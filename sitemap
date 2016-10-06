@@ -1,0 +1,14 @@
+// ID : Title ---> URL --> [Parent]
+homepage                 : @(Home)                         --> /
+contact                  : @(eshop:Contact)                --> /contact/                    --> homepage
+products                 : @(eshop:Products)               --> /produits/                   --> homepage
+checkout                 : @(eshop:Checkout)               --> /checkout/                   --> homepage
+shopping-cart            : @(eshop:ShoppingCart)           --> /shopping-cart/              --> homepage
+order                    : @(eshop:Order)                  --> /checkout/{0}/               --> checkout
+payment                  : @(eshop:CheckoutPayment)        --> /checkout/{0}/{1}/           --> checkout
+account                  : @(eshop:Account)                --> /account/                    --> homepage
+settings                 : @(eshop:AccountSettings)        --> /account/settings/           --> account
+category                 : @(eshop:Category)               --> /categorie/*                 --> products
+detail                   : @(eshop:Product)                --> /produit/{0}/{1}/            --> category
+blogs                    : @(eshop:Blogs)                  --> /blogs/                      --> homepage
+blogsdetail              : @(eshop:BlogDetail)             --> /blogs/{0}/                  --> blogs

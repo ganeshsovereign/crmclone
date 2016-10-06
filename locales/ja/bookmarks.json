@@ -1,0 +1,21 @@
+{
+    "CHARSET": "UTF-8",
+    "AddThisPageToBookmarks": "このページのブックマークに追加する",
+    "Bookmark": "ブックマーク",
+    "Bookmarks": "ブックマーク",
+    "NewBookmark": "新しいブックマーク",
+    "ShowBookmark": "ブックマークを表示",
+    "OpenANewWindow": "新しいウィンドウを開きます",
+    "ReplaceWindow": "現在のウィンドウを置き換える",
+    "BookmarkTargetNewWindowShort": "新しいウィンドウ",
+    "BookmarkTargetReplaceWindowShort": "現在のウィンドウ",
+    "BookmarkTitle": "ブックマークのタイトル",
+    "UrlOrLink": "URL",
+    "BehaviourOnClick": "Behaviour when a URL is clicked",
+    "CreateBookmark": "ブックマークを作成します。",
+    "SetHereATitleForLink": "ブックマークのタイトルを設定する",
+    "UseAnExternalHttpLinkOrRelativeSpeedealingLink": "Use an external http URL or a relative Speedealing URL",
+    "ChooseIfANewWindowMustBeOpenedOnClickOnBookmark": "リンクで開いたページは、現在または新しいウィンドウに表示される必要がある場合に選択します。",
+    "BookmarksManagement": "ブックマークの管理",
+    "ListOfBookmarks": "ブックマークのリスト"
+}

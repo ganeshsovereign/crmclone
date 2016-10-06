@@ -1,0 +1,313 @@
+"use strict";
+
+MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$filter', 'Users', function ($scope, $rootScope, $http, $filter, Users) {
+
+        var grid = new Datatable();
+        var user = $rootScope.login;
+
+        $scope.editable = false;
+
+        $scope.user = {
+            entity: $rootScope.login.entity,
+            datec: new Date()
+        };
+
+        $scope.dict = {};
+        $scope.users = [];
+        $scope.status_id = null;
+
+        // Init
+        $scope.$on('$viewContentLoaded', function () {
+            // initialize core components
+            Metronic.initAjax();
+
+            // set default layout mode
+            $rootScope.settings.layout.pageSidebarClosed = true;
+            $rootScope.settings.layout.pageBodySolid = false;
+
+            var dict = ["fk_user_status"];
+
+            $http({method: 'GET', url: '/erp/api/dict', params: {
+                    dictName: dict
+                }
+            }).success(function (data, status) {
+                $scope.dict = data;
+                //console.log(data);
+            });
+
+            if ($rootScope.$stateParams.Status) {
+                $scope.status_id = $rootScope.$stateParams.Status;
+                initDatatable({status_id: $scope.status_id});
+            } else
+                initDatatable();
+
+        });
+
+        // Init ng-include
+        $scope.$on('$includeContentLoaded', function () {
+            // initialize core components
+            Metronic.initAjax();
+
+            // set default layout mode
+            $rootScope.settings.layout.pageSidebarClosed = false;
+            $rootScope.settings.layout.pageBodySolid = false;
+
+            var dict = ["fk_user_status"];
+
+            $http({method: 'GET', url: '/erp/api/dict', params: {
+                    dictName: dict
+                }
+            }).success(function (data, status) {
+                $scope.dict = data;
+                //console.log(data);
+            });
+
+        });
+
+        $scope.ngIncludeInit = function (params, length) {
+            $scope.params = params;
+            initDatatable(params, length);
+        };
+
+        $scope.create = function () {
+            var user = new Users(this.user);
+            user.$save(function (response) {
+                $rootScope.$state.go("user.show", {id: response._id});
+            });
+        };
+
+        $scope.showStatus = function (val, dict) {
+            if (!($scope.dict[dict] && $scope.user[val]))
+                return;
+            var selected = $filter('filter')($scope.dict[dict].values, {id: $scope.user[val]});
+
+            return ($scope.user[val] && selected && selected.length) ? selected[0].label : 'Non défini';
+        };
+
+        $scope.remove = function (user) {
+            if (!user && grid) {
+                return $http({method: 'DELETE', url: '/erp/api/user', params:
+                            {
+                                id: grid.getSelectedRows()
+                            }
+                }).success(function (data, status) {
+                    if (status === 200)
+                        $scope.find();
+                });
+            }
+
+            user.$remove(function () {
+                $rootScope.$state.go("user.list");
+            });
+        };
+
+        $scope.update = function (options, callback) {  //example options : {status: Status}
+            var user = $scope.user;
+
+            user.$update(options, function (response) {
+
+                $scope.user = response;
+
+                if (callback)
+                    callback(null, response);
+            });
+        };
+
+        $scope.findOne = function () {
+            Users.users.get({
+                Id: $rootScope.$stateParams.id
+            }, function (user) {
+                $scope.user = user;
+
+                $http({method: 'GET', url: 'api/ticket', params:
+                            {
+                                find: {"linked.id": user._id},
+                                fields: "name ref updatedAt percentage Status task"
+                            }
+                }).success(function (data, status) {
+                    if (status == 200)
+                        $scope.tickets = data;
+
+                    $scope.countTicket = $scope.tickets.length;
+                });
+
+            }, function (err) {
+                if (err.status == 401)
+                    $location.path("401.html");
+            });
+        };
+
+        function getUrl(params) {
+
+            if (!params)
+                params = {};
+
+            if (!params.entity)
+                params.entity = $rootScope.entity;
+
+            var url = $rootScope.buildUrl('/erp/api/user/dt', params); // Build URL with json parameter
+            //console.log(url);
+            return url;
+        }
+
+        function initDatatable(params, length) {
+
+            grid.init({
+                src: $("#userList"),
+                onSuccess: function (grid) {
+                    // execute some code after table records loaded
+                },
+                onError: function (grid) {
+                    // execute some code on network or other general error 
+                },
+                loadingMessage: 'Loading...',
+                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+
+                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
+                    // So when dropdowns used the scrollable div should be removed. 
+                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+
+                    "bStateSave": (params ? false : true), // save datatable state(pagination, sort, etc) in cookie.
+
+                    "pageLength": length || 25, // default record count per page
+                    "ajax": {
+                        "url": getUrl(params) // ajax source
+                    },
+                    "order": [
+                        [1, "asc"]
+                    ], // set first column as a default sort by asc
+                    "columns": [{
+                            data: 'bool'
+                        }, {
+                            data: "lastname",
+                            defaultContent: ""
+                        }, {
+                            data: "firstname",
+                            defaultContent: ""
+                        }, {
+                            data: "username",
+                            defaultContent:""
+                        }, {
+                            data: "poste",
+                            defaultContent: ""
+                        }, {
+                            data: "groupe",
+                            defaultContent: ""
+                        }, {
+                            data: "entity",
+                            defaultContent: "",
+                            visible: user.multiEntities
+                        }, {
+                            data: "email",
+                            defaultContent: ""
+                        }, {
+                            data: "LastConnection",
+                            defaultContent: ""
+                        }, {
+                            data: "Status"
+                        }, {
+                            data: "updatedAt",
+                            defaultContent: ""
+                        }, {
+                            data: 'action'
+                        }]
+                }
+            });
+
+            // handle group actionsubmit button click
+            grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+                e.preventDefault();
+                var action = $(".table-group-action-input", grid.getTableWrapper());
+                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                    grid.setAjaxParam("customActionType", "group_action");
+                    grid.setAjaxParam("customActionName", action.val());
+                    grid.setAjaxParam("id", grid.getSelectedRows());
+                    grid.getDataTable().ajax.reload();
+                    grid.clearAjaxParams();
+                } else if (action.val() == "") {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'Please select an action',
+                        container: grid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                } else if (grid.getSelectedRowsCount() === 0) {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'No record selected',
+                        container: grid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                }
+            });
+        }
+
+        $scope.find = function () {
+            var url;
+            //console.log(this.status_id);
+
+            if ($scope.params) { // For ng-include in societe fiche
+                $scope.params.status_id = this.status_id;
+                url = getUrl($scope.params);
+            } else
+                url = getUrl({status_id: this.status_id});
+
+            grid.resetFilter(url);
+        };
+
+
+        /*
+         * NG-GRID for ticket list
+         */
+
+        $scope.filterOptionsTicket = {
+            filterText: "",
+            useExternalFilter: false
+        };
+
+        $scope.gridOptionsTicket = {
+            data: 'tickets',
+            enableRowSelection: false,
+            sortInfo: {fields: ["updatedAt"], directions: ["desc"]},
+            filterOptions: $scope.filterOptionsTicket,
+            i18n: 'fr',
+            enableColumnResize: true,
+            columnDefs: [
+                {field: 'name', displayName: 'Titre', cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/ticket/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"right"}\' title=\'{{row.getProperty("task")}}\'><span class="icon-ticket"></span> {{row.getProperty(col.field)}}</a>'},
+                {field: 'ref', displayName: 'Id'},
+                {field: 'percentage', displayName: 'Etat', cellTemplate: '<div class="ngCellText"><progressbar class="progress-striped thin" value="row.getProperty(col.field)" type="success"></progressbar></div>'},
+                {field: 'updatedAt', displayName: 'Dernière MAJ', cellFilter: "date:'dd-MM-yyyy HH:mm:ss'"}
+            ]
+        };
+
+        $scope.changeStatus = function (Status) {
+            $scope.user.Status = Status;
+            $scope.update({Status: Status});
+        };
+    }]);
+
+MetronicApp.controller('BoxRHController', ['$rootScope', '$scope', '$http', '$timeout', 'Users', function ($rootScope, $scope, $http, $timeout, Users) {
+
+        $scope.loadAbsences = function () {
+            Users.absences.query({query: 'NOW'}, function (absences) {
+                $scope.absences = absences;
+                //console.log(absences);
+            });
+        };
+
+        $scope.absenceAddTick = function (user) {
+            user.closed = true;
+            //console.log(user);
+            user.$update();
+            $scope.absences.splice($scope.absences.indexOf(user), 1);
+        };
+
+        $scope.late = function (date) {
+            if (new Date(date) <= new Date())
+                return "font-red-intense";
+        };
+
+    }]);

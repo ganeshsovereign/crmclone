@@ -1,0 +1,78 @@
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+
+\usepackage{tm_base}
+
+%%%%%%%%% entete pied de page %%%%%%%
+\usepackage{fancyhdr}
+\usepackage[official]{eurosym}
+
+\pagestyle{fancy}
+
+\fancyhf{}
+\rfoot{\tiny \thepage/\pageref{LastPage}}
+
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.5pt}
+
+\cfoot{\tiny\FOOT}
+
+%%% title %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\def\thickhrulefill{\leavevmode \leaders \hrule height 1pt\hfill \kern \z@}
+\def\nodeshadowed[#1]#2;{\node[scale=2,above,#1]{#2};\node[scale=2,
+        above,#1,yscale=-.8,scope fading=south,opacity=0.6]{#2};}
+\def\version#1{\def\@version{#1}}
+\def\subversion#1{\def\@subversion{#1}}
+\def\mail#1{\def\@mail{#1}}
+\def\fonction#1{\def\@fonction{#1}}
+\mail{}
+\fonction{}
+\version{1}
+\subversion{00}
+
+\renewcommand{\maketitle}{%
+    %\let\footnotesize\small
+    %\let\footnoterule\relax
+    \normalsize
+    %\thispagestyle{empty}%
+    \parindent \z@
+%	 \null
+%    \vskip 350\p@
+%    \hfil
+	 \begin{fminipage}[\textwidth]
+	 \begin{center}
+    \begin{tikzpicture}
+    	\node[at={(0,1)}]
+    		{\pgfimage[width=3cm]{logo}};
+    	%\node[at={(7,6)}]
+    	%	{\pgfimage[width=4cm]{logoSymeos}};
+    	%\nodeshadowed [at={(-1,5  )},yslant=0.05]
+      %  {\Huge Ti\textcolor{orange}{\emph{k}}Z};
+    	%\nodeshadowed [at={( 2,5.3)}] {\huge \textcolor{Symeos_Green}{\&}};
+    	\nodeshadowed [at={( 0,4  )},black] {\@title};
+    	\node [at={( 0,-1  )}] {\LARGE \oldstylenums{\@date}};
+	 	\end{tikzpicture}
+	 
+	 \end{center}
+	\end{fminipage}
+	\begin{flushright}
+   \begin{tikzpicture}
+   	\node {\Large \@author};
+   	\node [at={(0,-.5)}] {\Large \texttt{\@mail}};
+   	\node [at={(0,-1)}] {\Large \oldstylenums{v\@version}.\oldstylenums{\@subversion}};
+   \end{tikzpicture}
+	
+	\end{flushright}
+	%  \vfill
+	%  \null
+}
+
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%% section
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\thesection}{\arabic{section}}

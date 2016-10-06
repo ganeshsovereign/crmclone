@@ -1,0 +1,21 @@
+{
+    "CHARSET": "UTF-8",
+    "AddThisPageToBookmarks": "Lisage see leht järjehoidjad",
+    "Bookmark": "Järjehoidja",
+    "Bookmarks": "Järjehoidjad",
+    "NewBookmark": "Uus järjehoidja",
+    "ShowBookmark": "Näita järjehoidja",
+    "OpenANewWindow": "Ava uues aknas",
+    "ReplaceWindow": "Asendada aktiivse akna",
+    "BookmarkTargetNewWindowShort": "Uues aknas",
+    "BookmarkTargetReplaceWindowShort": "Aktiivse akna",
+    "BookmarkTitle": "Järjehoidja tiitel",
+    "UrlOrLink": "URL",
+    "BehaviourOnClick": "Käitumine kui URL on klõpsatud",
+    "CreateBookmark": "Loo järjehoidja",
+    "SetHereATitleForLink": "Set pealkiri järjehoidja",
+    "UseAnExternalHttpLinkOrRelativeSpeedealingLink": "Use an external http URL or a relative Speedealing URL",
+    "ChooseIfANewWindowMustBeOpenedOnClickOnBookmark": "Vali kui leht avada link peab olema praeguse või uues aknas",
+    "BookmarksManagement": "Järjehoidjad juhtimine",
+    "ListOfBookmarks": "Järjehoidjad"
+}

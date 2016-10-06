@@ -1,0 +1,16 @@
+{
+    "NewReceipt": "Nouveau bon de réception",
+    "Receipt": "Bon de réception",
+    "ReceiptShort": "Réception",
+    "Receipts": "Bons de receptions",
+    "AdressReceipt":"Adresse de réception",
+    "ReceiptDate":"Date de réception",
+    "CardReceipt":"Fiche réception",
+    "ReceiptDatePlanned":"Date de réception prévue",
+    "ReceiptDateReally":"Date de réception réélle",
+    "RefReceiptShort": "Réf. de la réception",
+    "Details":"Détails du bon de réception",
+    "RefReceipt": "Référence utile à la réception",
+    
+    "name": "herve"
+}

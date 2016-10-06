@@ -1,0 +1,26 @@
+\documentclass[a4paper, oneside, 10pt, french]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{top=1.5cm, bottom=1cm, left=1.5cm, right=1.5cm,foot=.2cm,head=2cm,headsep=.5cm,includefoot}
+
+\usepackage{tm_article}
+\usepackage{tabularx, longtable, multirow, rotating}
+
+\definecolor{violet}{rgb}{0.0,0.0,0.0}
+\definecolor{bleu}{rgb}{0.01,0.28,0.58}
+\newcommand{\vhline}{\arrayrulecolor{violet}\hline\arrayrulecolor{black}}
+\newcommand{\ghline}{\arrayrulecolor{gray}\hline\arrayrulecolor{black}}
+\newcommand{\bhline}{\arrayrulecolor{bleu}\hline\arrayrulecolor{black}}
+\makeatletter
+\renewcommand{\section}{\@startsection {section}{1}{\z@}%
+             {-0ex \@plus -1ex \@minus -.2ex}%
+             {0.01ex \@plus.1ex}%
+             {\footnotesize\sffamily}}
+\makeatother
+
+
+\begin{document}
+
+\include{texfile}
+
+\end{document}

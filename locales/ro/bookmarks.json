@@ -1,0 +1,21 @@
+{
+    "CHARSET": "UTF-8",
+    "AddThisPageToBookmarks": "Adăugaţi această pagină la marcajele",
+    "Bookmark": "Bookmark",
+    "Bookmarks": "Marcaje",
+    "NewBookmark": "Marcaj nou",
+    "ShowBookmark": "Arata marcaj",
+    "OpenANewWindow": "Deschide o fereastră nouă",
+    "ReplaceWindow": "Înlocuiţi ferestrei curente",
+    "BookmarkTargetNewWindowShort": "New window",
+    "BookmarkTargetReplaceWindowShort": "Ferestrei curente",
+    "BookmarkTitle": "Bookmark titlu",
+    "UrlOrLink": "URL-ul",
+    "BehaviourOnClick": "Comportamentul pe clic pe URL-ul",
+    "CreateBookmark": "Creaţi marcaj",
+    "SetHereATitleForLink": "Setaţi aici un titlu de marcaj",
+    "UseAnExternalHttpLinkOrRelativeSpeedealingLink": "Use an external http URL or a relative Speedealing URL",
+    "ChooseIfANewWindowMustBeOpenedOnClickOnBookmark": "Alegeţi dacă pagină deschisă de legătură trebuie să apară pe curent sau de-o fereastră nouă",
+    "BookmarksManagement": "Marcaje de management",
+    "ListOfBookmarks": "Lista de semne de carte"
+}

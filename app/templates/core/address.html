@@ -1,0 +1,31 @@
+<div class="row static-info">
+    <div class="col-md-12 value">
+        <div class="row static-info">
+            <div class="col-md-2 name">
+                @(Address) :
+            </div>
+            <div class="col-md-10 value">
+                <div class="well">
+                    <address>
+                        <strong>{{addressModel.client.name || addressModel.supplier.name || addressModel.societe.name}}</strong><br>
+                        <span editable-textarea="addressModel.address" e-name="address" e-rows="4" e-cols="400" e-required e-class="form-control"><pre>{{ addressModel.address ||  "Non defini" }}</pre></span>
+                    
+                            <span editable-text="addressModel.zip" e-class="form-control" e-name="zip" e-placeholder="@(companies:Zip)" e-title="@(companies:Zip)">{{addressModel.zip}}</span>
+                        
+                            <span editable-text="addressModel.town" e-class="form-control" e-name="town" e-placeholder="@(companies:Town)" e-title="@(companies:Town)">{{addressModel.town}}</span>
+                    </address>
+                </div>
+            </div>
+        </div>
+        <!--<div class="row static-info">
+            <div class="col-md-2 name">
+                Localisation :
+            </div>
+            <div class="col-md-10 value">
+                <a href="https://www.google.fr/maps/place/2+Rue+des+Faubourgs,+63960+Veyre-Monton" class="btn default btn-xs yellow-stripe">
+                    Voir l'adresse sur Google Maps</a>
+            </div>
+        </div>-->
+
+    </div>
+</div>

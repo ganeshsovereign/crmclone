@@ -1,0 +1,285 @@
+<h3 class="page-title" ng-init="findOne()">
+    <i class="fa fa-user font-blue-madison"></i> @(users:UserCard) {{user.fullname}} <small> @(From) {{user.createdAt| date:'@(main:date.format.java.dayhour)'}}</small> 
+</h3>
+
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a ui-sref="user.list" >@(users:ListOfUsers)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>{{user.username}}</span>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                @(Tools) <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                <!--<li>
+                    <a href="#" ng-show="(bill.Status == 'NEW' || bill.Status == 'DRAFT') && login.rights.bill.validate" data-ng-click="changeStatus('VALIDATE')">
+                        <i class="fa fa-thumbs-o-up"></i>
+                        @(Close)
+                    </a>
+                </li>-->
+                <li class="divider">
+                </li>
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(user)" ng-confirm-click="Supprimer l'utilisateur ?" title="Supprimer l'utilisateur">
+                        <i class="fa fa-trash-o font-red"></i>
+                        @(Delete)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-md-4 col-sm-12">
+        <form editable-form name="editableUser" onaftersave="update()">
+            <div class="portlet blue-madison box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>@(users:UserCard)
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" ng-click="editableUser.$show()" ng-show="!editableUser.$visible && editable" class="btn btn-default btn-sm">
+                            <i class="fa fa-pencil"></i> @(Edit) </a>
+                    </div>
+                    <div class="actions" ng-show="editableUser.$visible">
+                        <button type="submit" ng-disabled="editableUser.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                        <button type="button" ng-disabled="editableUser.$waiting" ng-click="editableUser.$cancel();
+                                                findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Title) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.name">
+                                {{user.civilite|| "Non defini"}}
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Type) :</div>
+                        <div class="col-md-8 value">
+                            {{user._type.name}}
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Group) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-select="user.group" onshow="loadGroup()" e-ng-options="group as group.name for group in groups track by group.id">
+
+                                <small class="label label-sm label-default">{{user.group.name|| 'Aucun groupe'}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(companies:Company) :</div>
+                        <div class="col-md-8 value">
+                            <a href="#" ui-sref="societe.show({id:user.societe.id})"
+                               class="fa fa-institution"
+                               editable-text="user.societe"
+                               e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', bill.entity) | filter:{name:$viewValue}"
+                               e-typeahead-on-select="updateAddress($item)"
+                               > {{user.societe.name|| "Non defini"}} </a>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(companies:Contact) :</div>
+                        <div class="col-md-8 value">
+                            <span class="icon-user" editable-select="user.contact" onshow="loadContact(user.societe)" e-ng-options="contact as contact.name for contact in contacts track by contact.id">
+                                {{user.contact.name|| "Non defini"}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Entity) :</div>
+                        <div class="col-md-8 value">
+                            <small class="label label-sm label-default">{{user.entity}}</small>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(leads:Lead) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-select="user.lead" onshow="loadLead(user.societe)" e-ng-options="lead as lead.name for lead in leads track by lead.id">
+                                {{user.lead.name|| 'Aucun'}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info" ng-if="isEvent">
+                        <div class="col-md-4 name">@(users:DateActionStart) :</div>
+                        <div class="col-md-8 value">
+                            <span href="#" editable-bsdate="user.datep" e-datepicker-popup="dd/MM/yyyy">
+                                {{ (user.datep | date:"dd/MM/yyyy") || 'empty'}}
+                            </span>
+                            <span editable-bstime="user.datep" e-show-meridian="false" e-minute-step="10" >
+                                {{ (user.datep | date:"HH:mm") || 'empty'}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name" ng-if="user.type == 'isEvent'">@(users:DateActionEnd) :</div>
+                        <div class="col-md-4 name" ng-if="user.type != 'isEvent'">@(users:DateEchAction) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-bsdate="user.datef" e-datepicker-popup="dd/MM/yyyy">
+                                {{ (user.datef | date:"dd/MM/yyyy") || 'empty'}}
+                            </span>
+                            <span editable-bstime="user.datef" e-show-meridian="false" e-minute-step="10">
+                                {{ (user.datef | date:"HH:mm") || 'empty'}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Status) :</div>
+                        <div class="col-md-8 value">
+
+                            <p class="input-group" ng-show="editable">
+                                <span class="input-group-btn btn-group-xs">
+                                    <button ng-disabled="user.percentage == 0" type="button" class="btn btn-default" ng-click="updatePercent(user.percentage - 25 < 0 ? 0 : user.percentage - 25);"><i class="glyphicon glyphicon-minus"></i></button>
+                                </span>
+                            <progressbar animate="true" value="user.percentage" type="success"><b>{{user.percentage}}%</b></progressbar>
+                            <span class="input-group-btn btn-group-xs">
+                                <button ng-disabled="user.percentage == 100" type="button" class="btn btn-default" ng-click="updatePercent(user.percentage + 25 > 100 ? 100 : user.percentage + 25);"><i class="glyphicon glyphicon-plus"></i></button>
+                            </span>
+                            </p>
+                            <progressbar ng-hide="editable" animate="true" value="user.percentage" type="success"><b>{{user.percentage}}%</b></progressbar>
+
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:CreatedBy) :</div>
+                        <div class="col-md-8 value">
+                            <span>{{user.author.name|| "Non defini"}}</span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:AffectedTo) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-text="user.usertodo" e-typeahead="user as user.name for user in AutoComplete($viewValue,'/api/user/name/autocomplete',5) | filter:{name:$viewValue}">
+                                {{user.usertodo.name|| "Non defini"}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(DateCreation) :</div>
+                        <div class="col-md-8 value">
+                            {{user.createdAt|date:'dd/MM/yyyy HH:mm'}}
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(DateLastModification) :</div>
+                        <div class="col-md-8 value">
+                            {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-8 col-sm-12">
+
+        <form editable-form name="noteDesc" onaftersave="update()">
+            <div class="portlet">
+                <div class="portlet-title">
+                    <div class="caption font-green-sharp">
+                        <i class="icon-speech"></i>
+                        <span class="caption-subject">@(Description)</span>
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" ng-click="noteDesc.$show()" ng-show="!noteDesc.$visible && editable" class="btn btn-default btn-sm">
+                            <i class="fa fa-pencil"></i> Éditer </a>
+                    </div>
+                    <div class="actions ng-hide" ng-show="noteDesc.$visible">
+                        <button type="submit" ng-disabled="noteDesc.$waiting" class="btn btn-default btn-sm">Enregistrer</button>
+                        <button type="button" ng-disabled="noteDesc.$waiting" ng-click="noteDesc.$cancel()" class="btn btn-default btn-sm">Annuler</button>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-center" ng-if="user.type != 'isEvent'">@(users:DateEchAction) : {{user.datef| date:'dd/MM/yyyy'}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-center"> @(users:AffectedTo) : {{user.usertodo.name|| "Non defini"}}</p>
+                        </div>
+                    </div>
+
+                    <pre editable-textarea="user.description" e-name="note" e-rows="6" e-cols="400" e-required e-class="form-control"></pre>
+                    <pre class="well"  ng-show="!noteDesc.$visible">{{user.description}}</pre>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div class="portlet light">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-bubble font-red-sunglo"></i>
+            <span class="caption-subject font-red-sunglo bold uppercase">@(Comments)</span>
+        </div>
+        <!--<div class="actions">
+            <div class="portlet-input input-inline">
+                <div class="input-icon right">
+                    <i class="icon-magnifier"></i>
+                    <input type="text" class="form-control input-circle" placeholder="search..."> </div>
+            </div>
+        </div>-->
+    </div>
+    <div class="portlet-body" id="chats">
+        <ul class="chats">
+            <li ng-class="{
+                                    in: !note.class, out:note.class}" ng-repeat="note in user.notes">
+                <img class="avatar" alt="" src="/assets/admin/layout/img/avatar3.jpg">
+                <div class="message">
+                    <span class="arrow"> </span>
+                    <a href="javascript:;" class="name"> {{note.author.name}} </a>
+                    <span class="datetime"> {{ note.datec | date:'@(main:date.format.java.dayhour)' }} </span> <span class="font-green">{{note.percentage| percent:0}}</span>
+                    <span class="body"> {{note.note}} </span>
+                </div>
+            </li>
+        </ul>
+        <div class="chat-form" ng-if="editable">
+            <div class="input-cont">
+                <input class="form-control" type="text" ng-model="newNote"  ng-enter="addNote()" placeholder="Ajouter un commentaire ici..."> </div>
+            <div class="btn-cont">
+                <span class="arrow"> </span>
+                <a href="" class="btn blue icn-only" ng-click="addNote()">
+                    <i class="fa fa-check icon-white"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+

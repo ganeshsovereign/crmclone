@@ -1,0 +1,21 @@
+{
+    "CHARSET": "UTF-8",
+    "AddThisPageToBookmarks": "Aggiungi segnalibro per questa pagina",
+    "Bookmark": "Segnalibro",
+    "Bookmarks": "Segnalibri",
+    "NewBookmark": "Nuovo segnalibro",
+    "ShowBookmark": "Visualizza segnalibro",
+    "OpenANewWindow": "Open a new window",
+    "ReplaceWindow": "Replace current window",
+    "BookmarkTargetNewWindowShort": "Nuova finestra",
+    "BookmarkTargetReplaceWindowShort": "Finestra corrente",
+    "BookmarkTitle": "Titolo segnalibro",
+    "UrlOrLink": "URL o link",
+    "BehaviourOnClick": "Behaviour when a URL is clicked",
+    "CreateBookmark": "Crea segnalibro",
+    "SetHereATitleForLink": "Set a title for the bookmark",
+    "UseAnExternalHttpLinkOrRelativeSpeedealingLink": "Use an external http URL or a relative Speedealing URL",
+    "ChooseIfANewWindowMustBeOpenedOnClickOnBookmark": "Scegli se caricare la pagina del collegamento in questa finestra o in una nuova",
+    "BookmarksManagement": "Gestione segnalibri",
+    "ListOfBookmarks": "Elenco segnalibri"
+}

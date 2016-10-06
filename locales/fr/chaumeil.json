@@ -1,0 +1,17 @@
+{
+    "ProductionPlanning": "Planning de production Chaumeil",
+    "NewPlanningProd": "Nouveau Job",
+    "OrderDate":"Date commande",
+    "Order":"Commande",
+    "RefClient":"Ref client",
+    "JobTicket":"Job ticket",
+    "Societe":"Societe",
+    "Description":"Déscription",
+    "Qte":"Qte",
+    "QteCopies":"Qte copies",
+    "Delivery":"Livraison",
+    "Status":"Etat",
+    "Step":"Etape",
+    "Entity":"Atelier",
+    "Notes":"Notes"
+}

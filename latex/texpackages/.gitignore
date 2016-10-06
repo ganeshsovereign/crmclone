@@ -1,0 +1,5 @@
+# Ignore everything in this directory
+*.tex
+# Except this file
+!.gitignore
+!main.tex

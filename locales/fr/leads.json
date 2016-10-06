@@ -1,0 +1,21 @@
+{
+	"CHARSET": "UTF-8",
+	"Leads": "Projets",
+        "NameLead": "Projet",
+        "MenuLeads":"Gestion des projets",
+	"LeadsDetected": "Projets détectés",
+	"Lead": "Projet",
+	"ListLeads": "Liste des projets",
+	"New Lead": "Nouveau projet",
+	"Potential": "Potentiel du projet",
+	"Type": "Type de projet",
+	"Step": "Etape / status du projet",
+	"Details Lead":"Fiche projet",
+        "Reports":"Comptes rendus",
+        "Report":"Compte rendu",
+        "DateEcheance":"Date d'écheance",
+        "TypeAction":"Type de l'action",
+        "PropalsID":"N° de proposition",
+        "PropalsPrice":"Montant",
+        "OpenLeads": "Projets en cours"
+}

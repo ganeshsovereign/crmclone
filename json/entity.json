@@ -1,0 +1,59 @@
+{
+	"_id": "module:Entity",
+	"enabled": true,
+	"boxes": [],
+	"const": [],
+	"rights": {
+		"entity": [
+			{
+				"desc": "Lister les entités",
+				"perm": {
+					"read": true
+				}
+			},
+			{
+				"desc": "Creer/modifier les entités",
+				"perm": {
+					"create": false
+				}
+			},
+			{
+				"desc": "Supprimer les entités",
+				"perm": {
+					"delete": false
+				}
+			}
+		]
+	},
+	"module_parts": [],
+	"family": "crm",
+	"name": "Entity",
+	"description": "Gestion des entités",
+	"version": "tomanage",
+	"picto": "entity",
+	"config_page_url": [],
+	"depends": [],
+	"requiredby": [],
+	"conflictwith": [],
+	"langfiles": [
+		"entity"
+	],
+	"menus": {
+		"menu:parameters": {
+			"submenus": {
+				"menu:menucompanysetup": {
+					"position": 1,
+					"url": "/erp/#!/entity",
+					"perms": [
+						["superadmin"],
+						["admin","entity.read"]
+					],
+					"enabled": "$conf->entity->enabled",
+					"usertype": 2,
+					"title": "admin:MenuCompanySetup",
+					"icon": "fa-globe"
+				}
+			}
+		}
+	}
+}

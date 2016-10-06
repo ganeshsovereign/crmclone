@@ -1,0 +1,22 @@
+{
+	"CHARSET": "UTF-8",
+	"OpenMessage": "Open ticket",
+	"From": "From",
+	"ForwardTo": "Forward to",
+	"TimeCreate": "Time create",
+	"NewTicket": "New ticket",
+	"CreateTicket": "Create a new ticket",
+	"ControlledBy": "Controlled by",
+	"UserClosedTicket": "User that closed this ticket",
+	"AffectedTo": "Affected to",
+	"RecievedNotification": "Users that received notifications",
+	"Expire": "Expiration date",
+	"AddComment": "Add a comment",
+	"Comment": "Comment",
+	"ReplyMessage": "Send a message to controler",
+	"EditTicket": "Edit a ticket",
+    "Callback": "Date callback",
+	"CallbackNotification": "Date ticket re-open",
+	"Recurrency" : "Recurrency",
+	"RecurrencyNotification" : "Recurrency of ticket in days"
+}

@@ -1,0 +1,21 @@
+{
+    "CHARSET": "UTF-8",
+    "AddThisPageToBookmarks": "Dodaj to stran med zaznamke",
+    "Bookmark": "Zaznamek",
+    "Bookmarks": "Zaznamki",
+    "NewBookmark": "Nov zaznamek",
+    "ShowBookmark": "Prikaži zaznamek",
+    "OpenANewWindow": "Odpri novo okno",
+    "ReplaceWindow": "Zamenjaj trenutno okno",
+    "BookmarkTargetNewWindowShort": "Novo okno",
+    "BookmarkTargetReplaceWindowShort": "Trenutno okno",
+    "BookmarkTitle": "Zaznamuj naslov",
+    "UrlOrLink": "URL",
+    "BehaviourOnClick": "Postopek po kliku na URL",
+    "CreateBookmark": "Kreiraj zaznamek",
+    "SetHereATitleForLink": "Nastavi naziv zaznamka",
+    "UseAnExternalHttpLinkOrRelativeSpeedealingLink": "Use an external http URL or a relative Speedealing URL",
+    "ChooseIfANewWindowMustBeOpenedOnClickOnBookmark": "Izberi, če se mora stran, odprta z linkom, prikazati v trenutnem ali novem oknu",
+    "BookmarksManagement": "Urejanje zaznamkov",
+    "ListOfBookmarks": "Seznam zaznamkov"
+}

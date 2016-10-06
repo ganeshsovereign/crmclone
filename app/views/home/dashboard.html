@@ -1,0 +1,51 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(Dashboard)</span>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        <div report-date-range ng-model="date" class="pull-right tooltips btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
+    </div>
+</div>
+<h3 class="page-title">
+    @(Dashboard) <small>rapports &amp; statistiques</small>
+</h3>
+<!-- END PAGE HEADER-->
+<!-- BEGIN MAIN CONTENT -->
+<div>
+    <!-- BEGIN DASHBOARD STATS -->
+    <!-- <div class="row" ng-show="login.rights.box.ca" ng-include="'/templates/box/top-boxes.html'" ng-controller="BoxTemporaryController" onload="init(date)"></div> -->
+    <!-- END DASHBOARD STATS -->
+    <!-- 
+    <div ng-if="login.rights.box.ca" ng-include="'/templates/box/ca.html'" ng-controller="BoxBillController" onload="loadCaFamily(date)" ></div>
+    <div ng-if="login.rights.box.ca" ng-include="'/templates/box/charges.html'" ng-controller="BoxBillSupplierController" onload="loadChFamily(date)" ></div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12"  ng-show="login.rights.box.dashboardGraph" ng-include="'/templates/box/ca-graph.html'" ng-controller="BoxBillController" onload="loadCaGraph(date)" ></div>
+        <div class="col-md-6 col-sm-12"  ng-show="login.rights.box.ca" ng-include="'/templates/box/customer-ca.html'" ng-controller="BoxBillController" onload="loadCustomerCa(date)" ></div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12" ng-show="login.rights.box.caCommercial" ng-include="'/templates/box/commercial-ca.html'" ng-controller="BoxBillController" onload="loadCommercialCa(date)" ></div>
+        <div class="col-md-6 col-sm-12" ng-show="login.rights.box.cost" ng-include="'/templates/box/subcontrator-details.html'" ng-controller="BoxTemporaryController" onload="loadCa(date);loadDebitDetails(date)" ></div>
+        <div class="col-md-6 col-sm-12" ng-show="login.rights.box.cost" ng-include="'/templates/box/charges-details.html'" ng-controller="BoxTemporaryController" onload="loadCa(date);loadDebitDetails(date);" ></div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12" ng-show="login.rights.box.absence" ng-include="'/templates/box/holiday.html'" ng-controller='BoxRHController' onload='loadAbsences()'></div>
+        <div class="col-md-6 col-sm-6" ng-show="login.rights.box.report" ng-include="'/templates/box/commercial-report.html'" ng-controller="BoxSocieteController" onload="findReport(date)"></div>
+    </div>
+    -->
+</div>
+<!-- END MAIN CONTENT -->
+<!-- BEGIN MAIN JS & CSS -->
+<script>
+    //Index.init();
+    //Tasks.initDashboardWidget();
+</script>
+<!-- BEGIN MAIN JS & CSS -->
+

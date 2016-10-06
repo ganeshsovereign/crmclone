@@ -1,0 +1,21 @@
+{
+    "CHARSET": "UTF-8",
+    "AddThisPageToBookmarks": "Legg denne siden til bokmerker",
+    "Bookmark": "Bokmerke",
+    "Bookmarks": "Bokmerker",
+    "NewBookmark": "Legg til bokmerke",
+    "ShowBookmark": "Vis bokmerke",
+    "OpenANewWindow": "Åpne et nytt vindu",
+    "ReplaceWindow": "Erstatt gjeldende vindu",
+    "BookmarkTargetNewWindowShort": "Nytt vindu",
+    "BookmarkTargetReplaceWindowShort": "Gjeldende vindu",
+    "BookmarkTitle": "Bokmerketittel",
+    "UrlOrLink": "URL",
+    "BehaviourOnClick": "URL åpner på følgende måte",
+    "CreateBookmark": "Opprett bokmerke",
+    "SetHereATitleForLink": "Angi tittel for bokmerket",
+    "UseAnExternalHttpLinkOrRelativeSpeedealingLink": "Use an external http URL or a relative Speedealing URL",
+    "ChooseIfANewWindowMustBeOpenedOnClickOnBookmark": "Velg om siden skal åpnes i nytt vindu eller i samme vindu",
+    "BookmarksManagement": "Behandling av bokmerker",
+    "ListOfBookmarks": "Oversikt over bokmerker"
+}

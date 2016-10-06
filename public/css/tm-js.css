@@ -1,0 +1,272 @@
+@media print
+{
+    body {zoom : 80%}
+    .portlet { border: none !important;}
+    .portlet.box > .portlet-body { padding: 0 0;}
+    /*background-color: inherit;}*/
+    .table td, .table th {-webkit-print-color-adjust:exact;}
+}
+
+.page-header.navbar.navbar-fixed-top, .page-header.navbar.navbar-static-top{
+    z-index: 1039;
+}
+
+.progress-bar-green {
+    background-color: #44b6ae!important
+}
+
+/* ng-grid */
+.gridStyle {
+    border: 1px solid #cccccc;
+    /*width: 800px; */
+    height: 250px;
+}
+.ngHeaderCell {
+    background: transparent;
+}
+
+.tooltip {
+    z-index: 500;
+}
+
+.table-fixed {
+    table-layout: fixed;
+}
+
+table.info-table {
+    width: 100%
+}
+
+.info-table > tbody > tr > th {
+    padding: 4px 10px;
+    color: black;
+    vertical-align: top;
+}
+
+.form-group {
+    margin-bottom: 6px;
+}
+
+.form-horizontal .control-label {
+    font-size: small;
+    text-align: -webkit-right;
+}
+
+.info-table > tbody > tr > td {
+    padding: 4px 10px;
+    color: #666666;
+    font-style: italic;
+
+}
+
+.page-header.navbar .page-logo .logo-default {
+    margin-top: 10px;
+    width: 165px;
+
+}
+
+ul.nav-tabs, ul.nav-pills {
+    margin-bottom: 0;
+    margin-top: 5px;
+    border-bottom:0;
+}
+
+.nav-tabs > li > a, .nav-pills > li > a {
+    font-size: small;
+}
+
+.static-info .name {
+    font-size: small;
+    text-align: -webkit-right;
+    font-weight: 300;
+    color: #555;
+}
+
+.sale-summary li .sale-num {
+    font-size: 14px;
+}
+
+[class^="fa-"], [class^="glyphicon-"], [class^="icon-"], [class*=" fa-"], [class*=" glyphicon-"], [class*=" icon-"] {
+    font-size: inherit;
+}
+
+.has-feedback label~.form-control-feedback {
+    top: 35px;
+    width: 2.25em;
+}
+
+.table .btn-group .btn {
+    margin-right: 0px;
+}
+
+.table .btn-toolbar {
+    margin-right: -10px;
+}
+
+/*Fix modal check*/
+.modal-body .checkbox > label, .modal-body .form-horizontal .checkbox > label {
+    padding-left: 20px;
+}
+
+address {
+    margin-bottom: 0px;
+}
+
+.well {
+    background-color: #FAFAFA;
+}
+
+address pre {
+    background-color: inherit;
+    border: 0px;
+    padding: 0 0;
+    font-family: inherit;
+}
+
+/* radio button see contact create soncas*/
+/*.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox],*/ .radio input[type=radio], .radio-inline input[type=radio] {
+    margin-left: -10px;
+}
+
+/* typeahead scroll */
+.typeahead .dropdown-menu, .editable-text .dropdown-menu {
+    max-height: 200px; 
+    overflow-y: auto; 
+    overflow-x: hidden; 
+}
+
+pre {
+    font-family: inherit;
+    padding: 0 0;
+    margin: 0 0;
+    color: inherit;
+    background-color: inherit;
+    border-radius: 0px;
+    border: 0px;
+}
+
+/* vertical checkbox in editable */
+.editable-checklist label {
+    display: block;
+}
+
+.static-info {
+    margin-bottom: 4px;
+}
+
+hr {
+    margin: 10px 0;
+    border-top-color: #bbb;
+}
+
+.progress {
+    margin: 2px 0;
+}
+
+.table-advance tr td.highlight:first-child span{
+    margin-left: 15px;
+}
+
+table.dataTable thead th, table.dataTable thead td {
+    padding: 5px 5px;
+}
+
+.table>caption+thead>tr:first-child>td, .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>td, .table>thead:first-child>tr:first-child>th {
+    font-size: small;
+}
+
+table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+    font-size: smaller;
+}
+
+.dashboard-stat .visual {
+    height: 55px;
+}
+
+.dashboard-stat .details .number {
+    padding-top: 10px;
+}
+
+.mt-element-step .step-thin .mt-step-title {
+    font-size: 16px;
+}
+
+.mt-element-step .step-thin .mt-step-number {
+    font-size:18px;
+    padding : 3px 11px;
+}
+
+.mt-element-step .step-default .mt-step-title {
+    font-size: 18px;
+}
+
+.mt-element-step .step-thin .mt-step-col{
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.mt-element-step .step-thin .mt-step-col {
+    font-size: 16px;
+}
+
+
+.table>.no-padding>tr>td {
+    padding: 1px;
+}
+
+#toast-container {
+    z-index: 10600;
+}
+
+/* Angular Tree*/
+
+.angular-ui-tree-handle {
+    background: #f8faff;
+    border: 1px solid #dae2ea;
+    padding: 10px 10px;
+    font-weight: initial;
+}
+
+.angular-ui-tree-handle:hover {
+    color: #438eb9;
+    background: #f4f6f7;
+    border-color: #dce2e8;
+}
+
+.angular-ui-tree-placeholder {
+    background: #f0f9ff;
+    border: 2px dashed #bed2db;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+tr.angular-ui-tree-empty {
+    height:100px
+}
+
+.group-title {
+    background-color: #687074 !important;
+    color: #FFF !important;
+}
+
+
+/* --- Tree --- */
+.tree-node {
+    border: 1px solid #dae2ea;
+    background: #f8faff;
+}
+
+.nodrop {
+    background-color: #f2dede;
+}
+
+.tree-node-content {
+    margin: 10px;
+}
+.tree-handle {
+    padding: 10px;
+    background: #428bca;
+    color: #FFF;
+    margin-right: 10px;
+}

@@ -1,0 +1,40 @@
+name                     : TM-js
+version                  : 0.5.001
+author                   : ToManage
+database                 : mongodb://127.0.0.1/mydatabase
+dateformatShort          : DD/MM/YYYY
+dateformatLong           : DD/MM/YYYY HH:mm
+manager-url              : /erp
+phone                    : +33 6 76 76 17 65
+
+// Image convertor for resizing of pictures
+// Default image converter: im = ImageMagick, gm = GraphicsMagick
+default-image-converter   : gm
+
+// Default theme
+default-theme             : eshop
+
+// session cookie name
+cookie			 : tmjs
+secret			 : 1234qwerty
+sessionTimeout           : 360000
+
+// OAuth
+twitter-key              : 1XR69DKARYXqKdPucICQ
+twitter-secret           : fCnZjLFQ7M8MsNZT4ekVkxiMS8pgwyPk9N6ysmbzEQA
+twitter-callback         : http://127.0.0.1/login/twitter/callback/
+google-id                : 102846639873-7lhqolitbk3fagv61p50om75a58occvq.apps.googleusercontent.com
+google-secret            : 6Y02V5G96hXYd0xU3SpsoZ
+google-callback          : http://tm.tomanage.fr/login/google/callback
+
+//SMTP
+mail.smtp                       : smtp.gmail.com
+mail.smtp.options               : {"secure":true,"port":465,"user":"myemail@tomanage.fr","password":"mypassword","timeout":10000,"tls":true}
+mail.address.from               : tm-js@tomanage.fr
+mail.address.reply              : contact@tomanage.fr
+mail.address.bcc                :
+
+//offer.emailNotify				: herve.prot@tomanage.fr
+accounting.VTE			: BLO
+accounting.ACH			: BLU
+ 

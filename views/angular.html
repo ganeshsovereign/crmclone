@@ -1,0 +1,16 @@
+@{meta('companies:CompanyList','description', 'keywords')}
+
+<!-- /app/css/ -->
+@{ngStyle('/assets/admin/pages/css/tasks.css')}
+
+<!-- cdnjs -->
+@{ngResource('rh','societe','contact','order','product','offer','delivery','bill','billsupplier','bank','payment','task')}
+@{ngController('rh','societe','contact','order','product','offer','delivery','bill','billsupplier','files','temporary','bank','payment','task')}
+
+@{section footer}
+@{end}
+
+<!-- BEGIN ACTUAL CONTENT -->
+<div ui-view class="fade-in-up">
+</div> 
+<!-- END ACTUAL CONTENT -->
