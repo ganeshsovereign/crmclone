@@ -8,7 +8,6 @@ var mongoose = require('mongoose'),
         timestamps = require('mongoose-timestamp');
 
 var DataTable = require('mongoose-datatable');
-var gridfs = INCLUDE('gridfs');
 
 DataTable.configure({
     verbose: false,
@@ -17,6 +16,9 @@ DataTable.configure({
 mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
+
+if (CONFIG('storing-files'))
+	var gridfs = INCLUDE(CONFIG('storing-files') + '.mod');
 
 var setPrice = function (value) {
     return MODULE('utils').setPrice(value);
