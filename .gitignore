@@ -18,4 +18,3 @@ mongod
 logs.txt
 *.sublime-project
 *.sublime-workspace
-install/
