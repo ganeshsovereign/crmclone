@@ -17,7 +17,9 @@ DataTable.configure({verbose: false, debug: false});
 mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
-var gridfs = INCLUDE('gridfs');
+
+if (CONFIG('storing-files'))
+	var gridfs = INCLUDE(CONFIG('storing-files') + '.mod');
 
 
 //  Getters and Setters

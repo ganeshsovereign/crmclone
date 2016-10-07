@@ -24,8 +24,11 @@ var setTags = function (tags) {
     return result;
 };
 
-var gridfs = INCLUDE('gridfs');
 var Dict = INCLUDE('dict');
+
+if (CONFIG('storing-files'))
+	var gridfs = INCLUDE(CONFIG('storing-files') + '.mod');
+
 /**
  * Category Schema
  */
