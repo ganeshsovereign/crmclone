@@ -11,6 +11,9 @@ phone                    : +33 6 76 76 17 65
 // Default image converter: im = ImageMagick, gm = GraphicsMagick
 default-image-converter   : gm
 
+// Storing files system
+stroring-files			: gridfs
+
 // Default theme
 default-theme             : eshop
 
