@@ -2,6 +2,7 @@
 
 USER="root"
 NODE_ENV="config"
+IP="127.0.0.1"
 PORT="8000"
 APP_DIR="/opt/framework"
 NODE_APP="debug.js"
@@ -56,7 +57,7 @@ is_running() {
 
 start_it() {
     echo "Starting $APP_NAME ..."
-    echo "cd $APP_DIR && PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP 1>$LOG_FILE 2>&1 & echo \$! > $PID_FILE" | sudo -i -u $USER
+    echo "cd $APP_DIR && IP=$IP PORT=$PORT NODE_ENV=$NODE_ENV NODE_CONFIG_DIR=$CONFIG_DIR $NODE_EXEC $APP_DIR/$NODE_APP 1>$LOG_FILE 2>&1 & echo \$! > $PID_FILE" | sudo -i -u $USER
     echo "$APP_NAME started with pid $(get_pid)"
 }
 
