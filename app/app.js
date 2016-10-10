@@ -732,11 +732,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 .state('societe', {
                     url: "/societe",
                     abstract: true,
-                    templateUrl: "/views/societe/index.html"
+                    templateUrl: "/views/company/index.html"
                 })
                 .state('societe.list', {
                     url: "",
-                    templateUrl: "/views/societe/list.html",
+                    templateUrl: "/views/company/list.html",
                     data: {
                         pageTitle: 'Liste des societes'
                     },
@@ -745,7 +745,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 .state('societe.show', {
                     parent: "societe",
                     url: "/{id:[0-9a-z]{24}}",
-                    templateUrl: "/views/societe/fiche.html",
+                    templateUrl: "/views/company/fiche.html",
                     data: {
                         pageTitle: 'Fiche societe'
                     },
@@ -754,7 +754,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 .state('societe.create', {
                     parent: "societe",
                     url: "/create.html",
-                    templateUrl: "/views/societe/create.html",
+                    templateUrl: "/views/company/create.html",
                     data: {
                         pageTitle: 'Creation societe'
                     },
@@ -763,7 +763,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 .state('societe.stats', {
                     parent: "societe",
                     url: "/stats",
-                    templateUrl: "/views/societe/stats.html",
+                    templateUrl: "/views/company/stats.html",
                     data: {
                         pageTitle: 'Statistiques client'
                     },

@@ -31,9 +31,6 @@ exports.install = function () {
 
                 /* Load rights */
 
-                if (!data.enabled)
-                    return;
-
                 rights.push({
                     name: data.name,
                     desc: data.description,
