@@ -11,9 +11,6 @@ var mongoose = require('mongoose'),
 
 var Dict = INCLUDE('dict');
 
-if (CONFIG('storing-files'))
-	var gridfs = INCLUDE(CONFIG('storing-files') + '.mod');
-
 /**
  * User Schema
  */
@@ -22,9 +19,9 @@ var setFirstname = function (name) {
     if (!name) {
         return name;
     }
-    
+
     name = name.toLowerCase();
-    
+
     name = name.charAt(0).toUpperCase() + name.substr(1);
 
     return name;
@@ -91,7 +88,10 @@ var UserSchema = new Schema({
 
 UserSchema.plugin(timestamps);
 
-UserSchema.plugin(gridfs.pluginGridFs, {root: "User"});
+if (CONFIG('storing-files')) {
+    var gridfs = INCLUDE('_.' + CONFIG('storing-files'));
+    UserSchema.plugin(gridfs.pluginGridFs, {root: "User"});
+}
 
 //var ExtrafieldModel = MODEL('extrafields').Schema;
 
@@ -110,13 +110,13 @@ UserSchema.virtual('status')
             var res_status = {};
 
             var status = this.Status;
-            
-            if(status == 'ENABLE' && this.password)
+
+            if (status == 'ENABLE' && this.password)
                 status = 'WEB';
-            
-            if(status == 'ENABLE' && !this.password)
+
+            if (status == 'ENABLE' && !this.password)
                 status = 'NOCONNECT';
-            
+
 
             if (status && statusList.values[status].label) {
                 //console.log(this);
@@ -272,9 +272,9 @@ UserSchema.methods = {
         for (var i = 0, n = charset.length; i < length; ++i) {
             retVal += charset.charAt(Math.floor(Math.random() * n));
         }
-        
+
         this.password = retVal;
-        
+
         return retVal;
     }
 };

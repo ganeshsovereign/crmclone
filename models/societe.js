@@ -18,10 +18,6 @@ mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
 
-if (CONFIG('storing-files'))
-	var gridfs = INCLUDE(CONFIG('storing-files') + '.mod');
-
-
 //  Getters and Setters
 /*var getTags = function(tags) {
  console.log("joiiiiin");
@@ -176,14 +172,17 @@ var societeSchema = new Schema({
     optional: mongoose.Schema.Types.Mixed
 }, {
     toObject: {getters: true, virtuals: true},
-    toJSON: {getters:true, virtuals: true}
+    toJSON: {getters: true, virtuals: true}
 });
 
 societeSchema.index({name: 'text', zip: 'text', Tag: 'text', rival: 'text', "segmentation.label": 'text'});
 
 societeSchema.plugin(timestamps);
 
-societeSchema.plugin(gridfs.pluginGridFs, {root: "Societe"});
+if (CONFIG('storing-files')) {
+    var gridfs = INCLUDE('_.' + CONFIG('storing-files'));
+    societeSchema.plugin(gridfs.pluginGridFs, {root: "Societe"});
+}
 
 societeSchema.plugin(versioner, {modelName: 'societe', collection: 'Societe.Version', mongoose: mongoose});
 

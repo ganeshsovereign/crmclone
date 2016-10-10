@@ -17,9 +17,6 @@ mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
 
-if (CONFIG('storing-files'))
-	var gridfs = INCLUDE(CONFIG('storing-files') + '.mod');
-
 var setPrice = function (value) {
     return MODULE('utils').setPrice(value);
 };
@@ -243,7 +240,7 @@ var offerSchema = new Schema({
                 },
                 label: String,
                 dynForm: String
-                //family: {type: String, uppercase: true, default: "OTHER"}
+                        //family: {type: String, uppercase: true, default: "OTHER"}
             },
             total_tva: {
                 type: Number,
@@ -289,9 +286,12 @@ var offerSchema = new Schema({
 
 offerSchema.plugin(timestamps);
 
-offerSchema.plugin(gridfs.pluginGridFs, {
-    root: 'Offer'
-});
+if (CONFIG('storing-files')) {
+    var gridfs = INCLUDE('_.' + CONFIG('storing-files'));
+    offerSchema.plugin(gridfs.pluginGridFs, {
+        root: 'Offer'
+    });
+}
 
 /**
  * Pre-save hook

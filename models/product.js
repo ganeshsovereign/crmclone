@@ -44,10 +44,6 @@ var setAccount = function (account) {
 };
 
 var Dict = INCLUDE('dict');
-
-if (CONFIG('storing-files'))
-	var gridfs = INCLUDE(CONFIG('storing-files') + '.mod');
-
 /**
  * Product Schema
  */
@@ -160,7 +156,11 @@ var productSchema = new Schema({
 });
 
 productSchema.plugin(timestamps);
-productSchema.plugin(gridfs.pluginGridFs, {root: "Product"});
+
+if (CONFIG('storing-files')) {
+    var gridfs = INCLUDE('_.' + CONFIG('storing-files'));
+    productSchema.plugin(gridfs.pluginGridFs, {root: "Product"});
+}
 
 // Gets listing
 productSchema.statics.query = function (options, callback) {
