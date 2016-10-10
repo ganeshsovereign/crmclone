@@ -139,7 +139,7 @@ function run() {
     }, 3e3)) : void app()
 }
 
-function install(done) {
+/*function install(done) {
     console.log("Install new TM modules");
     var dir = __dirname + '/install';
 
@@ -192,7 +192,7 @@ function install(done) {
         done();
     });
 }
-
+*/
 var isDebugging = -1 !== process.argv.indexOf("debugging"),
         directory = process.cwd(),
         path = require("path"),
