@@ -4,8 +4,8 @@
 @{ngStyle('/assets/admin/pages/css/tasks.css')}
 
 <!-- cdnjs -->
-@{ngResource('rh','societe','contact','order','product','offer','delivery','bill','billsupplier','bank','payment','task')}
-@{ngController('rh','societe','contact','order','product','offer','delivery','bill','billsupplier','files','temporary','bank','payment','task')}
+@{ngResource(model.resources)}
+@{ngController(model.controllers)}
 
 @{section footer}
 @{end}
