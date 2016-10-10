@@ -12,7 +12,7 @@ phone                    : +33 6 76 76 17 65
 default-image-converter   : gm
 
 // Storing files system
-storing-files			: gridfs
+storing-files		  : gridfs
 
 // Default theme
 default-theme             : eshop
