@@ -1,5 +1,5 @@
 var fs = require('fs'),
-    options = {};
+        options = {};
 
 options.ip = process.env.IP || '127.0.0.1';
 options.port = process.env.PORT || 8000;
@@ -14,7 +14,7 @@ options.port = process.env.PORT || 8000;
 
 function debug() {
     var framework = require("total.js"),
-        port = parseInt(process.argv[process.argv.length - 1]);
+            port = parseInt(process.argv[process.argv.length - 1]);
     return isNaN(port) || (options || (options = {}), options.port = port), port > 0 && !options.port && (options.port = port || 8e3), options.https ? framework.https("debug", options) : (framework.http("debug", options), void(first ? framework.emit("debug-start") : framework.emit("debug-restart")))
 }
 
@@ -24,13 +24,13 @@ function app() {
     }
 
     function onIncrease(clear) {
-        clear && (clearTimeout(pidIncrease), speed = TIME), pidIncrease = setTimeout(function() {
+        clear && (clearTimeout(pidIncrease), speed = TIME), pidIncrease = setTimeout(function () {
             speed += TIME, speed > 4e3 && (speed = 4e3), onIncrease()
         }, 12e4)
     }
 
     function onComplete(f) {
-        fs.readdir(directory, function(err, arr) {
+        fs.readdir(directory, function (err, arr) {
             for (var length = arr.length, i = 0; length > i; i++) {
                 var name = arr[i];
                 "debug.js" !== name && name.match(/config\-debug|config\-release|config|versions|sitemap|dependencies|\.js|\.resource/i) && f.push(name)
@@ -47,9 +47,9 @@ function app() {
     function refresh() {
         for (var filenames = Object.keys(files), length = filenames.length, i = 0; length > i; i++) {
             var filename = filenames[i];
-            ! function(filename) {
-                async.await(function(next) {
-                    fs.stat(filename, function(err, stat) {
+            !function (filename) {
+                async.await(function (next) {
+                    fs.stat(filename, function (err, stat) {
                         if (err)
                             delete files[filename], changes.push(prefix + filename.replace(directory, "") + " (removed)"), force = !0;
                         else {
@@ -61,7 +61,7 @@ function app() {
                 })
             }(filename)
         }
-        async.complete(function() {
+        async.complete(function () {
             if (isLoaded = !0, setTimeout(refresh_directory, speed), onIncrease(), 1 === status && force) {
                 onIncrease(!0), restart();
                 for (var length = changes.length, i = 0; length > i; i++)
@@ -80,18 +80,20 @@ function app() {
             try {
                 isSkip = !0, process.kill(app.pid)
             }
-            catch (err) {}
+            catch (err) {
+            }
             app = null
         }
         var arr = process.argv,
-            port = arr.pop();
+                port = arr.pop();
         if (-1 !== process.execArgv.indexOf("--debug")) {
-            var key = "--debug=" + (options["debugger"] || 40894); -
-            1 === process.execArgv.indexOf(key) && process.execArgv.push(key)
+            var key = "--debug=" + (options["debugger"] || 40894);
+            -
+                    1 === process.execArgv.indexOf(key) && process.execArgv.push(key)
         }
-        first ? first = !1 : arr.push("restart"), arr.push("debugging"), arr.push(port), app = fork(path.join(directory, "debug.js"), arr), app.on("message", function(msg) {
+        first ? first = !1 : arr.push("restart"), arr.push("debugging"), arr.push(port), app = fork(path.join(directory, "debug.js"), arr), app.on("message", function (msg) {
             "eaddrinuse" === msg && process.exit(1)
-        }), app.on("exit", function() {
+        }), app.on("exit", function () {
             return isSkip === !1 ? (app = null, void process.exit()) : (isSkip = !1, void(255 === status && (app = null)))
         }), 0 === status && app.send("debugging"), status = 1
     }
@@ -104,24 +106,25 @@ function app() {
         }
     }
 
-    function noop() {}
+    function noop() {
+    }
     var pidIncrease, fork = require("child_process").fork,
-        utils = require("total.js/utils"),
-        directories = [directory + "/controllers", directory + "/definitions", directory + "/isomorphic", directory + "/modules", directory + "/resources", directory + "/models", directory + "/source", directory + "/workers", directory + "/packages", directory + "/themes",  directory + "/install"],
-        files = {},
-        force = !1,
-        changes = [],
-        app = null,
-        status = 0,
-        async = new utils.Async,
-        pid = "",
-        pidInterval = null,
-        prefix = "----------------------------------------------------> ",
-        isLoaded = !1,
-        isSkip = !1,
-        speed = TIME;
-    process.on("SIGTERM", end), process.on("SIGINT", end), process.on("exit", end), process.pid > 0 && (console.log(prefix + "PID: " + process.pid + " (v" + VERSION + ")"), pid = path.join(directory, "debug.pid"), fs.writeFileSync(pid, process.pid), pidInterval = setInterval(function() {
-        fs.exists(pid, function(exist) {
+            utils = require("total.js/utils"),
+            directories = [directory + "/controllers", directory + "/definitions", directory + "/isomorphic", directory + "/modules", directory + "/resources", directory + "/models", directory + "/source", directory + "/workers", directory + "/packages", directory + "/themes"],
+            files = {},
+            force = !1,
+            changes = [],
+            app = null,
+            status = 0,
+            async = new utils.Async,
+            pid = "",
+            pidInterval = null,
+            prefix = "----------------------------------------------------> ",
+            isLoaded = !1,
+            isSkip = !1,
+            speed = TIME;
+    process.on("SIGTERM", end), process.on("SIGINT", end), process.on("exit", end), process.pid > 0 && (console.log(prefix + "PID: " + process.pid + " (v" + VERSION + ")"), pid = path.join(directory, "debug.pid"), fs.writeFileSync(pid, process.pid), pidInterval = setInterval(function () {
+        fs.exists(pid, function (exist) {
             exist || (fs.unlink(pid, noop), null !== app && (isSkip = !0, process.kill(app.pid)), process.exit(0))
         })
     }, 2e3)), restart(), refresh_directory()
@@ -129,9 +132,9 @@ function app() {
 
 function run() {
     if (isDebugging)
-        return void install(debug);
+        return void debug(); //install(debug) if needed
     var filename = path.join(directory, "debug.pid");
-    return fs.existsSync(filename) ? (fs.unlinkSync(filename), void setTimeout(function() {
+    return fs.existsSync(filename) ? (fs.unlinkSync(filename), void setTimeout(function () {
         app()
     }, 3e3)) : void app()
 }
@@ -140,11 +143,11 @@ function install(done) {
     console.log("Install new TM modules");
     var dir = __dirname + '/install';
 
-    fs.stat(dir, function(err, stats) {
+    fs.stat(dir, function (err, stats) {
         if (err)
             return console.log(err);
 
-        fs.readdirSync(dir).forEach(function(file) {
+        fs.readdirSync(dir).forEach(function (file) {
 
             //Test directory !
             if (!fs.statSync(dir + '/' + file).isDirectory())
@@ -185,17 +188,17 @@ function install(done) {
             //return console.log(package);
 
         });
-        
+
         done();
     });
 }
 
 var isDebugging = -1 !== process.argv.indexOf("debugging"),
-    directory = process.cwd(),
-    path = require("path"),
-    first = -1 === process.argv.indexOf("restart"),
-    VERSION = "3.0",
-    TIME = 2e3;
-process.on("uncaughtException", function(e) {
+        directory = process.cwd(),
+        path = require("path"),
+        first = -1 === process.argv.indexOf("restart"),
+        VERSION = "3.0",
+        TIME = 2e3;
+process.on("uncaughtException", function (e) {
     -1 === e.toString().indexOf("ESRCH") && console.log(e)
 }), run();

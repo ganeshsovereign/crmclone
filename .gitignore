@@ -14,7 +14,7 @@ npm-debug.log
 tmp/
 mongod
 /logs
-*.mod*
+_*
 logs.txt
 *.sublime-project
 *.sublime-workspace
