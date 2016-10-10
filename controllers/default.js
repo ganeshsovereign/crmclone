@@ -1,5 +1,7 @@
 exports.install = function () {
-    F.route('/', view_homepage);
+
+    if(!CONFIG('default-theme'))
+        F.route('/', view_homepage);
 };
 
 // Sets the default language for all controllers
@@ -20,6 +22,7 @@ F.on('controller', function (controller, name) {
 });
 
 function view_homepage(){
+    console.log("toto");
     var self=this;
     self.redirect('/erp');
 }
