@@ -158,7 +158,7 @@ var productSchema = new Schema({
 productSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
-    var gridfs = INCLUDE('_.' + CONFIG('storing-files'));
+    var gridfs = INCLUDE('_' + CONFIG('storing-files'));
     productSchema.plugin(gridfs.pluginGridFs, {root: "Product"});
 }
 

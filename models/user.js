@@ -89,7 +89,7 @@ var UserSchema = new Schema({
 UserSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
-    var gridfs = INCLUDE('_.' + CONFIG('storing-files'));
+    var gridfs = INCLUDE('_' + CONFIG('storing-files'));
     UserSchema.plugin(gridfs.pluginGridFs, {root: "User"});
 }
 

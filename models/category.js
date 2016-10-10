@@ -68,7 +68,7 @@ categorySchema.plugin(tree, {
 categorySchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
-    var gridfs = INCLUDE('_.' + CONFIG('storing-files'));
+    var gridfs = INCLUDE('_' + CONFIG('storing-files'));
     categorySchema.plugin(gridfs.pluginGridFs, {root: "Category"});
 }
 
