@@ -15,6 +15,7 @@ tmp/
 mongod
 /logs
 _*
+themes
 logs.txt
 *.sublime-project
 *.sublime-workspace
