@@ -47,7 +47,7 @@ function loadFilesAngular(callback) {
             });
         },
         controllers: function (cb) {
-            var dir = __dirname + '/../app/resources';
+            var dir = __dirname + '/../app/controllers';
             fs.stat(dir, function (err, stats) {
                 if (err)
                     return cb(err);
