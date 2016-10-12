@@ -9,6 +9,7 @@ exports.install = function () {
     F.route('/erp/api/dict', load_dict, ['authorize']);
     F.route('/erp/api/extrafield', load_extrafield, ['authorize']);
     F.route('/erp/api/sendEmail', sendEmail, ['post', 'json', 'authorize']);
+    F.route('/erp/api/task/count', task_count, ['authorize']);
 
     F.route('/erp/api/product/convert_price', function () {
         var ProductModel = MODEL('product').Schema;
@@ -155,6 +156,60 @@ function sendEmail() {
     });
 }
 
+function task_count() {
+    var TaskModel = MODEL('task').Schema;
+    var self = this;
+    var params = self.query;
+    var query = {};
+
+    /*if (params.filters) {
+     if (params.filters.filters) {
+     var list = [];
+     for (var i = 0; i < params.filters.filters.length; i++)
+     list.push(params.filters.filters[i].value);
+     query['usertodo.id'] = {'$in': list};
+     } else {
+     return res.send(200, []);
+     }
+     }*/
+
+    var result = [];
+
+    switch (params.query) {
+        case 'MYTASK':
+            query.$or = [
+                {'usertodo.id': params.user, 'userdone.id': null},
+                {'author.id': params.user, archived: false}
+            ];
+            break;
+        case 'ALLTASK':
+            query.$or = [
+                {'usertodo.id': params.user, 'userdone.id': null},
+                {'author.id': params.user, archived: false},
+                {entity: params.entity, archived: false}
+            ];
+            break;
+        case 'MYARCHIVED':
+            query.$or = [
+                {'usertodo.id': params.user, 'userdone.id': {$ne: null}},
+                {'author.id': params.user, archived: true}];
+            break;
+        case 'ARCHIVED':
+            query.$or = [
+                {'usertodo.id': params.user, 'userdone.id': {$ne: null}},
+                {'author.id': params.user, archived: true},
+                {entity: params.entity, archived: true}
+            ];
+            break;
+        default: //'ARCHIVED':
+            query.archived = true;
+    }
+
+    TaskModel.count(query, function (err, count) {
+        self.json({count: count});
+    });
+}
+
 function convert(type) {
     /**
      * Convert contact collection to new user schema extended for e-commerce
@@ -215,14 +270,14 @@ function convert(type) {
         mongoose.connection.db.collection('users', function (err, collection) {
             collection.find({}, function (err, users) {
                 users.each(function (err, user) {
-                    if(user.societe && user.societe.id)
-                        UserModel.update({_id:user._id}, {$set:{societe:user.societe.id}}, {upsert:false, multi:false}, function(err, result){
+                    if (user.societe && user.societe.id)
+                        UserModel.update({_id: user._id}, {$set: {societe: user.societe.id}}, {upsert: false, multi: false}, function (err, result) {
                             console.log(err, result);
                         });
                 });
             });
         });
-        
+
         return;
 
         mongoose.connection.db.collection('Contact', function (err, collection) {
