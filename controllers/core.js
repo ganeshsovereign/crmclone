@@ -76,7 +76,7 @@ exports.install = function () {
 
     });
 
-    F.route('#404', view_404);
+    //F.route('#404', view_404);
     //F.route('#500', view_500);
 };
 
@@ -104,10 +104,12 @@ function load_extrafield() {
 
 function view_404() {
     console.log("Error 404 : not found", this.url);
+    self.theme(null);
     this.view('404');
 }
 
 function view_500() {
+    self.theme(null);
     this.view('500');
 }
 
