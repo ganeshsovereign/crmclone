@@ -14,16 +14,17 @@ var Dict = INCLUDE('dict');
 
 var CartSchema = new Schema({
     product: {type: Schema.Types.ObjectId, ref: 'product'},
-    qty: {type: Number, default: 0},
+    count: {type: Number, default: 0},//qty
     discount: {type: Number, default: 0},
-    blocked: Boolean,
+    blocked: Boolean, //Price was negociate and blocked
     entity: String,
     userId: {type: Schema.Types.ObjectId, index: true},
+    price : Number, //Price unit
     updatedAt: {type: Date, expires: CONFIG('sessionTimeout'), default: Date.now}
 }, {
     toObject: {virtuals: true},
     toJSON: {virtuals: true}
 });
 
-exports.Schema = mongoose.model('cart', CartSchema, 'cart');
+exports.Schema = mongoose.model('cart', CartSchema, 'Cart');
 exports.name = 'cart';
