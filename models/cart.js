@@ -20,6 +20,7 @@ var CartSchema = new Schema({
     entity: String,
     userId: {type: Schema.Types.ObjectId, index: true},
     price : Number, //Price unit
+    options : {type: Schema.Types.Mixed}, // For product with options
     updatedAt: {type: Date, expires: CONFIG('sessionTimeout'), default: Date.now}
 }, {
     toObject: {virtuals: true},
