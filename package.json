@@ -54,7 +54,7 @@
     "shortid": "latest",
     "stream-worker": "0.x.x",
     "symeos-mqtt": "latest",
-    "total.js": "2.0.x",
+    "total.js": "2.1.x",
     "unzip": "^0.1.11",
     "xml-writer": ">=1.4.1",
     "xml2js": "latest"

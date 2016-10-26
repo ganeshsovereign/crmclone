@@ -10,5 +10,6 @@
     "MyAccount": "Mon compte",
     "Products": "Produits",
     "FromPrice": "A partir de",
-    "MaxPrice": "Prix de depart"
+    "MaxPrice": "Prix de depart",
+    "RefreshPrice":"Re-caluler le prix"
 }
