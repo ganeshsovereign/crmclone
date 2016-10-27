@@ -26,10 +26,15 @@ Using demo mongoDB database from dump directory
 cp config.sample config
 ```
 
-Edit and replace demo name database
+A demo database is in dump directory
+
+Edit and replace demo name database in config file
 
 ## Start
 
 ```shell
 node debug.js
 ```
+
+Demo authentication : admin/admin
+
