@@ -11,12 +11,6 @@ phone                    : +33 6 76 76 17 65
 // Default image converter: im = ImageMagick, gm = GraphicsMagick
 default-image-converter   : gm
 
-// Storing files system
-storing-files		  : gridfs
-
-// Default theme
-default-theme             : eshop
-
 // session cookie name
 cookie			 : tmjs
 secret			 : 1234qwerty
