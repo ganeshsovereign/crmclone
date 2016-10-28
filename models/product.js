@@ -329,10 +329,17 @@ productSchema.statics.findPrice = function (options, fields, callback) {
         if (!doc)
             return callback(null, {});
 
-        if (options.price_level) {
+        if (options.price_level && options.price_level !== 'BASE') {
             var modelClass = MODEL('pricelevel').Schema;
             return modelClass.findOne({"product.id": doc._id, price_level: options.price_level}, function (err, res) {
                 //console.log(res);
+
+                //console.log(res, self._id, price_level);
+                if (!res) { // No specific price using BASE Prices
+                    Pricebreak.set(doc.prices.pu_ht, doc.prices.pricesQty);
+                    return callback(null, {pu_ht: Pricebreak.price(options.qty).price, discount: doc.discount || 0});
+                }
+
                 Pricebreak.set(res.prices.pu_ht, res.prices.pricesQty);
 
                 callback(null, {pu_ht: Pricebreak.price(options.qty).price, discount: res.discount || 0});
@@ -356,15 +363,21 @@ productSchema.methods.getPrice = function (qty, price_level) {
         d.resolve(0);
         return d.promise;
     }
-    
-    if (price_level) {
-        
+
+    if (price_level && price_level !== 'BASE') {
+
         var modelClass;
 
         modelClass = MODEL('pricelevel').Schema;
         modelClass.findOne({"product.id": self._id, price_level: price_level}, function (err, res) {
             if (err)
                 return d.reject(err);
+
+            //console.log(res, self._id, price_level);
+            if (!res) { // No specific price using BASE Prices
+                Pricebreak.set(self.prices.pu_ht, self.prices.pricesQty);
+                return d.resolve(Pricebreak.price(qty).price);
+            }
 
             Pricebreak.set(res.prices.pu_ht, res.prices.pricesQty);
             return d.resolve(Pricebreak.price(qty).price);
