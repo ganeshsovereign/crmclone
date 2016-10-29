@@ -150,7 +150,11 @@ var productSchema = new Schema({
     },
     suppliers: [supplierPriceSchema],
     optional: Schema.Types.Mixed,
-    linker: {type: String, unique: true, set: setLink} // SEO URL
+    linker: {type: String, unique: true, set: setLink}, // SEO URL
+    attributes: [{
+            key: {type: String},
+            value: {type: String}
+        }]
 }, {
     toObject: {virtuals: true},
     toJSON: {virtuals: true}

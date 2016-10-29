@@ -14,8 +14,10 @@ framework.on('module#auth', function (type, name) {
         // this is an example
 
         // Why "1"? Look into auth.login(controller, "ID", user);
+        
+        //console.log("Authorize ",id);
 
-        if (!id)
+        if (id == null)
             return callback(false);
 
 
