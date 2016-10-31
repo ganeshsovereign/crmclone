@@ -1,3 +1,4 @@
+@{ng('angular','resource','touch','sanitize')}
 @{ngController('GeneralPageController')}
 @{ngService('websocketService')}
 @{ngDirective('metronic','tm-js','markdown')}
@@ -18,7 +19,6 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
         <meta content="ERP CRM" name="description" />
-        <meta content="ToManage" name="author" />
         <base href="/erp/">
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
@@ -28,8 +28,27 @@
         <link href="/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
         <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
         <link href="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
-
+        
+        <!-- BEGIN CORE PLUGINS -->
+        <!--[if lt IE 9]>
+        <script src="/assets/global/plugins/respond.min.js"></script>
+        <script src="/assets/global/plugins/excanvas.min.js"></script>
+        <![endif]-->
+        <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+        <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+        <!--<script src="/assets/global/plugins/jstree/dist/jstree.min.js" type="text/javascript"></script>-->
+        <!-- END CORE JQUERY PLUGINS -->
+        
         <!-- BEGIN DYMANICLY LOADED CSS FILES(all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
+        @{head}
         <link id="ng_load_plugins_before"/>
         <!-- END DYMANICLY LOADED CSS FILES -->
         <!-- Includes modules -->
@@ -127,23 +146,6 @@
         </div>
         <!-- END FOOTER -->
         <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
-        <!-- BEGIN CORE PLUGINS -->
-        <!--[if lt IE 9]>
-        <script src="/assets/global/plugins/respond.min.js"></script>
-        <script src="/assets/global/plugins/excanvas.min.js"></script>
-        <![endif]-->
-        <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-        <!--<script src="/assets/global/plugins/jstree/dist/jstree.min.js" type="text/javascript"></script>-->
-        <!-- END CORE JQUERY PLUGINS -->
 
         <script src="/assets/global/plugins/amcharts/amcharts/amcharts.js" type="text/javascript"></script>
         <script src="/assets/global/plugins/amcharts/amcharts/lang/fr.js" type="text/javascript"></script>
@@ -169,13 +171,13 @@
         <!--AngularJS-->
         <!-- Multi-language -->
         <!--<script src="js/i18n/angular-locale_fr.js"></script>-->
-        <script src="/common/angular/angular.min.js" type="text/javascript"></script>
+        <!--<script src="/common/angular/angular.min.js" type="text/javascript"></script>-->
         <script src="/common/angular-ui-router/release/angular-ui-router.min.js" type="text/javascript"></script>
         <script src="/assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js" type="text/javascript"></script>
-        <script src="/common/angular-resource/angular-resource.min.js" type="text/javascript"></script>
-        <script src="/common/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
+        <!--<script src="/common/angular-resource/angular-resource.min.js" type="text/javascript"></script>
+        <script src="/common/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>-->
         <!--<script src="/common/angular-animate/angular-animate.min.js" type="text/javascript"></script>-->
-        <script src="/common/angular-touch/angular-touch.min.js" type="text/javascript"></script>
+        <!--<script src="/common/angular-touch/angular-touch.min.js" type="text/javascript"></script>-->
         <script src="/common/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
         <!-- Dyn forms -->
         <script type="text/javascript" src="/common/tv4/tv4.js"></script>
@@ -185,7 +187,7 @@
         <script type="text/javascript" src="/common/angular-schema-form-typeahead/bootstrap-typeahead.js"></script>
         <!--<script type="text/javascript" src="/common/angular-schema-form-datepicker/bootstrap-datepicker.js"></script>-->
         <!--<script type="text/javascript" src="/common/amcharts-angular/dist/amChartsDirective.js"></script>-->
-        @{head}
+        
         <script type="text/javascript" src="/common/moment/min/moment.min.js"></script>
         <script type="text/javascript" src="/common/moment/locale/fr.js"></script>
         <script type="text/javascript" src="/common/i18next/i18next.min.js"></script>

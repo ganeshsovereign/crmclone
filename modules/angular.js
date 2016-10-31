@@ -6,7 +6,7 @@ var version = require('../package').version;
 
 exports.name = 'angular.js';
 exports.version = '1.0.3';
-exports.options = {'angular-version': '1.5.7', 'angular-i18n-version': '1.5.7', version: version};
+exports.options = {'angular-version': '1.3.20', 'angular-i18n-version': '1.3.20', version: version};
 
 var fs = require('fs');
 var EXTENSION_JS = '.js';
