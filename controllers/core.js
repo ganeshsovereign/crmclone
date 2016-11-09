@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require('lodash');
+var fs = require('fs');
 
 var Dict = INCLUDE('dict');
 
@@ -330,17 +331,31 @@ function convert(type) {
 
 function convert_resource() {
     var self = this;
+    var fixedWidthString = require('fixed-width-string'); //on déclare l'indentation
+    var readjson = require(__dirname + '/../locales/fr/admin.json');// lecture fichier json
+    var writeresource = fs.createWriteStream(__dirname + '/../resources/fr.resource');//création fichier resource
+    var jsonTemp = {
+        Tuas: "encore",
+        du: "boulot"
+    };
 
-    //phase 1. lire le fichier fr/admin.json lire:require afficher un json
-    //pahse 2. ecrire ton premier sublime
+    _.forEach(readjson, function (value, key) {
+        if (value === "UTF-8")
+            return;
+        var temp = fixedWidthString("admin_" + key, 60);
+        temp += ": ";
+        temp += value;
+        temp += "\n";
+        writeresource.write(temp);
+
+    });
+    //phase 2. ecrire ton premier sublime
     //phase 3. ecrire le premier fichier -> stream
     //phase 4. convertir le json en sublime
-    //pahse 5. faire automatique tous les fichiers du repertoire fr
+    //phase 5. faire automatique tous les fichiers du repertoire fr
     // Bon courage...
-
-    //self.plain('Coucou');//text
-    self.json({coucou:true});//afficher un json
-
+    writeresource.end();
+    self.plain(jsonTemp);//text
 }
 
 // TODO a supprimer cette function
