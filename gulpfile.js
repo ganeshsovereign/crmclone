@@ -41,7 +41,7 @@ gulp.task('license', function() {
 
 //Clean indentation Js, css, html
 gulp.task('beautifier', function() {
-      gulp.src(['./**/*.css', './**/*.html', './**/*.js','!./node_modules/**','!/tmp/**','!./**/*/*.min.js','!./**/*.min.css']) //['./**/*.css', './**/*.html', './**/*.js','!./node_modules/**','!/tmp/**']
+      gulp.src(['./**/*.css', './**/*.html', './**/*.js','!./node_modules/**','!/tmp/**','!./**/*.min.js','!./**/*.min.css']) //['./**/*.css', './**/*.html', './**/*.js','!./node_modules/**','!/tmp/**']
             .pipe(beautifier({
                   "indent_size": 4,
                   "indent_char": '  ',
