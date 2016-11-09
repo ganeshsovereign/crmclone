@@ -1,5 +1,5 @@
-
-/* 2014-2016 ToManage
+/**
+ 2014-2016 ToManage
 
 NOTICE OF LICENSE
 
@@ -20,6 +20,7 @@ needs please refer to http://www.tomanage.fr for more information.
 @author    ToManage SAS <contact@tomanage.fr>
 @copyright 2014-2016 ToManage SAS
 @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
-International Registered Trademark & Property of ToManage SAS*/
+International Registered Trademark & Property of ToManage SAS
+**/
 
 

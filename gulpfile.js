@@ -32,16 +32,16 @@ gulp.task('css', function() {
 //Header on file JS & CSS 
 gulp.task('license', function() {
       var year = (new Date()).getFullYear();
-      gulp.src(['./**/*.js','!./**/*.min.js','!./node_modules/**', '!./tmp/**', '!./app/common/**','!./public/assets/**','!./install/**'])
+      gulp.src(['./**/*.js','!./**/*.min.js','!./node_modules/**', '!./tmp/**', '!./app/common/**'])
             .pipe(license(fs.readFileSync('header.md', 'utf8'), {
                   year: year
             }, 0.9))
-            .pipe(gulp.dest('./dist'));
+            .pipe(gulp.dest('.'));
 });
 
 //Clean indentation Js, css, html
 gulp.task('beautifier', function() {
-      gulp.src(['./**/*.css', './**/*.html', './**/*.js','!./node_modules/**','!./tmp/**','!./**/*.min.js','!./**/*.min.css']) //['./**/*.css', './**/*.html', './**/*.js','!./node_modules/**','!/tmp/**']
+      gulp.src(['./**/*.css', './**/*.html', './**/*.js','!./node_modules/**','!/tmp/**','!./**/*.min.js','!./**/*.min.css']) //['./**/*.css', './**/*.html', './**/*.js','!./node_modules/**','!/tmp/**']
             .pipe(beautifier({
                   "indent_size": 4,
                   "indent_char": '  ',
@@ -51,9 +51,9 @@ gulp.task('beautifier', function() {
                         "indent_size": 3
                   }
             }))
-            .pipe(gulp.dest('./dist'));
+            .pipe(gulp.dest('./'));
 });
 
 // Task default
 
-gulp.task('default', ['beautifier', 'license']);
+gulp.task('default', ['license']);

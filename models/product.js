@@ -150,7 +150,12 @@ var productSchema = new Schema({
     },
     suppliers: [supplierPriceSchema],
     optional: Schema.Types.Mixed,
-    linker: {type: String, unique: true, set: setLink} // SEO URL
+    linker: {type: String, unique: true, set: setLink}, // SEO URL
+    attributes: [{
+            key: {type: String},
+            value: {type: String},
+            css: {type: String}
+        }]
 }, {
     toObject: {virtuals: true},
     toJSON: {virtuals: true}
@@ -329,10 +334,17 @@ productSchema.statics.findPrice = function (options, fields, callback) {
         if (!doc)
             return callback(null, {});
 
-        if (options.price_level) {
+        if (options.price_level && options.price_level !== 'BASE') {
             var modelClass = MODEL('pricelevel').Schema;
             return modelClass.findOne({"product.id": doc._id, price_level: options.price_level}, function (err, res) {
                 //console.log(res);
+
+                //console.log(res, self._id, price_level);
+                if (!res) { // No specific price using BASE Prices
+                    Pricebreak.set(doc.prices.pu_ht, doc.prices.pricesQty);
+                    return callback(null, {pu_ht: Pricebreak.price(options.qty).price, discount: doc.discount || 0});
+                }
+
                 Pricebreak.set(res.prices.pu_ht, res.prices.pricesQty);
 
                 callback(null, {pu_ht: Pricebreak.price(options.qty).price, discount: res.discount || 0});
@@ -356,15 +368,21 @@ productSchema.methods.getPrice = function (qty, price_level) {
         d.resolve(0);
         return d.promise;
     }
-    
-    if (price_level) {
-        
+
+    if (price_level && price_level !== 'BASE') {
+
         var modelClass;
 
         modelClass = MODEL('pricelevel').Schema;
         modelClass.findOne({"product.id": self._id, price_level: price_level}, function (err, res) {
             if (err)
                 return d.reject(err);
+
+            //console.log(res, self._id, price_level);
+            if (!res) { // No specific price using BASE Prices
+                Pricebreak.set(self.prices.pu_ht, self.prices.pricesQty);
+                return d.resolve(Pricebreak.price(qty).price);
+            }
 
             Pricebreak.set(res.prices.pu_ht, res.prices.pricesQty);
             return d.resolve(Pricebreak.price(qty).price);
@@ -468,7 +486,20 @@ productSchema.virtual('eshopIsNew')
 
             return false;
         });
+        
+productSchema.virtual('color') // Get default color in attributs
+        .get(function () {
+            var color = {};
 
+            for(var i=0, len=this.attributes.length;i<len;i++) {
+                if(this.attributes[i].css) {
+                    color = this.attributes[i];
+                    break;
+                }
+            }
+
+            return color;
+        });
 
 /*productSchema.method('linker_category', function (cb) {
  var self = this;

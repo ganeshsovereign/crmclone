@@ -13,7 +13,7 @@ exports.install = function () {
 
     console.log("ToManage modules install...");
 
-    F.on('i18n', function () {
+    F.once('i18n', function () {
 
         fs.readdirSync(__dirname + '/../json').forEach(function (file) {
             if (file === "index.js")
