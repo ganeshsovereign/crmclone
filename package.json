@@ -52,7 +52,6 @@
     "paypal-express-checkout": "^1.4.0",
     "q": "^1.4.1",
     "shortid": "latest",
-    "sqlagent": "^9.4.0",
     "stream-worker": "0.x.x",
     "symeos-mqtt": "latest",
     "total.js": "2.1.x",

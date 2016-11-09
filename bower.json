@@ -19,7 +19,6 @@
     "checklist-model": "latest",
     "json-formatter": "latest",
     "angular-schema-form": "0.8.2",
-    "marked": "latest",
     "jsdiff": "latest",
     "angular-toastr": "latest",
     "reconnectingWebsocket": "~1.0.0",
