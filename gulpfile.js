@@ -2,17 +2,16 @@
 var gulp = require('gulp');
 
 //Plugins
-var rename = require('gulp-rename'),
-      uglify = require('gulp-uglify'),
-      license = require('gulp-header'),
+var //rename = require('gulp-rename'),
+      //uglify = require('gulp-uglify'),
+      plumber = require('gulp-plumber'),
       csscomb = require('gulp-csscomb'),
       cssbeautify = require('gulp-cssbeautify'),
-      gulpignore = require('gulp-ignore'),
+      //autoprefixer = require('autoprefixer'),
+      license = require('gulp-header'),
+      fs = require('fs'),
       beautifier = require('gulp-jsbeautifier'),
-      autoprefixer = require('autoprefixer'),
-      plumber = require('gulp-plumber'),
-      fs = require('fs');
-
+      gulpignore = require('gulp-ignore');
 //-----------------------//
 
 
