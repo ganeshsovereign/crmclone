@@ -153,7 +153,8 @@ var productSchema = new Schema({
     linker: {type: String, unique: true, set: setLink}, // SEO URL
     attributes: [{
             key: {type: String},
-            value: {type: String}
+            value: {type: String},
+            css: {type: String}
         }]
 }, {
     toObject: {virtuals: true},
@@ -485,7 +486,20 @@ productSchema.virtual('eshopIsNew')
 
             return false;
         });
+        
+productSchema.virtual('color') // Get default color in attributs
+        .get(function () {
+            var color = {};
 
+            for(var i=0, len=this.attributes.length;i<len;i++) {
+                if(this.attributes[i].css) {
+                    color = this.attributes[i];
+                    break;
+                }
+            }
+
+            return color;
+        });
 
 /*productSchema.method('linker_category', function (cb) {
  var self = this;
