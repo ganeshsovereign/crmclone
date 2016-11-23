@@ -1,8 +1,11 @@
+F.on('load', function () {
+// Model product
+    F.install('model', 'http://modules.tomanage.fr/models/latest/product.js');
+
 // WebCounter module
-INSTALL('module', 'https://modules.totaljs.com/latest/webcounter.js');
-
+    F.install('module', 'https://modules.totaljs.com/latest/webcounter.js');
 // Request stats module
-INSTALL('module', 'https://modules.totaljs.com/latest/reqstats.js');
-
+    F.install('module', 'https://modules.totaljs.com/latest/reqstats.js');
 // Total.js monitoring
-INSTALL('module', 'https://modules.totaljs.com/latest/monitor.js');
+    F.install('module', 'https://modules.totaljs.com/latest/monitor.js');
+});
