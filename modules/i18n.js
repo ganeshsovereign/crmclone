@@ -83,6 +83,8 @@ Translation.prototype.load = function () {
 exports.name = 'i18n';
 exports.version = VERSION;
 
+var allowed = { fr: true, en: true };
+
 exports.install = function (options) {
 
     var translation = new Translation();
@@ -103,10 +105,26 @@ exports.install = function (options) {
 
         return translation.translate(content, language);
     };
+    
+    F.onLocate = function(req, res) {
+    var language = req.query.language;
 
-    F.onLocate = function (req, res) {
-        return req.cookie('language') || 'fr';
-    };
+    // Set the language according to the querystring and store to the cookie
+    if (language) {
+        if (!allowed[language])
+            return 'fr';
+
+        return language;
+    }
+    
+    // Sets the language according to user-agent
+    language = req.language;
+
+    if (language.indexOf('en') > -1)
+        return 'en';
+    
+    return 'fr';
+};
 
     // It will be work when you move /app/views/ --> to --> /public/views/ (the method below is optimized for the performance)
     // If you use it then remove file handler F.file('/views/*.html')
