@@ -239,7 +239,7 @@ passport.use(new GoogleStrategy({
 ));
 
 // Load user profile
-function SymeosOAuth2Strategy(options, verify) {
+/*function SymeosOAuth2Strategy(options, verify) {
     OAuth2Strategy.call(this, options, verify);
 }
 util.inherits(SymeosOAuth2Strategy, OAuth2Strategy);
@@ -300,7 +300,7 @@ passport.use(new SymeosOAuth2Strategy({
              console.log(err);
              return done(err, user);
              });*/
-        } else {
+/*        } else {
             user.LastConnection = user.NewConnection;
             user.NewConnection = new Date();
 
@@ -316,7 +316,7 @@ passport.use(new SymeosOAuth2Strategy({
     });
 
 }
-));
+));*/
 
 passport.serializeUser(function (user, done) {
     console.log("Passport !!!!!!!!!!!!!!!!!!!!!!!!!!");
