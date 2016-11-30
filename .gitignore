@@ -19,3 +19,6 @@ themes
 logs.txt
 *.sublime-project
 *.sublime-workspace
+*.cache
+*.nosql
+
