@@ -56,8 +56,7 @@ passport.use(new LocalStrategy({
 
                 done(null, user.toObject());
             });
-}
-));
+}));
 
 passport.use(new LocalAPIKeyStrategy(
         function (apikey, done) {
@@ -179,7 +178,8 @@ passport.use(new LocalAPIKeyStrategy(
 passport.use(new GoogleStrategy({
     clientID: CONFIG('google-id'),
     clientSecret: CONFIG('google-secret'),
-    callbackURL: CONFIG('google-callback')
+    callbackURL: CONFIG('google-callback'),
+    session: false
 }, function (accessToken, refreshToken, profile, done) {
     var User = MODEL('user').Schema;
 
@@ -319,7 +319,7 @@ passport.use(new SymeosOAuth2Strategy({
 ));*/
 
 passport.serializeUser(function (user, done) {
-    console.log("Passport !!!!!!!!!!!!!!!!!!!!!!!!!!", user);
+    //console.log("Passport !!!!!!!!!!!!!!!!!!!!!!!!!!", user);
     
     var UserModel = MODEL('user').Schema;
     var UserGroup = MODEL('userGroup').Schema;
@@ -335,7 +335,7 @@ passport.serializeUser(function (user, done) {
     }, function (err) {
     });
 
-    var rights = {
+    /*var rights = {
         societe: {
             default: false // Needed
         }
@@ -350,10 +350,10 @@ passport.serializeUser(function (user, done) {
         }, "rights", function (err, group) {
             user.rights = _.extend(user.rights, group.rights);
             //console.log(user.rights);
-            done(null, user);
+            done(null, user.toObject());
         });
-    else
-        done(null, user);
+    else*/
+    done(null, user.toObject());
 });
 
 passport.deserializeUser(function (obj, done) {

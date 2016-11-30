@@ -137,6 +137,8 @@ function passport_login_google() {
 
 function passport_login_google_callback() {
     var self = this;
+    
+    var auth = MODULE('auth');
 
     passport.authenticate('google')(self.req, self.res, function (err) {
         if (err) {
@@ -147,6 +149,11 @@ function passport_login_google_callback() {
 
         // self.json(self.user);
         //self.json({name: self.user.fullname});
+
+        //console.log(user);
+
+        auth.login(self, self.user._id, self.user);
+        
         self.redirect('/erp/');
     });
 }
