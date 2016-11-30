@@ -319,8 +319,8 @@ passport.use(new SymeosOAuth2Strategy({
 ));*/
 
 passport.serializeUser(function (user, done) {
-    console.log("Passport !!!!!!!!!!!!!!!!!!!!!!!!!!");
-    return done(null, user);
+    console.log("Passport !!!!!!!!!!!!!!!!!!!!!!!!!!", user);
+    
     var UserModel = MODEL('user').Schema;
     var UserGroup = MODEL('userGroup').Schema;
 

@@ -92,7 +92,7 @@ var societeSchema = new Schema({
     capital: {type: Number, default: 0},
     VATIsUsed: {type: Boolean, default: true},
     forme_juridique_code: String,
-    commercial_id: {id: {type: String}, name: {type: String, default: ""}},
+    commercial_id: Schema.Types.ObjectId,
     cptBilling: {id: {type: Schema.Types.ObjectId, ref: 'societe'}, name: String},
     price_level: {type: String, default: 'BASE', uppercase: true, trim: true},
     prospectlevel: {type: String, default: 'PL_NONE'},
@@ -107,11 +107,7 @@ var societeSchema = new Schema({
     zonegeo: String,
     rival: String, //concurrent
     Tag: {type: [], set: setTags},
-    segmentation: {
-        id: String,
-        label: String,
-        group: String
-    },
+    segmentation: String, // Segmentation label
     caFamily: {type: String, uppercase: true}, // Enseigne
     familyProduct: {type: [], set: setTags},
     notes: [{
@@ -169,6 +165,7 @@ var societeSchema = new Schema({
         },
         datec: {type: Date, default: Date.now}
     },
+    owner : String, //Contact name of company owner
     optional: mongoose.Schema.Types.Mixed
 }, {
     toObject: {getters: true, virtuals: true},

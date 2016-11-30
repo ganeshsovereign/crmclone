@@ -1,6 +1,6 @@
 F.on('load', function () {
 // Model product
-    F.install('model', 'http://modules.tomanage.fr/models/latest/product.js');
+    F.install('model', 'https://raw.githubusercontent.com/ToManage/modules/master/public/models/latest/product.js');
 
 // WebCounter module
     F.install('module', 'https://modules.totaljs.com/latest/webcounter.js');
