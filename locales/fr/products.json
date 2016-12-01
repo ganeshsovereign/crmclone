@@ -84,6 +84,7 @@
     "NewPrice": "Nouveau prix",
     "MinPrice": "Prix de vente min.",
     "CantBeLessThanMinPrice": "Le prix de vente ne doit pas être inférieur au minimum pour ce produit. Ce message peut aussi être provoqué par une remise trop importante.",
+    "LowerPrice" : "Le prix de vente est inférieur au prix d'achat.",
     "ContractStatus": "État du contrat",
     "ContractStatusClosed": "Clôturé",
     "ContractStatusRunning": "En service",
