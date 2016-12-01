@@ -1,17 +1,16 @@
 {
-  "name": "CRM-js",
-  "version": "0.5.000",
+  "name": "TM-CRM",
+  "version": "0.5.0",
   "private": true,
   "author": {
     "name": "TM - ToManage"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/crm-js/framework.git"
+    "url": "https://github.com/ToManage/TM-CRM_ERP.git"
   },
   "engines": {
-    "node": "0.12.x",
-    "npm": "2.11.x"
+    "node": "4.6.x"
   },
   "contributors": [
     "Herve Prot <herve.prot@tomanage.fr>"

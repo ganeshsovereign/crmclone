@@ -224,7 +224,7 @@ MetronicApp.directive('crmAddress', ['$http',
                     scope.updateAddressDir = !scope.updateAddressDir;
                 };
                 scope.getLocation = function (val) {
-                    return $http.post('/api/zipcode/autocomplete', {
+                    return $http.post('/erp/api/zipcode/autocomplete', {
                         val: val
                     }).then(function (res) {
 
