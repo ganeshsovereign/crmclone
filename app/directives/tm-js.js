@@ -224,10 +224,8 @@ MetronicApp.directive('crmAddress', ['$http',
                     scope.updateAddressDir = !scope.updateAddressDir;
                 };
                 scope.getLocation = function (val) {
-                    return $http.post('/erp/api/zipcode/autocomplete', {
-                        val: val
-                    }).then(function (res) {
-
+                    return $http.jsonp('https://modules.tomanage.fr/api/zipcode/autocomplete?callback=JSON_CALLBACK&q='+val)
+                            .then(function (res) {
                         return res.data;
                     });
                 };
