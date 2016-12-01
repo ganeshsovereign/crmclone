@@ -92,7 +92,7 @@ var societeSchema = new Schema({
     capital: {type: Number, default: 0},
     VATIsUsed: {type: Boolean, default: true},
     forme_juridique_code: String,
-    commercial_id: Schema.Types.ObjectId,
+    commercial_id: {id : Schema.Types.ObjectId,name : String},
     cptBilling: {id: {type: Schema.Types.ObjectId, ref: 'societe'}, name: String},
     price_level: {type: String, default: 'BASE', uppercase: true, trim: true},
     prospectlevel: {type: String, default: 'PL_NONE'},
