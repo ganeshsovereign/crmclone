@@ -123,6 +123,7 @@
     "SetDefaultBarcodeType": "Définissez le type de code-barres",
     "BarcodeValue": "Valeur du code-barres",
     "GenbarcodeLocation": "Outil de génération de code-barres en ligne de commande (utilisé par le moteur interne pour certains types de codes-barres)",
+    "AclCode":"Code ACL",
     "NoteNotVisibleOnBill": "Note (non visible sur les factures, propals...)",
     "CreateCopy": "Créer copie",
     "ServiceLimitedDuration": "Si produit de type service à durée limitée :",
@@ -205,7 +206,7 @@
     "CardProductSERVICE": "Fiche service",
     "OnBuySell": "En achat/vente",
     "StandardProduct": "Produit standard (Gestion de stock)",
-    "PackProduct": "Pack de produits existants",
+    "PackProduct": "Assemblage de produits existants",
     "ConfigurableProduct": "Produit configurable (formulaire dynamique)",
     "ProductDematerialized": "Produit dématérialisé (en ligne, produit téléchargeable ...)",
     "UseEcotax": "Utilisation de l'ecotaxe",
@@ -274,5 +275,6 @@
     "Rack": "Colonne dans le rack",
     "Floor": "Etage",
     "CostCenter": "Centre de cout",
-    "SubCostCenter": "Sous centre de cout"
+    "SubCostCenter": "Sous centre de cout",
+    "ReplenishmentTime":"Délai de réappro."
 }
