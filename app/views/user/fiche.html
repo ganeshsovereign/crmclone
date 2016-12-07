@@ -60,7 +60,7 @@
                     <div class="actions" ng-show="editableUser.$visible">
                         <button type="submit" ng-disabled="editableUser.$waiting" class="btn btn-default btn-sm">@(Save)</button>
                         <button type="button" ng-disabled="editableUser.$waiting" ng-click="editableUser.$cancel();
-                                                findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -70,43 +70,24 @@
                         <div class="col-md-8 value">
                             <span class="blue h5" editable-text="user.lastname">
                                 {{user.lastname|| "Non defini"}}
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(Type) :</div>
-                        <div class="col-md-8 value">
-                            {{user._type.name}}
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(Group) :</div>
-                        <div class="col-md-8 value">
-                            <span editable-select="user.group" onshow="loadGroup()" e-ng-options="group as group.name for group in groups track by group.id">
-
-                                <small class="label label-sm label-default">{{user.group.name|| 'Aucun groupe'}}</small>
                             </span>
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(companies:Company) :</div>
+                        <div class="col-md-4 name">@(users:FirstName) :</div>
                         <div class="col-md-8 value">
-                            <a href="#" ui-sref="societe.show({id:user.societe.id})"
-                               class="fa fa-institution"
-                               editable-text="user.societe"
-                               e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', bill.entity) | filter:{name:$viewValue}"
-                               e-typeahead-on-select="updateAddress($item)"
-                               > {{user.societe.name|| "Non defini"}} </a>
+                            <span class="blue h5" editable-text="user.firstname">
+                                {{user.firstname}}
+                            </span>
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(companies:Contact) :</div>
+                        <div class="col-md-4 name">@(Status) :</div>
                         <div class="col-md-8 value">
-                            <span class="icon-user" editable-select="user.contact" onshow="loadContact(user.societe)" e-ng-options="contact as contact.name for contact in contacts track by contact.id">
-                                {{user.contact.name|| "Non defini"}}
+                            <span editable-select="user.status" onshow="loadStatus()" e-ng-options="">
+                                <small class="label label-sm label-default">{{user.group.name|| '--'}}</small>
                             </span>
                         </div>
                     </div>
@@ -119,79 +100,58 @@
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(leads:Lead) :</div>
+                        <div class="col-md-4 name">@(Group) :</div>
                         <div class="col-md-8 value">
-                            <span editable-select="user.lead" onshow="loadLead(user.societe)" e-ng-options="lead as lead.name for lead in leads track by lead.id">
-                                {{user.lead.name|| 'Aucun'}}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info" ng-if="isEvent">
-                        <div class="col-md-4 name">@(users:DateActionStart) :</div>
-                        <div class="col-md-8 value">
-                            <span href="#" editable-bsdate="user.datep" e-datepicker-popup="dd/MM/yyyy">
-                                {{ (user.datep | date:"dd/MM/yyyy") || 'empty'}}
-                            </span>
-                            <span editable-bstime="user.datep" e-show-meridian="false" e-minute-step="10" >
-                                {{ (user.datep | date:"HH:mm") || 'empty'}}
+                            <span editable-select="user.group" onshow="loadGroup()" e-ng-options="group as group.name for group in groups track by group.id">
+                                <small class="label label-sm label-default">{{user.group.name|| 'Aucun groupe'}}</small>
                             </span>
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name" ng-if="user.type == 'isEvent'">@(users:DateActionEnd) :</div>
-                        <div class="col-md-4 name" ng-if="user.type != 'isEvent'">@(users:DateEchAction) :</div>
+                        <div class="col-md-4 name">@(Password) :</div>
                         <div class="col-md-8 value">
-                            <span editable-bsdate="user.datef" e-datepicker-popup="dd/MM/yyyy">
-                                {{ (user.datef | date:"dd/MM/yyyy") || 'empty'}}
-                            </span>
-                            <span editable-bstime="user.datef" e-show-meridian="false" e-minute-step="10">
-                                {{ (user.datef | date:"HH:mm") || 'empty'}}
-                            </span>
+                            <span href="#" editable-text="user.password" buttons="no" class="ng-scope ng-binding editable editable-click" onaftersave="update()">
+                            </span> 
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(Status) :</div>
+                        <div class="col-md-4 name">@(Email) :</div>
                         <div class="col-md-8 value">
-
-                            <p class="input-group" ng-show="editable">
-                                <span class="input-group-btn btn-group-xs">
-                                    <button ng-disabled="user.percentage == 0" type="button" class="btn btn-default" ng-click="updatePercent(user.percentage - 25 < 0 ? 0 : user.percentage - 25);"><i class="glyphicon glyphicon-minus"></i></button>
-                                </span>
-                            <progressbar animate="true" value="user.percentage" type="success"><b>{{user.percentage}}%</b></progressbar>
-                            <span class="input-group-btn btn-group-xs">
-                                <button ng-disabled="user.percentage == 100" type="button" class="btn btn-default" ng-click="updatePercent(user.percentage + 25 > 100 ? 100 : user.percentage + 25);"><i class="glyphicon glyphicon-plus"></i></button>
-                            </span>
-                            </p>
-                            <progressbar ng-hide="editable" animate="true" value="user.percentage" type="success"><b>{{user.percentage}}%</b></progressbar>
-
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:CreatedBy) :</div>
-                        <div class="col-md-8 value">
-                            <span>{{user.author.name|| "Non defini"}}</span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:AffectedTo) :</div>
-                        <div class="col-md-8 value">
-                            <span editable-text="user.usertodo" e-typeahead="user as user.name for user in AutoComplete($viewValue,'/api/user/name/autocomplete',5) | filter:{name:$viewValue}">
-                                {{user.usertodo.name|| "Non defini"}}
+                            <span class="blue h5" editable-text="user.email">
+                                {{user.email|| "Non defini"}}
                             </span>
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(DateCreation) :</div>
+                        <div class="col-md-4 name">@(Tel-Mobile) :</div>
                         <div class="col-md-8 value">
-                            {{user.createdAt|date:'dd/MM/yyyy HH:mm'}}
+                            <span class="blue h5" editable-text="user.telMobile">
+                                {{user.telMobile|| "Non defini"}}
+                            </span>
                         </div>
                     </div>
+                    
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Tel-Fixe) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.telFixe">
+                                {{user.telFixe|| "Non defini"}}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Address) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.Address">
+                                {{user.Address || "Non defini"}}
+                            </span>
+                        </div>
+                    </div>
+                   
 
                     <div class="row static-info">
                         <div class="col-md-4 name">@(DateLastModification) :</div>
