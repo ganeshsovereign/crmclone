@@ -51,7 +51,6 @@
     "paypal-express-checkout": "^1.4.0",
     "q": "^1.4.1",
     "shortid": "latest",
-    "stream-worker": "0.x.x",
     "symeos-mqtt": "latest",
     "total.js": "2.1.x",
     "unzip": "^0.1.11",

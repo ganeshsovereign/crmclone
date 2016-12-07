@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
         Schema = mongoose.Schema,
         timestamps = require('mongoose-timestamp'),
         tree = require('mongoose-path-tree'),
-        streamWorker = require('stream-worker'),
+        streamWorker = require('mongoose-path-tree/node_modules/stream-worker'),
         _ = require("lodash");
 
 var setTags = function (tags) {

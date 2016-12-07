@@ -117,7 +117,9 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
             Users.users.get({
                 Id: $rootScope.$stateParams.id
             }, function (user) {
+                console.log(user);
                 $scope.user = user;
+                $scope.editable=true; // TODO ajouter controle d'acces
 
                 $http({method: 'GET', url: 'api/ticket', params:
                             {
