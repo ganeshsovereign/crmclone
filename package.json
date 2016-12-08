@@ -1,6 +1,6 @@
 {
   "name": "TM-CRM",
-  "version": "0.5.0",
+  "version": "0.5.3",
   "private": true,
   "author": {
     "name": "TM - ToManage"
@@ -50,6 +50,8 @@
     "passport-oauth2": "latest",
     "paypal-express-checkout": "^1.4.0",
     "q": "^1.4.1",
+    "mosca": "^2.2.0",
+    "redis": "^2.6.3",
     "shortid": "latest",
     "symeos-mqtt": "latest",
     "total.js": "2.1.x",
