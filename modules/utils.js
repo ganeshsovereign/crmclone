@@ -1,9 +1,29 @@
 exports.name = 'utils';
-exports.version = '1.02';
+exports.version = '1.03';
 
 var _ = require('lodash'),
+        numeral = require('numeral'),
         mongoose = require('mongoose');
 
+numeral.register('locale', 'fr', {
+    delimiters: {
+        thousands: ' ',
+        decimal: ','
+    },
+    abbreviations: {
+        thousand: 'k',
+        million: 'm',
+        billion: 'b',
+        trillion: 't'
+    },
+    ordinal : function (number) {
+        return number === 1 ? 'er' : 'ème';
+    },
+    currency: {
+        symbol: '€'
+    }
+});
+numeral.locale('fr');
 
 function round(value, decimals) {
     if (value > Math.pow(10, (decimals + 2) * -1) * -1 && value < Math.pow(10, (decimals + 2) * -1)) // Fix error little number
@@ -15,6 +35,17 @@ exports.round = round;
 
 exports.setPrice = function (value) {
     return round(value, 2);
+};
+
+exports.printPrice = function (value, width) {
+    switch (width) {
+        case 3 :
+            return numeral(round(value, 3)).format('0[.]000 $'); ;
+        default :
+            return numeral(round(value, 2)).format('0[.]00 $'); ;
+    }
+    
+    
 };
 
 exports.numberFormat = function (number, width) {
