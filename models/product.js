@@ -82,7 +82,9 @@ supplierPriceSchema.virtual('pricesDetails')
 var productSchema = new Schema({
     oldId: String, // Only for import migration
     ref: {type: String, required: true, unique: true, uppercase: true},
+    name : String, //copy of ref
     seq: {type: String, unique: true},
+    isremoved : {type : Boolean, default:false},
     compta_buy: {type: String, set: setAccount, trim: true},
     compta_sell: {type: String, set: setAccount, trim: true},
     label: {type: String, default: ""},
@@ -131,15 +133,14 @@ var productSchema = new Schema({
             pu_ht: Number,
             ref_customer_code: String
         }],
-    template: {type: String, default: "/partials/lines/classic.html"}, // TODO Remove
-    view: String, // For partial product 
+    template: {type: String},
     dynForm: String,
     caFamily: {type: String, uppercase: true},
     subFamily: {type: String, uppercase: true},
     costCenter: {type: String, uppercase: true},
     subCostCenter: {type: String, uppercase: true},
-    category: {type: Schema.Types.ObjectId, ref: 'category'},
-    categories: [{type: Schema.Types.ObjectId, ref: 'category'}],
+    category: String,
+    linker_category: String,
     weight: {type: Number, default: 0}, // Poids en kg
     minQty: Number,
     stock: {
@@ -162,7 +163,8 @@ var productSchema = new Schema({
     pack :[{
             id:{type: Schema.Types.ObjectId, ref:'product'},
             qty:{type: Number, default: 0}
-    }]
+    }],
+    search : [String]
 }, {
     toObject: {virtuals: true},
     toJSON: {virtuals: true}
@@ -407,6 +409,8 @@ productSchema.methods.getPrice = function (qty, price_level) {
 productSchema.pre('save', function (next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
+    
+    self.name = self.ref;
 
     if (this.isNew)
         this.history = [];
@@ -419,6 +423,12 @@ productSchema.pre('save', function (next) {
     else
         this.linker = this.linker.replace(/ /g, "-");
     
+    if(this.category) {
+        var category = prepare_subcategories(this.category);
+        this.category = category.name;
+        this.linker_category = category.linker;
+    }
+    
     if(this.autoBarCode == true && this.seq) {
         this.barCode = "";
 
@@ -427,6 +437,13 @@ productSchema.pre('save', function (next) {
 
         this.barCode += this.seq;
     }
+    
+    var search = (this.name + ' ' + this.category);
+    this.attributes.forEach(function(elem){
+        search += ' ' + elem.value;
+    });
+    
+    this.search = search.keywords(true, true);
     
     if (this.isNew || !this.seq) {
         if (!this.body)
@@ -507,7 +524,8 @@ productSchema.virtual('total_pack') // Set Total price for a pack
                 return 0;
             
             for(var i=0, len=this.pack.length;i<len;i++) {
-                total += this.pack[i].qty * this.pack[i].id.prices.pu_ht;
+                if(this.pack[i].id.suppliers.length)
+                    total += this.pack[i].qty * this.pack[i].id.suppliers[0].prices.pu_ht;
             }
 
             return total;
@@ -592,3 +610,19 @@ productSchema.virtual('_units')
 exports.Schema = mongoose.model('product', productSchema, 'Product');
 exports.name = 'product';
 
+function prepare_subcategories(name) {
+
+    var builder_link = [];
+    var builder_text = [];
+    var category = name.split('/');
+    for (var i = 0, length = category.length; i < length; i++) {
+        var item = category[i].trim();
+        builder_link.push(item.slug());
+        builder_text.push(item);
+    }
+
+    return {
+        linker: builder_link.join('/'),
+        name: builder_text.join(' / ')
+    };
+}

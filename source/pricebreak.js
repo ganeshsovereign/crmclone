@@ -42,7 +42,7 @@ Pricebreak.prototype.price = function (quantity) {
                 }
             });
 
-    var total = Math.round(100 * quantity * (price || self.breaks[max])) / 100;
+    var total = MODULE('utils').round(quantity * (price || self.breaks[max]), 2);
 
     return ({price: (price || self.breaks[max]),
         total: total});

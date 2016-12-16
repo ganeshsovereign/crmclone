@@ -183,7 +183,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
                 });
 
         var login = function (userId) {
-            websocketService.login('wss://' + $location.host() + ':' + $location.port() + '/erp/', userId);
+            //websocketService.login('wss://' + $location.host() + ':' + $location.port() + '/erp/', userId);
             $rootScope.isLogged = true;
         };
 
