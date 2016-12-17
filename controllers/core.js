@@ -331,36 +331,30 @@ function convert(type) {
 
 function convert_resource() {
     var self = this;
-    var fixedWidthString = require('fixed-width-string'); //on déclare l'indentation
-
-    var writeresource = fs.createWriteStream(__dirname + '/../resources/fr.resource');//création fichier resource
-
+    //var fixedWidthString = require('fixed-width-string'); //on déclare l'indentation
     fs.readdirSync(__dirname + '/../locales/fr/')
             .filter(function (file) {
                 return file.endsWith('.json');
             })
+            
             .forEach(function (file) {
                 var readjson = require(__dirname + '/../locales/fr/' + file);// lecture fichier json
+                var writeresource = fs.createWriteStream(__dirname + '/../resources/fr/' + file + 'fr.json');
+                
+                _.forEach(readjson, function (file) {
+                    /*if (value === "UTF-8")
+                        return;*/
 
-                _.forEach(readjson, function (value, key) {
-                    if (value === "UTF-8")
-                        return;
-                    
-                    var header = "admin";
-                    
-                    var temp = fixedWidthString(header + "_" + key, 60);
+                 //var header = file.substring(0, file.length - 5);//delete .json 
+
+                   /* var temp = fixedWidthString(header + "_" + key, 80);
                     temp += ": ";
                     temp += value;
-                    temp += "\n";
-                    writeresource.write(temp);
-
+                    temp += "\n";*/
+                    writeresource.write(readjson);
+                       
                 });
-                //phase 2. ecrire ton premier sublime
-                //phase 3. ecrire le premier fichier -> stream
-                //phase 4. convertir le json en sublime
-                //phase 5. faire automatique tous les fichiers du repertoire fr
-                // Bon courage...
-
+               
             });
 
     writeresource.end();
