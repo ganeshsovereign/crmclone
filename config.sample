@@ -31,6 +31,8 @@ mail.address.from               : tm-js@tomanage.fr
 mail.address.reply              : contact@tomanage.fr
 mail.address.bcc                :
 
+allow-websocket                 : false
+
 //offer.emailNotify				: herve.prot@tomanage.fr
 accounting.VTE			: BLO
 accounting.ACH			: BLU
