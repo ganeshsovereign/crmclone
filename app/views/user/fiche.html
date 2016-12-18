@@ -23,14 +23,6 @@
                 @(Tools) <i class="fa fa-angle-down"></i>
             </button>
             <ul class="dropdown-menu pull-right" role="menu">
-                <!--<li>
-                    <a href="#" ng-show="(bill.Status == 'NEW' || bill.Status == 'DRAFT') && login.rights.bill.validate" data-ng-click="changeStatus('VALIDATE')">
-                        <i class="fa fa-thumbs-o-up"></i>
-                        @(Close)
-                    </a>
-                </li>-->
-                <li class="divider">
-                </li>
                 <li>
                     <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(user)" ng-confirm-click="Supprimer l'utilisateur ?" title="Supprimer l'utilisateur">
                         <i class="fa fa-trash-o font-red"></i>
@@ -86,8 +78,8 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(Status) :</div>
                         <div class="col-md-8 value">
-                            <span editable-select="user.status" onshow="loadStatus()" e-ng-options="">
-                                <small class="label label-sm label-default">{{user.group.name|| '--'}}</small>
+                            <span editable-select="user.Status" e-ng-options="s.id as s.label for s in dict.fk_user_status.values">
+                                <small class="label label-sm" ng-class="user.status.css">{{user.status.name || '--'}}</small>
                             </span>
                         </div>
                     </div>
@@ -111,7 +103,7 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(Password) :</div>
                         <div class="col-md-8 value">
-                            <span href="#" editable-text="user.password" buttons="no" class="ng-scope ng-binding editable editable-click" onaftersave="update()">
+                            <span editable-text="user.password">
                             </span> 
                         </div>
                     </div>

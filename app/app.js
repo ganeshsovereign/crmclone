@@ -1212,6 +1212,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                     },
                     controller: "UserController"
                 })
+                .state('user.create', {
+                    parent: "user",
+                    url: "/create.html",
+                    templateUrl: "/views/user/create.html",
+                    data: {
+                        pageTitle: 'Nouvel utilisateur'
+                    },
+                    controller: "UserController"
+                })
                 .state('user.show', {
                     parent: "user",
                     url: "/{id}",

@@ -58,13 +58,16 @@ exports.install = function () {
 
     // list for autocomplete
     F.route('/erp/api/user/name/autocomplete', function () {
-        console.dir(req.body);
+        var UserModel = MODEL('user').Schema;
+        var self = this;
+        
+        //console.dir(self.body);
 
         var query = {};
 
-        var filter = req.body.filter.filters[0].value.trim();
+        var filter = self.body.filter.filters[0].value.trim();
         //(david|doma) create regex or search if 2 words
-        if (req.body.filter.filters[0].value.indexOf(" ")) {
+        if (self.body.filter.filters[0].value.indexOf(" ")) {
             var search = filter.split(' ');
             search = _.map(search, function (text) {
                 return text.trim();
@@ -81,19 +84,19 @@ exports.install = function () {
 
         //console.log(filter);
 
-        if (req.body.filter)
+        if (self.body.filter)
             query = {'$or': [
                     {firstname: new RegExp(filter, "i")},
                     {lastname: new RegExp(filter, "i")}
                 ]};
 
-        if (req.query.status) {
-            query.Status = {$in: req.query.status};
+        if (self.query.status) {
+            query.Status = {$in: self.query.status};
         } else {
             query.Status = {$ne: "DISABLE"};
         }
 
-        UserModel.find(query, {}, {limit: req.body.take}, function (err, docs) {
+        UserModel.find(query, {}, {limit: self.body.take}, function (err, docs) {
             if (err) {
                 console.log("err : /api/user/name/autocomplete");
                 console.log(err);
@@ -107,7 +110,7 @@ exports.install = function () {
                     //console.log(docs[i]);
 
                     result[i] = {};
-                    if (req.query.lastname) {
+                    if (self.query.lastname) {
                         result[i] = {};
                         result[i].name = docs[i].lastname;
                         result[i].id = docs[i]._id;
@@ -120,7 +123,7 @@ exports.install = function () {
                     }
                 }
 
-            return res.send(200, result);
+            return self.json(result);
         });
     }, ['post', 'authorize']);
 
