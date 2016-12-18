@@ -211,7 +211,7 @@ Object.prototype = {
         });
     },
     read: function (req, res) {
-
+        var UserModel = MODEL('hr').Schema;
         UserModel.find({}, function (err, doc) {
             if (err) {
                 console.log(err);
@@ -222,18 +222,31 @@ Object.prototype = {
             res.send(doc);
         });
     },
-    update: function (req, res) {
+    update: function (id) {
         //return req.body.models;
-        var user = req.User;
-        user = _.extend(user, req.body);
+        var self = this;
+        var UserModel = MODEL('hr').Schema;
 
-        user.save(function (err, doc) {
+        UserModel.findOne({_id: id}, function (err, user) {
 
-            if (err) {
-                return console.log(err);
-            }
+            user = _.extend(user, self.body);
 
-            res.json(doc);
+            user.save(function (err, doc) {
+
+                if (err)
+                    return self.json({errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+
+                doc = doc.toObject();
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Utilisateur enregistré"
+                };
+                self.json(doc);
+            });
         });
     },
     del: function (req, res) {
