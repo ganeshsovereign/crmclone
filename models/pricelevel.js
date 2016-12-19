@@ -23,10 +23,7 @@ var Dict = INCLUDE('dict');
  */
 var priceLevelSchema = new Schema({
     price_level: {type: String, uppercase: true, require: true},
-    product: {
-        id: {type: Schema.Types.ObjectId, ref: 'product'},
-        name: String
-    },
+    product: {type: Schema.Types.ObjectId, ref: 'product'},
     // new price model
     prices: {
         pu_ht: {type: Number, default: 0}, // For base price

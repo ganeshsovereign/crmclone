@@ -223,107 +223,169 @@ function convert(type) {
 
     console.log(type);
 
-    if (type == 'user') {
-        var UserModel = MODEL('hr').Schema;
+    switch (type) {
+        case 'user' :
+            var UserModel = MODEL('hr').Schema;
 
-        mongoose.connection.db.collection('users', function (err, collection) {
-            collection.find({_type: null}, function (err, users) {
-                if (err)
-                    return console.log(err);
+            mongoose.connection.db.collection('users', function (err, collection) {
+                collection.find({_type: null}, function (err, users) {
+                    if (err)
+                        return console.log(err);
 
-                users.each(function (err, user) {
+                    users.each(function (err, user) {
 
-                    if (user == null)
-                        return self.plain("Converted Users...");
+                        if (user == null)
+                            return self.plain("Converted Users...");
 
 
-                    user.username = user.name;
-                    var id = user._id;
-                    delete user._id;
-                    delete user.name;
+                        user.username = user.name;
+                        var id = user._id;
+                        delete user._id;
+                        delete user.name;
 
-                    if (user.Status !== 'ENABLE')
-                        delete user.password;
+                        if (user.Status !== 'ENABLE')
+                            delete user.password;
 
-                    //console.log(user);
+                        //console.log(user);
 
-                    var newUser = new UserModel(user);
-                    //console.log(newUser);
-                    collection.deleteOne({_id: id}, function (err, results) {
-                        if (err)
-                            return console.log(err);
+                        var newUser = new UserModel(user);
+                        //console.log(newUser);
+                        collection.deleteOne({_id: id}, function (err, results) {
+                            if (err)
+                                return console.log(err);
+
+                            newUser.save(function (err, doc) {
+                                if (err || !doc)
+                                    return console.log("Impossible de creer ", err);
+                            });
+
+                        });
+
+                    });
+
+                });
+            });
+            return self.plain("Type is user");
+            break;
+
+        case 'contact' :
+            var UserModel = MODEL('contact').Schema;
+            mongoose.connection.db.collection('users', function (err, collection) {
+                collection.find({}, function (err, users) {
+                    users.each(function (err, user) {
+                        if (user.societe && user.societe.id)
+                            UserModel.update({_id: user._id}, {$set: {societe: user.societe.id}}, {upsert: false, multi: false}, function (err, result) {
+                                console.log(err, result);
+                            });
+                    });
+                });
+            });
+
+            return;
+
+            mongoose.connection.db.collection('Contact', function (err, collection) {
+                collection.find({}, function (err, contacts) {
+                    if (err)
+                        return console.log(err);
+
+                    contacts.each(function (err, contact) {
+
+
+                        if (contact == null)
+                            return self.plain("Converted contacts...");
+
+                        var id = contact._id;
+                        if (!contact.email)
+                            delete contact.email;
+
+                        if (contact.Status == 'ST_ENABLE')
+                            contact.Status = 'ENABLE';
+                        else if (contact.Status == 'ST_DISABLE')
+                            contact.Status = 'DISABLE';
+                        else
+                            contact.Status = 'NEVER';
+
+                        //console.log(contact);
+
+                        var newUser = new UserModel(contact);
+                        //console.log(contact);
 
                         newUser.save(function (err, doc) {
+                            if (err || !doc)
+                                return console.log("Impossible de creer ", err)
+                        });
+
+                    });
+                });
+                collection.remove(function (err) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+            return self.plain("Type is contact");
+            break;
+
+        case 'price_level' :
+            var PriceLevelModel = MODEL('pricelevel').Schema;
+            mongoose.connection.db.collection('PriceLevel', function (err, collection) {
+                collection.find({}, function (err, pricelevels) {
+                    if (err)
+                        return console.log(err);
+
+                    pricelevels.each(function (err, pricelevel) {
+                        //console.log(pricelevel);
+                        if(err)
+                            return console.log(err);
+                        
+                        if(!pricelevel)
+                            return;
+                        
+                        if (pricelevel.product && !pricelevel.product.id)
+                            return self.plain("Converted pricelevel...");
+                        
+                        
+
+                        PriceLevelModel.update({_id: pricelevel._id}, {$set : {product: pricelevel.product.id}}, function (err, doc) {
                             if (err || !doc)
                                 return console.log("Impossible de creer ", err);
                         });
 
                     });
-
                 });
-
             });
-        });
+            return self.plain("Type is price_level");
+            break;
+        
+        case 'product' :
+            var ProductModel = MODEL('product').Schema;
+            mongoose.connection.db.collection('Product', function (err, collection) {
+                collection.find({}, function (err, docs) {
+                    if (err)
+                        return console.log(err);
 
-        return;
-    }
+                    docs.each(function (err, doc) {
+                        //console.log(pricelevel);
+                        if(err)
+                            return console.log(err);
+                        
+                        if(!doc)
+                            return;
+                        
+                        if (doc.name)
+                            return self.plain("Converted product...");
 
-    if (type == 'contact') {
-        var UserModel = MODEL('contact').Schema;
-        mongoose.connection.db.collection('users', function (err, collection) {
-            collection.find({}, function (err, users) {
-                users.each(function (err, user) {
-                    if (user.societe && user.societe.id)
-                        UserModel.update({_id: user._id}, {$set: {societe: user.societe.id}}, {upsert: false, multi: false}, function (err, result) {
-                            console.log(err, result);
+                        ProductModel.update({_id: doc._id}, {$set : {name: doc.ref}}, function (err, doc) {
+                            if (err || !doc)
+                                return console.log("Impossible de creer ", err);
                         });
-                });
-            });
-        });
 
-        return;
-
-        mongoose.connection.db.collection('Contact', function (err, collection) {
-            collection.find({}, function (err, contacts) {
-                if (err)
-                    return console.log(err);
-
-                contacts.each(function (err, contact) {
-
-
-                    if (contact == null)
-                        return self.plain("Converted contacts...");
-
-                    var id = contact._id;
-                    if (!contact.email)
-                        delete contact.email;
-
-                    if (contact.Status == 'ST_ENABLE')
-                        contact.Status = 'ENABLE';
-                    else if (contact.Status == 'ST_DISABLE')
-                        contact.Status = 'DISABLE';
-                    else
-                        contact.Status = 'NEVER';
-
-                    //console.log(contact);
-
-                    var newUser = new UserModel(contact);
-                    //console.log(contact);
-
-                    newUser.save(function (err, doc) {
-                        if (err || !doc)
-                            return console.log("Impossible de creer ", err)
                     });
-
                 });
             });
-            collection.remove(function (err) {
-                if (err)
-                    console.log(err);
-            });
-        });
+            return self.plain("Type is product");
+            break;
 
-        return;
+
     }
 
     return self.plain("Type is unknown");
@@ -336,25 +398,25 @@ function convert_resource() {
             .filter(function (file) {
                 return file.endsWith('.json');
             })
-            
+
             .forEach(function (file) {
                 var readjson = require(__dirname + '/../locales/fr/' + file);// lecture fichier json
                 var writeresource = fs.createWriteStream(__dirname + '/../resources/fr/' + file + 'fr.json');
-                
+
                 _.forEach(readjson, function (file) {
                     /*if (value === "UTF-8")
-                        return;*/
+                     return;*/
 
-                 //var header = file.substring(0, file.length - 5);//delete .json 
+                    //var header = file.substring(0, file.length - 5);//delete .json 
 
-                   /* var temp = fixedWidthString(header + "_" + key, 80);
-                    temp += ": ";
-                    temp += value;
-                    temp += "\n";*/
+                    /* var temp = fixedWidthString(header + "_" + key, 80);
+                     temp += ": ";
+                     temp += value;
+                     temp += "\n";*/
                     writeresource.write(readjson);
-                       
+
                 });
-               
+
             });
 
     writeresource.end();
