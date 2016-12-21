@@ -134,11 +134,6 @@ var tab_attractivity = {
     }
 };
 
-/*contactSchema.virtual('name')
-        .get(function () {
-            return this.firstname + " " + this.lastname;
-        });*/
-
 var contactStatusList = {};
 Dict.dict({dictName: "fk_user_status", object: true}, function (err, doc) {
     if (err) {

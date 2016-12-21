@@ -104,6 +104,11 @@ Dict.dict({dictName: 'fk_user_status', object: true}, function (err, doc) {
     statusList = doc;
 });
 
+UserSchema.virtual('name')
+        .get(function () {
+            return this.firstname + " " + this.lastname;
+        });
+
 UserSchema.virtual('status')
         .get(function () {
 
