@@ -270,3 +270,7 @@ tr.angular-ui-tree-empty {
     color: #FFF;
     margin-right: 10px;
 }
+
+.nav .badge {
+    vertical-align: bottom;
+}

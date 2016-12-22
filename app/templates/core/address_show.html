@@ -1,7 +1,7 @@
 
 <div class="well">
     <address>
-        <strong>{{addressModel.client.name || addressModel.supplier.name || addressModel.societe.name}}</strong><br>
+        <strong>{{addressModel.client.name || addressModel.supplier.name || addressModel.societe.name || addressModel.name}}</strong><br>
         <span editable-textarea="addressModel.address" e-name="address" e-rows="4" e-cols="400" e-required e-class="form-control"><pre>{{ addressModel.address ||  "Non defini" }}</pre></span>
 
         <span editable-text="addressModel.zip" e-class="form-control" e-name="zip" e-placeholder="@(companies:Zip)" e-title="@(companies:Zip)">{{addressModel.zip}}</span>

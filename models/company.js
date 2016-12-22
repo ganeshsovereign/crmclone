@@ -65,6 +65,49 @@ var getUrl = function (url) {
         return "http://" + url;
 };
 
+var addressSchema = new Schema({
+        name : String,
+            address : String,
+            zip : String,
+            town : String,
+            Status: {type: String, default : 'ENABLE'}
+    }, {
+    toObject: {virtuals: true},
+    toJSON: {virtuals: true}
+});
+
+var statusAddressList = {};
+Dict.dict({dictName: 'fk_user_status', object: true}, function (err, doc) {
+    if (err) {
+        console.log(err);
+        return;
+    }
+    statusAddressList = doc;
+});
+
+
+addressSchema.virtual('status')
+        .get(function () {
+            var res_status = {};
+
+            var status = this.Status;
+
+            if (status && statusAddressList.values[status] && statusAddressList.values[status].label) {
+                //console.log(this);
+                res_status.id = status;
+                res_status.name = statusAddressList.values[status].label;
+                res_status.css = statusAddressList.values[status].cssClass;
+            } else { // By default
+                res_status.id = status;
+                res_status.name = status;
+                res_status.css = "label-default";
+            }
+            return res_status;
+
+        });
+
+
+
 /**
  * Societe Schema
  */
@@ -83,6 +126,8 @@ var societeSchema = new Schema({
     town: String,
     country_id: {type: String, default: 'FR', uppercase: true},
     state_id: Number,
+    addresses : [addressSchema], // ist of deliveries address
+    deliveryAddress : {type: Number, default:0}, // id of default address in addresses
     phone: {type: String, set: setPhone, default: null},
     fax: {type: String, set: setPhone, default: null},
     email: {type: String, lowercase: true, trim: true},

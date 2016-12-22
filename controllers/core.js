@@ -384,8 +384,34 @@ function convert(type) {
             });
             return self.plain("Type is product");
             break;
-
-
+            
+        case 'deliveryAddress' :
+            var SocieteModel = MODEL('societe').Schema;
+            
+            SocieteModel.find({}, function(err, docs){
+                if(err)
+                    return console.log(err);
+                
+                docs.forEach(function(doc){
+                    doc.addresses = [{
+                        name : doc.name,
+                        address : doc.address,
+                        zip : doc.zip,
+                        town : doc.town
+                    }];
+                    doc.deliveryAddress = 0;
+                    
+                    return doc.save(function (err, doc){
+                        if(err)
+                            console.log(err);
+                    });
+                    
+                });
+                
+                
+            });
+            return self.plain("Type is deliveryAddress");
+            break;
     }
 
     return self.plain("Type is unknown");
