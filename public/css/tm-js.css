@@ -135,6 +135,11 @@ address pre {
     overflow-x: hidden; 
 }
 
+/* full with bootstrap */
+.editable-wrap {
+    width: 100%;
+}
+
 pre {
     font-family: inherit;
     padding: 0 0;

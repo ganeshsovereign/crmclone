@@ -352,7 +352,6 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
                 //societe: '=?'
             },
             link: function (scope) {
-                console.log("toto");
 
                 scope.addContact = function () {
                     scope.contactModel.push(scope.selectedContact._id);
