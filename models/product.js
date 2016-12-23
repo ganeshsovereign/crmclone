@@ -153,6 +153,13 @@ var productSchema = new Schema({
     barCode : {type : String, index: true, uppercase: true, sparse: true},
     aclCode : {type : String, uppercase: true},
     suppliers: [supplierPriceSchema],
+    
+    /******** VAD Method **************/
+    directCost : {type : Number,default :0},   //Total MP
+    indirectCost : {type : Number,default :0}, //Total Effort
+    totalCost : {type : Number,default :0},    //Total MP + Effort
+    /**********************************/
+    
     optional: Schema.Types.Mixed,
     linker: {type: String, unique: true, set: setLink}, // SEO URL
     attributes: [{
@@ -444,6 +451,15 @@ productSchema.pre('save', function (next) {
     });
     
     this.search = search.keywords(true, true);
+    
+    if(this.isModified('suppliers')) { // a buy price changed
+        console.log('update suppliers');
+        
+        
+        
+    }
+    
+    //if(this.)
     
     if (this.isNew || !this.seq) {
         if (!this.body)
