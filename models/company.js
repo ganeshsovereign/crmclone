@@ -66,12 +66,12 @@ var getUrl = function (url) {
 };
 
 var addressSchema = new Schema({
-        name : String,
-            address : String,
-            zip : String,
-            town : String,
-            Status: {type: String, default : 'ENABLE'}
-    }, {
+    name: String,
+    address: String,
+    zip: String,
+    town: String,
+    Status: {type: String, default: 'ENABLE'}
+}, {
     toObject: {virtuals: true},
     toJSON: {virtuals: true}
 });
@@ -126,8 +126,8 @@ var societeSchema = new Schema({
     town: String,
     country_id: {type: String, default: 'FR', uppercase: true},
     state_id: Number,
-    addresses : [addressSchema], // ist of deliveries address
-    deliveryAddress : {type: Number, default:0}, // id of default address in addresses
+    addresses: [addressSchema], // ist of deliveries address
+    deliveryAddress: {type: Number, default: 0}, // id of default address in addresses
     phone: {type: String, set: setPhone, default: null},
     fax: {type: String, set: setPhone, default: null},
     email: {type: String, lowercase: true, trim: true},
@@ -232,6 +232,21 @@ societeSchema.pre('save', function (next) {
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
     var self = this;
+
+    // Update first address delivery copy main address
+    if (self.address.length) {
+        self.addresses[0].name = self.name;
+        self.addresses[0].address = self.address;
+        self.addresses[0].zip = self.zip;
+        self.addresses[0].town = self.town;
+    } else
+        self.addresses.push({
+            name: self.name,
+            address: self.address,
+            zip: self.zip,
+            town: self.town,
+            Status: 'ENABLE'
+        });
 
     if (this.code_client == null && this.entity !== "ALL" && this.Status !== 'ST_NEVER') {
         //console.log("Save societe");
