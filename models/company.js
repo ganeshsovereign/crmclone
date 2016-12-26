@@ -249,9 +249,10 @@ societeSchema.pre('save', function (next) {
         });
     
     //Check Valid IBAN
-    if(self.iban.id) {
+    if(self.iban && self.iban.id) {
         var IBAN = require('iban');
-        console.log(IBAN.isValid(self.iban.id));
+        if(!IBAN.isValid(self.iban.id))
+            console.log(IBAN.isValid(self.iban.id), self.iban.id);
     }
 
     if (this.code_client == null && this.entity !== "ALL" && this.Status !== 'ST_NEVER') {
