@@ -234,7 +234,7 @@ societeSchema.pre('save', function (next) {
     var self = this;
 
     // Update first address delivery copy main address
-    if (self.address && self.address.length != 0) {
+    if (self.addresses && self.addresses.length != 0) {
         self.addresses[0].name = self.name;
         self.addresses[0].address = self.address;
         self.addresses[0].zip = self.zip;
