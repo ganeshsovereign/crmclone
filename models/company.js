@@ -247,6 +247,12 @@ societeSchema.pre('save', function (next) {
             town: self.town,
             Status: 'ENABLE'
         });
+    
+    //Check Valid IBAN
+    if(self.iban.id) {
+        var IBAN = require('iban');
+        console.log(IBAN.isValid(self.iban.id));
+    }
 
     if (this.code_client == null && this.entity !== "ALL" && this.Status !== 'ST_NEVER') {
         //console.log("Save societe");
