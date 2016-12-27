@@ -4,6 +4,11 @@
     </a>
 </script>
 <p><strong>{{addressModel.client.name || addressModel.supplier.name || addressModel.societe.name}}</strong></p>
+<div class="row static-info" ng-if="addressModel.name">
+<div class="col-md-12 value">
+    <input type="text" ng-model="addressModel.name" class="form-control" placeholder="@(Name)" autocomplete="off"/>
+</div>
+</div>
 <textarea class="form-control" rows="3" cols="30" ng-model = "addressModel.address" placeholder="Adresse" autocomplete="off"></textarea><br/>
 <div class="row static-info">
     <div class="col-md-6 value">

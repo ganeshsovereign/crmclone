@@ -127,7 +127,7 @@ var societeSchema = new Schema({
     country_id: {type: String, default: 'FR', uppercase: true},
     state_id: Number,
     addresses: [addressSchema], // ist of deliveries address
-    deliveryAddress: {type: Number, default: 0}, // id of default address in addresses
+    deliveryAddressId: {type: Number, default: 0}, // id of default address in addresses
     phone: {type: String, set: setPhone, default: null},
     fax: {type: String, set: setPhone, default: null},
     email: {type: String, lowercase: true, trim: true},

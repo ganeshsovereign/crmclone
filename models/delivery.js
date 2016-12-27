@@ -61,6 +61,7 @@ var deliverySchema = new Schema({
         }],
     ref_client: {type: String, default: ""},
     price_level: {type: String, default: "BASE", uppercase: true, trim: true},
+    name: String,
     address: String,
     zip: String,
     town: String,
