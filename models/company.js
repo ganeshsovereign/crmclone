@@ -66,7 +66,7 @@ var getUrl = function (url) {
 };
 
 var addressSchema = new Schema({
-    name: String,
+    name: {type: String, trim: true, uppercase: true},
     address: String,
     zip: String,
     town: String,
