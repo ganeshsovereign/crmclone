@@ -293,6 +293,7 @@ deliverySchema.pre('save', function (next) {
                 }
             });
         } else {
+            self.ref = F.functions.refreshSeq(self.ref, self.datedl);
             next();
         }
     }

@@ -401,8 +401,11 @@ orderSchema.pre('save', function (next) {
                 next();
             });
         });
-    } else
+    } else {
+        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+        
         next();
+    }
 });
 
 var statusList = {};

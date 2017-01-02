@@ -173,7 +173,7 @@ var offerSchema = new Schema({
         trim: true
     },
     bl: [{
-            societe: {
+            societe: { //TODO REMOVE
                 id: {
                     type: Schema.Types.ObjectId,
                     ref: 'societe'
@@ -392,8 +392,10 @@ offerSchema.pre('save', function (next) {
                 next();
             });
         });
-    } else
+    } else {
+        self.ref = F.functions.refreshSeq(self.ref, self.datec);
         next();
+    }
 });
 
 var statusList = {};
