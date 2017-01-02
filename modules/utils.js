@@ -48,6 +48,17 @@ exports.printPrice = function (value, width) {
     
 };
 
+exports.printWeight = function (value, width) {
+    switch (width) {
+        case 3 :
+            return numeral(round(value, 3)).format('0[.]000') + ' kg' ;
+        default :
+            return numeral(round(value, 2)).format('0[.]00') + ' kg' ;
+    }
+    
+    
+};
+
 exports.numberFormat = function (number, width) {
     //console.log("number : " + number);
     //console.log("width : " + width);
