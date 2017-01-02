@@ -243,7 +243,7 @@ var orderSchema = new Schema({
             product: {
                 id: {
                     type: Schema.Types.ObjectId,
-                    ref: "Product"
+                    ref: "product"
                 },
                 name: {
                     type: String
@@ -347,6 +347,9 @@ orderSchema.pre('save', function (next) {
                 total: this.lines[i].total_tva
             });
         }
+        
+        if(this.lines[i].product.id && this.lines[i].product.id.weight)
+            this.lines[i].weight = this.lines[i].product.id.weight;
 
         //Poids total
         this.weight += this.lines[i].weight * this.lines[i].qty;

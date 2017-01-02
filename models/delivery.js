@@ -119,7 +119,7 @@ var deliverySchema = new Schema({
             description: {type: String, default: ""},
             product_type: String,
             product: {
-                id: {type: Schema.Types.ObjectId, ref: "Product"},
+                id: {type: Schema.Types.ObjectId, ref: "product"},
                 name: {type: String},
                 label: String,
                 unit: String,
@@ -224,6 +224,9 @@ deliverySchema.pre('save', function (next) {
                 total: this.lines[i].total_tva
             });
         }
+        
+        if(this.lines[i].product.id && this.lines[i].product.id.weight)
+            this.lines[i].weight = this.lines[i].product.id.weight;
 
         //Poids total
         this.weight += this.lines[i].weight * this.lines[i].qty;

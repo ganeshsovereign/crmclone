@@ -21,4 +21,4 @@ logs.txt
 *.sublime-workspace
 *.cache
 *.nosql
-
+/install/
