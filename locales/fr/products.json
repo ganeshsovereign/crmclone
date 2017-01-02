@@ -277,5 +277,6 @@
     "Floor": "Etage",
     "CostCenter": "Centre de cout",
     "SubCostCenter": "Sous centre de cout",
+    "SumCost":"Cout moyen (calculé)",
     "ReplenishmentTime":"Délai de réappro."
 }

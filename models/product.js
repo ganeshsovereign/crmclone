@@ -57,7 +57,7 @@ var supplierPriceSchema = new Schema({
     ref: String,
     tva_tx: Number,
     minQty: Number,
-    replenishmentTime : {type: Number, default: 0}, // delai de reappro en jr
+    replenishmentTime: {type: Number, default: 0}, // delai de reappro en jr
     prices: {
         pu_ht: {type: Number, default: 0}, // For base price
         pricesQty: {type: Schema.Types.Mixed} // For quantity price reduction
@@ -82,9 +82,9 @@ supplierPriceSchema.virtual('pricesDetails')
 var productSchema = new Schema({
     oldId: String, // Only for import migration
     ref: {type: String, required: true, unique: true, uppercase: true},
-    name : String, //copy of ref
+    name: String, //copy of ref
     seq: {type: String, unique: true},
-    isremoved : {type : Boolean, default:false},
+    isremoved: {type: Boolean, default: false},
     compta_buy: {type: String, set: setAccount, trim: true},
     compta_sell: {type: String, set: setAccount, trim: true},
     label: {type: String, default: ""},
@@ -149,17 +149,16 @@ var productSchema = new Schema({
         rack: Number, // column
         floor: Number // etage
     },
-    autoBarCode : {type : Boolean, default:true},
-    barCode : {type : String, index: true, uppercase: true, sparse: true},
-    aclCode : {type : String, uppercase: true},
+    autoBarCode: {type: Boolean, default: true},
+    barCode: {type: String, index: true, uppercase: true, sparse: true},
+    aclCode: {type: String, uppercase: true},
     suppliers: [supplierPriceSchema],
-    
     /******** VAD Method **************/
-    directCost : {type : Number,default :0},   //Total MP
-    indirectCost : {type : Number,default :0}, //Total Effort
-    totalCost : {type : Number,default :0},    //Total MP + Effort
+    directCost: {type: Number, default: 0}, //Total MP
+    indirectCost: {type: Number, default: 0}, //Total Effort
+    totalCost: {type: Number, default: 0}, //Total MP + Effort
     /**********************************/
-    
+
     optional: Schema.Types.Mixed,
     linker: {type: String, unique: true, set: setLink}, // SEO URL
     attributes: [{
@@ -167,11 +166,11 @@ var productSchema = new Schema({
             value: {type: String},
             css: {type: String}
         }],
-    pack :[{
-            id:{type: Schema.Types.ObjectId, ref:'product'},
-            qty:{type: Number, default: 0}
-    }],
-    search : [String]
+    pack: [{
+            id: {type: Schema.Types.ObjectId, ref: 'product'},
+            qty: {type: Number, default: 0}
+        }],
+    search: [String]
 }, {
     toObject: {virtuals: true},
     toJSON: {virtuals: true}
@@ -353,7 +352,7 @@ productSchema.statics.findPrice = function (options, fields, callback) {
         if (options.price_level && options.price_level !== 'BASE') {
             var modelClass = MODEL('pricelevel').Schema;
             return modelClass.findOne({"product": doc._id, price_level: options.price_level}, function (err, res) {
-                if(err)
+                if (err)
                     return console.log(err);
 
                 //console.log(res, self._id, price_level);
@@ -417,7 +416,7 @@ productSchema.methods.getPrice = function (qty, price_level) {
 productSchema.pre('save', function (next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
-    
+
     self.name = self.ref;
 
     if (this.isNew)
@@ -430,14 +429,14 @@ productSchema.pre('save', function (next) {
         this.linker = this.ref.replace(/ /g, "-").toLowerCase();
     else
         this.linker = this.linker.replace(/ /g, "-");
-    
-    if(this.category) {
+
+    if (this.category) {
         var category = prepare_subcategories(this.category);
         this.category = category.name;
         this.linker_category = category.linker;
     }
-    
-    if(this.autoBarCode == true && this.seq) {
+
+    if (this.autoBarCode == true && this.seq) {
         this.barCode = "";
 
         if (this.caFamily)
@@ -445,31 +444,42 @@ productSchema.pre('save', function (next) {
 
         this.barCode += this.seq;
     }
-    
+
     var search = (this.name + ' ' + this.category);
-    this.attributes.forEach(function(elem){
+    this.attributes.forEach(function (elem) {
         search += ' ' + elem.value;
     });
-    
+
     this.search = search.keywords(true, true);
-    
-    if(this.isModified('suppliers')) { // a buy price changed
-        console.log('update suppliers');
-        
-        
-        
+
+    if (this.isModified('suppliers')) { // a buy price changed
+        if (this.suppliers.length)
+            this.directCost = this.suppliers[0].prices.pu_ht;
+
+        this.totalCost = this.directCost + this.indirectCost;
     }
-    
-    //if(this.)
-    
+
+    if (this.type == 'PACK') {
+        this.directCost = 0;
+        for (var i = 0; i < this.pack.length; i++)
+            if (this.pack[i].id && this.pack[i].id.totalCost)
+                this.directCost += this.pack[i].id.totalCost * this.pack[i].qty;
+
+        this.totalCost = this.directCost + this.indirectCost;
+    }
+
+    if (!this.isNew && this.isModified('totalCost')) // Emit to all that a product change totalCost
+        F.functions.EE.emit('product', {type: 'updateCost', data: {_id: this._id}});
+
+
     if (this.isNew || !this.seq) {
         if (!this.body)
             this.body = this.description;
 
         SeqModel.incNumber("P", 7, function (seq) {
             self.seq = seq;
-            
-            if(self.autoBarCode == true) {
+
+            if (self.autoBarCode == true) {
                 self.barCode = "";
 
                 if (self.caFamily)
@@ -477,7 +487,7 @@ productSchema.pre('save', function (next) {
 
                 self.barCode += seq;
             }
-            
+
             next();
         });
     } else
@@ -533,30 +543,29 @@ productSchema.virtual('eshopIsNew')
 
             return false;
         });
-        
+
 productSchema.virtual('total_pack') // Set Total price for a pack
         .get(function () {
             var total = 0;
-            if(!this.pack || !this.pack.length)
+            if (!this.pack || !this.pack.length)
                 return 0;
-            
-            for(var i=0, len=this.pack.length;i<len;i++) {
-                if(this.pack[i].id.suppliers.length)
-                    total += this.pack[i].qty * this.pack[i].id.suppliers[0].prices.pu_ht;
+
+            for (var i = 0, len = this.pack.length; i < len; i++) {
+                total += this.pack[i].qty * this.pack[i].id.totalCost;
             }
 
             return total;
         });
-        
+
 productSchema.virtual('color') // Get default color in attributs
         .get(function () {
             var color = {};
-    
-            if(!this.attributes)
+
+            if (!this.attributes)
                 return null;
-                
-            for(var i=0, len=this.attributes.length;i<len;i++) {
-                if(this.attributes[i].css) {
+
+            for (var i = 0, len = this.attributes.length; i < len; i++) {
+                if (this.attributes[i].css) {
                     color = this.attributes[i];
                     break;
                 }
@@ -643,3 +652,31 @@ function prepare_subcategories(name) {
         name: builder_text.join(' / ')
     };
 }
+
+
+F.on('load', function () {
+// On refresh emit product
+
+    F.functions.EE.on('product', function (data) {
+        //console.log(data);
+        console.log("Update emit product");
+
+        switch (data.type) {
+            case 'updateCost' :
+                if (data.data._id)
+                    exports.Schema.find({'pack.id': data.data._id})
+                            .populate("pack.id", "ref name label totalCost")
+                            .exec(function (err, products) {
+                                products.forEach(function (product) {
+                                    product.save(function(err, doc){
+                                        if(err)
+                                            return console.log(err);
+                                    });
+                                });
+                            });
+                break;
+        }
+
+
+    });
+});
