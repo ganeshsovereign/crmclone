@@ -60,7 +60,7 @@
         \fi
 \fi
 
-\newcommand{\NAME}{Symeos}
+\newcommand{\NAME}{ToManage}
 
 %\renewcommand\rmdefault{phv}  % famille à utiliser pour du Roman
 %\renewcommand\sfdefault{cmss} % famille à utiliser pour du Sans Serif
@@ -121,15 +121,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Color
 
-\definecolor{Symeos_Grey}{rgb}{0.61,0.58,0.56}
-\definecolor{Symeos_Green}{rgb}{0.06,0.46,0.17}
-\definecolor{Symeos_Red}{rgb}{0.75,0.033,0}
-%\definecolor{Symeos_Red}{rgb}{1,0,0}
-\definecolor{Symeos_Orange}{rgb}{1,0.50,0}
-\definecolor{Symeos_Blue}{rgb}{0.21,0.71,0.67}
-\definecolor{Symeos_Blue_Fonce}{rgb}{0.22,0.71,0.67}
+\definecolor{ToManage_Grey}{rgb}{0.61,0.58,0.56}
+\definecolor{ToManage_Green}{rgb}{0.06,0.46,0.17}
+\definecolor{ToManage_Red}{rgb}{0.75,0.033,0}
+%\definecolor{ToManage_Red}{rgb}{1,0,0}
+\definecolor{ToManage_Orange}{rgb}{1,0.50,0}
+\definecolor{ToManage_Blue}{rgb}{0.21,0.71,0.67}
+\definecolor{ToManage_Blue_Fonce}{rgb}{0.22,0.71,0.67}
 
-\definecolor{Symeos_Yellow}{rgb}{0.99,0.93,0.48}
+\definecolor{ToManage_Yellow}{rgb}{0.99,0.93,0.48}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -168,12 +168,12 @@
 \newcommand{\EGOSP}{ego\texttrademark{} SP}
 \newcommand{\EGOIDP}{ego\texttrademark{} IDP}
 \newcommand{\EGOPAY}{ego\texttrademark{} Pay}
-\newcommand{\OUI}{{\color{Symeos_Green}\ding{51}}} % \ding{51} \ding{52}
-\newcommand{\NON}{{\color{Symeos_Red}\ding{55}}} % \ding{55} \ding{56}
-\newcommand{\PASCONTENT}{{\color{Symeos_Red}{\frownie}}}
+\newcommand{\OUI}{{\color{ToManage_Green}\ding{51}}} % \ding{51} \ding{52}
+\newcommand{\NON}{{\color{ToManage_Red}\ding{55}}} % \ding{55} \ding{56}
+\newcommand{\PASCONTENT}{{\color{ToManage_Red}{\frownie}}}
 %\newcommand{\BOF}{\raisebox{.2em}{\color{orange}\grimace}}
-\newcommand{\CONTENT}{{\color{Symeos_Green}{\smiley}}}
-\newcommand{\NULL}{{\color{Symeos_Orange}$\sim$}}
+\newcommand{\CONTENT}{{\color{ToManage_Green}{\smiley}}}
+\newcommand{\NULL}{{\color{ToManage_Orange}$\sim$}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -182,7 +182,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \tikzset{leader/.style = {shape          = circle,
-                                 ball color     = Symeos_Blue,
+                                 ball color     = ToManage_Blue,
                                  text           = black,
                                  inner sep      = 2pt,
                                  outer sep      = 0pt,
@@ -191,7 +191,7 @@
                                  text width=25pt,
                                  text centered, font={\tiny}}}
 \tikzset{member/.style =   {shape          = circle,
-                                 ball color     = Symeos_Yellow,
+                                 ball color     = ToManage_Yellow,
                                  text           = black,
                                  inner sep      = 2pt,
                                  outer sep      = 0pt,
@@ -201,7 +201,7 @@
   				text centered, font={\tiny}}}
   											
 \tikzset{rebelle/.style =   {shape          = circle,
-                                 ball color     = Symeos_Red,
+                                 ball color     = ToManage_Red,
                                  text           = white,
                                  inner sep      = 2pt,
                                  outer sep      = 0pt,
@@ -221,7 +221,7 @@
 %%%% Bulles %
 
   \tikzset{VertexStyle/.style = {shape          = circle,
-                                 ball color     = Symeos_Blue,
+                                 ball color     = ToManage_Blue,
                                  text           = black,
                                  inner sep      = 2pt,
                                  outer sep      = 0pt,
@@ -233,9 +233,9 @@
   \tikzset{EdgeStyle/.style   = {thick,black,
   											%rounded corners=4pt,
                                  ->}}
-  \tikzset{EdgeStyle2/.style  = {thick,Symeos_Green,->}}
+  \tikzset{EdgeStyle2/.style  = {thick,ToManage_Green,->}}
   \tikzset{LabelStyle/.style =   {shape          = circle,
-                                 ball color     = Symeos_Yellow,
+                                 ball color     = ToManage_Yellow,
                                  text           = black,midway,
                                  inner sep      = 2pt,
                                  outer sep      = 0pt,
@@ -246,10 +246,10 @@
 
 %%%% Graphes use cases
 
-\tikzstyle{decision} = [diamond, draw, ball color=Symeos_Green, outer sep = 0pt,
+\tikzstyle{decision} = [diamond, draw, ball color=ToManage_Green, outer sep = 0pt,
     text width=30pt, text badly centered, node distance=1.5cm, inner sep=0pt,font={\tiny}]
-\tikzstyle{block} = [rectangle, draw, ball color=Symeos_Blue, 
+\tikzstyle{block} = [rectangle, draw, ball color=ToManage_Blue, 
     text width=45pt, text centered, rounded corners, minimum height=2em,font={\tiny}]
-\tikzstyle{line} = [draw, -latex',Symeos_Yellow, font={\tiny},thick]
-\tikzstyle{cloud} = [draw, ellipse,ball color=Symeos_Yellow, node distance=1cm,
+\tikzstyle{line} = [draw, -latex',ToManage_Yellow, font={\tiny},thick]
+\tikzstyle{cloud} = [draw, ellipse,ball color=ToManage_Yellow, node distance=1cm,
     minimum height=2em,font={\tiny}, text width=40pt, text centered]
