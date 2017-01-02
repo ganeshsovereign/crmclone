@@ -352,8 +352,9 @@ productSchema.statics.findPrice = function (options, fields, callback) {
 
         if (options.price_level && options.price_level !== 'BASE') {
             var modelClass = MODEL('pricelevel').Schema;
-            return modelClass.findOne({"product.id": doc._id, price_level: options.price_level}, function (err, res) {
-                //console.log(res);
+            return modelClass.findOne({"product": doc._id, price_level: options.price_level}, function (err, res) {
+                if(err)
+                    return console.log(err);
 
                 //console.log(res, self._id, price_level);
                 if (!res) { // No specific price using BASE Prices
@@ -390,7 +391,7 @@ productSchema.methods.getPrice = function (qty, price_level) {
         var modelClass;
 
         modelClass = MODEL('pricelevel').Schema;
-        modelClass.findOne({"product.id": self._id, price_level: price_level}, function (err, res) {
+        modelClass.findOne({"product": self._id, price_level: price_level}, function (err, res) {
             if (err)
                 return d.reject(err);
 
