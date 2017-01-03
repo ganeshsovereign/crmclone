@@ -293,7 +293,7 @@ MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
                 scope.addNewContact = function () {
 
                     var modalInstance = $modal.open({
-                        templateUrl: '/templates/contact/modal/create.html',
+                        templateUrl: '/templates/_contact/modal/create.html',
                         controller: "ContactCreateController",
                         resolve: {
                             object: function () {

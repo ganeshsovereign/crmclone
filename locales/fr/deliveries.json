@@ -71,5 +71,6 @@
     "AmountSubcontractors": "Montant de la sous-traitance",
     "Period": "Période d'intervention",
     "Sended":"Classer expédié",
-    "Period":"Période d'intervention"
+    "Period":"Période d'intervention",
+    "HelpConfirmQuantityDelivery":"La commande restera ouverte s'il s'agit d'une livraison partielle"
 }
