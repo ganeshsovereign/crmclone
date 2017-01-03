@@ -191,6 +191,9 @@ deliverySchema.pre('save', function (next) {
     this.total_ttc = 0;
     this.total_ht_subcontractors = 0;
     this.weight = 0;
+    
+    if(!this.name)
+        this.name = this.client.name;
 
     if (this.isNew)
         this.history = [];
