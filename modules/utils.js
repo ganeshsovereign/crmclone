@@ -48,6 +48,7 @@ exports.printPrice = function (value, width) {
     
 };
 
+//TODO Remove used printUnit
 exports.printWeight = function (value, width) {
     switch (width) {
         case 3 :
@@ -55,8 +56,22 @@ exports.printWeight = function (value, width) {
         default :
             return numeral(round(value, 2)).format('0[.]00') + ' kg' ;
     }
+};
+
+exports.printUnit = function (value, unit, width) {
+    if(!unit)
+        unit = 'kg';
     
-    
+    switch (width) {
+        case 3 :
+            return numeral(round(value, 3)).format('0[.]000') + ' ' +unit ;
+        default :
+            return numeral(round(value, 2)).format('0[.]00') + ' ' +unit ;
+    }
+};
+
+exports.printNumber = function (value) {
+    return numeral(value).format('0.00');
 };
 
 exports.numberFormat = function (number, width) {
