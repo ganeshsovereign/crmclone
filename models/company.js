@@ -47,6 +47,13 @@ var setAccount = function (account) {
     return account;
 };
 
+var setNoSpace = function (text) {
+    if (text)
+        text = text.replace(/ /g, "");
+
+    return text;
+};
+
 var setPhone = function (phone) {
     if (phone !== null)
         phone = phone.replace(/ /g, "").replace(/\./g, "").replace(/\(/g, "").replace(/\)/g, "").replace(/\+/g, "");
@@ -184,8 +191,8 @@ var societeSchema = new Schema({
     idprof6: String, // TVA Intra
     iban: {
         bank: String,
-        id: String, //FR76........
-        swift: String //BIC / SWIFT
+        id: {type: String, set: setNoSpace}, //FR76........
+        swift: {type: String, set: setNoSpace} //BIC / SWIFT
     },
     checklist: mongoose.Schema.Types.Mixed,
     annualCA: [{
