@@ -668,8 +668,8 @@ F.on('load', function () {
                             .populate("pack.id", "ref name label totalCost")
                             .exec(function (err, products) {
                                 products.forEach(function (product) {
-                                    product.save(function(err, doc){
-                                        if(err)
+                                    product.save(function (err, doc) {
+                                        if (err)
                                             return console.log(err);
                                     });
                                 });
