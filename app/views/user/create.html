@@ -37,37 +37,48 @@
                         <div class="form-body">
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">@(users:LastName)</label>
-                                <div class="col-md-4">
-                                    <input class="form-control" required data-ng-model="user.lastname" placeholder="@(users:LastName)" type="text" autocomplete="off">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
                                 <label class="col-md-4 control-label">@(users:FirstName)</label>
                                 <div class="col-md-4">
-                                    <input class="form-control" required data-ng-model="user.firstname" placeholder="@(users:FirstName)" type="text" autocomplete="off">
+                                    <input class="form-control" required ng-model="user.firstname" placeholder="@(users:FirstName)" type="text" autocomplete="off">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">@(users:Login)</label>
+                                <label class="col-md-4 control-label">@(users:LastName)</label>
                                 <div class="col-md-4">
-                                    <input class="form-control" required data-ng-model="user.login" placeholder="@(users:Login)" type="text" autocomplete="off">
+                                    <input class="form-control" required ng-model="user.lastname" placeholder="@(users:LastName)" type="text" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-class="{'has-error':!validLogin, 'has-success': validLogin}">
+                                <label class="col-md-4 control-label">@(users:Username)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" ng-change="checkUserExist(user.username)" required ng-model="user.username" placeholder="@(users:Username)" type="text" autocomplete="off">
+                                    <span class="help-block">
+                                        <div class="alert alert-danger" ng-show="user.username.length >= 6 && !validLogin"> @(users:IdentifierAlReadyUsed)</div>
+                                        <div class="alert alert-warning" ng-show="user.username.length < 6"> @(users:MoreThanSixCharacters)</div>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(users:Password)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" required ng-model="user.password" placeholder="@(users:Password)" type="text" autocomplete="off">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(users:Poste)</label>
                                 <div class="col-md-4">
-                                    <input class="form-control" required data-ng-model="user.poste" placeholder="@(users:poste)" type="text" autocomplete="off">
+                                    <select class="form-control" ng-model="user.poste" ng-options="s.id as s.label for s in dict.fk_job.values"></select>
                                 </div>
                             </div>
 
                             <div ng-if="login.multiEntities" class="form-group">
                                 <label class="col-md-4 control-label">@(Entity)</label>
                                 <div class="col-md-4">
-                                    <select class="form-control" data-ng-model="user.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
+                                    <select class="form-control" required ng-model="user.entity" ng-options="s.id as s.name for s in entityListAll"></select>
                                 </div>
                             </div>
 
@@ -82,21 +93,21 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(Email)</label>
                                 <div class="col-md-4">
-                                    <input class="form-control" ng-model="user.email" placeholder="@(users:Email)" type="email">
+                                    <input class="form-control" required ng-model="user.email" placeholder="@(users:Email)" type="email">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(users:Phone)</label>
                                 <div class="col-md-4">
-                                    <input class="form-control" ng-model="user.phone" placeholder="@(users:Phone)" type="text">
+                                    <input class="form-control" required ng-model="user.phone" placeholder="@(users:Phone)" type="text" e-title="+xxxxxxxxxxx">
                                 </div>
                             </div>
-                            
+
                             <div class="form-group">
-                                <label class="col-md-4 control-label">@(users:MobilePhone)</label>
+                                <label class="col-md-4 control-label">@(users:TelMobile)</label>
                                 <div class="col-md-4">
-                                    <input class="form-control" ng-model="user.mobilephone" placeholder="@(users:MobilePhone)" type="text">
+                                    <input class="form-control" required ng-model="user.mobilePhone" placeholder="@(users:TelMobile)" type="text" e-title="+xxxxxxxxxxx">
                                 </div>
                             </div>
 
@@ -121,42 +132,42 @@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">@(users:CityOfBirth)</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" required data-ng-model="user.CityOfBirth" placeholder="@(users:CityOfBirth)" type="text" autocomplete="off">
+                                        <input class="form-control" ng-model="user.cityOfBirth" placeholder="@(users:CityOfBirth)" type="text" autocomplete="off">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">@(users:CountryOfBirth)</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" required data-ng-model="user.CountryOfBirth" placeholder="@(users:CountryOfBirth)" type="text" autocomplete="off">
+                                        <select class="form-control" ng-model="user.countryOfBirth" ng-options="s.id as s.label for s in dict.fk_country.values"></select>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">@(users:Nationality)</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" required data-ng-model="user.Nationality" placeholder="@(users:Nationality)" type="text" autocomplete="off">
+                                        <input class="form-control" ng-model="user.nationality" placeholder="@(users:Nationality)" type="text" autocomplete="off">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">@(users:Situation)</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" required data-ng-model="user.Situation" placeholder="@(users:Situation)" type="text" autocomplete="off">
+                                        <input class="form-control" ng-model="user.familySituation" placeholder="@(users:Situation)" type="text" autocomplete="off">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">@(users:Children)</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" required data-ng-model="user.Children" placeholder="@(users:Children)" type="text" autocomplete="off">
+                                        <input class="form-control" ng-model="user.children" placeholder="@(users:Children)" type="text" autocomplete="off">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">@(users:PerCharges)</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" required data-ng-model="user.PerCharges" placeholder="@(users:PerCharges)" type="text" autocomplete="off">
+                                        <input class="form-control" ng-model="user.perCharges" placeholder="@(users:PerCharges)" type="text" autocomplete="off">
                                     </div>
                                 </div>
                                 <!-- END PORTLET MAIN -->
@@ -183,21 +194,28 @@
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">@(users:SocialeSecurityNumber)</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" required data-ng-model="user.SocialeSecurityNumber" placeholder="@(users:SocialeSecurityNumber)" type="text" autocomplete="off">
+                                        <input class="form-control" ng-model="user.socialeSecurityNumber" placeholder="@(users:SocialeSecurityNumber)" type="text" autocomplete="off">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">@(users:AccountStatement)</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" required data-ng-model="user.AccountStatement" placeholder="@(users:AccountStatement)" type="text" autocomplete="off">
+                                        <input class="form-control" ng-model="user.accountStatement" placeholder="@(users:AccountStatement)" type="text" autocomplete="off">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-md-4 control-label">@(users:IBAN)</label>
                                     <div class="col-md-4">
-                                        <input class="form-control" required data-ng-model="user.IBAN" placeholder="@(users:IBAN)" type="text" autocomplete="off">
+                                        <input class="form-control" ng-model="user.IBAN" placeholder="@(users:IBAN)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:BIC)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.bic" placeholder="@(users:bic)" type="text" autocomplete="off">
                                     </div>
                                 </div>
 
@@ -212,7 +230,7 @@
     <div class="form-actions">
         <div class="row">
             <div class="col-md-offset-5 col-md-7">
-                <button type="submit" class="btn blue">@(Create)</button>
+                <button type="submit" ng-disabled="!validLogin" class="btn blue">@(Create)</button>
                 <a ui-sref="user.list" class="btn default">@(Cancel)</a>
             </div>
         </div>
