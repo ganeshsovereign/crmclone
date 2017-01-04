@@ -112,7 +112,7 @@
                         <div class="col-md-4 name">@(Email) :</div>
                         <div class="col-md-8 value">
                             <span class="blue h5" editable-text="user.email">
-                                {{user.email|| "Non defini"}}
+                                {{user.email|| '@(main:Undefined)'}}
                             </span>
                         </div>
                     </div>
@@ -120,17 +120,17 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(Phone) :</div>
                         <div class="col-md-8 value">
-                            <span class="blue h5" editable-text="user.Phone">
-                                {{user.Phone|| "Non defini"}}
+                            <span class="blue h5 editable-tel="user.Phone" e-title="+xxxxxxxxxxx">
+                                {{user.Phone|| '@(main:Undefined)' | phone}}
                             </span>
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(TelMobile) :</div>
+                        <div class="col-md-4 name">@(PhoneMobile) :</div>
                         <div class="col-md-8 value">
-                            <span class="blue h5" editable-text="user.MobilePhone">
-                                {{user.MobilePhone|| "Non defini"}}
+                            <span class="blue h5" editable-tel="user.PhoneMobile" e-title="+xxxxxxxxxxx">
+                                {{user.PhoneMobile|| '@(main:Undefined)' | phone}}
                             </span>
                         </div>
                     </div>
@@ -143,7 +143,24 @@
                             </span>
                         </div>
                     </div>
-
+                    
+                      <div class="row static-info">
+                        <div class="col-md-4 name">@(Zip) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.Zip">
+                                {{user.Zip|| "Non defini"}}
+                            </span>
+                        </div>
+                    </div>
+                    
+                      <div class="row static-info">
+                        <div class="col-md-4 name">@(Town) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.Town">
+                                {{user.Town}}
+                            </span>
+                        </div>
+                    </div>
 
                     <div class="row static-info">
                         <div class="col-md-4 name">@(DateLastModification) :</div>
@@ -169,11 +186,13 @@
                         <a href="javascript:;" ng-click="editableUserCivility.$show()" ng-show="!editableUserCivility.$visible && editable" class="btn btn-default btn-sm">
                             <i class="fa fa-pencil"></i> @(Edit) </a>
                     </div>
+                    
                     <div class="actions" ng-show="editableUserCivility.$visible">
                         <button type="submit" ng-disabled="editableUserCivility.$waiting" class="btn btn-default btn-sm">@(Save)</button>
                         <button type="button" ng-disabled="editableUserCivility.$waiting" ng-click="editableUserCivility.$cancel();
                             findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
                     </div>
+                   
                 </div>
 
                 <div class="portlet-body">
@@ -190,7 +209,7 @@
                         <div class="col-md-4 name">@(users:CityOfBirth) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.CityOfBirth">
-                                <small class="label label-sm label-default">{{user.CityOfBirth}}</small>
+                                {{user.CityOfBirth}}</small>
                             </span>
                         </div>
                     </div>
@@ -199,7 +218,7 @@
                         <div class="col-md-4 name">@(users:CountryOfBirth) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.CountryOfBirth">
-                                <small class="label label-sm label-default">{{user.CountryOfBirth}}</small>
+                                {{user.CountryOfBirth}}</small>
                             </span>
                         </div>
                     </div>
@@ -208,7 +227,7 @@
                         <div class="col-md-4 name">@(users:Nationality) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.Nationality">
-                                <small class="label label-sm label-default">{{user.Nationality}}</small>
+                                {{user.Nationality}}</small>
                             </span>
                         </div>
                     </div>
@@ -217,7 +236,7 @@
                         <div class="col-md-4 name">@(users:Situation) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.Situation">
-                                <small class="label label-sm label-default">{{user.Situation}}</small>
+                                {{user.Situation}}</small>
                             </span>
                         </div>
                     </div>
@@ -226,7 +245,7 @@
                         <div class="col-md-4 name">@(users:Children) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.Children">
-                                <small class="label label-sm label-default">{{user.Children}}</small>
+                               {{user.Children}}</small>
                             </span>
                         </div>
                     </div>
@@ -235,7 +254,7 @@
                         <div class="col-md-4 name">@(users:PerCharges) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.PerCharges">
-                                <small class="label label-sm label-default">{{user.PerCharges}}</small>
+                                {{user.PerCharges}}</small>
                             </span>
                         </div>
                     </div>  
@@ -264,7 +283,7 @@
                         <div class="col-md-4 name">@(users:AccountStatement) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.AccountStatement">
-                                <small class="label label-sm label-default">{{user.AccountStatement}}</small>
+                                {{user.AccountStatement}}</small>
                             </span>
                         </div>
                     </div>
@@ -273,7 +292,7 @@
                         <div class="col-md-4 name">@(users:IBAN) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.IBAN">
-                                <small class="label label-sm label-default">{{user.IBAN}}</small>
+                                {{user.IBAN}}</small>
                             </span>
                         </div>
                     </div>
@@ -284,22 +303,25 @@
     </div>
 
     <div class="col-md-4 col-sm-12">
-        <form editable-form name="editableUserEmploi" onaftersave="update()">
+        <form editable-form name="editableUserCivility" onaftersave="update()">
             <div class="portlet gen">
 
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-user"></i>@(users:Emploi)
                     </div>
-                    <div class="actions">
-                        <a href="javascript:;" ng-click="editableUserEmploi.$show()" ng-show="!editableUserEmploi.$visible && editable" class="btn btn-default btn-sm">
+                    
+                     <div class="actions">
+                        <a href="javascript:;" ng-click="editableUserCivility.$show()" ng-show="!editableUserCivility.$visible && editable" class="btn btn-default btn-sm">
                             <i class="fa fa-pencil"></i> @(Edit) </a>
                     </div>
-                    <div class="actions" ng-show="editableUserEmploi.$visible">
-                        <button type="submit" ng-disabled="editableUserEmploi.$waiting" class="btn btn-default btn-sm">@(Save)</button>
-                        <button type="button" ng-disabled="editableUserEmploi.$waiting" ng-click="editableUserEmploi.$cancel();
+                    
+                    <div class="actions" ng-show="editableUserCivility.$visible">
+                        <button type="submit" ng-disabled="editableUserCivility.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                        <button type="button" ng-disabled="editableUserCivility.$waiting" ng-click="editableUserCivility.$cancel();
                             findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
                     </div>
+                   
                 </div>
 
                 <div class="portlet-body">
@@ -316,7 +338,7 @@
                         <div class="col-md-4 name">@(users:DateOfDeparture) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.DateOfDeparture">
-                                <small class="label label-sm label-default">{{(user.DateOfDeparture|date:"dd/MM/yyyy")}}</small>
+                                {{(user.DateOfDeparture|date:"dd/MM/yyyy")}}</small>
                             </span>
                         </div>
                     </div>
@@ -325,7 +347,7 @@
                         <div class="col-md-4 name">@(users:Poste) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.Poste">
-                                <small class="label label-sm label-default">{{user.Poste}}</small>
+                                {{user.Poste}}</small>
                             </span>
                         </div>
                     </div>
@@ -334,7 +356,7 @@
                         <div class="col-md-4 name">@(users:JobDescription) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.JobDescription">
-                                <small class="label label-sm label-default">{{user.JobDescription}}</small>
+                                {{user.JobDescription}}</small>
                             </span>
                         </div>
                     </div>
@@ -343,7 +365,7 @@
                         <div class="col-md-4 name">@(users:TypeOfContract) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.TypeOfContract">
-                                <small class="label label-sm label-default">{{user.TypeOfContract}}</small>
+                                {{user.TypeOfContract}}</small>
                             </span>
                         </div>
                     </div>
@@ -352,7 +374,7 @@
                         <div class="col-md-4 name">@(users:TrialPeriod) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.TrialPeriod">
-                                <small class="label label-sm label-default">{{user.TrialPeriod}}</small>
+                                {{user.TrialPeriod}}</small>
                             </span>
                         </div>
                     </div>  
@@ -361,7 +383,7 @@
                         <div class="col-md-4 name">@(users:GrossSalary) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.GrossSalary">
-                                <small class="label label-sm label-default">{{user.GrossSalary}}</small>
+                                {{user.GrossSalary}}</small>
                             </span>
                         </div>
                     </div> 
@@ -370,7 +392,7 @@
                         <div class="col-md-4 name">@(users:TimeWork) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.TimeWork">
-                                <small class="label label-sm label-default">{{user.TimeWork}}</small>
+                                {{user.TimeWork}}</small>
                             </span>
                         </div>
                     </div> 
@@ -399,7 +421,7 @@
                         <div class="col-md-4 name">@(users:DateOfClasses) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.DateOfClasses">
-                                <small class="label label-sm label-default">{{user.DateOfClasses}}</small>
+                                {{user.DateOfClasses}}</small>
                             </span>
                         </div>
                     </div>
