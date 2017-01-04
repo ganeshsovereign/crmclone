@@ -15,6 +15,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
         $scope.dict = {};
         $scope.users = [];
         $scope.status_id = null;
+        $scope.validLogin = false;
 
         // Init
         $scope.$on('$viewContentLoaded', function () {
@@ -25,14 +26,14 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
             $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
-            var dict = ["fk_user_status","fk_rh_categorie"];
+            var dict = ["fk_user_status","fk_rh_categorie","fk_job","fk_country","fk_departements"];
 
             $http({method: 'GET', url: '/erp/api/dict', params: {
                     dictName: dict
                 }
             }).success(function (data, status) {
                 $scope.dict = data;
-                //console.log(data);
+                console.log(data);
             });
 
             if ($rootScope.$stateParams.Status) {
@@ -70,7 +71,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
         };
 
         $scope.create = function () {
-            var user = new Users(this.user);
+            var user = new Users.users(this.user);
             user.$save(function (response) {
                 $rootScope.$state.go("user.show", {id: response._id});
             });
@@ -288,6 +289,32 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
         $scope.changeStatus = function (Status) {
             $scope.user.Status = Status;
             $scope.update({Status: Status});
+        };
+        
+        $scope.checkUserExist = function (data) {
+            if(!data || data.length < 6)
+                return $scope.validLogin = false;
+            
+            return $http.get('/erp/api/user/' + data).then(function (user) {
+                if(!user.data)
+                    return true;
+                
+                console.log("toto", user.data);
+                if ($scope.user && user.data._id && $scope.user._id == user.data._id){
+                    $scope.validLogin = true;
+                    return true;
+                }
+                console.log("toto2", user.data);
+                if (user.data._id){
+                    $scope.validLogin = false;
+                    return 'Erreur de username';
+                }
+                
+               
+                $scope.validLogin = true;
+                return true;
+            });
+
         };
     }]);
 
