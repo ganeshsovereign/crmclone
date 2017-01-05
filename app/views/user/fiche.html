@@ -115,7 +115,7 @@
                             </span>
                         </div>
                     </div>
-                    
+
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:Poste) :</div>
                         <div class="col-md-4 value">
@@ -213,7 +213,7 @@
                 <div class="portlet-body">
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:BirthDate) :</div>
-                        <div class="col-md-4 value">
+                        <div class="col-md-8 value">
                             <span class="blue h5" editable-text="user.birthDate" e-title="xx/xx/20xx"> {{(user.birthDate|date:"dd/MM/yyyy")}} </span>
                         </div>
                     </div>
@@ -230,9 +230,8 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:CountryOfBirth) :</div>
                         <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.countryOfBirth">
-                                {{user.countryOfBirth}}</small>
-
+                            <span editable-select="user.countryOfBirth" e-ng-options="s.id as s.label for s in dict.fk_country.values">
+                                <small class="blue h5">{{user.countryOfBirth}}</small> 
                             </span>
                         </div>
                     </div>
@@ -249,8 +248,8 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:Situation) :</div>
                         <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.familySituation">
-                                {{user.familySituation}}</small>
+                            <span editable-select="user.familySituation" e-ng-options="s.id as s.label for s in dict.fk_rh_situationFamiliale.values">
+                                <small class="blue h5"> {{user.familySituation}} </small>
                             </span>
                         </div>
                     </div>
@@ -310,7 +309,7 @@
                             </span>
                         </div>
                     </div>
-                    
+
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:BIC) :</div>
                         <div class="col-md-4 value">
@@ -376,7 +375,9 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:TypeOfContract) :</div>
                         <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.typeOfContract"> {{user.typeOfContract}}</small> </span>
+                            <span editable-select="user.typeOfContract" e-ng-options="s.id as s.label for s in dict.fk_rh_contrat.values">
+                                <small class="blue h5"> {{user.typeOfContract}} </small>
+                            </span>
                         </div>
                     </div>
 
@@ -397,9 +398,12 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:TimeWork) :</div>
                         <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.timeWork">{{user.timeWork}}</small> </span>
+                            <span editable-select="user.timeWork" e-ng-options="s.id as s.label for s in dict.fk_rh_tempsTravail.values">
+                                <small class="blue h5"> {{user.timeWork}} </small>
+                            </span>
                         </div>
-                    </div> 
+                    </div>
+
                 </div>
             </div>   
 
@@ -415,8 +419,8 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:Classes) :</div>
                         <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.classes">
-                                {{user.classes}}
+                            <span editable-select="user.classes" e-ng-options="s.id as s.label for s in dict.fk_rh_niveauEtude.values">
+                                <small class="blue h5"> {{user.classes}} </small>
                             </span>
                         </div>
                     </div>
@@ -424,18 +428,16 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:DateOfClasses) :</div>
                         <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.dateOfClasses">
-                                {{user.dateOfClasses}}</small>
-                            </span>
+                            <span class="blue h5" editable-text="user.dateOfClasses"> {{user.dateOfClasses}}</span>
                         </div>
                     </div>
                 </div>            
             </div> 
         </form>        
     </div>
-
-    <form editable-form name="noteDesc" onaftersave="update()">
-        <div class="col-md-8">
+   <!--
+    <div class="col-md-8 col-sm-12">
+        <form editable-form name="userNotes" onaftersave="update()">
             <div class="portlet light">
                 <div class="portlet-title">
                     <div class="caption font-green-sharp">
@@ -443,20 +445,20 @@
                         <span class="caption-subject">@(Notes)</span>
                     </div>
                     <div class="actions">
-                        <a href="javascript:;" ng-hide="user.isremoved" ng-click="noteDesc.$show()" ng-show="!noteDesc.$visible && editable" class="btn btn-default btn-sm">
+                        <a href="javascript:;" ng-hide="user.isremoved" ng-click="userNotes.$show()" ng-show="!userNotes.$visible && editable" class="btn btn-default btn-sm">
                             <i class="fa fa-pencil"></i> Éditer </a>
                     </div>
-                    <div class="actions ng-hide" ng-show="noteDesc.$visible">
-                        <button type="submit" ng-disabled="noteDesc.$waiting" class="btn btn-default btn-sm">Enregistrer</button>
-                        <button type="button" ng-disabled="noteDesc.$waiting" ng-click="noteDesc.$cancel()" class="btn btn-default btn-sm">Annuler</button>
+                    <div class="actions ng-hide" ng-show="userNotes.$visible">
+                        <button type="submit" ng-disabled="userNotes.$waiting" class="btn btn-default btn-sm">Enregistrer</button>
+                        <button type="button" ng-disabled="userNotes.$waiting" ng-click="userNotes.$cancel()" class="btn btn-default btn-sm">Annuler</button>
                     </div>
                 </div>
                 <div class="portlet-body">
                     <pre editable-textarea="user.description" e-name="note" e-rows="6" e-cols="400" e-required e-class="form-control"></pre>
-                    <pre class="well"  ng-show="!noteDesc.$visible">{{user.description}}</pre>
-
+                    <pre class="well"  ng-show="!userNotes.$visible">{{user.description}}</pre>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
+    -->
 </div>
