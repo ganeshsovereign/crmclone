@@ -64,6 +64,8 @@ node debug.js
 
 Demo authentication : admin/admin
 
+Good coding :)
+
 
 <a href="https://www.tomanage.fr/?=en" target="_blank">
 <img src="https://www.tomanage.fr/images/gestion-de-production-tomanage-logo.png" alt="ERP software open source with IOT ToManage" data-canonical-src="https://www.tomanage.fr/images/gestion-de-production-tomanage-logo.png" style="max-width:100%;">
