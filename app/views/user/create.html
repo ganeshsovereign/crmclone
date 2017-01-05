@@ -23,7 +23,7 @@
 
 <form ng-submit="create()" role="form">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6 col-sm-12">
 
             <!-- BEGIN PARAMETRES GENERAUX -->
             <div class="portlet blue-madison box">
@@ -37,147 +37,203 @@
                         <div class="form-body">
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">@(Title)</label>
-                                <div class="col-md-8">
-                                    <input  required type="text" ng-model="task.name" id="label" class="form-control" autocomplete="on">
+                                <label class="col-md-4 control-label">@(users:FirstName)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" required ng-model="user.firstname" placeholder="@(users:FirstName)" type="text" autocomplete="off">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">@(Type)</label>
-                                <div class="col-md-8">
-                                    <select class="form-control" id="type" required data-ng-model="eventType" ng-change="typeChange(eventType)" data-ng-options="c as c.label for c in dict.fk_actioncomm.values track by c.id"></select>
+                                <label class="col-md-4 control-label">@(users:LastName)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" required ng-model="user.lastname" placeholder="@(users:LastName)" type="text" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-class="{'has-error':!validLogin, 'has-success': validLogin}">
+                                <label class="col-md-4 control-label">@(users:Username)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" ng-change="checkUserExist(user.username)" required ng-model="user.username" placeholder="@(users:Username)" type="text" autocomplete="off">
+                                    <span class="help-block">
+                                        <div class="alert alert-danger" ng-show="user.username.length >= 6 && !validLogin"> @(users:IdentifierAlReadyUsed)</div>
+                                        <div class="alert alert-warning" ng-show="user.username.length < 6"> @(users:MoreThanSixCharacters)</div>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(users:Password)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" required ng-model="user.password" placeholder="@(users:Password)" type="text" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(users:Poste)</label>
+                                <div class="col-md-4">
+                                    <select class="form-control" ng-model="user.poste" ng-options="s.id as s.label for s in dict.fk_job.values"></select>
                                 </div>
                             </div>
 
                             <div ng-if="login.multiEntities" class="form-group">
                                 <label class="col-md-4 control-label">@(Entity)</label>
-                                <div class="col-md-8">
-                                    <select class="form-control" data-ng-model="task.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
+                                <div class="col-md-4">
+                                    <select class="form-control" required ng-model="user.entity" ng-options="s.id as s.name for s in entityListAll"></select>
                                 </div>
                             </div>
 
-                            <div crm-id label="@(companies:Company)" name="societeId" ng-model="task.societe" entity="task.entity" url="/erp/api/societe/autocomplete" on-select="searchContact" placeholder="@(companies:CompanyName)"></div>
 
-                            <div class="form-group" ng-if="contacts.length">
-                                <label class="col-md-4 control-label">@(Contact)</label>
-                                <div class="col-md-8">
-                                    <div class="input-group" title="Contact">
-                                        <span class="input-group-addon icon icon-user"></span>
-                                        <select class="form-control"
-                                                id="contact" 
-                                                ng-model="task.contact" 
-                                                ng-options="contact as contact.name for contact in contacts">                                    
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div ng-if="leads.length" class="form-group">
-                                <label class="col-md-4 control-label">@(leads:Lead)</label>
-                                <div class="col-md-8">
-                                    <select class="form-control" 
-                                            id="lead" 
-                                            ng-model="task.lead"
-                                            ng-options="lead as lead.name for lead in leads">                                    
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div ng-if="isEvent" class="form-group">
-                                <label class="col-md-4 control-label">@(tasks:DateActionStart)</label>
-                                <div class="col-md-8">
-                                    <div class="col-md-6" style="margin-top: 34px;">
-                                        <p class="input-group">
-                                            <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="task.datep" ng-change="task.datef = task.datep" is-open="opened[0]" datepicker-options="dateOptions" ng-required="true" close-text="Fermer" />
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-default" ng-click="open($event, 0)"><i class="glyphicon glyphicon-calendar"></i></button>
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <timepicker ng-model="task.datep" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
-                                    </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(Address)</label>
+                                <div class="col-md-4">
+                                    <div crm-address mode="create" model="user"></div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label" ng-if="isEvent">@(tasks:DateActionEnd)</label>
-                                <label class="col-md-4 control-label" ng-if="!isEvent">@(tasks:DateEchAction)</label>
-                                <div class="col-md-8">
-                                    <div class="col-md-6" style="margin-top: 34px;">
-                                        <p class="input-group">
-                                            <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="task.datef" is-open="opened[1]" datepicker-options="dateOptions" ng-required="true" close-text="Fermer" />
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-default" ng-click="open($event, 1)"><i class="glyphicon glyphicon-calendar"></i></button>
-                                            </span>
-                                        </p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <timepicker ng-model="task.datef" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
-                                    </div>
-
+                                <label class="col-md-4 control-label">@(Email)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" required ng-model="user.email" placeholder="@(users:Email)" type="email">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">@(Status)</label>
-                                <div class="col-md-8">
-                                    <p class="input-group">
-                                        <span class="input-group-btn btn-group-xs">
-                                            <button ng-disabled="task.percentage == 0" type="button" class="btn btn-default" ng-click="task.percentage = (task.percentage - 25 < 0 ? 0 : task.percentage - 25);"><i class="glyphicon glyphicon-minus"></i></button>
-                                        </span>
-                                    <progressbar animate="true" value="task.percentage" type="success"><b>{{task.percentage}}%</b></progressbar>
-                                    <span class="input-group-btn btn-group-xs">
-                                        <button ng-disabled="task.percentage == 100" type="button" class="btn btn-default" ng-click="task.percentage = (task.percentage + 25 > 100 ? 100 : task.percentage + 25);"><i class="glyphicon glyphicon-plus"></i></button>
-                                    </span>
-                                    </p>
+                                <label class="col-md-4 control-label">@(users:Phone)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" required ng-model="user.phone" placeholder="@(users:Phone)" type="text" e-title="+xxxxxxxxxxx">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">@(tasks:Group)</label>
-                                <div class="col-md-8">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="icon icon-users"></i>
-                                        </span>
-                                        <select class="form-control" id="group" required ng-model="task.group" data-ng-options="c as c.name for c in groups track by c.id"></select>
-                                    </div>
+                                <label class="col-md-4 control-label">@(users:TelMobile)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" required ng-model="user.mobilePhone" placeholder="@(users:TelMobile)" type="text" e-title="+xxxxxxxxxxx">
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(tasks:AffectedTo)</label>
-                                <div class="col-md-8">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="icon icon-user"></i>
-                                        </span>
-                                        <input type="text" id="affectedTo" data-ng-model="task.usertodo" typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}" class="form-control" autocomplete="off">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(Description)</label>
-                                <div class="col-md-8">
-                                    <textarea id="notes" cols="30" rows="5" data-ng-model="task.description" class="form-control"></textarea>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        <div class="col-md-6 col-sm-12">
+            <div class="portlet gen">
+                <div class="portlet-title">
+                    <div class="caption font-red-flamingo">
+                        <i class="fa fa-hand-o-right font-red-flamingo"></i>@(users:Civility)
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal">
+                        <div class="portlet-body">
+                            <div class="form-group">
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:CityOfBirth)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.cityOfBirth" placeholder="@(users:CityOfBirth)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:CountryOfBirth)</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" ng-model="user.countryOfBirth" ng-options="s.id as s.label for s in dict.fk_country.values"></select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:Nationality)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.nationality" placeholder="@(users:Nationality)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:Situation)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.familySituation" placeholder="@(users:Situation)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:Children)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.children" placeholder="@(users:Children)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:PerCharges)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.perCharges" placeholder="@(users:PerCharges)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+                                <!-- END PORTLET MAIN -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+            <div class="portlet gen">
+                <div class="portlet-title">
+                    <div class="caption font-red-flamingo">
+                        <i class="fa fa-hand-o-right font-red-flamingo"></i>@(users:informations)
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal">
+                        <div class="portlet-body">
+                            <div class="form-group">
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:SocialeSecurityNumber)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.socialeSecurityNumber" placeholder="@(users:SocialeSecurityNumber)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:AccountStatement)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.accountStatement" placeholder="@(users:AccountStatement)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:IBAN)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.IBAN" placeholder="@(users:IBAN)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(users:BIC)</label>
+                                    <div class="col-md-4">
+                                        <input class="form-control" ng-model="user.bic" placeholder="@(users:bic)" type="text" autocomplete="off">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <div class="form-actions">
         <div class="row">
             <div class="col-md-offset-5 col-md-7">
-                <button type="submit" ng-disabled='!task.usertodo.id' class="btn blue">@(Add)</button>
-                <a ui-sref="task.todo" class="btn default">@(Cancel)</a>
+                <button type="submit" ng-disabled="!validLogin" class="btn blue">@(Create)</button>
+                <a ui-sref="user.list" class="btn default">@(Cancel)</a>
             </div>
         </div>
     </div>
+</div>
 </form>
