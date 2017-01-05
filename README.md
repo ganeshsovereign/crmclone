@@ -10,7 +10,7 @@ ERP software manage your organization's activity (contacts, suppliers, invoices,
 The IOT network allow for faster and further (to collect relevant external data, to relay sensor data through, to create alerts, ...) to work in real time .
 
 <a href="https://www.tomanage.fr/?=en" target="_blank">
-<img src="https://www.tomanage.fr/images/plan-gestion-de-production-de-tomanage.jpg" alt="ERP software open source with Internet of things network schema ToManage" data-canonical-src="https://www.tomanage.fr/images/plan-gestion-de-production-de-tomanage.jpg" width="673" height="386">
+<img src="https://www.tomanage.fr/images/en/erp-software-open-source-iot-tomanage-diagram.jpg" alt="ERP software open source with Internet of things network schema ToManage" data-canonical-src="https://www.tomanage.fr/images/en/erp-software-open-source-iot-tomanage-diagram.jpg" width="673" height="386">
 </a>
 
 
