@@ -1,6 +1,17 @@
-# Framework base for ToManage ERP/CRM and IoT
+# Framework base to build your ToManage ERP/CRM and IoT
 
-A framework to build your own ERP/CRM
+
+ToManage is the first ERP software with internet of things (IOT) network in open source.
+
+ERP software manage your organization's activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).
+The IOT network allow for faster and further (to collect relevant external data, to relay sensor data through, to create alerts, ...) to work in real time .
+
+It's an Open Source ERP software with javascript language and use Nodejs MongoDB Angularjs and Totaljs .
+
+You can freely use, study, modify or distribute it according to its Free Software licence.
+
+You can use it as a standalone application or as a web application to be able to access it from the Internet or a LAN.
+
 
 # Getting Started
 
