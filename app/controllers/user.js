@@ -26,7 +26,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
             $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
-            var dict = ["fk_user_status","fk_rh_categorie","fk_job","fk_country","fk_departements"];
+            var dict = ["fk_user_status","fk_rh_categorie","fk_job","fk_country","fk_departements","fk_rh_niveauEtude","fk_rh_contrat","fk_rh_situationFamiliale","fk_rh_tempsTravail"];
 
             $http({method: 'GET', url: '/erp/api/dict', params: {
                     dictName: dict
