@@ -140,7 +140,7 @@ exports.install = function () {
     F.route('/erp/api/users/{userId}', object.update, ['put', 'json', 'authorize']);
 
     //verifie si le nouveau exite ou pas
-    F.route('/erp/api/createUser/uniqLogin', object.uniqLogin, ['authorize']);
+    F.route('/erp/api/user/{id}', object.uniqLogin, ['authorize']);
 
     F.route('/erp/api/users/{userId}', object.del, ['delete', 'authorize']);
 
@@ -192,25 +192,25 @@ Object.prototype = {
             self.json(doc);
         });
     },
-    create: function (req, res) {
+    create: function () {
+        var UserModel = MODEL('hr').Schema;
+        var self=this;
         //return req.body.models;
-        var user = new UserModel(req.body);
+        var user = new UserModel(self.body);
 
-        user.name = req.body.login.toLowerCase();
-        var login = req.body.login;
-        user._id = 'user:' + login;
+        //user.name = req.body.login.toLowerCase();
+        //var login = req.body.login;
+        //user._id = 'user:' + login;
 
         if (!user.entity)
-            user.entity = req.user.entity;
+            user.entity = self.user.entity;
 
         user.save(function (err, doc) {
-            if (err) {
-                return res.sttus(500).json(err);
+            if (err) 
+                return self.throw500(err);
                 //return console.log(err);
 
-            }
-
-            res.json(user);
+            self.json(user);
         });
     },
     read: function (req, res) {
@@ -252,17 +252,16 @@ Object.prototype = {
             });
         });
     },
-    del: function (req, res) {
+    del: function (id) {
         //return req.body.models;
-        var user = req.User;
-        user.remove(function (err) {
-            if (err) {
-                res.render('error', {
-                    status: 500
-                });
-            } else {
-                res.json(user);
-            }
+        var self = this;
+        var UserModel = MODEL('hr').Schema;
+
+        UserModel.update({_id: id},{$set:{isremoved:true, Status:'DISABLE'}}, function (err, user) {
+            if (err) 
+                self.throw500(err);
+             else
+                self.json(user);
         });
     },
     connection: function (req, res) {
@@ -272,22 +271,18 @@ Object.prototype = {
             res.json(docs);
         });
     },
-    uniqLogin: function (req, res) {
-
-        if (!req.query.login)
-            return res.send(404);
-
-        var login = "user:" + req.query.login;
-
-
-        UserModel.findOne({_id: login}, "lastname firstname", function (err, doc) {
+    uniqLogin: function (id) {
+        var self = this;
+        var UserModel = MODEL('hr').Schema;
+        
+        UserModel.findOne({username: id.toLowerCase()}, "_id lastname firstname username", function (err, doc) {
             if (err)
-                return next(err);
+                return self.throw500(err);
             if (!doc)
-                return res.json({});
+                return self.json({});
 
 
-            res.json(doc);
+            self.json(doc);
         });
     },
     entityUpdate: function (req, res) {
@@ -315,7 +310,7 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            //Status: {$ne: "PAID"},
+            isremoved: {$ne: true},
             entity: self.query.entity
         };
 
@@ -384,7 +379,7 @@ Object.prototype = {
         });
     }
 };
-
+        
 function Absence() {
 }
 
