@@ -325,7 +325,8 @@ orderSchema.pre('save', function (next) {
             });
         });
     } else {
-        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+        if(self.date_livraison)
+            self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
 
         next();
     }
