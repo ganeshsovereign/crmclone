@@ -6,8 +6,6 @@
 var mongoose = require('mongoose'),
         Schema = mongoose.Schema;
 
-var Dict = INCLUDE('dict');
-
 /**
  * Cart Schema
  */
