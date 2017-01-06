@@ -67,6 +67,8 @@ Demo authentication : admin/admin
 Good coding :)
 
 
-<a href="https://www.tomanage.fr/?=en" target="_blank">
-<img src="https://www.tomanage.fr/images/gestion-de-production-tomanage-logo.png" alt="ERP software open source with IOT ToManage" data-canonical-src="https://www.tomanage.fr/images/gestion-de-production-tomanage-logo.png" style="max-width:100%;">
-</a>
+Follow us :
+<p><a href="https://twitter.com/ToManage_js" target="_blank">On Twitter</a></p>
+<p><a href="https://www.linkedin.com/company/6648031" target="_blank">On Linkedin</a></p>
+<p><a href="https://plus.google.com/u/0/115392823150899643360" target="_blank">On Google +</a></p>
+<p><a href="https://www.facebook.com/ToManage.erp/" target="_blank">On Facebook</a></p>
