@@ -177,5 +177,7 @@
     "BeCareful": "Attention !",
     "UserHasBeenDeleted": "Cet utilisateur à été supprimé",
     "IdentifierAlReadyUsed": "Cet identifiant est déjà utilisé",
-    "MoreThanSixCharacters": "Minimum 6 caractères"
+    "MoreThanSixCharacters": "Minimum 6 caractères",
+    "Dep": "Département",
+    "Sector": "Secteur Géographique"
 }
