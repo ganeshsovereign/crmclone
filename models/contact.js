@@ -49,6 +49,7 @@ var UserSchema = MODEL('user').Schema; //extend User model
  */
 var contactSchema = UserSchema.discriminator('contact', new Schema({
     ref: String,
+    isremoved: Boolean,
     address: {type: String, default: null},
     zip: {type: String, default: null},
     town: {type: String, default: null},

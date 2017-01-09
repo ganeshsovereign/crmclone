@@ -120,6 +120,7 @@ addressSchema.virtual('status')
  */
 var societeSchema = new Schema({
     ref: String,
+    isremoved: Boolean,
     name: {type: String, require: true, trim: true, uppercase: true/*, es_indexed: true*/},
     logo: String,
     code_client: {type: String, trim: true, uppercase: true},
