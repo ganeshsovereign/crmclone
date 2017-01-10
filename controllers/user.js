@@ -139,9 +139,6 @@ exports.install = function () {
     //modifier la fiche du collaborateur
     F.route('/erp/api/users/{userId}', object.update, ['put', 'json', 'authorize']);
 
-    //verifie si le nouveau exite ou pas
-    F.route('/erp/api/user/{id}', object.uniqLogin, ['authorize']);
-
     F.route('/erp/api/users/{userId}', object.del, ['delete', 'authorize']);
 
     /*app.delete('/api/user', auth.requiresLogin, function (req, res) {
@@ -160,6 +157,10 @@ exports.install = function () {
     // For multi-entites user
     F.route('/erp/api/user/entity', object.entityUpdate, ['put', 'json', 'authorize']);
     //other routes..
+    
+    //verifie si le nouveau exite ou pas
+    F.route('/erp/api/user/email/', object.uniqEmail, ['authorize']);
+    F.route('/erp/api/user/{id}', object.uniqLogin, ['authorize']);
 };
 
 function Object() {
@@ -281,6 +282,22 @@ Object.prototype = {
             if (!doc)
                 return self.json({});
 
+
+            self.json(doc);
+        });
+    },
+    uniqEmail: function () {
+        var self = this;
+        var UserModel = MODEL('hr').Schema;
+        
+        if(!self.query.email)
+            return self.throw500("/erp/api/user/email : err query url -> email not found");
+        
+        UserModel.findOne({email: self.query.email.toLowerCase()}, "_id lastname firstname email", function (err, doc) {
+            if (err)
+                return self.throw500(err);
+            if (!doc)
+                return self.json({});
 
             self.json(doc);
         });

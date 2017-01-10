@@ -89,11 +89,15 @@
                                     <div crm-address mode="create" model="user"></div>
                                 </div>
                             </div>
-
-                            <div class="form-group">
+                            
+                            <div class="form-group" ng-class="{'has-error':!validEmail, 'has-success': validEmail}">
                                 <label class="col-md-4 control-label">@(Email)</label>
                                 <div class="col-md-4">
-                                    <input class="form-control" required ng-model="user.email" placeholder="@(users:Email)" type="email">
+                                    <input class="form-control" ng-change="checkEmailExist(user.email)" required ng-model="user.email" placeholder="@(users:Email)" type="email" autocomplete="off">
+                                    <span class="help-block">
+                                        <div class="alert alert-warning" ng-show="!user.email"> @(users:EmailAddressNeeded)</div>
+                                        <div class="alert alert-danger" ng-show="!validEmail"> @(users:ErrorEmailAlreadyExists)</div>
+                                    </span>
                                 </div>
                             </div>
 
@@ -180,7 +184,7 @@
         </div>
 
         <div class="col-md-6 col-sm-12">
-            <div class="portlet gen">
+            <div class="portlet light">
                 <div class="portlet-title">
                     <div class="caption font-red-flamingo">
                         <i class="fa fa-hand-o-right font-red-flamingo"></i>@(users:informations)
@@ -230,7 +234,7 @@
     <div class="form-actions">
         <div class="row">
             <div class="col-md-offset-5 col-md-7">
-                <button type="submit" ng-disabled="!validLogin" class="btn blue">@(Create)</button>
+                <button type="submit" ng-disabled="!validLogin || !validEmail" class="btn blue">@(Create)</button>
                 <a ui-sref="user.list" class="btn default">@(Cancel)</a>
             </div>
         </div>

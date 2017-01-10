@@ -16,6 +16,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
         $scope.users = [];
         $scope.status_id = null;
         $scope.validLogin = false;
+        $scope.validEmail = true;
 
         // Init
         $scope.$on('$viewContentLoaded', function () {
@@ -299,12 +300,11 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                 if(!user.data)
                     return true;
                 
-                console.log("toto", user.data);
                 if ($scope.user && user.data._id && $scope.user._id == user.data._id){
                     $scope.validLogin = true;
                     return true;
                 }
-                console.log("toto2", user.data);
+                
                 if (user.data._id){
                     $scope.validLogin = false;
                     return 'Erreur de username';
@@ -312,6 +312,28 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                 
                
                 $scope.validLogin = true;
+                return true;
+            });
+
+        };
+        $scope.checkEmailExist = function (data) {
+            
+            return $http.get('/erp/api/user/email/?email=' + data).then(function (user) {
+                if(!user.data)
+                    return true;
+                
+                // if edit mode
+                if ($scope.user && user.data._id && $scope.user._id == user.data._id){
+                    $scope.validEmail = true;
+                    return true;
+                }
+                
+                if (user.data._id){
+                    $scope.validEmail = false;
+                    return 'Erreur adresse email';
+                }
+               
+                $scope.validEmail = true;
                 return true;
             });
 
