@@ -1230,6 +1230,38 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                     },
                     controller: "UserController"
                 })
+                // Gestion des LCR
+                .state('lcr', {
+                    url: "/lcr",
+                    abstract: true,
+                    templateUrl: "/views/_lcr/index.html"
+                })
+                .state('lcr.list', {
+                    url: "?Status",
+                    templateUrl: "/views/_lcr/list.html",
+                    data: {
+                        pageTitle: 'Liste des LCR clients'
+                    },
+                    controller: "LcrController"
+                })
+                .state('lcr.show', {
+                    parent: "lcr",
+                    url: "/{id:[0-9a-z]{24}}",
+                    templateUrl: "/views/_lcr/fiche.html",
+                    data: {
+                        pageTitle: 'LCR client'
+                    },
+                    controller: "LcrController"
+                })
+                .state('lcr.create', {
+                    parent: "lcr",
+                    url: "/create.html",
+                    templateUrl: "/views/_lcr/create.html",
+                    data: {
+                        pageTitle: 'Nouveau LCR client'
+                    },
+                    controller: "LcrController"
+                })
                 /*
                  // AngularJS plugins
                  .state('fileupload', {
