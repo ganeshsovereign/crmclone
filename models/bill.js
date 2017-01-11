@@ -148,135 +148,56 @@ var billSchema = new Schema({
 
 billSchema.plugin(timestamps);
 
-var cond_reglement = {};
-Dict.dict({dictName: "fk_payment_term", object: true}, function (err, docs) {
-    cond_reglement = docs;
-});
-
 /**
  * Pre-save hook
  */
 billSchema.pre('save', function (next) {
+
+    var self = this;
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
 
-    this.calculate_date_lim_reglement();
-
-    this.total_ht = 0;
-    this.total_tva = [];
-    this.total_ttc = 0;
+    this.dater = MODULE('utils').calculate_date_lim_reglement(this.datec, this.cond_reglement_code);
 
     if (this.isNew)
         this.history = [];
 
-    var i, j, length, found;
-    var subtotal = 0;
+    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.client.id, function (result) {
+        self.total_ht = result.total_ht;
+        self.total_tva = result.total_tva;
+        self.total_ttc = result.total_ttc;
 
-    for (i = 0, length = this.lines.length; i < length; i++) {
-        // SUBTOTAL
-        if (this.lines[i].product.name == 'SUBTOTAL') {
-            this.lines[i].total_ht = subtotal;
-            subtotal = 0;
-            continue;
-        }
-
-        //console.log(object.lines[i].total_ht);
-        this.total_ht += this.lines[i].total_ht;
-        subtotal += this.lines[i].total_ht;
-        //this.total_ttc += this.lines[i].total_ttc;
-
-        //Add VAT
-        found = false;
-        for (j = 0; j < this.total_tva.length; j++)
-            if (this.total_tva[j].tva_tx === this.lines[i].tva_tx) {
-                this.total_tva[j].total += this.lines[i].total_tva;
-                found = true;
-                break;
-            }
-
-        if (!found) {
-            this.total_tva.push({
-                tva_tx: this.lines[i].tva_tx,
-                total: this.lines[i].total_tva
-            });
-        }
-
-    }
-
-    // shipping cost
-    if (this.shipping.total_ht) {
-        this.total_ht += this.shipping.total_ht;
-
-        this.shipping.total_tva = this.shipping.total_ht * this.shipping.tva_tx / 100;
-
-        //Add VAT
-        found = false;
-        for (j = 0; j < this.total_tva.length; j++)
-            if (this.total_tva[j].tva_tx === this.shipping.tva_tx) {
-                this.total_tva[j].total += this.shipping.total_tva;
-                found = true;
-                break;
-            }
-
-        if (!found) {
-            this.total_tva.push({
-                tva_tx: this.shipping.tva_tx,
-                total: this.shipping.total_tva
-            });
-        }
-    }
-
-    if (this.discount.percent) {
-        this.discount.value = MODULE('utils').round(this.total_ht * this.discount.percent / 100, 2);
-        this.total_ht -= this.discount.value;
-
-        // Remise sur les TVA
-        for (j = 0; j < this.total_tva.length; j++) {
-            this.total_tva[j].total -= this.total_tva[j].total * this.discount.percent / 100;
-        }
-    }
-
-    this.total_ht = MODULE('utils').round(this.total_ht, 2);
-    //this.total_tva = Math.round(this.total_tva * 100) / 100;
-    this.total_ttc = this.total_ht;
-
-    for (j = 0; j < this.total_tva.length; j++) {
-        this.total_tva[j].total = MODULE('utils').round(this.total_tva[j].total, 2);
-        this.total_ttc += this.total_tva[j].total;
-    }
-
-    var self = this;
-
-    if (!this.ref && this.isNew) {
-        SeqModel.inc("PROV", function (seq) {
-            //console.log(seq);
-            self.ref = "PROV" + seq;
-            next();
-        });
-    } else {
-        if (this.Status != "DRAFT" && this.total_ttc != 0 && this.ref.substr(0, 4) == "PROV") {
-            EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
-                if (err)
-                    console.log(err);
-
-                if (entity && entity.cptRef) {
-                    SeqModel.inc("FA" + entity.cptRef, self.datec, function (seq) {
-                        //console.log(seq);
-                        self.ref = "FA" + entity.cptRef + seq;
-                        next();
-                    });
-                } else {
-                    SeqModel.inc("FA", self.datec, function (seq) {
-                        //console.log(seq);
-                        self.ref = "FA" + seq;
-                        next();
-                    });
-                }
+        if (!self.ref && self.isNew) {
+            SeqModel.inc("PROV", function (seq) {
+                //console.log(seq);
+                self.ref = "PROV" + seq;
+                next();
             });
         } else {
-            next();
+            if (self.Status != "DRAFT" && self.total_ttc != 0 && self.ref.substr(0, 4) == "PROV") {
+                EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
+                    if (err)
+                        console.log(err);
+
+                    if (entity && entity.cptRef) {
+                        SeqModel.inc("FA" + entity.cptRef, self.datec, function (seq) {
+                            //console.log(seq);
+                            self.ref = "FA" + entity.cptRef + seq;
+                            next();
+                        });
+                    } else {
+                        SeqModel.inc("FA", self.datec, function (seq) {
+                            //console.log(seq);
+                            self.ref = "FA" + seq;
+                            next();
+                        });
+                    }
+                });
+            } else {
+                next();
+            }
         }
-    }
+    });
 });
 
 /**
@@ -292,53 +213,6 @@ billSchema.methods.setNumber = function () {
             //console.log(seq);
             self.ref = "FA" + seq;
         });
-};
-/**
- * 	Renvoi une date limite de reglement de facture en fonction des
- * 	conditions de reglements de la facture et date de facturation
- *
- * 	@param      string	$cond_reglement   	Condition of payment (code or id) to use. If 0, we use current condition.
- * 	@return     date     			       	Date limite de reglement si ok, <0 si ko
- */
-billSchema.methods.calculate_date_lim_reglement = function () {
-    var data = cond_reglement.values[this.cond_reglement_code];
-
-    var cdr_nbjour = data.nbjour || 0;
-    var cdr_fdm = data.fdm;
-    var cdr_decalage = data.decalage || 0;
-
-    /* Definition de la date limite */
-
-    // 1 : ajout du nombre de jours
-    var datelim = new Date(this.datec);
-    datelim.setDate(datelim.getDate() + cdr_nbjour);
-    //console.log(cdr_nbjour);
-
-    // 2 : application de la regle "fin de mois"
-    if (cdr_fdm) {
-        var mois = datelim.getMonth();
-        var annee = datelim.getFullYear();
-
-        if (mois == 12) {
-            mois = 1;
-            annee++;
-        } else {
-            mois++;
-        }
-
-        // On se deplace au debut du mois suivant, et on retire un jour
-        datelim.setHours(0);
-        datelim.setMonth(mois);
-        //datelim.setFullYear(annee);
-        datelim.setDate(0);
-        //console.log(datelim);
-    }
-
-    // 3 : application du decalage
-    datelim.setDate(datelim.getDate() + cdr_decalage);
-    //console.log(datelim);
-
-    this.dater = datelim;
 };
 
 var statusList = {};

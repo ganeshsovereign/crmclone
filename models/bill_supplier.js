@@ -132,88 +132,18 @@ Dict.dict({dictName: "fk_payment_term", object: true}, function (err, docs) {
 billSupplierSchema.pre('save', function (next) {
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
+    var self = this;
     this.calculate_date_lim_reglement();
-    this.total_ht = 0;
-    this.total_tva = [];
-    this.total_ttc = 0;
-    var i, j, found;
-    var subtotal = 0;
-
-    for (var i = 0, length = this.lines.length; i < length; i++) {
-        // SUBTOTAL
-        if (this.lines[i].product.name == 'SUBTOTAL') {
-            this.lines[i].total_ht = subtotal;
-            subtotal = 0;
-            continue;
-        }
-        //console.log(object.lines[i].total_ht);
-        this.total_ht += this.lines[i].total_ht;
-        subtotal += this.lines[i].total_ht;
-        //this.total_ttc += this.lines[i].total_ttc;
-
-        //Add VAT
-        found = false;
-        for (j = 0; j < this.total_tva.length; j++)
-            if (this.total_tva[j].tva_tx === this.lines[i].tva_tx) {
-                this.total_tva[j].total += this.lines[i].total_tva;
-                found = true;
-                break;
-            }
-
-        if (!found) {
-            this.total_tva.push({
-                tva_tx: this.lines[i].tva_tx,
-                total: this.lines[i].total_tva
-            });
-        }
-    }
-
-    // shipping cost
-    if (this.shipping.total_ht) {
-        this.total_ht += this.shipping.total_ht;
-        this.shipping.total_tva = this.shipping.total_ht * this.shipping.tva_tx / 100;
-
-        //Add VAT
-        found = false;
-        for (j = 0; j < this.total_tva.length; j++)
-            if (this.total_tva[j].tva_tx === this.shipping.tva_tx) {
-                this.total_tva[j].total += this.shipping.total_tva;
-                found = true;
-                break;
-            }
-
-        if (!found) {
-            this.total_tva.push({
-                tva_tx: this.shipping.tva_tx,
-                total: this.shipping.total_tva
-            });
-        }
-    }
-
-    if (this.discount.percent) {
-        this.discount.value = MODULE('utils').round(this.total_ht * this.discount.percent / 100, 2);
-        this.total_ht -= this.discount.value;
-
-        // Remise sur les TVA
-        for (j = 0; j < this.total_tva.length; j++) {
-            this.total_tva[j].total -= this.total_tva[j].total * this.discount.percent / 100;
-        }
-    }
-
-
-    this.total_ht = MODULE('utils').round(this.total_ht, 2);
-    //this.total_tva = Math.round(this.total_tva * 100) / 100;
-    this.total_ttc = this.total_ht;
-    for (j = 0; j < this.total_tva.length; j++) {
-        this.total_tva[j].total = MODULE('utils').round(this.total_tva[j].total, 2);
-        this.total_ttc += this.total_tva[j].total;
-    }
+    
+     MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier.id, function (result) {
+        self.total_ht = result.total_ht;
+        self.total_tva = result.total_tva;
+        self.total_ttc = result.total_ttc;
     
     // Apply correction
-    this.total_ttc += this.correction;
+    self.total_ttc += self.correction;
 
-    var self = this;
-    if (this.isNew || this.ref.substr(0, 4) == "PROV") {
+    if (self.isNew || self.ref.substr(0, 4) == "PROV") {
         EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
             if (err)
                 return console.log(err);
@@ -236,10 +166,11 @@ billSupplierSchema.pre('save', function (next) {
             }
         });
     } else {
-        if (this.total_ttc == 0)
-            this.Status = "DRAFT";
+        if (self.total_ttc == 0)
+            self.Status = "DRAFT";
         next();
     }
+     });
 });
 /**
  * Methods

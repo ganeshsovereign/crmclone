@@ -85,53 +85,14 @@ orderSupplierSchema.pre('save', function (next) {
 
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
-
-    this.total_ht = 0;
-    this.total_tva = [];
-    this.total_ttc = 0;
-
-    var subtotal = 0;
-
-    for (var i = 0, length = this.lines.length; i < length; i++) {
-        // SUBTOTAL
-        if (this.lines[i].product.name == 'SUBTOTAL') {
-            this.lines[i].total_ht = subtotal;
-            subtotal = 0;
-            continue;
-        }
-
-        //console.log(object.lines[i].total_ht);
-        this.total_ht += this.lines[i].total_ht;
-        subtotal += this.lines[i].total_ht;
-        //this.total_ttc += this.lines[i].total_ttc;
-        //Add VAT
-        var found = false;
-        for (var j = 0; j < this.total_tva.length; j++)
-            if (this.total_tva[j].tva_tx === this.lines[i].tva_tx) {
-                this.total_tva[j].total += this.lines[i].total_tva;
-                found = true;
-                break;
-            }
-
-        if (!found) {
-            this.total_tva.push({
-                tva_tx: this.lines[i].tva_tx,
-                total: this.lines[i].total_tva
-            });
-        }
-    }
-
-    this.total_ht = Math.round(this.total_ht * 100) / 100;
-    //this.total_tva = Math.round(this.total_tva * 100) / 100;
-    this.total_ttc = this.total_ht;
-
-    for (var j = 0; j < this.total_tva.length; j++) {
-        this.total_tva[j].total = Math.round(this.total_tva[j].total * 100) / 100;
-        this.total_ttc += this.total_tva[j].total;
-    }
-
     var self = this;
-    if (this.isNew) {
+    
+    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier.id, function (result) {
+        self.total_ht = result.total_ht;
+        self.total_tva = result.total_tva;
+        self.total_ttc = result.total_ttc;
+    
+    if (self.isNew) {
         EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
             if (err)
                 console.log(err);
@@ -152,6 +113,7 @@ orderSupplierSchema.pre('save', function (next) {
         });
     } else
         next();
+    });
 });
 
 var statusList = {};

@@ -173,7 +173,7 @@ var offerSchema = new Schema({
         trim: true
     },
     bl: [{
-            societe: { //TODO REMOVE
+            societe: {//TODO REMOVE
                 id: {
                     type: Schema.Types.ObjectId,
                     ref: 'societe'
@@ -297,105 +297,40 @@ if (CONFIG('storing-files')) {
  * Pre-save hook
  */
 offerSchema.pre('save', function (next) {
+    var self = this;
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
-
-    this.total_ht = 0;
-    this.total_tva = [];
-    this.total_ttc = 0;
-    this.weight = 0;
 
     if (this.isNew)
         this.history = [];
 
-    var subtotal = 0;
+    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.client.id, function (result) {
+        self.total_ht = result.total_ht;
+        self.total_tva = result.total_tva;
+        self.total_ttc = result.total_ttc;
+        self.weight = result.weight;
 
-    for (var i = 0, length = this.lines.length; i < length; i++) {
-        // SUBTOTAL
-        if (this.lines[i].product.name == 'SUBTOTAL') {
-            this.lines[i].total_ht = subtotal;
-            subtotal = 0;
-            continue;
-        }
+        if (self.isNew && !self.ref) {
+            SeqModel.inc("PC", function (seq) {
+                //console.log(seq);
+                EntityModel.findOne({
+                    _id: self.entity
+                }, "cptRef", function (err, entity) {
+                    if (err)
+                        console.log(err);
 
-        //console.log(object.lines[i].total_ht);
-        this.total_ht += this.lines[i].total_ht;
-        subtotal += this.lines[i].total_ht;
-        //this.total_ttc += this.lines[i].total_ttc;
-
-        //Add VAT
-        var found = false;
-        for (var j = 0; j < this.total_tva.length; j++)
-            if (this.total_tva[j].tva_tx === this.lines[i].tva_tx) {
-                this.total_tva[j].total += this.lines[i].total_tva;
-                found = true;
-                break;
-            }
-
-        if (!found) {
-            this.total_tva.push({
-                tva_tx: this.lines[i].tva_tx,
-                total: this.lines[i].total_tva
+                    if (entity && entity.cptRef)
+                        self.ref = "PC" + entity.cptRef + seq;
+                    else
+                        self.ref = "PC" + seq;
+                    next();
+                });
             });
+        } else {
+            self.ref = F.functions.refreshSeq(self.ref, self.datec);
+            next();
         }
-
-        //Poids total
-        this.weight += this.lines[i].weight * this.lines[i].qty;
-    }
-
-    // shipping cost
-    if (this.shipping.total_ht) {
-        this.total_ht += this.shipping.total_ht;
-
-        this.shipping.total_tva = this.shipping.total_ht * this.shipping.tva_tx / 100;
-
-        //Add VAT
-        var found = false;
-        for (var j = 0; j < this.total_tva.length; j++)
-            if (this.total_tva[j].tva_tx === this.shipping.tva_tx) {
-                this.total_tva[j].total += this.shipping.total_tva;
-                found = true;
-                break;
-            }
-
-        if (!found) {
-            this.total_tva.push({
-                tva_tx: this.shipping.tva_tx,
-                total: this.shipping.total_tva
-            });
-        }
-    }
-
-    this.total_ht = MODULE('utils').round(this.total_ht, 2);
-    //this.total_tva = Math.round(this.total_tva * 100) / 100;
-    this.total_ttc = this.total_ht;
-
-    for (var j = 0; j < this.total_tva.length; j++) {
-        this.total_tva[j].total = MODULE('utils').round(this.total_tva[j].total, 2);
-        this.total_ttc += this.total_tva[j].total;
-    }
-
-    var self = this;
-    if (this.isNew && !this.ref) {
-        SeqModel.inc("PC", function (seq) {
-            //console.log(seq);
-            EntityModel.findOne({
-                _id: self.entity
-            }, "cptRef", function (err, entity) {
-                if (err)
-                    console.log(err);
-
-                if (entity && entity.cptRef)
-                    self.ref = "PC" + entity.cptRef + seq;
-                else
-                    self.ref = "PC" + seq;
-                next();
-            });
-        });
-    } else {
-        self.ref = F.functions.refreshSeq(self.ref, self.datec);
-        next();
-    }
+    });
 });
 
 var statusList = {};

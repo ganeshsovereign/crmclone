@@ -30,6 +30,7 @@
     "i18next-node-fs-backend": "latest",
     "i18next-sprintf-postprocessor": "latest",
     "iban": "0.0.7",
+    "iconv": "^2.2.1",
     "json-2-csv": "latest",
     "json2csv": "^2.12.0",
     "lodash": "3.10.1",
