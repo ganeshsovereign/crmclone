@@ -31,7 +31,7 @@ var UserSchema = new Schema({
     // _id: {type: String},
     Status: {type: String, default: 'DISABLE'}, //mongoose.Schema.Types.Mixed,
     civilite: String,
-    isremoved:Boolean,
+    isremoved: Boolean,
     //name: {type: String, require: true},
     username: {type: String, unique: true, lowercase: true, sparse: true},
     email: {type: String, lowercase: true, trim: true, index: true, sparse: true},
@@ -237,52 +237,47 @@ UserSchema.path('hashed_password').validate(function (hashed_password) {
 //});
 
 /**
- * Methods
+ * Authenticate - check if the passwords are the same
+ *
+ * @param {String} plainText
+ * @return {Boolean}
+ * @api public
  */
-UserSchema.methods = {
-    /**
-     * Authenticate - check if the passwords are the same
-     *
-     * @param {String} plainText
-     * @return {Boolean}
-     * @api public
-     */
-    authenticate: function (plainText) {
-        return this.password === plainText;
-        //return this.encryptPassword(plainText) === this.hashed_password; // FIXME return after return
-    },
-    /**
-     * Make salt
-     *
-     * @return {String}
-     * @api public
-     */
-    makeSalt: function () {
-        return Math.round((new Date().valueOf() * Math.random())) + '';
-    },
-    /**
-     * Encrypt password
-     *
-     * @param {String} password
-     * @return {String}
-     * @api public
-     */
-    encryptPassword: function (password) {
-        if (!password)
-            return '';
-        return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
-    },
-    generatePassword: function (length) {
-        var charset = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-                retVal = "";
-        for (var i = 0, n = charset.length; i < length; ++i) {
-            retVal += charset.charAt(Math.floor(Math.random() * n));
-        }
-
-        this.password = retVal;
-
-        return retVal;
+UserSchema.methods.authenticate = function (plainText) {
+    return this.password === plainText;
+    //return this.encryptPassword(plainText) === this.hashed_password; // FIXME return after return
+};
+/**
+ * Make salt
+ *
+ * @return {String}
+ * @api public
+ */
+UserSchema.methods.makeSalt = function () {
+    return Math.round((new Date().valueOf() * Math.random())) + '';
+};
+/**
+ * Encrypt password
+ *
+ * @param {String} password
+ * @return {String}
+ * @api public
+ */
+UserSchema.methods.encryptPassword = function (password) {
+    if (!password)
+        return '';
+    return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+};
+UserSchema.methods.generatePassword = function (length) {
+    var charset = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+            retVal = "";
+    for (var i = 0, n = charset.length; i < length; ++i) {
+        retVal += charset.charAt(Math.floor(Math.random() * n));
     }
+
+    this.password = retVal;
+
+    return retVal;
 };
 
 exports.Schema = mongoose.model('user', UserSchema, 'users');
