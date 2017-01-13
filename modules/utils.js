@@ -171,6 +171,9 @@ exports.sumTotal = function (lines, shipping, discount, societeId, callback) {
     var SocieteModel = MODEL('societe').Schema;
 
     SocieteModel.findOne({_id: societeId}, "VATIsUsed", function (err, societe) {
+        
+        if(err || !societe)
+            return callback("Societe not found !");
 
         var VATIsUsed = societe.VATIsUsed;
 
@@ -263,7 +266,7 @@ exports.sumTotal = function (lines, shipping, discount, societeId, callback) {
                 total_ttc += total_tva[j].total;
             }
 
-        callback({
+        callback(null, {
             total_ht: total_ht,
             total_tva: total_tva,
             total_ttc: total_ttc,

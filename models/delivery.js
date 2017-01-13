@@ -195,7 +195,10 @@ deliverySchema.pre('save', function (next) {
     if (this.isNew)
         this.history = [];
 
-    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.client.id, function (result) {
+    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.client.id, function (err, result) {
+         if(err)
+            return next(err);
+        
         self.total_ht = result.total_ht;
         self.total_tva = result.total_tva;
         self.total_ttc = result.total_ttc;

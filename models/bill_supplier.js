@@ -135,7 +135,10 @@ billSupplierSchema.pre('save', function (next) {
     var self = this;
     this.calculate_date_lim_reglement();
     
-     MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier.id, function (result) {
+     MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier.id, function (err, result) {
+          if(err)
+            return next(err);
+        
         self.total_ht = result.total_ht;
         self.total_tva = result.total_tva;
         self.total_ttc = result.total_ttc;
