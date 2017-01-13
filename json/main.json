@@ -1,5 +1,5 @@
 {
-	"_id": "module:User",
+    "_id": "module:User",
     "enabled": true,
     "boxes": [],
     "const": [],
@@ -159,15 +159,15 @@
             "title": "Parameters",
             "icon": "fa-cogs",
             "submenus": {
-            	"menu:modules": {
-					"position": 2,
-					"enabled": "$user->admin",
-					"url": "",
-					"perms": "admin",
-					"icon": "fa-cog",
-					"usertype": 2,
-					"title": "admin:Modules"
-				},
+                "menu:modules": {
+                    "position": 2,
+                    "enabled": "$user->admin",
+                    "url": "",
+                    "perms": "admin",
+                    "icon": "fa-cog",
+                    "usertype": 2,
+                    "title": "admin:Modules"
+                },
                 "menu:systemtools": {
                     "position": 2,
                     "usertype": 2,
@@ -211,7 +211,7 @@
                 },
                 "menu:groups": {
                     "position": 4,
-                    "url": "/erp/#!/userGroup",
+                    "url": "/erp/#!/group",
                     "perms": "group.read",
                     "usertype": 2,
                     "icon": "fa-group",

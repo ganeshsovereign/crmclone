@@ -1230,6 +1230,38 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                     },
                     controller: "UserController"
                 })
+                // Group management
+                .state('group', {
+                    url: "/group",
+                    abstract: true,
+                    templateUrl: "/views/group/index.html"
+                })
+                .state('group.list', {
+                    url: "",
+                    templateUrl: "/views/group/list.html",
+                    data: {
+                        pageTitle: 'Liste des utilisateurs'
+                    },
+                    controller: "GroupController"
+                })
+                .state('group.create', {
+                    parent: "group",
+                    url: "/create.html",
+                    templateUrl: "/views/group/create.html",
+                    data: {
+                        pageTitle: 'Nouveau groupe'
+                    },
+                    controller: "GroupController"
+                })
+                .state('group.show', {
+                    parent: "group",
+                    url: "/{id}",
+                    templateUrl: "/views/group/fiche.html",
+                    data: {
+                        pageTitle: 'Fiche groupe'
+                    },
+                    controller: "GroupController"
+                })
                 // Gestion des LCR
                 .state('lcr', {
                     url: "/lcr",

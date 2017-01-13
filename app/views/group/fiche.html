@@ -1,0 +1,464 @@
+<h3 class="page-title" ng-init="findOne()">
+    <i class="fa fa-user font-blue-madison"></i> @(users:UserCard) {{user.fullname}} <small> @(From) {{user.createdAt| date:'@(main:date.format.java.dayhour)'}}</small> 
+</h3>
+
+<div ng-if="user.isremoved" class="alert alert-danger"><strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)</div>
+
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a ui-sref="user.list" >@(users:ListOfUsers)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>{{user.firstname}} {{user.lastname}}</span>
+        </li>
+    </ul>
+    <div class="page-toolbar" ng-hide="user.isremoved">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                @(Tools) <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(user)" ng-confirm-click="Supprimer l'utilisateur ?" title="Supprimer l'utilisateur">
+                        <i class="fa fa-trash-o font-red"></i>
+                        @(Delete)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-md-4 col-sm-12">
+        <form editable-form name="editableUser" onaftersave="update()">
+            <div class="portlet blue-madison box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>@(users:UserCard)
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" ng-click="editableUser.$show()"ng-hide="user.isremoved" ng-show="!editableUser.$visible && editable" class="btn btn-default btn-sm">
+                            <i class="fa fa-pencil"></i> @(Edit) </a>
+                    </div>
+                    <div class="actions" ng-show="editableUser.$visible">
+                        <button type="submit" ng-disabled="editableUser.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                        <button type="button" ng-disabled="editableUser.$waiting" ng-click="editableUser.$cancel();
+                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:FirstName) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.firstname">
+                                {{user.firstname}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:LastName) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.lastname"> {{user.lastname|| "Non defini"}} </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info" ng-class="{'has-error':$error, 'has-success': !$error}">
+                        <div class="col-md-4 name">@(users:Username) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.username" onbeforesave="checkUserExist($data)"> {{user.username|| "Non defini"}}</span>
+                        </div>
+                    </div>
+
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Password) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-text="user.password">  </span> 
+                        </div>
+                    </div>
+
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Status) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-select="user.Status" e-ng-options="s.id as s.label for s in dict.fk_user_status.values">
+                                <small class="label label-sm" ng-class="user.status.css">{{user.status.name|| '--'}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Entity) :</div>
+                        <div class="col-md-8 value">
+                            <small class="label label-sm label-default">{{user.entity}}</small>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Group) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-select="user.group" onshow="loadGroup()" e-ng-options="group as group.name for group in groups track by group.id">
+                                <small class="label label-sm label-default">{{user.group.name|| 'Aucun groupe'}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:Poste) :</div>
+                        <div class="col-md-4 value">
+                            <span editable-select="user.poste" e-ng-options="s.id as s.label for s in dict.fk_job.values">
+                                <small class="blue h5">{{user.poste|| 'Aucun groupe'}}</small> 
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Email) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.email"> {{user.email|| '@(main:Undefined)'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Phone) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-tel="user.phone" e-title="+xxxxxxxxxxx">
+                                {{user.phone|| '@(main:Undefined)' | phone}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(TelMobile) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-tel="user.mobilePhone" e-title="+xxxxxxxxxxx">
+                                {{user.mobilePhone|| '@(main:Undefined)' | phone}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Address) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.address">
+                                {{user.address|| "Non defini"}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Zip) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.zip">
+                                {{user.zip}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Town) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.town">
+                                {{user.town}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(DateLastModification) :</div>
+                        <div class="col-md-8 value">
+                            {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="col-md-4 col-sm-12">
+        <form editable-form name="editableUserCivility" onaftersave="update()">
+            <div class="portlet light">
+
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>@(users:Civility)
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" ng-hide="user.isremoved" ng-click="editableUserCivility.$show()" ng-show="!editableUserCivility.$visible && editable" class="btn btn-default btn-sm">
+                            <i class="fa fa-pencil"></i> @(Edit) </a>
+                    </div>
+
+                    <div class="actions" ng-show="editableUserCivility.$visible">
+                        <button type="submit" ng-disabled="editableUserCivility.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                        <button type="button" ng-disabled="editableUserCivility.$waiting" ng-click="editableUserCivility.$cancel();
+                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                    </div>
+
+                </div>
+
+                <div class="portlet-body">
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:BirthDate) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.birthDate" e-title="xx/xx/20xx"> {{(user.birthDate|date:"dd/MM/yyyy")}} </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:CityOfBirth) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.cityOfBirth">
+                                {{user.cityOfBirth}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:CountryOfBirth) :</div>
+                        <div class="col-md-4 value">
+                            <span editable-select="user.countryOfBirth" e-ng-options="s.id as s.label for s in dict.fk_country.values">
+                                <small class="blue h5">{{user.countryOfBirth}}</small> 
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:Nationality) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.nationality">
+                                {{user.nationality}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:Situation) :</div>
+                        <div class="col-md-4 value">
+                            <span editable-select="user.familySituation" e-ng-options="s.id as s.label for s in dict.fk_rh_situationFamiliale.values">
+                                <small class="blue h5"> {{user.familySituation}} </small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:Children) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.children">
+                                {{user.children}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:PerCharges) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.perCharges">
+                                {{user.perCharges}}</small>
+                            </span>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+
+            <div class="portlet light">
+
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>@(users:Informations)
+                    </div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:SocialeSecurityNumber) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.socialeSecurityNumber">
+                                {{user.socialeSecurityNumber}}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:bankingEtablishment) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.bankingEtablishment">
+                                {{user.bankingEtablishment}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:IBAN) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.iban">
+                                {{user.iban}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:BIC) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.bic">
+                                {{user.bic}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>  
+
+        </form>
+    </div>
+
+    <div class="col-md-4 col-sm-12">
+        <form editable-form name="editableUserCivility2" onaftersave="update()">
+            <div class="portlet light">
+
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>@(users:Emploi)
+                    </div>
+
+                    <div class="actions">
+                        <a href="javascript:;"  ng-hide="user.isremoved" ng-click="editableUserCivility2.$show()" ng-show="!editableUserCivility2.$visible && editable" class="btn btn-default btn-sm">
+                            <i class="fa fa-pencil"></i> @(Edit) </a>
+                    </div>
+
+                    <div class="actions" ng-show="editableUserCivility2.$visible">
+                        <button type="submit" ng-disabled="editableUserCivility2.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                        <button type="button" ng-disabled="editableUserCivility2.$waiting" ng-click="editableUserCivility2.$cancel();
+                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                    </div>
+
+                </div>
+
+                <div class="portlet-body">
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:ArrivalDate) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.arrivalDate"> {{(user.arrivalDate|date:"dd/MM/yyyy")}} </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:DateOfDeparture) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.dateOfDeparture"> {{(user.dateOfDeparture|date:"dd/MM/yyyy")}}</small> </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:JobDescription) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.jobDescription">
+                                {{user.jobDescription}}</small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:TypeOfContract) :</div>
+                        <div class="col-md-4 value">
+                            <span editable-select="user.typeOfContract" e-ng-options="s.id as s.label for s in dict.fk_rh_contrat.values">
+                                <small class="blue h5"> {{user.typeOfContract}} </small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:TrialPeriod) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.trialPeriod"> {{user.trialPeriod}}</small> </span>
+                        </div>
+                    </div>  
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:GrossSalary) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.grossSalary"> {{user.grossSalary}}</small> </span>
+                        </div>
+                    </div> 
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:TimeWork) :</div>
+                        <div class="col-md-4 value">
+                            <span editable-select="user.timeWork" e-ng-options="s.id as s.label for s in dict.fk_rh_tempsTravail.values">
+                                <small class="blue h5"> {{user.timeWork}} </small>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>   
+
+            <div class="portlet light">
+
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>@(users:Formations)
+                    </div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:Classes) :</div>
+                        <div class="col-md-4 value">
+                            <span editable-select="user.classes" e-ng-options="s.id as s.label for s in dict.fk_rh_niveauEtude.values">
+                                <small class="blue h5"> {{user.classes}} </small>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:DateOfClasses) :</div>
+                        <div class="col-md-4 value">
+                            <span class="blue h5" editable-text="user.dateOfClasses"> {{user.dateOfClasses}}</span>
+                        </div>
+                    </div>
+                </div>            
+            </div> 
+        </form>        
+    </div>
+   <!--
+    <div class="col-md-8 col-sm-12">
+        <form editable-form name="userNotes" onaftersave="update()">
+            <div class="portlet light">
+                <div class="portlet-title">
+                    <div class="caption font-green-sharp">
+                        <i class="icon-speech"></i>
+                        <span class="caption-subject">@(Notes)</span>
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" ng-hide="user.isremoved" ng-click="userNotes.$show()" ng-show="!userNotes.$visible && editable" class="btn btn-default btn-sm">
+                            <i class="fa fa-pencil"></i> Éditer </a>
+                    </div>
+                    <div class="actions ng-hide" ng-show="userNotes.$visible">
+                        <button type="submit" ng-disabled="userNotes.$waiting" class="btn btn-default btn-sm">Enregistrer</button>
+                        <button type="button" ng-disabled="userNotes.$waiting" ng-click="userNotes.$cancel()" class="btn btn-default btn-sm">Annuler</button>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <pre editable-textarea="user.description" e-name="note" e-rows="6" e-cols="400" e-required e-class="form-control"></pre>
+                    <pre class="well"  ng-show="!userNotes.$visible">{{user.description}}</pre>
+                </div>
+            </div>
+        </form>
+    </div>
+    -->
+</div>
