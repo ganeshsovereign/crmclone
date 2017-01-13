@@ -21,10 +21,10 @@ exports.install = function () {
     F.route('/erp/api/user/dt', object.readDT, ['post', 'authorize']);
 
     F.route('/erp/api/user/select', function () {
-        var UserModel = MODEL('user').Schema;
+        var UserModel = MODEL('hr').Schema;
         var self = this;
 
-        UserModel.find({Status: {$ne: "DISABLE"}}, "", {sort: {lastname: 1}}, function (err, docs) {
+        UserModel.find({isremoved: {$ne : true},Status: {$ne: "DISABLE"}}, "", {sort: {lastname: 1}}, function (err, docs) {
             if (err)
                 return self.throw500("err : /erp/api/user/select {0}".format(err));
 
