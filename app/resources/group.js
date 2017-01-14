@@ -3,7 +3,7 @@
 
 //User Group service used for UserGroup REST endpoint
 MetronicApp.factory("Group", ['$resource', function($resource) {
-    return $resource('/erp/api/group/:Id', {
+    return $resource('/erp/api/userGroup/:Id', {
         Id: '@_id'
     }, {
         update: {

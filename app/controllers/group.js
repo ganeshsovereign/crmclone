@@ -47,7 +47,7 @@ MetronicApp.controller('GroupController', ['$scope','$rootScope', '$http', 'Grou
             if (!params.entity)
                 params.entity = $rootScope.entity;
 
-            var url = $rootScope.buildUrl('/erp/api/group/dt', params); // Build URL with json parameter
+            var url = $rootScope.buildUrl('/erp/api/userGroup/dt', params); // Build URL with json parameter
             //console.log(url);
             return url;
         }
