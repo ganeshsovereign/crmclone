@@ -293,8 +293,10 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
         };
         
         $scope.checkUserExist = function (data) {
-            if(!data || data.length < 6)
-                return $scope.validLogin = false;
+            if(!data || data.length < 6) {
+                $scope.validLogin = false;
+                return "Nom utilisateur trop court";
+            }
             
             return $http.get('/erp/api/user/' + data).then(function (user) {
                 if(!user.data)
