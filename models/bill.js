@@ -169,6 +169,9 @@ billSchema.pre('save', function (next) {
         self.total_ht = result.total_ht;
         self.total_tva = result.total_tva;
         self.total_ttc = result.total_ttc;
+        
+        if(self.total_ttc === 0)
+            self.Status = 'DRAFT';
 
         if (!self.ref && self.isNew) {
             SeqModel.inc("PROV", function (seq) {
