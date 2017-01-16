@@ -43,7 +43,7 @@ var HrSchema = UserSchema.discriminator('hr', new Schema({
     grossSalary: Number,
     timeWork: String,
     bankingEtablishment: String,
-    socialeSecurityNumber: Number,
+    socialeSecurityNumber: String,
     accountStatement: String,
     iban: String,
     bic: String,

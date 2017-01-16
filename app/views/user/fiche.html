@@ -214,14 +214,16 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:BirthDate) :</div>
                         <div class="col-md-8 value">
-                            <span class="blue h5" editable-text="user.birthDate" e-title="xx/xx/20xx"> {{(user.birthDate|date:"dd/MM/yyyy")}} </span>
+                            <span editable-bsdate="user.birthDate" e-datepicker-popup="dd/MM/yyyy">
+                                                    {{ (user.birthDate | date:"dd/MM/yyyy") || 'empty'}}
+                                                </span>
                         </div>
                     </div>
 
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:CityOfBirth) :</div>
                         <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.cityOfBirth">
+                            <span editable-text="user.cityOfBirth">
                                 {{user.cityOfBirth}}
                             </span>
                         </div>
@@ -352,14 +354,18 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:ArrivalDate) :</div>
                         <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.arrivalDate"> {{(user.arrivalDate|date:"dd/MM/yyyy")}} </span>
+                            <span editable-bsdate="user.arrivalDate" e-datepicker-popup="dd/MM/yyyy">
+                                                    {{ (user.arrivalDate | date:"dd/MM/yyyy") || 'empty'}}
+                                                </span>
                         </div>
                     </div>
 
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:DateOfDeparture) :</div>
                         <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.dateOfDeparture"> {{(user.dateOfDeparture|date:"dd/MM/yyyy")}} </span>
+                            <span editable-bsdate="user.dateOfDeparture" e-datepicker-popup="dd/MM/yyyy">
+                                                    {{ (user.dateOfDeparture | date:"dd/MM/yyyy") || 'empty'}}
+                                                </span>
                         </div>
                     </div>
 
