@@ -1,7 +1,8 @@
 exports.name = 'utils';
-exports.version = '1.04';
+exports.version = '1.05';
 
 var _ = require('lodash'),
+        async = require('async'),
         numeral = require('numeral'),
         mongoose = require('mongoose');
 
@@ -170,14 +171,22 @@ exports.sumTotal = function (lines, shipping, discount, societeId, callback) {
 
     var SocieteModel = MODEL('societe').Schema;
 
-    SocieteModel.findOne({_id: societeId}, "VATIsUsed", function (err, societe) {
-        
-        if(err || !societe)
-            return callback("Societe not found !");
+    async.waterfall([
+        function (cb) {
+            if (!societeId)
+                return cb(null, true);
 
-        var VATIsUsed = societe.VATIsUsed;
+            SocieteModel.findOne({_id: societeId}, "VATIsUsed", function (err, societe) {
+                if (err || !societe)
+                    return callback("Societe not found !");
 
-        var total_ht = 0,
+                cb(null, societe.VATIsUsed);
+            });
+        }
+    ], function (err, VATIsUsed) {
+
+        var count = 0,
+                total_ht = 0,
                 total_tva = [],
                 total_ttc = 0,
                 weight = 0;
@@ -215,9 +224,10 @@ exports.sumTotal = function (lines, shipping, discount, societeId, callback) {
                     });
                 }
             }
-            
+
             //Poids total
             weight += lines[i].weight * lines[i].qty;
+            count += lines[i].qty;
         }
 
         // shipping cost
@@ -247,7 +257,7 @@ exports.sumTotal = function (lines, shipping, discount, societeId, callback) {
         }
 
         if (discount && discount.percent) {
-            discount.value = MODULE('utils').round(total_ht * discount.percent / 100, 2);
+            discount.value = exports.round(total_ht * discount.percent / 100, 2);
             total_ht -= discount.value;
 
             if (VATIsUsed)
@@ -257,12 +267,12 @@ exports.sumTotal = function (lines, shipping, discount, societeId, callback) {
                 }
         }
 
-        total_ht = MODULE('utils').round(total_ht, 2);
+        total_ht = exports.round(total_ht, 2);
         total_ttc = total_ht;
 
         if (VATIsUsed)
             for (j = 0; j < total_tva.length; j++) {
-                total_tva[j].total = MODULE('utils').round(total_tva[j].total, 2);
+                total_tva[j].total = exports.round(total_tva[j].total, 2);
                 total_ttc += total_tva[j].total;
             }
 
@@ -270,7 +280,8 @@ exports.sumTotal = function (lines, shipping, discount, societeId, callback) {
             total_ht: total_ht,
             total_tva: total_tva,
             total_ttc: total_ttc,
-            weight: weight
+            weight: weight,
+            count: count
         });
     });
 };
