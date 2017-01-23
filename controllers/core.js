@@ -412,6 +412,29 @@ function convert(type) {
             });
             return self.plain("Type is deliveryAddress");
             break;
+        case 'code_compta' :
+            var SocieteModel = MODEL('societe').Schema;
+            
+            SocieteModel.find({code_compta:null, code_client:{$ne:null}}, function(err, docs){
+                if(err)
+                    return console.log(err);
+                
+                docs.forEach(function(doc){
+                    if(doc.code_client[0] !== 'C') { //Not an automatic code
+                        if(doc.code_client.length + 3 > 10)
+                            return console.log('code_compta too long ', doc.code_client);
+                            
+                        doc.code_compta = '411' + doc.code_client.trim();
+                        doc.save(function (err, doc){
+                            if(err)
+                                console.log(err);
+                        });
+                        
+                    }   
+                });
+
+            });
+            break;
     }
 
     return self.plain("Type is unknown");

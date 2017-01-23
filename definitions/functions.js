@@ -9,6 +9,9 @@ var numberFormat = function (number, width) {
 
 
 F.functions.refreshSeq = function(ref, date) {
+    if(!ref)
+        return null;
+    
     var split = ref.split('-');
     
     split[0] = split[0].substring(0,split[0].length-4);
