@@ -166,6 +166,7 @@ hr {
 
 .progress {
     margin: 2px 0;
+    height: 18px;
 }
 
 .table-advance tr td.highlight:first-child span{
