@@ -211,12 +211,11 @@
                 </div>
 
                 <div class="portlet-body">
-                    <div class="row static-info">
+                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:BirthDate) :</div>
-                        <div class="col-md-8 value">
+                        <div class="col-md-4 value">
                             <span editable-bsdate="user.birthDate" e-datepicker-popup="dd/MM/yyyy">
-                                                    {{ (user.birthDate | date:"dd/MM/yyyy") || 'empty'}}
-                                                </span>
+                                {{ (user.birthDate | date:"dd/MM/yyyy") || 'empty'}} </span>
                         </div>
                     </div>
 
@@ -355,19 +354,18 @@
                         <div class="col-md-4 name">@(users:ArrivalDate) :</div>
                         <div class="col-md-4 value">
                             <span editable-bsdate="user.arrivalDate" e-datepicker-popup="dd/MM/yyyy">
-                                                    {{ (user.arrivalDate | date:"dd/MM/yyyy") || 'empty'}}
-                                                </span>
+                                {{ (user.arrivalDate | date:"dd/MM/yyyy") || 'empty'}} </span>
                         </div>
                     </div>
 
-                    <div class="row static-info">
+                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:DateOfDeparture) :</div>
                         <div class="col-md-4 value">
                             <span editable-bsdate="user.dateOfDeparture" e-datepicker-popup="dd/MM/yyyy">
-                                                    {{ (user.dateOfDeparture | date:"dd/MM/yyyy") || 'empty'}}
-                                                </span>
+                                {{ (user.dateOfDeparture | date:"dd/MM/yyyy") || @(Empty)}} </span>
                         </div>
                     </div>
+
 
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:JobDescription) :</div>
