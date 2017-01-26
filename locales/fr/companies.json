@@ -463,5 +463,8 @@
     "LogoCompany": "Logo",
     "UploadLogoCompany-max1Mo": "Télécharger le logo de l'entreprise - 1Mo maximum",
     "GroupDeliveries": "Regroupement des BL",
-    "Tasks":"Tâches / Tickets"
+    "Tasks":"Tâches / Tickets",
+    "ErrEmptyReglement":"Mode de reglement manquant",
+    "ErrEmptyCondition":"Conditions de reglement manquantes",
+    "ErrIBAN":"IBAN incorrect : cle de verification incorrecte"
 }

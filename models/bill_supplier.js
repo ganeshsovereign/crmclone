@@ -44,7 +44,10 @@ var billSupplierSchema = new Schema({
     town: {type: String, default: ""},
     country_id: {type: String, default: 'FR'},
     state_id: Number,
-    contact: {id: {type: Schema.Types.ObjectId, ref: 'Contact'}, name: String},
+    contacts: [{
+            type: Schema.Types.ObjectId,
+            ref: 'contact'
+        }],
     ref_supplier: {type: String},
     pieceAccounting: Number,
     libelleAccounting: String,

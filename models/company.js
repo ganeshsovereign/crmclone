@@ -400,6 +400,25 @@ societeSchema.virtual('prospectLevel')
             return prospectLevel;
         });
 
+societeSchema.virtual('errors')
+        .get(function () {
+            var errors = [];
+
+            if (!this.cond_reglement)
+                errors.push(i18n.t("companies:ErrEmptyReglement"));
+            if (!this.mode_reglement)
+                errors.push(i18n.t("companies:ErrEmptyCondition"));
+
+            //Check Valid IBAN
+            if (this.iban && this.iban.id) {
+                var IBAN = require('iban');
+                if (!IBAN.isValid(this.iban.id))
+                    errors.push(i18n.t("companies:ErrIBAN"));
+            }
+
+            return errors;
+        });
+
 exports.Schema = mongoose.model('societe', societeSchema, 'Societe');
 exports.name = "societe";
 

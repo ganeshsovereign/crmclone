@@ -266,7 +266,7 @@ MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
 
                     $http({method: 'GET', url: '/erp/api/contact', params: {
                             find: {
-                                "societe.id": newValue.id
+                                societe : newValue.id
                             },
                             field: "_id firstname lastname name poste"
                         }
