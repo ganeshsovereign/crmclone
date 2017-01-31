@@ -972,8 +972,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 .state('accounting', {
                     url: "/accounting",
                     abstract: true,
-                    templateUrl: "/views/_accounting/index.html",
-                    resolve: {
+                    templateUrl: "/views/_accounting/index.html"
+                    /*resolve: {
                         deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                                 return $ocLazyLoad.load({
                                     name: 'MetronicApp',
@@ -985,7 +985,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                                     ]
                                 });
                             }]
-                    }
+                    }*/
                 })
                 .state('accounting.journal', {
                     parent: "accounting",
