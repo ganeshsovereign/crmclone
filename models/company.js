@@ -41,7 +41,7 @@ var setTags = function (tags) {
 var setAccount = function (account) {
     if (account) {
         account = account.replace(/ /g, "");
-        account = account.substring(0, 10); //limit a 10 character
+        account = account.substring(0, CONFIG('accounting.length') || 10); //limit a 10 character
     }
 
     return account;

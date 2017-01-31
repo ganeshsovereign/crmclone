@@ -421,7 +421,7 @@ function convert(type) {
                 
                 docs.forEach(function(doc){
                     if(doc.code_client[0] !== 'C') { //Not an automatic code
-                        if(doc.code_client.length + 3 > 10)
+                        if(doc.code_client.length + 3 > (CONFIG('accounting.length') || 10))
                             return console.log('code_compta too long ', doc.code_client);
                             
                         doc.code_compta = '411' + doc.code_client.trim();
@@ -434,6 +434,7 @@ function convert(type) {
                 });
 
             });
+            return self.plain("Type is code_compta");
             break;
     }
 

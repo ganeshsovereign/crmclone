@@ -45,7 +45,7 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function ($rootScope) {
                         'Mois m-2': [moment().subtract(2, 'month').startOf('month'), moment().subtract(2, 'month').endOf('month')],
                         'Mois m-3': [moment().subtract(3, 'month').startOf('month'), moment().subtract(3, 'month').endOf('month')],
                         '3 derniers mois': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                        'Année en cours': [moment().startOf('year'), moment().subtract(1, 'month').endOf('month')],
+                        'Année en cours': [moment().startOf('year'), moment().startOf('month').endOf('month')],
                         'Année N-1': [moment().startOf('year').subtract(1, 'year'), moment().endOf('year').subtract(1, 'year')]
                     },
                     buttonClasses: ['btn btn-sm'],
