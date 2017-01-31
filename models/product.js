@@ -86,7 +86,11 @@ var productSchema = new Schema({
     seq: {type: String, unique: true},
     isremoved: {type: Boolean, default: false},
     compta_buy: {type: String, set: setAccount, trim: true},
+    compta_buy_eu : {type: String, set: setAccount, trim: true},
+    compta_buy_exp : {type: String, set: setAccount, trim: true},
     compta_sell: {type: String, set: setAccount, trim: true},
+    compta_sell_eu: {type: String, set: setAccount, trim: true},
+    compta_sell_exp: {type: String, set: setAccount, trim: true},
     label: {type: String, default: ""},
     description: {type: String, default: ""},
     body: {type: String, default: ""}, // Description For SEO

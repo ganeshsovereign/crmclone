@@ -1,0 +1,13 @@
+{
+    "CHARSET": "UTF-8",   
+    "LcrGestion": "Gestion des Lcr",
+    "LcrCreation": "Création de Lcr",
+    "LcrList": "Liste des Lcr",
+    "LcrStatus": "État de la Lcr",
+    "LcrStatusDraft": "Brouillon (à valider)",
+    "LcrStatusWaiting": "En attente",
+    "LcrStatusCredited": "Crédité",
+    "LcrStatusRejected": "Rejeté",
+    "LcrDetails":"Détails de la Lcr",
+    "LcrCreationDate":"Date de Lcr"
+}
