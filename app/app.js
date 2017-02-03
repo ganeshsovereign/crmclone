@@ -696,6 +696,38 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                     },
                     controller: "BillController"
                 })
+                 // Order Supplier
+                .state('orderSupplier', {
+                    url: "/orderSupplier",
+                    abstract: true,
+                    templateUrl: "/views/_order_supplier/index.html"
+                })
+                .state('orderSupplier.list', {
+                    url: "",
+                    templateUrl: "/views/_order_supplier/list.html",
+                    data: {
+                        pageTitle: 'Liste des commandes fournisseurs'
+                    },
+                    controller: "OrderSupplierController"
+                })
+                .state('orderSupplier.show', {
+                    parent: "orderSupplier",
+                    url: "/{id:[0-9a-z]{24}}",
+                    templateUrl: "/views/_order_supplier/fiche.html",
+                    data: {
+                        pageTitle: 'Commande fournisseur'
+                    },
+                    controller: "OrderSupplierController"
+                })
+                .state('orderSupplier.create', {
+                    parent: "orderSupplier",
+                    url: "/create.html",
+                    templateUrl: "/views/_order_supplier/create.html",
+                    data: {
+                        pageTitle: 'Nouvelle commande fournisseur'
+                    },
+                    controller: "OrderSupplierController"
+                })
                 // BillSupplier
                 .state('billSupplier', {
                     url: "/billSupplier",
@@ -800,38 +832,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                         pageTitle: 'Creation contact'
                     },
                     controller: "ContactController"
-                })
-                // OrderSupplier
-                .state('orderSupplier', {
-                    url: "/orderSupplier",
-                    abstract: true,
-                    templateUrl: "/views/_order_supplier/index.html"
-                })
-                .state('orderSupplier.list', {
-                    url: "",
-                    templateUrl: "/views/_order_supplier/list.html",
-                    data: {
-                        pageTitle: 'Liste des commandes fournisseur'
-                    },
-                    controller: "OrderController"
-                })
-                .state('orderSupplier.show', {
-                    parent: "orderSupplier",
-                    url: "/{id:[0-9a-z]{24}}",
-                    templateUrl: "/views/_order_supplier/fiche.html",
-                    data: {
-                        pageTitle: 'Commande fournisseur'
-                    },
-                    controller: "OrderController"
-                })
-                .state('orderSupplier.create', {
-                    parent: "orderSupplier",
-                    url: "/create.html",
-                    templateUrl: "/views/_order_supplier/create.html",
-                    data: {
-                        pageTitle: 'Nouvelle commande fournisseur'
-                    },
-                    controller: "OrderController"
                 })
                 // Product / services
                 .state('product', {
@@ -972,8 +972,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                 .state('accounting', {
                     url: "/accounting",
                     abstract: true,
-                    templateUrl: "/views/_accounting/index.html",
-                    resolve: {
+                    templateUrl: "/views/_accounting/index.html"
+                    /*resolve: {
                         deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                                 return $ocLazyLoad.load({
                                     name: 'MetronicApp',
@@ -985,7 +985,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                                     ]
                                 });
                             }]
-                    }
+                    }*/
                 })
                 .state('accounting.journal', {
                     parent: "accounting",

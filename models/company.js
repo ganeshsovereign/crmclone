@@ -41,7 +41,7 @@ var setTags = function (tags) {
 var setAccount = function (account) {
     if (account) {
         account = account.replace(/ /g, "");
-        account = account.substring(0, 10); //limit a 10 character
+        account = account.substring(0, CONFIG('accounting.length') || 10); //limit a 10 character
     }
 
     return account;
@@ -398,6 +398,25 @@ societeSchema.virtual('prospectLevel')
             }
 
             return prospectLevel;
+        });
+
+societeSchema.virtual('errors')
+        .get(function () {
+            var errors = [];
+
+            if (!this.cond_reglement)
+                errors.push(i18n.t("companies:ErrEmptyReglement"));
+            if (!this.mode_reglement)
+                errors.push(i18n.t("companies:ErrEmptyCondition"));
+
+            //Check Valid IBAN
+            if (this.iban && this.iban.id) {
+                var IBAN = require('iban');
+                if (!IBAN.isValid(this.iban.id))
+                    errors.push(i18n.t("companies:ErrIBAN"));
+            }
+
+            return errors;
         });
 
 exports.Schema = mongoose.model('societe', societeSchema, 'Societe');

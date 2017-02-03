@@ -33,6 +33,7 @@ var orderSchema = new Schema({
             default: false
         } //For automatic process generated deliveries
     },
+    isremoved: Boolean,
     Status: {type: Schema.Types.Mixed, default: 'DRAFT'},
     cond_reglement_code: {type: String, default: 'RECEP'},
     mode_reglement_code: {type: String, default: 'TIP'},

@@ -44,8 +44,8 @@ var Datatable = function () {
                 dataTable: {
 		    "dom": "<'row hidden-print'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'f<'table-group-actions pull-right'>>r><'table-responsive't><'row hidden-print'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
                     "lengthMenu": [
-                        [10, 25, 50, 100, 200/*, -1*/],
-                        [10, 25, 50, 100, 200/*, "All"*/] // change per page values here
+                        [10, 25, 50, 100, 200, 500/*, -1*/],
+                        [10, 25, 50, 100, 200, 500/*, "All"*/] // change per page values here
                     ],
                     "pageLength": 25, // default record count per page
                     "language": {// language settings

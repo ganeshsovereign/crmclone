@@ -21,7 +21,7 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function ($rootScope) {
             },
             template: '<i class="icon-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block">{{data.start | date : \'d MMM yyyy\'}} - {{data.end | date : \'d MMM yyyy\'}}</span>&nbsp; <i class="fa fa-angle-down"></i>',
             link: function (scope, element, attrs, ngModel) {
-                if (!jQuery().daterangepicker) {
+                if (!jQuery().daterangepicker || !element) {
                     return;
                 }
 
@@ -45,7 +45,7 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function ($rootScope) {
                         'Mois m-2': [moment().subtract(2, 'month').startOf('month'), moment().subtract(2, 'month').endOf('month')],
                         'Mois m-3': [moment().subtract(3, 'month').startOf('month'), moment().subtract(3, 'month').endOf('month')],
                         '3 derniers mois': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                        'Année en cours': [moment().startOf('year'), moment().subtract(1, 'month').endOf('month')],
+                        'Année en cours': [moment().startOf('year'), moment().endOf('month')],
                         'Année N-1': [moment().startOf('year').subtract(1, 'year'), moment().endOf('year').subtract(1, 'year')]
                     },
                     buttonClasses: ['btn btn-sm'],
@@ -266,7 +266,7 @@ MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
 
                     $http({method: 'GET', url: '/erp/api/contact', params: {
                             find: {
-                                "societe.id": newValue.id
+                                societe : newValue.id
                             },
                             field: "_id firstname lastname name poste"
                         }
