@@ -711,7 +711,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                     controller: "OrderSupplierController"
                 })
                 .state('orderSupplier.show', {
-                    parent: "order",
+                    parent: "orderSupplier",
                     url: "/{id:[0-9a-z]{24}}",
                     templateUrl: "/views/_order_supplier/fiche.html",
                     data: {
@@ -720,7 +720,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                     controller: "OrderSupplierController"
                 })
                 .state('orderSupplier.create', {
-                    parent: "order",
+                    parent: "orderSupplier",
                     url: "/create.html",
                     templateUrl: "/views/_order_supplier/create.html",
                     data: {

@@ -1,13 +1,13 @@
 {
     "CHARSET": "UTF-8",   
-    "LcrGestion": "Gestion des Lcr",
-    "LcrCreation": "Création de Lcr",
-    "LcrList": "Liste des Lcr",
-    "LcrStatus": "État de la Lcr",
+    "LcrGestion": "Gestion des LCR",
+    "LcrCreation": "Création de LCR",
+    "LcrList": "Liste des LCR",
+    "LcrStatus": "État de la LCR",
     "LcrStatusDraft": "Brouillon (à valider)",
     "LcrStatusWaiting": "En attente",
     "LcrStatusCredited": "Crédité",
     "LcrStatusRejected": "Rejeté",
-    "LcrDetails":"Détails de la Lcr",
-    "LcrCreationDate":"Date de Lcr"
+    "LcrDetails":"Détails de la LCR",
+    "LcrCreationDate":"Date de LCR"
 }
