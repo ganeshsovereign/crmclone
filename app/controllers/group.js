@@ -182,7 +182,7 @@ MetronicApp.controller('GroupController', ['$scope','$rootScope', '$http', 'Grou
                   ],
             filterOptions: $scope.filterOptionsGroup
         };
-
+ 
         $scope.addNew = function() {
                 var modalInstance = $modal.open({
                         templateUrl: '/partials/userGroup/create.html',
