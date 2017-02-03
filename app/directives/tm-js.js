@@ -21,7 +21,7 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function ($rootScope) {
             },
             template: '<i class="icon-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block">{{data.start | date : \'d MMM yyyy\'}} - {{data.end | date : \'d MMM yyyy\'}}</span>&nbsp; <i class="fa fa-angle-down"></i>',
             link: function (scope, element, attrs, ngModel) {
-                if (!jQuery().daterangepicker) {
+                if (!jQuery().daterangepicker || !element) {
                     return;
                 }
 
