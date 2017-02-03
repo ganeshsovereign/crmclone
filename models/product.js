@@ -424,6 +424,10 @@ productSchema.pre('save', function (next) {
 
     if (this.type !== 'DYNAMIC')
         this.dynForm = null;
+    
+    // remove old packif change
+    if (this.type !== 'PACK')
+        this.pack = [];
 
     if (!this.linker)
         this.linker = this.ref.replace(/ /g, "-").toLowerCase();
