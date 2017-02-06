@@ -273,7 +273,7 @@ function convert(type) {
             mongoose.connection.db.collection('users', function (err, collection) {
                 collection.find({}, function (err, users) {
                     users.each(function (err, user) {
-                        if (user.societe && user.societe.id)
+                        if (user && user.societe && user.societe.id)
                             UserModel.update({_id: user._id}, {$set: {societe: user.societe.id}}, {upsert: false, multi: false}, function (err, result) {
                                 console.log(err, result);
                             });
