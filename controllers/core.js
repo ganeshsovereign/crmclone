@@ -281,8 +281,6 @@ function convert(type) {
                 });
             });
 
-            return;
-
             mongoose.connection.db.collection('Contact', function (err, collection) {
                 collection.find({}, function (err, contacts) {
                     if (err)
@@ -312,7 +310,7 @@ function convert(type) {
 
                         newUser.save(function (err, doc) {
                             if (err || !doc)
-                                return console.log("Impossible de creer ", err)
+                                return console.log("Impossible de creer ", err);
                         });
 
                     });
