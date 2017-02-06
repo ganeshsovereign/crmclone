@@ -211,11 +211,6 @@ orderSupplierSchema.pre('save', function (next) {
     });
 });
 
-var statusList = {};
-Dict.dict({dictName: "fk_order_status_supplier", object: true}, function (err, docs) {
-    statusList = docs;
-});
-
 orderSupplierSchema.virtual('status')
         .get(function () {
             var res_status = {};
@@ -224,12 +219,12 @@ orderSupplierSchema.virtual('status')
 
             //console.log("status :" + status);
 
-            if (status && statusList.values[status].label) {
+            if (status && exports.Status.values[status].label) {
                 //console.log(this);
                 res_status.id = status;
                 //res_status.name = i18n.t("orders:" + statusList.values[status].label);
-                res_status.name = statusList.values[status].label;
-                res_status.css = statusList.values[status].cssClass;
+                res_status.name = exports.Status.values[status].label;
+                res_status.css = exports.Status.values[status].cssClass;
             } else { // By default
                 res_status.id = status;
                 res_status.name = status;
@@ -238,6 +233,36 @@ orderSupplierSchema.virtual('status')
             return res_status;
 
         });
+
+exports.Status = {
+    "_id": "fk_order_status_supplier",
+    "values": {
+        "NEW": {
+            "enable": true,
+            "label": "Nouveau",
+            "cssClass": "label-warning"
+        },
+        "VALIDATED": {
+            "enable": true,
+            "label": "Validé / accepté",
+            "cssClass": "label-success"
+        },
+        "REFUSED": {
+            "label": "Refusé",
+            "enable": true,
+            "cssClass": "label-danger"
+        },
+        "BILLED": {
+            "label": "Facturé",
+            "enable": true,
+            "cssClass": "label-default"
+        },
+        "PRINTED": {
+            "label": "Editée",
+            "cssClass": "label-success"
+        }
+    }
+};
 
 exports.Schema = mongoose.model('orderSupplier', orderSupplierSchema, 'OrderSupplier');
 exports.name = "orderSupplier";
