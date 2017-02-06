@@ -242,9 +242,9 @@ exports.Status = {
             "label": "Nouveau",
             "cssClass": "label-warning"
         },
-        "VALIDATED": {
+        "ACCEPTED": {
             "enable": true,
-            "label": "Validé / accepté",
+            "label": "Accepté / validé",
             "cssClass": "label-success"
         },
         "REFUSED": {
@@ -258,7 +258,7 @@ exports.Status = {
             "cssClass": "label-default"
         },
         "PRINTED": {
-            "label": "Editée",
+            "label": "Edité",
             "cssClass": "label-success"
         }
     }
