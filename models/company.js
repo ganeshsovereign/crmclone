@@ -399,6 +399,19 @@ societeSchema.virtual('prospectLevel')
 
             return prospectLevel;
         });
+        
+societeSchema.virtual('iban.isOk')
+        .get(function(){
+            var self = this;
+            
+            if (self.iban && self.iban.id) {
+                var IBAN = require('iban');
+            
+                return IBAN.isValid(self.iban.id);
+            }
+            
+            return null;
+});
 
 societeSchema.virtual('errors')
         .get(function () {
