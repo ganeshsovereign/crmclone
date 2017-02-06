@@ -1,7 +1,8 @@
 "use strict";
 
-var _ = require('lodash');
-var fs = require('fs');
+var _ = require('lodash'),
+        async = require('async'),
+        fs = require('fs');
 
 var Dict = INCLUDE('dict');
 
@@ -273,22 +274,20 @@ function convert(type) {
             mongoose.connection.db.collection('users', function (err, collection) {
                 collection.find({}, function (err, users) {
                     users.each(function (err, user) {
-                        if (user.societe && user.societe.id)
+                        if (user && user.societe && user.societe.id)
                             UserModel.update({_id: user._id}, {$set: {societe: user.societe.id}}, {upsert: false, multi: false}, function (err, result) {
-                                console.log(err, result);
+                                //console.log(err, result);
                             });
                     });
                 });
             });
 
-            return;
-
             mongoose.connection.db.collection('Contact', function (err, collection) {
-                collection.find({}, function (err, contacts) {
+                collection.find({}).toArray(function (err, contacts) {
                     if (err)
                         return console.log(err);
 
-                    contacts.each(function (err, contact) {
+                    async.each(contacts, function (contact, cb) {
 
 
                         if (contact == null)
@@ -298,6 +297,8 @@ function convert(type) {
                         if (!contact.email)
                             delete contact.email;
 
+                        contact.oldId = "TESTING";
+
                         if (contact.Status == 'ST_ENABLE')
                             contact.Status = 'ENABLE';
                         else if (contact.Status == 'ST_DISABLE')
@@ -305,22 +306,31 @@ function convert(type) {
                         else
                             contact.Status = 'NEVER';
 
+                        if (contact.societe && contact.societe.id)
+                            contact.societe = contact.societe.id;
+                        else
+                            delete contact.societe;
+
                         //console.log(contact);
 
                         var newUser = new UserModel(contact);
                         //console.log(contact);
 
-                        newUser.save(function (err, doc) {
-                            if (err || !doc)
-                                return console.log("Impossible de creer ", err)
+                        newUser.save(cb);
+                    }, function (err) {
+                        if (err)
+                            return console.log("Impossible de creer ", err);
+                        
+                        collection.remove(function (err) {
+                            if (err)
+                                console.log(err);
                         });
 
                     });
+
                 });
-                collection.remove(function (err) {
-                    if (err)
-                        console.log(err);
-                });
+
+
             });
             return self.plain("Type is contact");
             break;
@@ -334,18 +344,18 @@ function convert(type) {
 
                     pricelevels.each(function (err, pricelevel) {
                         //console.log(pricelevel);
-                        if(err)
+                        if (err)
                             return console.log(err);
-                        
-                        if(!pricelevel)
+
+                        if (!pricelevel)
                             return;
-                        
+
                         if (pricelevel.product && !pricelevel.product.id)
                             return self.plain("Converted pricelevel...");
-                        
-                        
 
-                        PriceLevelModel.update({_id: pricelevel._id}, {$set : {product: pricelevel.product.id}}, function (err, doc) {
+
+
+                        PriceLevelModel.update({_id: pricelevel._id}, {$set: {product: pricelevel.product.id}}, function (err, doc) {
                             if (err || !doc)
                                 return console.log("Impossible de creer ", err);
                         });
@@ -355,7 +365,7 @@ function convert(type) {
             });
             return self.plain("Type is price_level");
             break;
-        
+
         case 'product' :
             var ProductModel = MODEL('product').Schema;
             mongoose.connection.db.collection('Product', function (err, collection) {
@@ -365,16 +375,16 @@ function convert(type) {
 
                     docs.each(function (err, doc) {
                         //console.log(pricelevel);
-                        if(err)
+                        if (err)
                             return console.log(err);
-                        
-                        if(!doc)
+
+                        if (!doc)
                             return;
-                        
+
                         if (doc.name)
                             return self.plain("Converted product...");
 
-                        ProductModel.update({_id: doc._id}, {$set : {name: doc.ref}}, function (err, doc) {
+                        ProductModel.update({_id: doc._id}, {$set: {name: doc.ref}}, function (err, doc) {
                             if (err || !doc)
                                 return console.log("Impossible de creer ", err);
                         });
@@ -384,53 +394,53 @@ function convert(type) {
             });
             return self.plain("Type is product");
             break;
-            
+
         case 'deliveryAddress' :
             var SocieteModel = MODEL('societe').Schema;
-            
-            SocieteModel.find({}, function(err, docs){
-                if(err)
+
+            SocieteModel.find({}, function (err, docs) {
+                if (err)
                     return console.log(err);
-                
-                docs.forEach(function(doc){
+
+                docs.forEach(function (doc) {
                     doc.addresses = [{
-                        name : doc.name,
-                        address : doc.address,
-                        zip : doc.zip,
-                        town : doc.town
-                    }];
+                            name: doc.name,
+                            address: doc.address,
+                            zip: doc.zip,
+                            town: doc.town
+                        }];
                     doc.deliveryAddress = 0;
-                    
-                    return doc.save(function (err, doc){
-                        if(err)
+
+                    return doc.save(function (err, doc) {
+                        if (err)
                             console.log(err);
                     });
-                    
+
                 });
-                
-                
+
+
             });
             return self.plain("Type is deliveryAddress");
             break;
         case 'code_compta' :
             var SocieteModel = MODEL('societe').Schema;
-            
-            SocieteModel.find({code_compta:null, code_client:{$ne:null}}, function(err, docs){
-                if(err)
+
+            SocieteModel.find({code_compta: null, code_client: {$ne: null}}, function (err, docs) {
+                if (err)
                     return console.log(err);
-                
-                docs.forEach(function(doc){
-                    if(doc.code_client[0] !== 'C') { //Not an automatic code
-                        if(doc.code_client.length + 3 > (CONFIG('accounting.length') || 10))
+
+                docs.forEach(function (doc) {
+                    if (doc.code_client[0] !== 'C') { //Not an automatic code
+                        if (doc.code_client.length + 3 > (CONFIG('accounting.length') || 10))
                             return console.log('code_compta too long ', doc.code_client);
-                            
+
                         doc.code_compta = '411' + doc.code_client.trim();
-                        doc.save(function (err, doc){
-                            if(err)
+                        doc.save(function (err, doc) {
+                            if (err)
                                 console.log(err);
                         });
-                        
-                    }   
+
+                    }
                 });
 
             });
