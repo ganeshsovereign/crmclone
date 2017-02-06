@@ -5,9 +5,6 @@ var fs = require('fs'),
         moment = require('moment'),
         async = require('async');
 
-
-var Dict = INCLUDE('dict');
-
 exports.install = function () {
 
     var object = new Object();
@@ -353,10 +350,7 @@ Object.prototype = {
 
         async.parallel({
             status: function (cb) {
-                Dict.dict({
-                    dictName: "fk_user_status",
-                    object: true
-                }, cb);
+               cb(null,MODEL('user').Status);
             },
             datatable: function (cb) {
                 UserModel.dataTable(query, options, cb);

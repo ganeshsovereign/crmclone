@@ -9,8 +9,6 @@ var mongoose = require('mongoose'),
         crypto = require('crypto'),
         authTypes = ['github', 'twitter', 'facebook', 'google'];
 
-var Dict = INCLUDE('dict');
-
 /**
  * User Schema
  */
@@ -96,15 +94,6 @@ if (CONFIG('storing-files')) {
 
 //var ExtrafieldModel = MODEL('extrafields').Schema;
 
-var statusList = {};
-Dict.dict({dictName: 'fk_user_status', object: true}, function (err, doc) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    statusList = doc;
-});
-
 UserSchema.virtual('name')
         .get(function () {
             return this.firstname + " " + this.lastname;
@@ -124,12 +113,12 @@ UserSchema.virtual('status')
                 status = 'NOCONNECT';
 
 
-            if (status && statusList.values[status].label) {
+            if (status && exports.Status.values[status].label) {
                 //console.log(this);
                 res_status.id = status;
                 //this.status.name = i18n.t("intervention." + statusList.values[status].label);
-                res_status.name = statusList.values[status].label;
-                res_status.css = statusList.values[status].cssClass;
+                res_status.name = exports.Status.values[status].label;
+                res_status.css = exports.Status.values[status].cssClass;
             } else { // By default
                 res_status.id = status;
                 res_status.name = status;
@@ -280,5 +269,36 @@ UserSchema.methods.generatePassword = function (length) {
     return retVal;
 };
 
+exports.Status = {
+    "_id" : "fk_user_status",
+    "default" : "DISABLE",
+    "values" : {
+        "NEVER" : {
+            "label" : "Inconnu",
+            "enable" : true,
+            "cssClass" : "label-default"
+        },
+        "ENABLE" : {
+            "enable" : true,
+            "label" : "Actif",
+            "cssClass" : "label-success"
+        },
+        "DISABLE" : {
+            "enable" : true,
+            "label" : "Bloqué",
+            "cssClass" : "label-danger"
+        },
+        "NOCONNECT" : {
+            "enable" : false,
+            "label" : "Actif / Sans connexion",
+            "cssClass" : "label-info"
+        },
+        "WEB" : {
+            "enable" : false,
+            "label" : "Actif / Connexion Web",
+            "cssClass" : "label-warning"
+        }
+    }
+};
 exports.Schema = mongoose.model('user', UserSchema, 'users');
 exports.name = 'user';
