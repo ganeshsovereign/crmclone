@@ -191,9 +191,9 @@ var societeSchema = new Schema({
     idprof5: String,
     idprof6: String, // TVA Intra
     iban: {
-        bank: String,
-        id: {type: String, set: setNoSpace}, //FR76........
-        swift: {type: String, set: setNoSpace} //BIC / SWIFT
+        bank: {type: String, uppercase: true, trim: true},
+        id: {type: String, set: setNoSpace, uppercase: true, trim: true}, //FR76........
+        swift: {type: String, set: setNoSpace, uppercase: true, trim: true} //BIC / SWIFT
     },
     checklist: mongoose.Schema.Types.Mixed,
     annualCA: [{
@@ -399,19 +399,19 @@ societeSchema.virtual('prospectLevel')
 
             return prospectLevel;
         });
-        
+
 societeSchema.virtual('iban.isOk')
-        .get(function(){
+        .get(function () {
             var self = this;
-            
+
             if (self.iban && self.iban.id) {
                 var IBAN = require('iban');
-            
+
                 return IBAN.isValid(self.iban.id);
             }
-            
+
             return null;
-});
+        });
 
 societeSchema.virtual('errors')
         .get(function () {
