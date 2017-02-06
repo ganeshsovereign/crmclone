@@ -302,6 +302,11 @@ function convert(type) {
                             contact.Status = 'DISABLE';
                         else
                             contact.Status = 'NEVER';
+                        
+                        if(contact.societe && contact.societe.id)
+                            contact.societe = contact.societe.id;
+                        else
+                            delete contact.societe;
 
                         //console.log(contact);
 
