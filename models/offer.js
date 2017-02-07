@@ -173,13 +173,6 @@ var offerSchema = new Schema({
         trim: true
     },
     bl: [{
-            societe: {//TODO REMOVE
-                id: {
-                    type: Schema.Types.ObjectId,
-                    ref: 'societe'
-                },
-                name: String
-            },
             label: String,
             name: String,
             contact: String,
