@@ -150,7 +150,7 @@ function sendEmail() {
     self.mail(dest, self.body.data.entity + " - " + self.body.data.title, self.body.ModelEmail, self.body.data);
 
     if (self.config['mail.address.copy'])
-        self.mail(self.config['mail.address.copy'], self.entity.name + " - " + self.body.data.title, self.body.ModelEmail, self.body.data);
+        self.mail(self.config['mail.address.copy'], self.body.data.entity + " - " + self.body.data.title, self.body.ModelEmail, self.body.data);
 
     self.json({
         successNotify: {

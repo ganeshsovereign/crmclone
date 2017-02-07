@@ -161,7 +161,16 @@ var orderSupplierSchema = new Schema({
             weight: {type: Number, default: 0},
             optional: {type: Schema.Types.Mixed}
         }],
-    history: [{date: Date, author: {id: String, name: String}, Status: Schema.Types.Mixed}],
+    history: [{
+            date: {type: Date, default: Date.now},
+            author: {
+                id: String,
+                name: String
+            },
+            mode: String, //email, order, alert, new, ...
+            Status: String,
+            msg: String
+        }],
     optional: {}
 }, {
     toObject: {virtuals: true},
