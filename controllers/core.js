@@ -320,7 +320,7 @@ function convert(type) {
                     }, function (err) {
                         if (err)
                             return console.log("Impossible de creer ", err);
-                        
+
                         collection.remove(function (err) {
                             if (err)
                                 console.log(err);
@@ -445,6 +445,40 @@ function convert(type) {
 
             });
             return self.plain("Type is code_compta");
+            break;
+
+        case 'offer' :
+            var OfferModel = MODEL('offer').Schema;
+            mongoose.connection.db.collection('Offer', function (err, collection) {
+                collection.find({}, function (err, docs) {
+                    if (err)
+                        return console.log(err);
+
+                    docs.each(function (err, doc) {
+                        //console.log(pricelevel);
+                        if (err)
+                            return console.log(err);
+
+                        if (!doc)
+                            return;
+
+                        var set = {};
+                        
+                        if(doc.bl[0].societe && doc.bl[0].societe.name)
+                            set["bl.0.name"] =  doc.bl[0].societe.name;
+                        
+                        if(doc.ref.length == 15)
+                            set.ref = "PC" + doc.ref.substring(4);
+
+                        OfferModel.update({_id: doc._id}, {$set: set}, function (err, doc) {
+                            if (err || !doc)
+                                return console.log("Impossible de creer ", err);
+                        });
+
+                    });
+                });
+            });
+            return self.plain("Type is offer");
             break;
     }
 
