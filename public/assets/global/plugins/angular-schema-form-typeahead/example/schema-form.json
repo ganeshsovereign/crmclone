@@ -1,0 +1,65 @@
+{
+    "form": [
+        {
+            "key": "optional.compositions",
+            "type": "tabarray",
+            "add": "Ajouter",
+            "remove": "Supprimer",
+            "style": {
+                "remove": "btn-danger"
+            },
+            "title": "{{ value.ref.name || 'Face '+($index+1) }}",
+            "condition": "model.product.family == 'VITRAGE_ISOLANT'",
+            "items": [{
+                    "key": "optional.compositions[].ref",
+                    "typeahead": "product as product.name for product in evalExpr(\"productAutoComplete(modelValue)\",{'modelValue':$viewValue}) | filter:{name:$viewValue}",
+                    "typeaheadTemplate": "searchproduct.html",
+                    "typeaheadOnSelect": "evalExpr(\"addProduct(product, model)\",{'product':$item, 'model': $model})"
+                }, {
+                    "key": "optional.compositions[].pu_ht",
+                    "onChange": "updated(modelValue,form)"
+                }, {
+                    "type": "template",
+                    "template": "<div class=\"alert alert-success\">Tarif {{model.optional.compositions[arrayIndex].pu_ht | currency}} / Quantite : {{model.optional.compositions[arrayIndex].qty}} m2 <i>Total HT : {{model.optional.compositions[arrayIndex].pu_ht * model.optional.compositions[arrayIndex].qty | currency}}</i></div>",
+                    "condition": "model.optional.compositions[arrayIndex].pu_ht"
+                }]
+        }
+    ],
+    "schema": {
+        "type": "object",
+        "title": "Prix du verre",
+        "properties": {    
+            "optional": {
+                "type": "object",
+                "title": "options",
+                "required": ["width", "length"],
+                "properties": {
+                    "compositions": {
+                        "title": "Choix des compositions (Uniquement VITRAGE_ISOLANT)",
+                        "type": "array",
+                        "maxItems": 2,
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "ref": {
+                                    "title": "Ref. produit",
+                                    "type": "object",
+                                    "format": "typeahead"
+                                },
+                                "pu_ht": {
+                                    "title": "Prix Unitaire HT",
+                                    "type": "number"
+                                },
+                                "qty": {
+                                    "title": "Quantite",
+                                    "type": "number"
+                                }
+                            },
+                            "required": ["ref"]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

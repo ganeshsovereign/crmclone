@@ -1,0 +1,38 @@
+{
+  "name": "angular-schema-form-typeahead",
+  "main": [
+    "bootstrap-typeahead.min.js"
+  ],
+  "version": "0.1.0",
+  "authors": [
+    "Le&Co",
+    "Herve Prot <herve.prot@leandco.fr>"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "angular-schema-form",
+    "schema-form",
+    "form",
+    "json",
+    "json-schema",
+    "schema",
+    "marked",
+    "angular-schema-form-typeahead"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "coverage"
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+    "angular-schema-form": ">= 0.7.6",
+    "angular-mocks": ">= 1.2"
+  }
+}

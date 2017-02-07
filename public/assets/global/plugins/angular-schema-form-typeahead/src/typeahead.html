@@ -1,0 +1,24 @@
+<div class="form-group {{form.htmlClass}}" ng-class="{'has-error': hasError()}">
+    <label class="control-label" ng-show="showTitle()">{{form.title}}</label>
+    
+    <div ng-class="{'input-group': (form.fieldAddonLeft || form.fieldAddonRight)}" class="typeahead">
+        <span ng-if="form.fieldAddonLeft"
+              class="input-group-addon"
+              ng-bind-html="form.fieldAddonLeft"></span>
+        <input ng-show="form.key"
+               type="text"
+               class="form-control {{form.fieldHtmlClass}}"
+               schema-validate="form"
+               ng-model="$$value$$"
+               typeahead-template-url="{{form.typeaheadTemplate}}"
+               typeahead="{{form.typeahead}}"
+               typeahead-on-select="{{form.typeaheadOnSelect}}"
+               name="{{form.key.slice(-1)[0]}}"
+               ng-disabled="$$value$$ != null && {{form.disabled}}"
+               autocomplete="off" />
+        <span ng-if="form.fieldAddonRight"
+              class="input-group-addon"
+              ng-bind-html="form.fieldAddonRight"></span>
+    </div>
+    <span class="help-block" sf-message="form.description"></span>
+</div>
