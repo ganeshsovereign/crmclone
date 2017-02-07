@@ -75,7 +75,7 @@ var orderSupplierSchema = new Schema({
         id: {type: String},
         name: String
     },
-    entity: {type: String},
+    //entity: {type: String},
     bl: [{
             societe: {
                 id: {type: Schema.Types.ObjectId, ref: 'societe'},
@@ -201,19 +201,11 @@ orderSupplierSchema.pre('save', function (next) {
                 if (err)
                     console.log(err);
 
-                if (entity && entity.cptRef) {
-                    SeqModel.inc("CF" + entity.cptRef, self.datec, function (seq) {
-                        //console.log(seq);
-                        self.ref = "CF" + entity.cptRef + seq;
-                        next();
-                    });
-                } else {
                     SeqModel.inc("CF", self.datec, function (seq) {
                         //console.log(seq);
                         self.ref = "CF" + seq;
                         next();
                     });
-                }
             });
         } else
             next();
