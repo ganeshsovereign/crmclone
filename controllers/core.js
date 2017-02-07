@@ -463,11 +463,11 @@ function convert(type) {
                             return;
 
                         var set = {};
-                        
-                        if(doc.bl[0].societe && doc.bl[0].societe.name)
-                            set["bl.0.name"] =  doc.bl[0].societe.name;
-                        
-                        if(doc.ref.length == 15)
+
+                        if (doc.bl[0].societe && doc.bl[0].societe.name)
+                            set["bl.0.name"] = doc.bl[0].societe.name;
+
+                        if (doc.ref.length == 15)
                             set.ref = "PC" + doc.ref.substring(4);
 
                         OfferModel.update({_id: doc._id}, {$set: set}, function (err, doc) {
@@ -479,6 +479,39 @@ function convert(type) {
                 });
             });
             return self.plain("Type is offer");
+            break;
+        case 'order' :
+            var OrderModel = MODEL('order').Schema;
+            mongoose.connection.db.collection('Commande', function (err, collection) {
+                collection.find({}, function (err, docs) {
+                    if (err)
+                        return console.log(err);
+
+                    docs.each(function (err, doc) {
+                        //console.log(pricelevel);
+                        if (err)
+                            return console.log(err);
+
+                        if (!doc)
+                            return;
+
+                        var set = {};
+
+                        if (doc.bl[0].societe && doc.bl[0].societe.name)
+                            set["bl.0.name"] = doc.bl[0].societe.name;
+
+                        if (doc.ref.length == 15)
+                            set.ref = "CO" + doc.ref.substring(4);
+
+                        OrderModel.update({_id: doc._id}, {$set: set}, function (err, doc) {
+                            if (err || !doc)
+                                return console.log("Impossible de creer ", err);
+                        });
+
+                    });
+                });
+            });
+            return self.plain("Type is order");
             break;
     }
 
