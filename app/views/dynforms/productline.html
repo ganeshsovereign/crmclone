@@ -1,0 +1,46 @@
+<form name="myDynForm">
+        <div class="modal-header">
+            <h3 class="modal-title">{{t 'products:ProductOrService'}} (\{{model.product.name}}) - \{{model.product.label}}</h3>
+        </div>
+        <div class="modal-body" sf-schema="dynform.schema" sf-form="dynform.form" sf-model="model">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="addOrUpdate(myDynForm)">{{t 'Ok'}}</button>
+            <button class="btn btn-warning" ng-click="cancel()">{{t 'Cancel'}}</button>
+        </div>
+</form>
+<!--<form data-ng-init='init()' data-ng-submit='addOrUpdate()' class="no-margin-bottom block margin-bottom wizard same-height wizard-enabled" style="width: 800px;margin: 0 auto;">
+
+    <h3 class="block-title">{{t 'products:ProductOrService'}}</h3>
+    <script type="text/ng-template" id="searchproduct.html">
+        <a>
+        <span bind-html-unsafe="match.model.product.id.ref | typeaheadHighlight:query"></span> - <span bind-html-unsafe="match.model.product.id.label"></span> (\{{match.model.price_level}} : \{{match.model.pu_ht|currency}})
+        </a>
+    </script>
+
+    
+
+    <fieldset class="wizard-fieldset fields-list active">
+            <div class="field-block">
+                    <p>{{t 'products:ProductToAddSearch'}}</p>
+            </div>
+
+            <div class="field-block button-height">
+                    <label for="productId"><b>{{t 'products:ProductCode'}}</b></label>
+                    <input name="productId" required type="text" data-ng-model="line.product" typeahead-on-select="updateLine($item)" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name') | filter:{name:$viewValue}" typeahead-template-url="searchproduct.html" id="productId" class="input full-width" autocomplete="off">
+                    <span class='intro'>\{{line.product.label}}</span>
+            </div>
+
+            <div data-ng-include="line.product.template" class="field-block-include"></div>
+
+            <div class="field-block button-height wizard-controls align-right">
+
+                    <button type="submit" class="button glossy mid-margin-right">
+                            <span class="button-icon"><span class="icon-tick"></span></span>
+                            {{t	'Add'}}
+                    </button>
+
+            </div>
+    </fieldset>
+
+</form>-->
