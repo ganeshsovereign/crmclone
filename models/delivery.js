@@ -221,19 +221,19 @@ deliverySchema.pre('save', function (next) {
                 if (err)
                     console.log(err);
 
-                if (entity && entity.cptRef) {
+               /* if (entity && entity.cptRef) {
                     SeqModel.inc("BL" + entity.cptRef, self.datec, function (seq) {
                         //console.log(seq);
                         self.ref = "BL" + entity.cptRef + seq;
                         next();
                     });
-                } else {
+                } else {*/
                     SeqModel.inc("BL", self.datec, function (seq) {
                         //console.log(seq);
                         self.ref = "BL" + seq;
                         next();
                     });
-                }
+                //}
             });
         } else {
             self.ref = F.functions.refreshSeq(self.ref, self.datedl);

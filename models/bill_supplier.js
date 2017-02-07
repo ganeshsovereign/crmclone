@@ -154,7 +154,7 @@ billSupplierSchema.pre('save', function (next) {
             EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
                 if (err)
                     return console.log(err);
-                if (entity && entity.cptRef) {
+                /*if (entity && entity.cptRef) {
                     SeqModel.inc("FF" + entity.cptRef, self.datec, function (seq, idx) {
                         //console.log(seq);
                         self.ref = "FF" + entity.cptRef + seq;
@@ -162,7 +162,7 @@ billSupplierSchema.pre('save', function (next) {
                         //    self.pieceAccounting = parseInt(seq);
                         next();
                     });
-                } else {
+                } else {*/
                     SeqModel.inc("FF", self.datec, function (seq, idx) {
                         //console.log(seq);
                         self.ref = "FF" + seq;
@@ -170,7 +170,7 @@ billSupplierSchema.pre('save', function (next) {
                         //    self.pieceAccounting = parseInt(seq);
                         next();
                     });
-                }
+                //}
             });
         } else {
             if (self.total_ttc == 0)
