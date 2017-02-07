@@ -185,19 +185,19 @@ billSchema.pre('save', function (next) {
                     if (err)
                         console.log(err);
 
-                    /*if (entity && entity.cptRef) {
+                    if (entity && entity.cptRef) {
                         SeqModel.inc("FA" + entity.cptRef, self.datec, function (seq) {
                             //console.log(seq);
                             self.ref = "FA" + entity.cptRef + seq;
                             next();
                         });
-                    } else {*/
+                    } else {
                         SeqModel.inc("FA", self.datec, function (seq) {
                             //console.log(seq);
                             self.ref = "FA" + seq;
                             next();
                         });
-                    //}
+                    }
                 });
             } else {
                 next();
