@@ -315,9 +315,9 @@ offerSchema.pre('save', function (next) {
                     if (err)
                         console.log(err);
 
-                    if (entity && entity.cptRef)
+                    /*if (entity && entity.cptRef)
                         self.ref = "PC" + entity.cptRef + seq;
-                    else
+                    else*/
                         self.ref = "PC" + seq;
                     next();
                 });
