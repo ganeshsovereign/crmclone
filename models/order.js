@@ -254,9 +254,9 @@ orderSchema.pre('save', function (next) {
                 if (err)
                     console.log(err);
 
-                if (entity && entity.cptRef)
+                /*if (entity && entity.cptRef)
                     self.ref = "CO" + entity.cptRef + seq;
-                else
+                else*/
                     self.ref = "CO" + seq;
                 next();
             });
