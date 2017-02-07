@@ -200,6 +200,7 @@ MetronicApp.directive('crmAddress', ['$http',
                 scope.updateAddressDir = true;
 
                 scope.deletedAddress = {
+                    name:null,
                     address: null,
                     zip: null,
                     town: null,
@@ -208,6 +209,7 @@ MetronicApp.directive('crmAddress', ['$http',
 
                 scope.enableUpdateAddress = function () {
                     scope.deletedAddress = {
+                        name: scope.addressModel.name,
                         address: scope.addressModel.address,
                         zip: scope.addressModel.zip,
                         town: scope.addressModel.town,
@@ -218,6 +220,7 @@ MetronicApp.directive('crmAddress', ['$http',
                 };
 
                 scope.cancelUpdateAddress = function () {
+                    scope.addressModel.name = scope.deletedAddress.name;
                     scope.addressModel.address = scope.deletedAddress.address;
                     scope.addressModel.zip = scope.deletedAddress.zip;
                     scope.addressModel.town = scope.deletedAddress.town;
