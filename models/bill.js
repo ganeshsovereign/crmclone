@@ -200,6 +200,7 @@ billSchema.pre('save', function (next) {
                     }
                 });
             } else {
+                self.ref = F.functions.refreshSeq(self.ref, self.datec);
                 next();
             }
         }

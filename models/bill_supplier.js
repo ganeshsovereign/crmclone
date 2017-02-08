@@ -175,6 +175,7 @@ billSupplierSchema.pre('save', function (next) {
         } else {
             if (self.total_ttc == 0)
                 self.Status = "DRAFT";
+            self.ref = F.functions.refreshSeq(self.ref, self.datec);
             next();
         }
     });
