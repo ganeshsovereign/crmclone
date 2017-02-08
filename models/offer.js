@@ -209,19 +209,14 @@ var offerSchema = new Schema({
                 default: 0
             },
             //price_base_type: String,
-            group: {
-                type: String,
-                default: "GLOBAL",
-                uppercase: true,
-                trim: true
-            },
-            title: String,
+            //title: String,
             priceSpecific: {type: Boolean, default: false},
             pu_ht: {
                 type: Number,
                 default: 0
             },
             description: String,
+            private : String, // Private note
             product_type: String,
             product: {
                 id: {

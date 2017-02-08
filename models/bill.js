@@ -108,7 +108,7 @@ var billSchema = new Schema({
             //pu: Number,
             qty: Number,
             tva_tx: Number,
-            group: {type: String, default: "1. DEFAULT"},
+            //group: {type: String, default: "1. DEFAULT"},
             //title: String,
             priceSpecific: {type: Boolean, default: false},
             pu_ht: Number,

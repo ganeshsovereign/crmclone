@@ -115,9 +115,10 @@ var deliverySchema = new Schema({
     //groups: [Schema.Types.Mixed],
     weight: {type: Number, default: 0}, // Poids total
     lines: [{
-            group: {type: String, default: "1. DEFAULT"},
-            title: String,
+            //group: {type: String, default: "1. DEFAULT"},
+            //title: String,
             description: {type: String, default: ""},
+            private : String, // Private note
             product_type: String,
             product: {
                 id: {type: Schema.Types.ObjectId, ref: "product"},
@@ -136,7 +137,8 @@ var deliverySchema = new Schema({
             discount: {type: Number, default: 0},
             no_package: Number, // Colis Number TODO a supprimer
             qty_order: {type: Number, default: 0},
-            weight: {type: Number, default: 0}
+            weight: {type: Number, default: 0},
+            optional: {type: Schema.Types.Mixed}
         }],
     subcontractors: [{
             title: String,
