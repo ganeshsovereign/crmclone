@@ -29,11 +29,11 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function ($rootScope) {
                     opens: (Metronic.isRTL() ? 'right' : 'left'),
                     startDate: moment(scope.data.start),
                     endDate: moment(scope.data.end),
-                    minDate: '01/01/2014',
+                    minDate: '01/01/2012',
                     //maxDate: '12/31/2014',
-                    dateLimit: {
-                        days: 90
-                    },
+                    //dateLimit: {
+                    //    days: 90
+                    //},
                     showDropdowns: false,
                     showWeekNumbers: true,
                     timePicker: false,
