@@ -4,6 +4,7 @@
 
 var _ = require('lodash'),
         mongoose = require('mongoose'),
+        moment = require('moment'),
         util = require('util'),
         Q = require('q');
 
@@ -331,8 +332,8 @@ exports.Book.prototype.parseQuery = function (query) {
         parsed['_journal'] = query._journal;
     }
     if ((query.start_date != null) && (query.end_date != null)) {
-        start_date = new Date(query.start_date);
-        end_date = new Date(query.end_date);
+        start_date = moment(query.start_date).startOf('day').toDate();
+        end_date = moment(query.end_date).endOf('day').toDate();
         parsed[dateParam] = {
             $gte: start_date,
             $lte: end_date
@@ -341,12 +342,12 @@ exports.Book.prototype.parseQuery = function (query) {
         delete query.end_date;
     } else if (query.start_date != null) {
         parsed[dateParam] = {
-            $gte: new Date(query.start_date)
+            $gte: moment(query.start_date).startOf('day').toDate()
         };
         delete query.start_date;
     } else if (query.end_date != null) {
         parsed[dateParam] = {
-            $lte: new Date(query.end_date)
+            $lte: moment(query.end_date).endOf('day').toDate()
         };
         delete query.end_date;
     }
