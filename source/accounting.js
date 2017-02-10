@@ -332,6 +332,8 @@ exports.Book.prototype.parseQuery = function (query) {
         parsed['_journal'] = query._journal;
     }
     if ((query.start_date != null) && (query.end_date != null)) {
+        //console.log(moment(query.start_date).startOf('day').toDate());
+        //console.log(moment(query.end_date).endOf('day').toDate());
         start_date = moment(query.start_date).startOf('day').toDate();
         end_date = moment(query.end_date).endOf('day').toDate();
         parsed[dateParam] = {
