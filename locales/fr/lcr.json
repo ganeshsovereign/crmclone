@@ -2,7 +2,7 @@
     "CHARSET": "UTF-8",   
     "LcrGestion": "Gestion des LCR",
     "LcrCreation": "Création de LCR",
-    "LcrList": "Liste des LCR",
+    "List": "Liste des LCR",
     "LcrStatus": "État de la LCR",
     "LcrStatusDraft": "Brouillon (à valider)",
     "LcrStatusWaiting": "En attente",
