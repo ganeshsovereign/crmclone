@@ -38,7 +38,7 @@ var TransationSchema = new Schema({
     account_path: [String],
     accounts: {type: String, set: setAccount},
     book: String,
-    entity: {type: String, required: true},
+    //entity: {type: String, required: true},
     memo: {type: String, uppercase: true},
     _journal: {
         type: Schema.Types.ObjectId,

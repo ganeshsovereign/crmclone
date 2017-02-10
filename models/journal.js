@@ -28,7 +28,7 @@ var JournalSchema = new Schema({
         }
     ],
     book: String,
-    entity: {type: String, required: true},
+    //entity: {type: String, required: true},
     voided: {
         type: Boolean,
         "default": false

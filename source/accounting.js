@@ -23,7 +23,7 @@ function Entry(book, memo, date, author, original_journal) {
     }
     this.journal.datetime = date;
     this.journal.book = this.book.name;
-    this.journal.entity = this.book.entity;
+    //this.journal.entity = this.book.entity;
     this.transactions = [];
     this.transactionModels = [];
     this.journal.approved = true;
@@ -65,7 +65,7 @@ Entry.prototype.credit = function (account_path, amount, extra) {
         credit: amount,
         debit: 0.0,
         book: this.book.name,
-        entity: this.book.entity,
+        //entity: this.book.entity,
         memo: this.journal.memo,
         _journal: this.journal._id,
         datetime: this.journal.datetime,
@@ -113,7 +113,7 @@ Entry.prototype.debit = function (account_path, amount, extra) {
         debit: amount,
         _journal: this.journal._id,
         book: this.book.name,
-        entity: this.book.entity,
+        //entity: this.book.entity,
         memo: this.journal.memo,
         datetime: this.journal.datetime,
         _original_journal: this.journal._original_journal
@@ -155,14 +155,14 @@ Entry.prototype.commit = function (success) {
     deferred = Q.defer();
     _ref = this.transactions;
 
-    if (!this.journal.entity) {
+    /*if (!this.journal.entity) {
         err = new Error("INVALID_ENTITY");
         err.code = 400;
         err.message = 'Entite inconnue';
         //console.error('Journal is invalid. Total is:', total);
         deferred.reject(err);
         return deferred.promise;
-    }
+    }*/
 
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         transaction = _ref[_i];
@@ -256,9 +256,9 @@ exports.Book.prototype.setName = function (name) {
     this.name = name;
 };
 
-exports.Book.prototype.setEntity = function (entity) {
+/*exports.Book.prototype.setEntity = function (entity) {
     this.entity = entity;
-};
+};*/
 
 
 exports.Book.prototype.entry = function (memo, date, author, original_journal) {
@@ -385,8 +385,8 @@ exports.Book.prototype.parseQuery = function (query) {
     //if (query.reconcilliation === 'all') //filter form angular
     //    parsed.reconcilliation == null;
 
-    if (this.entity)
-        parsed.entity = this.entity;
+    //if (this.entity)
+    //    parsed.entity = this.entity;
 
     parsed.approved = true;
     //console.log(parsed);
@@ -734,7 +734,7 @@ exports.Book.prototype.listJournal = function () {
     var deferred;
     deferred = Q.defer();
     this.transactionModel.find({
-        entity: this.entity
+        //entity: this.entity
     }).distinct('book', function (err, results) {
         if (err) {
             console.error(err);
@@ -751,7 +751,7 @@ exports.Book.prototype.listAccounts = function (val) {
     deferred = Q.defer();
 
     var query = {
-        entity: this.entity
+        //entity: this.entity
     };
 
     if (this.name)
