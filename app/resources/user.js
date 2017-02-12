@@ -12,13 +12,3 @@ MetronicApp.factory("Users", ['$resource', function ($resource) {
             })
         };
     }]);
-
-MetronicApp.factory("UserGroup", ['$resource', function($resource) {
-    return $resource('/erp/api/userGroup/:Id', {
-        Id: '@_id'
-    }, {
-        update: {
-            method: 'PUT'
-        }
-    });
-}]);

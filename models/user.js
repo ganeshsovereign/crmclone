@@ -128,7 +128,7 @@ UserSchema.virtual('status')
 
         });
 
-var UserGroupModel = MODEL('userGroup').Schema;
+var UserGroupModel = MODEL('group').Schema;
 var userGroupList = {};
 
 UserGroupModel.find(function (err, docs) {
