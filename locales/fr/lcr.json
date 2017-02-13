@@ -9,5 +9,7 @@
     "LcrStatusCredited": "Crédité",
     "LcrStatusRejected": "Rejeté",
     "LcrDetails":"Détails de la LCR",
-    "LcrCreationDate":"Date de LCR"
+    "LcrCreationDate":"Date de LCR",
+    "LcrValueDate":"Date de valeur LCR",
+    "Refresh_bills":"Rafraichir les factures"
 }

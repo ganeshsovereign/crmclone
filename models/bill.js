@@ -273,6 +273,8 @@ billSchema.virtual('amount').get(function () {
 
     var amount = {};
     var id = this._id;
+    
+    
 
     /*if (transactionList) {
      for (var i = 0; i < transactionList.length; i++) {
@@ -284,7 +286,7 @@ billSchema.virtual('amount').get(function () {
      }
      }*/
 
-    return 0;
+    return this.total_ttc - this.total_paid;
 });
 
 
