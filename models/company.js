@@ -191,8 +191,8 @@ var societeSchema = new Schema({
     idprof5: String,
     idprof6: String, // TVA Intra
     iban: {
-        bank: {type: String, uppercase: true, trim: true},
-        id: {type: String, set: setNoSpace, trim: true}, //FR76........
+        bank: {type: String, set: setNoSpace, uppercase: true, trim: true},
+        id: {type: String, set: setNoSpace, uppercase: true, trim: true}, //FR76........
         swift: {type: String, set: setNoSpace, uppercase: true, trim: true} //BIC / SWIFT
     },
     checklist: mongoose.Schema.Types.Mixed,
