@@ -104,6 +104,7 @@ var billSchema = new Schema({
     orders: [{type: Schema.Types.ObjectId, ref: 'order'}],
     deliveries: [{type: Schema.Types.ObjectId, ref: 'delivery'}],
     groups: [Schema.Types.Mixed],
+    weight: {type: Number, default: 0}, // Poids total
     lines: [{
             //pu: Number,
             qty: Number,
@@ -126,6 +127,7 @@ var billSchema = new Schema({
             discount: {type: Number, default: 0},
             no_package: Number, // Colis Number
             total_ht: {type: Number, set: setPrice},
+            weight: {type: Number, default: 0},
             date_start: Date,
             date_end: Date
         }],
@@ -169,6 +171,7 @@ billSchema.pre('save', function (next) {
         self.total_ht = result.total_ht;
         self.total_tva = result.total_tva;
         self.total_ttc = result.total_ttc;
+        self.weight = result.weight;
         
         if(self.total_ttc === 0)
             self.Status = 'DRAFT';
