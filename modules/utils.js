@@ -1,5 +1,5 @@
 exports.name = 'utils';
-exports.version = '1.05';
+exports.version = '1.06';
 
 var _ = require('lodash'),
         async = require('async'),
