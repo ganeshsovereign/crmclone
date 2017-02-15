@@ -110,8 +110,8 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(Group) :</div>
                         <div class="col-md-8 value">
-                            <span editable-select="user.group" onshow="loadGroup()" e-ng-options="s.id as s.label for s in userGroup.group.values">
-                                <small class="label label-sm label-default">{{user.group|| 'Aucun groupe'}}</small>
+                            <span editable-select="user.groupe" e-ng-options="g.id as g.name for g in groups">
+                                <small class="label label-sm label-default">{{user.groupe|| 'Aucun groupe'}}</small>
                             </span>
                         </div>
                     </div>
@@ -294,7 +294,7 @@
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(users:bankingEtablishment) :</div>
+                        <div class="col-md-4 name">@(users:BankingEtablishment) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.bankingEtablishment">
                                 {{user.bankingEtablishment}}

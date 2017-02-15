@@ -6,21 +6,21 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
         var user = $rootScope.login;
 
 
-        $scope.userGroupRightsCreate = true;
-        $scope.userGroupRightsDelete = true;
-        $scope.userGroupRightsReadPerms = true;
+        $scope.groupRightsCreate = true;
+        $scope.groupRightsDelete = true;
+        $scope.groupRightsReadPerms = true;
         $scope.group = {};
         $scope.validLogin = true;
         $scope.validEmail = true;
-        // Check userGroup rights
+        // Check group rights
         /*if (!Global.user.admin && !Global.user.superadmin) {
          
-         if (!Global.user.rights.group.delete)		// check userGroup delete 
-         $scope.userGroupRightsDelete = false;
-         if (!Global.user.rights.group.write)		// check userGroup write
-         $scope.userGroupRightsCreate = false;
-         if (!Global.user.rights.group.readperms)	// check userGroup readperms
-         $scope.userGroupRightsReadPerms = false;
+         if (!Global.user.rights.group.delete)		// check group delete 
+         $scope.groupRightsDelete = false;
+         if (!Global.user.rights.group.write)		// check group write
+         $scope.groupRightsCreate = false;
+         if (!Global.user.rights.group.readperms)	// check group readperms
+         $scope.groupRightsReadPerms = false;
          
          }*/
 
@@ -140,9 +140,9 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
 
         $scope.addNewUser = function () {
 
-            $http({method: 'PUT', url: '/api/userGroup/addUserToGroup', params: {
-                    user: $scope.userGroup.newUser._id,
-                    groupe: $scope.userGroup._id
+            $http({method: 'PUT', url: '/erp/api/group/addUserToGroup', params: {
+                    user: $scope.group.newUser._id,
+                    groupe: $scope.group._id
                 }
             }).success(function (status) {
 
@@ -154,18 +154,16 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
         $scope.findOne = function () {
 
             Group.get({
-                Id: $routeParams.id
+                Id: $rootScope.$stateParams.id
             }, function (doc) {
 
-                $scope.userGroup = doc;
-
-                pageTitle.setTitle('Fiche ' + $scope.userGroup.name);
+                $scope.group = doc;
 
                 $http({
                     method: 'GET',
-                    url: '/api/userGroup/users',
+                    url: '/erp/api/group/users',
                     params: {
-                        groupe: $scope.userGroup._id
+                        group: $scope.group._id
                     }
                 }).success(function (data, status) {
                     $scope.listUsers = data;
@@ -174,31 +172,31 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
 
                 $http({
                     method: 'GET',
-                    url: '/api/userGroup/noUsers',
+                    url: '/erp/api/group/noUsers',
                     params: {
-                        groupe: $scope.userGroup._id
+                        group: $scope.group._id
                     }
                 }).success(function (data, status) {
                     $scope.listNoUsers = data;
                 });
 
-                // Check userGroup rights
-                if (!Global.user.admin && !Global.user.superadmin) {
+                // Check group rights
+                if (!$rootScope.login.admin) {
 
-                    if (Global.user.groupe == $scope.userGroup._id && Global.user.rights.user.self_readperms) // check user self_readperms
-                        $scope.userGroupRightsReadPerms = true;
+                    if ($rootScope.login.groupe == $scope.group._id && $rootScope.login.rights.user.self_readperms) // check user self_readperms
+                        $scope.groupRightsReadPerms = true;
 
                 } else {
 
-                    if (Global.user.groupe == $scope.userGroup._id) // an admin can not delete a group to which it belongs
-                        $scope.userGroupRightsDelete = false;
+                    if ($rootScope.login.groupe == $scope.group._id) // an admin can not delete a group to which it belongs
+                        $scope.groupRightsDelete = false;
 
                 }
 
-                if ($scope.userGroupRightsReadPerms) {
+                if ($scope.groupRightsReadPerms) {
                     $http({
                         method: 'GET',
-                        url: '/rights'
+                        url: '/erp/api/rights'
                     }).success(function (data, status) {
                         $scope.modules = data;
                     });
@@ -212,16 +210,16 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
             if ($scope.listUsers.length > 0)
                 return alert("ce groupe ne peut pas être supprimer");
 
-            var userGroup = $scope.userGroup;
-            userGroup.$remove(function (response) {
-                $location.path('/userGroup');
+            var group = $scope.group;
+            group.$remove(function (response) {
+                $location.path('/group');
             });
         };
 
         $scope.removeUser = function (user) {
 
-            $http({method: 'PUT', url: '/api/userGroup/removeUserFromGroup', params: {
-                    user: user, group: $scope.userGroup._id
+            $http({method: 'PUT', url: '/erp/api/group/removeUserFromGroup', params: {
+                    user: user, group: $scope.group._id
                 }
             }).success(function (data, status) {
                 $scope.listUsers;
@@ -240,9 +238,9 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
 
         $scope.update = function () {
 
-            var userGroup = $scope.userGroup;
+            var group = $scope.group;
 
-            userGroup.$update(function () {
+            group.$update(function () {
 
             });
         };

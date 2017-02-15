@@ -26,7 +26,7 @@
             </button>
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(group)" ng-confirm-click="@(ConfirmDeleteGroup)" title="Delete Group ?">
+                    <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(group)" ng-confirm-click="@(Delete)" title="Delete Group ?">
                         <i class="fa fa-trash-o font-red"></i>
                         @(Delete)
                     </a>
@@ -53,16 +53,14 @@
                 <div class="row static-info">
                     <div class="col-md-4 name">@(users:NameGroup) :</div>
                     <div class="col-md-8 value">
-                        <span class="blue h5">
-                            {{group.name}}
-                        </span>
+                        <span class="blue h5"> {{group.name}} </span>
                     </div>
                 </div>
 
                 <div class="row static-info">
                     <div class="col-md-4 name">@(users:CreatedAt) :</div>
-                    <div class="col-md-8 value">
-                        <span class="blue h5" > {{group._createdAt}} </span>
+                    <div class="col-md-8 value"> 
+                        <span class="blue h5" > {{(group.createdAt | date:"dd/MM/yyyy")}} </span>
                     </div>
                 </div>
 
@@ -72,58 +70,17 @@
 
 
     <div class="col-md-4 col-sm-12">
-        <form editable-form name="editableUserCivility" onaftersave="update()">
+ 
             <div class="portlet light">
 
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-user"></i>@(users:ManagementofAccountingEntries)
                     </div>
-                    <div class="actions">
-                        <a href="javascript:;" ng-hide="user.isremoved" ng-click="editableUserCivility.$show()" ng-show="!editableUserCivility.$visible && editable" class="btn btn-default btn-sm">
-                            <i class="fa fa-pencil"></i> @(Edit) </a>
-                    </div>
-
-                    <div class="actions" ng-show="editableUserCivility.$visible">
-                        <button type="submit" ng-disabled="editableUserCivility.$waiting" class="btn btn-default btn-sm">@(Save)</button>
-                        <button type="button" ng-disabled="editableUserCivility.$waiting" ng-click="editableUserCivility.$cancel();
-                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
-                    </div>
-
+   
                 </div>
 
                 <div class="portlet-body">
-
-                    <div ng-controller="AccordionDemoCtrl">
-                        <p>
-                            <button class="btn btn-default btn-sm" ng-click="status.open = !status.open">Toggle last panel</button>
-                            <button class="btn btn-default btn-sm" ng-click="status.isFirstDisabled = ! status.isFirstDisabled">Enable / Disable first panel</button>
-                        </p>
-
-                        <label class="checkbox">
-                            <input type="checkbox" ng-model="oneAtATime">
-                            Open only one at a time
-                        </label>
-                        <accordion close-others="oneAtATime">
-                            <accordion-group heading="Static Header, initially expanded" is-open="status.isFirstOpen" is-disabled="status.isFirstDisabled">
-                                This content is straight in the template.
-                            </accordion-group>
-                            <accordion-group heading="{{group.title}}" ng-repeat="group in groups">
-                                {{group.content}}
-                            </accordion-group>
-                            <accordion-group heading="Dynamic Body Content">
-                                <p>The body of the accordion group grows to fit the contents</p>
-                                <button class="btn btn-default btn-sm" ng-click="addItem()">Add Item</button>
-                                <div ng-repeat="item in items">{{item}}</div>
-                            </accordion-group>
-                            <accordion-group is-open="status.open">
-                                <accordion-heading>
-                                    I can have markup, too! <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-                                </accordion-heading>
-                                This is just some content to illustrate fancy headings.
-                            </accordion-group>
-                        </accordion>
-                    </div>
 
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:CountryOfBirth) :</div>
@@ -191,7 +148,7 @@
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(users:bankingEtablishment) :</div>
+                        <div class="col-md-4 name">@(users:BankingEtablishment) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.bankingEtablishment">
                                 {{user.bankingEtablishment}}</small>
@@ -220,30 +177,15 @@
 
                 </div>
             </div>  
-
-        </form>
     </div>
 
     <div class="col-md-4 col-sm-12">
-        <form editable-form name="editableUserCivility2" onaftersave="update()">
             <div class="portlet light">
 
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="fa fa-user"></i>@(users:Emploi)
                     </div>
-
-                    <div class="actions">
-                        <a href="javascript:;"  ng-hide="user.isremoved" ng-click="editableUserCivility2.$show()" ng-show="!editableUserCivility2.$visible && editable" class="btn btn-default btn-sm">
-                            <i class="fa fa-pencil"></i> @(Edit) </a>
-                    </div>
-
-                    <div class="actions" ng-show="editableUserCivility2.$visible">
-                        <button type="submit" ng-disabled="editableUserCivility2.$waiting" class="btn btn-default btn-sm">@(Save)</button>
-                        <button type="button" ng-disabled="editableUserCivility2.$waiting" ng-click="editableUserCivility2.$cancel();
-                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
-                    </div>
-
                 </div>
 
                 <div class="portlet-body">
@@ -330,8 +272,7 @@
                         </div>
                     </div>
                 </div>            
-            </div> 
-        </form>        
+            </div>       
     </div>
     <!--
      <div class="col-md-8 col-sm-12">
