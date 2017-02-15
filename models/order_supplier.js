@@ -196,10 +196,12 @@ orderSupplierSchema.pre('save', function (next) {
         self.total_tva = result.total_tva;
         self.total_ttc = result.total_ttc;
 
-        if (self.isNew) {
-            EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
+        if (self.isNew)
+            //console.log(self.entity);
+            return EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
                 if (err)
                     return console.log(err);
+                
                 if (entity && entity.cptRef) {
                     SeqModel.inc("CF" + entity.cptRef, self.datec, function (seq, idx) {
                         //console.log(seq);
@@ -210,7 +212,6 @@ orderSupplierSchema.pre('save', function (next) {
                     });
                 } else {
                     SeqModel.inc("CF", self.datec, function (seq, idx) {
-                        //console.log(seq);
                         self.ref = "CF" + seq;
                         //if (!self.pieceAccounting)
                         //    self.pieceAccounting = parseInt(seq);
@@ -218,9 +219,10 @@ orderSupplierSchema.pre('save', function (next) {
                     });
                 }
             });
-        } else
-            self.ref = F.functions.refreshSeq(self.ref, self.datec);
-            next();
+        
+        self.ref = F.functions.refreshSeq(self.ref, self.datec);
+        next();
+        
     });
 });
 
