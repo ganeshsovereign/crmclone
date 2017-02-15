@@ -75,7 +75,7 @@ var orderSupplierSchema = new Schema({
         id: {type: String},
         name: String
     },
-    //entity: {type: String},
+    entity: {type: String},
     bl: [{
             societe: {
                 id: {type: Schema.Types.ObjectId, ref: 'societe'},
@@ -199,13 +199,24 @@ orderSupplierSchema.pre('save', function (next) {
         if (self.isNew) {
             EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
                 if (err)
-                    console.log(err);
-
-                    SeqModel.inc("CF", self.datec, function (seq) {
+                    return console.log(err);
+                if (entity && entity.cptRef) {
+                    SeqModel.inc("CF" + entity.cptRef, self.datec, function (seq, idx) {
                         //console.log(seq);
-                        self.ref = "CF" + seq;
+                        self.ref = "CF" + entity.cptRef + seq;
+                        //if (!self.pieceAccounting)
+                        //    self.pieceAccounting = parseInt(seq);
                         next();
                     });
+                } else {
+                    SeqModel.inc("CF", self.datec, function (seq, idx) {
+                        //console.log(seq);
+                        self.ref = "CF" + seq;
+                        //if (!self.pieceAccounting)
+                        //    self.pieceAccounting = parseInt(seq);
+                        next();
+                    });
+                }
             });
         } else
             self.ref = F.functions.refreshSeq(self.ref, self.datec);
