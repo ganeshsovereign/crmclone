@@ -143,6 +143,7 @@ var societeSchema = new Schema({
     typent_id: {type: String, default: 'TE_UNKNOWN'},
     effectif_id: {type: String, default: 'EF0'},
     capital: {type: Number, default: 0},
+    importExport : String, // null (no internal country), EUROP (Import/Export in EUROPE), INTER (Import/Export international)
     VATIsUsed: {type: Boolean, default: true},
     forme_juridique_code: String,
     commercial_id: {id: Schema.Types.ObjectId, name: String},
