@@ -44,7 +44,7 @@ exports.install = function () {
     F.route('/erp/api/group/removeUserFromGroup', object.removeUserFromGroup, ['post', 'json', 'authorize']);
 
     //modifier un groupe de collaborateur
-    F.route('/erp/api/group/{userGroupId}', object.update, ['post', 'json', 'authorize']);
+    F.route('/erp/api/group/{id}', object.update, ['put', 'json', 'authorize']);
 
 };
 
@@ -177,9 +177,9 @@ Object.prototype = {
     },
     show: function (id) {
         var self = this;
-        var group = MODEL('group').Schema;
+        var UserGroupModel = MODEL('group').Schema;
 
-        group.findOne({_id: id}, function (err, doc) {
+        UserGroupModel.findOne({_id: id}, function (err, doc) {
             if (err)
                 return self.throw500(err);
             if (!doc)
@@ -204,7 +204,7 @@ Object.prototype = {
     removeUserFromGroup: function () {
         var self = this;
         var user = self.query.user;
-        var group = self.query.group;
+        var UserGroupModel = self.query.group;
         var UserModel = MODEL('user').Schema;
 
         UserModel.update({_id: user}, {groupe: null}, function (err, doc) {
@@ -213,17 +213,29 @@ Object.prototype = {
             self.json(doc);
         });
     },
-    update: function () {
+    update: function (id) {
         var self = this;
-        var userGroup = self.userGroup;
-        userGroup = _.extend(userGroup, self.body);
+        var UserGroupModel = MODEL('group').Schema;
+        
+        UserGroupModel.findOne({_id: id}, function (err, group) {
+            group = _.extend(group, self.body);
+        
+        group.save(function (err, doc) {
 
-        userGroup.save(function (err, doc) {
+                if (err)
+                    return self.json({errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
 
-            if (err) {
-                return console.log(err);
-            }
-            self.json(doc);
+                doc = doc.toObject();
+                doc.successNotify = {
+                    title: "Success",
+                    message: "groupe enregistré"
+                };
+                self.json(doc);
+            });
         });
     },
     list: function () {

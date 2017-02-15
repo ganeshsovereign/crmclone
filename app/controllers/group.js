@@ -12,6 +12,7 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
         $scope.group = {};
         $scope.validLogin = true;
         $scope.validEmail = true;
+        $scope.oneAtATime = true;
         // Check group rights
         /*if (!Global.user.admin && !Global.user.superadmin) {
          
@@ -199,6 +200,7 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
                         url: '/erp/api/rights'
                     }).success(function (data, status) {
                         $scope.modules = data;
+                        console.log(data);
                     });
                 }
             });
@@ -244,5 +246,6 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
 
             });
         };
+
 
     }]);

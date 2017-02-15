@@ -41,239 +41,88 @@
 
 <div class="row">
     <div class="col-md-4 col-sm-12">
-        <div class="portlet blue-madison box">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-user"></i>@(users:GroupCard)
-                </div>
-
-            </div>
-            <div class="portlet-body">
-
-                <div class="row static-info">
-                    <div class="col-md-4 name">@(users:NameGroup) :</div>
-                    <div class="col-md-8 value">
-                        <span class="blue h5"> {{group.name}} </span>
+        <form editable-form name="editableNameGroup" onaftersave="update()">
+            <div class="portlet blue-madison box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>@(users:GroupCard)
                     </div>
-                </div>
-
-                <div class="row static-info">
-                    <div class="col-md-4 name">@(users:CreatedAt) :</div>
-                    <div class="col-md-8 value"> 
-                        <span class="blue h5" > {{(group.createdAt | date:"dd/MM/yyyy")}} </span>
+                    <div class="actions">
+                        <a href="javascript:;" ng-click="editableNameGroup.$show()"ng-hide="user.isremoved" ng-show="!editableNameGroup.$visible && editable" class="btn btn-default btn-sm">
+                            <i class="fa fa-pencil"></i> @(Edit) </a>
                     </div>
-                </div>
+                    <div class="actions" ng-show="editableNameGroup.$visible">
+                        <button type="submit" ng-disabled="editableNameGroup.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                        <button type="button" ng-disabled="editableNameGroup.$waiting" ng-click="editableNameGroup.$cancel();
+                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                    </div>
 
+                </div>
+                <div class="portlet-body">
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:NameGroup) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="group.name"> {{group.name}} </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(NumberOfEmployeesAssigned) :</div>
+                        <div class="col-md-8 value"> 
+                            <span class="blue h5" > compte avec tes doigts ! </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(users:CreatedAt) :</div>
+                        <div class="col-md-8 value"> 
+                            <span class="blue h5" > {{(group.createdAt| date:"dd/MM/yyyy")}} </span>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 
-
+    <!--
+    <label class="checkbox">
+        <input type="checkbox" ng-model="oneAtATime">
+        Un seul menu à la fois
+    </label>
+    -->
     <div class="col-md-4 col-sm-12">
- 
-            <div class="portlet light">
 
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-user"></i>@(users:ManagementofAccountingEntries)
-                    </div>
-   
+        <accordion >
+            <accordion-group heading="{{module.desc}}" ng-repeat="module in modules">
+                {{module.name}}
+                <div class="table-scrollable table-scrollable-borderless">
+                    <table class="table table-hover table-light" ng-repeat="(name,rights) in module.rights">
+
+                        <tbody>
+                            <tr ng-repeat="right in rights">
+                                <td> {{right.desc}} </td>
+                                <td ng-repeat="(key,perm) in right.perm">
+                                    <input type="checkbox" ng-checked="perm" ng-disabled="!groupRightsCreate" ng-model="group.rights[name][key]" ng-change="update()">
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
                 </div>
+            </accordion-group>
 
-                <div class="portlet-body">
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:CountryOfBirth) :</div>
-                        <div class="col-md-4 value">
-                            <span editable-select="user.countryOfBirth" e-ng-options="s.id as s.label for s in dict.fk_country.values">
-                                <small class="blue h5">{{user.countryOfBirth}}</small> 
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:Nationality) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.nationality">
-                                {{user.nationality}}</small>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:Situation) :</div>
-                        <div class="col-md-4 value">
-                            <span editable-select="user.familySituation" e-ng-options="s.id as s.label for s in dict.fk_rh_situationFamiliale.values">
-                                <small class="blue h5"> {{user.familySituation}} </small>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:Children) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.children">
-                                {{user.children}}</small>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:PerCharges) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.perCharges">
-                                {{user.perCharges}}</small>
-                            </span>
-                        </div>
-                    </div>  
-                </div>
-            </div>
-
-            <div class="portlet light">
-
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-user"></i>@(users:Informations)
-                    </div>
-                </div>
-
-                <div class="portlet-body">
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:SocialeSecurityNumber) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.socialeSecurityNumber">
-                                {{user.socialeSecurityNumber}}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:BankingEtablishment) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.bankingEtablishment">
-                                {{user.bankingEtablishment}}</small>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:IBAN) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.iban">
-                                {{user.iban}}</small>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:BIC) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.bic">
-                                {{user.bic}}</small>
-                            </span>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>  
+            <accordion-group is-open="status.open">
+                <accordion-heading>
+                    I can have markup, too! <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                </accordion-heading>
+                This is just some content to illustrate fancy headings.
+            </accordion-group>
+        </accordion>
     </div>
 
-    <div class="col-md-4 col-sm-12">
-            <div class="portlet light">
-
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-user"></i>@(users:Emploi)
-                    </div>
-                </div>
-
-                <div class="portlet-body">
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:ArrivalDate) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.arrivalDate"> {{(user.arrivalDate|date:"dd/MM/yyyy")}} </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:DateOfDeparture) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.dateOfDeparture"> {{(user.dateOfDeparture|date:"dd/MM/yyyy")}}</small> </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:JobDescription) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.jobDescription">
-                                {{user.jobDescription}}</small>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:TypeOfContract) :</div>
-                        <div class="col-md-4 value">
-                            <span editable-select="user.typeOfContract" e-ng-options="s.id as s.label for s in dict.fk_rh_contrat.values">
-                                <small class="blue h5"> {{user.typeOfContract}} </small>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:TrialPeriod) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.trialPeriod"> {{user.trialPeriod}}</small> </span>
-                        </div>
-                    </div>  
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:GrossSalary) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.grossSalary"> {{user.grossSalary}}</small> </span>
-                        </div>
-                    </div> 
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:TimeWork) :</div>
-                        <div class="col-md-4 value">
-                            <span editable-select="user.timeWork" e-ng-options="s.id as s.label for s in dict.fk_rh_tempsTravail.values">
-                                <small class="blue h5"> {{user.timeWork}} </small>
-                            </span>
-                        </div>
-                    </div>
-
-                </div>
-            </div>   
-
-            <div class="portlet light">
-
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-user"></i>@(users:Formations)
-                    </div>
-                </div>
-
-                <div class="portlet-body">
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:Classes) :</div>
-                        <div class="col-md-4 value">
-                            <span editable-select="user.classes" e-ng-options="s.id as s.label for s in dict.fk_rh_niveauEtude.values">
-                                <small class="blue h5"> {{user.classes}} </small>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="row static-info">
-                        <div class="col-md-4 name">@(users:DateOfClasses) :</div>
-                        <div class="col-md-4 value">
-                            <span class="blue h5" editable-text="user.dateOfClasses"> {{user.dateOfClasses}}</span>
-                        </div>
-                    </div>
-                </div>            
-            </div>       
-    </div>
     <!--
      <div class="col-md-8 col-sm-12">
          <form editable-form name="userNotes" onaftersave="update()">
