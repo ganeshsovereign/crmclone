@@ -223,3 +223,23 @@ MetronicApp.filter('filterAmount', function () {
         return items.out;
     };
 });
+
+MetronicApp.filter('range', function() {
+  return function(input, total) {
+    total = parseInt(total);
+
+    for (var i=0; i<total; i++) {
+      input.push(i);
+    }
+
+    return input;
+  };
+});
+
+MetronicApp.filter('monthName', [function() {
+    return function (monthNumber) { //1 = January
+        var monthNames = [ 'Jan', 'Fev', 'Mar', 'Avril', 'Mai', 'Juin',
+            'Juil', 'Aout', 'Sept', 'Oct', 'Nov', 'Dec' ];
+        return monthNames[monthNumber - 1];
+    };
+}]);
