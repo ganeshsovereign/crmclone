@@ -556,7 +556,7 @@ function convert(type) {
             });
             self.plain('Convert date bill is ok');
             break;
-            case 'date_delivery':
+        case 'date_delivery':
             var DeliveryModel = MODEL('delivery').Schema;
             var setDate = MODULE('utils').setDate;
             var moment = require('moment');
