@@ -554,7 +554,27 @@ function convert(type) {
                     });
                 });
             });
-            self.plain('Convert date is ok');
+            self.plain('Convert date bill is ok');
+            break;
+            case 'date_delivery':
+            var DeliveryModel = MODEL('delivery').Schema;
+            var setDate = MODULE('utils').setDate;
+            var moment = require('moment');
+
+            DeliveryModel.find({}, "_id datec datedl", function (err, docs) {
+                docs.forEach(function (elem) {
+                    //console.log(elem);
+
+                    elem.update({$set: {datec: setDate(elem.datec), datedl: setDate(elem.datedl)}}, {w: 1}, function (err, doc) {
+                        if (err)
+                            console.log(err);
+
+                        //console.log(doc);
+                    });
+                });
+            });
+
+            self.plain('Convert date delivery is ok');
             break;
     }
 
