@@ -17,9 +17,8 @@ mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
 
-var setPrice = function (value) {
-    return MODULE('utils').setPrice(value);
-};
+var setPrice = MODULE('utils').setPrice;
+var setDate = MODULE('utils').setDate;
 
 /**
  * Article Schema
@@ -70,8 +69,8 @@ var deliverySchema = new Schema({
     state_id: Number,
     phone: String,
     email: String,
-    datec: {type: Date, default: Date.now}, // date de creation
-    datedl: {type: Date, default: Date.now}, // date d'expedition
+    datec: {type: Date, default: Date.now, set:setDate}, // date de creation
+    datedl: {type: Date, default: Date.now, set:setDate}, // date d'expedition
     dater: {type: Date}, // Date de reception
     dateOf: {type: Date}, // date de debut de prestation
     dateTo: {type: Date}, // date de fin de prestation

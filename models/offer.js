@@ -17,9 +17,8 @@ mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
 
-var setPrice = function (value) {
-    return MODULE('utils').setPrice(value);
-};
+var setPrice = MODULE('utils').setPrice;
+var setDate = MODULE('utils').setDate;
 
 /**
  * Article Schema
@@ -77,10 +76,10 @@ var offerSchema = new Schema({
         type: String, default: ""
     },
     datec: {
-        type: Date, default: Date.now
+        type: Date, default: Date.now, set:setDate
     },
     date_livraison: {
-        type: Date
+        type: Date, set:setDate
     },
     notes: [{
             title: String,

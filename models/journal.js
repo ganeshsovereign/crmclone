@@ -7,15 +7,14 @@ var mongoose = require('mongoose'),
         Schema = mongoose.Schema,
         Q = require('q');
 
-var setPrice = function (value) {
-    return MODULE('utils').setPrice(value);
-};
+var setPrice = MODULE('utils').setPrice;
+var setDate = MODULE('utils').setDate;
 
 /**
  * Article Schema
  */
 var JournalSchema = new Schema({
-    datetime: Date,
+    datetime: {type: Date,set:setDate},
     memo: {
         type: String,
         "default": '',

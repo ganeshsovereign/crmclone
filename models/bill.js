@@ -17,9 +17,8 @@ mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
 
-var setPrice = function (value) {
-    return MODULE('utils').setPrice(value);
-};
+var setPrice = MODULE('utils').setPrice;
+var setDate = MODULE('utils').setDate;
 
 /**
  * Article Schema
@@ -63,8 +62,8 @@ var billSchema = new Schema({
     town: {type: String, default: ""},
     country_id: {type: String, default: 'FR'},
     state_id: Number,
-    datec: {type: Date, default: new Date},
-    dater: {type: Date}, // date limit reglement
+    datec: {type: Date, default: new Date, set:setDate},
+    dater: {type: Date, set:setDate}, // date limit reglement
     dateOf: {type: Date}, // Periode de facturation du
     dateTo: {type: Date}, // au
     notes: [{
