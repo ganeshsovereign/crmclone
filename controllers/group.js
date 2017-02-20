@@ -10,41 +10,41 @@ var Dict = INCLUDE('dict');
 
 
 exports.install = function () {
-    
+
     var object = new Object();
 
     //afficher la liste des groupes de collaborateurs
-    F.route('/erp/api/userGroup', object.read, ['authorize']);
+    F.route('/erp/api/group', object.read, ['authorize']);
 
     //recuperer la liste des groupes
-    F.route('/erp/api/userGroup/dt', object.readDT, ['post', 'authorize']);
+    F.route('/erp/api/group/dt', object.readDT, ['post', 'authorize']);
 
     //verifie si le nouveau groupe exite ou pas
-    F.route('/erp/api/userGroup/uniqName', object.uniqName, ['authorize']);
+    F.route('/erp/api/group/uniqName', object.uniqName, ['authorize']);
 
     //affiche la liste des collaborateurs du groupe
-    F.route('/erp/api/userGroup/users', object.listUsers, ['authorize']);
+    F.route('/erp/api/group/users', object.listUsers, ['authorize']);
 
     //affiche la liste des collaborateurs non affectés au groupe
-    F.route('/erp/api/userGroup/noUsers', object.listNoUsers, ['authorize']);
+    F.route('/erp/api/group/noUsers', object.listNoUsers, ['authorize']);
 
     //ajout d'un nouveau groupe collaborateurs
-    F.route('/erp/api/userGroup', object.create,['post', 'json', 'authorize']);
+    F.route('/erp/api/group', object.create, ['post', 'json', 'authorize']);
 
     //afficher la fiche du groupe collaborateurs
-    F.route('/erp/api/userGroup/{userGroupId}', object.show, ['authorize']);
+    F.route('/erp/api/group/{id}', object.show, ['authorize']);
 
     //affecter un collaborateur à un groupe
-    F.route('/erp/api/userGroup/addUserToGroup', object.addToGroup,['put', 'json', 'authorize']);
+    F.route('/erp/api/group/addUserToGroup', object.addToGroup, ['put', 'json', 'authorize']);
 
     //Supprimer un groupe de collaborateurs
-    F.route('/erp/api/userGroup/{userGroupId}', object.deleteUserGroup,  ['delete', 'authorize']);
+    F.route('/erp/api/group/{userGroupId}', object.deleteUserGroup, ['delete', 'authorize']);
 
     //supprimer un collaborateur d'un groupe
-    F.route('/erp/api/userGroup/removeUserFromGroup', object.removeUserFromGroup, ['post', 'json', 'authorize']);
+    F.route('/erp/api/group/removeUserFromGroup', object.removeUserFromGroup, ['post', 'json', 'authorize']);
 
     //modifier un groupe de collaborateur
-    F.route('/erp/api/userGroup/{userGroupId}', object.update, ['post', 'json', 'authorize']);
+    F.route('/erp/api/group/{id}', object.update, ['put', 'json', 'authorize']);
 
 };
 
@@ -64,8 +64,8 @@ Object.prototype = {
         });
     },
     read: function () {
-        var self=this;
-        var UserGroupModel = MODEL('userGroup').Schema;
+        var self = this;
+        var UserGroupModel = MODEL('group').Schema;
         var UserModel = MODEL('user').Schema;
         var user;
         var userGroup = [];
@@ -77,14 +77,14 @@ Object.prototype = {
 
                 var counter;
                 var i, j;
-                groups.forEach(function(group) {
+                groups.forEach(function (group) {
                     counter = 0;
                     for (j in user) {
                         if (user[j].groupe === group._id)
                             counter = counter + 1;
                     }
 
-                    userGroup.push({_id: group._id, id:group._id, name: group.name, count: counter, description:group.notes});
+                    userGroup.push({_id: group._id, id: group._id, name: group.name, count: counter, description: group.notes});
                 });
 
                 //console.log(userGroup);
@@ -109,124 +109,207 @@ Object.prototype = {
         });
 
     },
-    listUsers: function (req, res) {
+    listUsers: function () {
+        var self = this;
+        var UserModel = MODEL('user').Schema;
 
-        if (!req.query.groupe)
-            return res.send(404);
+        if (!self.query.group)
+            return self.throw404();
 
-        var groupe = req.query.groupe;
+        var group = self.query.group;
 
-        UserModel.find({groupe: groupe}, function (err, doc) {
+        UserModel.find({groupe: group}, function (err, doc) {
             if (err)
-                return next(err);
+                return self.throw500(err);
             if (!doc)
-                return res.json({});
+                return self.json([]);
 
-            res.send(200, doc);
+            self.json(doc);
 
         });
 
     },
-    listNoUsers: function (req, res) {
+    listNoUsers: function () {
+        var self = this;
+        var UserModel = MODEL('user').Schema;
 
-        if (!req.query.groupe)
-            return res.send(404);
+        if (!self.query.group)
+            return self.throw404();
 
-        var groupe = req.query.groupe;
+        var group = self.query.group;
 
-        UserModel.find({groupe: {$nin: [groupe]}}, "_id lastname firstname", function (err, doc) {
+        UserModel.find({groupe: {$nin: [group]}}, "_id lastname firstname", function (err, doc) {
             if (err)
-                return next(err);
+                return self.throw500(err);
             if (!doc)
-                return res.json({});
+                return self.json([]);
 
-            res.send(200, doc);
+            self.json(doc);
 
         });
 
     },
-    addToGroup: function (req, res) {
-
-        var user = req.query.user;
-        var groupe = req.query.groupe;
+    addToGroup: function () {
+        var self = this;
+        var UserModel = MODEL('user').Schema;
+        var user = self.query.user;
+        var groupe = self.query.groupe;
 
         UserModel.update({_id: user}, {$set: {groupe: groupe}}, function (err, doc) {
             if (err)
-                return res.send(500, err);
-
-
-            res.send(200);
+                return self.throw500(err);
+            self.json(doc);
         });
     },
-    create: function (req, res) {
+    create: function () {
+        var self = this;
+        var UserGroupModel = MODEL('group').Schema;
+        var userGroup = new UserGroupModel(self.body);
+        var name = self.body.name;
 
-        var userGroup = new UserGroupModel(req.body);
-
-        var name = req.body.name;
-        userGroup._id = 'group:' + name;
-
+        userGroup._id = 'group' + name;
         userGroup.save(function (err, doc) {
-            if (err) {
-                return res.status(500).json(err);
-                //return console.log(err);
-
-            }
-
-            res.json(userGroup);
+            if (err)
+                return self.throw500(err);
+            //return console.log(err);
+            self.json(userGroup);
         });
     },
-    show: function (req, res) {
-        res.json(req.userGroup);
-    },
-    deleteUserGroup: function (req, res) {
+    show: function (id) {
+        var self = this;
+        var UserGroupModel = MODEL('group').Schema;
 
-        var userGroup = req.userGroup;
+        UserGroupModel.findOne({_id: id}, function (err, doc) {
+            if (err)
+                return self.throw500(err);
+            if (!doc)
+                return self.throw500('Failed to load Group' + id);
+            self.json(doc);
+        });
+    },
+    deleteUserGroup: function () {
+        var self = this;
+        var userGroup = self.userGroup;
 
         userGroup.remove(function (err) {
             if (err) {
-                res.render('error', {
+                self.render('error', {
                     status: 500
                 });
             } else {
-                res.json(userGroup);
+                self.json(userGroup);
             }
         });
     },
-    removeUserFromGroup: function (req, res) {
+    removeUserFromGroup: function () {
+        var self = this;
+        var user = self.query.user;
+        var UserGroupModel = self.query.group;
+        var UserModel = MODEL('user').Schema;
 
-        var user = req.query.user;
-        var group = req.query.group;
-
-        UserModel.update({_id: user}, {groupe: null}, function (err) {
+        UserModel.update({_id: user}, {groupe: null}, function (err, doc) {
             if (err)
-                return res.send(500, err);
-
-            res.send(200);
+                return self.throw500(err);
+            self.json(doc);
         });
     },
-    update: function (req, res) {
+    update: function (id) {
+        var self = this;
+        var UserGroupModel = MODEL('group').Schema;
+        
+        UserGroupModel.findOne({_id: id}, function (err, group) {
+            group = _.extend(group, self.body);
+        
+        group.save(function (err, doc) {
 
-        var userGroup = req.userGroup;
-        userGroup = _.extend(userGroup, req.body);
+                if (err)
+                    return self.json({errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
 
-        userGroup.save(function (err, doc) {
-
-            if (err) {
-                return console.log(err);
-            }
-
-            res.json(doc);
+                doc = doc.toObject();
+                doc.successNotify = {
+                    title: "Success",
+                    message: "groupe enregistré"
+                };
+                self.json(doc);
+            });
         });
     },
-    list: function (req, res) {
-
-        var fields = req.query.fields;
+    list: function () {
+        var self = this;
+        var fields = self.query.fields;
+        var UserGroupModel = MODEL('group').Schema;
 
         UserGroupModel.find("ALL", fields, function (err, doc) {
             if (err)
-                return res.send(500, err);
+                       return self.throw500(err);
+            self.json(doc);
+        });
+    },
 
-            res.json(doc);
+    readDT: function () {
+        var self = this;
+        var UserGroupModel = MODEL('group').Schema;
+        var query = JSON.parse(self.req.body.query);
+        var Status;
+
+        //console.log(self.query);
+
+        var conditions = {
+            isremoved: {$ne: true}
+        };
+
+        if (!query.search.value) {
+            if (self.query.status_id) {
+                conditions.Status = self.query.status_id;
+            }
+        } else
+            delete conditions.Status;
+
+        //console.log(self.query);
+
+        var options = {
+            conditions: conditions
+                    //select: ""
+        };
+
+        //console.log(options);
+
+        async.parallel({
+            datatable: function (cb) {
+                UserGroupModel.dataTable(query, options, cb);
+            }
+        }, function (err, res) {
+            if (err)
+                return self.throw500(err);
+
+            //console.log(res);
+
+            for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                var row = res.datatable.data[i];
+
+                // Add checkbox
+                res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                // Add link company                
+
+                // Add id
+                res.datatable.data[i].DT_RowId = row._id.toString();
+
+                res.datatable.data[i].name = '<a class="with-tooltip" href="#!/group/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name + '"><span class="fa fa-users"></span> ' + row.name + '</a>';
+                // Action
+                res.datatable.data[i].action = '<a href="#!/group/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                // Add url on name
+                res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
+                // Convert Date
+                res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+            }
+
+            //console.log(res.datatable);
+
+            self.json(res.datatable);
         });
     }
 };

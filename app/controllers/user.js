@@ -1,6 +1,6 @@
 "use strict";
 
-MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$filter', 'Users', function ($scope, $rootScope, $http, $filter, Users) {
+MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$filter', 'Users', 'Group', function ($scope, $rootScope, $http, $filter, Users, Group) {
 
         var grid = new Datatable();
         var user = $rootScope.login;
@@ -17,7 +17,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
         $scope.status_id = null;
         $scope.validLogin = false;
         $scope.validEmail = true;
-
+        $scope.groups = [];
         // Init
         $scope.$on('$viewContentLoaded', function () {
             // initialize core components
@@ -34,7 +34,12 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                 }
             }).success(function (data, status) {
                 $scope.dict = data;
-                console.log(data);
+               //console.log(data);
+            });
+            
+            Group.query({}, function (groups) {
+                //console.log(groups);
+                $scope.groups = groups;
             });
 
             if ($rootScope.$stateParams.Status) {
@@ -65,6 +70,8 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
             });
 
         });
+        
+        
 
         $scope.ngIncludeInit = function (params, length) {
             $scope.params = params;
@@ -119,7 +126,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
             Users.users.get({
                 Id: $rootScope.$stateParams.id
             }, function (user) {
-                console.log(user);
+                //console.log(user);
                 $scope.user = user;
                 $scope.editable=true; // TODO ajouter controle d'acces
 
@@ -340,6 +347,8 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
             });
 
         };
+        
+        
     }]);
 
 MetronicApp.controller('BoxRHController', ['$rootScope', '$scope', '$http', '$timeout', 'Users', function ($rootScope, $scope, $http, $timeout, Users) {

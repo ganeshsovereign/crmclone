@@ -26,7 +26,7 @@
             </button>
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(user)" ng-confirm-click="Supprimer l'utilisateur ?" title="Supprimer l'utilisateur">
+                    <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(user)" ng-confirm-click="@(ConfirmDeleteUser)" title="Delete Users ?">
                         <i class="fa fa-trash-o font-red"></i>
                         @(Delete)
                     </a>
@@ -110,8 +110,8 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(Group) :</div>
                         <div class="col-md-8 value">
-                            <span editable-select="user.group" onshow="loadGroup()" e-ng-options="group as group.name for group in groups track by group.id">
-                                <small class="label label-sm label-default">{{user.group.name|| 'Aucun groupe'}}</small>
+                            <span editable-select="user.groupe" e-ng-options="g.id as g.name for g in groups">
+                                <small class="label label-sm label-default">{{user.groupe|| 'Aucun groupe'}}</small>
                             </span>
                         </div>
                     </div>
@@ -222,7 +222,7 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:CityOfBirth) :</div>
                         <div class="col-md-4 value">
-                            <span editable-text="user.cityOfBirth">
+                            <span class="blue h5" editable-text="user.cityOfBirth">
                                 {{user.cityOfBirth}}
                             </span>
                         </div>
@@ -294,7 +294,7 @@
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(users:bankingEtablishment) :</div>
+                        <div class="col-md-4 name">@(users:BankingEtablishment) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.bankingEtablishment">
                                 {{user.bankingEtablishment}}
