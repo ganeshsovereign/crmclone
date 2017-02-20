@@ -21,7 +21,7 @@ exports.install = function () {
         var UserModel = MODEL('hr').Schema;
         var self = this;
 
-        UserModel.find({isremoved: {$ne : true},Status: {$ne: "DISABLE"}}, "", {sort: {lastname: 1}}, function (err, docs) {
+        UserModel.find({isremoved: {$ne: true}, Status: {$ne: "DISABLE"}}, "", {sort: {lastname: 1}}, function (err, docs) {
             if (err)
                 return self.throw500("err : /erp/api/user/select {0}".format(err));
 
@@ -57,7 +57,7 @@ exports.install = function () {
     F.route('/erp/api/user/name/autocomplete', function () {
         var UserModel = MODEL('user').Schema;
         var self = this;
-        
+
         //console.dir(self.body);
 
         var query = {};
@@ -154,7 +154,7 @@ exports.install = function () {
     // For multi-entites user
     F.route('/erp/api/user/entity', object.entityUpdate, ['put', 'json', 'authorize']);
     //other routes..
-    
+
     //verifie si le nouveau exite ou pas
     F.route('/erp/api/user/email/', object.uniqEmail, ['authorize']);
     F.route('/erp/api/user/{id}', object.uniqLogin, ['authorize']);
@@ -164,16 +164,17 @@ function Object() {
 }
 
 Object.prototype = {
-    user: function (req, res, next, id) {
+    user: function (next, id) {
         var UserModel = MODEL('hr').Schema;
-
+        var self = this;
+        
         UserModel.findOne({_id: id}, function (err, doc) {
             if (err)
                 return next(err);
             if (!doc)
                 return next(new Error('Failed to load user ' + id));
 
-            req.User = doc;
+            self.json(doc);
             next();
         });
     },
@@ -192,7 +193,7 @@ Object.prototype = {
     },
     create: function () {
         var UserModel = MODEL('hr').Schema;
-        var self=this;
+        var self = this;
         //return req.body.models;
         var user = new UserModel(self.body);
 
@@ -204,23 +205,24 @@ Object.prototype = {
             user.entity = self.user.entity;
 
         user.save(function (err, doc) {
-            if (err) 
+            if (err)
                 return self.throw500(err);
-                //return console.log(err);
+            //return console.log(err);
 
             self.json(user);
         });
     },
-    read: function (req, res) {
+    read: function () {
         var UserModel = MODEL('hr').Schema;
+        var self = this; 
         UserModel.find({}, function (err, doc) {
             if (err) {
                 console.log(err);
-                res.send(500, doc);
+                self.throw500(err);
                 return;
             }
 
-            res.send(doc);
+            self.send(doc);
         });
     },
     update: function (id) {
@@ -255,24 +257,26 @@ Object.prototype = {
         var self = this;
         var UserModel = MODEL('hr').Schema;
 
-        UserModel.update({_id: id},{$set:{isremoved:true, Status:'DISABLE'}}, function (err, user) {
-            if (err) 
+        UserModel.update({_id: id}, {$set: {isremoved: true, Status: 'DISABLE'}}, function (err, user) {
+            if (err)
                 self.throw500(err);
-             else
+            else
                 self.json(user);
         });
     },
-    connection: function (req, res) {
-        UserModel.find({NewConnection: {$ne: null}, entity: req.query.entity}, "lastname firstname NewConnection", {limit: 10, sort: {
+    connection: function () {
+        var self = this;
+        var UserModel = MODEL('hr').Schema;
+        UserModel.find({NewConnection: {$ne: null}, entity: self.query.entity}, "lastname firstname NewConnection", {limit: 10, sort: {
                 NewConnection: -1
             }}, function (err, docs) {
-            res.json(docs);
+            self.json(docs);
         });
     },
     uniqLogin: function (id) {
         var self = this;
         var UserModel = MODEL('hr').Schema;
-        
+
         UserModel.findOne({username: id.toLowerCase()}, "_id lastname firstname username", function (err, doc) {
             if (err)
                 return self.throw500(err);
@@ -286,10 +290,10 @@ Object.prototype = {
     uniqEmail: function () {
         var self = this;
         var UserModel = MODEL('hr').Schema;
-        
-        if(!self.query.email)
+
+        if (!self.query.email)
             return self.throw500("/erp/api/user/email : err query url -> email not found");
-        
+
         UserModel.findOne({email: self.query.email.toLowerCase()}, "_id lastname firstname email", function (err, doc) {
             if (err)
                 return self.throw500(err);
@@ -299,30 +303,28 @@ Object.prototype = {
             self.json(doc);
         });
     },
-    entityUpdate: function (req, res) {
+    entityUpdate: function () {
+        var self = this;
+        var UserModel = MODEL('hr').Schema;
         var result = [];
         //console.log(req.user);
 
-        if (req.user.multiEntities && req.body.entity) {
-            UserModel.findByIdAndUpdate(req.user._id, {$set: {entity: req.body.entity}}, function (err, user) {
+        if (self.user.multiEntities && selfreq.body.entity) {
+            UserModel.findByIdAndUpdate(self.user._id, {$set: {entity: self.body.entity}}, function (err, user) {
                 if (err)
                     console.log(err);
 
                 //console.log(user);
-                res.json(user);
+                self.json(user);
             });
         }
     },
     readDT: function () {
         var self = this;
         var UserModel = MODEL('user').Schema;
-
         var query = JSON.parse(self.req.body.query);
-
         var Status;
-
         //console.log(self.query);
-
         var conditions = {
             isremoved: {$ne: true},
             entity: self.query.entity
@@ -350,7 +352,7 @@ Object.prototype = {
 
         async.parallel({
             status: function (cb) {
-               cb(null,MODEL('user').Status);
+                cb(null, MODEL('user').Status);
             },
             datatable: function (cb) {
                 UserModel.dataTable(query, options, cb);
@@ -390,7 +392,7 @@ Object.prototype = {
         });
     }
 };
-        
+
 function Absence() {
 }
 

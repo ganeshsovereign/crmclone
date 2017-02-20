@@ -39,7 +39,7 @@ framework.on('module#auth', function (type, name) {
                         console.log("onAuthorize", response.email);
 
                         console.log("Load rights !");
-                        var UserGroup = MODEL('userGroup').Schema;
+                        var UserGroup = MODEL('group').Schema;
 
                         var rights = {
                             societe: {

@@ -638,7 +638,7 @@
     "Owner": "Propriétaire",
     "DetectedVersion": "Version détectée",
     "FollowingConstantsWillBeSubstituted": "Les constantes suivantes seront substituées par leur valeur correspondante.",
-    "Refresh": "Rafraichir",
+    "Refresh": "Rafraîchir",
     "BackToList": "Retour liste",
     "GoBack": "Retour arrière",
     "CanBeModifiedIfOk": "Peut être modifié si valide",
@@ -782,5 +782,6 @@
     "PrintList": "Imprimer la liste",
     "Barcode":"Code barres",
     "View more":"Voir détails",
-    "ReadMore":"Voir plus"
+    "ReadMore":"Voir plus",
+    "NumberOfEmployeesAssigned" : "Nombre de collaborateurs affectés"
 }

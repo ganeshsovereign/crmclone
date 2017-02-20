@@ -215,7 +215,7 @@
                     "perms": "group.read",
                     "usertype": 2,
                     "icon": "fa-group",
-                    "title": "users:Profiles"
+                    "title": "users:GroupManagement"
                 },
                 "menu:absences": {
                     "position": 5,

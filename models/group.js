@@ -12,11 +12,8 @@ var mongoose = require('mongoose'),
  * UserGroup Schema
  */
 var userGroupSchema = new Schema({
-	name: String,
+	name: {type: String, unique: true, lowercase: true},
 	_id: String,
-	members: [Number],
-	databases: [Number],
-	entity: String,
 	_createdAt: {type: Date},
 	updatedAt: Date,
 	notes: String,
@@ -25,10 +22,11 @@ var userGroupSchema = new Schema({
 	},
 	objectifs: {
 		type: Schema.Types.Mixed
-	}
+	},
+        isremoved: Boolean
 });
 
 userGroupSchema.plugin(timestamps);
 
-exports.Schema = mongoose.model('userGroup', userGroupSchema, 'UserGroup');
-exports.name = 'userGroup';
+exports.Schema = mongoose.model('group', userGroupSchema, 'UserGroup');
+exports.name = 'group';
