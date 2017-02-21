@@ -464,13 +464,16 @@ exports.Book.prototype.balance = function (query) {
                 if (result == null) {
                     return deferred.resolve({
                         balance: 0,
-                        notes: 0
+                        notes: 0,
+                        result : 0
                     });
                 }
                 total = result.credit - result.debit;
+                
                 return deferred.resolve({
                     balance: total,
-                    notes: result.count
+                    notes: result.count,
+                    result : 0
                 });
             }
         });
@@ -493,18 +496,21 @@ exports.Book.prototype.balance = function (query) {
                     if (result == null) {
                         return deferred.resolve({
                             balance: 0,
-                            notes: 0
+                            notes: 0,
+                            result : 0
                         });
                     }
                     total = result.credit - result.debit;
                     return deferred.resolve({
                         balance: total,
-                        notes: result.notes
+                        notes: result.notes,
+                        result : 0
                     });
                 } else {
 
                     var credit = 0,
-                            debit = 0;
+                            debit = 0,
+                            solde = 0; //Benefice or perte
                     for (var i = 0, len = result.length; i < len; i++) {
                         if (!result[i].credit)
                             result[i].credit = 0;
@@ -513,6 +519,12 @@ exports.Book.prototype.balance = function (query) {
 
                         debit += result[i].debit;
                         credit += result[i].credit;
+                        
+                        if (result[i]._id.trim()[0] == '6' || result[i]._id.trim()[0] == '7') {
+                            //console.log(result[i]._id);
+                            solde +=  result[i].credit;
+                            solde -= result[i].debit;
+                        }
 
                         result[i].balance = MODULE('utils').round(result[i].credit - result[i].debit, 2);
                         result[i].credit = MODULE('utils').round(result[i].credit, 2);
@@ -527,7 +539,8 @@ exports.Book.prototype.balance = function (query) {
                         credit: credit,
                         debit: debit,
                         notes: result.length,
-                        data: result
+                        data: result,
+                        result : solde
                     });
                 }
             }
