@@ -1,9 +1,10 @@
 exports.name = 'utils';
-exports.version = '1.05';
+exports.version = '1.07';
 
 var _ = require('lodash'),
         async = require('async'),
         numeral = require('numeral'),
+        moment = require('moment'),
         mongoose = require('mongoose');
 
 var Dict = INCLUDE('dict');
@@ -44,13 +45,9 @@ exports.printPrice = function (value, width) {
     switch (width) {
         case 3 :
             return numeral(round(value, 3)).format('0[.]000 $');
-            ;
         default :
             return numeral(round(value, 2)).format('0[.]00 $');
-            ;
     }
-
-
 };
 
 //TODO Remove used printUnit
@@ -84,6 +81,14 @@ exports.numberFormat = function (number, width) {
     //console.log("width : " + width);
     //console.log(number + '');
     return new Array(width + 1 - (number + '').length).join('0') + number;
+};
+
+// Fix Timezone GMT for mongodb aggregate -> set hours to 12
+exports.setDate = function (value) {
+    if(!value)
+        return null;
+    
+    return moment(value).hour(12).toDate();
 };
 
 // merge 2 arrays of object with specif prop example _id

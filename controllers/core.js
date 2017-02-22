@@ -513,6 +513,69 @@ function convert(type) {
             });
             return self.plain("Type is order");
             break;
+        case 'date_bill':
+            var BillModel = MODEL('bill').Schema;
+            var BillSupplierModel = MODEL('billSupplier').Schema;
+            var setDate = MODULE('utils').setDate;
+            var moment = require('moment');
+
+            BillModel.find({}, "_id datec dater", function (err, docs) {
+                docs.forEach(function (elem) {
+                    //console.log(elem);
+
+                    //FIX 29/02 !!! replace 28/02
+                    //console.log(moment(elem.datec).day());
+                    if (moment(elem.datec).month() == 1 && moment(elem.datec).date() == 29)
+                        elem.datec = moment(elem.datec).subtract(1, 'day').toDate();
+
+                    elem.update({$set: {datec: setDate(elem.datec), dater: setDate(elem.dater)}}, {w: 1}, function (err, doc) {
+                        if (err)
+                            console.log(err);
+
+                        //console.log(doc);
+                    });
+                });
+            });
+
+            BillSupplierModel.find({}, "_id datec dater", function (err, docs) {
+                docs.forEach(function (elem) {
+                    //console.log(elem);
+
+                    //FIX 29/02 !!! replace 28/02
+                    //console.log(moment(elem.datec).day());
+                    if (moment(elem.datec).month() == 1 && moment(elem.datec).date() == 29)
+                        elem.datec = moment(elem.datec).subtract(1, 'day').toDate();
+
+                    elem.update({$set: {datec: setDate(elem.datec), dater: setDate(elem.dater)}}, {w: 1}, function (err, doc) {
+                        if (err)
+                            console.log(err);
+
+                        //console.log(doc);
+                    });
+                });
+            });
+            self.plain('Convert date bill is ok');
+            break;
+        case 'date_delivery':
+            var DeliveryModel = MODEL('delivery').Schema;
+            var setDate = MODULE('utils').setDate;
+            var moment = require('moment');
+
+            DeliveryModel.find({}, "_id datec datedl", function (err, docs) {
+                docs.forEach(function (elem) {
+                    //console.log(elem);
+
+                    elem.update({$set: {datec: setDate(elem.datec), datedl: setDate(elem.datedl)}}, {w: 1}, function (err, doc) {
+                        if (err)
+                            console.log(err);
+
+                        //console.log(doc);
+                    });
+                });
+            });
+
+            self.plain('Convert date delivery is ok');
+            break;
     }
 
     return self.plain("Type is unknown");

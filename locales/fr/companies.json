@@ -379,7 +379,8 @@
     "AttachANewFile": "Joindre un nouveau fichier",
     "NoRIB": "Aucun BAN (RIB) défini",
     "NoParentCompany": "Aucune",
-    "ExportImport": "Import-Export",
+    "ImportExport": "Import-Export",
+    "ImportExportHelp": "Utilisé pour les déclarations de TVA",
     "ExportCardToFormat": "Exporter fiche au format",
     "ContactNotLinkedToCompany": "Contact non lié à un compte",
     "SpeedealingLogin": "Speedealing login",
@@ -463,8 +464,8 @@
     "LogoCompany": "Logo",
     "UploadLogoCompany-max1Mo": "Télécharger le logo de l'entreprise - 1Mo maximum",
     "GroupDeliveries": "Regroupement des BL",
-    "Tasks":"Tâches / Tickets",
-    "ErrEmptyReglement":"Mode de reglement manquant",
-    "ErrEmptyCondition":"Conditions de reglement manquantes",
-    "ErrIBAN":"IBAN incorrect : cle de verification incorrecte"
+    "Tasks": "Tâches / Tickets",
+    "ErrEmptyReglement": "Mode de reglement manquant",
+    "ErrEmptyCondition": "Conditions de reglement manquantes",
+    "ErrIBAN": "IBAN incorrect : cle de verification incorrecte"
 }

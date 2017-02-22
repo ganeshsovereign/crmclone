@@ -9,9 +9,8 @@ var mongoose = require('mongoose'),
 
 var Dict = INCLUDE('dict');
 
-var setPrice = function (value) {
-    return MODULE('utils').setPrice(value);
-};
+var setPrice = MODULE('utils').setPrice;
+var setDate = MODULE('utils').setDate;
 
 /**
  * Article Schema
@@ -46,8 +45,8 @@ var orderSupplierSchema = new Schema({
         town: String,
         country: String
     },
-    datec: {type: Date, default: Date.now},
-    date_livraison: {type: Date, default: Date.now},
+    datec: {type: Date, default: Date.now, set:setDate},
+    date_livraison: {type: Date, default: Date.now, set:setDate},
     notes: [{
             author: {
                 id: {type: String, ref: 'User'},
@@ -75,7 +74,7 @@ var orderSupplierSchema = new Schema({
         id: {type: String},
         name: String
     },
-    //entity: {type: String},
+    entity: {type: String},
     bl: [{
             societe: {
                 id: {type: Schema.Types.ObjectId, ref: 'societe'},
@@ -196,20 +195,33 @@ orderSupplierSchema.pre('save', function (next) {
         self.total_tva = result.total_tva;
         self.total_ttc = result.total_ttc;
 
-        if (self.isNew) {
-            EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
+        if (self.isNew)
+            //console.log(self.entity);
+            return EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
                 if (err)
-                    console.log(err);
-
-                    SeqModel.inc("CF", self.datec, function (seq) {
+                    return console.log(err);
+                
+                if (entity && entity.cptRef) {
+                    SeqModel.inc("CF" + entity.cptRef, self.datec, function (seq, idx) {
                         //console.log(seq);
-                        self.ref = "CF" + seq;
+                        self.ref = "CF" + entity.cptRef + seq;
+                        //if (!self.pieceAccounting)
+                        //    self.pieceAccounting = parseInt(seq);
                         next();
                     });
+                } else {
+                    SeqModel.inc("CF", self.datec, function (seq, idx) {
+                        self.ref = "CF" + seq;
+                        //if (!self.pieceAccounting)
+                        //    self.pieceAccounting = parseInt(seq);
+                        next();
+                    });
+                }
             });
-        } else
-            self.ref = F.functions.refreshSeq(self.ref, self.datec);
-            next();
+        
+        self.ref = F.functions.refreshSeq(self.ref, self.datec);
+        next();
+        
     });
 });
 

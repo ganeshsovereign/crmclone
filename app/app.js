@@ -875,6 +875,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                     },
                     controller: "ProductPriceLevelController"
                 })
+                .state('product.consumption', {
+                    parent: "product",
+                    url: "/consumption.html",
+                    templateUrl: "/views/_product/consumption.html",
+                    data: {
+                        pageTitle: 'Statistiques de consommation des produits'
+                    },
+                    controller: "ProductStatsController"
+                })
                 // Category
                 .state('category', {
                     url: "/category",

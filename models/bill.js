@@ -17,9 +17,8 @@ mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
 
-var setPrice = function (value) {
-    return MODULE('utils').setPrice(value);
-};
+var setPrice = MODULE('utils').setPrice;
+var setDate = MODULE('utils').setDate;
 
 /**
  * Article Schema
@@ -63,8 +62,8 @@ var billSchema = new Schema({
     town: {type: String, default: ""},
     country_id: {type: String, default: 'FR'},
     state_id: Number,
-    datec: {type: Date, default: new Date},
-    dater: {type: Date}, // date limit reglement
+    datec: {type: Date, default: new Date, set:setDate},
+    dater: {type: Date, set:setDate}, // date limit reglement
     dateOf: {type: Date}, // Periode de facturation du
     dateTo: {type: Date}, // au
     notes: [{
@@ -104,6 +103,7 @@ var billSchema = new Schema({
     orders: [{type: Schema.Types.ObjectId, ref: 'order'}],
     deliveries: [{type: Schema.Types.ObjectId, ref: 'delivery'}],
     groups: [Schema.Types.Mixed],
+    weight: {type: Number, default: 0}, // Poids total
     lines: [{
             //pu: Number,
             qty: Number,
@@ -126,6 +126,7 @@ var billSchema = new Schema({
             discount: {type: Number, default: 0},
             no_package: Number, // Colis Number
             total_ht: {type: Number, set: setPrice},
+            weight: {type: Number, default: 0},
             date_start: Date,
             date_end: Date
         }],
@@ -169,6 +170,7 @@ billSchema.pre('save', function (next) {
         self.total_ht = result.total_ht;
         self.total_tva = result.total_tva;
         self.total_ttc = result.total_ttc;
+        self.weight = result.weight;
         
         if(self.total_ttc === 0)
             self.Status = 'DRAFT';
@@ -273,6 +275,8 @@ billSchema.virtual('amount').get(function () {
 
     var amount = {};
     var id = this._id;
+    
+    
 
     /*if (transactionList) {
      for (var i = 0; i < transactionList.length; i++) {
@@ -284,7 +288,7 @@ billSchema.virtual('amount').get(function () {
      }
      }*/
 
-    return 0;
+    return this.total_ttc - this.total_paid;
 });
 
 

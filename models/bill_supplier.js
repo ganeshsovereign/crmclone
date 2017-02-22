@@ -17,9 +17,8 @@ mongoose.plugin(DataTable.init);
 var Dict = INCLUDE('dict');
 
 
-var setPrice = function (value) {
-    return MODULE('utils').setPrice(value);
-};
+var setPrice = MODULE('utils').setPrice;
+var setDate = MODULE('utils').setDate;
 
 /**
  * Article Schema
@@ -54,8 +53,8 @@ var billSupplierSchema = new Schema({
     libelleAccounting: String,
     imported: {type: Boolean, default: false}, //imported in accounting
     journalId: [Schema.Types.ObjectId], // Id transactions for accounting
-    datec: {type: Date, default: new Date},
-    dater: {type: Date}, // Date echeance
+    datec: {type: Date, default: new Date, set:setDate},
+    dater: {type: Date, set:setDate}, // Date echeance
     dateOf: {type: Date}, // Periode de facturation du
     dateTo: {type: Date}, // au
     notes: [{

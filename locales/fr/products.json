@@ -202,7 +202,7 @@
     "CurrentProductPrice": "Prix actuel",
     "AlwaysUseNewPrice": "Toujours utiliser le prix du jour",
     "AlwaysUseFixedPrice": "Utiliser le prix fixé",
-    "ProductList": "Liste produits",
+    "ProductList": "Liste des produits",
     "CardProductPRODUCT": "Fiche produit",
     "CardProductSERVICE": "Fiche service",
     "OnBuySell": "En achat/vente",
@@ -278,5 +278,6 @@
     "CostCenter": "Centre de cout",
     "SubCostCenter": "Sous centre de cout",
     "SumCost":"Cout moyen (calculé)",
-    "ReplenishmentTime":"Délai de réappro."
+    "ReplenishmentTime":"Délai de réappro.",
+    "Consumptions" : "Statisques des consommations"
 }

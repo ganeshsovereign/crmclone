@@ -56,6 +56,37 @@
             "friday": "vendredi",
             "saturday": "samedi"
         },
+        "month" : {
+            "aShort2": [
+                "J",
+                "F",
+                "M",
+                "A",
+                "M",
+                "J",
+                "J",
+                "J",
+                "A",
+                "S",
+                "O",
+                "N",
+                "D"
+            ],
+            "aShort3": [
+                "Jan",
+                "Fev",
+                "Mar",
+                "Avr",
+                "Mai",
+                "Juin",
+                "Juil",
+                "Aout",
+                "Sept",
+                "Oct",
+                "Nov",
+                "Dec"
+            ]
+        },
         "format": {
             "java": {
                 "day": "dd/MM/yyyy",

@@ -17,6 +17,8 @@ mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
 
+var setDate = MODULE('utils').setDate;
+
 /**
  * Article Schema
  */
@@ -24,7 +26,7 @@ var taskSchema = new Schema({
     name: String,
     societe: {id: Schema.Types.ObjectId, name: String},
     contact: {id: Schema.Types.ObjectId, name: String},
-    datec: {type: Date, default: Date.now}, // date de creation
+    datec: {type: Date, default: Date.now, set:setDate}, // date de creation
     datep: Date, // date de debut
     datef: Date, // date de fin
     duration: Number,

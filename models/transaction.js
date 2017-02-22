@@ -14,9 +14,8 @@ DataTable.configure({
 });
 mongoose.plugin(DataTable.init);
 
-var setPrice = function (value) {
-    return MODULE('utils').setPrice(value);
-};
+var setPrice = MODULE('utils').setPrice;
+var setDate = MODULE('utils').setDate;
 
 var setAccount = function (account) {
     if (account) {
@@ -34,7 +33,7 @@ var TransationSchema = new Schema({
     credit: Number,
     debit: Number,
     meta: Schema.Types.Mixed,
-    datetime: Date,
+    datetime: {type: Date, set: setDate},
     account_path: [String],
     accounts: {type: String, set: setAccount},
     book: String,
