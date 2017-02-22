@@ -322,7 +322,7 @@ passport.serializeUser(function (user, done) {
     //console.log("Passport !!!!!!!!!!!!!!!!!!!!!!!!!!", user);
     
     var UserModel = MODEL('user').Schema;
-    var UserGroup = MODEL('userGroup').Schema;
+    var UserGroup = MODEL('group').Schema;
 
     // Save Date Connection
     UserModel.update({
