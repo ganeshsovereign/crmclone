@@ -618,14 +618,30 @@ MetronicApp.directive('crmNotes', [
             },
             link: function (scope, elem, attrs, ngModel) {
 
-                scope.updateNoteDir = true;
-                //console.log(scope);
-                if (!scope.noteModel)
+                //scope.updateNoteDir = true;
+                //console.log("titi",scope);
+                var first = false;
+               
+                scope.$watch('noteModel', function(){
+                //console.log(typeof scope.noteModel);
+                if (typeof scope.noteModel == "undefined") {
+                    //console.log("toto");
+                    first = true;
                     scope.noteModel = {};
+                }
+                
+                else { 
+                    first=false;
+                    //console.log("tutu");
+                }
+                });               
+                
                 scope.update = function () {
                     //console.log("save");
                     ngModel.$setViewValue(scope.noteModel);
-                    scope.ngChange();
+                    if (!first)  
+                        scope.ngChange();
+                    
                     return true;
                 };
                 scope.deletedNote = {
