@@ -105,7 +105,7 @@
                             <tr ng-repeat="right in rights">
                                 <td> {{right.desc}} </td>
                                 <td ng-repeat="(key,perm) in right.perm">
-                                    <input type="checkbox" ng-checked="perm" ng-disabled="!groupRightsCreate" ng-model="group.rights[name][key]" ng-change="update()">
+                                    <input type="checkbox" ng-checked="group.rights[name][key]" ng-disabled="!groupRightsCreate" ng-model="group.rights[name][key]" ng-change="update()">
                                 </td>
                             </tr>
 
