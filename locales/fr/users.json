@@ -189,7 +189,7 @@
     "ManagementofAccountingEntries":"Gestion des écritures comptables",
     "ReadTheScripturesAccounting": "Lire les écritures comptables",
     "ProductCode": "Code produit",
-    "PriceVAT": "Prix H.T",
+    "PriceHT": "Prix H.T",
     "ShippingCosts": "Frais de transport",
     "Totals": "Totaux",
     "Edit": "Editer",
@@ -198,5 +198,11 @@
     "SendToFtp": "Envoyer sur FTP",
     "DisputedDraw": "Tirage contesté",
     "IBANError": "Erreur IBAN",
-    "InsufficientFunds":"Fonds insuffisants"
+    "InsufficientFunds":"Fonds insuffisants",
+    "Empty": "vide",
+    "NoNotes": "Aucune(s) Note(s)",
+    "QuantityOrdered":"Quantitée commandée",
+    "DeliveredQuantity": "Quantité Livrée",
+    "Subcontractor": "Sous-traitant"
+
 }

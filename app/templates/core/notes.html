@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="portlet-body">
-            <span editable-textarea="noteModel.note" e-name="notes" e-rows="10" e-cols="400" e-class="form-control"><pre>{{ noteModel.note ||  "Aucune" }}</pre></span>
+            <span editable-textarea="noteModel.note" e-name="notes" e-rows="10" e-cols="400" e-class="form-control"><pre>{{ noteModel.note ||  "@(users:NoNotes)" }}</pre></span>
         </div>
     </div>
 </form>    
