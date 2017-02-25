@@ -389,6 +389,7 @@
     "AmountTotal": "Montant total",
     "AmountAverage": "Montant moyen",
     "Amounts": "Montants",
+    "ShippingCosts":"Cout de transport",
     "PriceQtyHT": "Prix pour la quantité HT",
     "PriceQtyMinHT": "Prix quantité min. HT",
     "PriceQtyTTC": "Prix pour la quantité TTC",
@@ -396,6 +397,7 @@
     "Percentage": "Pourcentage",
     "Total": "Total",
     "SubTotal": "Sous-total",
+    "AddSubTotal":"Ajouter sous-total",
     "TotalHTbuy": "Prix achat HT",
     "TotalHTsell": "Prix vente HT",
     "TotalHT": "Total HT",
@@ -783,5 +785,6 @@
     "Barcode":"Code barres",
     "View more":"Voir détails",
     "ReadMore":"Voir plus",
-    "NumberOfEmployeesAssigned" : "Nombre de collaborateurs affectés"
+    "NumberOfEmployeesAssigned" : "Nombre de collaborateurs affectés",
+    "Empty" : "Vide"
 }

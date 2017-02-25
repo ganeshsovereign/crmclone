@@ -270,7 +270,7 @@
 	"DiscountOfferedBy": "Accordé par",
 	"DiscountStillRemaining": "Remises restant en cours",
 	"DiscountAlreadyCounted": "Remises déjà appliquées",
-	"BillAddress": "Adresse de facturation",
+	"BillAddress": "Adr. facturation",
 	"HelpEscompte": "Un <b>escompte</b> est une remise accordée, sur une facture donnée, à un client car ce dernier a réalisé son règlement bien avant l'échéance.",
 	"HelpAbandonBadCustomer": "Ce montant a été abandonné (client jugé mauvais payeur) et est considéré comme une perte exceptionnelle.",
 	"HelpAbandonOther": "Ce montant a été abandonné car il s'agissait d'une erreur de facturation (saisie mauvais client, facture remplacée par une autre).",
