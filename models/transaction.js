@@ -33,6 +33,33 @@ var TransationSchema = new Schema({
     credit: Number,
     debit: Number,
     meta: Schema.Types.Mixed,
+    /*
+     meta : {
+        billsSupplier: [
+            {
+                amount: Number,
+                billSupplierRef: String,
+                billSupplierId: String
+            }
+        ],
+        bills: [
+            {
+                amount: Number,
+                billRef: String,
+                billId: String
+            }
+        ],
+        productRef : String,
+        productId:String,
+        societeName: String,
+        societeId: String,
+        pieceAccounting : String,
+        type: String,
+        tva_tx : Number
+    }
+     */
+    
+    
     datetime: {type: Date, set: setDate},
     account_path: [String],
     accounts: {type: String, set: setAccount},

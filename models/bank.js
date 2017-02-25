@@ -189,7 +189,7 @@ bankSchema.methods.addPayment = function (options, user, callback) {
         for (var i = 0, len = options.bills.length; i < len; i++)
             if (options.bills[i].payment != null)
                 bills.push({
-                    billId: options.bills[i]._id,
+                    billId: options.bills[i]._id.toString(),
                     billRef: options.bills[i].ref,
                     amount: options.bills[i].payment
                 });
@@ -198,7 +198,7 @@ bankSchema.methods.addPayment = function (options, user, callback) {
         for (var i = 0, len = options.bills_supplier.length; i < len; i++)
             if (options.bills_supplier[i].payment != null)
                 billsSupplier.push({
-                    billSupplierId: options.bills_supplier[i]._id,
+                    billSupplierId: options.bills_supplier[i]._id.toString(),
                     billSupplierRef: options.bills_supplier[i].ref,
                     amount: options.bills_supplier[i].payment
                 });
@@ -278,16 +278,16 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                     if (bill.payment != null) {
                         if (bill.payment > 0)
                             entry.credit(bill.client.id.code_compta, Math.abs(bill.payment), {
-                                billId: bill._id,
+                                billId: bill._id.toString(),
                                 billRef: bill.ref,
-                                societeId: bill.client.id._id,
+                                societeId: bill.client.id._id.toString(),
                                 societeName: bill.client.name
                             });
                         else
                             entry.debit(bill.client.id.code_compta, Math.abs(bill.payment), {
-                                billId: bill._id,
+                                billId: bill._id.toString(),
                                 billRef: bill.ref,
-                                societeId: bill.client.id._id,
+                                societeId: bill.client.id._id.toString(),
                                 societeName: bill.client.name
                             });
 
@@ -302,24 +302,24 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                                     // TVA on payment
                                     if (bill.total_tva[j].total > 0) {
                                         entryOD.debit(tva.tva_code_colle[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billId: bill._id,
+                                            billId: bill._id.toString(),
                                             billRef: bill.ref,
                                             tva_tx: bill.total_tva[j].tva_tx
                                         });
                                         entryOD.credit(tva.tva_code_colle_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billId: bill._id,
+                                            billId: bill._id.toString(),
                                             billRef: bill.ref,
                                             tva_tx: bill.total_tva[j].tva_tx
                                         });
                                     } else {
                                         // Si avoir
                                         entryOD.credit(tva.tva_code_colle[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billId: bill._id,
+                                            billId: bill._id.toString(),
                                             billRef: bill.ref,
                                             tva_tx: bill.total_tva[j].tva_tx
                                         });
                                         entryOD.debit(tva.tva_code_colle_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billId: bill._id,
+                                            billId: bill._id.toString(),
                                             billRef: bill.ref,
                                             tva_tx: bill.total_tva[j].tva_tx
                                         });
@@ -334,16 +334,16 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                     if (bill.payment != null) {
                         if (bill.payment > 0)
                             entry.debit(bill.supplier.id.code_compta_fournisseur, Math.abs(bill.payment), {
-                                billSupplierId: bill._id,
+                                billSupplierId: bill._id.toString(),
                                 billSupplierRef: bill.ref,
-                                societeId: bill.supplier.id._id,
+                                societeId: bill.supplier.id._id.toString(),
                                 societeName: bill.supplier.name
                             });
                         else
                             entry.credit(bill.supplier.id.code_compta_fournisseur, Math.abs(bill.payment), {
-                                billSupplierId: bill._id,
+                                billSupplierId: bill._id.toString(),
                                 billSupplierRef: bill.ref,
-                                societeId: bill.supplier.id._id,
+                                societeId: bill.supplier.id._id.toString(),
                                 societeName: bill.supplier.name
                             });
 
@@ -358,24 +358,24 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                                     // TVA on payment
                                     if (bill.total_tva[j].total > 0) {
                                         entryOD.credit(tva.tva_code_deduc[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billSupplierId: bill._id,
+                                            billSupplierId: bill._id.toString(),
                                             billSupplierRef: bill.ref,
                                             tva_tx: bill.total_tva[j].tva_tx
                                         });
                                         entryOD.debit(tva.tva_code_deduc_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billSupplierId: bill._id,
+                                            billSupplierId: bill._id.toString(),
                                             billSupplierRef: bill.ref,
                                             tva_tx: bill.total_tva[j].tva_tx
                                         });
                                     } else {
                                         // Si avoir
                                         entryOD.debit(tva.tva_code_deduc[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billSupplierId: bill._id,
+                                            billSupplierId: bill._id.toString(),
                                             billSupplierRef: bill.ref,
                                             tva_tx: bill.total_tva[j].tva_tx
                                         });
                                         entryOD.credit(tva.tva_code_deduc_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billSupplierId: bill._id,
+                                            billSupplierId: bill._id.toString(),
                                             billSupplierRef: bill.ref,
                                             tva_tx: bill.total_tva[j].tva_tx
                                         });
@@ -426,6 +426,9 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                         var status = "STARTED";
                         if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2))
                             status = "PAID";
+                        
+                        if (round(bill.payment + bill.total_paid, 2) == 0)
+                            status = 'NOT_PAID';
 
                         BillModel.update({_id: bill._id}, {$set: {Status: status, updatedAt: new Date()}, $inc: {total_paid: bill.payment}, $addToSet: {journalId: {$each: journalId}}}, function (err, doc) {
                             if (err)
@@ -453,7 +456,6 @@ bankSchema.methods.addPayment = function (options, user, callback) {
             }], callback);
     });
 };
-
 
 exports.Schema = mongoose.model('bank', bankSchema, 'Bank');
 exports.name = 'bank';

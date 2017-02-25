@@ -11,5 +11,8 @@
     "LcrDetails":"Détails de la LCR",
     "LcrCreationDate":"Date de LCR",
     "LcrValueDate":"Date de valeur LCR",
-    "Refresh_bills":"Rafraichir les factures"
+    "Refresh_bills":"Rafraichir les factures",
+    "DisputedDraw":"Tirage contesté",
+    "IBANError":"Erreur IBAN",
+    "InsufficientFunds":"Solde insuffisant"
 }
