@@ -192,7 +192,6 @@
     "PriceHT": "Prix H.T",
     "ShippingCosts": "Frais de transport",
     "Totals": "Totaux",
-    "Edit": "Editer",
     "DuplicateLine": "Dupliquer la ligne",
     "AddSubtotal": "Ajouter sous-total",
     "SendToFtp": "Envoyer sur FTP",
@@ -205,6 +204,6 @@
     "DeliveredQuantity": "Quantité Livrée",
     "Subcontractor": "Sous-traitant",
     "ThisContactIsDeleted": "Attention ce contact à été supprimé",
-    "DeleteThisContact": "Supprimer ce contact ?"
-
+    "DeleteThisContact": "Supprimer ce contact ?",
+    "ThisBillIsDeleted": "Attention cette facture à été supprimée"
 }
