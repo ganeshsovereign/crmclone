@@ -4,13 +4,13 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-        Schema = mongoose.Schema,
-        timestamps = require('mongoose-timestamp'),
-        moment = require('moment'),
-        _ = require("lodash"),
-        Q = require('q');
+    Schema = mongoose.Schema,
+    timestamps = require('mongoose-timestamp'),
+    moment = require('moment'),
+    _ = require("lodash"),
+    Q = require('q');
 
-var setTags = function (tags) {
+var setTags = function(tags) {
     var result = [];
     for (var i = 0; i < tags.length; i++)
         if (typeof tags[i] == "object" && tags[i].text)
@@ -24,7 +24,7 @@ var setTags = function (tags) {
     return result;
 };
 
-var setLink = function (link) {
+var setLink = function(link) {
     if (!link)
         return null;
 
@@ -35,7 +35,7 @@ var setLink = function (link) {
     return link;
 };
 
-var setAccount = function (account) {
+var setAccount = function(account) {
     if (account) {
         account = account.replace(/ /g, "");
         account = account.substring(0, 10); //limit a 10 character
@@ -51,101 +51,101 @@ var Dict = INCLUDE('dict');
 
 var supplierPriceSchema = new Schema({
     societe: {
-        id: {type: Schema.Types.ObjectId, ref: 'societe'},
+        id: { type: Schema.Types.ObjectId, ref: 'societe' },
         name: String
     },
     ref: String,
     tva_tx: Number,
     minQty: Number,
-    replenishmentTime: {type: Number, default: 0}, // delai de reappro en jr
+    replenishmentTime: { type: Number, default: 0 }, // delai de reappro en jr
     prices: {
-        pu_ht: {type: Number, default: 0}, // For base price
-        pricesQty: {type: Schema.Types.Mixed} // For quantity price reduction
+        pu_ht: { type: Number, default: 0 }, // For base price
+        pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
     packing: String //conditionement
 }, {
-    toObject: {virtuals: true},
-    toJSON: {virtuals: true}
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 
 supplierPriceSchema.virtual('pricesDetails')
-        .get(function () {
-            var Pricebreak = INCLUDE('pricebreak');
+    .get(function() {
+        var Pricebreak = INCLUDE('pricebreak');
 
-            Pricebreak.set(this.prices.pu_ht, this.prices.pricesQty);
+        Pricebreak.set(this.prices.pu_ht, this.prices.pricesQty);
 
-            return Pricebreak.humanize(true, 3);
-        });
+        return Pricebreak.humanize(true, 3);
+    });
 
 
 var productSchema = new Schema({
     oldId: String, // Only for import migration
-    ref: {type: String, required: true, unique: true, uppercase: true},
+    ref: { type: String, required: true, unique: true, uppercase: true },
     name: String, //copy of ref
-    seq: {type: String, unique: true},
-    isremoved: {type: Boolean, default: false},
-    compta_buy: {type: String, set: setAccount, trim: true},
-    compta_buy_eu : {type: String, set: setAccount, trim: true},
-    compta_buy_exp : {type: String, set: setAccount, trim: true},
-    compta_sell: {type: String, set: setAccount, trim: true},
-    compta_sell_eu: {type: String, set: setAccount, trim: true},
-    compta_sell_exp: {type: String, set: setAccount, trim: true},
-    label: {type: String, default: ""},
-    description: {type: String, default: ""},
-    body: {type: String, default: ""}, // Description For SEO
-    notePrivate: {type: String},
-    type: {type: String, default: 'PRODUCT'},
+    seq: { type: String, unique: true },
+    isremoved: { type: Boolean, default: false },
+    compta_buy: { type: String, set: setAccount, trim: true },
+    compta_buy_eu: { type: String, set: setAccount, trim: true },
+    compta_buy_exp: { type: String, set: setAccount, trim: true },
+    compta_sell: { type: String, set: setAccount, trim: true },
+    compta_sell_eu: { type: String, set: setAccount, trim: true },
+    compta_sell_exp: { type: String, set: setAccount, trim: true },
+    label: { type: String, default: "" },
+    description: { type: String, default: "" },
+    body: { type: String, default: "" }, // Description For SEO
+    notePrivate: { type: String },
+    type: { type: String, default: 'PRODUCT' },
     Status: String,
-    enabled: {type: Boolean, default: true},
-    istop: {type: Boolean, default: false},
-    sale: {type: Boolean, default: false}, // soldes
-    ischat: {type: Boolean, default: false},
-    negociate: {type: Number, default: 0}, // 0 is no negociate
+    enabled: { type: Boolean, default: true },
+    istop: { type: Boolean, default: false },
+    sale: { type: Boolean, default: false }, // soldes
+    ischat: { type: Boolean, default: false },
+    negociate: { type: Number, default: 0 }, // 0 is no negociate
     country_id: String,
-    tva_tx: {type: Number, default: 20},
-    units: {type: String, default: "unit"},
-    minPrice: {type: Number, default: 0},
+    tva_tx: { type: Number, default: 20 },
+    units: { type: String, default: "unit" },
+    minPrice: { type: Number, default: 0 },
     finished: String,
     tms: Date, // Not used ??
-    datec: {type: Date, default: Date.now},
-    billingMode: {type: String, uppercase: true, default: "QTY"}, //MONTH, QTY, ...
-    Tag: {type: [], set: setTags},
+    datec: { type: Date, default: Date.now },
+    billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
+    Tag: { type: [], set: setTags },
     entity: [String],
     price: [{
-            _id: {type: Schema.Types.ObjectId, required: true},
-            price_level: String,
-            tms: Date,
-            pu_ht: Number,
-            qtyMin: {type: Number, default: 0},
-            ref_customer_code: String,
-            user_mod: Schema.Types.Mixed,
-            tva_tx: Number,
-            dsf_coef: Number,
-            dsf_time: Number
-        }],
+        _id: { type: Schema.Types.ObjectId, required: true },
+        price_level: String,
+        tms: Date,
+        pu_ht: Number,
+        qtyMin: { type: Number, default: 0 },
+        ref_customer_code: String,
+        user_mod: Schema.Types.Mixed,
+        tva_tx: Number,
+        dsf_coef: Number,
+        dsf_time: Number
+    }],
     // new price model
     prices: {
-        pu_ht: {type: Number, default: 0}, // For base price
-        pricesQty: {type: Schema.Types.Mixed} // For quantity price reduction
+        pu_ht: { type: Number, default: 0 }, // For base price
+        pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
-    pu_ht: {type: Number, default: 0}, // For base price OLD
-    user_mod: {id: String, name: String},
+    pu_ht: { type: Number, default: 0 }, // For base price OLD
+    user_mod: { id: String, name: String },
     history: [{
-            tms: Date,
-            user_mod: Schema.Types.Mixed,
-            pu_ht: Number,
-            ref_customer_code: String
-        }],
-    template: {type: String},
+        tms: Date,
+        user_mod: Schema.Types.Mixed,
+        pu_ht: Number,
+        ref_customer_code: String
+    }],
+    template: { type: String },
     dynForm: String,
-    caFamily: {type: String, uppercase: true},
-    subFamily: {type: String, uppercase: true},
-    costCenter: {type: String, uppercase: true},
-    subCostCenter: {type: String, uppercase: true},
+    caFamily: { type: String, uppercase: true },
+    subFamily: { type: String, uppercase: true },
+    costCenter: { type: String, uppercase: true },
+    subCostCenter: { type: String, uppercase: true },
     category: String,
     linker_category: String,
-    weight: {type: Number, default: 0}, // Poids en kg
+    weight: { type: Number, default: 0 }, // Poids en kg
     minQty: Number,
     stock: {
         zone: String,
@@ -153,42 +153,42 @@ var productSchema = new Schema({
         rack: Number, // column
         floor: Number // etage
     },
-    autoBarCode: {type: Boolean, default: true},
-    barCode: {type: String, index: true, uppercase: true, sparse: true},
-    aclCode: {type: String, uppercase: true},
+    autoBarCode: { type: Boolean, default: true },
+    barCode: { type: String, index: true, uppercase: true, sparse: true },
+    aclCode: { type: String, uppercase: true },
     suppliers: [supplierPriceSchema],
     /******** VAD Method **************/
-    directCost: {type: Number, default: 0}, //Total MP
-    indirectCost: {type: Number, default: 0}, //Total Effort
-    totalCost: {type: Number, default: 0}, //Total MP + Effort
+    directCost: { type: Number, default: 0 }, //Total MP
+    indirectCost: { type: Number, default: 0 }, //Total Effort
+    totalCost: { type: Number, default: 0 }, //Total MP + Effort
     /**********************************/
 
     optional: Schema.Types.Mixed,
-    linker: {type: String, unique: true, set: setLink}, // SEO URL
+    linker: { type: String, unique: true, set: setLink }, // SEO URL
     attributes: [{
-            key: {type: String},
-            value: {type: String},
-            css: {type: String}
-        }],
+        key: { type: String },
+        value: { type: String },
+        css: { type: String }
+    }],
     pack: [{
-            id: {type: Schema.Types.ObjectId, ref: 'product'},
-            qty: {type: Number, default: 0}
-        }],
+        id: { type: Schema.Types.ObjectId, ref: 'product' },
+        qty: { type: Number, default: 0 }
+    }],
     search: [String]
 }, {
-    toObject: {virtuals: true},
-    toJSON: {virtuals: true}
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 productSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
     var gridfs = INCLUDE('_' + CONFIG('storing-files'));
-    productSchema.plugin(gridfs.pluginGridFs, {root: "Product"});
+    productSchema.plugin(gridfs.pluginGridFs, { root: "Product" });
 }
 
 // Gets listing
-productSchema.statics.query = function (options, callback) {
+productSchema.statics.query = function(options, callback) {
     var self = this;
 
     // options.search {String}
@@ -199,7 +199,7 @@ productSchema.statics.query = function (options, callback) {
 
     options.page = U.parseInt(options.page) - 1;
     options.max = U.parseInt(options.max, 20);
-    if (options.id && typeof (options.id) === 'string')
+    if (options.id && typeof(options.id) === 'string')
         options.id = options.id.split(',');
     if (options.page < 0)
         options.page = 0;
@@ -208,8 +208,8 @@ productSchema.statics.query = function (options, callback) {
 
     var query = {
         enabled: true,
-        Status: {$in: ['SELL', 'SELLBUY']},
-        'prices.pu_ht': {$gt: 0}
+        Status: { $in: ['SELL', 'SELLBUY'] },
+        'prices.pu_ht': { $gt: 0 }
     };
 
     if (options.category)
@@ -220,7 +220,7 @@ productSchema.statics.query = function (options, callback) {
     //    builder.in('search', options.search.keywords(true, true));
     if (options.id) {
         if (typeof options.id === 'object')
-            options.id = {'$in': options.id};
+            options.id = { '$in': options.id };
         query._id = options.id;
     }
     if (options.skip)
@@ -236,44 +236,44 @@ productSchema.statics.query = function (options, callback) {
         sort = 'updatedAt';
 
     this.find(query)
-            .limit(take)
-            .skip(skip)
-            .populate('category', "_id path url linker name")
-            .sort(sort)
-            .lean()
-            .exec(function (err, doc) {
-                //console.log(doc);
-                var data = {};
-                data.count = doc.length;
-                data.items = doc;
-                data.limit = options.max;
-                data.pages = Math.ceil(data.count / options.max);
+        .limit(take)
+        .skip(skip)
+        .populate('category', "_id path url linker name")
+        .sort(sort)
+        .lean()
+        .exec(function(err, doc) {
+            //console.log(doc);
+            var data = {};
+            data.count = doc.length;
+            data.items = doc;
+            data.limit = options.max;
+            data.pages = Math.ceil(data.count / options.max);
 
-                var linker_detail = F.sitemap('detail', true);
-                var linker_category = F.sitemap('category', true);
+            var linker_detail = F.sitemap('detail', true);
+            var linker_category = F.sitemap('category', true);
 
-                data.items.forEach(function (item) {
+            data.items.forEach(function(item) {
 
-                    if (linker_detail) {
-                        item.url = item.linker;
-                        item.linker = linker_detail.url.format(item.url, item._id);
-                    }
-                    if (linker_category)
-                        item.linker_category = linker_category.url + item.category.linker + '/' + item.category._id + '/';
+                if (linker_detail) {
+                    item.url = item.linker;
+                    item.linker = linker_detail.url.format(item.url, item._id);
+                }
+                if (linker_category)
+                    item.linker_category = linker_category.url + item.category.linker + '/' + item.category._id + '/';
 
-                    // Load PHOTO ?
+                // Load PHOTO ?
 
-                });
-                if (!data.pages)
-                    data.pages = 1;
-                data.page = options.page + 1;
-                callback(null, data);
             });
+            if (!data.pages)
+                data.pages = 1;
+            data.page = options.page + 1;
+            callback(null, data);
+        });
 
     return;
 
     var nosql = DB(error);
-    nosql.listing('products', 'Product').make(function (builder) {
+    nosql.listing('products', 'Product').make(function(builder) {
 
         builder.where('enabled', true);
         builder.in('Status', ['SELL', 'SELLBUY']);
@@ -298,7 +298,7 @@ productSchema.statics.query = function (options, callback) {
         else
             builder.sort('_id', false);
     });
-    nosql.exec(function (err, response) {
+    nosql.exec(function(err, response) {
         //console.log(response.products.items);
         var data = {};
         data.count = response.products.count;
@@ -309,7 +309,7 @@ productSchema.statics.query = function (options, callback) {
         var linker_detail = F.sitemap('detail', true);
         var linker_category = F.sitemap('category', true);
 
-        data.items.forEach(function (item) {
+        data.items.forEach(function(item) {
             if (linker_detail) {
                 item.url = item.linker;
                 item.linker = linker_detail.url.format(item.linker, item._id);
@@ -329,7 +329,7 @@ productSchema.statics.query = function (options, callback) {
     });
 };
 
-productSchema.statics.findPrice = function (options, fields, callback) {
+productSchema.statics.findPrice = function(options, fields, callback) {
     var self = this;
 
     var Pricebreak = INCLUDE('pricebreak');
@@ -341,12 +341,10 @@ productSchema.statics.findPrice = function (options, fields, callback) {
     if (typeof fields === 'function') {
         callback = fields;
         fields = "prices discount";
-    }
-
-    else if (options.ref)
+    } else if (options.ref)
         query.ref = options.ref;
 
-    this.findOne(query, fields, function (err, doc) {
+    this.findOne(query, fields, function(err, doc) {
         if (err)
             return callback("err : model product/price");
 
@@ -355,31 +353,31 @@ productSchema.statics.findPrice = function (options, fields, callback) {
 
         if (options.price_level && options.price_level !== 'BASE') {
             var modelClass = MODEL('pricelevel').Schema;
-            return modelClass.findOne({"product": doc._id, price_level: options.price_level}, function (err, res) {
+            return modelClass.findOne({ "product": doc._id, price_level: options.price_level }, function(err, res) {
                 if (err)
                     return console.log(err);
 
                 //console.log(res, self._id, price_level);
                 if (!res) { // No specific price using BASE Prices
                     Pricebreak.set(doc.prices.pu_ht, doc.prices.pricesQty);
-                    return callback(null, {pu_ht: Pricebreak.price(options.qty).price, discount: doc.discount || 0});
+                    return callback(null, { pu_ht: Pricebreak.price(options.qty).price, discount: doc.discount || 0 });
                 }
 
                 Pricebreak.set(res.prices.pu_ht, res.prices.pricesQty);
 
-                callback(null, {pu_ht: Pricebreak.price(options.qty).price, discount: res.discount || 0});
+                callback(null, { pu_ht: Pricebreak.price(options.qty).price, discount: res.discount || 0 });
             });
         }
 
         Pricebreak.set(doc.prices.pu_ht, doc.prices.pricesQty);
 
         //console.log(doc);
-        callback(null, {pu_ht: Pricebreak.price(options.qty).price, discount: doc.discount || 0});
+        callback(null, { pu_ht: Pricebreak.price(options.qty).price, discount: doc.discount || 0 });
     });
 };
 
 
-productSchema.methods.getPrice = function (qty, price_level) {
+productSchema.methods.getPrice = function(qty, price_level) {
     var Pricebreak = INCLUDE('pricebreak');
     var self = this;
     var d = Q.defer();
@@ -394,7 +392,7 @@ productSchema.methods.getPrice = function (qty, price_level) {
         var modelClass;
 
         modelClass = MODEL('pricelevel').Schema;
-        modelClass.findOne({"product": self._id, price_level: price_level}, function (err, res) {
+        modelClass.findOne({ "product": self._id, price_level: price_level }, function(err, res) {
             if (err)
                 return d.reject(err);
 
@@ -417,7 +415,7 @@ productSchema.methods.getPrice = function (qty, price_level) {
     return d.promise;
 };
 
-productSchema.pre('save', function (next) {
+productSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
 
@@ -428,7 +426,7 @@ productSchema.pre('save', function (next) {
 
     if (this.type !== 'DYNAMIC')
         this.dynForm = null;
-    
+
     // remove old packif change
     if (this.type !== 'PACK')
         this.pack = [];
@@ -454,7 +452,7 @@ productSchema.pre('save', function (next) {
     }
 
     var search = (this.name + ' ' + this.category);
-    this.attributes.forEach(function (elem) {
+    this.attributes.forEach(function(elem) {
         search += ' ' + elem.value;
     });
 
@@ -477,14 +475,14 @@ productSchema.pre('save', function (next) {
     }
 
     if (!this.isNew && this.isModified('totalCost')) // Emit to all that a product change totalCost
-        F.functions.EE.emit('product', {type: 'updateCost', data: {_id: this._id}});
+        F.functions.EE.emit('product', { type: 'updateCost', data: { _id: this._id } });
 
 
     if (this.isNew || !this.seq) {
         if (!this.body)
             this.body = this.description;
 
-        SeqModel.incNumber("P", 7, function (seq) {
+        SeqModel.incNumber("P", 7, function(seq) {
             self.seq = seq;
 
             if (self.autoBarCode == true) {
@@ -503,7 +501,7 @@ productSchema.pre('save', function (next) {
 });
 
 var dict = {};
-Dict.dict({dictName: ['fk_product_status', 'fk_units'], object: true}, function (err, doc) {
+Dict.dict({ dictName: ['fk_product_status', 'fk_units'], object: true }, function(err, doc) {
     if (err) {
         console.log(err);
         return;
@@ -512,75 +510,75 @@ Dict.dict({dictName: ['fk_product_status', 'fk_units'], object: true}, function 
 });
 
 productSchema.virtual('zone')
-        .get(function () {
-            var zone = "";
+    .get(function() {
+        var zone = "";
 
-            if (this.type !== 'PRODUCT')
-                return null;
+        if (this.type !== 'PRODUCT')
+            return null;
 
-            if (!this.stock)
-                return "Inconnu";
+        if (!this.stock)
+            return "Inconnu";
 
-            if (!this.stock.zone)
-                return "Inconnu";
+        if (!this.stock.zone)
+            return "Inconnu";
 
-            zone += this.stock.zone;
+        zone += this.stock.zone;
 
-            if (!this.stock.driveway)
-                return "Inconnu";
+        if (!this.stock.driveway)
+            return "Inconnu";
 
-            zone += this.stock.driveway;
+        zone += this.stock.driveway;
 
-            if (!this.stock.rack)
-                return "Inconnu";
+        if (!this.stock.rack)
+            return "Inconnu";
 
-            zone += "-" + MODULE('utils').numberFormat(this.stock.rack, 3);
+        zone += "-" + MODULE('utils').numberFormat(this.stock.rack, 3);
 
-            if (!this.stock.floor)
-                return "Inconnu";
+        if (!this.stock.floor)
+            return "Inconnu";
 
-            zone += "/" + this.stock.floor;
+        zone += "/" + this.stock.floor;
 
-            return zone;
-        });
+        return zone;
+    });
 
 productSchema.virtual('eshopIsNew')
-        .get(function () {
-            if (moment(this.createdAt).isAfter(moment().subtract(15, 'days'))) // eshopIsNew
-                return true;
+    .get(function() {
+        if (moment(this.createdAt).isAfter(moment().subtract(15, 'days'))) // eshopIsNew
+            return true;
 
-            return false;
-        });
+        return false;
+    });
 
 productSchema.virtual('total_pack') // Set Total price for a pack
-        .get(function () {
-            var total = 0;
-            if (!this.pack || !this.pack.length)
-                return 0;
+    .get(function() {
+        var total = 0;
+        if (!this.pack || !this.pack.length)
+            return 0;
 
-            for (var i = 0, len = this.pack.length; i < len; i++) {
-                total += this.pack[i].qty * this.pack[i].id.totalCost;
-            }
+        for (var i = 0, len = this.pack.length; i < len; i++) {
+            total += this.pack[i].qty * this.pack[i].id.totalCost;
+        }
 
-            return total;
-        });
+        return total;
+    });
 
 productSchema.virtual('color') // Get default color in attributs
-        .get(function () {
-            var color = {};
+    .get(function() {
+        var color = {};
 
-            if (!this.attributes)
-                return null;
+        if (!this.attributes)
+            return null;
 
-            for (var i = 0, len = this.attributes.length; i < len; i++) {
-                if (this.attributes[i].css) {
-                    color = this.attributes[i];
-                    break;
-                }
+        for (var i = 0, len = this.attributes.length; i < len; i++) {
+            if (this.attributes[i].css) {
+                color = this.attributes[i];
+                break;
             }
+        }
 
-            return color;
-        });
+        return color;
+    });
 
 /*productSchema.method('linker_category', function (cb) {
  var self = this;
@@ -594,52 +592,52 @@ productSchema.virtual('color') // Get default color in attributs
 
 
 productSchema.virtual('pricesDetails')
-        .get(function () {
-            var Pricebreak = INCLUDE('pricebreak');
+    .get(function() {
+        var Pricebreak = INCLUDE('pricebreak');
 
-            Pricebreak.set(this.prices.pu_ht, this.prices.pricesQty);
+        Pricebreak.set(this.prices.pu_ht, this.prices.pricesQty);
 
-            return Pricebreak.humanize(true, 3);
-        });
+        return Pricebreak.humanize(true, 3);
+    });
 
 productSchema.virtual('status')
-        .get(function () {
-            var res_status = {};
+    .get(function() {
+        var res_status = {};
 
-            var status = this.Status;
+        var status = this.Status;
 
-            if (status && dict.fk_product_status.values[status].label) {
-                //console.log(this);
-                res_status.id = status;
-                res_status.name = i18n.t("products:" + dict.fk_product_status.values[status].label);
-                //res_status.name = statusList.values[status].label;
-                res_status.css = dict.fk_product_status.values[status].cssClass;
-            } else { // By default
-                res_status.id = status;
-                res_status.name = status;
-                res_status.css = "";
-            }
-            return res_status;
+        if (status && dict.fk_product_status.values[status].label) {
+            //console.log(this);
+            res_status.id = status;
+            res_status.name = i18n.t("products:" + dict.fk_product_status.values[status].label);
+            //res_status.name = statusList.values[status].label;
+            res_status.css = dict.fk_product_status.values[status].cssClass;
+        } else { // By default
+            res_status.id = status;
+            res_status.name = status;
+            res_status.css = "";
+        }
+        return res_status;
 
-        });
+    });
 
 productSchema.virtual('_units')
-        .get(function () {
-            var res = {};
+    .get(function() {
+        var res = {};
 
-            var units = this.units;
+        var units = this.units;
 
-            if (units && dict.fk_units.values[units].label) {
-                //console.log(this);
-                res.id = units;
-                res.name = i18n.t("products:" + dict.fk_units.values[units].label);
-            } else { // By default
-                res.id = units;
-                res.name = units;
-            }
-            return res;
+        if (units && dict.fk_units.values[units].label) {
+            //console.log(this);
+            res.id = units;
+            res.name = i18n.t("products:" + dict.fk_units.values[units].label);
+        } else { // By default
+            res.id = units;
+            res.name = units;
+        }
+        return res;
 
-        });
+    });
 
 exports.Schema = mongoose.model('product', productSchema, 'Product');
 exports.name = 'product';
@@ -662,26 +660,26 @@ function prepare_subcategories(name) {
 }
 
 
-F.on('load', function () {
-// On refresh emit product
+F.on('load', function() {
+    // On refresh emit product
 
-    F.functions.EE.on('product', function (data) {
+    F.functions.EE.on('product', function(data) {
         //console.log(data);
         console.log("Update emit product");
 
         switch (data.type) {
-            case 'updateCost' :
+            case 'updateCost':
                 if (data.data._id)
-                    exports.Schema.find({'pack.id': data.data._id})
-                            .populate("pack.id", "ref name label totalCost")
-                            .exec(function (err, products) {
-                                products.forEach(function (product) {
-                                    product.save(function (err, doc) {
-                                        if (err)
-                                            return console.log(err);
-                                    });
-                                });
+                    exports.Schema.find({ 'pack.id': data.data._id })
+                    .populate("pack.id", "ref name label totalCost")
+                    .exec(function(err, products) {
+                        products.forEach(function(product) {
+                            product.save(function(err, doc) {
+                                if (err)
+                                    return console.log(err);
                             });
+                        });
+                    });
                 break;
         }
 
