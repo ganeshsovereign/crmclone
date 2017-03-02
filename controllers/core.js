@@ -1,26 +1,26 @@
 "use strict";
 
 var _ = require('lodash'),
-        async = require('async'),
-        fs = require('fs');
+    async = require('async'),
+    fs = require('fs');
 
 var Dict = INCLUDE('dict');
 
 
-exports.install = function () {
+exports.install = function() {
     F.route('/erp/api/dict', load_dict, ['authorize']);
     F.route('/erp/api/extrafield', load_extrafield, ['authorize']);
     F.route('/erp/api/sendEmail', sendEmail, ['post', 'json', 'authorize']);
     F.route('/erp/api/task/count', task_count, ['authorize']);
 
-    F.route('/erp/api/product/convert_price', function () {
+    F.route('/erp/api/product/convert_price', function() {
         var ProductModel = MODEL('product').Schema;
         var PriceLevelModel = MODEL('pricelevel').Schema;
 
         if (this.query.type) {
-            ProductModel.find({}, function (err, docs) {
+            ProductModel.find({}, function(err, docs) {
                 for (var i = 0, len = docs.length; i < len; i++) {
-                    ProductModel.update({_id: docs[i]._id}, {'type': 'PRODUCT'}, function (err, doc) {
+                    ProductModel.update({ _id: docs[i]._id }, { 'type': 'PRODUCT' }, function(err, doc) {
                         if (err)
                             console.log(err);
                     });
@@ -29,9 +29,9 @@ exports.install = function () {
         }
 
         if (this.query.price) {
-            ProductModel.find({}, function (err, docs) {
+            ProductModel.find({}, function(err, docs) {
                 for (var i = 0, len = docs.length; i < len; i++) {
-                    ProductModel.update({_id: docs[i]._id}, {'prices.pu_ht': docs[i].pu_ht}, function (err, doc) {
+                    ProductModel.update({ _id: docs[i]._id }, { 'prices.pu_ht': docs[i].pu_ht }, function(err, doc) {
                         if (err)
                             console.log(err);
                     });
@@ -39,9 +39,9 @@ exports.install = function () {
             });
         }
         if (this.query.pricelevel) {
-            PriceLevelModel.find({}, function (err, docs) {
+            PriceLevelModel.find({}, function(err, docs) {
                 for (var i = 0, len = docs.length; i < len; i++) {
-                    PriceLevelModel.update({_id: docs[i]._id}, {'prices.pu_ht': docs[i].pu_ht}, function (err, doc) {
+                    PriceLevelModel.update({ _id: docs[i]._id }, { 'prices.pu_ht': docs[i].pu_ht }, function(err, doc) {
                         if (err)
                             console.log(err);
                     });
@@ -49,12 +49,12 @@ exports.install = function () {
             });
         }
 
-        this.json({ok: true});
+        this.json({ ok: true });
     }, ['authorize']);
-    F.route('/erp/api/product/convert_tva', function () {
+    F.route('/erp/api/product/convert_tva', function() {
         DictModel.findOne({
             _id: "dict:fk_tva"
-        }, function (err, docs) {
+        }, function(err, docs) {
             for (var i in docs.values) {
                 if (docs.values[i].label)
                     docs.values[i].value = docs.values[i].label;
@@ -63,7 +63,7 @@ exports.install = function () {
                 delete docs.values[i].label;
                 //console.log(docs.values[i]);
             }
-            docs.save(function (err, doc) {
+            docs.save(function(err, doc) {
                 //console.log(err);
                 res.json(doc);
             });
@@ -74,7 +74,7 @@ exports.install = function () {
 
 
     // SHOW LAST 50 PROBLEMS
-    F.route('/erp/errors/', function () {
+    F.route('/erp/errors/', function() {
 
         var self = this;
         self.json(F.problems);
@@ -88,7 +88,7 @@ exports.install = function () {
 function load_dict() {
     var self = this;
 
-    Dict.dict(self.query, function (err, dict) {
+    Dict.dict(self.query, function(err, dict) {
         if (err)
             return self.throw500(err);
 
@@ -99,7 +99,7 @@ function load_dict() {
 function load_extrafield() {
     var self = this;
 
-    Dict.extrafield(self.query, function (err, extrafield) {
+    Dict.extrafield(self.query, function(err, extrafield) {
         if (err)
             return self.throw500(err);
 
@@ -182,35 +182,36 @@ function task_count() {
     switch (params.query) {
         case 'MYTASK':
             query.$or = [
-                {'usertodo.id': params.user, 'userdone.id': null},
-                {'author.id': params.user, archived: false}
+                { 'usertodo.id': params.user, 'userdone.id': null },
+                { 'author.id': params.user, archived: false }
             ];
             break;
         case 'ALLTASK':
             query.$or = [
-                {'usertodo.id': params.user, 'userdone.id': null},
-                {'author.id': params.user, archived: false},
-                {entity: params.entity, archived: false}
+                { 'usertodo.id': params.user, 'userdone.id': null },
+                { 'author.id': params.user, archived: false },
+                { entity: params.entity, archived: false }
             ];
             break;
         case 'MYARCHIVED':
             query.$or = [
-                {'usertodo.id': params.user, 'userdone.id': {$ne: null}},
-                {'author.id': params.user, archived: true}];
+                { 'usertodo.id': params.user, 'userdone.id': { $ne: null } },
+                { 'author.id': params.user, archived: true }
+            ];
             break;
         case 'ARCHIVED':
             query.$or = [
-                {'usertodo.id': params.user, 'userdone.id': {$ne: null}},
-                {'author.id': params.user, archived: true},
-                {entity: params.entity, archived: true}
+                { 'usertodo.id': params.user, 'userdone.id': { $ne: null } },
+                { 'author.id': params.user, archived: true },
+                { entity: params.entity, archived: true }
             ];
             break;
         default: //'ARCHIVED':
             query.archived = true;
     }
 
-    TaskModel.count(query, function (err, count) {
-        self.json({count: count});
+    TaskModel.count(query, function(err, count) {
+        self.json({ count: count });
     });
 }
 
@@ -225,15 +226,15 @@ function convert(type) {
     console.log(type);
 
     switch (type) {
-        case 'user' :
+        case 'user':
             var UserModel = MODEL('hr').Schema;
 
-            mongoose.connection.db.collection('users', function (err, collection) {
-                collection.find({_type: null}, function (err, users) {
+            mongoose.connection.db.collection('users', function(err, collection) {
+                collection.find({ _type: null }, function(err, users) {
                     if (err)
                         return console.log(err);
 
-                    users.each(function (err, user) {
+                    users.each(function(err, user) {
 
                         if (user == null)
                             return self.plain("Converted Users...");
@@ -251,11 +252,11 @@ function convert(type) {
 
                         var newUser = new UserModel(user);
                         //console.log(newUser);
-                        collection.deleteOne({_id: id}, function (err, results) {
+                        collection.deleteOne({ _id: id }, function(err, results) {
                             if (err)
                                 return console.log(err);
 
-                            newUser.save(function (err, doc) {
+                            newUser.save(function(err, doc) {
                                 if (err || !doc)
                                     return console.log("Impossible de creer ", err);
                             });
@@ -269,25 +270,25 @@ function convert(type) {
             return self.plain("Type is user");
             break;
 
-        case 'contact' :
+        case 'contact':
             var UserModel = MODEL('contact').Schema;
-            mongoose.connection.db.collection('users', function (err, collection) {
-                collection.find({}, function (err, users) {
-                    users.each(function (err, user) {
+            mongoose.connection.db.collection('users', function(err, collection) {
+                collection.find({}, function(err, users) {
+                    users.each(function(err, user) {
                         if (user && user.societe && user.societe.id)
-                            UserModel.update({_id: user._id}, {$set: {societe: user.societe.id}}, {upsert: false, multi: false}, function (err, result) {
+                            UserModel.update({ _id: user._id }, { $set: { societe: user.societe.id } }, { upsert: false, multi: false }, function(err, result) {
                                 //console.log(err, result);
                             });
                     });
                 });
             });
 
-            mongoose.connection.db.collection('Contact', function (err, collection) {
-                collection.find({}).toArray(function (err, contacts) {
+            mongoose.connection.db.collection('Contact', function(err, collection) {
+                collection.find({}).toArray(function(err, contacts) {
                     if (err)
                         return console.log(err);
 
-                    async.each(contacts, function (contact, cb) {
+                    async.each(contacts, function(contact, cb) {
 
 
                         if (contact == null)
@@ -317,11 +318,11 @@ function convert(type) {
                         //console.log(contact);
 
                         newUser.save(cb);
-                    }, function (err) {
+                    }, function(err) {
                         if (err)
                             return console.log("Impossible de creer ", err);
 
-                        collection.remove(function (err) {
+                        collection.remove(function(err) {
                             if (err)
                                 console.log(err);
                         });
@@ -335,14 +336,14 @@ function convert(type) {
             return self.plain("Type is contact");
             break;
 
-        case 'price_level' :
+        case 'price_level':
             var PriceLevelModel = MODEL('pricelevel').Schema;
-            mongoose.connection.db.collection('PriceLevel', function (err, collection) {
-                collection.find({}, function (err, pricelevels) {
+            mongoose.connection.db.collection('PriceLevel', function(err, collection) {
+                collection.find({}, function(err, pricelevels) {
                     if (err)
                         return console.log(err);
 
-                    pricelevels.each(function (err, pricelevel) {
+                    pricelevels.each(function(err, pricelevel) {
                         //console.log(pricelevel);
                         if (err)
                             return console.log(err);
@@ -355,7 +356,7 @@ function convert(type) {
 
 
 
-                        PriceLevelModel.update({_id: pricelevel._id}, {$set: {product: pricelevel.product.id}}, function (err, doc) {
+                        PriceLevelModel.update({ _id: pricelevel._id }, { $set: { product: pricelevel.product.id } }, function(err, doc) {
                             if (err || !doc)
                                 return console.log("Impossible de creer ", err);
                         });
@@ -366,14 +367,14 @@ function convert(type) {
             return self.plain("Type is price_level");
             break;
 
-        case 'product' :
+        case 'product':
             var ProductModel = MODEL('product').Schema;
-            mongoose.connection.db.collection('Product', function (err, collection) {
-                collection.find({}, function (err, docs) {
+            mongoose.connection.db.collection('Product', function(err, collection) {
+                collection.find({}, function(err, docs) {
                     if (err)
                         return console.log(err);
 
-                    docs.each(function (err, doc) {
+                    docs.each(function(err, doc) {
                         //console.log(pricelevel);
                         if (err)
                             return console.log(err);
@@ -384,7 +385,7 @@ function convert(type) {
                         if (doc.name)
                             return self.plain("Converted product...");
 
-                        ProductModel.update({_id: doc._id}, {$set: {name: doc.ref}}, function (err, doc) {
+                        ProductModel.update({ _id: doc._id }, { $set: { name: doc.ref } }, function(err, doc) {
                             if (err || !doc)
                                 return console.log("Impossible de creer ", err);
                         });
@@ -395,23 +396,23 @@ function convert(type) {
             return self.plain("Type is product");
             break;
 
-        case 'deliveryAddress' :
+        case 'deliveryAddress':
             var SocieteModel = MODEL('societe').Schema;
 
-            SocieteModel.find({}, function (err, docs) {
+            SocieteModel.find({}, function(err, docs) {
                 if (err)
                     return console.log(err);
 
-                docs.forEach(function (doc) {
+                docs.forEach(function(doc) {
                     doc.addresses = [{
-                            name: doc.name,
-                            address: doc.address,
-                            zip: doc.zip,
-                            town: doc.town
-                        }];
+                        name: doc.name,
+                        address: doc.address,
+                        zip: doc.zip,
+                        town: doc.town
+                    }];
                     doc.deliveryAddress = 0;
 
-                    return doc.save(function (err, doc) {
+                    return doc.save(function(err, doc) {
                         if (err)
                             console.log(err);
                     });
@@ -422,20 +423,20 @@ function convert(type) {
             });
             return self.plain("Type is deliveryAddress");
             break;
-        case 'code_compta' :
+        case 'code_compta':
             var SocieteModel = MODEL('societe').Schema;
 
-            SocieteModel.find({code_compta: null, code_client: {$ne: null}}, function (err, docs) {
+            SocieteModel.find({ code_compta: null, code_client: { $ne: null } }, function(err, docs) {
                 if (err)
                     return console.log(err);
 
-                docs.forEach(function (doc) {
+                docs.forEach(function(doc) {
                     if (doc.code_client[0] !== 'C') { //Not an automatic code
                         if (doc.code_client.length + 3 > (CONFIG('accounting.length') || 10))
                             return console.log('code_compta too long ', doc.code_client);
 
                         doc.code_compta = '411' + doc.code_client.trim();
-                        doc.save(function (err, doc) {
+                        doc.save(function(err, doc) {
                             if (err)
                                 console.log(err);
                         });
@@ -447,14 +448,14 @@ function convert(type) {
             return self.plain("Type is code_compta");
             break;
 
-        case 'offer' :
+        case 'offer':
             var OfferModel = MODEL('offer').Schema;
-            mongoose.connection.db.collection('Offer', function (err, collection) {
-                collection.find({}, function (err, docs) {
+            mongoose.connection.db.collection('Offer', function(err, collection) {
+                collection.find({}, function(err, docs) {
                     if (err)
                         return console.log(err);
 
-                    docs.each(function (err, doc) {
+                    docs.each(function(err, doc) {
                         //console.log(pricelevel);
                         if (err)
                             return console.log(err);
@@ -470,7 +471,7 @@ function convert(type) {
                         if (doc.ref.length == 15)
                             set.ref = "PC" + doc.ref.substring(4);
 
-                        OfferModel.update({_id: doc._id}, {$set: set}, function (err, doc) {
+                        OfferModel.update({ _id: doc._id }, { $set: set }, function(err, doc) {
                             if (err || !doc)
                                 return console.log("Impossible de creer ", err);
                         });
@@ -480,14 +481,14 @@ function convert(type) {
             });
             return self.plain("Type is offer");
             break;
-        case 'order' :
+        case 'order':
             var OrderModel = MODEL('order').Schema;
-            mongoose.connection.db.collection('Commande', function (err, collection) {
-                collection.find({}, function (err, docs) {
+            mongoose.connection.db.collection('Commande', function(err, collection) {
+                collection.find({}, function(err, docs) {
                     if (err)
                         return console.log(err);
 
-                    docs.each(function (err, doc) {
+                    docs.each(function(err, doc) {
                         //console.log(pricelevel);
                         if (err)
                             return console.log(err);
@@ -503,7 +504,7 @@ function convert(type) {
                         if (doc.ref.length == 15)
                             set.ref = "CO" + doc.ref.substring(4);
 
-                        OrderModel.update({_id: doc._id}, {$set: set}, function (err, doc) {
+                        OrderModel.update({ _id: doc._id }, { $set: set }, function(err, doc) {
                             if (err || !doc)
                                 return console.log("Impossible de creer ", err);
                         });
@@ -519,8 +520,8 @@ function convert(type) {
             var setDate = MODULE('utils').setDate;
             var moment = require('moment');
 
-            BillModel.find({}, "_id datec dater", function (err, docs) {
-                docs.forEach(function (elem) {
+            BillModel.find({}, "_id datec dater", function(err, docs) {
+                docs.forEach(function(elem) {
                     //console.log(elem);
 
                     //FIX 29/02 !!! replace 28/02
@@ -528,7 +529,7 @@ function convert(type) {
                     if (moment(elem.datec).month() == 1 && moment(elem.datec).date() == 29)
                         elem.datec = moment(elem.datec).subtract(1, 'day').toDate();
 
-                    elem.update({$set: {datec: setDate(elem.datec), dater: setDate(elem.dater)}}, {w: 1}, function (err, doc) {
+                    elem.update({ $set: { datec: setDate(elem.datec), dater: setDate(elem.dater) } }, { w: 1 }, function(err, doc) {
                         if (err)
                             console.log(err);
 
@@ -537,8 +538,8 @@ function convert(type) {
                 });
             });
 
-            BillSupplierModel.find({}, "_id datec dater", function (err, docs) {
-                docs.forEach(function (elem) {
+            BillSupplierModel.find({}, "_id datec dater", function(err, docs) {
+                docs.forEach(function(elem) {
                     //console.log(elem);
 
                     //FIX 29/02 !!! replace 28/02
@@ -546,7 +547,7 @@ function convert(type) {
                     if (moment(elem.datec).month() == 1 && moment(elem.datec).date() == 29)
                         elem.datec = moment(elem.datec).subtract(1, 'day').toDate();
 
-                    elem.update({$set: {datec: setDate(elem.datec), dater: setDate(elem.dater)}}, {w: 1}, function (err, doc) {
+                    elem.update({ $set: { datec: setDate(elem.datec), dater: setDate(elem.dater) } }, { w: 1 }, function(err, doc) {
                         if (err)
                             console.log(err);
 
@@ -557,15 +558,16 @@ function convert(type) {
             self.plain('Convert date bill is ok');
             break;
         case 'date_delivery':
+
             var DeliveryModel = MODEL('delivery').Schema;
             var setDate = MODULE('utils').setDate;
             var moment = require('moment');
 
-            DeliveryModel.find({}, "_id datec datedl", function (err, docs) {
-                docs.forEach(function (elem) {
+            DeliveryModel.find({}, "_id datec datedl", function(err, docs) {
+                docs.forEach(function(elem) {
                     //console.log(elem);
 
-                    elem.update({$set: {datec: setDate(elem.datec), datedl: setDate(elem.datedl)}}, {w: 1}, function (err, doc) {
+                    elem.update({ $set: { datec: setDate(elem.datec), datedl: setDate(elem.datedl) } }, { w: 1 }, function(err, doc) {
                         if (err)
                             console.log(err);
 
@@ -576,6 +578,64 @@ function convert(type) {
 
             self.plain('Convert date delivery is ok');
             break;
+        case 'paymentTransactionBills':
+            /* Convert objectId to string */
+            var TransactionModel = MODEL('transaction').Schema;
+
+            //Select only objectId()
+            TransactionModel.find({ "meta.bills.billId": { $type: 7 } }, function(err, docs) {
+                if (err)
+                    return console.log(err);
+
+                docs.forEach(function(doc) {
+
+                    var bills = doc.meta.bills;
+
+                    for (var i = 0, len = bills.length; i < len; i++)
+                        bills[i].billId = bills[i].billId.toString();
+
+
+                    //console.log(bills);
+
+                    doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
+
+                        //doc.save(function(err, doc) {
+                        if (err)
+                            console.log(err);
+                    });
+                });
+
+            });
+            return self.plain("Type is paymentTransaction");
+            break;
+        case 'commercial_idBill':
+            var BillModel = MODEL('bill').Schema;
+            var UserModel = MODEL('hr').Schema;
+
+            BillModel.find({ "commercial_id.id": { $type: 2 } }, function(err, docs) {
+                if (err)
+                    return console.log(err);
+
+                docs.forEach(function(doc) {
+                    //console.log(doc.commercial_id.id.substr(0, 5));
+                    if (doc.commercial_id.id.substr(0, 5) == 'user:') { //Not an automatic code
+                        UserModel.findOne({ username: doc.commercial_id.id.substr(5) }, "_id lastname", function(err, user) {
+
+                            //console.log(user);
+                            //return;
+
+                            doc.commercial_id.id = user._id;
+                            doc.save(function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+                    }
+                });
+
+            });
+            return self.plain("Type is commercial_idBill");
+            break;
     }
 
     return self.plain("Type is unknown");
@@ -585,30 +645,30 @@ function convert_resource() {
     var self = this;
     //var fixedWidthString = require('fixed-width-string'); //on déclare l'indentation
     fs.readdirSync(__dirname + '/../locales/fr/')
-            .filter(function (file) {
-                return file.endsWith('.json');
-            })
+        .filter(function(file) {
+            return file.endsWith('.json');
+        })
 
-            .forEach(function (file) {
-                var readjson = require(__dirname + '/../locales/fr/' + file);// lecture fichier json
-                var writeresource = fs.createWriteStream(__dirname + '/../resources/fr/' + file + 'fr.json');
+    .forEach(function(file) {
+        var readjson = require(__dirname + '/../locales/fr/' + file); // lecture fichier json
+        var writeresource = fs.createWriteStream(__dirname + '/../resources/fr/' + file + 'fr.json');
 
-                _.forEach(readjson, function (file) {
-                    /*if (value === "UTF-8")
-                     return;*/
+        _.forEach(readjson, function(file) {
+            /*if (value === "UTF-8")
+             return;*/
 
-                    //var header = file.substring(0, file.length - 5);//delete .json 
+            //var header = file.substring(0, file.length - 5);//delete .json 
 
-                    /* var temp = fixedWidthString(header + "_" + key, 80);
-                     temp += ": ";
-                     temp += value;
-                     temp += "\n";*/
-                    writeresource.write(readjson);
+            /* var temp = fixedWidthString(header + "_" + key, 80);
+             temp += ": ";
+             temp += value;
+             temp += "\n";*/
+            writeresource.write(readjson);
 
-                });
+        });
 
-            });
+    });
 
     writeresource.end();
-    self.plain("Ok");//text
+    self.plain("Ok"); //text
 }
