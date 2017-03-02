@@ -608,33 +608,39 @@ function convert(type) {
             });
             return self.plain("Type is paymentTransaction");
             break;
-        case 'commercial_idBill':
+        case 'commercial_id':
             var BillModel = MODEL('bill').Schema;
             var UserModel = MODEL('hr').Schema;
+            var OfferModel = MODEL('offer').Schema;
+            var OrderModel = MODEL('order').Schema;
+            var DeliveryModel = MODEL('delivery').Schema;
 
-            BillModel.find({ "commercial_id.id": { $type: 2 } }, function(err, docs) {
-                if (err)
-                    return console.log(err);
+            var Model = [BillModel, OfferModel, OrderModel, DeliveryModel];
 
-                docs.forEach(function(doc) {
-                    //console.log(doc.commercial_id.id.substr(0, 5));
-                    if (doc.commercial_id.id.substr(0, 5) == 'user:') { //Not an automatic code
-                        UserModel.findOne({ username: doc.commercial_id.id.substr(5) }, "_id lastname", function(err, user) {
+            Model.forEach(function(model) {
+                model.find({ "commercial_id.id": { $type: 2 } }, function(err, docs) {
+                    if (err)
+                        return console.log(err);
 
-                            //console.log(user);
-                            //return;
+                    docs.forEach(function(doc) {
+                        //console.log(doc.commercial_id.id.substr(0, 5));
+                        if (doc.commercial_id.id.substr(0, 5) == 'user:') { //Not an automatic code
+                            UserModel.findOne({ username: doc.commercial_id.id.substr(5) }, "_id lastname", function(err, user) {
 
-                            doc.commercial_id.id = user._id;
-                            doc.save(function(err, doc) {
-                                if (err)
-                                    console.log(err);
+                                //console.log(user);
+                                //return;
+
+                                doc.commercial_id.id = user._id;
+                                doc.save(function(err, doc) {
+                                    if (err)
+                                        console.log(err);
+                                });
                             });
-                        });
-                    }
+                        }
+                    });
                 });
-
             });
-            return self.plain("Type is commercial_idBill");
+            return self.plain("Type is commercial_id");
             break;
     }
 
