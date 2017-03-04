@@ -3,10 +3,10 @@
 //https://github.com/jraede/medici
 
 var _ = require('lodash'),
-        mongoose = require('mongoose'),
-        moment = require('moment'),
-        util = require('util'),
-        Q = require('q');
+    mongoose = require('mongoose'),
+    moment = require('moment'),
+    util = require('util'),
+    Q = require('q');
 
 function Entry(book, memo, date, author, original_journal) {
     var journalModel;
@@ -31,17 +31,17 @@ function Entry(book, memo, date, author, original_journal) {
     this.journal.author = author;
 }
 
-Entry.prototype.setApproved = function (bool) {
+Entry.prototype.setApproved = function(bool) {
     this.journal.approved = bool;
     return this;
 };
 
-Entry.prototype.setSeq = function (seq) {
+Entry.prototype.setSeq = function(seq) {
     this.journal.seq = seq;
     return this;
 };
 
-Entry.prototype.credit = function (account_path, amount, extra) {
+Entry.prototype.credit = function(account_path, amount, extra) {
     var key, keys, meta, transaction, val;
     if (extra == null) {
         extra = null;
@@ -88,7 +88,7 @@ Entry.prototype.credit = function (account_path, amount, extra) {
     return this;
 };
 
-Entry.prototype.debit = function (account_path, amount, extra) {
+Entry.prototype.debit = function(account_path, amount, extra) {
     var key, keys, meta, transaction, val;
     if (extra == null) {
         extra = null;
@@ -134,13 +134,13 @@ Entry.prototype.debit = function (account_path, amount, extra) {
     return this;
 };
 
-Entry.prototype.saveTransaction = function (transaction) {
+Entry.prototype.saveTransaction = function(transaction) {
     var d, model, modelClass;
     d = Q.defer();
     modelClass = this.book.transactionModel;
     model = new modelClass(transaction);
     this.journal._transactions.push(model._id);
-    model.save(function (err, res) {
+    model.save(function(err, res) {
         if (err) {
             return d.reject(err);
         } else {
@@ -150,9 +150,9 @@ Entry.prototype.saveTransaction = function (transaction) {
     return d.promise;
 };
 
-Entry.prototype.commit = function (success) {
+Entry.prototype.commit = function(success) {
     var deferred, err, saves, total, trans, transaction, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2,
-            _this = this;
+        _this = this;
     deferred = Q.defer();
     _ref = this.transactions;
 
@@ -203,8 +203,8 @@ Entry.prototype.commit = function (success) {
             trans = _ref2[_k];
             saves.push(this.saveTransaction(trans));
         }
-        Q.all(saves).then(function () {
-            return _this.journal.save(function (err, result) {
+        Q.all(saves).then(function() {
+            return _this.journal.save(function(err, result) {
                 if (err) {
                     _this.book.transactionModel.remove({
                         _journal: _this.journal._id
@@ -219,12 +219,10 @@ Entry.prototype.commit = function (success) {
                         //console.log("Void old transaction");
                         _this.book.transactionModel.remove({
                             _journal: _this.journal._original_journal
-                        }, function (err, doc) {
-                        });
+                        }, function(err, doc) {});
                         _this.book.journalModel.remove({
                             _id: _this.journal._original_journal
-                        }, function (err, doc) {
-                        });
+                        }, function(err, doc) {});
                         //console.log(_this.journal._original_journal);
                     }
                     //             book.void(original_journal).then(function(){
@@ -236,7 +234,7 @@ Entry.prototype.commit = function (success) {
                     }
                 }
             });
-        }, function (err) {
+        }, function(err) {
             return deferred.reject(err);
         });
     }
@@ -247,13 +245,13 @@ Entry.prototype.commit = function (success) {
  * Transaction book
  */
 
-exports.Book = function (name) {
+exports.Book = function(name) {
     this.name = name;
     this.transactionModel = MODEL('transaction').Schema;
     this.journalModel = MODEL('journal').Schema;
 }
 
-exports.Book.prototype.setName = function (name) {
+exports.Book.prototype.setName = function(name) {
     this.name = name;
 };
 
@@ -262,7 +260,7 @@ exports.Book.prototype.setName = function (name) {
 };*/
 
 
-exports.Book.prototype.entry = function (memo, date, author, original_journal) {
+exports.Book.prototype.entry = function(memo, date, author, original_journal) {
 
     if (date == null) {
         date = null;
@@ -275,7 +273,7 @@ exports.Book.prototype.entry = function (memo, date, author, original_journal) {
     return new Entry(this, memo, date, author, original_journal);
 };
 
-exports.Book.prototype.parseQuery = function (query) {
+exports.Book.prototype.parseQuery = function(query) {
     query = _.clone(query);
     var dateParam = 'datetime';
 
@@ -397,7 +395,7 @@ exports.Book.prototype.parseQuery = function (query) {
     return parsed;
 };
 
-exports.Book.prototype.balance = function (query) {
+exports.Book.prototype.balance = function(query) {
     var deferred, group, match, pagination, project, skip, sort;
     deferred = Q.defer();
     if (query.perPage) {
@@ -413,6 +411,8 @@ exports.Book.prototype.balance = function (query) {
     delete query.groupByAccounts;
 
     query = this.parseQuery(query);
+
+    var fixedWidthString = require('fixed-width-string');
 
     if (!this.name) //No book - balance on all
         delete query.book;
@@ -454,7 +454,7 @@ exports.Book.prototype.balance = function (query) {
                 'timestamp': -1
             }
         };
-        this.transactionModel.aggregate(match, project, sort, skip, group, function (err, result) {
+        this.transactionModel.aggregate(match, project, sort, skip, group, function(err, result) {
             //console.log(result);
             var total;
             if (err) {
@@ -465,15 +465,15 @@ exports.Book.prototype.balance = function (query) {
                     return deferred.resolve({
                         balance: 0,
                         notes: 0,
-                        result : 0
+                        result: 0
                     });
                 }
                 total = result.credit - result.debit;
-                
+
                 return deferred.resolve({
                     balance: total,
                     notes: result.count,
-                    result : 0
+                    result: 0
                 });
             }
         });
@@ -483,7 +483,7 @@ exports.Book.prototype.balance = function (query) {
                 '_id': 1
             }
         };
-        this.transactionModel.aggregate(match, project, group, sort, function (err, result) {
+        this.transactionModel.aggregate(match, project, group, sort, function(err, result) {
             var total;
             if (err) {
                 return deferred.reject(err);
@@ -497,20 +497,51 @@ exports.Book.prototype.balance = function (query) {
                         return deferred.resolve({
                             balance: 0,
                             notes: 0,
-                            result : 0
+                            result: 0
                         });
                     }
                     total = result.credit - result.debit;
                     return deferred.resolve({
                         balance: total,
                         notes: result.notes,
-                        result : 0
+                        result: 0
                     });
                 } else {
 
+                    // reduce duplicate account
+                    function isNormalInteger(str) {
+                        var n = Math.floor(Number(str));
+                        return String(n) === str && n >= 0;
+                    }
+
+                    var idx = {}; // index result[i] and _id
+                    var reduce = [];
+
+                    _.map(result, function(elem) {
+                        //console.log(elem);
+
+                        if (isNormalInteger(elem._id))
+                            while (elem._id[elem._id.length - 1] == '0') {
+                                elem._id = elem._id.substring(0, elem._id.length - 1);
+                            }
+
+                        if (!idx[elem._id]) {
+                            reduce.push(elem);
+                            idx[elem._id] = reduce.length - 1;
+                        } else {
+                            reduce[idx[elem._id]].credit += elem.credit;
+                            reduce[idx[elem._id]].debit += elem.debit;
+                            reduce[idx[elem._id]].notes += elem.notes;
+                        }
+
+                        return;
+                    });
+
+                    result = reduce;
+
                     var credit = 0,
-                            debit = 0,
-                            solde = 0; //Benefice or perte
+                        debit = 0,
+                        solde = 0; //Benefice or perte
                     for (var i = 0, len = result.length; i < len; i++) {
                         if (!result[i].credit)
                             result[i].credit = 0;
@@ -519,10 +550,10 @@ exports.Book.prototype.balance = function (query) {
 
                         debit += result[i].debit;
                         credit += result[i].credit;
-                        
+
                         if (result[i]._id.trim()[0] == '6' || result[i]._id.trim()[0] == '7') {
                             //console.log(result[i]._id);
-                            solde +=  result[i].credit;
+                            solde += result[i].credit;
                             solde -= result[i].debit;
                         }
 
@@ -530,9 +561,11 @@ exports.Book.prototype.balance = function (query) {
                         result[i].credit = MODULE('utils').round(result[i].credit, 2);
                         result[i].debit = MODULE('utils').round(result[i].debit, 2);
 
+                        if (isNormalInteger(result[i]._id))
+                            result[i]._id = fixedWidthString(result[i]._id, 10, { padding: '0', align: 'left' });
+
                         delete result[i].notes;
                     }
-                    //console.log(result);
 
                     return deferred.resolve({
                         balance: credit - debit,
@@ -540,7 +573,7 @@ exports.Book.prototype.balance = function (query) {
                         debit: debit,
                         notes: result.length,
                         data: result,
-                        result : solde
+                        result: solde
                     });
                 }
             }
@@ -549,9 +582,9 @@ exports.Book.prototype.balance = function (query) {
     return deferred.promise;
 };
 
-exports.Book.prototype.ledger = function (query, populate) {
+exports.Book.prototype.ledger = function(query, populate) {
     var deferred, pagination, pop, q, _i, _len,
-            _this = this;
+        _this = this;
     if (populate == null) {
         populate = null;
     }
@@ -568,7 +601,7 @@ exports.Book.prototype.ledger = function (query, populate) {
     q = this.transactionModel.find(query);
     //console.log(query);
     if (pagination) {
-        this.transactionModel.count(query, function (err, count) {
+        this.transactionModel.count(query, function(err, count) {
             var pop, _i, _len;
             q.skip((pagination.page - 1) * pagination.perPage).limit(pagination.perPage);
             q.sort({
@@ -581,7 +614,7 @@ exports.Book.prototype.ledger = function (query, populate) {
                     q.populate(pop);
                 }
             }
-            return q.exec(function (err, results) {
+            return q.exec(function(err, results) {
                 if (err) {
                     return deferred.reject(err);
                 } else {
@@ -603,16 +636,16 @@ exports.Book.prototype.ledger = function (query, populate) {
                 q.populate(pop);
             }
         }
-        q.exec(function (err, results) {
+        q.exec(function(err, results) {
             var returnVal;
             //console.log(results);
             if (err) {
                 return deferred.reject(err);
             } else {
-                var credit = _.sum(results, function (object) {
+                var credit = _.sum(results, function(object) {
                     return object.credit;
                 });
-                var debit = _.sum(results, function (object) {
+                var debit = _.sum(results, function(object) {
                     return object.debit;
                 });
 
@@ -630,9 +663,9 @@ exports.Book.prototype.ledger = function (query, populate) {
 };
 
 /* With plugin datatable */
-exports.Book.prototype.ledgerDt = function (query, conditions) {
+exports.Book.prototype.ledgerDt = function(query, conditions) {
     var deferred, pagination, pop, q, _i, _len,
-            _this = this;
+        _this = this;
 
     if (conditions == null)
         conditions = {};
@@ -652,7 +685,7 @@ exports.Book.prototype.ledgerDt = function (query, conditions) {
         conditions: conditions
     };
 
-    this.transactionModel.dataTable(query, {}/*options*/, function (err, results) {
+    this.transactionModel.dataTable(query, {} /*options*/ , function(err, results) {
         if (err) {
             return deferred.reject(err);
         } else {
@@ -674,19 +707,19 @@ exports.Book.prototype.ledgerDt = function (query, conditions) {
     return deferred.promise;
 };
 
-exports.Book.prototype["void"] = function (journal_id, reason) {
+exports.Book.prototype["void"] = function(journal_id, reason) {
     var deferred,
-            _this = this;
+        _this = this;
     deferred = Q.defer();
-    this.journalModel.findById(journal_id, function (err, journal) {
+    this.journalModel.findById(journal_id, function(err, journal) {
         if (err) {
             return deferred.reject(err);
         } else if (!journal) {
             return deferred.reject("Journal not found");
         } else {
-            return journal["void"](_this, reason).then(function () {
+            return journal["void"](_this, reason).then(function() {
                 return deferred.resolve();
-            }, function (err) {
+            }, function(err) {
                 return deferred.reject(err);
             });
         }
@@ -695,15 +728,15 @@ exports.Book.prototype["void"] = function (journal_id, reason) {
 };
 
 /* Set true if entry export to external accounting*/
-exports.Book.prototype.setExported = function (journal_id, date) {
+exports.Book.prototype.setExported = function(journal_id, date) {
     var deferred,
-            _this = this;
+        _this = this;
 
     if (!date)
         date = new Date();
 
     deferred = Q.defer();
-    this.journalModel.findById(journal_id, function (err, journal) {
+    this.journalModel.findById(journal_id, function(err, journal) {
         if (err) {
             return deferred.reject(err);
         } else if (!journal) {
@@ -711,9 +744,9 @@ exports.Book.prototype.setExported = function (journal_id, date) {
         } else if (journal.exported != null)
             return deferred.reject("JournalId already exported");
         else {
-            return journal.setExported(_this, date).then(function () {
+            return journal.setExported(_this, date).then(function() {
                 return deferred.resolve();
-            }, function (err) {
+            }, function(err) {
                 return deferred.reject(err);
             });
         }
@@ -722,23 +755,23 @@ exports.Book.prototype.setExported = function (journal_id, date) {
 };
 
 /* Set date of concilliation*/
-exports.Book.prototype.setReconcilliation = function (journal_id, date) {
+exports.Book.prototype.setReconcilliation = function(journal_id, date) {
     var deferred,
-            _this = this;
+        _this = this;
 
     if (!date)
         date = null;
 
     deferred = Q.defer();
-    this.journalModel.findById(journal_id, function (err, journal) {
+    this.journalModel.findById(journal_id, function(err, journal) {
         if (err) {
             return deferred.reject(err);
         } else if (!journal)
             return deferred.reject("JournalId not found");
         else {
-            return journal.setReconcilliation(_this, date).then(function () {
+            return journal.setReconcilliation(_this, date).then(function() {
                 return deferred.resolve();
-            }, function (err) {
+            }, function(err) {
                 return deferred.reject(err);
             });
         }
@@ -746,12 +779,12 @@ exports.Book.prototype.setReconcilliation = function (journal_id, date) {
     return deferred.promise;
 };
 
-exports.Book.prototype.listJournal = function () {
+exports.Book.prototype.listJournal = function() {
     var deferred;
     deferred = Q.defer();
     this.transactionModel.find({
         //entity: this.entity
-    }).distinct('book', function (err, results) {
+    }).distinct('book', function(err, results) {
         if (err) {
             console.error(err);
             return deferred.reject(err);
@@ -762,7 +795,7 @@ exports.Book.prototype.listJournal = function () {
     return deferred.promise;
 };
 
-exports.Book.prototype.listAccounts = function (val) {
+exports.Book.prototype.listAccounts = function(val) {
     var deferred;
     deferred = Q.defer();
 
@@ -776,7 +809,7 @@ exports.Book.prototype.listAccounts = function (val) {
     if (val)
         query.accounts = new RegExp(val, "gi");
 
-    this.transactionModel.find(query).distinct('accounts', function (err, results) {
+    this.transactionModel.find(query).distinct('accounts', function(err, results) {
         var acct, final, paths, prev, result, _i, _j, _len, _len1;
         if (err) {
             console.error(err);

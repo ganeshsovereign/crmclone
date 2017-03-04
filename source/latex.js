@@ -1,16 +1,16 @@
 "use strict";
 var mongoose = require('mongoose'),
-        fs = require("fs"),
-        path = require("path"),
-        accounting = require("accounting"),
-        exec = require("child_process").exec,
-        util = require('util'),
-        async = require('async'),
-        events = require('events'),
-        moment = require('moment'),
-        i18n = require('i18next'),
-        shortId = require('shortid'),
-        _ = require('lodash');
+    fs = require("fs"),
+    path = require("path"),
+    accounting = require("accounting"),
+    exec = require("child_process").exec,
+    util = require('util'),
+    async = require('async'),
+    events = require('events'),
+    moment = require('moment'),
+    i18n = require('i18next'),
+    shortId = require('shortid'),
+    _ = require('lodash');
 
 var Dict = require('./dict');
 
@@ -77,10 +77,10 @@ util.inherits(Template, events.EventEmitter);
  * @emit end {Archive} The read stream of the finished document.
  */
 
-Template.prototype.apply = function (handler) {
+Template.prototype.apply = function(handler) {
 
     // provide a shortcut for simple value applying and convert to array
-    this.handlers = _.values(_.reduce(handler, function (result, num, key) {
+    this.handlers = _.values(_.reduce(handler, function(result, num, key) {
         num.id = key;
         result[key] = num;
         return result;
@@ -100,8 +100,8 @@ Template.prototype.apply = function (handler) {
 
         // parse the tex file
         this
-                .stream
-                .on('data', this.processContent.bind(this));
+            .stream
+            .on('data', this.processContent.bind(this));
         // the blip needs a resume to work properly
         this.processing = true;
         return this;
@@ -114,23 +114,24 @@ Template.prototype.apply = function (handler) {
  * @api private
  */
 
-Template.prototype.processContent = function (stream) {
+Template.prototype.processContent = function(stream) {
     var emit = this.emit.bind(this);
     var self = this;
     async.waterfall(
-            [
-                parse(stream),
-                this.applyHandlers(),
-                this.applyHeadFoot()
-                        //this.append({name: 'content.xml'})
-            ], function (err, result) {
-        // result now equals 'done'    
+        [
+            parse(stream),
+            this.applyHandlers(),
+            this.applyHeadFoot()
+            //this.append({name: 'content.xml'})
+        ],
+        function(err, result) {
+            // result now equals 'done'    
 
-        if (err)
-            return emit('error', err);
-        emit('finalized', result);
-        emit('compile', result);
-    });
+            if (err)
+                return emit('error', err);
+            emit('finalized', result);
+            emit('compile', result);
+        });
 };
 /**
  * Apply the content to the various installed handlers.
@@ -139,7 +140,7 @@ Template.prototype.processContent = function (stream) {
  * @api private
  */
 
-Template.prototype.applyHandlers = function () {
+Template.prototype.applyHandlers = function() {
     var handlers = this.handlers;
 
     function apply(handler, key, callback) {
@@ -152,18 +153,18 @@ Template.prototype.applyHandlers = function () {
                     value = handler.value.toString();
                     //console.log(handler);
                     value = value.replace(/_/gi, "\\_")
-                            .replace(/%/gi, "\\%")
-                            .replace(/&/gi, "\\&")
-                            .replace(/\n/g, " ");
+                        .replace(/%/gi, "\\%")
+                        .replace(/&/gi, "\\&")
+                        .replace(/\n/g, " ");
                 }
                 break;
             case "area":
                 if (handler.value) {
                     value = handler.value;
                     value = value.replace(/_/gi, "\\_")
-                            .replace(/%/gi, "\\%")
-                            .replace(/&/gi, "\\&")
-                            .replace(/\n/g, "\\\\");
+                        .replace(/%/gi, "\\%")
+                        .replace(/&/gi, "\\&")
+                        .replace(/\n/g, "\\\\");
                 }
                 break;
             case "number":
@@ -220,7 +221,7 @@ Template.prototype.applyHandlers = function () {
                 if (!handler.value)
                     handler.value = 0;
 
-                value = fixedWidthString(handler.value, 13, {padding: '0', align: 'right'});
+                value = fixedWidthString(handler.value, 13, { padding: '0', align: 'right' });
                 break;
             default:
                 return callback("Handler not found : " + handler.type + " (" + handler.id + ")");
@@ -230,81 +231,81 @@ Template.prototype.applyHandlers = function () {
 
     }
 
-    return function (content, done) {
+    return function(content, done) {
         //console.log(content);
         async.eachSeries(
-                handlers,
-                function (handler, next) {
-                    // apply the handlers to the content
+            handlers,
+            function(handler, next) {
+                // apply the handlers to the content
 
-                    if (_.isArray(handler)) {
-                        if (!handler[0] || !handler[0].keys)
-                            return next("Array(0) row keys is missing " + handler.id);
-                        var columns = handler[0].keys;
+                if (_.isArray(handler)) {
+                    if (!handler[0] || !handler[0].keys)
+                        return next("Array(0) row keys is missing " + handler.id);
+                    var columns = handler[0].keys;
 
-                        var output = "";
+                    var output = "";
 
-                        async.eachSeries(handler, function (tabline, cb) {
-                            if (tabline.keys)
-                                return cb();
+                    async.eachSeries(handler, function(tabline, cb) {
+                        if (tabline.keys)
+                            return cb();
 
-                            // Add horizontal line
+                        // Add horizontal line
+                        //console.log(tabline);
+                        if (tabline.hline) {
+                            output += "\\hline\n";
+                            return cb();
+                        }
+
+                        for (var i = 0; i < columns.length; i++) {
                             //console.log(tabline);
-                            if (tabline.hline) {
-                                output += "\\hline\n";
-                                return cb();
-                            }
-
-                            for (var i = 0; i < columns.length; i++) {
-                                //console.log(tabline);
-                                if (typeof tabline[columns[i].key] === 'undefined')
-                                    return next("Value not found in array : " + handler.id + " for key " + columns[i].key);
+                            if (typeof tabline[columns[i].key] === 'undefined')
+                                return next("Value not found in array : " + handler.id + " for key " + columns[i].key);
 
 
-                                if (columns[i].type === 'area') // Specific for array multilines
-                                    tabline[columns[i].key] = "\\specialcell[t]{" + tabline[columns[i].key] + "\\\\}";
+                            if (columns[i].type === 'area') // Specific for array multilines
+                                tabline[columns[i].key] = "\\specialcell[t]{" + tabline[columns[i].key] + "\\\\}";
 
-                                apply(_.extend(columns[i], {
-                                    value: tabline[columns[i].key]
-                                }), i, function (err, key, value) {
-                                    if (err)
-                                        return next(err);
+                            apply(_.extend(columns[i], {
+                                value: tabline[columns[i].key]
+                            }), i, function(err, key, value) {
+                                if (err)
+                                    return next(err);
 
-                                    if (tabline.italic)
-                                        output += '\\textit{' + value + '}';
-                                    else
-                                        output += value;
+                                if (tabline.italic)
+                                    output += '\\textit{' + value + '}';
+                                else
+                                    output += value;
 
-                                    //console.log(key);
-                                    if (key === columns.length - 1) { // end line
-                                        output += "\\tabularnewline\n";
-                                        cb();
-                                    } else
-                                        output += "&"; //next column
+                                //console.log(key);
+                                if (key === columns.length - 1) { // end line
+                                    output += "\\tabularnewline\n";
+                                    cb();
+                                } else
+                                    output += "&"; //next column
 
-                                });
-                            }
+                            });
+                        }
 
-                        }, function () {
-                            //console.log(output);
-                            content = content.replace(new RegExp("--" + handler.id + "--", "g"), output);
-                            next();
-                        });
-                    } else {
-                        apply(handler, handler.id, function (err, key, value) {
-                            if (err)
-                                return next(err);
+                    }, function() {
+                        //console.log(output);
+                        content = content.replace(new RegExp("--" + handler.id + "--", "g"), output);
+                        next();
+                    });
+                } else {
+                    apply(handler, handler.id, function(err, key, value) {
+                        if (err)
+                            return next(err);
 
-                            content = content.replace(new RegExp("--" + key + "--", "g"), value);
-                            next();
-                        })
-                    }
-                },
-                function (err) {
-                    if (err)
-                        return done(err);
-                    done(null, content);
+                        content = content.replace(new RegExp("--" + key + "--", "g"), value);
+                        next();
+                    })
                 }
+            },
+            function(err) {
+                if (err)
+                    return done(err);
+                done(null, content);
+            }
         );
     };
 };
@@ -315,20 +316,20 @@ Template.prototype.applyHandlers = function () {
  * @api private
  */
 
-Template.prototype.applyHeadFoot = function () {
+Template.prototype.applyHeadFoot = function() {
     var entity = this.entity;
     var cgv = this.options.cgv;
     var emit = this.emit.bind(this);
-    return function (tex, done) {
+    return function(tex, done) {
         Dict.dict({
             dictName: "fk_forme_juridique",
             object: true
-        }, function (err, dict) {
+        }, function(err, dict) {
 
-            mongoose.connection.db.collection('Mysoc', function (err, collection) {
+            mongoose.connection.db.collection('Mysoc', function(err, collection) {
                 collection.findOne({
                     _id: entity
-                }, function (err, doc) {
+                }, function(err, doc) {
                     if (err || !doc)
                         return emit("error", "Entity not found");
                     var mysoc = "";
@@ -374,7 +375,7 @@ Template.prototype.applyHeadFoot = function () {
  * launch the finalization of the archive.  But this is done automatically now.
  */
 
-Template.prototype.finalize = function (done) {
+Template.prototype.finalize = function(done) {
     this.on('finalized', done);
     return this;
 };
@@ -382,14 +383,14 @@ Template.prototype.finalize = function (done) {
  * Register a handler on the 'finalized' event. This start latex compilation
  */
 
-Template.prototype.compile = function (layout, inputTex) {
+Template.prototype.compile = function(layout, inputTex) {
 
     if (typeof layout === 'undefined') // Choose an other model latex
         layout = "main"; // .tex .log ...
 
     var emit = this.emit.bind(this);
 
-    var compile = function (tex) {
+    var compile = function(tex) {
         // make temporary directory to create and compile latex pdf
         var dirPath = framework.path.temp() + "pdfcreator-" + shortId.generate();
 
@@ -397,38 +398,38 @@ Template.prototype.compile = function (layout, inputTex) {
 
         var inputPath = path.join(dirPath, "texfile.tex");
         var compilePath = path.join(dirPath, layout + ".tex");
-        var afterCompile = function (err) {
+        var afterCompile = function(err) {
             // store the logs for the user here
-            fs.readFile(path.join(dirPath, layout + ".log"), function (err, data) {
+            fs.readFile(path.join(dirPath, layout + ".log"), function(err, data) {
                 if (err) {
                     return emit('error', "Error while trying to read logs.");
                 }
 
                 var pdfTitle = layout + ".pdf",
-                        tempfile = path.join(dirPath, pdfTitle);
+                    tempfile = path.join(dirPath, pdfTitle);
                 var outputStream = fs.createReadStream(tempfile);
                 emit('pipe', outputStream);
-                outputStream.on('end', function () {
+                outputStream.on('end', function() {
                     deleteFolderRecursive(dirPath);
                 });
                 return;
             });
         };
-        fs.writeFile(inputPath, tex, function (err) {
+        fs.writeFile(inputPath, tex, function(err) {
             if (err) {
                 console.log(err);
                 return emit('error', "An error occured even before compiling");
             }
             //process.chdir(dirPath);
             var copyPackages = ["cp -r", latex.includes + ".", dirPath + "/"].join(" ");
-            exec(copyPackages, function (err) {
+            exec(copyPackages, function(err) {
                 if (err) {
                     console.log(err);
                     return emit('error', "Error copying additional " + "packages/images to use during compilation");
                 }
 
                 // compile the document (or at least try)
-                exec("TEXINPUTS=" + dirPath + ":$TEXINPUTS pdflatex -interaction=nonstopmode -output-directory=" + dirPath + " " + compilePath + " > /dev/null 2>&1", function () {
+                exec("TEXINPUTS=" + dirPath + ":$TEXINPUTS pdflatex -interaction=nonstopmode -output-directory=" + dirPath + " " + compilePath + " > /dev/null 2>&1", function() {
                     exec("TEXINPUTS=" + dirPath + ":$TEXINPUTS pdflatex -interaction=nonstopmode -output-directory=" + dirPath + " " + compilePath + " > /dev/null 2>&1", afterCompile);
                 });
             });
@@ -451,7 +452,7 @@ Template.prototype.compile = function (layout, inputTex) {
  */
 
 function parse(stream) {
-    return function (done) {
+    return function(done) {
         done(null, stream.toString('utf8'));
     };
 }
@@ -466,7 +467,7 @@ function deleteFolderRecursive(path) {
     var files = [];
     if (fs.existsSync(path)) {
         files = fs.readdirSync(path);
-        files.forEach(function (file, index) {
+        files.forEach(function(file, index) {
             var curPath = path + "/" + file;
             if (fs.lstatSync(curPath).isDirectory()) { // recurse
                 deleteFolderRecursive(curPath);
@@ -476,15 +477,14 @@ function deleteFolderRecursive(path) {
         });
         fs.rmdirSync(path);
     }
-}
-;
+};
 /**
  * Proxy the archive `pipe()` method.
  */
 
-Template.prototype.pipe = function () {
+Template.prototype.pipe = function() {
     var out = arguments;
-    this.on('pipe', function (streamOutput) {
+    this.on('pipe', function(streamOutput) {
         streamOutput.pipe.apply(streamOutput, out);
     });
     return this;
