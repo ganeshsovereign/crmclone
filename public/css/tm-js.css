@@ -288,3 +288,14 @@ tr.angular-ui-tree-empty {
 .page-bar {
     background-color: #dedede;
 }
+
+ .portlet > .portlet-title > .caption {
+      float: left;
+      display: inline-block;
+      font-size: 16px;
+      line-height: 18px;
+      padding: 10px 0; }
+ 
+ h4 {
+    font-size: 14px;
+}
