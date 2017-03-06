@@ -62,7 +62,7 @@ var supplierPriceSchema = new Schema({
         pu_ht: { type: Number, default: 0 }, // For base price
         pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
-    packing: String //conditionement
+    packing: Number //conditionement
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
