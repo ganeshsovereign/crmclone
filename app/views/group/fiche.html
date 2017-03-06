@@ -70,7 +70,7 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(NumberOfEmployeesAssigned) :</div>
                         <div class="col-md-8 value"> 
-                            <span class="blue h5" > compte avec tes doigts ! </span>
+                            <span class="blue h5" > ... </span>
                         </div>
                     </div>
 
@@ -105,7 +105,7 @@
                             <tr ng-repeat="right in rights">
                                 <td> {{right.desc}} </td>
                                 <td ng-repeat="(key,perm) in right.perm">
-                                    <input type="checkbox" ng-checked="perm" ng-disabled="!groupRightsCreate" ng-model="group.rights[name][key]" ng-change="update()">
+                                    <input type="checkbox" ng-checked="group.rights[name][key]" ng-disabled="!groupRightsCreate" ng-model="group.rights[name][key]" ng-change="update()">
                                 </td>
                             </tr>
 
@@ -114,12 +114,6 @@
                 </div>
             </accordion-group>
 
-            <accordion-group is-open="status.open">
-                <accordion-heading>
-                    I can have markup, too! <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-                </accordion-heading>
-                This is just some content to illustrate fancy headings.
-            </accordion-group>
         </accordion>
     </div>
 
