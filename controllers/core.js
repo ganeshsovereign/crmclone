@@ -70,7 +70,7 @@ exports.install = function() {
         });
     }, ['authorize']);
     F.route('/erp/convert/resource', convert_resource, ['authorize']);
-    F.route('/erp/convert/{type}', convert, ['authorize']);
+    F.route('/erp/convert/{type}', convert);
 
 
     // SHOW LAST 50 PROBLEMS
