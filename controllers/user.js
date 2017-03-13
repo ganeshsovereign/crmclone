@@ -1,27 +1,28 @@
 "use strict";
 
 var fs = require('fs'),
-        _ = require('lodash'),
-        moment = require('moment'),
-        async = require('async');
+    _ = require('lodash'),
+    moment = require('moment'),
+    async = require('async');
 
-exports.install = function () {
+exports.install = function() {
 
     var object = new Object();
     var absence = new Absence();
 
     object.colors = ["#DDDF0D", "#7798BF", "#55BF3B", "#DF5353", "#aaeeee", "#ff0066", "#eeaaee",
-        "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"];
+        "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"
+    ];
 
     // Specific for select
     F.route('/erp/api/user', object.read, ['authorize']);
     F.route('/erp/api/user/dt', object.readDT, ['post', 'authorize']);
 
-    F.route('/erp/api/user/select', function () {
+    F.route('/erp/api/user/select', function() {
         var UserModel = MODEL('hr').Schema;
         var self = this;
 
-        UserModel.find({isremoved: {$ne: true}, Status: {$ne: "DISABLE"}}, "", {sort: {lastname: 1}}, function (err, docs) {
+        UserModel.find({ isremoved: { $ne: true }, Status: { $ne: "DISABLE" } }, "", { sort: { lastname: 1 } }, function(err, docs) {
             if (err)
                 return self.throw500("err : /erp/api/user/select {0}".format(err));
 
@@ -54,7 +55,7 @@ exports.install = function () {
     }, ['authorize']);
 
     // list for autocomplete
-    F.route('/erp/api/user/name/autocomplete', function () {
+    F.route('/erp/api/user/name/autocomplete', function() {
         var UserModel = MODEL('user').Schema;
         var self = this;
 
@@ -66,7 +67,7 @@ exports.install = function () {
         //(david|doma) create regex or search if 2 words
         if (self.body.filter.filters[0].value.indexOf(" ")) {
             var search = filter.split(' ');
-            search = _.map(search, function (text) {
+            search = _.map(search, function(text) {
                 return text.trim();
             });
 
@@ -82,18 +83,20 @@ exports.install = function () {
         //console.log(filter);
 
         if (self.body.filter)
-            query = {'$or': [
-                    {firstname: new RegExp(filter, "i")},
-                    {lastname: new RegExp(filter, "i")}
-                ]};
+            query = {
+                '$or': [
+                    { firstname: new RegExp(filter, "i") },
+                    { lastname: new RegExp(filter, "i") }
+                ]
+            };
 
         if (self.query.status) {
-            query.Status = {$in: self.query.status};
+            query.Status = { $in: self.query.status };
         } else {
-            query.Status = {$ne: "DISABLE"};
+            query.Status = { $ne: "DISABLE" };
         }
 
-        UserModel.find(query, {}, {limit: self.body.take}, function (err, docs) {
+        UserModel.find(query, {}, { limit: self.body.take }, function(err, docs) {
             if (err) {
                 console.log("err : /api/user/name/autocomplete");
                 console.log(err);
@@ -160,15 +163,14 @@ exports.install = function () {
     F.route('/erp/api/user/{id}', object.uniqLogin, ['authorize']);
 };
 
-function Object() {
-}
+function Object() {}
 
 Object.prototype = {
-    user: function (next, id) {
+    user: function(next, id) {
         var UserModel = MODEL('hr').Schema;
         var self = this;
-        
-        UserModel.findOne({_id: id}, function (err, doc) {
+
+        UserModel.findOne({ _id: id }, function(err, doc) {
             if (err)
                 return next(err);
             if (!doc)
@@ -178,11 +180,11 @@ Object.prototype = {
             next();
         });
     },
-    show: function (id) {
+    show: function(id) {
         var UserModel = MODEL('hr').Schema;
         var self = this;
 
-        UserModel.findOne({_id: id}, function (err, doc) {
+        UserModel.findOne({ _id: id }, function(err, doc) {
             if (err)
                 return next(err);
             if (!doc)
@@ -191,7 +193,7 @@ Object.prototype = {
             self.json(doc);
         });
     },
-    create: function () {
+    create: function() {
         var UserModel = MODEL('hr').Schema;
         var self = this;
         //return req.body.models;
@@ -204,7 +206,7 @@ Object.prototype = {
         if (!user.entity)
             user.entity = self.user.entity;
 
-        user.save(function (err, doc) {
+        user.save(function(err, doc) {
             if (err)
                 return self.throw500(err);
             //return console.log(err);
@@ -212,32 +214,30 @@ Object.prototype = {
             self.json(user);
         });
     },
-    read: function () {
+    read: function() {
         var UserModel = MODEL('hr').Schema;
-        var self = this; 
-        UserModel.find({}, function (err, doc) {
-            if (err) {
-                console.log(err);
-                self.throw500(err);
-                return;
-            }
+        var self = this;
+        UserModel.find({}, function(err, doc) {
+            if (err)
+                return self.throw500(err);
 
-            self.send(doc);
+            self.json(doc);
         });
     },
-    update: function (id) {
+    update: function(id) {
         //return req.body.models;
         var self = this;
         var UserModel = MODEL('hr').Schema;
 
-        UserModel.findOne({_id: id}, function (err, user) {
+        UserModel.findOne({ _id: id }, function(err, user) {
 
             user = _.extend(user, self.body);
 
-            user.save(function (err, doc) {
+            user.save(function(err, doc) {
 
                 if (err)
-                    return self.json({errorNotify: {
+                    return self.json({
+                        errorNotify: {
                             title: 'Erreur',
                             message: err
                         }
@@ -252,32 +252,35 @@ Object.prototype = {
             });
         });
     },
-    del: function (id) {
+    del: function(id) {
         //return req.body.models;
         var self = this;
         var UserModel = MODEL('hr').Schema;
 
-        UserModel.update({_id: id}, {$set: {isremoved: true, Status: 'DISABLE'}}, function (err, user) {
+        UserModel.update({ _id: id }, { $set: { isremoved: true, Status: 'DISABLE' } }, function(err, user) {
             if (err)
                 self.throw500(err);
             else
                 self.json(user);
         });
     },
-    connection: function () {
+    connection: function() {
         var self = this;
         var UserModel = MODEL('hr').Schema;
-        UserModel.find({NewConnection: {$ne: null}, entity: self.query.entity}, "lastname firstname NewConnection", {limit: 10, sort: {
+        UserModel.find({ NewConnection: { $ne: null }, entity: self.query.entity }, "lastname firstname NewConnection", {
+            limit: 10,
+            sort: {
                 NewConnection: -1
-            }}, function (err, docs) {
+            }
+        }, function(err, docs) {
             self.json(docs);
         });
     },
-    uniqLogin: function (id) {
+    uniqLogin: function(id) {
         var self = this;
         var UserModel = MODEL('hr').Schema;
 
-        UserModel.findOne({username: id.toLowerCase()}, "_id lastname firstname username", function (err, doc) {
+        UserModel.findOne({ username: id.toLowerCase() }, "_id lastname firstname username", function(err, doc) {
             if (err)
                 return self.throw500(err);
             if (!doc)
@@ -287,14 +290,14 @@ Object.prototype = {
             self.json(doc);
         });
     },
-    uniqEmail: function () {
+    uniqEmail: function() {
         var self = this;
         var UserModel = MODEL('hr').Schema;
 
         if (!self.query.email)
             return self.throw500("/erp/api/user/email : err query url -> email not found");
 
-        UserModel.findOne({email: self.query.email.toLowerCase()}, "_id lastname firstname email", function (err, doc) {
+        UserModel.findOne({ email: self.query.email.toLowerCase() }, "_id lastname firstname email", function(err, doc) {
             if (err)
                 return self.throw500(err);
             if (!doc)
@@ -303,14 +306,14 @@ Object.prototype = {
             self.json(doc);
         });
     },
-    entityUpdate: function () {
+    entityUpdate: function() {
         var self = this;
         var UserModel = MODEL('hr').Schema;
         var result = [];
         //console.log(req.user);
 
         if (self.user.multiEntities && selfreq.body.entity) {
-            UserModel.findByIdAndUpdate(self.user._id, {$set: {entity: self.body.entity}}, function (err, user) {
+            UserModel.findByIdAndUpdate(self.user._id, { $set: { entity: self.body.entity } }, function(err, user) {
                 if (err)
                     console.log(err);
 
@@ -319,14 +322,14 @@ Object.prototype = {
             });
         }
     },
-    readDT: function () {
+    readDT: function() {
         var self = this;
         var UserModel = MODEL('user').Schema;
         var query = JSON.parse(self.req.body.query);
         var Status;
         //console.log(self.query);
         var conditions = {
-            isremoved: {$ne: true},
+            isremoved: { $ne: true },
             entity: self.query.entity
         };
 
@@ -345,19 +348,19 @@ Object.prototype = {
 
         var options = {
             conditions: conditions
-                    //select: ""
+                //select: ""
         };
 
         //console.log(options);
 
         async.parallel({
-            status: function (cb) {
+            status: function(cb) {
                 cb(null, MODEL('user').Status);
             },
-            datatable: function (cb) {
+            datatable: function(cb) {
                 UserModel.dataTable(query, options, cb);
             }
-        }, function (err, res) {
+        }, function(err, res) {
             if (err)
                 return self.throw500(err);
 
@@ -393,11 +396,10 @@ Object.prototype = {
     }
 };
 
-function Absence() {
-}
+function Absence() {}
 
 Absence.prototype = {
-    create: function (req, res) {
+    create: function(req, res) {
         var obj = req.body;
 
         console.log(obj);
@@ -410,14 +412,14 @@ Absence.prototype = {
         doc.author.id = req.user._id;
         doc.author.name = req.user.name;
 
-        doc.save(function (err, doc) {
+        doc.save(function(err, doc) {
             if (err)
                 console.log(err);
 
             res.send(200, doc);
         });
     },
-    read: function (req, res) {
+    read: function(req, res) {
         var query = {};
 
         console.log(req.query);
@@ -431,10 +433,12 @@ Absence.prototype = {
         if (req.query.entity)
             query.entity = req.query.entity;
 
-        UserAbsenceModel.find(query, "", {sort: {
+        UserAbsenceModel.find(query, "", {
+            sort: {
                 Status: -1, //Sort by Status
                 dateEnd: 1
-            }}, function (err, doc) {
+            }
+        }, function(err, doc) {
             if (err) {
                 console.log(err);
                 res.send(500, doc);
@@ -443,24 +447,24 @@ Absence.prototype = {
             res.send(200, doc);
         });
     },
-    update: function (req, res) {
+    update: function(req, res) {
         var obj = req.body;
         //console.log(obj);
 
-        UserAbsenceModel.findOne({_id: req.params.id}, function (err, doc) {
+        UserAbsenceModel.findOne({ _id: req.params.id }, function(err, doc) {
             if (err)
                 console.log(err);
 
             doc = _.extend(doc, obj);
 
-            doc.save(function (err, doc) {
+            doc.save(function(err, doc) {
                 res.send(200, doc);
             });
         });
     },
-    delete: function (req, res) {
+    delete: function(req, res) {
 
-        UserAbsenceModel.remove({_id: req.params.id}, function (err, doc) {
+        UserAbsenceModel.remove({ _id: req.params.id }, function(err, doc) {
             if (err) {
                 res.render('error', {
                     status: 500
@@ -470,19 +474,19 @@ Absence.prototype = {
             }
         });
     },
-    count: function (req, res) {
+    count: function(req, res) {
         var d = new Date();
         d.setHours(0, 0, 0);
         var dateStart = new Date(d.getFullYear(), 0, 1);
         var dateEnd = new Date(d.getFullYear() + 1, 0, 1);
 
         UserAbsenceModel.aggregate([
-            {$match: {Status: "NOTJUSTIFIED", dateStart: {$gte: dateStart, $lt: dateEnd}}},
-            {$project: {_id: 0, nbDay: 1}},
-            {$group: {'_id': 0, sum: {"$sum": "$nbDay"}}}
-        ], function (err, docs) {
+            { $match: { Status: "NOTJUSTIFIED", dateStart: { $gte: dateStart, $lt: dateEnd } } },
+            { $project: { _id: 0, nbDay: 1 } },
+            { $group: { '_id': 0, sum: { "$sum": "$nbDay" } } }
+        ], function(err, docs) {
             if (docs.length === 0)
-                return res.json({_id: 0, sum: 0});
+                return res.json({ _id: 0, sum: 0 });
 
             res.json(docs[0]);
         });
