@@ -12,8 +12,8 @@ var mongoose = require('mongoose'),
  * Bank Category Schema
  */
 var bankCategorySchema = new Schema({
-	name: String,
-        description: String
+    name: String,
+    description: String
 });
 
 exports.Schema = mongoose.model('BankCategory', bankCategorySchema, 'BankCategory');

@@ -10,40 +10,6 @@ var mongoose = require('mongoose'),
     _ = require("lodash"),
     Q = require('q');
 
-var setTags = function(tags) {
-    var result = [];
-    for (var i = 0; i < tags.length; i++)
-        if (typeof tags[i] == "object" && tags[i].text)
-            result.push(tags[i].text.trim());
-        else
-            result.push(tags[i].trim());
-
-    result = _.uniq(result);
-
-    //console.log(result);
-    return result;
-};
-
-var setLink = function(link) {
-    if (!link)
-        return null;
-
-    link = link.replace(/ /g, "_");
-    link = link.replace(/\//g, "");
-
-    //console.log(result);
-    return link;
-};
-
-var setAccount = function(account) {
-    if (account) {
-        account = account.replace(/ /g, "");
-        account = account.substring(0, 10); //limit a 10 character
-    }
-
-    return account;
-};
-
 var Dict = INCLUDE('dict');
 /**
  * Product Schema
@@ -79,18 +45,92 @@ supplierPriceSchema.virtual('pricesDetails')
     });
 
 
+
+
 var productSchema = new Schema({
+    isBundle: { type: Boolean, default: false },
+    isVariant: { type: Boolean, default: false },
+    groupId: { type: String, default: null },
+    // wTrack           : {type: String, ref: 'wTrack', default: null},
+    job: { type: Schema.Types.ObjectId, ref: 'jobs', default: null },
+    canBeSold: { type: Boolean, default: true },
+    canBeExpensed: { type: Boolean, default: true },
+    eventSubscription: { type: Boolean, default: true },
+    canBePurchased: { type: Boolean, default: true },
+    sourceDocument: { type: Schema.Types.ObjectId, ref: 'ProductImages', default: null },
+    imageSrc: {
+        type: Schema.Types.ObjectId,
+        ref: 'Images',
+        default: null
+    },
+
+
     oldId: String, // Only for import migration
+
     ref: { type: String, required: true, unique: true, uppercase: true },
-    name: String, //copy of ref
+    name: { type: String, default: '' }, //copy of ref
     seq: { type: String, unique: true },
     isremoved: { type: Boolean, default: false },
-    compta_buy: { type: String, set: setAccount, trim: true },
-    compta_buy_eu: { type: String, set: setAccount, trim: true },
-    compta_buy_exp: { type: String, set: setAccount, trim: true },
-    compta_sell: { type: String, set: setAccount, trim: true },
-    compta_sell_eu: { type: String, set: setAccount, trim: true },
-    compta_sell_exp: { type: String, set: setAccount, trim: true },
+
+    // TODO Migrate to this model with PIM module 
+    info: {
+        productType: { type: Schema.Types.ObjectId, ref: 'productTypes', default: null },
+        isActive: { type: Boolean, default: true },
+        barcode: { type: String, default: '' },
+        description: { type: String, default: '' },
+        brand: { type: Schema.Types.ObjectId, ref: 'Brand', default: null },
+        categories: [{ type: Schema.Types.ObjectId, ref: 'ProductCategory' }],
+        SKU: { type: String, default: null },
+        UPC: { type: String, default: null },
+        ISBN: { type: String, default: null },
+        EAN: { type: String, default: null }
+    },
+
+    inventory: {
+        warehouseMsg: { type: String, default: '' },
+        minStockLevel: { type: Number, default: 0 }
+    },
+
+    variants: [{ type: Schema.Types.ObjectId, ref: 'ProductOptionsValues', default: null }],
+
+    //bundles
+    pack: [{
+        id: { type: Schema.Types.ObjectId, ref: 'product' },
+        qty: { type: Number, default: 0 }
+    }],
+    search: [String],
+
+    workflow: { type: Schema.Types.ObjectId, ref: 'workflows', default: null },
+    whoCanRW: { type: String, enum: ['owner', 'group', 'everyOne'], default: 'everyOne' },
+
+    groups: {
+        owner: { type: Schema.Types.ObjectId, ref: 'Users', default: null },
+        users: [{ type: Schema.Types.ObjectId, ref: 'Users', default: null }],
+        group: [{ type: Schema.Types.ObjectId, ref: 'Department', default: null }]
+    },
+
+    createdBy: {
+        user: { type: Schema.Types.ObjectId, ref: 'Users', default: null },
+        date: { type: Date, default: Date.now }
+    },
+
+    editedBy: {
+        user: { type: Schema.Types.ObjectId, ref: 'Users', default: null },
+        date: { type: Date, default: Date.now }
+    },
+
+    externalId: { type: String, default: '' },
+
+    attachments: { type: Array, default: [] },
+
+
+
+    compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
     label: { type: String, default: "" },
     description: { type: String, default: "" },
     body: { type: String, default: "" }, // Description For SEO
@@ -107,11 +147,12 @@ var productSchema = new Schema({
     units: { type: String, default: "unit" },
     minPrice: { type: Number, default: 0 },
     finished: String,
-    tms: Date, // Not used ??
     datec: { type: Date, default: Date.now },
     billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
-    Tag: { type: [], set: setTags },
+    Tag: { type: [], set: MODULE('utils').setTags },
     entity: [String],
+
+    // Old price model
     price: [{
         _id: { type: Schema.Types.ObjectId, required: true },
         price_level: String,
@@ -129,7 +170,8 @@ var productSchema = new Schema({
         pu_ht: { type: Number, default: 0 }, // For base price
         pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
-    pu_ht: { type: Number, default: 0 }, // For base price OLD
+
+    pu_ht: { type: Number, default: 0 }, // For base price OLD TODO Remove
     user_mod: { id: String, name: String },
     history: [{
         tms: Date,
@@ -146,17 +188,27 @@ var productSchema = new Schema({
     category: String,
     linker_category: String,
     weight: { type: Number, default: 0 }, // Poids en kg
+    size: {
+        length: { type: Number, default: 0 },
+        width: { type: Number, default: 0 },
+        height: { type: Number, default: 0 },
+        dimension: { type: String, default: 'cm' }
+    },
     minQty: Number,
+
+    // TODO Remove old model stock
     stock: {
         zone: String,
         driveway: String, //allee
         rack: Number, // column
         floor: Number // etage
     },
+
     autoBarCode: { type: Boolean, default: true },
     barCode: { type: String, index: true, uppercase: true, sparse: true },
     aclCode: { type: String, uppercase: true },
     suppliers: [supplierPriceSchema],
+
     /******** VAD Method **************/
     directCost: { type: Number, default: 0 }, //Total MP
     indirectCost: { type: Number, default: 0 }, //Total Effort
@@ -164,17 +216,12 @@ var productSchema = new Schema({
     /**********************************/
 
     optional: Schema.Types.Mixed,
-    linker: { type: String, unique: true, set: setLink }, // SEO URL
+    linker: { type: String, unique: true, set: MODULE('utils').setLink }, // SEO URL
     attributes: [{
         key: { type: String },
         value: { type: String },
         css: { type: String }
-    }],
-    pack: [{
-        id: { type: Schema.Types.ObjectId, ref: 'product' },
-        qty: { type: Number, default: 0 }
-    }],
-    search: [String]
+    }]
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }

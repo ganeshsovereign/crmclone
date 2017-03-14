@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-        Schema = mongoose.Schema;
+    Schema = mongoose.Schema;
 
 var Dict = INCLUDE('dict');
 
@@ -14,11 +14,7 @@ var Dict = INCLUDE('dict');
 
 var UserSchema = MODEL('user').Schema; //extend User model
 
-var setPhone = function (phone) {
-    if (phone !== null)
-        phone = phone.replace(/ /g, "").replace(/\./g, "").replace(/\(/g, "").replace(/\)/g, "").replace(/\+/g, "");
-    return phone;
-};
+var setPhone = MODULE('utils').setPhone;
 
 
 var HrSchema = UserSchema.discriminator('hr', new Schema({
@@ -50,17 +46,16 @@ var HrSchema = UserSchema.discriminator('hr', new Schema({
     classes: String,
     dateOfClasses: Number,
     notes: [{
-            author: {
-                id: {type: String, ref: 'User'},
-                name: String
-            },
-            datec: Date,
-            note: String
-        }]
-},
-{
-    toObject: {virtuals: true},
-    toJSON: {virtuals: true},
+        author: {
+            id: { type: String, ref: 'User' },
+            name: String
+        },
+        datec: Date,
+        note: String
+    }]
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true },
     discriminatorKey: '_type',
     collection: 'users'
 }));
