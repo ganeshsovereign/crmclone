@@ -1,6 +1,6 @@
 {
     "Ecommerce": "Vente en ligne",
-    "Attributes":"Attributs",
+    "Attributes": "Attributs",
     "OnWebSale": "Site(s) vente en ligne",
     "Contact": "Contact",
     "Login": "Se connecter",
@@ -24,8 +24,12 @@
     "Continue shopping": "Je continue mon shopping",
     "Checkout": "Je commande",
     "Sub total": "Sous total",
+    "ShowPrice": "Afficher le prix",
+    "AvailableSale": "Disponible à la vente",
+    "WebExclusivity": "Exclusivité Web",
     "Shipping cost": "Frais de port",
     "New Customer": "Nouveau client(e)",
+    "abstract": "Résumé",
     "Returning Customer": "Déjà client(e)",
     "Register Account": "Creer un compte",
     "Guest Checkout": "Commander sans créer de compte",
@@ -61,11 +65,11 @@
     "Fax": "Fax",
     "Terms & Conditions": "conditions générales de vente",
     "Confirm Order": "Valider la commande",
-    "Billing Address":"Adresse de facturation",
-    "Please Select":"Faites votre choix",
-    "Delivery Address":"Adresse de livraison",
-    "Delivery type":"Mode de livraison",
-    "Browse all products":"Voir tous les produits"
+    "Billing Address": "Adresse de facturation",
+    "Please Select": "Faites votre choix",
+    "Delivery Address": "Adresse de livraison",
+    "Delivery type": "Mode de livraison",
+    "Browse all products": "Voir tous les produits"
 
 
 

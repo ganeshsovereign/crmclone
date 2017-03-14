@@ -884,6 +884,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProv
                     },
                     controller: "ProductStatsController"
                 })
+                .state('product.visual', {
+                    parent: "product",
+                    url: "/visual/{id:[0-9a-z]{24}}",
+                    templateUrl: "/views/_product/productvisual.html",
+                    data: {
+                        pageTitle: 'Fiche produit print'
+                    },
+                    controller: "ProductController"
+                })
                 // Category
                 .state('category', {
                     url: "/category",
