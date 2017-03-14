@@ -1,12 +1,12 @@
 var mongoose = require('mongoose'),
-        _ = require('lodash');
+    _ = require('lodash');
 
 // ================================================
 // AUTHORIZATION
 // ================================================
 
-framework.on('module#auth', function (type, name) {
-    MODULE('auth').onAuthorize = function (id, callback) {
+framework.on('module#auth', function(type, name) {
+    MODULE('auth').onAuthorize = function(id, callback) {
 
         // this is cached
         // read user information from database
@@ -14,7 +14,7 @@ framework.on('module#auth', function (type, name) {
         // this is an example
 
         // Why "1"? Look into auth.login(controller, "ID", user);
-        
+
         //console.log("Authorize ",id);
 
         if (id == null)
@@ -25,49 +25,47 @@ framework.on('module#auth', function (type, name) {
         if (user) {
             //req.user = user;
             return callback(user);
-        }
-
-        else {
+        } else {
             var UserModel = MODEL('user').Schema;
-            UserModel.findOne({_id: id, Status: {$ne: "DISABLE"}}, "name firstname lastname entity groupe groups home societe multiEntities poste admin email right_menu")
-                    .populate("societe", "id name Status price_level address zip town")
-                    .exec(function (err, response) {
+            UserModel.findOne({ _id: id, Status: { $ne: "DISABLE" } }, "name firstname lastname entity groupe groups home societe multiEntities poste admin email right_menu")
+                .populate("societe", "id name Status price_level address zip town")
+                .exec(function(err, response) {
 
-                        if (!response)
-                            return callback(false); // if user not exist then
+                    if (!response)
+                        return callback(false); // if user not exist then
 
-                        console.log("onAuthorize", response.email);
+                    console.log("onAuthorize", response.email);
 
-                        console.log("Load rights !");
-                        var UserGroup = MODEL('group').Schema;
+                    console.log("Load rights !");
+                    var UserGroup = MODEL('group').Schema;
 
-                        var rights = {
-                            societe: {
-                                default: false // Needed
-                            }
-                        };
+                    var rights = {
+                        societe: {
+                            default: false // Needed
+                        }
+                    };
 
-                        response.rights = rights;
-                        delete response.password;
-                        delete response.hashed_password;
-                        delete response.google;
+                    response.rights = rights;
+                    delete response.password;
+                    delete response.hashed_password;
+                    delete response.google;
 
-                        //console.log(user.rights);
-                        if (response.groupe)
-                            return UserGroup.findOne({
-                                _id: response.groupe
-                            }, "rights", function (err, group) {
-                                response.rights = _.extend(response.rights, group.rights);
-                                //console.log(user.rights);
-                                F.cache.add('user_' + response._id, response, '5 minutes');
-                                //console.log(response);
-                                callback(response);
-                            });
+                    //console.log(user.rights);
+                    if (response.groupe)
+                        return UserGroup.findOne({
+                            _id: response.groupe
+                        }, "rights", function(err, group) {
+                            response.rights = _.extend(response.rights, group.rights);
+                            //console.log(user.rights);
+                            F.cache.add('user_' + response._id, response, '5 minutes');
+                            //console.log(response);
+                            callback(response);
+                        });
 
-                        F.cache.add('user_' + response._id, response, '5 minutes');
-                        //console.log(response);
-                        callback(response);
-                    });
+                    F.cache.add('user_' + response._id, response, '5 minutes');
+                    //console.log(response);
+                    callback(response);
+                });
         }
     };
 
