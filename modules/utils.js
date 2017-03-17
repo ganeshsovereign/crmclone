@@ -78,7 +78,14 @@ exports.setAccount = function(account) {
 
 exports.setNoSpace = function(text) {
     if (text)
-        text = text.replace(/ /g, "");
+        text = text.replace(/ /g, "").trim();
+
+    return text;
+};
+
+exports.set_Space = function(text) {
+    if (text)
+        text = text.replace(/ /g, "_").trim();
 
     return text;
 };

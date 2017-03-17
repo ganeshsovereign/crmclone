@@ -45,6 +45,29 @@ supplierPriceSchema.virtual('pricesDetails')
     });
 
 
+var LangSchema = new Schema({
+    lang: { type: String, default: "fr" },
+    description: { type: String, default: '' },
+    body: { type: String, default: '' },
+    name: { type: String, default: '' },
+    meta: {
+        title: { type: String, default: '' },
+        description: { type: String, default: '' }
+    },
+    linker: { type: String, unique: true, set: MODULE('utils').setLink }, // SEO URL
+    Tag: { type: [], set: MODULE('utils').setTags }
+});
+
+LangSchema.pre('save', function(next) {
+    var self = this;
+
+    // remove old packif change
+    if (!this.linker)
+        this.linker = this.name.replace(/ /g, "-").toLowerCase();
+
+    next();
+});
+
 
 
 var productSchema = new Schema({
@@ -64,11 +87,10 @@ var productSchema = new Schema({
         default: null
     },
 
-
     oldId: String, // Only for import migration
 
-    ref: { type: String, required: true, unique: true, uppercase: true },
-    name: { type: String, default: '' }, //copy of ref
+    //ref: { type: String, required: true, unique: true, uppercase: true }, //TODO Remove
+    name: { type: String, default: '' },
     seq: { type: String, unique: true },
     isremoved: { type: Boolean, default: false },
 
@@ -76,14 +98,28 @@ var productSchema = new Schema({
     info: {
         productType: { type: Schema.Types.ObjectId, ref: 'productTypes', default: null },
         isActive: { type: Boolean, default: true },
-        barcode: { type: String, default: '' },
-        description: { type: String, default: '' },
+        autoBarCode: { type: Boolean, default: true },
+        barCode: { type: String, index: true, uppercase: true, sparse: true },
+        aclCode: { type: String, uppercase: true },
+
         brand: { type: Schema.Types.ObjectId, ref: 'Brand', default: null },
-        categories: [{ type: Schema.Types.ObjectId, ref: 'ProductCategory' }],
+        categories: [{ type: Schema.Types.ObjectId, ref: 'productCategory' }],
         SKU: { type: String, default: null },
         UPC: { type: String, default: null },
         ISBN: { type: String, default: null },
-        EAN: { type: String, default: null }
+        EAN: { type: String, default: null },
+
+        attributes: [{
+            key: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
+            value: { type: String, default: "" }
+        }],
+
+        notePrivate: { type: String },
+
+        /* PIM transaltion */
+        lang: [LangSchema]
+            /* need to Add  alt des images TODO */
+
     },
 
     inventory: {
@@ -95,9 +131,11 @@ var productSchema = new Schema({
 
     //bundles
     pack: [{
+        _id: false,
         id: { type: Schema.Types.ObjectId, ref: 'product' },
         qty: { type: Number, default: 0 }
     }],
+
     search: [String],
 
     workflow: { type: Schema.Types.ObjectId, ref: 'workflows', default: null },
@@ -123,90 +161,60 @@ var productSchema = new Schema({
 
     attachments: { type: Array, default: [] },
 
-
-
     compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true },
     compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
     compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
     compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true },
     compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
     compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
-    label: { type: String, default: "" },
-    description: { type: String, default: "" },
-    body: { type: String, default: "" }, // Description For SEO
-    notePrivate: { type: String },
+
+    //label: { type: String, default: "" },
+    //description: { type: String, default: "" },
+    //body: { type: String, default: "" }, // Description For SEO
+
     type: { type: String, default: 'PRODUCT' },
     Status: String,
-    enabled: { type: Boolean, default: true },
-    istop: { type: Boolean, default: false },
-    sale: { type: Boolean, default: false }, // soldes
-    ischat: { type: Boolean, default: false },
-    negociate: { type: Number, default: 0 }, // 0 is no negociate
-    country_id: String,
+    //enabled: { type: Boolean, default: true },
+    //ischat: { type: Boolean, default: false },
+    //negociate: { type: Number, default: 0 }, // 0 is no negociate
     tva_tx: { type: Number, default: 20 },
-    units: { type: String, default: "unit" },
-    minPrice: { type: Number, default: 0 },
-    finished: String,
-    datec: { type: Date, default: Date.now },
-    billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
-    Tag: { type: [], set: MODULE('utils').setTags },
-    entity: [String],
+    //units: { type: String, default: "unit" },
+    //datec: { type: Date, default: Date.now },
+    //billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
 
-    // Old price model
-    price: [{
-        _id: { type: Schema.Types.ObjectId, required: true },
-        price_level: String,
-        tms: Date,
-        pu_ht: Number,
-        qtyMin: { type: Number, default: 0 },
-        ref_customer_code: String,
-        user_mod: Schema.Types.Mixed,
-        tva_tx: Number,
-        dsf_coef: Number,
-        dsf_time: Number
-    }],
-    // new price model
+
+    // price model TODO remove
     prices: {
         pu_ht: { type: Number, default: 0 }, // For base price
         pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
 
-    pu_ht: { type: Number, default: 0 }, // For base price OLD TODO Remove
-    user_mod: { id: String, name: String },
-    history: [{
-        tms: Date,
-        user_mod: Schema.Types.Mixed,
-        pu_ht: Number,
-        ref_customer_code: String
-    }],
     template: { type: String },
     dynForm: String,
+
     caFamily: { type: String, uppercase: true },
     subFamily: { type: String, uppercase: true },
     costCenter: { type: String, uppercase: true },
     subCostCenter: { type: String, uppercase: true },
-    category: String,
-    linker_category: String,
-    weight: { type: Number, default: 0 }, // Poids en kg
+
+    units: { type: String, default: "unit" },
+
     size: {
         length: { type: Number, default: 0 },
         width: { type: Number, default: 0 },
         height: { type: Number, default: 0 },
-        dimension: { type: String, default: 'cm' }
+        dimension: { type: String, default: 'cm' },
+        weight: { type: Number, default: 0 } // Poids en kg
     },
-    minQty: Number,
 
     // TODO Remove old model stock
-    stock: {
+    /*stock: {
         zone: String,
         driveway: String, //allee
         rack: Number, // column
         floor: Number // etage
-    },
+    },*/
 
-    autoBarCode: { type: Boolean, default: true },
-    barCode: { type: String, index: true, uppercase: true, sparse: true },
-    aclCode: { type: String, uppercase: true },
     suppliers: [supplierPriceSchema],
 
     /******** VAD Method **************/
@@ -215,13 +223,8 @@ var productSchema = new Schema({
     totalCost: { type: Number, default: 0 }, //Total MP + Effort
     /**********************************/
 
-    optional: Schema.Types.Mixed,
-    linker: { type: String, unique: true, set: MODULE('utils').setLink }, // SEO URL
-    attributes: [{
-        key: { type: String },
-        value: { type: String },
-        css: { type: String }
-    }]
+    optional: Schema.Types.Mixed // TODO Remove ?
+
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
@@ -466,42 +469,31 @@ productSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
 
-    self.name = self.ref;
-
-    if (this.isNew)
-        this.history = [];
-
-    if (this.type !== 'DYNAMIC')
-        this.dynForm = null;
-
-    // remove old packif change
-    if (this.type !== 'PACK')
+    // remove old pack if change
+    if (!this.isBundle)
         this.pack = [];
 
-    if (!this.linker)
-        this.linker = this.ref.replace(/ /g, "-").toLowerCase();
-    else
-        this.linker = this.linker.replace(/ /g, "-");
+    this.name = this.info.lang[0].name;
 
-    if (this.category) {
-        var category = prepare_subcategories(this.category);
-        this.category = category.name;
-        this.linker_category = category.linker;
-    }
+    /* if (this.category) {
+         var category = prepare_subcategories(this.category);
+         this.category = category.name;
+         this.linker_category = category.linker;
+     }*/
 
-    if (this.autoBarCode == true && this.seq) {
-        this.barCode = "";
+    if (this.info.autoBarCode == true && this.seq) {
+        this.info.barCode = "";
 
         if (this.caFamily)
-            this.barCode += this.caFamily.substr(0, 2);
+            this.info.barCode += this.caFamily.substr(0, 2);
 
-        this.barCode += this.seq;
+        this.info.barCode += this.seq;
     }
 
-    var search = (this.name + ' ' + this.category);
-    this.attributes.forEach(function(elem) {
+    var search = (this.info.lang[0].name + ' ' + this.info.lang[0].decription);
+    /*this.attributes.forEach(function(elem) {
         search += ' ' + elem.value;
-    });
+    });*/
 
     this.search = search.keywords(true, true);
 
@@ -512,7 +504,7 @@ productSchema.pre('save', function(next) {
         this.totalCost = this.directCost + this.indirectCost;
     }
 
-    if (this.type == 'PACK') {
+    if (this.isBundle) {
         this.directCost = 0;
         for (var i = 0; i < this.pack.length; i++)
             if (this.pack[i].id && this.pack[i].id.totalCost)
@@ -521,24 +513,25 @@ productSchema.pre('save', function(next) {
         this.totalCost = this.directCost + this.indirectCost;
     }
 
-    if (!this.isNew && this.isModified('totalCost')) // Emit to all that a product change totalCost
-        F.functions.EE.emit('product', { type: 'updateCost', data: { _id: this._id } });
+    //if (!this.isNew && this.isModified('totalCost')) // Emit to all that a product change totalCost
+    //    F.functions.EE.emit('product', { type: 'updateCost', data: { _id: this._id } });
+    // TODO NEED TO RE-ACTIVATE
 
 
     if (this.isNew || !this.seq) {
-        if (!this.body)
-            this.body = this.description;
+        //if (!this.body)
+        //    this.body = this.description;
 
         SeqModel.incNumber("P", 7, function(seq) {
             self.seq = seq;
 
-            if (self.autoBarCode == true) {
-                self.barCode = "";
+            if (self.info.autoBarCode == true) {
+                self.info.barCode = "";
 
                 if (self.caFamily)
-                    self.barCode += self.caFamily.substr(0, 2);
+                    self.info.barCode += self.caFamily.substr(0, 2);
 
-                self.barCode += seq;
+                self.info.barCode += seq;
             }
 
             next();

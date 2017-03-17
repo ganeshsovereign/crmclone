@@ -298,5 +298,8 @@
     "SubCostCenter": "Sous centre de cout",
     "SumCost": "Cout moyen (calculé)",
     "ReplenishmentTime": "Délai de réappro.",
-    "Consumptions": "Statisques des consommations"
+    "Consumptions": "Statisques des consommations",
+    "Variants": "Variantes",
+    "EditVariants": "Edit. variantes",
+    "CreateVariants": "Creat. variantes"
 }
