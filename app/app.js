@@ -900,11 +900,39 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/templates/_product/marketing.html",
             data: { pageTitle: 'Marketing - Product' }
         })
-        // marketing
+        // attributes
         .state("product.show.attributes", {
             url: "/attributes",
             templateUrl: "/templates/_product/attributes.html",
             data: { pageTitle: 'Attributes - Product' }
+        })
+        // information
+        .state("product.show.informations", {
+            url: "/informations",
+            templateUrl: "/templates/_product/informations.html",
+            data: { pageTitle: 'Informations - Product' }
+        })
+        // price
+        .state("product.show.price", {
+            url: "/price",
+            templateUrl: "/templates/_product/price.html",
+            data: { pageTitle: 'Prices - Product' }
+        })
+        // associations
+        .state("product.show.associations", {
+            url: "/associations",
+            templateUrl: "/templates/_product/associations.html",
+            data: {
+                pageTitle: 'Associations - Product '
+            }
+        })
+        // declinaisons
+        .state("product.show.declinations", {
+            url: "/declinations",
+            templateUrl: "/templates/_product/declinations.html",
+            data: {
+                pageTitle: 'Declinaisons - Product '
+            }
         })
         // Category
         .state('category', {
