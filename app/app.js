@@ -934,6 +934,30 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Declinaisons - Product '
             }
         })
+        // stocks
+        .state("product.show.stock", {
+            url: "/stock",
+            templateUrl: "/templates/_product/stock.html",
+            data: {
+                pageTitle: 'Stock - Product '
+            }
+        })
+        // characteristics
+        .state("product.show.characteristics", {
+            url: "/characteristics",
+            templateUrl: "/templates/_product/characteristics.html",
+            data: {
+                pageTitle: 'Caractéristiques - Product '
+            }
+        })
+        // ecommerce
+        .state("product.show.ecommerce", {
+            url: "/ecommerce",
+            templateUrl: "/templates/_product/ecommerce.html",
+            data: {
+                pageTitle: 'Ecommerce - Product '
+            }
+        })
         // Category
         .state('category', {
             url: "/category",
