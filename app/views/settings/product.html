@@ -1,0 +1,106 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(products:Settings Overview)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(products:Product Configuration)</span>
+        </li>
+    </ul>
+</div>
+<h3 class="page-title">
+    <i class="fa fa-cubes font-grey-silver"></i> @(products:Product Configuration)
+</h3>
+
+<div ng-if="product.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce produit est supprime. </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PROFILE SIDEBAR -->
+        <div class="profile-sidebar">
+            <!-- PORTLET MAIN -->
+            <div class="portlet light profile-sidebar-portlet">
+                <!-- SIDEBAR USERPIC -->
+                <div class="profile-userpic">
+                    <img class="img-responsive" alt="Product" />
+                </div>
+                <!-- END SIDEBAR USERPIC -->
+                <!-- SIDEBAR USER TITLE -->
+                <div class="profile-usertitle">
+                    <div class="profile-usertitle-name"> {{product.info.SKU}} </div>
+                </div>
+                <!-- END SIDEBAR USER TITLE -->
+                <div class="progress">
+                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                        <span class="sr-only"> 60% Complete </span>
+                    </div>
+                </div>
+                <!-- SIDEBAR BUTTONS -->
+                <div class="profile-userbuttons">
+                    <button type="button" class="btn btn-circle green-haze btn-sm">Follow</button>
+                    <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
+                </div>
+                <!-- END SIDEBAR BUTTONS -->
+                <!-- SIDEBAR MENU -->
+                <div class="profile-usermenu">
+                    <ul class="nav">
+                        <li ng-class="{active: $state.includes('settings.product.warehouse')}">
+                            <a ui-sref="settings.product.warehouse">
+                                <i class="icon-home"></i> @(Warehouse) </a>
+                        </li>
+                        <li ng-class="{active: $state.includes('settings.product.pricelists')}">
+                            <a ui-sref="settings.product.pricelists">
+                                <i class="icon-money"></i> @(Price Lists) </a>
+                        </li>
+                        <li ng-class="{active: $state.includes('settings.product.types')}">
+                            <a ui-sref="settings.product.types">
+                                <i class="icon-settings"></i> @(Product Types) </a>
+                        </li>
+                        <li ng-class="{active: $state.includes('settings.product.options')}">
+                            <a ui-sref="settings.product.options">
+                                <i class="icon-settings"></i> @(Product Options) </a>
+                        </li>
+                        <li ng-class="{active: $state.includes('settings.product.categories')}">
+                            <a ui-sref="settings.product.categories">
+                                <i class="icon-settings"></i> @(Product Categories) </a>
+                        </li>
+                        <li ng-class="{active: $state.includes('settings.product.shipping')}">
+                            <a ui-sref="settings.product.shipping">
+                                <i class="icon-settings"></i> @(Shipping Methods) </a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- END MENU -->
+            </div>
+            <!-- END PORTLET MAIN -->
+            <!-- PORTLET MAIN -->
+            <div class="portlet light">
+                <!-- STAT -->
+                <div class="row list-separated profile-stat">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="uppercase profile-stat-title"> {{product.createdAt|date:'dd/MM/yyyy'}} </div>
+                        <div class="uppercase profile-stat-text"> @(DateCreation)</div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="uppercase profile-stat-title"> {{product.updatedAt|date:'dd/MM/yyyy'}} </div>
+                        <div class="uppercase profile-stat-text"> @(DateModification) </div>
+                    </div>
+                </div>
+                <!-- END STAT -->
+                <div>
+                    <h4 class="profile-desc-title">{{product.info.SKU}}</h4>
+                    <span class="profile-desc-text"> {{product.info.lang[0].name}}. </span>
+                </div>
+            </div>
+            <!-- END PORTLET MAIN -->
+        </div>
+        <!-- END BEGIN PROFILE SIDEBAR -->
+        <div ui-view class="profile-content fade-in-up"></div>
+    </div>
+</div>
