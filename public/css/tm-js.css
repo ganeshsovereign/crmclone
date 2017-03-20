@@ -76,7 +76,8 @@ table.info-table {
     position: relative;
 }
 
-.label-success {
+
+/*.label-success {
     background-color: #F3C200;
 }
 
@@ -86,7 +87,7 @@ table.info-table {
 
 .label-warning {
     background-color: #2F353B;
-}
+}*/
 
 .page-content {
     background-color: #FFFFFF;
@@ -355,11 +356,6 @@ tr.angular-ui-tree-empty {
 
 .page-bar {
     background-color: #dedede;
-}
-
-a {
-    text-shadow: none;
-    color: #F3C200;
 }
 
 .page-sidebar .page-sidebar-menu>li.active.open>a:hover,

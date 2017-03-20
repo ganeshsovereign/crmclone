@@ -46,7 +46,24 @@ var Login = function() {
             },
 
             submitHandler: function(form) {
-                form.submit(); // form validation success, call ajax form submit
+                $.ajax({
+                    type: "post",
+                    url: '/login/',
+                    dataType: "json",
+                    data: {
+                        username: $("#username").val(), // Nous récupérons la valeur de nos inputs que l'on fait passer à connexion.php
+                        password: $("#password").val()
+                    },
+                    success: function(data) {
+                        if (data.success)
+                            return location.reload(true);
+
+                        $('#error').html(data[0].error);
+                        $('.alert-danger', $('.login-form')).show();
+
+
+                    }
+                });
             }
         });
 
@@ -60,8 +77,8 @@ var Login = function() {
         });
     }
 
- 
-  
+
+
 
     return {
         //main function to initiate the module
@@ -69,23 +86,8 @@ var Login = function() {
 
             handleLogin();
 
-            // init background slide images
-            $('.login-bg').backstretch([
-                "../assets/pages/img/login/bg1.jpg",
-                "../assets/pages/img/login/bg2.jpg",
-                "../assets/pages/img/login/bg3.jpg"
-                ], {
-                  fade: 1000,
-                  duration: 8000
-                }
-            );
-
         }
 
     };
 
 }();
-
-jQuery(document).ready(function() {
-    Login.init();
-});
