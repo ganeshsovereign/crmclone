@@ -10,6 +10,7 @@ var productTypesSchema = new Schema({
     name: String,
     options: [{ type: Schema.Types.ObjectId, ref: 'productOptions' }],
     inventory: { type: Boolean, default: true },
+    coef: { type: Boolean, default: false }, //Price was calculated from a coefficient
     createdAt: { type: Date, default: Date.now }
 });
 

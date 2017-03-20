@@ -147,15 +147,9 @@ var productSchema = new Schema({
         group: [{ type: Schema.Types.ObjectId, ref: 'Department', default: null }]
     },
 
-    createdBy: {
-        user: { type: Schema.Types.ObjectId, ref: 'Users', default: null },
-        date: { type: Date, default: Date.now }
-    },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null },
+    editedBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null },
 
-    editedBy: {
-        user: { type: Schema.Types.ObjectId, ref: 'Users', default: null },
-        date: { type: Date, default: Date.now }
-    },
 
     externalId: { type: String, default: '' },
 
