@@ -283,6 +283,7 @@
     "Family": "Famille",
     "SubFamily": "Sous-famille",
     "Description": "Description",
+    "LongueDescription": "Description détaillée",
     "InternalDescription": "Description interne",
     "DescriptionShort": "Description courte",
     "Designation": "Désignation",
