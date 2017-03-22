@@ -1187,7 +1187,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('europexpress.vehicule', {
             parent: "europexpress",
-            url: "/absence.html",
+            url: "/list_vehicule.html",
             templateUrl: "/views/_europexpress/list_vehicule.html",
             data: {
                 pageTitle: 'Gestion des véhicules'
@@ -1196,7 +1196,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('europexpress.vehicule.create', {
             parent: "europexpress",
-            url: "/absence.html",
+            url: "/list_vehiculecreate.html",
             templateUrl: "/views/_europexpress/list_vehiculecreate.html",
             data: {
                 pageTitle: 'Gestion des véhicules'
@@ -1205,7 +1205,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('europexpress.vehicule.show', {
             parent: "europexpress",
-            url: "/absence.html",
+            url: "/vehicules/{id:[0-9a-z]{24}}",
             templateUrl: "/views/_europexpress/list_vehiculeshow.html",
             data: {
                 pageTitle: 'Gestion des véhicules'
