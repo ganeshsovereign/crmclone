@@ -347,7 +347,8 @@ tr.angular-ui-tree-empty {
 }
 
 .nav .badge {
-    vertical-align: bottom;
+    vertical-align: baseline;
+    float: right
 }
 
 .page-content {

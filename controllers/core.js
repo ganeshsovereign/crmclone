@@ -403,12 +403,13 @@ function convert(type) {
 
                             product.size.weight = doc.weight;
 
-                            product.createdBy.date = doc.createdAt;
-                            product.editedBy.date = doc.updatedAt;
-
                             product.info.barCode = doc.barCode;
                             product.info.aclCode = doc.aclCode;
                             product.info.autoBarCode = doc.autoBarCode;
+
+                            for (var i = 0, len = product.suppliers.length; i < len; i++)
+                                if (product.suppliers[i].name)
+                                    product.suppliers[i] = product.suppliers[i].id;
 
                             switch (doc.type) {
 

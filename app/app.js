@@ -867,14 +867,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductController"
         })
-        .state('product.pricelevel', {
+        .state('product.pricelist', {
             parent: "product",
             url: "/pricelevel.html",
-            templateUrl: "/views/_product/pricelevel.html",
+            templateUrl: "/views/_product/pricelist.html",
             data: {
                 pageTitle: 'Liste de prix'
             },
-            controller: "ProductPriceLevelController"
+            controller: "ProductPriceListController"
         })
         .state('product.consumption', {
             parent: "product",
@@ -919,11 +919,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: { pageTitle: 'Prices - Product' }
         })
         // associations
-        .state("product.show.associations", {
-            url: "/associations",
-            templateUrl: "/templates/_product/associations.html",
+        .state("product.show.categories", {
+            url: "/categories",
+            templateUrl: "/templates/_product/categories.html",
             data: {
-                pageTitle: 'Associations - Product '
+                pageTitle: 'Categories - Product '
             }
         })
         // declinaisons
@@ -942,20 +942,20 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Stock - Product '
             }
         })
-        // characteristics
-        .state("product.show.characteristics", {
-            url: "/characteristics",
-            templateUrl: "/templates/_product/characteristics.html",
-            data: {
-                pageTitle: 'Caractéristiques - Product '
-            }
-        })
         // ecommerce
         .state("product.show.ecommerce", {
             url: "/ecommerce",
             templateUrl: "/templates/_product/ecommerce.html",
             data: {
                 pageTitle: 'Ecommerce - Product '
+            }
+        })
+        // ecommerce
+        .state("product.show.bundles", {
+            url: "/bundle",
+            templateUrl: "/templates/_product/bundles.html",
+            data: {
+                pageTitle: 'Compositions - Product '
             }
         })
         // Category

@@ -16,10 +16,8 @@ var Dict = INCLUDE('dict');
  */
 
 var supplierPriceSchema = new Schema({
-    societe: {
-        id: { type: Schema.Types.ObjectId, ref: 'societe' },
-        name: String
-    },
+    _id: false,
+    societe: { type: Schema.Types.ObjectId, ref: 'societe' },
     ref: String,
     tva_tx: Number,
     minQty: Number,
@@ -35,14 +33,14 @@ var supplierPriceSchema = new Schema({
 });
 
 
-supplierPriceSchema.virtual('pricesDetails')
+/*supplierPriceSchema.virtual('pricesDetails')
     .get(function() {
         var Pricebreak = INCLUDE('pricebreak');
 
         Pricebreak.set(this.prices.pu_ht, this.prices.pricesQty);
 
         return Pricebreak.humanize(true, 3);
-    });
+    });*/
 
 
 var LangSchema = new Schema({
@@ -56,6 +54,9 @@ var LangSchema = new Schema({
     },
     linker: { type: String, unique: true, set: MODULE('utils').setLink }, // SEO URL
     Tag: { type: [], set: MODULE('utils').setTags }
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 LangSchema.pre('save', function(next) {
@@ -74,18 +75,17 @@ var productSchema = new Schema({
     isBundle: { type: Boolean, default: false },
     isVariant: { type: Boolean, default: false },
     groupId: { type: String, default: null },
-    // wTrack           : {type: String, ref: 'wTrack', default: null},
-    job: { type: Schema.Types.ObjectId, ref: 'jobs', default: null },
+    //  job: { type: Schema.Types.ObjectId, ref: 'jobs', default: null },
     canBeSold: { type: Boolean, default: true },
     canBeExpensed: { type: Boolean, default: true },
     eventSubscription: { type: Boolean, default: true },
     canBePurchased: { type: Boolean, default: true },
-    sourceDocument: { type: Schema.Types.ObjectId, ref: 'ProductImages', default: null },
-    imageSrc: {
+    //sourceDocument: { type: Schema.Types.ObjectId, ref: 'ProductImages', default: null },
+    /*imageSrc: {
         type: Schema.Types.ObjectId,
         ref: 'Images',
         default: null
-    },
+    },*/
 
     oldId: String, // Only for import migration
 
@@ -127,7 +127,7 @@ var productSchema = new Schema({
         minStockLevel: { type: Number, default: 0 }
     },
 
-    variants: [{ type: Schema.Types.ObjectId, ref: 'ProductOptionsValues', default: null }],
+    variants: [{ type: Schema.Types.ObjectId, ref: 'ProductOptionsValues' }],
 
     //bundles
     pack: [{
@@ -142,13 +142,13 @@ var productSchema = new Schema({
     whoCanRW: { type: String, enum: ['owner', 'group', 'everyOne'], default: 'everyOne' },
 
     groups: {
-        owner: { type: Schema.Types.ObjectId, ref: 'Users', default: null },
-        users: [{ type: Schema.Types.ObjectId, ref: 'Users', default: null }],
+        owner: { type: Schema.Types.ObjectId, ref: 'hr', default: null },
+        users: [{ type: Schema.Types.ObjectId, ref: 'hr', default: null }],
         group: [{ type: Schema.Types.ObjectId, ref: 'Department', default: null }]
     },
 
-    createdBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null },
-    editedBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'hr' },
+    editedBy: { type: Schema.Types.ObjectId, ref: 'hr' },
 
 
     externalId: { type: String, default: '' },
@@ -166,21 +166,20 @@ var productSchema = new Schema({
     //description: { type: String, default: "" },
     //body: { type: String, default: "" }, // Description For SEO
 
-    type: { type: String, default: 'PRODUCT' },
+    //type: { type: String, default: 'PRODUCT' },
     Status: String,
     //enabled: { type: Boolean, default: true },
     //ischat: { type: Boolean, default: false },
     //negociate: { type: Number, default: 0 }, // 0 is no negociate
     tva_tx: { type: Number, default: 20 },
-    //units: { type: String, default: "unit" },
     //datec: { type: Date, default: Date.now },
     //billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
 
 
-    // price model TODO remove
+    // price model just for list product
     prices: {
         pu_ht: { type: Number, default: 0 }, // For base price
-        pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
+        //pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
 
     template: { type: String },
@@ -214,7 +213,6 @@ var productSchema = new Schema({
     /******** VAD Method **************/
     directCost: { type: Number, default: 0 }, //Total MP
     indirectCost: { type: Number, default: 0 }, //Total Effort
-    totalCost: { type: Number, default: 0 }, //Total MP + Effort
     /**********************************/
 
     optional: Schema.Types.Mixed // TODO Remove ?
@@ -422,6 +420,7 @@ productSchema.statics.findPrice = function(options, fields, callback) {
 
 
 productSchema.methods.getPrice = function(qty, price_level) {
+    console.log("tototototo");
     var Pricebreak = INCLUDE('pricebreak');
     var self = this;
     var d = Q.defer();
@@ -491,26 +490,16 @@ productSchema.pre('save', function(next) {
 
     this.search = search.keywords(true, true);
 
-    if (this.isModified('suppliers')) { // a buy price changed
-        if (this.suppliers.length)
-            this.directCost = this.suppliers[0].prices.pu_ht;
-
-        this.totalCost = this.directCost + this.indirectCost;
-    }
-
     if (this.isBundle) {
         this.directCost = 0;
         for (var i = 0; i < this.pack.length; i++)
             if (this.pack[i].id && this.pack[i].id.totalCost)
                 this.directCost += this.pack[i].id.totalCost * this.pack[i].qty;
-
-        this.totalCost = this.directCost + this.indirectCost;
     }
 
-    //if (!this.isNew && this.isModified('totalCost')) // Emit to all that a product change totalCost
-    //    F.functions.EE.emit('product', { type: 'updateCost', data: { _id: this._id } });
+    if (!this.isNew && this.isModified('directCost')) // Emit to all that a product change totalCost
+        F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: this._id } });
     // TODO NEED TO RE-ACTIVATE
-
 
     if (this.isNew || !this.seq) {
         //if (!this.body)
@@ -543,7 +532,7 @@ Dict.dict({ dictName: ['fk_product_status', 'fk_units'], object: true }, functio
     dict = doc;
 });
 
-productSchema.virtual('zone')
+/*productSchema.virtual('zone')
     .get(function() {
         var zone = "";
 
@@ -574,6 +563,11 @@ productSchema.virtual('zone')
         zone += "/" + this.stock.floor;
 
         return zone;
+    });*/
+
+productSchema.virtual('totalCost')
+    .get(function() {
+        return this.directCost + this.indirectCost;
     });
 
 productSchema.virtual('eshopIsNew')
@@ -597,7 +591,7 @@ productSchema.virtual('total_pack') // Set Total price for a pack
         return total;
     });
 
-productSchema.virtual('color') // Get default color in attributs
+/*productSchema.virtual('color') // Get default color in attributs
     .get(function() {
         var color = {};
 
@@ -612,7 +606,7 @@ productSchema.virtual('color') // Get default color in attributs
         }
 
         return color;
-    });
+    });*/
 
 /*productSchema.method('linker_category', function (cb) {
  var self = this;
@@ -625,14 +619,14 @@ productSchema.virtual('color') // Get default color in attributs
  });*/
 
 
-productSchema.virtual('pricesDetails')
+/*productSchema.virtual('pricesDetails')
     .get(function() {
         var Pricebreak = INCLUDE('pricebreak');
 
         Pricebreak.set(this.prices.pu_ht, this.prices.pricesQty);
 
         return Pricebreak.humanize(true, 3);
-    });
+    });*/
 
 productSchema.virtual('status')
     .get(function() {
@@ -696,16 +690,15 @@ function prepare_subcategories(name) {
 
 F.on('load', function() {
     // On refresh emit product
-
-    F.functions.EE.on('product', function(data) {
+    F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
         //console.log(data);
-        console.log("Update emit product");
+        console.log("Update emit product", data);
 
-        switch (data.type) {
-            case 'updateCost':
+        switch (channel) {
+            case 'product:updateDirectCost':
                 if (data.data._id)
                     exports.Schema.find({ 'pack.id': data.data._id })
-                    .populate("pack.id", "ref name label totalCost")
+                    .populate("pack.id", "info directCost indirectCost")
                     .exec(function(err, products) {
                         products.forEach(function(product) {
                             product.save(function(err, doc) {

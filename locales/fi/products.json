@@ -239,5 +239,6 @@
     "SizeUnitmm": "mm",
     "SizeUnitinch": "pouce",
     "SizeUnitfoot": "pied",
-    "SizeUnitpoint": "point"
+    "SizeUnitpoint": "point",
+    "Bundle": "Compositon"
 }
