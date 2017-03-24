@@ -261,7 +261,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 shipping.total_tva = 0;
         }
 
-        if (discount.discount && discount.discount.percent) {
+        if (discount && discount.discount && discount.discount.percent) {
             discount.discount.value = exports.round(total_ht * discount.discount.percent / 100, 2);
             total_ht -= discount.discount.value;
 
@@ -272,7 +272,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
             }
         }
 
-        if (discount.escompte && discount.escompte.percent) {
+        if (discount && discount.escompte && discount.escompte.percent) {
             discount.escompte.value = exports.round(total_ht * discount.escompte.percent / 100, 2);
             total_ht -= discount.escompte.value;
 
