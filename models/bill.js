@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+    moment = require('moment'),
     Schema = mongoose.Schema,
     timestamps = require('mongoose-timestamp');
 
@@ -303,7 +304,7 @@ billSchema.virtual('status')
 
         var status = this.Status;
 
-        if (status === 'NOT_PAID' && this.dater > new Date()) //Check if late
+        if (status === 'NOT_PAID' && this.dater > moment().subtract(10, 'days').toDate()) //Check if late
             status = 'VALIDATE';
 
         if (status && statusList.values[status] && statusList.values[status].label) {
