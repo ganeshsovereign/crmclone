@@ -70,7 +70,7 @@ exports.install = function() {
         });
     }, ['authorize']);
     F.route('/erp/convert/resource', convert_resource, ['authorize']);
-    F.route('/erp/convert/{type}', convert, ['authorize']);
+    F.route('/erp/convert/{type}', convert);
 
 
     // SHOW LAST 50 PROBLEMS
@@ -87,12 +87,58 @@ exports.install = function() {
 
 function load_dict() {
     var self = this;
+    //console.log(self.query);
+    async.parallel([
+        function(cb) {
+            Dict.dict(self.query, cb);
+        },
+        function(cb) {
+            var result, status = {};
 
-    Dict.dict(self.query, function(err, dict) {
+            if (!self.query.modelName)
+                return cb(null, {});
+
+            status[self.query.modelName] = MODEL(self.query.modelName).status;
+
+            result = {
+                _id: self.query.modelName,
+                values: []
+            };
+
+            if (status[self.query.modelName].lang)
+                result.lang = status[self.query.modelName].lang;
+
+            for (var i in status[self.query.modelName].values) {
+                if (status[self.query.modelName].values[i].enable) {
+                    if (status[self.query.modelName].values[i].pays_code && status[self.query.modelName].values[i].pays_code != 'FR')
+                        continue;
+
+                    var val = status[self.query.modelName].values[i];
+                    val.id = i;
+
+                    if (status[self.query.modelName].lang) //(doc.values[i].label)
+                        val.label = i18n.t(status[self.query.modelName].lang + ":" + status[self.query.modelName].values[i].label);
+                    else
+                        val.label = status[self.query.modelName].values[i].label;
+
+                    //else
+                    //  val.label = req.i18n.t("companies:" + i);
+
+                    result.values.push(val);
+                    //console.log(val);
+                }
+            }
+
+            status[self.query.modelName] = result;
+
+            cb(null, status);
+        }
+    ], function(err, result) {
         if (err)
             return self.throw500(err);
 
-        self.json(dict);
+        result[0] = _.extend(result[0], result[1]);
+        self.json(result[0]);
     });
 }
 
