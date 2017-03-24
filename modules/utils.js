@@ -2,10 +2,10 @@ exports.name = 'utils';
 exports.version = '1.07';
 
 var _ = require('lodash'),
-        async = require('async'),
-        numeral = require('numeral'),
-        moment = require('moment'),
-        mongoose = require('mongoose');
+    async = require('async'),
+    numeral = require('numeral'),
+    moment = require('moment'),
+    mongoose = require('mongoose');
 
 var Dict = INCLUDE('dict');
 
@@ -20,7 +20,7 @@ numeral.register('locale', 'fr', {
         billion: 'b',
         trillion: 't'
     },
-    ordinal: function (number) {
+    ordinal: function(number) {
         return number === 1 ? 'er' : 'ème';
     },
     currency: {
@@ -37,46 +37,46 @@ function round(value, decimals) {
 
 exports.round = round;
 
-exports.setPrice = function (value) {
+exports.setPrice = function(value) {
     return round(value, 2);
 };
 
-exports.printPrice = function (value, width) {
+exports.printPrice = function(value, width) {
     switch (width) {
-        case 3 :
+        case 3:
             return numeral(round(value, 3)).format('0[.]000 $');
-        default :
+        default:
             return numeral(round(value, 2)).format('0[.]00 $');
     }
 };
 
 //TODO Remove used printUnit
-exports.printWeight = function (value, width) {
+exports.printWeight = function(value, width) {
     switch (width) {
-        case 3 :
+        case 3:
             return numeral(round(value, 3)).format('0[.]000') + ' kg';
-        default :
+        default:
             return numeral(round(value, 2)).format('0[.]00') + ' kg';
     }
 };
 
-exports.printUnit = function (value, unit, width) {
+exports.printUnit = function(value, unit, width) {
     if (!unit)
         unit = 'kg';
 
     switch (width) {
-        case 3 :
+        case 3:
             return numeral(round(value, 3)).format('0[.]000') + ' ' + unit;
-        default :
+        default:
             return numeral(round(value, 2)).format('0[.]00') + ' ' + unit;
     }
 };
 
-exports.printNumber = function (value) {
+exports.printNumber = function(value) {
     return numeral(value).format('0.00');
 };
 
-exports.numberFormat = function (number, width) {
+exports.numberFormat = function(number, width) {
     //console.log("number : " + number);
     //console.log("width : " + width);
     //console.log(number + '');
@@ -84,10 +84,10 @@ exports.numberFormat = function (number, width) {
 };
 
 // Fix Timezone GMT for mongodb aggregate -> set hours to 12
-exports.setDate = function (value) {
-    if(!value)
+exports.setDate = function(value) {
+    if (!value)
         return null;
-    
+
     return moment(value).hour(12).toDate();
 };
 
@@ -95,9 +95,9 @@ exports.setDate = function (value) {
 //arr1  = [{_id:1, total:34}]
 //arr2 = [{_id:1, moy:12}]
 //[{_id:1, total:34, moy:12}]
-exports.mergeByProperty = function (arr1, arr2, prop) {
-    _.each(arr2, function (arr2obj) {
-        var arr1obj = _.find(arr1, function (arr1obj) {
+exports.mergeByProperty = function(arr1, arr2, prop) {
+    _.each(arr2, function(arr2obj) {
+        var arr1obj = _.find(arr1, function(arr1obj) {
             return arr1obj[prop] === arr2obj[prop];
         });
 
@@ -106,9 +106,9 @@ exports.mergeByProperty = function (arr1, arr2, prop) {
 };
 
 // Same but type is ObjectId()
-exports.mergeByObjectId = function (arr1, arr2, prop) {
-    _.each(arr2, function (arr2obj) {
-        var arr1obj = _.find(arr1, function (arr1obj) {
+exports.mergeByObjectId = function(arr1, arr2, prop) {
+    _.each(arr2, function(arr2obj) {
+        var arr1obj = _.find(arr1, function(arr1obj) {
             return arr1obj[prop].toString() === arr2obj[prop].toString();
         });
 
@@ -128,11 +128,11 @@ exports.ObjectId = mongoose.Types.ObjectId;
  */
 
 var cond_reglement = {};
-Dict.dict({dictName: "fk_payment_term", object: true}, function (err, docs) {
+Dict.dict({ dictName: "fk_payment_term", object: true }, function(err, docs) {
     cond_reglement = docs;
 });
 
-exports.calculate_date_lim_reglement = function (datec, cond_reglement_code) {
+exports.calculate_date_lim_reglement = function(datec, cond_reglement_code) {
     var data = cond_reglement.values[cond_reglement_code];
 
     var cdr_nbjour = data.nbjour || 0;
@@ -172,29 +172,29 @@ exports.calculate_date_lim_reglement = function (datec, cond_reglement_code) {
     return datelim;
 };
 
-exports.sumTotal = function (lines, shipping, discount, societeId, callback) {
+exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
     var SocieteModel = MODEL('societe').Schema;
 
     async.waterfall([
-        function (cb) {
+        function(cb) {
             if (!societeId)
                 return cb(null, true);
 
-            SocieteModel.findOne({_id: societeId}, "VATIsUsed", function (err, societe) {
+            SocieteModel.findOne({ _id: societeId }, "VATIsUsed", function(err, societe) {
                 if (err || !societe)
                     return callback("Societe not found !");
 
                 cb(null, societe.VATIsUsed);
             });
         }
-    ], function (err, VATIsUsed) {
+    ], function(err, VATIsUsed) {
 
         var count = 0,
-                total_ht = 0,
-                total_tva = [],
-                total_ttc = 0,
-                weight = 0;
+            total_ht = 0,
+            total_tva = [],
+            total_ttc = 0,
+            weight = 0;
 
         var i, j, length, found;
         var subtotal = 0;
@@ -261,15 +261,26 @@ exports.sumTotal = function (lines, shipping, discount, societeId, callback) {
                 shipping.total_tva = 0;
         }
 
-        if (discount && discount.percent) {
-            discount.value = exports.round(total_ht * discount.percent / 100, 2);
-            total_ht -= discount.value;
+        if (discount.discount && discount.discount.percent) {
+            discount.discount.value = exports.round(total_ht * discount.discount.percent / 100, 2);
+            total_ht -= discount.discount.value;
 
             if (VATIsUsed)
-                // Remise sur les TVA
+            // Remise sur les TVA
                 for (j = 0; j < total_tva.length; j++) {
-                    total_tva[j].total -= total_tva[j].total * discount.percent / 100;
-                }
+                total_tva[j].total -= total_tva[j].total * discount.discount.percent / 100;
+            }
+        }
+
+        if (discount.escompte && discount.escompte.percent) {
+            discount.escompte.value = exports.round(total_ht * discount.escompte.percent / 100, 2);
+            total_ht -= discount.escompte.value;
+
+            if (VATIsUsed)
+            // Remise sur les TVA
+                for (j = 0; j < total_tva.length; j++) {
+                total_tva[j].total -= total_tva[j].total * discount.escompte.percent / 100;
+            }
         }
 
         total_ht = exports.round(total_ht, 2);
