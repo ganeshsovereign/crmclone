@@ -26,7 +26,7 @@ var supplierPriceSchema = new Schema({
         pu_ht: { type: Number, default: 0 }, // For base price
         pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
-    packing: String //conditionement
+    packing: Number //conditionement
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
@@ -46,13 +46,14 @@ var supplierPriceSchema = new Schema({
 var LangSchema = new Schema({
     lang: { type: String, default: "fr" },
     description: { type: String, default: '' },
+    shortDescription: { type: String, default: '' },
     body: { type: String, default: '' },
     name: { type: String, default: '' },
     meta: {
         title: { type: String, default: '' },
         description: { type: String, default: '' }
     },
-    linker: { type: String, unique: true, set: MODULE('utils').setLink }, // SEO URL
+    linker: { type: String, sparse: true, set: MODULE('utils').setLink }, // SEO URL
     Tag: { type: [], set: MODULE('utils').setTags }
 }, {
     toObject: { virtuals: true },
@@ -63,8 +64,8 @@ LangSchema.pre('save', function(next) {
     var self = this;
 
     // remove old packif change
-    if (!this.linker)
-        this.linker = this.name.replace(/ /g, "-").toLowerCase();
+    //if (!this.linker)
+    //    this.linker = this.name.replace(/ /g, "-").toLowerCase();
 
     next();
 });
@@ -80,6 +81,9 @@ var productSchema = new Schema({
     canBeExpensed: { type: Boolean, default: true },
     eventSubscription: { type: Boolean, default: true },
     canBePurchased: { type: Boolean, default: true },
+    onlyWeb: { type: Boolean },
+    istop: { type: Boolean, default: false },
+    ischat: { type: Boolean, default: false },
     //sourceDocument: { type: Schema.Types.ObjectId, ref: 'ProductImages', default: null },
     /*imageSrc: {
         type: Schema.Types.ObjectId,
@@ -101,13 +105,14 @@ var productSchema = new Schema({
         autoBarCode: { type: Boolean, default: true },
         barCode: { type: String, index: true, uppercase: true, sparse: true },
         aclCode: { type: String, uppercase: true },
-
-        brand: { type: Schema.Types.ObjectId, ref: 'Brand', default: null },
-        categories: [{ type: Schema.Types.ObjectId, ref: 'productCategory' }],
         SKU: { type: String, default: null },
         UPC: { type: String, default: null },
         ISBN: { type: String, default: null },
         EAN: { type: String, default: null },
+
+        brand: { type: Schema.Types.ObjectId, ref: 'Brand', default: null },
+        categories: [{ type: Schema.Types.ObjectId, ref: 'productCategory' }],
+
 
         attributes: [{
             key: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
@@ -462,10 +467,6 @@ productSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
 
-    // remove old pack if change
-    if (!this.isBundle)
-        this.pack = [];
-
     this.name = this.info.lang[0].name;
 
     /* if (this.category) {
@@ -475,12 +476,12 @@ productSchema.pre('save', function(next) {
      }*/
 
     if (this.info.autoBarCode == true && this.seq) {
-        this.info.barCode = "";
+        this.info.EAN = "";
 
-        if (this.caFamily)
-            this.info.barCode += this.caFamily.substr(0, 2);
+        //if (this.caFamily)
+        //    this.info.barCode += this.caFamily.substr(0, 2);
 
-        this.info.barCode += this.seq;
+        this.info.EAN += this.seq;
     }
 
     var search = (this.info.lang[0].name + ' ' + this.info.lang[0].decription);
@@ -493,31 +494,30 @@ productSchema.pre('save', function(next) {
     if (this.isBundle) {
         this.directCost = 0;
         for (var i = 0; i < this.pack.length; i++)
-            if (this.pack[i].id && this.pack[i].id.totalCost)
-                this.directCost += this.pack[i].id.totalCost * this.pack[i].qty;
+            if (this.pack[i].id && this.pack[i].id.directCost)
+                this.directCost += this.pack[i].id.directCost * this.pack[i].qty;
     }
 
     if (!this.isNew && this.isModified('directCost')) // Emit to all that a product change totalCost
         F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: this._id } });
-    // TODO NEED TO RE-ACTIVATE
 
     if (this.isNew || !this.seq) {
         //if (!this.body)
         //    this.body = this.description;
 
-        SeqModel.incNumber("P", 7, function(seq) {
+        return SeqModel.incNumber("P", 7, function(seq) {
             self.seq = seq;
 
             if (self.info.autoBarCode == true) {
-                self.info.barCode = "";
+                self.info.EAN = "";
 
-                if (self.caFamily)
-                    self.info.barCode += self.caFamily.substr(0, 2);
+                //if (self.caFamily)
+                //    self.info.barCode += self.caFamily.substr(0, 2);
 
-                self.info.barCode += seq;
+                self.info.EAN += seq;
             }
 
-            next();
+            return next();
         });
     } else
         next();

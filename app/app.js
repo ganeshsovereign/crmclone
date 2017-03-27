@@ -1231,6 +1231,60 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "EEDHLController"
         })
+        .state('europexpress.absence', {
+            parent: "europexpress",
+            url: "/absence.html",
+            templateUrl: "/views/_europexpress/absence.html",
+            data: {
+                pageTitle: 'Gestion des congés/absences'
+            },
+            controller: "UserRhAbsenceController"
+        })
+        .state('europexpress.absence.create', {
+            parent: "europexpress",
+            url: "/absencecreate.html",
+            templateUrl: "/views/_europexpress/absencecreate.html",
+            data: {
+                pageTitle: 'Gestion des congés/absences'
+            },
+            controller: "UserRhAbsenceController"
+        })
+        .state('europexpress.absence.show', {
+            parent: "europexpress",
+            url: "/absence/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/_europexpress/absenceedit.html",
+            data: {
+                pageTitle: 'Gestion des congés/absences'
+            },
+            controller: "UserRhAbsenceController"
+        })
+        .state('europexpress.vehicule', {
+            parent: "europexpress",
+            url: "/list_vehicule.html",
+            templateUrl: "/views/_europexpress/list_vehicule.html",
+            data: {
+                pageTitle: 'Gestion des véhicules'
+            },
+            controller: "EEVehiculeController"
+        })
+        .state('europexpress.vehicule.create', {
+            parent: "europexpress",
+            url: "/list_vehiculecreate.html",
+            templateUrl: "/views/_europexpress/list_vehiculecreate.html",
+            data: {
+                pageTitle: 'Gestion des véhicules'
+            },
+            controller: "EEVehiculeController"
+        })
+        .state('europexpress.vehicule.show', {
+            parent: "europexpress",
+            url: "/vehicules/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/_europexpress/list_vehiculeshow.html",
+            data: {
+                pageTitle: 'Gestion des véhicules'
+            },
+            controller: "EEVehiculeController"
+        })
         .state('europacourses', {
             url: "/europacourses",
             abstract: true,

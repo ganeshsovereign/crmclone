@@ -241,6 +241,7 @@
     "ListServices": "Liste des services",
     "ListAll": "Liste complète",
     "PriceLevel": "Liste de prix",
+    "DefaultPriceList": "List de prix par defaut",
     "NewPriceLevel": "Nouvelle liste de prix",
     "Units": "Unité de facturation",
     "Unit": "unité",
