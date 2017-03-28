@@ -191,6 +191,8 @@
     "ShowPayment": "Afficher règlement",
     "File": "Fichier",
     "AlreadyPaid": "Déjà réglé",
+    "FilterbyStatus": "Filtrer par état",
+    "FilterbyEntity": "Filtrer par entité",
     "AlreadyPaidNoCreditNotesNoDeposits": "Déjà réglé (hors avoirs et acomptes)",
     "Abandoned": "Abandonné",
     "RemainderToPay": "Reste à payer",

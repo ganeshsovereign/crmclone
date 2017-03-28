@@ -6,16 +6,16 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>@(products:Settings Overview)</span>
+            <span>@(SettingsOverview)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>@(products:Product Configuration)</span>
+            <span>@(ProductConfiguration)</span>
         </li>
     </ul>
 </div>
 <h3 class="page-title">
-    <i class="fa fa-cubes font-grey-silver"></i> @(products:Product Configuration)
+    <i class="fa fa-gears font-grey-silver"></i> @(ProductConfiguration)
 </h3>
 
 <div ng-if="product.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce produit est supprime. </div>
@@ -28,8 +28,7 @@
             <div class="portlet light profile-sidebar-portlet">
                 <!-- SIDEBAR USERPIC -->
                 <div class="profile-userpic">
-                    <img class="img-responsive" alt="Product" />
-                </div>
+                    <img src="/img/parameters3.jpg" class="img-responsive" alt="Parameters"> </div>
                 <!-- END SIDEBAR USERPIC -->
                 <!-- SIDEBAR USER TITLE -->
                 <div class="profile-usertitle">
@@ -52,11 +51,11 @@
                     <ul class="nav">
                         <li ng-class="{active: $state.includes('settings.product.warehouse')}">
                             <a ui-sref="settings.product.warehouse">
-                                <i class="icon-home"></i> @(Warehouse) </a>
+                                <i class="fa fa-industry"></i> @(Warehouse) </a>
                         </li>
                         <li ng-class="{active: $state.includes('settings.product.pricelists')}">
                             <a ui-sref="settings.product.pricelists">
-                                <i class="icon-money"></i> @(Price Lists) </a>
+                                <i class="fa fa-th-list"></i> @(PriceLists) </a>
                         </li>
                         <li ng-class="{active: $state.includes('settings.product.types')}">
                             <a ui-sref="settings.product.types">
@@ -68,11 +67,11 @@
                         </li>
                         <li ng-class="{active: $state.includes('settings.product.categories')}">
                             <a ui-sref="settings.product.categories">
-                                <i class="icon-settings"></i> @(Product Categories) </a>
+                                <i class="fa fa-share-alt"></i> @(ProductCategories) </a>
                         </li>
                         <li ng-class="{active: $state.includes('settings.product.shipping')}">
                             <a ui-sref="settings.product.shipping">
-                                <i class="icon-settings"></i> @(Shipping Methods) </a>
+                                <i class="fa fa-truck"></i> @(ShippingMethods) </a>
                         </li>
                     </ul>
                 </div>
@@ -84,11 +83,11 @@
                 <!-- STAT -->
                 <div class="row list-separated profile-stat">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{product.createdAt|date:'dd/MM/yyyy'}} </div>
+                        <div class="uppercase profile-stat-title"> {{company.createdAt|date:'dd/MM/yyyy'}} </div>
                         <div class="uppercase profile-stat-text"> @(DateCreation)</div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{product.updatedAt|date:'dd/MM/yyyy'}} </div>
+                        <div class="uppercase profile-stat-title"> {{company.updatedAt|date:'dd/MM/yyyy'}} </div>
                         <div class="uppercase profile-stat-text"> @(DateModification) </div>
                     </div>
                 </div>

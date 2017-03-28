@@ -269,6 +269,10 @@ table.table-bordered.dataTable tbody td {
     padding: 3px 11px;
 }
 
+.page-container-bg-solid .page-content {
+    background: #ffffff;
+}
+
 .mt-element-step .step-default .mt-step-title {
     font-size: 18px;
 }
@@ -355,7 +359,7 @@ tr.angular-ui-tree-empty {
 }
 
 .page-bar {
-    background-color: #dedede;
+    background-color: #ffffff;
 }
 
 .page-sidebar .page-sidebar-menu>li.active.open>a:hover,
