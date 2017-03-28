@@ -11,6 +11,7 @@ var priceListsSchema = new Schema({
     name: { type: 'String', default: null },
     currency: { type: String, ref: 'currency', default: null },
     cost: { type: Boolean, default: false }, //true if supplier price
+    defaultPriceList: { type: Boolean }, //truue
     removable: { type: Boolean, default: true }
 });
 

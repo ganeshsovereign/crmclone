@@ -1,5 +1,12 @@
-EventEmitter = require('eventemitter3');
+//EventEmitter = require('eventemitter3');
 
-var EE = new EventEmitter();
+var redis = require('redis-eventemitter');
+var pubsub = redis({
+    prefix: 'production:',
+    host: '127.0.0.1',
+    port: 6379
+});
 
-F.functions.EE = EE;
+//var EE = new EventEmitter();
+
+F.functions.PubSub = pubsub;

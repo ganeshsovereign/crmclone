@@ -219,7 +219,7 @@
                 },
                 "menu:absences": {
                     "position": 5,
-                    "url": "",
+                    "url": "/erp/#!/europexpress/absence.html",
                     "perms": "user.holidayAll",
                     "usertype": 2,
                     "icon": "fa-group",

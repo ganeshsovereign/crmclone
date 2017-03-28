@@ -200,7 +200,7 @@
     "StillToBeDisbursed": "Reste à décaisser",
     "AmountExpected": "Montant réclamé",
     "ExcessReceived": "Trop perçu",
-    "EscompteOffered": "Escompte (règlement avant échéance)",
+    "EscompteOffered": "Escompte",
     "SendBillRef": "Envoi facture %s",
     "SendReminderBillRef": "Relance facture %s",
     "StandingOrders": "Prélèvements",

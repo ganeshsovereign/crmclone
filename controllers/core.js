@@ -87,12 +87,58 @@ exports.install = function() {
 
 function load_dict() {
     var self = this;
+    //console.log(self.query);
+    async.parallel([
+        function(cb) {
+            Dict.dict(self.query, cb);
+        },
+        function(cb) {
+            var result, status = {};
 
-    Dict.dict(self.query, function(err, dict) {
+            if (!self.query.modelName)
+                return cb(null, {});
+
+            status[self.query.modelName] = MODEL(self.query.modelName).status;
+
+            result = {
+                _id: self.query.modelName,
+                values: []
+            };
+
+            if (status[self.query.modelName].lang)
+                result.lang = status[self.query.modelName].lang;
+
+            for (var i in status[self.query.modelName].values) {
+                if (status[self.query.modelName].values[i].enable) {
+                    if (status[self.query.modelName].values[i].pays_code && status[self.query.modelName].values[i].pays_code != 'FR')
+                        continue;
+
+                    var val = status[self.query.modelName].values[i];
+                    val.id = i;
+
+                    if (status[self.query.modelName].lang) //(doc.values[i].label)
+                        val.label = i18n.t(status[self.query.modelName].lang + ":" + status[self.query.modelName].values[i].label);
+                    else
+                        val.label = status[self.query.modelName].values[i].label;
+
+                    //else
+                    //  val.label = req.i18n.t("companies:" + i);
+
+                    result.values.push(val);
+                    //console.log(val);
+                }
+            }
+
+            status[self.query.modelName] = result;
+
+            cb(null, status);
+        }
+    ], function(err, result) {
         if (err)
             return self.throw500(err);
 
-        self.json(dict);
+        result[0] = _.extend(result[0], result[1]);
+        self.json(result[0]);
     });
 }
 
@@ -391,7 +437,7 @@ function convert(type) {
                             product.info.lang = [{
                                 lang: "fr",
                                 name: doc.label,
-                                description: doc.description,
+                                shortDescription: doc.description,
                                 body: doc.body,
                                 notePrivate: doc.notePrivate,
                                 Tag: doc.Tag,
@@ -403,12 +449,13 @@ function convert(type) {
 
                             product.size.weight = doc.weight;
 
-                            product.createdBy.date = doc.createdAt;
-                            product.editedBy.date = doc.updatedAt;
-
-                            product.info.barCode = doc.barCode;
+                            product.info.EAN = doc.barCode;
                             product.info.aclCode = doc.aclCode;
                             product.info.autoBarCode = doc.autoBarCode;
+
+                            for (var i = 0, len = product.suppliers.length; i < len; i++)
+                                if (product.suppliers[i].name)
+                                    product.suppliers[i] = product.suppliers[i].id;
 
                             switch (doc.type) {
 
@@ -505,7 +552,6 @@ function convert(type) {
             });
             return self.plain("Type is deliveryAddress");
             break;
-
         case 'code_compta':
             var SocieteModel = MODEL('societe').Schema;
 
@@ -564,7 +610,6 @@ function convert(type) {
             });
             return self.plain("Type is offer");
             break;
-
         case 'order':
             var OrderModel = MODEL('order').Schema;
             mongoose.connection.db.collection('Commande', function(err, collection) {
@@ -598,7 +643,6 @@ function convert(type) {
             });
             return self.plain("Type is order");
             break;
-
         case 'date_bill':
             var BillModel = MODEL('bill').Schema;
             var BillSupplierModel = MODEL('billSupplier').Schema;
@@ -642,7 +686,6 @@ function convert(type) {
             });
             self.plain('Convert date bill is ok');
             break;
-
         case 'date_delivery':
             var DeliveryModel = MODEL('delivery').Schema;
             var setDate = MODULE('utils').setDate;
@@ -663,7 +706,6 @@ function convert(type) {
 
             self.plain('Convert date delivery is ok');
             break;
-
         case 'price_level_new':
             var PriceLevelModel = MODEL('pricelevel').Schema;
             var ProductPricesModel = MODEL('productPrices').Schema;
@@ -770,6 +812,70 @@ function convert(type) {
                 ],
                 function(result) {});
             return self.plain("Type is price_level new format !!!");
+            break;
+        case 'paymentTransactionBills':
+            /* Convert objectId to string */
+            var TransactionModel = MODEL('transaction').Schema;
+
+            //Select only objectId()
+            TransactionModel.find({ "meta.bills.billId": { $type: 7 } }, function(err, docs) {
+                if (err)
+                    return console.log(err);
+
+                docs.forEach(function(doc) {
+
+                    var bills = doc.meta.bills;
+
+                    for (var i = 0, len = bills.length; i < len; i++)
+                        bills[i].billId = bills[i].billId.toString();
+
+
+                    //console.log(bills);
+
+                    doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
+
+                        //doc.save(function(err, doc) {
+                        if (err)
+                            console.log(err);
+                    });
+                });
+
+            });
+            return self.plain("Type is paymentTransaction");
+            break;
+        case 'commercial_id':
+            var BillModel = MODEL('bill').Schema;
+            var UserModel = MODEL('hr').Schema;
+            var OfferModel = MODEL('offer').Schema;
+            var OrderModel = MODEL('order').Schema;
+            var DeliveryModel = MODEL('delivery').Schema;
+
+            var Model = [BillModel, OfferModel, OrderModel, DeliveryModel];
+
+            Model.forEach(function(model) {
+                model.find({ "commercial_id.id": { $type: 2 } }, function(err, docs) {
+                    if (err)
+                        return console.log(err);
+
+                    docs.forEach(function(doc) {
+                        //console.log(doc.commercial_id.id.substr(0, 5));
+                        if (doc.commercial_id.id.substr(0, 5) == 'user:') { //Not an automatic code
+                            UserModel.findOne({ username: doc.commercial_id.id.substr(5) }, "_id lastname", function(err, user) {
+
+                                //console.log(user);
+                                //return;
+
+                                doc.commercial_id.id = user._id;
+                                doc.save(function(err, doc) {
+                                    if (err)
+                                        console.log(err);
+                                });
+                            });
+                        }
+                    });
+                });
+            });
+            return self.plain("Type is commercial_id");
             break;
     }
 

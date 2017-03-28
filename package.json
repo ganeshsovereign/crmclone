@@ -1,6 +1,6 @@
 {
   "name": "TM-CRM",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "private": true,
   "author": {
     "name": "TM - ToManage"
@@ -23,7 +23,6 @@
     "crypto": "latest",
     "csv": "0.3.6",
     "dateformat": "latest",
-    "eventemitter3": "^1.1.1",
     "fixed-width-string": "^1.0.0",
     "googleapis": "latest",
     "i18next": "latest",
@@ -53,7 +52,7 @@
     "passport-oauth2": "latest",
     "paypal-express-checkout": "^1.4.0",
     "q": "^1.4.1",
-    "redis": "^2.6.3",
+    "redis-eventemitter": "^2.0.1",
     "shortid": "latest",
     "symeos-mqtt": "latest",
     "total.js": "2.1.x",
