@@ -659,9 +659,12 @@ function convert(type) {
             var UserModel = MODEL('hr').Schema;
             var OfferModel = MODEL('offer').Schema;
             var OrderModel = MODEL('order').Schema;
+            var OrderSupplierModel = MODEL('orderSupplier').Schema;
+            var BillSupplierModel = MODEL('billSupplier').Schema;
             var DeliveryModel = MODEL('delivery').Schema;
+            var ObjectId = MODULE('utils').ObjectId;
 
-            var Model = [BillModel, OfferModel, OrderModel, DeliveryModel];
+            var Model = [BillModel, OfferModel, OrderModel, DeliveryModel, OrderSupplierModel, BillSupplierModel];
 
             Model.forEach(function(model) {
                 model.find({ "commercial_id.id": { $type: 2 } }, function(err, docs) {
@@ -669,20 +672,25 @@ function convert(type) {
                         return console.log(err);
 
                     docs.forEach(function(doc) {
+                        if (doc.commercial_id.id.toString().length == 24)
+                            return doc.update({ $set: { 'commercial_id.id': ObjectId(doc.commercial_id.id) } }, function(err, doc) {
+                                console.log(doc);
+                                if (err)
+                                    console.log(err);
+                            });
                         //console.log(doc.commercial_id.id.substr(0, 5));
-                        if (doc.commercial_id.id.substr(0, 5) == 'user:') { //Not an automatic code
+                        if (doc.commercial_id.id.substr(0, 5) == 'user:') //Not an automatic code
                             UserModel.findOne({ username: doc.commercial_id.id.substr(5) }, "_id lastname", function(err, user) {
 
-                                //console.log(user);
-                                //return;
+                            //console.log(user);
+                            //return;
 
-                                doc.commercial_id.id = user._id;
-                                doc.save(function(err, doc) {
-                                    if (err)
-                                        console.log(err);
-                                });
+                            doc.commercial_id.id = user._id;
+                            doc.save(function(err, doc) {
+                                if (err)
+                                    console.log(err);
                             });
-                        }
+                        });
                     });
                 });
             });
