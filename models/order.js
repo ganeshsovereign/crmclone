@@ -109,6 +109,7 @@ var orderSchema = new Schema({
     },
     price_level: { type: String, default: "BASE", uppercase: true, trim: true },
     bl: [{
+        _id: false,
         societe: {
             id: { type: Schema.Types.ObjectId, ref: 'societe' },
             name: String
