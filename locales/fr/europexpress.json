@@ -44,5 +44,6 @@
     "Geolocation": "Géoloc.",
     "InsurancePolicy": "Assurance",
     "CarRegistrationDocument": "Carte grise",
-    "EditVehicule": "Edition Véhicule"
+    "EditVehicule": "Edition Véhicule",
+    "CreateBill": "Créer Facture"
 }
