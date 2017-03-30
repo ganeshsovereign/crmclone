@@ -32,7 +32,7 @@
     "iban": "0.0.7",
     "iconv": "^2.2.1",
     "json-2-csv": "latest",
-    "json2csv": "^2.12.0",
+    "json2csv": "~3.7",
     "lodash": "3.10.1",
     "moment": "^2.10.3",
     "mongoose": "~4.5",
