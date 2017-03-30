@@ -60,13 +60,12 @@ productPricesSchema.pre('save', function(next) {
                 });
             }
 
-            if (self.priceLists.defaultPriceList == true && self.isModified('prices')) {
-                product.prices.pu_ht = self.prices[0].price;
-                product.save(function(err, doc) {
+            if (self.priceLists.defaultPriceList == true && self.isModified('prices'))
+                product.update({ $set: { 'prices.pu_ht': self.prices[0].price } }, function(err, doc) {
                     if (err)
                         return console.log(err);
                 });
-            }
+
 
             self.prices = _.filter(self.prices, function(price) {
                 if (price.count == 0)

@@ -23,8 +23,8 @@ var MetronicApp = angular.module("MetronicApp", [
     'schemaForm',
     'notification',
     'ngHandsontable',
-    'summernote',
-    'ui.tree'
+    'summernote'
+    //   'ui.tree'
 ]);
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
@@ -1517,7 +1517,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Configuration des categories'
             },
-            controller: "SettingProductController"
+            controller: "SettingCategoryController"
         })
         .state('settings.product.categories.create', {
             url: "/create.html",
@@ -1525,7 +1525,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Ajouter une categorie'
             },
-            controller: "SettingProductController"
+            controller: "SettingCategoryController"
         })
         .state('settings.product.categories.show', {
             url: "/{id:[0-9a-z]{24}}",
@@ -1533,7 +1533,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Editer une categories'
             },
-            controller: "SettingProductController"
+            controller: "SettingCategoryController"
         })
         // prices configuration
         .state('settings.product.pricelists', {

@@ -425,7 +425,6 @@ productSchema.statics.findPrice = function(options, fields, callback) {
 
 
 productSchema.methods.getPrice = function(qty, price_level) {
-    console.log("tototototo");
     var Pricebreak = INCLUDE('pricebreak');
     var self = this;
     var d = Q.defer();
@@ -499,7 +498,15 @@ productSchema.pre('save', function(next) {
     }
 
     if (!this.isNew && this.isModified('directCost')) // Emit to all that a product change totalCost
-        F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: this._id } });
+        setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
+        F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: self._id } });
+    }, 500);
+
+    //Emit product update
+    setTimeout2('product:' + this._id.toString(), function() {
+        F.functions.PubSub.emit('product:update', { data: { _id: self._id } });
+    }, 1000);
+
 
     if (this.isNew || !this.seq) {
         //if (!this.body)
@@ -689,7 +696,7 @@ function prepare_subcategories(name) {
 
 
 F.on('load', function() {
-    // On refresh emit product
+    // Refresh pack prices from directCost
     F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
         //console.log(data);
         console.log("Update emit product", data);
