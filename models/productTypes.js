@@ -9,6 +9,7 @@ var mongoose = require('mongoose'),
 var productTypesSchema = new Schema({
     name: String,
     options: [{ type: Schema.Types.ObjectId, ref: 'productOptions' }],
+    attributs: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }],
     inventory: { type: Boolean, default: true },
     coef: { type: Boolean, default: false }, //Price was calculated from a coefficient
     createdAt: { type: Date, default: Date.now }
