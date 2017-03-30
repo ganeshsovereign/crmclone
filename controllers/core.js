@@ -70,7 +70,7 @@ exports.install = function() {
         });
     }, ['authorize']);
     F.route('/erp/convert/resource', convert_resource, ['authorize']);
-    F.route('/erp/convert/{type}', convert);
+    F.route('/erp/convert/{type}', convert, ['authorize']);
 
 
     // SHOW LAST 50 PROBLEMS
@@ -415,6 +415,8 @@ function convert(type) {
 
         case 'product':
             var ProductModel = MODEL('product').Schema;
+            var PriceListModel = MODEL('priceList').Schema;
+            var ProductPricesModel = MODEL('productPrices').Schema;
             mongoose.connection.db.collection('Product', function(err, collection) {
                 collection.find({}, function(err, docs) {
                     if (err)
@@ -428,14 +430,95 @@ function convert(type) {
                         if (!doc)
                             return;
 
-                        if (doc.name)
-                            return self.plain("Converted product...");
+                        if (doc.info && doc.info.SKU)
+                            return self.plain("Already converted product...");
 
-                        ProductModel.update({ _id: doc._id }, { $set: { name: doc.ref } }, function(err, doc) {
-                            if (err || !doc)
-                                return console.log("Impossible de creer ", err);
+                        ProductModel.findOne({ _id: doc._id }, function(err, product) {
+                            product.info.lang = [{
+                                lang: "fr",
+                                name: doc.label,
+                                shortDescription: doc.description,
+                                body: doc.body,
+                                notePrivate: doc.notePrivate,
+                                Tag: doc.Tag,
+                                linker: doc.linker
+                            }];
+
+                            product.info.SKU = doc.ref;
+                            product.info.isActive = doc.enabled;
+
+                            product.size.weight = doc.weight;
+
+                            product.info.EAN = doc.barCode;
+                            product.info.aclCode = doc.aclCode;
+                            product.info.autoBarCode = doc.autoBarCode;
+
+                            for (var i = 0, len = product.suppliers.length; i < len; i++)
+                                if (product.suppliers[i].name)
+                                    product.suppliers[i] = product.suppliers[i].id;
+
+                            switch (doc.type) {
+
+                                case "SERVICE":
+                                    product.info.productType = "57f36a64da7737dc08729c66";
+
+                                    break;
+                                case "PACK":
+                                    product.isBundle = true;
+                                    product.info.productType = "58c9b84f33a486a14b498d7b";
+
+                                    break;
+                                case "DYNAMIC":
+                                    product.info.productType = "58ca427fff3ca47610372561";
+
+                                    break;
+
+                                default: //"PRODUCT"...
+                                    product.info.productType = "58c9b84f33a486a14b498d7b";
+                            }
+
+
+
+                            // Add default price to BASE priceList
+                            PriceListModel.findOne({ priceListCode: "BASE" }, function(err, priceList) {
+                                if (!priceList)
+                                    return console.log("PriceList notfound");
+
+                                ProductPricesModel.findOne({ priceLists: priceList._id, product: product._id }, function(err, price) {
+                                    if (!price)
+                                        price = new ProductPricesModel({
+                                            priceLists: priceList._id,
+                                            product: product._id,
+                                            prices: []
+                                        });
+
+                                    /* add prices */
+                                    price.prices = [];
+
+                                    price.prices.push({
+                                        price: doc.prices.pu_ht,
+                                        count: 0
+                                    });
+
+                                    if (doc.prices.pricesQty)
+                                        for (var key in doc.prices.pricesQty)
+                                            price.prices.push({
+                                                price: doc.prices.pricesQty[key],
+                                                count: parseInt(key)
+                                            });
+
+                                    price.save(function(err, doc) {});
+
+                                });
+                            });
+
+
+
+                            product.save(function(err, doc) {
+                                if (err || !doc)
+                                    return console.log("Impossible de creer ", err);
+                            });
                         });
-
                     });
                 });
             });
@@ -604,7 +687,6 @@ function convert(type) {
             self.plain('Convert date bill is ok');
             break;
         case 'date_delivery':
-
             var DeliveryModel = MODEL('delivery').Schema;
             var setDate = MODULE('utils').setDate;
             var moment = require('moment');
@@ -623,6 +705,113 @@ function convert(type) {
             });
 
             self.plain('Convert date delivery is ok');
+            break;
+        case 'price_level_new':
+            var PriceLevelModel = MODEL('pricelevel').Schema;
+            var ProductPricesModel = MODEL('productPrices').Schema;
+            var PriceListModel = MODEL('priceList').Schema;
+            var ProductModel = MODEL('product').Schema;
+
+            // Add groupId to all products
+            ProductModel.find({}, "_id", function(err, docs) {
+                docs.forEach(function(doc) {
+                    ProductModel.update({ _id: doc._id }, { $set: { groupId: doc._id.toString() } }, function(err, result) {
+                        //console.log(err, result);
+                    });
+                });
+            });
+
+            async.series([
+                    function(cb) {
+                        /* BASE price list */
+                        PriceListModel.findOne({ priceListCode: "BASE" }, function(err, priceList) {
+                            if (priceList)
+                                return;
+
+                            priceList = new PriceListModel({
+                                priceListCode: "BASE",
+                                name: "Default price base",
+                                currency: "EUR",
+                                cost: false
+                            });
+
+                            return priceList.save();
+                        });
+
+                        /* SP price list for supplier */
+                        PriceListModel.findOne({ priceListCode: "SP" }, function(err, priceList) {
+                            if (priceList)
+                                return;
+
+                            priceList = new PriceListModel({
+                                priceListCode: "SP",
+                                name: "Default supplier price base",
+                                currency: "EUR",
+                                cost: true
+                            });
+
+                            return priceList.save();
+                        });
+
+                        PriceLevelModel.distinct("price_level", function(err, docs) {
+                            async.each(docs, function(doc, callback) {
+                                PriceListModel.findOne({ priceListCode: MODULE('utils').set_Space(doc) }, function(err, priceList) {
+                                    if (priceList)
+                                        return callback();
+
+                                    priceList = new PriceListModel({
+                                        priceListCode: doc,
+                                        name: doc,
+                                        currency: "EUR",
+                                        cost: false
+                                    });
+
+                                    priceList.save(callback);
+                                });
+                            }, cb);
+                        });
+                    },
+                    function(cb) {
+                        // add prices to productPrice
+                        PriceLevelModel.find({}, function(err, docs) {
+                            async.each(docs, function(doc, callback) {
+                                PriceListModel.findOne({ priceListCode: MODULE('utils').set_Space(doc.price_level) }, function(err, priceList) {
+                                    if (!priceList)
+                                        return console.log("PriceList notfound");
+
+                                    ProductPricesModel.findOne({ priceLists: priceList._id, product: doc.product }, function(err, price) {
+                                        if (!price)
+                                            price = new ProductPricesModel({
+                                                priceLists: priceList._id,
+                                                product: doc.product,
+                                                prices: []
+                                            });
+
+                                        /* add prices */
+                                        price.prices = [];
+
+                                        price.prices.push({
+                                            price: doc.prices.pu_ht,
+                                            count: 0
+                                        });
+
+                                        if (doc.prices.pricesQty)
+                                            for (var key in doc.prices.pricesQty)
+                                                price.prices.push({
+                                                    price: doc.prices.pricesQty[key],
+                                                    count: parseInt(key)
+                                                });
+
+                                        price.save(callback);
+
+                                    });
+                                });
+                            });
+                        });
+                    }
+                ],
+                function(result) {});
+            return self.plain("Type is price_level new format !!!");
             break;
         case 'paymentTransactionBills':
             /* Convert objectId to string */
@@ -659,9 +848,12 @@ function convert(type) {
             var UserModel = MODEL('hr').Schema;
             var OfferModel = MODEL('offer').Schema;
             var OrderModel = MODEL('order').Schema;
+            var OrderSupplierModel = MODEL('orderSupplier').Schema;
+            var BillSupplierModel = MODEL('billSupplier').Schema;
             var DeliveryModel = MODEL('delivery').Schema;
+            var ObjectId = MODULE('utils').ObjectId;
 
-            var Model = [BillModel, OfferModel, OrderModel, DeliveryModel];
+            var Model = [BillModel, OfferModel, OrderModel, DeliveryModel, OrderSupplierModel, BillSupplierModel];
 
             Model.forEach(function(model) {
                 model.find({ "commercial_id.id": { $type: 2 } }, function(err, docs) {
@@ -669,20 +861,25 @@ function convert(type) {
                         return console.log(err);
 
                     docs.forEach(function(doc) {
+                        if (doc.commercial_id.id.toString().length == 24)
+                            return doc.update({ $set: { 'commercial_id.id': ObjectId(doc.commercial_id.id) } }, function(err, doc) {
+                                console.log(doc);
+                                if (err)
+                                    console.log(err);
+                            });
                         //console.log(doc.commercial_id.id.substr(0, 5));
-                        if (doc.commercial_id.id.substr(0, 5) == 'user:') { //Not an automatic code
+                        if (doc.commercial_id.id.substr(0, 5) == 'user:') //Not an automatic code
                             UserModel.findOne({ username: doc.commercial_id.id.substr(5) }, "_id lastname", function(err, user) {
 
-                                //console.log(user);
-                                //return;
+                            //console.log(user);
+                            //return;
 
-                                doc.commercial_id.id = user._id;
-                                doc.save(function(err, doc) {
-                                    if (err)
-                                        console.log(err);
-                                });
+                            doc.commercial_id.id = user._id;
+                            doc.save(function(err, doc) {
+                                if (err)
+                                    console.log(err);
                             });
-                        }
+                        });
                     });
                 });
             });

@@ -4,58 +4,48 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-        Schema = mongoose.Schema,
-        timestamps = require('mongoose-timestamp'),
-        crypto = require('crypto'),
-        authTypes = ['github', 'twitter', 'facebook', 'google'];
+    Schema = mongoose.Schema,
+    timestamps = require('mongoose-timestamp'),
+    crypto = require('crypto'),
+    authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 /**
  * User Schema
  */
 
-var setFirstname = function (name) {
-    if (!name) {
-        return name;
-    }
-
-    name = name.toLowerCase();
-
-    name = name.charAt(0).toUpperCase() + name.substr(1);
-
-    return name;
-};
+var setFirstname = MODULE('utils').setFirstUpperCase
 
 var UserSchema = new Schema({
     // _id: {type: String},
-    Status: {type: String, default: 'DISABLE'}, //mongoose.Schema.Types.Mixed,
+    Status: { type: String, default: 'DISABLE' }, //mongoose.Schema.Types.Mixed,
     civilite: String,
     isremoved: Boolean,
     //name: {type: String, require: true},
-    username: {type: String, unique: true, lowercase: true, sparse: true},
-    email: {type: String, lowercase: true, trim: true, index: true, sparse: true},
+    username: { type: String, unique: true, lowercase: true, sparse: true },
+    email: { type: String, lowercase: true, trim: true, index: true, sparse: true },
     admin: Boolean,
-    firstname: {type: String, trim: true, default: null, set: setFirstname},
-    lastname: {type: String, uppercase: true, trim: true, default: null},
+    firstname: { type: String, trim: true, default: null, set: setFirstname },
+    lastname: { type: String, uppercase: true, trim: true, default: null },
     DefaultLang: String,
     provider: String,
     password: String,
     hashed_password: String,
     salt: String,
-    entity: {type: String, trim: true},
+    entity: { type: String, trim: true },
     photo: String,
     facebook: {},
     twitter: {},
     github: {},
     google: {
         user_id: String,
-        sync: {type: Boolean, default: true}, // authorisation to sync with google
+        sync: { type: Boolean, default: true }, // authorisation to sync with google
         tokens: {
             access_token: String,
             refresh_token: String
         },
         contacts: {
             latestImport: String, // date format YYYY-MM-DD
-            group_href: String 		// group which contains exported contacts
+            group_href: String // group which contains exported contacts
         },
         tasks: {
             tasklist_id: String // tasklist which contains our tasks
@@ -69,17 +59,16 @@ var UserSchema = new Schema({
     rights: mongoose.Schema.Types.Mixed,
     lastConnection: Date,
     newConnection: Date,
-    externalConnect: {type: Boolean, default: false},
+    externalConnect: { type: Boolean, default: false },
     //url: {type: Schema.Types.Mixed}, //url by default after login,
-    right_menu: {type: Boolean, default: true},
+    right_menu: { type: Boolean, default: true },
     home: String,
-    societe: {type: Schema.Types.ObjectId, ref: 'societe'},
-    multiEntities: {type: Boolean, default: false}, // Access to all entities ?
+    societe: { type: Schema.Types.ObjectId, ref: 'societe' },
+    multiEntities: { type: Boolean, default: false }, // Access to all entities ?
     poste: String
-},
-{
-    toObject: {virtuals: true},
-    toJSON: {virtuals: true},
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true },
     discriminatorKey: '_type',
     collection: 'users'
 });
@@ -89,71 +78,71 @@ UserSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
     var gridfs = INCLUDE('_' + CONFIG('storing-files'));
-    UserSchema.plugin(gridfs.pluginGridFs, {root: "User"});
+    UserSchema.plugin(gridfs.pluginGridFs, { root: "User" });
 }
 
 //var ExtrafieldModel = MODEL('extrafields').Schema;
 
 UserSchema.virtual('name')
-        .get(function () {
-            return this.firstname + " " + this.lastname;
-        });
+    .get(function() {
+        return this.firstname + " " + this.lastname;
+    });
 
 UserSchema.virtual('status')
-        .get(function () {
+    .get(function() {
 
-            var res_status = {};
+        var res_status = {};
 
-            var status = this.Status;
+        var status = this.Status;
 
-            if (status == 'ENABLE' && this.password)
-                status = 'WEB';
+        if (status == 'ENABLE' && this.password)
+            status = 'WEB';
 
-            if (status == 'ENABLE' && !this.password)
-                status = 'NOCONNECT';
+        if (status == 'ENABLE' && !this.password)
+            status = 'NOCONNECT';
 
 
-            if (status && exports.Status.values[status].label) {
-                //console.log(this);
-                res_status.id = status;
-                //this.status.name = i18n.t("intervention." + statusList.values[status].label);
-                res_status.name = exports.Status.values[status].label;
-                res_status.css = exports.Status.values[status].cssClass;
-            } else { // By default
-                res_status.id = status;
-                res_status.name = status;
-                res_status.css = "";
-            }
-            return res_status;
+        if (status && exports.Status.values[status].label) {
+            //console.log(this);
+            res_status.id = status;
+            //this.status.name = i18n.t("intervention." + statusList.values[status].label);
+            res_status.name = exports.Status.values[status].label;
+            res_status.css = exports.Status.values[status].cssClass;
+        } else { // By default
+            res_status.id = status;
+            res_status.name = status;
+            res_status.css = "";
+        }
+        return res_status;
 
-        });
+    });
 
 var UserGroupModel = MODEL('group').Schema;
 var userGroupList = {};
 
-UserGroupModel.find(function (err, docs) {
+UserGroupModel.find(function(err, docs) {
 
     userGroupList = docs;
 
 });
 
 UserSchema.virtual('userGroup')
-        .get(function () {
+    .get(function() {
 
-            var group;
+        var group;
 
-            if (this.groupe) {
-                for (var j in userGroupList) {
-                    if (userGroupList[j]._id === this.groupe)
-                        group = userGroupList[j].name;
-                }
-
+        if (this.groupe) {
+            for (var j in userGroupList) {
+                if (userGroupList[j]._id === this.groupe)
+                    group = userGroupList[j].name;
             }
 
-            return group;
-        });
+        }
 
-UserSchema.virtual('fullname').get(function () {
+        return group;
+    });
+
+UserSchema.virtual('fullname').get(function() {
     var out = "";
 
     if (this.lastname)
@@ -182,19 +171,19 @@ UserSchema.virtual('fullname').get(function () {
 /**
  * Validations
  */
-var validatePresenceOf = function (value) {
+var validatePresenceOf = function(value) {
     return value && value.length;
 };
 
 // the below 4 validations only apply if you are signing up traditionally
-UserSchema.path('username').validate(function (username) {
+UserSchema.path('username').validate(function(username) {
     // if you are authenticating by any of the oauth strategies, don't validate
     if (authTypes.indexOf(this.provider) !== -1)
         return true;
     return username.length;
 }, 'Name cannot be blank');
 
-UserSchema.path('hashed_password').validate(function (hashed_password) {
+UserSchema.path('hashed_password').validate(function(hashed_password) {
     // if you are authenticating by any of the oauth strategies, don't validate
     if (authTypes.indexOf(this.provider) !== -1)
         return true;
@@ -232,7 +221,7 @@ UserSchema.path('hashed_password').validate(function (hashed_password) {
  * @return {Boolean}
  * @api public
  */
-UserSchema.methods.authenticate = function (plainText) {
+UserSchema.methods.authenticate = function(plainText) {
     return this.password === plainText;
     //return this.encryptPassword(plainText) === this.hashed_password; // FIXME return after return
 };
@@ -242,7 +231,7 @@ UserSchema.methods.authenticate = function (plainText) {
  * @return {String}
  * @api public
  */
-UserSchema.methods.makeSalt = function () {
+UserSchema.methods.makeSalt = function() {
     return Math.round((new Date().valueOf() * Math.random())) + '';
 };
 /**
@@ -252,14 +241,14 @@ UserSchema.methods.makeSalt = function () {
  * @return {String}
  * @api public
  */
-UserSchema.methods.encryptPassword = function (password) {
+UserSchema.methods.encryptPassword = function(password) {
     if (!password)
         return '';
     return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
 };
-UserSchema.methods.generatePassword = function (length) {
+UserSchema.methods.generatePassword = function(length) {
     var charset = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-            retVal = "";
+        retVal = "";
     for (var i = 0, n = charset.length; i < length; ++i) {
         retVal += charset.charAt(Math.floor(Math.random() * n));
     }
@@ -270,33 +259,33 @@ UserSchema.methods.generatePassword = function (length) {
 };
 
 exports.Status = {
-    "_id" : "fk_user_status",
-    "default" : "DISABLE",
-    "values" : {
-        "NEVER" : {
-            "label" : "Inconnu",
-            "enable" : true,
-            "cssClass" : "label-default"
+    "_id": "fk_user_status",
+    "default": "DISABLE",
+    "values": {
+        "NEVER": {
+            "label": "Inconnu",
+            "enable": true,
+            "cssClass": "label-default"
         },
-        "ENABLE" : {
-            "enable" : true,
-            "label" : "Actif",
-            "cssClass" : "label-success"
+        "ENABLE": {
+            "enable": true,
+            "label": "Actif",
+            "cssClass": "label-success"
         },
-        "DISABLE" : {
-            "enable" : true,
-            "label" : "Bloqué",
-            "cssClass" : "label-danger"
+        "DISABLE": {
+            "enable": true,
+            "label": "Bloqué",
+            "cssClass": "label-danger"
         },
-        "NOCONNECT" : {
-            "enable" : false,
-            "label" : "Actif / Sans connexion",
-            "cssClass" : "label-info"
+        "NOCONNECT": {
+            "enable": false,
+            "label": "Actif / Sans connexion",
+            "cssClass": "label-info"
         },
-        "WEB" : {
-            "enable" : false,
-            "label" : "Actif / Connexion Web",
-            "cssClass" : "label-warning"
+        "WEB": {
+            "enable": false,
+            "label": "Actif / Connexion Web",
+            "cssClass": "label-warning"
         }
     }
 };

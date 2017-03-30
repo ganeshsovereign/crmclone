@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-        Schema = mongoose.Schema;
+    Schema = mongoose.Schema;
 
 var DataTable = require('mongoose-datatable');
 
@@ -16,15 +16,7 @@ mongoose.plugin(DataTable.init);
 
 var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
-
-var setAccount = function (account) {
-    if (account) {
-        account = account.replace(/ /g, "");
-        account = account.substring(0, CONFIG('accounting.length') || 10); //limit a 10 character
-    }
-
-    return account;
-};
+var setAccount = MODULE('utils').setAccount;
 
 /**
  * Article Schema
@@ -58,14 +50,14 @@ var TransationSchema = new Schema({
         tva_tx : Number
     }
      */
-    
-    
-    datetime: {type: Date, set: setDate},
+
+
+    datetime: { type: Date, set: setDate },
     account_path: [String],
-    accounts: {type: String, set: setAccount},
+    accounts: { type: String, set: setAccount },
     book: String,
     //entity: {type: String, required: true},
-    memo: {type: String, uppercase: true},
+    memo: { type: String, uppercase: true },
     _journal: {
         type: Schema.Types.ObjectId,
         ref: 'Medici_Journal'
@@ -86,16 +78,16 @@ var TransationSchema = new Schema({
     },
     exported: Date, // Date of export
     reconcilliation: Date, //Only for rapprochement in bank
-    seq: {type: String} /*Numero de piece*/
+    seq: { type: String } /*Numero de piece*/
 }, {
-    toObject: {virtuals: true},
-    toJSON: {virtuals: true}
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 /**
  * Pre-save hook
  */
-TransationSchema.pre('save', function (next) {
+TransationSchema.pre('save', function(next) {
     /*var SeqModel = MODEL('Sequence').Schema;
      var EntityModel = MODEL('entity').Schema;
      

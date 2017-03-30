@@ -82,8 +82,8 @@ var billSupplierSchema = new Schema({
         tva_tx: { type: Number, default: 20 },
         total_tva: { type: Number, default: 0 }
     },
-    author: { id: String, name: String },
-    commercial_id: { id: { type: String }, name: String }, // Buyer
+    author: { id: { type: Schema.Types.ObjectId, ref: 'hr' }, name: String },
+    commercial_id: { id: { type: Schema.Types.ObjectId, ref: 'hr' }, name: String }, // Buyer
     entity: { type: String },
     orders: [{
         id: Schema.Types.ObjectId,

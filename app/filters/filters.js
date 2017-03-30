@@ -38,6 +38,9 @@ MetronicApp.filter('object2Array', function () {
     return function (input) {
         var out = [];
         for (var i in input) {
+            if(!input[i])
+                continue;
+
             input[i].id = i;
             out.push(input[i]);
         }

@@ -23,8 +23,8 @@ var MetronicApp = angular.module("MetronicApp", [
     'schemaForm',
     'notification',
     'ngHandsontable',
-    'summernote',
-    'ui.tree'
+    'summernote'
+    //   'ui.tree'
 ]);
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
@@ -867,14 +867,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductController"
         })
-        .state('product.pricelevel', {
+        .state('product.pricelist', {
             parent: "product",
             url: "/pricelevel.html",
-            templateUrl: "/views/_product/pricelevel.html",
+            templateUrl: "/views/_product/pricelist.html",
             data: {
                 pageTitle: 'Liste de prix'
             },
-            controller: "ProductPriceLevelController"
+            controller: "ProductPriceListController"
         })
         .state('product.consumption', {
             parent: "product",
@@ -884,6 +884,79 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Statistiques de consommation des produits'
             },
             controller: "ProductStatsController"
+        })
+        .state('product.visual', {
+            parent: "product",
+            url: "/visual/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/_product/productvisual.html",
+            data: {
+                pageTitle: 'Fiche produit print'
+            },
+            controller: "ProductController"
+        })
+        // marketing
+        .state("product.show.marketing", {
+            url: "/marketing",
+            templateUrl: "/templates/_product/marketing.html",
+            data: { pageTitle: 'Marketing - Product' }
+        })
+        // attributes
+        .state("product.show.attributes", {
+            url: "/attributes",
+            templateUrl: "/templates/_product/attributes.html",
+            data: { pageTitle: 'Attributes - Product' }
+        })
+        // information
+        .state("product.show.informations", {
+            url: "/informations",
+            templateUrl: "/templates/_product/informations.html",
+            data: { pageTitle: 'Informations - Product' }
+        })
+        // price
+        .state("product.show.price", {
+            url: "/price",
+            templateUrl: "/templates/_product/price.html",
+            data: { pageTitle: 'Prices - Product' }
+        })
+        // associations
+        .state("product.show.categories", {
+            url: "/categories",
+            templateUrl: "/templates/_product/categories.html",
+            data: {
+                pageTitle: 'Categories - Product '
+            }
+        })
+        // declinaisons
+        .state("product.show.declinations", {
+            url: "/declinations",
+            templateUrl: "/templates/_product/declinations.html",
+            data: {
+                pageTitle: 'Declinaisons - Product '
+            }
+        })
+        // stocks
+        .state("product.show.stock", {
+            url: "/stock",
+            templateUrl: "/templates/_product/stock.html",
+            data: {
+                pageTitle: 'Stock - Product '
+            }
+        })
+        // ecommerce
+        .state("product.show.ecommerce", {
+            url: "/ecommerce",
+            templateUrl: "/templates/_product/ecommerce.html",
+            data: {
+                pageTitle: 'Ecommerce - Product '
+            }
+        })
+        // ecommerce
+        .state("product.show.bundles", {
+            url: "/bundle",
+            templateUrl: "/templates/_product/bundles.html",
+            data: {
+                pageTitle: 'Compositions - Product '
+            }
         })
         // Category
         .state('category', {
@@ -1375,6 +1448,220 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Nouveau LCR client'
             },
             controller: "LcrController"
+        })
+        // General settings
+        .state('settings', {
+            url: "/settings",
+            abstract: true,
+            templateUrl: "/views/settings/index.html"
+        })
+        //General Configuration
+        .state('settings.general', {
+            url: "/general",
+            templateUrl: "/views/settings/general.html",
+            data: {
+                pageTitle: 'Configuration general'
+            },
+            controller: "SettingGeneralController"
+        })
+        //Entites Configuration
+        .state('settings.entity', {
+            url: "/entity",
+            abstract: true,
+            templateUrl: "/views/settings/entities/index.html"
+        })
+        .state('settings.entity.list', {
+            url: "",
+            templateUrl: "/views/settings/entities/list.html",
+            data: {
+                pageTitle: 'Configuration des organisations'
+            },
+            controller: "SettingEntityController"
+        })
+        .state('settings.entity.create', {
+            url: "/create.html",
+            templateUrl: "/views/settings/entities/create.html",
+            data: {
+                pageTitle: 'Creation d\'une organisation'
+            },
+            controller: "SettingEntityController"
+        })
+        .state('settings.entity.show', {
+            url: "/{id}",
+            templateUrl: "/views/settings/entities/fiche.html",
+            data: {
+                pageTitle: 'Configuration de l\'organisation'
+            },
+            controller: "SettingEntityController"
+        })
+        //Product Configuration
+        .state('settings.product', {
+            url: "/product",
+            templateUrl: "/views/settings/product.html",
+            data: {
+                pageTitle: 'Configuration des produits'
+            },
+            controller: "SettingProductController"
+        })
+        // warehouse
+        .state('settings.product.warehouse', {
+            url: "/warehouse",
+            templateUrl: "/views/settings/warehouse/list.html",
+            data: {
+                pageTitle: 'Configuration des entrepots'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.warehouse.create', {
+            url: "/create.html",
+            templateUrl: "/views/settings/warehouse/create.html",
+            data: {
+                pageTitle: 'Ajouter un entrepot'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.warehouse.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/settings/warehouse/fiche.html",
+            data: {
+                pageTitle: 'Editer un entrepot'
+            },
+            controller: "SettingProductController"
+        })
+        // categories
+        .state('settings.product.categories', {
+            url: "/categories",
+            templateUrl: "/views/settings/categories/list.html",
+            data: {
+                pageTitle: 'Configuration des categories'
+            },
+            controller: "SettingCategoryController"
+        })
+        .state('settings.product.categories.create', {
+            url: "/create.html",
+            templateUrl: "/views/settings/categories/create.html",
+            data: {
+                pageTitle: 'Ajouter une categorie'
+            },
+            controller: "SettingCategoryController"
+        })
+        .state('settings.product.categories.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/settings/categories/fiche.html",
+            data: {
+                pageTitle: 'Editer une categories'
+            },
+            controller: "SettingCategoryController"
+        })
+        // prices configuration
+        .state('settings.product.pricelists', {
+            url: "/pricelists",
+            templateUrl: "/views/settings/pricelists/list.html",
+            data: {
+                pageTitle: 'Configuration des listes de prix'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.pricelists.create', {
+            url: "/create.html",
+            templateUrl: "/views/settings/pricelists/create.html",
+            data: {
+                pageTitle: 'Ajouter une liste de prix'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.pricelists.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/settings/pricelists/fiche.html",
+            data: {
+                pageTitle: 'Editer une liste de prix'
+            },
+            controller: "SettingProductController"
+        })
+        // product options configuration
+        .state('settings.product.options', {
+            url: "/options",
+            templateUrl: "/views/settings/productOptions/list.html",
+            data: {
+                pageTitle: 'Configuration des options des produits'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.options.create', {
+            url: "/create.html",
+            templateUrl: "/views/settings/productOptions/create.html",
+            data: {
+                pageTitle: 'Ajouter une options'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.options.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/settings/productOptions/fiche.html",
+            data: {
+                pageTitle: 'Editer une options'
+            },
+            controller: "SettingProductController"
+        })
+        // product types configuration
+        .state('settings.product.types', {
+            url: "/types",
+            templateUrl: "/views/settings/productTypes/list.html",
+            data: {
+                pageTitle: 'Configuration des types de produits'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.types.create', {
+            url: "/create.html",
+            templateUrl: "/views/settings/productTypes/create.html",
+            data: {
+                pageTitle: 'Ajouter un type de produit'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.types.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/settings/productTypes/fiche.html",
+            data: {
+                pageTitle: 'Editer un type de produit'
+            },
+            controller: "SettingProductController"
+        })
+        // shipping configuration
+        .state('settings.product.shipping', {
+            url: "/shipping",
+            templateUrl: "/views/settings/shipping/list.html",
+            data: {
+                pageTitle: 'Configuration des transports'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.shipping.create', {
+            url: "/create.html",
+            templateUrl: "/views/settings/shipping/create.html",
+            data: {
+                pageTitle: 'Ajouter un transport'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.shipping.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/settings/shipping/fiche.html",
+            data: {
+                pageTitle: 'Editer un tranport'
+            },
+            controller: "SettingProductController"
+        })
+        //Integration Configuration
+        .state('settings.integration', {
+            parent: "settings",
+            url: "/integration",
+            templateUrl: "/views/settings/integration.html",
+            data: {
+                pageTitle: 'Gestion des integrations'
+            },
+            controller: "SettingIntegrationController"
         })
         /*
          // AngularJS plugins

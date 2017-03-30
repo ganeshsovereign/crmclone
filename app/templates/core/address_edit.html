@@ -1,9 +1,9 @@
 <script type="text/ng-template" id="customTemplate.html">
     <a>
-        <span bind-html-unsafe="match.model.code | typeaheadHighlight:query"></span> - <span bind-html-unsafe="match.model.city"></span>
+    <span bind-html-unsafe="match.model.code | typeaheadHighlight:query"></span> - <span bind-html-unsafe="match.model.city"></span>
     </a>
 </script>
-<p><strong>{{addressModel.client.name || addressModel.supplier.name || addressModel.societe.name || addressModel.name}}</strong></p>
+<p><strong>{{addressModel.client.name|| addressModel.supplier.name || addressModel.societe.name || addressModel.name}}</strong></p>
 <div class="row static-info" ng-if="addressModel.name">
     <div class="col-md-12 value">
         <input type="text" ng-model="addressModel.name" class="form-control" placeholder="@(Name)" autocomplete="off" />
@@ -12,11 +12,9 @@
 <textarea class="form-control" rows="3" cols="30" ng-model="addressModel.address" placeholder="Adresse" autocomplete="off"></textarea><br/>
 <div class="row static-info">
     <div class="col-md-6 value">
-        <input type="text" ng-model="addressModel.zip" typeahead="address.code for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" class="form-control" typeahead-on-select="generateZip($item)" placeholder="Code Postal" autocomplete="off"
-        />
+        <input type="text" ng-model="addressModel.zip" typeahead="address.code for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" class="form-control" typeahead-on-select="generateZip($item)" placeholder="Code Postal" autocomplete="off"/>
     </div>
     <div class="col-md-6 value">
-        <input type="text" ng-model="addressModel.town" typeahead="address.city for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" class="form-control" typeahead-on-select="generateZip($item)" placeholder="Ville" autocomplete="off"
-        />
+        <input type="text" ng-model="addressModel.town" typeahead="address.city for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" class="form-control" typeahead-on-select="generateZip($item)" placeholder="Ville" autocomplete="off"/>
     </div>
 </div>

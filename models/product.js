@@ -10,50 +10,14 @@ var mongoose = require('mongoose'),
     _ = require("lodash"),
     Q = require('q');
 
-var setTags = function(tags) {
-    var result = [];
-    for (var i = 0; i < tags.length; i++)
-        if (typeof tags[i] == "object" && tags[i].text)
-            result.push(tags[i].text.trim());
-        else
-            result.push(tags[i].trim());
-
-    result = _.uniq(result);
-
-    //console.log(result);
-    return result;
-};
-
-var setLink = function(link) {
-    if (!link)
-        return null;
-
-    link = link.replace(/ /g, "_");
-    link = link.replace(/\//g, "");
-
-    //console.log(result);
-    return link;
-};
-
-var setAccount = function(account) {
-    if (account) {
-        account = account.replace(/ /g, "");
-        account = account.substring(0, 10); //limit a 10 character
-    }
-
-    return account;
-};
-
 var Dict = INCLUDE('dict');
 /**
  * Product Schema
  */
 
 var supplierPriceSchema = new Schema({
-    societe: {
-        id: { type: Schema.Types.ObjectId, ref: 'societe' },
-        name: String
-    },
+    _id: false,
+    societe: { type: Schema.Types.ObjectId, ref: 'societe' },
     ref: String,
     tva_tx: Number,
     minQty: Number,
@@ -69,112 +33,195 @@ var supplierPriceSchema = new Schema({
 });
 
 
-supplierPriceSchema.virtual('pricesDetails')
+/*supplierPriceSchema.virtual('pricesDetails')
     .get(function() {
         var Pricebreak = INCLUDE('pricebreak');
 
         Pricebreak.set(this.prices.pu_ht, this.prices.pricesQty);
 
         return Pricebreak.humanize(true, 3);
-    });
+    });*/
+
+
+var LangSchema = new Schema({
+    lang: { type: String, default: "fr" },
+    description: { type: String, default: '' },
+    shortDescription: { type: String, default: '' },
+    body: { type: String, default: '' },
+    name: { type: String, default: '' },
+    meta: {
+        title: { type: String, default: '' },
+        description: { type: String, default: '' }
+    },
+    linker: { type: String, sparse: true, set: MODULE('utils').setLink }, // SEO URL
+    Tag: { type: [], set: MODULE('utils').setTags }
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
+});
+
+LangSchema.pre('save', function(next) {
+    var self = this;
+
+    // remove old packif change
+    //if (!this.linker)
+    //    this.linker = this.name.replace(/ /g, "-").toLowerCase();
+
+    next();
+});
+
 
 
 var productSchema = new Schema({
+    isBundle: { type: Boolean, default: false },
+    isVariant: { type: Boolean, default: false },
+    groupId: { type: String, default: null },
+    //  job: { type: Schema.Types.ObjectId, ref: 'jobs', default: null },
+    canBeSold: { type: Boolean, default: true },
+    canBeExpensed: { type: Boolean, default: true },
+    eventSubscription: { type: Boolean, default: true },
+    canBePurchased: { type: Boolean, default: true },
+    onlyWeb: { type: Boolean },
+    istop: { type: Boolean, default: false },
+    ischat: { type: Boolean, default: false },
+    //sourceDocument: { type: Schema.Types.ObjectId, ref: 'ProductImages', default: null },
+    /*imageSrc: {
+        type: Schema.Types.ObjectId,
+        ref: 'Images',
+        default: null
+    },*/
+
     oldId: String, // Only for import migration
-    ref: { type: String, required: true, unique: true, uppercase: true },
-    name: String, //copy of ref
+
+    //ref: { type: String, required: true, unique: true, uppercase: true }, //TODO Remove
+    name: { type: String, default: '' },
     seq: { type: String, unique: true },
     isremoved: { type: Boolean, default: false },
-    compta_buy: { type: String, set: setAccount, trim: true },
-    compta_buy_eu: { type: String, set: setAccount, trim: true },
-    compta_buy_exp: { type: String, set: setAccount, trim: true },
-    compta_sell: { type: String, set: setAccount, trim: true },
-    compta_sell_eu: { type: String, set: setAccount, trim: true },
-    compta_sell_exp: { type: String, set: setAccount, trim: true },
-    label: { type: String, default: "" },
-    description: { type: String, default: "" },
-    body: { type: String, default: "" }, // Description For SEO
-    notePrivate: { type: String },
-    type: { type: String, default: 'PRODUCT' },
-    Status: String,
-    enabled: { type: Boolean, default: true },
-    istop: { type: Boolean, default: false },
-    sale: { type: Boolean, default: false }, // soldes
-    ischat: { type: Boolean, default: false },
-    negociate: { type: Number, default: 0 }, // 0 is no negociate
-    country_id: String,
-    tva_tx: { type: Number, default: 20 },
-    units: { type: String, default: "unit" },
-    minPrice: { type: Number, default: 0 },
-    finished: String,
-    tms: Date, // Not used ??
-    datec: { type: Date, default: Date.now },
-    billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
-    Tag: { type: [], set: setTags },
-    entity: [String],
-    price: [{
-        _id: { type: Schema.Types.ObjectId, required: true },
-        price_level: String,
-        tms: Date,
-        pu_ht: Number,
-        qtyMin: { type: Number, default: 0 },
-        ref_customer_code: String,
-        user_mod: Schema.Types.Mixed,
-        tva_tx: Number,
-        dsf_coef: Number,
-        dsf_time: Number
+
+    // TODO Migrate to this model with PIM module 
+    info: {
+        productType: { type: Schema.Types.ObjectId, ref: 'productTypes', default: null },
+        isActive: { type: Boolean, default: true },
+        autoBarCode: { type: Boolean, default: true },
+        barCode: { type: String, index: true, uppercase: true, sparse: true },
+        aclCode: { type: String, uppercase: true },
+        SKU: { type: String, default: null },
+        UPC: { type: String, default: null },
+        ISBN: { type: String, default: null },
+        EAN: { type: String, default: null },
+
+        brand: { type: Schema.Types.ObjectId, ref: 'Brand', default: null },
+        categories: [{ type: Schema.Types.ObjectId, ref: 'productCategory' }],
+
+
+        attributes: [{
+            key: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
+            value: { type: String, default: "" }
+        }],
+
+        notePrivate: { type: String },
+
+        /* PIM transaltion */
+        lang: [LangSchema]
+            /* need to Add  alt des images TODO */
+
+    },
+
+    inventory: {
+        warehouseMsg: { type: String, default: '' },
+        minStockLevel: { type: Number, default: 0 }
+    },
+
+    variants: [{ type: Schema.Types.ObjectId, ref: 'ProductOptionsValues' }],
+
+    //bundles
+    pack: [{
+        _id: false,
+        id: { type: Schema.Types.ObjectId, ref: 'product' },
+        qty: { type: Number, default: 0 }
     }],
-    // new price model
+
+    search: [String],
+
+    workflow: { type: Schema.Types.ObjectId, ref: 'workflows', default: null },
+    whoCanRW: { type: String, enum: ['owner', 'group', 'everyOne'], default: 'everyOne' },
+
+    groups: {
+        owner: { type: Schema.Types.ObjectId, ref: 'hr', default: null },
+        users: [{ type: Schema.Types.ObjectId, ref: 'hr', default: null }],
+        group: [{ type: Schema.Types.ObjectId, ref: 'Department', default: null }]
+    },
+
+    createdBy: { type: Schema.Types.ObjectId, ref: 'hr' },
+    editedBy: { type: Schema.Types.ObjectId, ref: 'hr' },
+
+
+    externalId: { type: String, default: '' },
+
+    attachments: { type: Array, default: [] },
+
+    compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
+
+    //label: { type: String, default: "" },
+    //description: { type: String, default: "" },
+    //body: { type: String, default: "" }, // Description For SEO
+
+    //type: { type: String, default: 'PRODUCT' },
+    Status: String,
+    //enabled: { type: Boolean, default: true },
+    //ischat: { type: Boolean, default: false },
+    //negociate: { type: Number, default: 0 }, // 0 is no negociate
+    tva_tx: { type: Number, default: 20 },
+    //datec: { type: Date, default: Date.now },
+    //billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
+
+
+    // price model just for list product
     prices: {
         pu_ht: { type: Number, default: 0 }, // For base price
-        pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
+        //pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
-    pu_ht: { type: Number, default: 0 }, // For base price OLD
-    user_mod: { id: String, name: String },
-    history: [{
-        tms: Date,
-        user_mod: Schema.Types.Mixed,
-        pu_ht: Number,
-        ref_customer_code: String
-    }],
+
     template: { type: String },
     dynForm: String,
+
     caFamily: { type: String, uppercase: true },
     subFamily: { type: String, uppercase: true },
     costCenter: { type: String, uppercase: true },
     subCostCenter: { type: String, uppercase: true },
-    category: String,
-    linker_category: String,
-    weight: { type: Number, default: 0 }, // Poids en kg
-    minQty: Number,
-    stock: {
+
+    units: { type: String, default: "unit" },
+
+    size: {
+        length: { type: Number, default: 0 },
+        width: { type: Number, default: 0 },
+        height: { type: Number, default: 0 },
+        dimension: { type: String, default: 'cm' },
+        weight: { type: Number, default: 0 } // Poids en kg
+    },
+
+    // TODO Remove old model stock
+    /*stock: {
         zone: String,
         driveway: String, //allee
         rack: Number, // column
         floor: Number // etage
-    },
-    autoBarCode: { type: Boolean, default: true },
-    barCode: { type: String, index: true, uppercase: true, sparse: true },
-    aclCode: { type: String, uppercase: true },
+    },*/
+
     suppliers: [supplierPriceSchema],
+
     /******** VAD Method **************/
     directCost: { type: Number, default: 0 }, //Total MP
     indirectCost: { type: Number, default: 0 }, //Total Effort
-    totalCost: { type: Number, default: 0 }, //Total MP + Effort
     /**********************************/
 
-    optional: Schema.Types.Mixed,
-    linker: { type: String, unique: true, set: setLink }, // SEO URL
-    attributes: [{
-        key: { type: String },
-        value: { type: String },
-        css: { type: String }
-    }],
-    pack: [{
-        id: { type: Schema.Types.ObjectId, ref: 'product' },
-        qty: { type: Number, default: 0 }
-    }],
-    search: [String]
+    optional: Schema.Types.Mixed // TODO Remove ?
+
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
@@ -419,82 +466,65 @@ productSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
 
-    self.name = self.ref;
+    this.name = this.info.lang[0].name;
 
-    if (this.isNew)
-        this.history = [];
+    /* if (this.category) {
+         var category = prepare_subcategories(this.category);
+         this.category = category.name;
+         this.linker_category = category.linker;
+     }*/
 
-    if (this.type !== 'DYNAMIC')
-        this.dynForm = null;
+    if (this.info.autoBarCode == true && this.seq) {
+        this.info.EAN = "";
 
-    // remove old packif change
-    if (this.type !== 'PACK')
-        this.pack = [];
+        //if (this.caFamily)
+        //    this.info.barCode += this.caFamily.substr(0, 2);
 
-    if (!this.linker)
-        this.linker = this.ref.replace(/ /g, "-").toLowerCase();
-    else
-        this.linker = this.linker.replace(/ /g, "-");
-
-    if (this.category) {
-        var category = prepare_subcategories(this.category);
-        this.category = category.name;
-        this.linker_category = category.linker;
+        this.info.EAN += this.seq;
     }
 
-    if (this.autoBarCode == true && this.seq) {
-        this.barCode = "";
-
-        if (this.caFamily)
-            this.barCode += this.caFamily.substr(0, 2);
-
-        this.barCode += this.seq;
-    }
-
-    var search = (this.name + ' ' + this.category);
-    this.attributes.forEach(function(elem) {
+    var search = (this.info.lang[0].name + ' ' + this.info.lang[0].decription);
+    /*this.attributes.forEach(function(elem) {
         search += ' ' + elem.value;
-    });
+    });*/
 
     this.search = search.keywords(true, true);
 
-    if (this.isModified('suppliers')) { // a buy price changed
-        if (this.suppliers.length)
-            this.directCost = this.suppliers[0].prices.pu_ht;
-
-        this.totalCost = this.directCost + this.indirectCost;
-    }
-
-    if (this.type == 'PACK') {
+    if (this.isBundle) {
         this.directCost = 0;
         for (var i = 0; i < this.pack.length; i++)
-            if (this.pack[i].id && this.pack[i].id.totalCost)
-                this.directCost += this.pack[i].id.totalCost * this.pack[i].qty;
-
-        this.totalCost = this.directCost + this.indirectCost;
+            if (this.pack[i].id && this.pack[i].id.directCost)
+                this.directCost += this.pack[i].id.directCost * this.pack[i].qty;
     }
 
-    if (!this.isNew && this.isModified('totalCost')) // Emit to all that a product change totalCost
-        F.functions.EE.emit('product', { type: 'updateCost', data: { _id: this._id } });
+    if (!this.isNew && this.isModified('directCost')) // Emit to all that a product change totalCost
+        setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
+        F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: self._id } });
+    }, 500);
+
+    //Emit product update
+    setTimeout2('product:' + this._id.toString(), function() {
+        F.functions.PubSub.emit('product:update', { data: { _id: self._id } });
+    }, 1000);
 
 
     if (this.isNew || !this.seq) {
-        if (!this.body)
-            this.body = this.description;
+        //if (!this.body)
+        //    this.body = this.description;
 
-        SeqModel.incNumber("P", 7, function(seq) {
+        return SeqModel.incNumber("P", 7, function(seq) {
             self.seq = seq;
 
-            if (self.autoBarCode == true) {
-                self.barCode = "";
+            if (self.info.autoBarCode == true) {
+                self.info.EAN = "";
 
-                if (self.caFamily)
-                    self.barCode += self.caFamily.substr(0, 2);
+                //if (self.caFamily)
+                //    self.info.barCode += self.caFamily.substr(0, 2);
 
-                self.barCode += seq;
+                self.info.EAN += seq;
             }
 
-            next();
+            return next();
         });
     } else
         next();
@@ -509,7 +539,7 @@ Dict.dict({ dictName: ['fk_product_status', 'fk_units'], object: true }, functio
     dict = doc;
 });
 
-productSchema.virtual('zone')
+/*productSchema.virtual('zone')
     .get(function() {
         var zone = "";
 
@@ -540,6 +570,11 @@ productSchema.virtual('zone')
         zone += "/" + this.stock.floor;
 
         return zone;
+    });*/
+
+productSchema.virtual('totalCost')
+    .get(function() {
+        return this.directCost + this.indirectCost;
     });
 
 productSchema.virtual('eshopIsNew')
@@ -563,7 +598,7 @@ productSchema.virtual('total_pack') // Set Total price for a pack
         return total;
     });
 
-productSchema.virtual('color') // Get default color in attributs
+/*productSchema.virtual('color') // Get default color in attributs
     .get(function() {
         var color = {};
 
@@ -578,7 +613,7 @@ productSchema.virtual('color') // Get default color in attributs
         }
 
         return color;
-    });
+    });*/
 
 /*productSchema.method('linker_category', function (cb) {
  var self = this;
@@ -591,14 +626,14 @@ productSchema.virtual('color') // Get default color in attributs
  });*/
 
 
-productSchema.virtual('pricesDetails')
+/*productSchema.virtual('pricesDetails')
     .get(function() {
         var Pricebreak = INCLUDE('pricebreak');
 
         Pricebreak.set(this.prices.pu_ht, this.prices.pricesQty);
 
         return Pricebreak.humanize(true, 3);
-    });
+    });*/
 
 productSchema.virtual('status')
     .get(function() {
@@ -661,17 +696,16 @@ function prepare_subcategories(name) {
 
 
 F.on('load', function() {
-    // On refresh emit product
-
-    F.functions.EE.on('product', function(data) {
+    // Refresh pack prices from directCost
+    F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
         //console.log(data);
-        console.log("Update emit product");
+        console.log("Update emit product", data);
 
-        switch (data.type) {
-            case 'updateCost':
+        switch (channel) {
+            case 'product:updateDirectCost':
                 if (data.data._id)
                     exports.Schema.find({ 'pack.id': data.data._id })
-                    .populate("pack.id", "ref name label totalCost")
+                    .populate("pack.id", "info directCost indirectCost")
                     .exec(function(err, products) {
                         products.forEach(function(product) {
                             product.save(function(err, doc) {

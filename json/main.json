@@ -1,8 +1,6 @@
 {
     "_id": "module:User",
     "enabled": true,
-    "boxes": [],
-    "const": [],
     "rights": {
         "user": [{
                 "desc": "Consulter les autres utilisateurs",
@@ -135,15 +133,12 @@
             }
         ]
     },
-    "module_parts": [],
     "family": "base",
     "name": "User",
     "description": "Gestion des utilisateurs (requis)",
     "always_enabled": 1,
-    "version": "speedealing",
+    "version": "tomanage",
     "picto": "group",
-    "depends": [],
-    "requiredby": [],
     "rights_admin_allowed": 1,
     "menus": {
         "menu:parameters": {
@@ -156,7 +151,7 @@
             "icon": "fa-cogs",
             "submenus": {
                 "menu:modules": {
-                    "position": 2,
+                    "position": 3,
                     "enabled": "$user->admin",
                     "url": "",
                     "perms": "admin",
@@ -164,8 +159,17 @@
                     "usertype": 2,
                     "title": "admin:Modules"
                 },
+                "settings.general": {
+                    "position": 1,
+                    "enabled": "$user->admin",
+                    "url": "/erp/#!/settings/general",
+                    "perms": "admin",
+                    "icon": "fa-cog",
+                    "usertype": 2,
+                    "title": "admin:General"
+                },
                 "menu:systemtools": {
-                    "position": 2,
+                    "position": 10,
                     "usertype": 2,
                     "enabled": "$user->admin",
                     "title": "admin:SystemTools",
