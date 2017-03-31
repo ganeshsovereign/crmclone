@@ -417,6 +417,7 @@ function convert(type) {
             var ProductModel = MODEL('product').Schema;
             var PriceListModel = MODEL('priceList').Schema;
             var ProductPricesModel = MODEL('productPrices').Schema;
+
             mongoose.connection.db.collection('Product', function(err, collection) {
                 collection.find({}, function(err, docs) {
                     if (err)
@@ -430,11 +431,18 @@ function convert(type) {
                         if (!doc)
                             return;
 
+
+                        //ProductModel.update({ _id: doc._id }, { $set: { "info.langs": doc.info.lang } }, { multi: false, upsert: false }, function(err, doc) {
+                        //    console.log(doc);
+                        //});
+
+                        //return;
+
                         if (doc.info && doc.info.SKU)
                             return self.plain("Already converted product...");
 
                         ProductModel.findOne({ _id: doc._id }, function(err, product) {
-                            product.info.lang = [{
+                            product.info.langs = [{
                                 lang: "fr",
                                 name: doc.label,
                                 shortDescription: doc.description,

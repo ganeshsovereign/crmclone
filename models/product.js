@@ -44,6 +44,7 @@ var supplierPriceSchema = new Schema({
 
 
 var LangSchema = new Schema({
+    _id: false,
     lang: { type: String, default: "fr" },
     description: { type: String, default: '' },
     shortDescription: { type: String, default: '' },
@@ -466,8 +467,8 @@ productSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
 
-    if (this.info && this.info.lang && this.info.lang.length)
-        this.name = this.info.lang[0].name;
+    if (this.info && this.info.langs && this.info.langs.length)
+        this.name = this.info.langs[0].name;
 
     /* if (this.category) {
          var category = prepare_subcategories(this.category);
@@ -484,8 +485,8 @@ productSchema.pre('save', function(next) {
         this.info.EAN += this.seq;
     }
 
-    if (this.info && this.info.lang && this.info.lang.length) {
-        var search = (this.info.lang[0].name + ' ' + this.info.lang[0].decription);
+    if (this.info && this.info.langs && this.info.langs.length) {
+        var search = (this.info.langs[0].name + ' ' + this.info.langs[0].decription);
         /*this.attributes.forEach(function(elem) {
             search += ' ' + elem.value;
         });*/
