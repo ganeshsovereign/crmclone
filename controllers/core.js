@@ -656,6 +656,7 @@ function convert(type) {
             break;
         case 'commercial_id':
             var BillModel = MODEL('bill').Schema;
+            var SocieteModel = MODEL('societe').Schema;
             var UserModel = MODEL('hr').Schema;
             var OfferModel = MODEL('offer').Schema;
             var OrderModel = MODEL('order').Schema;
@@ -664,37 +665,63 @@ function convert(type) {
             var DeliveryModel = MODEL('delivery').Schema;
             var ObjectId = MODULE('utils').ObjectId;
 
-            var Model = [BillModel, OfferModel, OrderModel, DeliveryModel, OrderSupplierModel, BillSupplierModel];
+            var Model = [SocieteModel, BillModel, OfferModel, OrderModel, DeliveryModel, OrderSupplierModel, BillSupplierModel];
+            var Collections = ['Societe', 'Facture', 'Commande', 'Offer', 'OrderSupplier', 'BillSupplier', 'Delivery'];
 
-            Model.forEach(function(model) {
-                model.find({ "commercial_id.id": { $type: 2 } }, function(err, docs) {
-                    if (err)
-                        return console.log(err);
+            Collections.forEach(function(model) {
+                mongoose.connection.db.collection(model, function(err, collection) {
+                    collection.find({ "commercial_id.id": { $type: 2 } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+                        //console.log(docs);
 
-                    docs.forEach(function(doc) {
-                        if (doc.commercial_id.id.toString().length == 24)
-                            return doc.update({ $set: { 'commercial_id.id': ObjectId(doc.commercial_id.id) } }, function(err, doc) {
-                                console.log(doc);
-                                if (err)
-                                    console.log(err);
-                            });
-                        //console.log(doc.commercial_id.id.substr(0, 5));
-                        if (doc.commercial_id.id.substr(0, 5) == 'user:') //Not an automatic code
-                            UserModel.findOne({ username: doc.commercial_id.id.substr(5) }, "_id lastname", function(err, user) {
+                        docs.forEach(function(doc) {
+                            console.log(doc.commercial_id);
+                            if (!doc.commercial_id.id)
+                                return;
 
-                            //console.log(user);
-                            //return;
+                            /*  if (doc.commercial_id.id.toString().length == 24)
+                                  return doc.update({ $set: { 'commercial_id.id': ObjectId(doc.commercial_id.id) } }, function(err, doc) {
+                                      console.log(doc);
+                                      if (err)
+                                          console.log(err);
+                                  });*/
+                            //console.log(doc.commercial_id.id.substr(0, 5));
+                            if (doc.commercial_id.id.substr(0, 5) == 'user:') //Not an automatic code
+                                UserModel.findOne({ username: doc.commercial_id.id.substr(5) }, "_id lastname firstname", function(err, user) {
 
-                            doc.commercial_id.id = user._id;
-                            doc.save(function(err, doc) {
-                                if (err)
-                                    console.log(err);
+                                //console.log(user);
+                                //return;
+
+                                collection.update({ _id: doc._id }, { $set: { 'commercial_id.id': user._id, 'commercial_id.name': user.fullname } }, function(err, doc) {
+                                    if (err)
+                                        console.log(err);
+                                });
                             });
                         });
                     });
                 });
             });
             return self.plain("Type is commercial_id");
+            break;
+        case 'bill_reset_commercial':
+            var BillModel = MODEL('bill').Schema;
+
+            BillModel.find({})
+                .populate("client.id", "_id name commercial_id")
+                .exec(function(err, docs) {
+                    docs.forEach(function(elem) {
+                        //console.log(elem);
+
+                        elem.update({ $set: { commercial_id: elem.client.id.commercial_id } }, { w: 1 }, function(err, doc) {
+                            if (err)
+                                console.log(err);
+
+                            //console.log(doc);
+                        });
+                    });
+                });
+            return self.plain("Type is bill_reset_commercial_id");
             break;
     }
 
