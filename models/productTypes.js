@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var productTypesSchema = new Schema({
+    code: String,
     langs: [{
         _id: false,
         lang: { type: String, default: "fr" },

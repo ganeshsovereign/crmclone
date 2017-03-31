@@ -114,12 +114,6 @@ var productSchema = new Schema({
         brand: { type: Schema.Types.ObjectId, ref: 'Brand', default: null },
         categories: [{ type: Schema.Types.ObjectId, ref: 'productCategory' }],
 
-
-        attributes: [{
-            key: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
-            value: { type: String, default: "" }
-        }],
-
         notePrivate: { type: String },
 
         /* PIM transaltion */
@@ -133,7 +127,11 @@ var productSchema = new Schema({
         minStockLevel: { type: Number, default: 0 }
     },
 
-    variants: [{ type: Schema.Types.ObjectId, ref: 'ProductOptionsValues' }],
+    variants: [{ type: Schema.Types.ObjectId, ref: 'productOptionsValues' }],
+    attributes: [{
+        attribute: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
+        value: { type: String, default: null }
+    }],
 
     //bundles
     pack: [{
