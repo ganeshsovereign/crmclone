@@ -122,7 +122,7 @@ var productSchema = new Schema({
         notePrivate: { type: String },
 
         /* PIM transaltion */
-        lang: [LangSchema]
+        langs: [LangSchema]
             /* need to Add  alt des images TODO */
 
     },

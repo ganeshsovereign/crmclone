@@ -7,7 +7,11 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ProductAttributesSchema = new Schema({
-    name: String,
+    code: String,
+    langs: [{
+        lang: { type: String, default: "fr" },
+        name: String
+    }],
     createdAt: { type: Date, default: Date.now }
 });
 
