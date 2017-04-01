@@ -29,6 +29,7 @@
     "Service": "Service",
     "ProductId": "Id produit/service",
     "Cross-Sell": "Vente croisée",
+    "Up-Sell": "Vente incitative",
     "Create": "Create",
     "GridPrice": "Grille de tarifs",
     "Reference": "Référence",

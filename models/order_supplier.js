@@ -74,6 +74,7 @@ var orderSupplierSchema = new Schema({
     },
     entity: { type: String },
     bl: [{
+        _id: false,
         societe: {
             id: { type: Schema.Types.ObjectId, ref: 'societe' },
             name: String

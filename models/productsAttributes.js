@@ -9,9 +9,24 @@ var mongoose = require('mongoose'),
 var ProductAttributesSchema = new Schema({
     code: String,
     langs: [{
+        _id: false,
         lang: { type: String, default: "fr" },
         name: String
     }],
+    allowedExtension: [String], //png,pdf,...
+    dateMin: Date,
+    dateMin: Date,
+    decimalsAllowed: { type: Number, default: 0 },
+    metricUnit: String, //See dict.units
+    group: { type: Schema.Types.ObjectId, ref: 'groupAttribues', default: null },
+    maxCharacters: Number,
+    minCharacters: Number,
+    negativeAllowed: Boolean,
+    maxNumber: Number,
+    minNumber: Number,
+    sort: Number,
+    mode: { type: String, enum: ['text', 'number', 'metric', 'textarea', 'boolean', 'simpleselect', 'multiselect', 'date', 'file', 'image'] },
+    wysiwyg: Boolean,
     createdAt: { type: Date, default: Date.now }
 });
 
