@@ -1,13 +1,22 @@
-@media print
-{
-    body {zoom : 80%}
-    .portlet { border: none !important;}
-    .portlet.box > .portlet-body { padding: 0 0;}
+@media print {
+    body {
+        zoom: 80%
+    }
+    .portlet {
+        border: none !important;
+    }
+    .portlet.box>.portlet-body {
+        padding: 0 0;
+    }
     /*background-color: inherit;}*/
-    .table td, .table th {-webkit-print-color-adjust:exact;}
+    .table td,
+    .table th {
+        -webkit-print-color-adjust: exact;
+    }
 }
 
-.page-header.navbar.navbar-fixed-top, .page-header.navbar.navbar-static-top{
+.page-header.navbar.navbar-fixed-top,
+.page-header.navbar.navbar-static-top {
     z-index: 1039;
 }
 
@@ -15,12 +24,15 @@
     background-color: #44b6ae!important
 }
 
+
 /* ng-grid */
+
 .gridStyle {
     border: 1px solid #cccccc;
     /*width: 800px; */
     height: 250px;
 }
+
 .ngHeaderCell {
     background: transparent;
 }
@@ -37,7 +49,7 @@ table.info-table {
     width: 100%
 }
 
-.info-table > tbody > tr > th {
+.info-table>tbody>tr>th {
     padding: 4px 10px;
     color: black;
     vertical-align: top;
@@ -52,7 +64,7 @@ table.info-table {
     text-align: -webkit-right;
 }
 
-.info-table > tbody > tr > td {
+.info-table>tbody>tr>td {
     padding: 4px 10px;
     color: #666666;
     font-style: italic;
@@ -94,7 +106,7 @@ ul.nav-tabs,
 ul.nav-pills {
     margin-bottom: 0;
     margin-top: 5px;
-    border-bottom:0;
+    border-bottom: 0;
 }
 
 .nav-tabs>li>a,
@@ -135,7 +147,9 @@ ul.nav-pills {
     margin-right: -10px;
 }
 
+
 /*Fix modal check*/
+
 .modal-body .checkbox>label,
 .modal-body .form-horizontal .checkbox>label {
     padding-left: 20px;
@@ -156,7 +170,10 @@ address pre {
     font-family: inherit;
 }
 
+
 /* radio button see contact create soncas*/
+
+
 /*.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox],*/
 
 .radio input[type=radio],
@@ -164,15 +181,19 @@ address pre {
     margin-left: -10px;
 }
 
+
 /* typeahead scroll */
+
 .typeahead .dropdown-menu,
 .editable-text .dropdown-menu {
-    max-height: 200px; 
-    overflow-y: auto; 
-    overflow-x: hidden; 
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
+
 /* full with bootstrap */
+
 .editable-wrap {
     width: 100%;
 }
@@ -187,7 +208,9 @@ pre {
     border: 0px;
 }
 
+
 /* vertical checkbox in editable */
+
 .editable-checklist label {
     display: block;
 }
@@ -206,7 +229,7 @@ hr {
     height: 18px;
 }
 
-.table-advance tr td.highlight:first-child span{
+.table-advance tr td.highlight:first-child span {
     margin-left: 15px;
 }
 
@@ -242,8 +265,8 @@ table.table-bordered.dataTable tbody td {
 }
 
 .mt-element-step .step-thin .mt-step-number {
-    font-size:18px;
-    padding : 3px 11px;
+    font-size: 18px;
+    padding: 3px 11px;
 }
 
 .page-container-bg-solid .page-content {
@@ -254,7 +277,7 @@ table.table-bordered.dataTable tbody td {
     font-size: 18px;
 }
 
-.mt-element-step .step-thin .mt-step-col{
+.mt-element-step .step-thin .mt-step-col {
     padding-top: 5px;
     padding-bottom: 5px;
 }
@@ -263,7 +286,6 @@ table.table-bordered.dataTable tbody td {
     font-size: 16px;
 }
 
-
 .table>.no-padding>tr>td {
     padding: 1px;
 }
@@ -271,6 +293,7 @@ table.table-bordered.dataTable tbody td {
 #toast-container {
     z-index: 10600;
 }
+
 
 /* Angular Tree*/
 
@@ -296,7 +319,7 @@ table.table-bordered.dataTable tbody td {
 }
 
 tr.angular-ui-tree-empty {
-    height:100px
+    height: 100px
 }
 
 .group-title {
@@ -306,6 +329,7 @@ tr.angular-ui-tree-empty {
 
 
 /* --- Tree --- */
+
 .tree-node {
     border: 1px solid #dae2ea;
     background: #f8faff;
@@ -318,6 +342,13 @@ tr.angular-ui-tree-empty {
 .tree-node-content {
     margin: 10px;
 }
+
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    border-bottom: 0;
+}
+
 .tree-handle {
     padding: 10px;
     background: #428bca;
@@ -338,14 +369,15 @@ tr.angular-ui-tree-empty {
     background-color: #ffffff;
 }
 
- .portlet > .portlet-title > .caption {
-      float: left;
-      display: inline-block;
-      font-size: 16px;
-      line-height: 18px;
-      padding: 10px 0; }
- 
- h4 {
+.portlet>.portlet-title>.caption {
+    float: left;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 18px;
+    padding: 10px 0;
+}
+
+h4 {
     font-size: 14px;
 }
 
@@ -363,4 +395,11 @@ tr.angular-ui-tree-empty {
     background: #F3C200;
     border-top-color: transparent;
     color: #fff;
+}
+
+.profile-usermenu ul li.active a {
+    color: #F3C200;
+    background-color: #f6f9fb;
+    border-left: 2px solid #F3C200;
+    margin-left: -2px;
 }
