@@ -356,6 +356,12 @@ hr {
     margin-right: 10px;
 }
 
+.tabbable-line>.nav-tabs>li.open,
+.tabbable-line>.nav-tabs>li:hover {
+    background: 0 0;
+    border-bottom: 4px solid #FFEB9A;
+}
+
 .nav .badge {
     vertical-align: baseline;
     float: right
