@@ -1,17 +1,109 @@
-<ul class="list-unstyled">
-    <li ng-repeat="category in categories" class="item <%=className%> " data-id="<%=product._id%>" data-fullname="<%=product.fullName%>" data-level="<%=product.nestingLevel%>" data-sequence="<%=product.sequence%>">
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <button type="button" class="bootbox-close-button close" ng-click="cancel()" aria-hidden="true">×</button>
+        <h4 class="no-margin-bottom">@(categories:CreateCat) </h4>
+    </div>
+    <form class="modal-body form" ng-submit="ok()">
+        <div class="form-horizontal">
+            <div class="form-body">
+                <div class="form-group">
+                    <label class="col-md-4 control-label">@(categories:Category) : META Title <span class="required">* </span></label>
+                    <div class="col-md-8">
+                        <input required class="form-control" ng-model="category.name" placeholder="@(Name)" type="text">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">@(Url) <span class="required">* </span></label>
+                    <div class="col-md-8">
+                        <input required class="form-control" ng-model="category.url" placeholder="url-name" type="text">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">@(Description) </label>
+                    <div class="col-md-8">
+                        <summernote height="200" ng-model="category.body"></summernote>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">META @(Description)</label>
+                    <div class="col-md-8">
+                        <textarea class="form-control" ng-model="category.description" type="text"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label">@(Enabled): </label>
+                    <div class="col-md-8">
+                        <label class="control-label"><input uniform type="checkbox" ng-model="category.enabled" ng-checked="category.enabled"/> </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
+            <button type="submit" class="btn blue btn-sm">@(Save)</button>
+        </div>
+    </form>
+</script>
 
-        <span class="content <%=selected%>">
-        <span class="text">
-            <span class="_contentValue"><%=product.name%></span>
-        <span class="_contentCount">(<%= product.productsCount%>)</span>
-        </span>
-        <span class="action-btn">
-            <span class="editCategory icon-note" title="Edit"></span>
-        <%if (canDelete) {%>
-            <span class="deleteCategory icon-trash" title="Delete"></span>
-            <%}%>
-                </span>
-                </span>
-    </li>
-</ul>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light bordered" ng-init="init()">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-share-alt font-yellow-crusta"></i>
+                    <span class="caption-subject font-yellow-crusta bold uppercase">@(Categories) @(Ecommerce)</span>
+                </div>
+                <div class="actions">
+                    <div class="btn-group">
+                        <a class="btn btn-circle default" ng-click="addEditCategory(category)"> @(Add) </a>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="btn-group">
+                                <button class="btn" ng-click="expandAll()"><i class="fa fa-plus-square-o"></i> Expand all</button>
+                                <button class="btn" ng-click="collapseAll()"><i class="fa fa-minus-square-o"></i> Collapse all</button>
+                                <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="btn-group pull-right">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nested node template -->
+                <script type="text/ng-template" id="nodes_renderer.html">
+                    <div ui-tree-handle class="tree-node tree-node-content">
+                        <a class="" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-plus-square-o': collapsed,'fa-minus-square-o': !collapsed                    }"></span></a> {{node.name}}
+                        <span style="margin-left: 20px;" class="font-blue">/{{node.linker}}/</span> <small class="h6" ng-show="node.qty">({{node.qty}} @(products:Products))</small>
+
+                        <a class="pull-right btn btn-danger btn-xs" data-nodrag ng-click="removeItem(this)"><span class="fa fa-trash"></span></a>
+                        <a class="pull-right btn btn-primary btn-xs" ng-hide="depth(this) == 5" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;">@(Add) <span class="fa fa-plus"></span></a>
+                        <a class="pull-right btn btn-default btn-xs" data-nodrag ng-click="addEditCategory(this.$modelValue)" style="margin-right: 8px;"><span class="fa fa-pencil"></span></a>
+                        <h6 class="">{{node.description}}</h6>
+                    </div>
+                    <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+                        <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+                        </li>
+                    </ol>
+                </script>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div ui-tree="treeOptions" id="tree-root" data-max-depth="5">
+                            <ol ui-tree-nodes ng-model="categories">
+                                <li ng-repeat="node in categories" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

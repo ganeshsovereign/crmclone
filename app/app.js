@@ -23,8 +23,8 @@ var MetronicApp = angular.module("MetronicApp", [
     'schemaForm',
     'notification',
     'ngHandsontable',
-    'summernote'
-    //   'ui.tree'
+    'summernote',
+    'ui.tree'
 ]);
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
@@ -924,7 +924,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/templates/_product/categories.html",
             data: {
                 pageTitle: 'Categories - Product '
-            }
+            },
+            controller: "CategoryController"
         })
         // declinaisons
         .state("product.show.declinations", {
