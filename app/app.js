@@ -924,7 +924,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/templates/_product/categories.html",
             data: {
                 pageTitle: 'Categories - Product '
-            }
+            },
+            controller: "CategoryController"
         })
         // declinaisons
         .state("product.show.declinations", {
@@ -1517,7 +1518,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Configuration des categories'
             },
-            controller: "SettingProductController"
+            controller: "SettingCategoryController"
         })
         .state('settings.product.categories.create', {
             url: "/create.html",
@@ -1525,7 +1526,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Ajouter une categorie'
             },
-            controller: "SettingProductController"
+            controller: "SettingCategoryController"
         })
         .state('settings.product.categories.show', {
             url: "/{id:[0-9a-z]{24}}",
@@ -1533,7 +1534,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Editer une categories'
             },
-            controller: "SettingProductController"
+            controller: "SettingCategoryController"
         })
         // prices configuration
         .state('settings.product.pricelists', {

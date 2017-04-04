@@ -44,6 +44,7 @@ var supplierPriceSchema = new Schema({
 
 
 var LangSchema = new Schema({
+    _id: false,
     lang: { type: String, default: "fr" },
     description: { type: String, default: '' },
     shortDescription: { type: String, default: '' },
@@ -113,16 +114,10 @@ var productSchema = new Schema({
         brand: { type: Schema.Types.ObjectId, ref: 'Brand', default: null },
         categories: [{ type: Schema.Types.ObjectId, ref: 'productCategory' }],
 
-
-        attributes: [{
-            key: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
-            value: { type: String, default: "" }
-        }],
-
         notePrivate: { type: String },
 
         /* PIM transaltion */
-        lang: [LangSchema]
+        langs: [LangSchema]
             /* need to Add  alt des images TODO */
 
     },
@@ -132,7 +127,11 @@ var productSchema = new Schema({
         minStockLevel: { type: Number, default: 0 }
     },
 
-    variants: [{ type: Schema.Types.ObjectId, ref: 'ProductOptionsValues' }],
+    variants: [{ type: Schema.Types.ObjectId, ref: 'productOptionsValues' }],
+    attributes: [{
+        attribute: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
+        value: { type: String, default: null }
+    }],
 
     //bundles
     pack: [{
@@ -425,7 +424,6 @@ productSchema.statics.findPrice = function(options, fields, callback) {
 
 
 productSchema.methods.getPrice = function(qty, price_level) {
-    console.log("tototototo");
     var Pricebreak = INCLUDE('pricebreak');
     var self = this;
     var d = Q.defer();
@@ -467,7 +465,8 @@ productSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
 
-    this.name = this.info.lang[0].name;
+    if (this.info && this.info.langs && this.info.langs.length)
+        this.name = this.info.langs[0].name;
 
     /* if (this.category) {
          var category = prepare_subcategories(this.category);
@@ -475,7 +474,7 @@ productSchema.pre('save', function(next) {
          this.linker_category = category.linker;
      }*/
 
-    if (this.info.autoBarCode == true && this.seq) {
+    if (this.info && this.info.autoBarCode == true && this.seq) {
         this.info.EAN = "";
 
         //if (this.caFamily)
@@ -484,12 +483,15 @@ productSchema.pre('save', function(next) {
         this.info.EAN += this.seq;
     }
 
-    var search = (this.info.lang[0].name + ' ' + this.info.lang[0].decription);
-    /*this.attributes.forEach(function(elem) {
-        search += ' ' + elem.value;
-    });*/
+    if (this.info && this.info.langs && this.info.langs.length) {
+        var search = (this.info.langs[0].name + ' ' + this.info.langs[0].decription);
+        /*this.attributes.forEach(function(elem) {
+            search += ' ' + elem.value;
+        });*/
+        this.search = search.keywords(true, true);
+    }
 
-    this.search = search.keywords(true, true);
+
 
     if (this.isBundle) {
         this.directCost = 0;
@@ -499,7 +501,15 @@ productSchema.pre('save', function(next) {
     }
 
     if (!this.isNew && this.isModified('directCost')) // Emit to all that a product change totalCost
-        F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: this._id } });
+        setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
+        F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: self._id } });
+    }, 500);
+
+    //Emit product update
+    setTimeout2('product:' + this._id.toString(), function() {
+        F.functions.PubSub.emit('product:update', { data: { _id: self._id } });
+    }, 1000);
+
 
     if (this.isNew || !this.seq) {
         //if (!this.body)
@@ -689,7 +699,7 @@ function prepare_subcategories(name) {
 
 
 F.on('load', function() {
-    // On refresh emit product
+    // Refresh pack prices from directCost
     F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
         //console.log(data);
         console.log("Update emit product", data);

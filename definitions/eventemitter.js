@@ -2,7 +2,7 @@
 
 var redis = require('redis-eventemitter');
 var pubsub = redis({
-    prefix: 'production:',
+    prefix: CONFIG('database').split('/').pop() + ':',
     host: '127.0.0.1',
     port: 6379
 });
