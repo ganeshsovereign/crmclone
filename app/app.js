@@ -959,30 +959,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Compositions - Product '
             }
         })
-        // Category
-        .state('category', {
-            url: "/category",
-            abstract: true,
-            templateUrl: "/views/_category/index.html"
-        })
-        .state('category.list', {
-            parent: "category",
-            url: "",
-            templateUrl: "/views/_category/list.html",
-            data: {
-                pageTitle: 'Liste des categories produits / services'
-            },
-            controller: "CategoryController"
-        })
-        .state('category.show', {
-            parent: "category",
-            url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_category/fiche.html",
-            data: {
-                pageTitle: 'Categorie produit / service'
-            },
-            controller: "CategoryController"
-        })
         // Bank/Payment
         .state('bank', {
             url: "/bank",
@@ -1518,23 +1494,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Configuration des categories'
             },
-            controller: "SettingCategoryController"
-        })
-        .state('settings.product.categories.create', {
-            url: "/create.html",
-            templateUrl: "/views/settings/categories/create.html",
-            data: {
-                pageTitle: 'Ajouter une categorie'
-            },
-            controller: "SettingCategoryController"
-        })
-        .state('settings.product.categories.show', {
-            url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/settings/categories/fiche.html",
-            data: {
-                pageTitle: 'Editer une categories'
-            },
-            controller: "SettingCategoryController"
+            controller: "CategoryController"
         })
         // prices configuration
         .state('settings.product.pricelists', {

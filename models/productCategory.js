@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var CategorySchema = new Schema({
-    name: { type: String, required: true, unique: true, default: 'All' }, //Meta Title
+    name: { type: String }, //Meta Title
     fullName: { type: String, default: 'All' },
     //parent: { type: ObjectId, ref: 'productCategory', default: null },
     // child: [{ type: ObjectId, default: null }],
@@ -21,16 +21,22 @@ var CategorySchema = new Schema({
     createdBy: { type: Schema.Types.ObjectId, ref: 'hr' },
     editedBy: { type: Schema.Types.ObjectId, ref: 'hr' },
 
-
-    description: { type: String, default: "" }, //Meta description
-    body: { type: String, default: "" }, // Description HTML
     enabled: { type: Boolean, default: true },
-    Tag: { type: [], set: MODULE('utils').setTags },
-    entity: String,
-
-    url: { type: String, unique: true, set: MODULE('utils').setLink }, // SEO URL short link
-    linker: { type: String }, // Full Link with tree
+    entity: [String],
     idx: { type: Number, default: 0 }, //order in array for nodes
+
+    langs: [{
+        _id: false,
+        lang: { type: String, default: 'fr' },
+        name: { type: String, default: 'All', unique: true },
+        description: { type: String, default: "" }, //Meta description
+        body: { type: String, default: "" }, // Description HTML
+
+        Tag: { type: [], set: MODULE('utils').setTags },
+
+        url: { type: String, unique: true, set: MODULE('utils').setLink }, // SEO URL short link
+        linker: { type: String } // Full Link with tree        
+    }],
 
     nestingLevel: { type: Number, default: 0 },
     sequence: { type: Number, default: 0 },
@@ -56,14 +62,25 @@ CategorySchema.statics.updateParentsCategory = function(newCategoryId, parentId,
     var ProductCategory = this;
     var id;
     var updateCriterior;
+    var ProductModel = MODEL('product').Schema;
 
-    if (modifier === 'add') {
-        updateCriterior = { $addToSet: { child: newCategoryId } };
-    } else {
-        updateCriterior = { $pull: { child: newCategoryId } };
-    }
+    if (modifier === 'remove')
+        return ProductModel.update({ 'info.categories': newCategoryId }, { $pull: { 'info.categories': newCategoryId } }, { upsert: false, multi: true }, function(err, doc) {
+            if (err)
+                return callback(err);
 
-    ProductCategory.findOneAndUpdate({ _id: parentId }, updateCriterior, function(err, result) {
+            return callback(null);
+        });
+    //    updateCriterior = { $addToSet: { child: newCategoryId } };
+    //} else {
+    //    updateCriterior = { $pull: { child: newCategoryId } };
+    //}
+
+    callback(null);
+
+
+
+    /*ProductCategory.findOneAndUpdate({ _id: parentId }, updateCriterior, function(err, result) {
         if (err)
             return callback(err);
 
@@ -72,7 +89,7 @@ CategorySchema.statics.updateParentsCategory = function(newCategoryId, parentId,
 
         id = result.parent;
         this.updateParentsCategory(newCategoryId, id, modifier, callback);
-    });
+    });*/
 };
 
 CategorySchema.statics.updateNestingLevel = function(id, nestingLevel, callback) {
@@ -173,21 +190,40 @@ CategorySchema.statics.updateFullName = function(id, cb) {
     var Model = this;
     var fullName;
     var parrentFullName;
+    var path;
 
     Model
         .findById(id)
         .populate('parent')
         .exec(function(err, category) {
             parrentFullName = category && category.parent ? category.parent.fullName : null;
-
             if (parrentFullName)
-                fullName = parrentFullName + ' / ' + category.name;
+                fullName = parrentFullName + ' / ' + category.langs[0].name;
             else
-                fullName = category.name;
+                fullName = category.langs[0].name;
 
+            path = (category && category.parent ? category.parent.path + "#" : "") + category._id.toString();
+
+            var previousUrl = category.langs[0].linker;
+            category.langs[0].linker = (category && category.parent ? category.parent.langs[0].linker + "/" : "") + category.langs[0].url;
+
+
+            // When the parent is changed we must rewrite all children paths as well
+            if (previousUrl)
+                return Model.find({ 'langs.linker': { '$regex': '^' + previousUrl + '[/]' } }, function(err, docs) {
+                    if (err)
+                        return cb(err);
+
+                    async.each(docs, function(doc, done) {
+                        var newUrl = category.langs[0].linker + doc.langs[0].linker.substr(previousUrl.length);
+                        Model.update({ _id: doc._id }, { $set: { 'langs.0.linker': newUrl } }, done);
+                    }, function() {
+                        Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
+                    });
+                });
 
             if (!err)
-                Model.findByIdAndUpdate(id, { $set: { fullName: fullName } }, { new: true }, cb);
+                Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
 
         });
 };
@@ -239,6 +275,15 @@ CategorySchema.statics.removeAllChild = function(id, callback) {
         });
     });
 };
+
+CategorySchema.pre('save', function(next) {
+    var self = this;
+
+    if (self.langs[0])
+        self.name = self.langs[0].name;
+
+    next();
+});
 
 exports.Schema = mongoose.model('productCategory', CategorySchema, 'ProductCategories');
 exports.name = "productCategory";
