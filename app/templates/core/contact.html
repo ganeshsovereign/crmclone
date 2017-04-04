@@ -1,24 +1,22 @@
 <div class="row static-info">
     <div class="col-md-12 value">
         <div class="row static-info">
-            <div class="col-md-2 name">
-                @(Add) : 
-            </div>
-            <div class="col-md-10 value">
-                <!--<a data-ng-href="mailto:\{{contactModel.email}}" target="_blank" editable-email="contactModel.email">{{contactModel.email|| "Non defini"}}</a>-->
-                <div class="input-group input-group-sm">
-                    <select class="form-control" 
-                            id="contacts" 
-                            ng-model="selectedContact" 
-                            ng-options="contact as contact.name for contact in contacts" 
-                            ng-change="addContact()"
-                            >                                    
+            <div class="form-group form-md-line-input">
+                <div class="col-md-2 name">
+                    @(Add) :
+                </div>
+                <div class="col-md-10 value">
+                    <!--<a data-ng-href="mailto:\{{contactModel.email}}" target="_blank" editable-email="contactModel.email">{{contactModel.email|| "Non defini"}}</a>-->
+                    <div class="input-group input-group-sm">
+
+                        <select class="form-control" id="contacts" ng-model="selectedContact" ng-options="contact as contact.name for contact in contacts" ng-change="addContact()">                                    
                     </select>
 
-                    <span class="input-group-btn">
-                        <button class="btn blue" type="button" ng-click="addNewContact()"><i class="fa fa-plus"></i>
+                        <span class="input-group-btn">
+                        <button class="btn btn-circle btn-outline uppercase green" type="button" ng-click="addNewContact()"><i class="fa fa-plus"></i>
                             @(Create)</button>
                     </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -39,7 +37,7 @@
                         <td><a href="mailto:{{contact.email}}" target="_blank">{{contact.email}}</a></td>
                         <td>
                             <a href="javascript:;" ng-click="deleteContact($index)" class="btn btn-outline btn-circle dark btn-sm red">
-                                                            <i class="fa fa-trash-o"></i> </a>
+                                <i class="fa fa-trash-o"></i> </a>
                         </td>
                     </tr>
                 </tbody>
