@@ -23,8 +23,8 @@ var MetronicApp = angular.module("MetronicApp", [
     'schemaForm',
     'notification',
     'ngHandsontable',
-    'summernote'
-    //   'ui.tree'
+    'summernote',
+    'ui.tree'
 ]);
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
@@ -924,7 +924,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/templates/_product/categories.html",
             data: {
                 pageTitle: 'Categories - Product '
-            }
+            },
+            controller: "CategoryController"
         })
         // declinaisons
         .state("product.show.declinations", {
@@ -957,30 +958,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Compositions - Product '
             }
-        })
-        // Category
-        .state('category', {
-            url: "/category",
-            abstract: true,
-            templateUrl: "/views/_category/index.html"
-        })
-        .state('category.list', {
-            parent: "category",
-            url: "",
-            templateUrl: "/views/_category/list.html",
-            data: {
-                pageTitle: 'Liste des categories produits / services'
-            },
-            controller: "CategoryController"
-        })
-        .state('category.show', {
-            parent: "category",
-            url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_category/fiche.html",
-            data: {
-                pageTitle: 'Categorie produit / service'
-            },
-            controller: "CategoryController"
         })
         // Bank/Payment
         .state('bank', {
@@ -1535,23 +1512,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Configuration des categories'
             },
-            controller: "SettingCategoryController"
-        })
-        .state('settings.product.categories.create', {
-            url: "/create.html",
-            templateUrl: "/views/settings/categories/create.html",
-            data: {
-                pageTitle: 'Ajouter une categorie'
-            },
-            controller: "SettingCategoryController"
-        })
-        .state('settings.product.categories.show', {
-            url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/settings/categories/fiche.html",
-            data: {
-                pageTitle: 'Editer une categories'
-            },
-            controller: "SettingCategoryController"
+            controller: "CategoryController"
         })
         // prices configuration
         .state('settings.product.pricelists', {

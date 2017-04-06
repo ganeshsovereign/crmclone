@@ -193,6 +193,7 @@
     "AlreadyPaid": "Déjà réglé",
     "FilterbyStatus": "Filtrer par état",
     "FilterbyEntity": "Filtrer par entité",
+    "FilterbyFamily": "Filtrer par famille",
     "AlreadyPaidNoCreditNotesNoDeposits": "Déjà réglé (hors avoirs et acomptes)",
     "Abandoned": "Abandonné",
     "RemainderToPay": "Reste à payer",

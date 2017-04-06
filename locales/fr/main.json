@@ -727,7 +727,7 @@
     "FieldsWithAreMandatory": "Les champs marqués par un <b>%s</b> sont obligatoires",
     "FieldsWithIsForPublic": "Les champs marqués par <b>%s</b> seront affichés sur la liste publique des membres. Si vous ne le souhaitez pas, décochez la case \"public\".",
     "AccordingToGeoIPDatabase": "(obtenu par conversion GeoIP)",
-    "Line": "Ligne",
+    "Lines": "Ligne(s)",
     "NotSupported": "Non supporté",
     "RequiredField": "Champ obligatoire",
     "Result": "Résultat",
