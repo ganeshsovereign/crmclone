@@ -455,7 +455,8 @@ function convert(type) {
                             product.info.SKU = doc.ref;
                             product.info.isActive = doc.enabled;
 
-                            product.size.weight = doc.weight;
+                            //product.size.weight = doc.weight; 
+                            //TODO MOVE WEIGHT TO ATTRIBUTES
 
                             product.info.EAN = doc.barCode;
                             product.info.aclCode = doc.aclCode;
@@ -921,6 +922,15 @@ function convert(type) {
             return self.plain("Type is bill_reset_commercial_id");
             break;
     }
+
+    /**
+     * TODO schema conversion 5/04/2017
+     * Schema company
+     * commercial_id.id -> commercial_id
+     * cptBilling.id -> cptBilling
+     */
+
+
 
     return self.plain("Type is unknown");
 }

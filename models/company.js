@@ -77,7 +77,7 @@ addressSchema.virtual('status')
  * Societe Schema
  */
 var societeSchema = new Schema({
-    ref: String,
+    //ref: String, // TODO REMOVE
     isremoved: Boolean,
     name: { type: String, require: true, trim: true, uppercase: true },
     logo: String,
@@ -104,8 +104,8 @@ var societeSchema = new Schema({
     importExport: String, // null (no internal country), EUROP (Import/Export in EUROPE), INTER (Import/Export international)
     VATIsUsed: { type: Boolean, default: true },
     forme_juridique_code: String,
-    commercial_id: { id: Schema.Types.ObjectId, name: String },
-    cptBilling: { id: { type: Schema.Types.ObjectId, ref: 'societe' }, name: String },
+    commercial_id: { type: Schema.Types.ObjectId, ref: 'hr' },
+    cptBilling: { type: Schema.Types.ObjectId, ref: 'societe' },
     price_level: { type: String, default: 'BASE', uppercase: true, trim: true },
     prospectlevel: { type: String, default: 'PL_NONE' },
     brand: [String],
@@ -121,7 +121,7 @@ var societeSchema = new Schema({
     Tag: { type: [], set: MODULE('utils').setTags },
     segmentation: { label: String, group: String, id: String }, // Segmentation label
     caFamily: { type: String, uppercase: true }, // Enseigne
-    familyProduct: { type: [], set: MODULE('utils').setTags },
+    familyProduct: { type: [], set: MODULE('utils').setTags }, // ??????
     notes: [{
         author: {
             id: { type: String, ref: 'User' },
@@ -138,10 +138,10 @@ var societeSchema = new Schema({
     user_modif: String,
     remise_client: Number,
     entity: { type: String, trim: true },
-    fournisseur: { type: String, default: 'NO' },
+    fournisseur: { type: String, default: 'NO', enum: ["SUPPLIER", "NO", "SUBCONTRACTOR"] },
     gps: [Number],
-    contractID: String,
-    UGAP_Ref_Client: String,
+    //contractID: String,
+    //UGAP_Ref_Client: String,
     datec: { type: Date, default: Date.now },
     idprof1: String, // SIREN
     idprof2: { type: String }, // SIRET

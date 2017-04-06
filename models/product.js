@@ -196,13 +196,14 @@ var productSchema = new Schema({
 
     units: { type: String, default: "unit" },
 
-    size: {
+    /*size: {
         length: { type: Number, default: 0 },
         width: { type: Number, default: 0 },
         height: { type: Number, default: 0 },
         dimension: { type: String, default: 'cm' },
-        weight: { type: Number, default: 0 } // Poids en kg
-    },
+        
+    },MOVE TO ATTRIBUTES */
+    weight: { type: Number, default: 0 }, // Poids en kg
 
     // TODO Remove old model stock
     /*stock: {

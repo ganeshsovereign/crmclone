@@ -79,45 +79,6 @@ Dict.dict({ dictName: "fk_segmentation" }, function(err, docs) {
     }
 });
 
-var tab_attractivity = {
-    effectif_id: {
-        "EF0": 1,
-        "EF1-5": 1,
-        "EF6-10": 1,
-        "EF11-50": 1,
-        "EF51-100": 1,
-        "EF101-250": 2,
-        "EF251-500": 2,
-        "EF501-1000": 3,
-        "EF1001-5000": 5,
-        "EF5000+": 5
-    },
-    typent_id: {
-        //"TE_PUBLIC": 3,
-        "TE_ETABL": 3,
-        "TE_SIEGE": 5
-    },
-    familyProduct: {
-        "Externalisation": 5,
-        "Imp Num": 4,
-        "Repro/plan": 2,
-        "Signalétique": 5,
-        "Numérisation": 5,
-        "Créa, Pao": 2,
-        "Dupli cd/dvd": 4
-    },
-    segmentation: segmentationList,
-    poste: {
-        "PDG": 5,
-        "DG": 4,
-        "DET": 4,
-        "DIR IMMO": 4,
-        "DirCO": 2,
-        "Dir COM": 3,
-        "DirMktg": 3
-    }
-};
-
 var contactStatusList = {};
 Dict.dict({ dictName: "fk_user_status", object: true }, function(err, doc) {
     if (err) {
@@ -126,50 +87,6 @@ Dict.dict({ dictName: "fk_user_status", object: true }, function(err, doc) {
     }
     contactStatusList = doc;
 });
-
-/*contactSchema.virtual('status')
-        .get(function () {
-            var res_status = {};
-
-            var status = this.Status;
-
-            if (status && contactStatusList.values[status] && contactStatusList.values[status].label) {
-                //console.log(this);
-                res_status.id = status;
-                //this.status.name = i18n.t("intervention." + statusList.values[status].label);
-                res_status.name = contactStatusList.values[status].label;
-                res_status.css = contactStatusList.values[status].cssClass;
-            } else { // By default
-                res_status.id = status;
-                res_status.name = status;
-                res_status.css = "";
-            }
-            return res_status;
-
-        });*/
-
-/*contactSchema.virtual('attractivity')
-        .get(function () {
-            var attractivity = 0;
-
-            for (var i in tab_attractivity) {
-                if (this[i]) {
-                    if (tab_attractivity[i][this[i].text])
-                        attractivity += tab_attractivity[i][this[i].text];
-
-                    else if (tab_attractivity[i][this[i]])
-                        attractivity += tab_attractivity[i][this[i]];
-                }
-            }
-
-            return attractivity;
-        });
-
-contactSchema.virtual('fullAddress').get(function () {
-
-    return this.address + ', ' + this.zip + ' ' + this.town;
-
-});*/
 
 exports.Schema = mongoose.model('contact', contactSchema);
 exports.name = 'contact';
