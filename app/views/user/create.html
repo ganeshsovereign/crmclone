@@ -10,7 +10,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="user.list" >@(users:ListOfUsers)</a>
+            <a ui-sref="user.list">@(users:ListOfUsers)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
@@ -89,7 +89,7 @@
                                     <div crm-address mode="create" model="user"></div>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group" ng-class="{'has-error':!validEmail, 'has-success': validEmail}">
                                 <label class="col-md-4 control-label">@(Email)</label>
                                 <div class="col-md-4">
@@ -104,14 +104,14 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(users:Phone)</label>
                                 <div class="col-md-4">
-                                    <input class="form-control" required ng-model="user.phone" placeholder="@(users:Phone)" type="text" e-title="+xxxxxxxxxxx">
+                                    <input class="form-control" ng-model="user.phone" placeholder="@(users:Phone)" type="text" e-title="+xxxxxxxxxxx">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(users:TelMobile)</label>
                                 <div class="col-md-4">
-                                    <input class="form-control" required ng-model="user.mobilePhone" placeholder="@(users:TelMobile)" type="text" e-title="+xxxxxxxxxxx">
+                                    <input class="form-control" ng-model="user.mobilePhone" placeholder="@(users:TelMobile)" type="text" e-title="+xxxxxxxxxxx">
                                 </div>
                             </div>
 
@@ -239,5 +239,5 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 </form>

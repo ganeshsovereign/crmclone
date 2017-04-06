@@ -21,7 +21,6 @@ var CategorySchema = new Schema({
     createdBy: { type: Schema.Types.ObjectId, ref: 'hr' },
     editedBy: { type: Schema.Types.ObjectId, ref: 'hr' },
 
-    enabled: { type: Boolean, default: true },
     entity: [String],
     idx: { type: Number, default: 0 }, //order in array for nodes
 
@@ -29,30 +28,14 @@ var CategorySchema = new Schema({
         _id: false,
         lang: { type: String, default: 'fr' },
         name: { type: String, default: 'All', unique: true },
-        meta: {
-            title: { type: String, default: '' },
-            description: { type: String, default: '' }
-        },
-        body: { type: String, default: "" }, // Description HTML
-
-        Tag: { type: [], set: MODULE('utils').setTags },
-
-        url: { type: String, unique: true, require: true, set: MODULE('utils').setLink }, // SEO URL short link
-        linker: { type: String } // Full Link with tree        
     }],
 
     nestingLevel: { type: Number, default: 0 },
     sequence: { type: Number, default: 0 },
     main: { type: Boolean, default: false },
     removable: { type: Boolean, default: true },
-    integrationId: { type: String, default: '' },
-    taxesAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
-    debitAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
-    creditAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
-    bankExpensesAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
-    otherIncome: { type: ObjectId, ref: 'chartOfAccount', default: null },
-    otherLoss: { type: ObjectId, ref: 'chartOfAccount', default: null }
-});
+    accountsCount: { type: Number, default: 0 }
+}, { collection: 'accountsCategories' });
 
 CategorySchema.plugin(tree, {
     pathSeparator: '#', // Default path separator
@@ -66,19 +49,15 @@ CategorySchema.statics.updateParentsCategory = function(newCategoryId, parentId,
     var ProductCategory = this;
     var id;
     var updateCriterior;
-    var ProductModel = MODEL('product').Schema;
+    var SocieteModel = MODEL('societe').Schema;
 
     if (modifier === 'remove')
-        return ProductModel.update({ 'info.categories': newCategoryId }, { $pull: { 'info.categories': newCategoryId } }, { upsert: false, multi: true }, function(err, doc) {
+        return SocieteModel.update({ 'companyInfo.category': newCategoryId }, { $set: { 'companyInfo.category': parentId } }, { upsert: false, multi: true }, function(err, doc) {
             if (err)
                 return callback(err);
 
             return callback(null);
         });
-    //    updateCriterior = { $addToSet: { child: newCategoryId } };
-    //} else {
-    //    updateCriterior = { $pull: { child: newCategoryId } };
-    //}
 
     callback(null);
 
@@ -97,19 +76,19 @@ CategorySchema.statics.updateParentsCategory = function(newCategoryId, parentId,
 };
 
 CategorySchema.statics.updateNestingLevel = function(id, nestingLevel, callback) {
-    var ProductCategory = this;
+    var Model = this;
 
-    ProductCategory.find({ parent: id }).exec(function(err, result) {
+    Model.find({ parent: id }).exec(function(err, result) {
         var n = 0;
         if (result.length !== 0)
             return result.forEach(function(item) {
                 n++;
 
-                ProductCategory.findByIdAndUpdate(item._id, { nestingLevel: nestingLevel + 1 }, { new: true }, function(err, res) {
+                Model.findByIdAndUpdate(item._id, { nestingLevel: nestingLevel + 1 }, { new: true }, function(err, res) {
                     if (result.length === n)
-                        ProductCategory.updateNestingLevel(res._id, res.nestingLevel + 1, callback);
+                        Model.updateNestingLevel(res._id, res.nestingLevel + 1, callback);
                     else
-                        ProductCategory.updateNestingLevel(res._id, res.nestingLevel + 1);
+                        Model.updateNestingLevel(res._id, res.nestingLevel + 1);
 
                 });
             });
@@ -208,35 +187,17 @@ CategorySchema.statics.updateFullName = function(id, cb) {
 
             path = (category && category.parent ? category.parent.path + "#" : "") + category._id.toString();
 
-            var previousUrl = category.langs[0].linker;
-            category.langs[0].linker = (category && category.parent ? category.parent.langs[0].linker + "/" : "") + category.langs[0].url;
-
-
-            // When the parent is changed we must rewrite all children paths as well
-            if (previousUrl)
-                return Model.find({ 'langs.linker': { '$regex': '^' + previousUrl + '[/]' } }, function(err, docs) {
-                    if (err)
-                        return cb(err);
-
-                    async.each(docs, function(doc, done) {
-                        var newUrl = category.langs[0].linker + doc.langs[0].linker.substr(previousUrl.length);
-                        Model.update({ _id: doc._id }, { $set: { 'langs.0.linker': newUrl } }, done);
-                    }, function() {
-                        Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
-                    });
-                });
-
             if (!err)
-                Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
+                Model.findByIdAndUpdate(id, { $set: { fullName: fullName, path: path } }, { new: true }, cb);
 
         });
 };
 
 CategorySchema.statics.removeAllChild = function(id, callback) {
-    var ProductCategory = this;
-    var Product = MODEL('product').Schema;
+    var Model = this;
+    var Societe = MODEL('societe').Schema;
 
-    ProductCategory.find({
+    Model.find({
         $or: [
             { ancestors: { $elemMatch: { $eq: id } } },
             { _id: id }
@@ -250,7 +211,7 @@ CategorySchema.statics.removeAllChild = function(id, callback) {
         ids = _.pluck(result, '_id');
 
         function deleteCategories(parCb) {
-            ProductCategory.remove({ _id: { $in: ids } }, function(err) {
+            Model.remove({ _id: { $in: ids } }, function(err) {
                 if (err)
                     return parCb(err);
 
@@ -259,8 +220,8 @@ CategorySchema.statics.removeAllChild = function(id, callback) {
             });
         }
 
-        /*function deleteProducts(parCb) {
-            Product.remove({ 'accounting.category._id': { $in: ids } }, function(err) {
+        /*function deleteSocietes(parCb) {
+            Societe.remove({ 'accounting.category._id': { $in: ids } }, function(err) {
                 if (err)
                     return parCb(err);
 
@@ -270,7 +231,7 @@ CategorySchema.statics.removeAllChild = function(id, callback) {
         }*/
 
         async
-        .parallel([deleteCategories, deleteProducts], function(err) {
+        .parallel([deleteCategories, deleteSocietes], function(err) {
             if (err)
                 return callback(err);
 
@@ -289,5 +250,5 @@ CategorySchema.pre('save', function(next) {
     next();
 });
 
-exports.Schema = mongoose.model('productCategory', CategorySchema, 'ProductCategories');
-exports.name = "productCategory";
+exports.Schema = mongoose.model('accountsCategory', CategorySchema);
+exports.name = "accountsCategory";
