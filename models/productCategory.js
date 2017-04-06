@@ -38,7 +38,7 @@ var CategorySchema = new Schema({
         Tag: { type: [], set: MODULE('utils').setTags },
 
         url: { type: String, unique: true, require: true, set: MODULE('utils').setLink }, // SEO URL short link
-        linker: { type: String } // Full Link with tree        
+        linker: { type: String, default: '' } // Full Link with tree        
     }],
 
     nestingLevel: { type: Number, default: 0 },
@@ -208,7 +208,7 @@ CategorySchema.statics.updateFullName = function(id, cb) {
 
             path = (category && category.parent ? category.parent.path + "#" : "") + category._id.toString();
 
-            var previousUrl = category.langs[0].linker;
+            var previousUrl = category.langs[0].linker || category.langs[0].url;
             category.langs[0].linker = (category && category.parent ? category.parent.langs[0].linker + "/" : "") + category.langs[0].url;
 
 
@@ -220,7 +220,7 @@ CategorySchema.statics.updateFullName = function(id, cb) {
 
                     async.each(docs, function(doc, done) {
                         var newUrl = category.langs[0].linker + doc.langs[0].linker.substr(previousUrl.length);
-                        Model.update({ _id: doc._id }, { $set: { 'langs.0.linker': newUrl } }, done);
+                        Model.findByIdAndUpdate(doc._id, { $set: { 'langs.0.linker': newUrl } }, done);
                     }, function() {
                         Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
                     });
