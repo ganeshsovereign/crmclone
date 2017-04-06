@@ -221,7 +221,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
 
         // Return url logo
         $rootScope.getLogo = function(model, data) {
-            if (data.logo)
+            if (data && data.logo)
                 return "/erp/api/file/" + model + "/" + data.logo;
             else
                 return "/assets/admin/layout/img/nophoto.jpg";
@@ -783,6 +783,20 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Fiche societe'
             },
             controller: "SocieteController"
+        })
+        .state('societe.show.info', {
+            url: "/info",
+            templateUrl: "/templates/_company/info.html",
+            data: {
+                pageTitle: 'Fiche societe'
+            }
+        })
+        .state('societe.show.commercial', {
+            url: "/commercial",
+            templateUrl: "/templates/_company/commercial.html",
+            data: {
+                pageTitle: 'Fiche societe'
+            }
         })
         .state('societe.create', {
             parent: "societe",
