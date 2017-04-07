@@ -170,12 +170,12 @@ var customerSchema = new Schema({
     isHidden: { type: Boolean, default: false },
 
     name: {
-        civility: String, // DICT civilite
+        civilite: String, // DICT civilite
         first: { type: String, tirm: true, default: '' },
         last: { type: String, trim: true, uppercase: true, default: 'DEMO' } // Company name
     },
 
-    Status: { type: String, default: 'ST_NEVER' },
+    Status: { type: String, default: 'ST_NEVER' }, // TODO virtual
 
     dateBirth: Date,
 
@@ -200,7 +200,7 @@ var customerSchema = new Schema({
         city: { type: String, default: '' },
         state: { type: String, default: '' },
         zip: { type: String, default: '' },
-        country: { type: String, default: '' }
+        country: { type: String, uppercase: true, default: 'FRANCE' }
     },
 
     shippingAddress: [addressSchema], // list of deliveries address
@@ -226,23 +226,23 @@ var customerSchema = new Schema({
         isSubcontractor: { type: Boolean, default: false }, //fournisseur
         salesPerson: { type: ObjectId, ref: 'Employees', default: null }, //commercial_id
         salesTeam: { type: ObjectId, ref: 'Department', default: null },
-        implementedBy: { type: ObjectId, ref: 'Customers', default: null },
+        implementedBy: { type: ObjectId, ref: 'customers', default: null },
         active: { type: Boolean, default: true },
-        reference: { type: String, trim: true, uppercase: true, sparse: true, default: '' }, //code_client or code_fournisseur
-        language: { type: String, default: 'English' },
+        ref: { type: String, trim: true, uppercase: true, sparse: true, default: '' }, //code_client or code_fournisseur
+        language: { type: String, default: 'fr' },
         receiveMessages: { type: Number, default: 0 },
         cptBilling: { type: Schema.Types.ObjectId, ref: 'customers' },
         priceList: { type: Schema.Types.ObjectId, ref: 'priceList' }, //price_level
-        prospectlevel: { type: String, default: 'PL_NONE' },
+        //prospectlevel: { type: String, default: 'PL_NONE' },
 
         cond_reglement: { type: String, default: 'RECEP' },
         mode_reglement: { type: String, default: 'CHQ' },
         bank_reglement: { type: String },
         VATIsUsed: { type: Boolean, default: true },
 
-        groupOrder: Boolean, // 1 bill for many order
+        groupOrder: { type: Boolean, default: false }, // 1 bill for many order
         groupDelivery: { type: Boolean, default: true }, // 1 bill for many delivery
-        zonegeo: String,
+        //zonegeo: String,
         rival: [String], //concurrent
 
         customerAccount: { type: String, set: MODULE('utils').setAccount, trim: true }, //code_compta
@@ -349,13 +349,6 @@ customerSchema.pre('save', function(next) {
             country: self.address.country,
             Status: 'ENABLE'
         });
-
-    //Check Valid IBAN
-    if (self.iban && self.iban.id) {
-        var IBAN = require('iban');
-        if (!IBAN.isValid(self.iban.id))
-            console.log(IBAN.isValid(self.iban.id), self.iban.id);
-    }
 
     //if (this.code_client == null && this.entity !== "ALL" && this.Status !== 'ST_NEVER') {
     //console.log("Save societe");
@@ -536,7 +529,7 @@ if (CONFIG('storing-files')) {
     customerSchema.plugin(gridfs.pluginGridFs, { root: "Customer" });
 }
 
-customerSchema.plugin(versioner, { modelName: 'Customers', collection: 'Customer.Version', mongoose: mongoose });
+customerSchema.plugin(versioner, { modelName: 'customers', collection: 'Customer.Version', mongoose: mongoose });
 
-exports.Schema = mongoose.model('Customers', customerSchema);
-exports.name = "Customers";
+exports.Schema = mongoose.model('customers', customerSchema);
+exports.name = "customers";
