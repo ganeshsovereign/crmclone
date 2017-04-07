@@ -1,6 +1,6 @@
 "use strict";
 
-MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '$filter', 'Users', 'Group', function($scope, $rootScope, $http, $filter, Users, Group) {
+MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', '$filter', 'Employees', function($scope, $rootScope, $http, $filter, Employees) {
 
     var grid = new Datatable();
     var user = $rootScope.login;
@@ -17,7 +17,6 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     $scope.status_id = null;
     $scope.validLogin = false;
     $scope.validEmail = true;
-    $scope.groups = [];
     // Init
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
@@ -40,10 +39,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
             //console.log(data);
         });
 
-        Group.query({}, function(groups) {
-            //console.log(groups);
-            $scope.groups = groups;
-        });
+
 
         if ($rootScope.$stateParams.Status) {
             $scope.status_id = $rootScope.$stateParams.Status;
@@ -166,7 +162,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
         if (!params.entity)
             params.entity = $rootScope.entity;
 
-        var url = $rootScope.buildUrl('/erp/api/user/dt', params); // Build URL with json parameter
+        var url = $rootScope.buildUrl('/erp/api/employees/dt', params); // Build URL with json parameter
         //console.log(url);
         return url;
     }
@@ -174,7 +170,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     function initDatatable(params, length) {
 
         grid.init({
-            src: $("#userList"),
+            src: $("#employeesList"),
             onSuccess: function(grid) {
                 // execute some code after table records loaded
             },
@@ -358,28 +354,5 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
 
     };
 
-
-}]);
-
-MetronicApp.controller('BoxRHController', ['$rootScope', '$scope', '$http', '$timeout', 'Users', function($rootScope, $scope, $http, $timeout, Users) {
-
-    $scope.loadAbsences = function() {
-        Users.absences.query({ query: 'NOW' }, function(absences) {
-            $scope.absences = absences;
-            //console.log(absences);
-        });
-    };
-
-    $scope.absenceAddTick = function(user) {
-        user.closed = true;
-        //console.log(user);
-        user.$update();
-        $scope.absences.splice($scope.absences.indexOf(user), 1);
-    };
-
-    $scope.late = function(date) {
-        if (new Date(date) <= new Date())
-            return "font-red-intense";
-    };
 
 }]);

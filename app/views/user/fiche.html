@@ -1,5 +1,5 @@
 <h3 class="page-title" ng-init="findOne()">
-    <i class="fa fa-user font-blue-madison"></i> @(users:UserCard) {{user.fullname}} <small> @(From) {{user.createdAt| date:'@(main:date.format.java.dayhour)'}}</small> 
+    <i class="fa fa-user font-blue-madison"></i> @(users:UserCard) {{user.fullname}} <small> @(From) {{user.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>
 </h3>
 
 <div ng-if="user.isremoved" class="alert alert-danger"><strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)</div>
@@ -12,7 +12,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="user.list" >@(users:ListOfUsers)</a>
+            <a ui-sref="user.list">@(users:ListOfUsers)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
@@ -27,8 +27,7 @@
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>
                     <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(user)" ng-confirm-click="@(ConfirmDeleteUser)" title="Delete Users ?">
-                        <i class="fa fa-trash-o font-red"></i>
-                        @(Delete)
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
                 </li>
             </ul>
@@ -48,7 +47,7 @@
                         <i class="fa fa-user"></i>@(users:UserCard)
                     </div>
                     <div class="actions">
-                        <a href="javascript:;" ng-click="editableUser.$show()"ng-hide="user.isremoved" ng-show="!editableUser.$visible && editable" class="btn btn-default btn-sm">
+                        <a href="javascript:;" ng-click="editableUser.$show()" ng-hide="user.isremoved" ng-show="!editableUser.$visible && editable" class="btn btn-default btn-sm">
                             <i class="fa fa-pencil"></i> @(Edit) </a>
                     </div>
                     <div class="actions" ng-show="editableUser.$visible">
@@ -86,7 +85,7 @@
                     <div class="row static-info">
                         <div class="col-md-4 name">@(Password) :</div>
                         <div class="col-md-8 value">
-                            <span editable-text="user.password">  </span> 
+                            <span editable-text="user.password">  </span>
                         </div>
                     </div>
 
@@ -211,7 +210,7 @@
                 </div>
 
                 <div class="portlet-body">
-                     <div class="row static-info">
+                    <div class="row static-info">
                         <div class="col-md-4 name">@(users:BirthDate) :</div>
                         <div class="col-md-4 value">
                             <span editable-bsdate="user.birthDate" e-datepicker-popup="dd/MM/yyyy">
@@ -271,7 +270,7 @@
                                 {{user.perCharges}}
                             </span>
                         </div>
-                    </div>  
+                    </div>
                 </div>
             </div>
 
@@ -322,7 +321,7 @@
 
 
                 </div>
-            </div>  
+            </div>
 
         </form>
     </div>
@@ -337,7 +336,7 @@
                     </div>
 
                     <div class="actions">
-                        <a href="javascript:;"  ng-hide="user.isremoved" ng-click="editableUserCivility2.$show()" ng-show="!editableUserCivility2.$visible && editable" class="btn btn-default btn-sm">
+                        <a href="javascript:;" ng-hide="user.isremoved" ng-click="editableUserCivility2.$show()" ng-show="!editableUserCivility2.$visible && editable" class="btn btn-default btn-sm">
                             <i class="fa fa-pencil"></i> @(Edit) </a>
                     </div>
 
@@ -358,7 +357,7 @@
                         </div>
                     </div>
 
-                     <div class="row static-info">
+                    <div class="row static-info">
                         <div class="col-md-4 name">@(users:DateOfDeparture) :</div>
                         <div class="col-md-4 value">
                             <span editable-bsdate="user.dateOfDeparture" e-datepicker-popup="dd/MM/yyyy">
@@ -373,7 +372,7 @@
                             <span class="blue h5" editable-text="user.jobDescription"> {{user.jobDescription}} </span>
                         </div>
                     </div>
-                    
+
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:Sector) :</div>
                         <div class="col-md-4 value">
@@ -395,14 +394,14 @@
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.trialPeriod"> {{user.trialPeriod}}</span>
                         </div>
-                    </div>  
+                    </div>
 
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:GrossSalary) :</div>
                         <div class="col-md-4 value">
                             <span class="blue h5" editable-text="user.grossSalary"> {{user.grossSalary}} </span>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="row static-info">
                         <div class="col-md-4 name">@(users:TimeWork) :</div>
@@ -414,7 +413,7 @@
                     </div>
 
                 </div>
-            </div>   
+            </div>
 
             <div class="portlet light">
 
@@ -440,11 +439,11 @@
                             <span class="blue h5" editable-text="user.dateOfClasses"> {{user.dateOfClasses}}</span>
                         </div>
                     </div>
-                </div>            
-            </div> 
-        </form>        
+                </div>
+            </div>
+        </form>
     </div>
-   <!--
+    <!--
     <div class="col-md-8 col-sm-12">
         <form editable-form name="userNotes" onaftersave="update()">
             <div class="portlet light">

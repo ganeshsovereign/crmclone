@@ -1118,7 +1118,7 @@ Object.prototype = {
     readDT: function() {
         var self = this;
         var UserModel = MODEL('Employees').Schema;
-        var query = JSON.parse(self.self.body.query);
+        var query = JSON.parse(self.body.query);
         var Status;
         //console.log(self.query);
         var conditions = {

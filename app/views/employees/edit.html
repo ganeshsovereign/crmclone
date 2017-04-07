@@ -1,0 +1,19 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="dashbord">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>Pre-facturation</span>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group btn-group-solid">
+            <button ng-click="previous()" type="button" class="btn"><span class="fa fa-angle-left"></button>
+            <button type="button" ng-click="today()" class="btn yellow">@(Today)</button>
+            <button ng-click="next()" type="button" class="btn"><span class="fa fa-angle-right"></button>
+        </div>
+    </div>
+</div>
