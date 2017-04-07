@@ -1276,6 +1276,24 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "EEVehiculeController"
         })
+        .state('europexpress.billing', {
+            parent: "europexpress",
+            url: "/facturation.html?month&year",
+            templateUrl: "/views/_europexpress/facturation.html",
+            data: {
+                pageTitle: 'Pré-facturation'
+            },
+            controller: "EEFacturationController"
+        })
+        .state('europexpress.billing.planning', {
+            parent: "europexpress",
+            url: "/suiviplanning.html?month&year",
+            templateUrl: "/views/_europexpress/suiviplanning.html",
+            data: {
+                pageTitle: 'Suivi Planning'
+            },
+            controller: "EESuiviPlanningController"
+        })
         .state('europacourses', {
             url: "/europacourses",
             abstract: true,

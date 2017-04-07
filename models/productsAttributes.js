@@ -16,12 +16,11 @@ var ProductAttributesSchema = new Schema({
     allowedExtension: [String], //png,pdf,...
     dateMin: Date,
     dateMin: Date,
-    decimalsAllowed: { type: Number, default: 0 },
+    steps: { type: Number, default: 1 },
     metricUnit: String, //See dict.units
     group: { type: Schema.Types.ObjectId, ref: 'groupAttribues', default: null },
     maxCharacters: Number,
     minCharacters: Number,
-    negativeAllowed: Boolean,
     maxNumber: Number,
     minNumber: Number,
     sort: Number,
