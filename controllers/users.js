@@ -159,29 +159,15 @@ exports.install = function() {
 function Object() {}
 
 Object.prototype = {
-    user: function(next, id) {
-        var UserModel = MODEL('Users').Schema;
-        var self = this;
-
-        UserModel.findOne({ _id: id }, function(err, doc) {
-            if (err)
-                return next(err);
-            if (!doc)
-                return next(new Error('Failed to load user ' + id));
-
-            self.json(doc);
-            next();
-        });
-    },
     show: function(id) {
         var UserModel = MODEL('Users').Schema;
         var self = this;
 
         UserModel.findOne({ _id: id }, function(err, doc) {
             if (err)
-                return next(err);
+                return self.throw500(err);
             if (!doc)
-                return next(new Error('Failed to load user ' + id));
+                return self.throw500(new Error('Failed to load user ' + id));
 
             self.json(doc);
         });
