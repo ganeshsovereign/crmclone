@@ -276,7 +276,7 @@ var offerSchema = new Schema({
 offerSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
-    var gridfs = INCLUDE('_' + CONFIG('storing-files'));
+    var gridfs = INCLUDE(CONFIG('storing-files'));
     offerSchema.plugin(gridfs.pluginGridFs, {
         root: 'Offer'
     });

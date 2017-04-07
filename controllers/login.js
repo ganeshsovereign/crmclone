@@ -33,7 +33,7 @@ function view_redirect() {
 function passport_login_local() {
     var self = this;
     var auth = MODULE('auth');
-    var UserModel = MODEL('user').Schema;
+    var UserModel = MODEL('Users').Schema;
 
     //clear old flash message
     //self.flash('error', []);
@@ -216,7 +216,7 @@ function session() {
 function decrypt() {
     var self = this;
     var sessionModel = MODEL('session').Schema;
-    var userModel = MODEL('user').Schema;
+    var userModel = MODEL('Users').Schema;
 
     var session = F.decrypt(self.body.data, CONFIG('secret'));
 

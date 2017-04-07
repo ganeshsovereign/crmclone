@@ -273,7 +273,7 @@ function convert(type) {
 
     switch (type) {
         case 'user':
-            var UserModel = MODEL('hr').Schema;
+            var UserModel = MODEL('Users').Schema;
 
             mongoose.connection.db.collection('users', function(err, collection) {
                 collection.find({ _type: null }, function(err, users) {
@@ -855,7 +855,7 @@ function convert(type) {
         case 'commercial_id':
             var BillModel = MODEL('bill').Schema;
             var SocieteModel = MODEL('societe').Schema;
-            var UserModel = MODEL('hr').Schema;
+            var UserModel = MODEL('Users').Schema;
             var OfferModel = MODEL('offer').Schema;
             var OrderModel = MODEL('order').Schema;
             var OrderSupplierModel = MODEL('orderSupplier').Schema;

@@ -17,9 +17,9 @@ var CategorySchema = new Schema({
     fullName: { type: String, default: 'All' },
     //parent: { type: ObjectId, ref: 'productCategory', default: null },
     // child: [{ type: ObjectId, default: null }],
-    users: [{ type: ObjectId, ref: 'hr', default: null }],
-    createdBy: { type: Schema.Types.ObjectId, ref: 'hr' },
-    editedBy: { type: Schema.Types.ObjectId, ref: 'hr' },
+    users: [{ type: ObjectId, ref: 'Users', default: null }],
+    createdBy: { type: Schema.Types.ObjectId, ref: 'Users' },
+    editedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 
     entity: [String],
     idx: { type: Number, default: 0 }, //order in array for nodes

@@ -19,6 +19,7 @@ mongoose.plugin(DataTable.init);
 var Dict = INCLUDE('dict');
 
 var setPhone = MODULE('utils').setPhone;
+var setFirstname = MODULE('utils').setFirstUpperCase
 
 
 var EmployeeSchema = new Schema({
@@ -116,7 +117,7 @@ var EmployeeSchema = new Schema({
     subject: { type: String, default: '' },
 
     name: {
-        first: { type: String, default: '' },
+        first: { type: String, set: setFirstname, default: '' },
         last: { type: String, default: '' }
     },
 
@@ -252,9 +253,41 @@ EmployeeSchema.virtual('iban.isOk')
 EmployeeSchema.set('toJSON', { virtuals: true });
 
 if (CONFIG('storing-files')) {
-    var gridfs = INCLUDE('_' + CONFIG('storing-files'));
+    var gridfs = INCLUDE(CONFIG('storing-files'));
     EmployeeSchema.plugin(gridfs.pluginGridFs, { root: "Employees" });
 }
+
+exports.Status = {
+    "_id": "fk_user_status",
+    "default": "DISABLE",
+    "values": {
+        "NEVER": {
+            "label": "Inconnu",
+            "enable": true,
+            "cssClass": "label-default"
+        },
+        "ENABLE": {
+            "enable": true,
+            "label": "Actif",
+            "cssClass": "label-success"
+        },
+        "DISABLE": {
+            "enable": true,
+            "label": "Bloqué",
+            "cssClass": "label-danger"
+        },
+        "NOCONNECT": {
+            "enable": false,
+            "label": "Actif / Sans connexion",
+            "cssClass": "label-info"
+        },
+        "WEB": {
+            "enable": false,
+            "label": "Actif / Connexion Web",
+            "cssClass": "label-warning"
+        }
+    }
+};
 
 exports.Schema = mongoose.model('Employees', EmployeeSchema);
 exports.name = 'Employees';

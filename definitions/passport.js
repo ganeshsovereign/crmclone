@@ -1,16 +1,16 @@
 "use strict";
 
 var passport = require('passport'),
-        util = require("util"),
-        _ = require('lodash');
+    util = require("util"),
+    _ = require('lodash');
 
 var LocalStrategy = require('passport-local').Strategy,
-        //TwitterStrategy = require('passport-twitter').Strategy,
-        //FacebookStrategy = require('passport-facebook').Strategy,
-        //GitHubStrategy = require('passport-github').Strategy,
-        LocalAPIKeyStrategy = require('passport-localapikey').Strategy,
-        OAuth2Strategy = require('passport-oauth2').Strategy,
-        GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+    //TwitterStrategy = require('passport-twitter').Strategy,
+    //FacebookStrategy = require('passport-facebook').Strategy,
+    //GitHubStrategy = require('passport-github').Strategy,
+    LocalAPIKeyStrategy = require('passport-localapikey').Strategy,
+    OAuth2Strategy = require('passport-oauth2').Strategy,
+    GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 //Use local strategy
 passport.use(new LocalStrategy({
@@ -18,8 +18,8 @@ passport.use(new LocalStrategy({
     passwordField: 'password',
     //passReqToCallback: true
     session: false
-}, function (login, password, done) {
-    var User = MODEL('user').Schema;
+}, function(login, password, done) {
+    var User = MODEL('Users').Schema;
 
     function msg_error(msg) {
         return msg;
@@ -27,8 +27,8 @@ passport.use(new LocalStrategy({
     }
 
     var query = {
-        Status: "ENABLE",
-        password: {$ne: null}
+        isEnable: true,
+        password: { $ne: null }
     };
 
     if (login.indexOf("@") > 0) // email
@@ -36,47 +36,47 @@ passport.use(new LocalStrategy({
     else
         query.username = login.toLowerCase();
 
-    User.findOne(query, "username firstname lastname password entity NewConnection")
-            //.populate("societe", "id name Status")
-            .exec(function (err, user) {
-                if (err) {
-                    return done(err);
-                }
-                console.log(user);
-                if (!user) {
-                    return done(null, false, {
-                        error: msg_error('Unknown user')
-                    });
-                }
-                if (!user.authenticate(password)) {
-                    return done(null, false, {
-                        error: msg_error('Invalid password')
-                    });
-                }
+    User.findOne(query, "username email password entity NewConnection")
+        //.populate("societe", "id name Status")
+        .exec(function(err, user) {
+            if (err) {
+                return done(err);
+            }
+            console.log(user);
+            if (!user) {
+                return done(null, false, {
+                    error: msg_error('Unknown user')
+                });
+            }
+            if (!user.authenticate(password)) {
+                return done(null, false, {
+                    error: msg_error('Invalid password')
+                });
+            }
 
-                done(null, user.toObject());
-            });
+            done(null, user.toObject());
+        });
 }));
 
 passport.use(new LocalAPIKeyStrategy(
-        function (apikey, done) {
-            var User = MODEL('user').Schema;
+    function(apikey, done) {
+        var User = MODEL('Users').Schema;
 
-            //console.log(apikey);
+        //console.log(apikey);
 
-            User.findOne({
-                key: apikey
-            }, function (err, user) {
-                if (err) {
-                    return done(err);
-                }
-                if (!user) {
-                    return done(null, false, {message: 'Unknown apikey : ' + apikey});
-                }
-                // if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
-                return done(null, user);
-            });
-        }
+        User.findOne({
+            key: apikey
+        }, function(err, user) {
+            if (err) {
+                return done(err);
+            }
+            if (!user) {
+                return done(null, false, { message: 'Unknown apikey : ' + apikey });
+            }
+            // if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
+            return done(null, user);
+        });
+    }
 ));
 
 //Use twitter strategy
@@ -180,23 +180,23 @@ passport.use(new GoogleStrategy({
     clientSecret: CONFIG('google-secret'),
     callbackURL: CONFIG('google-callback'),
     session: false
-}, function (accessToken, refreshToken, profile, done) {
-    var User = MODEL('user').Schema;
+}, function(accessToken, refreshToken, profile, done) {
+    var User = MODEL('Users').Schema;
 
     //console.log(refreshToken);
     //console.log(profile);
     User.findOne({
         //'google.id': profile.id
         email: profile._json.emails[0].value,
-        Status: "ENABLE"
-    }, "-password", function (err, user) {
+        isEnable: true,
+    }, "-password", function(err, user) {
         if (err)
             console.log(err);
 
         if (!user) {
             console.log("User unknown ! " + profile._json.emails[0].value);
 
-            return done({message: 'Unknown user ' + profile._json.emails[0].value}, false, {
+            return done({ message: 'Unknown user ' + profile._json.emails[0].value }, false, {
                 message: 'Unknown user ' + profile._json.emails[0].value
             });
 
@@ -227,7 +227,7 @@ passport.use(new GoogleStrategy({
 
             //console.log(user);
 
-            user.save(function (err, user) {
+            user.save(function(err, user) {
                 if (err)
                     console.log(err);
 
@@ -235,8 +235,7 @@ passport.use(new GoogleStrategy({
             });
         }
     });
-}
-));
+}));
 
 // Load user profile
 /*function SymeosOAuth2Strategy(options, verify) {
@@ -318,10 +317,10 @@ passport.use(new SymeosOAuth2Strategy({
 }
 ));*/
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
     //console.log("Passport !!!!!!!!!!!!!!!!!!!!!!!!!!", user);
-    
-    var UserModel = MODEL('user').Schema;
+
+    var UserModel = MODEL('Users').Schema;
     var UserGroup = MODEL('group').Schema;
 
     // Save Date Connection
@@ -332,8 +331,7 @@ passport.serializeUser(function (user, done) {
             LastConnection: user.NewConnection,
             NewConnection: new Date()
         }
-    }, function (err) {
-    });
+    }, function(err) {});
 
     /*var rights = {
         societe: {
@@ -356,7 +354,7 @@ passport.serializeUser(function (user, done) {
     done(null, user.toObject());
 });
 
-passport.deserializeUser(function (obj, done) {
+passport.deserializeUser(function(obj, done) {
     console.log("Passport !!");
     done(null, obj);
 });

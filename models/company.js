@@ -189,7 +189,7 @@ societeSchema.index({ name: 'text', zip: 'text', Tag: 'text', rival: 'text', "se
 societeSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
-    var gridfs = INCLUDE('_' + CONFIG('storing-files'));
+    var gridfs = INCLUDE(CONFIG('storing-files'));
     societeSchema.plugin(gridfs.pluginGridFs, { root: "Societe" });
 }
 

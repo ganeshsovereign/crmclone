@@ -525,7 +525,7 @@ customerSchema.index({ name: 'text', zip: 'text', Tag: 'text' });
 customerSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
-    var gridfs = INCLUDE('_' + CONFIG('storing-files'));
+    var gridfs = INCLUDE(CONFIG('storing-files'));
     customerSchema.plugin(gridfs.pluginGridFs, { root: "Customers" });
 }
 

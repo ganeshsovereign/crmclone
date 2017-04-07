@@ -146,13 +146,13 @@ var productSchema = new Schema({
     whoCanRW: { type: String, enum: ['owner', 'group', 'everyOne'], default: 'everyOne' },
 
     groups: {
-        owner: { type: Schema.Types.ObjectId, ref: 'hr', default: null },
-        users: [{ type: Schema.Types.ObjectId, ref: 'hr', default: null }],
+        owner: { type: Schema.Types.ObjectId, ref: 'Users', default: null },
+        users: [{ type: Schema.Types.ObjectId, ref: 'Users', default: null }],
         group: [{ type: Schema.Types.ObjectId, ref: 'Department', default: null }]
     },
 
-    createdBy: { type: Schema.Types.ObjectId, ref: 'hr' },
-    editedBy: { type: Schema.Types.ObjectId, ref: 'hr' },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'Users' },
+    editedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 
 
     externalId: { type: String, default: '' },
@@ -230,7 +230,7 @@ var productSchema = new Schema({
 productSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
-    var gridfs = INCLUDE('_' + CONFIG('storing-files'));
+    var gridfs = INCLUDE(CONFIG('storing-files'));
     productSchema.plugin(gridfs.pluginGridFs, { root: "Product" });
 }
 

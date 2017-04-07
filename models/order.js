@@ -219,7 +219,7 @@ var orderSchema = new Schema({
 orderSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
-    var gridfs = INCLUDE('_' + CONFIG('storing-files'));
+    var gridfs = INCLUDE(CONFIG('storing-files'));
     orderSchema.plugin(gridfs.pluginGridFs, {
         root: 'Commande'
     });

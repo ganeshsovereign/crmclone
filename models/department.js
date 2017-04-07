@@ -12,17 +12,10 @@ var DepartmentSchema = new Schema({
     parentDepartment: { type: ObjectId, ref: 'Department', default: null },
     departmentManager: { type: ObjectId, ref: 'Employees', default: null },
     isDevelopment: Boolean,
-    users: [{ type: ObjectId, ref: 'hr', default: null }],
+    users: [{ type: ObjectId, ref: 'Users', default: null }],
 
-    createdBy: {
-        user: { type: ObjectId, ref: 'hr', default: null },
-        date: { type: Date, default: Date.now }
-    },
-
-    editedBy: {
-        user: { type: ObjectId, ref: 'hr', default: null },
-        date: { type: Date }
-    },
+    createdBy: { type: ObjectId, ref: 'Users', default: null },
+    editedBy: { type: ObjectId, ref: 'Users', default: null },
 
     nestingLevel: { type: Number, default: 0 },
     sequence: { type: Number, default: 0 },

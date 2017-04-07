@@ -13,9 +13,9 @@ var ProductAttributesSchema = new Schema({
         lang: { type: String, default: "fr" },
         name: String
     }],
-    allowedExtension: [String], //png,pdf,...
-    dateMin: Date,
-    dateMin: Date,
+    allowedExtension: [String], //png,pdf...
+    dateMin: {type: Date},
+    dateMin: {type: Date},
     steps: { type: Number, default: 1 },
     metricUnit: String, //See dict.units
     group: { type: Schema.Types.ObjectId, ref: 'groupAttribues', default: null },

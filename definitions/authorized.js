@@ -26,8 +26,8 @@ framework.on('module#auth', function(type, name) {
             //req.user = user;
             return callback(user);
         } else {
-            var UserModel = MODEL('user').Schema;
-            UserModel.findOne({ _id: id, Status: { $ne: "DISABLE" } }, "name firstname lastname entity groupe groups home societe multiEntities poste admin email right_menu")
+            var UserModel = MODEL('Users').Schema;
+            UserModel.findOne({ _id: id, isEnable: true }, "username entity groupe groups home societe multiEntities poste admin email right_menu")
                 .populate("societe", "id name Status price_level address zip town")
                 .exec(function(err, response) {
 

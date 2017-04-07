@@ -11,7 +11,7 @@ var integrationsSchema = new Schema({
     channelName: { type: String, default: '' },
     dbName: { type: String, default: '' },
     type: { type: String, default: '' },
-    user: { type: ObjectId, default: null, ref: 'rh' },
+    user: { type: ObjectId, default: null, ref: 'Users' },
     username: { type: String, default: '' },
     password: { type: String, default: '' },
     baseUrl: { type: String, default: '' },
