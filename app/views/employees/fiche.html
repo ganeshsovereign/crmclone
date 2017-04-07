@@ -10,240 +10,109 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>{{employees.firstname}} {{user.lastname}}</span>
+            <span>{{employees.firstname}} {{employees.lastname}}</span>
         </li>
     </ul>
-    <div class="page-toolbar">
-        <div class="btn-group pull-right">
-            <a class="btn btn-circle dark dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
-                                                    <i class="fa fa-angle-down"></i>
-                                                </a>
-            <ul class="dropdown-menu pull-right">
-                <li>
-                    <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
-                                        @(PrintList) </a>
-                </li>
-                <li>
-                    <a href="#" ng-show="login.rights.user.delete" confirmed-click="remove()" ng-confirm-click="@(ConfirmDeleteUser)">
-                        <i class="fa fa-mail-forward"></i>@(Delete)
-                    </a>
-                </li>
-                <!--    <li>
-                                        <a href="#">
-                                            @(Delete) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(BuildPDF) </a>
-                                    </li>-->
-            </ul>
-        </div>
-    </div>
+
 </div>
 
-
 <div class="row">
-    <div class="col-md-12">
-        <tabset class="tabbable-line tabbable-full-width">
-            <tab heading="Clients réguliers">
-                <div class="portlet box purple">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-random"></i>Clients réguliers
-                        </div>
-                    </div>
-                    <div class="table-scrollable">
-                        <table class="table table-condensed table-striped table-hover table-advance">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>@(europexpress:Client)</th>
-                                    <th>Id</th>
-                                    <th>Dest</th>
-                                    <th>Etat</th>
-                                    <th>Date d'enlèvement</th>
-                                    <th>Total HT</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in result.regulier" ng-class="{danger:entry.voided}">
-                                    <td>{{line.client.name}}</td>
-                                    <td>{{line.ref}}</td>
-                                    <td>{{}}</td>
-                                    <td>{{}}</td>
-                                    <td>{{line.datedl | date:"dd/MM/yyyy"}}</td>
-                                    <td>{{line.total_ht | currency}}</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="8" class="text-right h5">Total</td>
-                                    <td class="h5">{{TotalCourses.regulier| currency}}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </tab>
-            <tab heading="Courses Clients">
-                <div class="portlet box blue">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-random"></i>Courses Clients
-                        </div>
-                    </div>
-                    <div class="table-scrollable">
-                        <table class="table table-condensed table-striped table-hover table-advance">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>@(europexpress:Client)</th>
-                                    <th>Id</th>
-                                    <th>Dest</th>
-                                    <th>Etat</th>
-                                    <th>Date d'enlèvement</th>
-                                    <th>Total HT</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in result.course" ng-class="{danger:entry.voided}">
-                                    <td>{{line.client.name}}</td>
-                                    <td>{{line.ref}}</td>
-                                    <td>{{line.to.name}}</td>
-                                    <td>{{line.Status}}</td>
-                                    <td>{{line.date_enlevement | date:"dd/MM/yyyy"}}</td>
-                                    <td>{{line.total_ht | currency}}</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="8" class="text-right h5">Total</td>
-                                    <td class="h5">{{TotalCourses.course| currency}}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </tab>
-            <tab heading="Affrêtements Clients">
-                <div class="portlet box green-meadow">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-random"></i>Affrêtements Clients
-                        </div>
-                    </div>
-                    <div class="table-scrollable">
-                        <table class="table table-condensed table-striped table-hover table-advance">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>@(europexpress:Client)</th>
-                                    <th>Id</th>
-                                    <th>Dest</th>
-                                    <th>Etat</th>
-                                    <th>Date d'enlèvement</th>
-                                    <th>Total HT</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in result.affretement" ng-class="{danger:entry.voided}">
-                                    <td>{{}}</td>
-                                    <td>{{}}</td>
-                                    <td>{{}}</td>
-                                    <td>{{}}</td>
-                                    <td>{{}}</td>
-                                    <td>{{line.total_ht | currency}}</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="8" class="text-right h5">Total</td>
-                                    <td class="h5">{{TotalCourses.affretement| currency}}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </tab>
-            <tab heading="Messagerie Clients">
-                <div class="portlet box yellow-lemon">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-random"></i>Messagerie Clients
-                        </div>
-                    </div>
-                    <div class="table-scrollable">
-                        <table class="table table-condensed table-striped table-hover table-advance">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>@(europexpress:Client)</th>
-                                    <th>Id</th>
-                                    <th>Dest</th>
-                                    <th>Etat</th>
-                                    <th>Date d'enlèvement</th>
-                                    <th>Total HT</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in result.messagerie" ng-class="{danger:entry.voided}">
-                                    <td>{{line.client.name}}</td>
-                                    <td>{{line.ref}}</td>
-                                    <td>{{line.to.name}}</td>
-                                    <td>{{line.Status}}</td>
-                                    <td>{{line.date_enlevement | date:"dd/MM/yyyy"}}</td>
-                                    <td>{{line.total_ht | currency}}</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="8" class="text-right h5">Total</td>
-                                    <td class="h5">{{TotalCourses.messagerie| currency}}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </tab>
-            <tab heading="Sous-traitants">
-                <div class="portlet box yellow-casablanca">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-random"></i>Sous-traitants
-                        </div>
-                    </div>
-                    <div class="table-scrollable">
-                        <table class="table table-condensed table-striped table-hover table-advance">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>Sous-traitant</th>
-                                    <th>Id</th>
-                                    <th>Type</th>
-                                    <th>Etat</th>
-                                    <th>Date d'enlèvement</th>
-                                    <th>@(europexpress:Fournisseur)</th>
-                                    <th>Total HT</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in result.allST">
-                                    <td>{{line.fournisseur.name}}</td>
-                                    <td>{{line.ref}}</td>
-                                    <td>{{line.type}}</td>
-                                    <td>{{line.Status}}</td>
-                                    <td>{{line.date_enlevement | date:"dd/MM/yyyy"}}</td>
-                                    <td>{{line.client.name}}</td>
-                                    <td>{{line.total_ht | currency}}</td>
+    <div class=" col-md-12">
+        <!-- BEGIN PROFILE SIDEBAR -->
 
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="8" class="text-right h5">@(Total)</td>
-                                    <td class="h5">{{TotalCoursesST| currency}}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
+        <!-- PORTLET MAIN -->
+        <div class="portlet light profile-sidebar-portlet">
+            <tabset class="tabbable-line tabbable-full-width">
+                <tab heading="Main">
+                    <div class="portlet box">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-random"></i>@(employees:Main)
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group form-md-line-input">
+
+                                <label class="col-md-4 control-label" for="form_control_1">@(Ref): <span class="required">
+                                        * </span>
+                                </label>
+                                <div class="col-md-8">
+                                    <input class="form-control" ng-model="product.ref" maxlength="13" required placeholder="" type="text">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-4 control-label" for="form_control_1">@(Status): </label>
+                                <div class="col-md-8">
+                                    <label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.info.isActive" ng-checked="product.info.isActive"/> @(Enabled) </label>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+
+                                <label class="col-md-4 control-label" for="form_control_1">@(SKU): <span class="required">
+                                        * </span>
+                                </label>
+                                <div class="col-md-8">
+                                    <input class="form-control" ng-model="product.ref" maxlength="13" required placeholder="" type="text">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-4 control-label" for="form_control_1">@(Status2):</label>
+                                <div class="col-md-8">
+                                    <select class="table-group-action-input form-control" required ng-model="product.Status" ng-options="s.id as s.label for s in dict.fk_product_status.values"></select>
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-scrollable">
+
+                        </div>
                     </div>
-                </div>
-            </tab>
-        </tabset>
+                </tab>
+                <tab heading="PersonnalInformations">
+                    <div class="portlet box blue">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-random"></i>@(employees:PersonnalInformations)
+                            </div>
+                        </div>
+                        <div class="table-scrollable">
+
+                        </div>
+                    </div>
+                </tab>
+                <tab heading="Job">
+                    <div class="portlet box green-meadow">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-random"></i>@(employees:Job)
+                            </div>
+                        </div>
+                        <div class="table-scrollable">
+
+                        </div>
+                    </div>
+                </tab>
+                <tab heading="Assignees">
+                    <div class="portlet box yellow-lemon">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-random"></i>@(employees:Assignees)
+                            </div>
+                        </div>
+                        <div class="table-scrollable">
+
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+
     </div>
 </div>
 <!-- END MAIN CONTENT -->

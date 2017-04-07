@@ -3,8 +3,11 @@
     "ListofEmployees": "Liste des collaborateurs",
     "Skype": "Skype",
     "Departement": "Département",
-    "Job": "Emploi",
     "Manager": "Chef d'équipe",
     "CreatedBy": "Créé par",
-    "EditedBy": "Edité par"
+    "EditedBy": "Edité par",
+    "Main": "Résumé",
+    "PersonnalInformation": "Informations détaillées",
+    "Job": "Emploi",
+    "Assignees": "Affectation"
 }
