@@ -467,7 +467,7 @@ customerSchema.virtual('status')
 
     });
 
-customerSchema.virtual('prospectLevel')
+/*customerSchema.virtual('prospectLevel')
     .get(function() {
         var prospectLevel = {};
 
@@ -486,7 +486,7 @@ customerSchema.virtual('prospectLevel')
         }
 
         return prospectLevel;
-    });
+    });*/
 
 customerSchema.virtual('iban.isOk')
     .get(function() {
