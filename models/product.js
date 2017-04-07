@@ -96,7 +96,7 @@ var productSchema = new Schema({
 
     //ref: { type: String, required: true, unique: true, uppercase: true }, //TODO Remove
     name: { type: String, default: '' },
-    seq: { type: String, unique: true },
+    ID: { type: Number, unique: true },
     isremoved: { type: Boolean, default: false },
 
     // TODO Migrate to this model with PIM module 
