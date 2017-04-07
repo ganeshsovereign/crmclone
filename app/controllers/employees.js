@@ -159,8 +159,8 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
         if (!params)
             params = {};
 
-        if (!params.entity)
-            params.entity = $rootScope.entity;
+        // if (!params.entity)
+        //     params.entity = $rootScope.entity;
 
         var url = $rootScope.buildUrl('/erp/api/employees/dt', params); // Build URL with json parameter
         //console.log(url);
@@ -197,10 +197,10 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
                 "columns": [{
                     data: 'bool'
                 }, {
-                    data: "lastname",
+                    data: "name.last",
                     defaultContent: ""
                 }, {
-                    data: "firstname",
+                    data: "name.first",
                     defaultContent: ""
                 }, {
                     data: "username",

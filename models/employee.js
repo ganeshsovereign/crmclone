@@ -222,7 +222,7 @@ var EmployeeSchema = new Schema({
 
     transfer: { type: Array, default: [] },
 
-    entity: [{ type: String, trim: true }],
+    //entity: [{ type: String, trim: true }],
 
     lastFire: { type: Number, default: null },
     externalId: { type: String, default: null },
