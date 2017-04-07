@@ -1362,8 +1362,10 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "UserController"
         })
-        // Group management
-        .state('group', {
+        // Menu employees
+
+    // Group management
+    .state('group', {
             url: "/group",
             abstract: true,
             templateUrl: "/views/group/index.html"

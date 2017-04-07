@@ -191,39 +191,39 @@
                             "title": "admin:Sessions"
                         }
                     }
-                }
-            }
-        },
-        "menu:user": {
-            "position": 999,
-            "perms": "user.write",
-            "usertype": 2,
-            "title": "User",
-            "icon": "fa-group",
-            "submenus": {
-                "menu:team": {
-                    "position": 3,
-                    "url": "/erp/#!/user",
-                    "perms": "user.read",
-                    "usertype": 2,
-                    "icon": "fa-group",
-                    "title": "users:Collaborators"
                 },
-                "menu:groups": {
-                    "position": 4,
-                    "url": "/erp/#!/group",
-                    "perms": "group.read",
+                "menu:user": {
+                    "position": 11,
+                    "perms": "user.write",
                     "usertype": 2,
+                    "title": "User",
                     "icon": "fa-group",
-                    "title": "users:GroupManagement"
-                },
-                "menu:absences": {
-                    "position": 5,
-                    "url": "/erp/#!/europexpress/absence.html",
-                    "perms": "user.holidayAll",
-                    "usertype": 2,
-                    "icon": "fa-group",
-                    "title": "Gestion des conges / absences"
+                    "submenus": {
+                        "menu:team": {
+                            "position": 3,
+                            "url": "/erp/#!/user",
+                            "perms": "user.read",
+                            "usertype": 2,
+                            "icon": "fa-group",
+                            "title": "users:Collaborators"
+                        },
+                        "menu:groups": {
+                            "position": 4,
+                            "url": "/erp/#!/group",
+                            "perms": "group.read",
+                            "usertype": 2,
+                            "icon": "fa-group",
+                            "title": "users:GroupManagement"
+                        },
+                        "menu:absences": {
+                            "position": 5,
+                            "url": "/erp/#!/europexpress/absence.html",
+                            "perms": "user.holidayAll",
+                            "usertype": 2,
+                            "icon": "fa-group",
+                            "title": "Gestion des conges / absences"
+                        }
+                    }
                 }
             }
         }
