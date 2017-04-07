@@ -106,6 +106,7 @@ var EmployeeSchema = new Schema({
 
 
     isEmployee: { type: Boolean, default: false },
+    isremoved: { type: Boolean, default: false },
 
     imageSrc: {
         type: String,

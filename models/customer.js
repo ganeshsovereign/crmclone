@@ -226,12 +226,12 @@ var customerSchema = new Schema({
         isSubcontractor: { type: Boolean, default: false }, //fournisseur
         salesPerson: { type: ObjectId, ref: 'Employees', default: null }, //commercial_id
         salesTeam: { type: ObjectId, ref: 'Department', default: null },
-        implementedBy: { type: ObjectId, ref: 'customers', default: null },
+        implementedBy: { type: ObjectId, ref: 'Customers', default: null },
         active: { type: Boolean, default: true },
         ref: { type: String, trim: true, uppercase: true, sparse: true, default: '' }, //code_client or code_fournisseur
         language: { type: String, default: 'fr' },
         receiveMessages: { type: Number, default: 0 },
-        cptBilling: { type: Schema.Types.ObjectId, ref: 'customers' },
+        cptBilling: { type: Schema.Types.ObjectId, ref: 'Customers' },
         priceList: { type: Schema.Types.ObjectId, ref: 'priceList' }, //price_level
         //prospectlevel: { type: String, default: 'PL_NONE' },
 
@@ -526,10 +526,10 @@ customerSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
     var gridfs = INCLUDE('_' + CONFIG('storing-files'));
-    customerSchema.plugin(gridfs.pluginGridFs, { root: "Customer" });
+    customerSchema.plugin(gridfs.pluginGridFs, { root: "Customers" });
 }
 
-customerSchema.plugin(versioner, { modelName: 'customers', collection: 'Customer.Version', mongoose: mongoose });
+customerSchema.plugin(versioner, { modelName: 'Customers', collection: 'Customers.Version', mongoose: mongoose });
 
-exports.Schema = mongoose.model('customers', customerSchema);
-exports.name = "customers";
+exports.Schema = mongoose.model('Customers', customerSchema);
+exports.name = "Customers";
