@@ -1,90 +1,102 @@
-<div>
-    <h3 class="page-title">
-        <i class="fa fa-user font-green"></i> @(users:ListOfUsers)
-    </h3>
-    <div class="page-bar">
-        <ul class="page-breadcrumb">
-            <li>
-                <i class="fa fa-home"></i>
-                <a ui-sref="home">@(Home)</a>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(users:ListOfUsers)</span>
-            </li>
-        </ul>
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span> @(employees:ListofEmployees)</span>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group pull-right">
+            <a class="btn btn-circle dark dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
+                                                    <i class="fa fa-angle-down"></i>
+                                                </a>
+            <ul class="dropdown-menu pull-right">
+                <li>
+                    <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+                                        @(PrintList) </a>
+                </li>
+                <li>
+                    <a href="#" ng-show="login.rights.user.delete" confirmed-click="remove()" ng-confirm-click="@(ConfirmDeleteUser)">
+                        <i class="fa fa-mail-forward"></i>@(Delete)
+                    </a>
+                </li>
+                <!--    <li>
+                                        <a href="#">
+                                            @(Delete) </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            @(BuildPDF) </a>
+                                    </li>-->
+            </ul>
+        </div>
     </div>
+</div>
 
-    <div class="portlet box green">
+
+<div>
+    <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-user"></i>@(users:ListOfUsers)
+            <h3 class="caption">
+                <i class="fa fa-user font-blue"></i> <span class="caption-subject font-blue sbold uppercase">@(employees:ListofEmployees)</span>
+            </h3>
+            <!--<div class="caption">
+                <i class="fa fa-user font-blue"></i>
+                <span class="caption-subject font-blue sbold uppercase">@(users:ListOfUsers)</span>
+            </div>-->
+            <div class="actions">
+                <button class="btn btn-circle default" ui-sref="user.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button title="@(Refresh)" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
-        <div class="tools">
-        </div>
         <div class="portlet-body">
-            <div class="table-toolbar">
+            <!-- <div class="form-group form-md-line-input">
                 <div class="row hidden-print">
-                    <div class="col-md-3">
-                        <div class="btn-group">
-                            <button class="btn blue" ui-sref="user.create">@(Add) <i class="fa fa-plus"></i></button>
-                            <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="col-md-4">
-                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_user_status.values" class="form-control">
-                                <option value="">-- @(All) --</option>
+                    <div class="form-group form-md-line-input">
+
+                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
+                        <div class="col-md-3">
+                            <select ng-model="type" ng-change="setCache('type', type);
+                                    find();" ng-options="s.id as s.name for s in types" class="form-control">
                             </select>
+                            <div class="form-control-focus"> </div>
                         </div>
-                        <div class="col-md-4">
-                            <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
-                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="btn-group pull-right">
-                            <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
-                            </button>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
-                                        @(PrintList) </a>
-                                </li>
-                                <li class="divider">
-                                </li>
-                                <li>
-                                    <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove()" ng-confirm-click="@(ConfirmDeleteUser)">
-                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
-                                    </a>
-                                </li>
-                            </ul>
+                        <div class="col-md-1"></div>
+                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyFamily)</label>
+                        <div class="col-md-3">
+                            <div class="input-icon input-icon-sm right">
+                                <i class="fa fa-times" ng-click="family = null;
+                                        find();"></i>
+                                <input class="form-control" placeholder="@(Family)" ng-model="family" typeahead="f.id as f.name for f in AutoComplete($viewValue,'/erp/api/product/family/autocomplete')" typeahead-on-select="find()" type="text" autocomplete="off" />
+                                <div class="form-control-focus"> </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="dataTables_wrapper no-footer">
-                <table class="table table-striped table-bordered table-hover dataTable no-footer" id="userList">
-                    <thead>
-                        <tr role="row" class="heading">
-                            <th width="2%">
-                                <input type="checkbox" class="group-checkable" />
-                            </th>
-                            <th>@(users:LastName)</th>
-                            <th>@(users:FirstName)</th>
-                            <th>@(users:Login)</th>
-                            <th>@(users:Poste)</th>
-                            <th>@(users:Permissions)</th>
-                            <th>@(Entity)</th>
-                            <th>@(Email)</th>
-                            <th>@(users:LastConnection)</th>
-                            <th>@(Status)</th>
-                            <th>@(DateModification)</th>
-                            <th>@(Action)</th>
-                        </tr>
-                        <!--<tr role="row" class="filter">
+            </div>-->
+            <div class="dataTables_wrapper table-responsive">
+                <div class="col-md-12">
+                    <table class="table dataTable table-hover" id="userList">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th width="2%">
+                                    <input type="checkbox" class="group-checkable" />
+                                </th>
+                                <th>@(Name)</th>
+                                <th>@(Tel-Mobile)</th>
+                                <th>@(Email)</th>
+                                <th>@(employees:Skype)</th>
+                                <th>@(employees:Departement)</th>
+                                <th>@(employees:Job)</th>
+                                <th>@(employees:Manager)</th>
+                                <th>@(employees:EditedBy)</th>
+                                <th>@(employees:CreatedBy)</th>
+                            </tr>
+                            <!--<tr role="row" class="filter">
                             <td>
                             </td>
                             <td>
@@ -138,8 +150,9 @@
                                 <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
                             </td>
                         </tr>-->
-                    </thead>
-                </table>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

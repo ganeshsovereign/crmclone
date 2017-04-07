@@ -1377,6 +1377,37 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "UserController"
         })
         // Menu employees
+        .state('employees', {
+            url: "/employees",
+            abstract: true,
+            templateUrl: "/views/employees/index.html"
+        })
+        .state('employees.list', {
+            url: "",
+            templateUrl: "/views/employees/list.html",
+            data: {
+                pageTitle: 'Liste des collaborateurs'
+            },
+            controller: "EmployeesController"
+        })
+        .state('employees.create', {
+            parent: "employees",
+            url: "/employees.html",
+            templateUrl: "/views/employees/create.html",
+            data: {
+                pageTitle: 'Nouveau collaborateur'
+            },
+            controller: "EmployeesController"
+        })
+        .state('employees.show', {
+            parent: "employees",
+            url: "/{id}",
+            templateUrl: "/views/employees/fiche.html",
+            data: {
+                pageTitle: 'Fiche collaborateur'
+            },
+            controller: "EmployeesController"
+        })
 
     // Group management
     .state('group', {
