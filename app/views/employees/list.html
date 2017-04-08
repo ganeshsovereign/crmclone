@@ -6,7 +6,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span> @(employees:ListofEmployees)</span>
+            <span> @(employees:ListOfEmployees)</span>
         </li>
     </ul>
     <div class="page-toolbar">
@@ -42,14 +42,14 @@
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
             <h3 class="caption">
-                <i class="fa fa-user font-blue"></i> <span class="caption-subject font-blue sbold uppercase">@(employees:ListofEmployees)</span>
+                <i class="fa fa-user font-blue"></i> <span class="caption-subject font-blue sbold uppercase">@(employees:ListOfEmployees)</span>
             </h3>
             <!--<div class="caption">
                 <i class="fa fa-user font-blue"></i>
                 <span class="caption-subject font-blue sbold uppercase">@(users:ListOfUsers)</span>
             </div>-->
             <div class="actions">
-                <button class="btn btn-circle default" ui-sref="user.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button class="btn green" ui-sref="employees.create">@(Add) <i class="fa fa-plus"></i></button>
                 <button title="@(Refresh)" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
@@ -86,7 +86,8 @@
                                 <th width="2%">
                                     <input type="checkbox" class="group-checkable" />
                                 </th>
-                                <th>@(Name)</th>
+                                <th>@(employees:FirstName)</th>
+                                <th>@(employees:LastName)</th>
                                 <th>@(Tel-Mobile)</th>
                                 <th>@(Email)</th>
                                 <th>@(employees:Skype)</th>
@@ -95,6 +96,7 @@
                                 <th>@(employees:Manager)</th>
                                 <th>@(employees:EditedBy)</th>
                                 <th>@(employees:CreatedBy)</th>
+                                <th>@(Action)</th>
                             </tr>
                             <!--<tr role="row" class="filter">
                             <td>

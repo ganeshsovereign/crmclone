@@ -1,6 +1,8 @@
 {
     "CHARSET": "UTF-8",
-    "ListofEmployees": "Liste des collaborateurs",
+    "Employees": "Collaborateurs",
+    "ListOfEmployees": "Liste des collaborateurs",
+    "EmployeesCardOf": "Fiche Collaborateur de",
     "Skype": "Skype",
     "Departement": "Département",
     "Manager": "Chef d'équipe",
@@ -9,5 +11,11 @@
     "Main": "Résumé",
     "PersonnalInformation": "Informations détaillées",
     "Job": "Emploi",
-    "Assignees": "Affectation"
+    "Assignees": "Affectation",
+    "FirstName": "Prénom",
+    "LastName": "Nom",
+    "NewEmployees": "Nouveau Collaborateur",
+    "LinkedIn": "LinkedIn",
+    "Facebook": "Facebook",
+    "dateBirth": "Année de Naissance"
 }

@@ -25,3 +25,4 @@ logs.txt
 databases/reqstats.json
 debug.pid
 dump/new/
+dump/tm/

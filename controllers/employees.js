@@ -47,7 +47,7 @@ exports.install = function() {
         });
     }, ['authorize']);
     F.route('/erp/api/employees/name/autocomplete', function() {
-        var UserModel = MODEL('Users').Schema;
+        var Employees = MODEL('Users').Schema;
         var self = this;
 
         //console.dir(self.body);
@@ -87,7 +87,7 @@ exports.install = function() {
             query.Status = { $ne: "DISABLE" };
         }
 
-        UserModel.find(query, {}, { limit: self.body.take }, function(err, docs) {
+        Employees.find(query, {}, { limit: self.body.take }, function(err, docs) {
             if (err) {
                 console.log("err : /api/user/name/autocomplete");
                 console.log(err);
@@ -1106,9 +1106,9 @@ function Object() {}
 
 Object.prototype = {
     read: function() {
-        var UserModel = MODEL('Users').Schema;
+        var Employees = MODEL('Employees').Schema;
         var self = this;
-        UserModel.find({}, function(err, doc) {
+        Employees.find({}, function(err, doc) {
             if (err)
                 return self.throw500(err);
 
@@ -1117,7 +1117,7 @@ Object.prototype = {
     },
     readDT: function() {
         var self = this;
-        var UserModel = MODEL('Employees').Schema;
+        var EmployeesModel = MODEL('Employees').Schema;
         var query = JSON.parse(self.body.query);
         var Status;
         //console.log(self.query);
@@ -1151,7 +1151,7 @@ Object.prototype = {
                 cb(null, MODEL('Employees').Status);
             },
             datatable: function(cb) {
-                UserModel.dataTable(query, options, cb);
+                EmployeesModel.dataTable(query, options, cb);
             }
         }, function(err, res) {
             if (err)
@@ -1169,17 +1169,17 @@ Object.prototype = {
                 // Add id
                 res.datatable.data[i].DT_RowId = row._id.toString();
 
-                res.datatable.data[i].lastname = '<a class="with-tooltip" href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.lastname + '"><span class="fa fa-user"></span> ' + row.lastname + '</a>';
+                res.datatable.data[i].name.first = '<a class="with-tooltip" href="#!/employees/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.first + '"><span class="fa fa-user"></span> ' + row.name.first + '</a>';
 
                 res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
 
                 // Action
-                res.datatable.data[i].action = '<a href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                res.datatable.data[i].action = '<a href="#!/employees/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                 // Add url on name
-                res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
+                res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/employees/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
                 // Convert Date
-                res.datatable.data[i].LastConnection = (row.LastConnection ? moment(row.LastConnection).format(CONFIG('dateformatShort')) : '');
-                res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                //res.datatable.data[i].LastConnection = (row.LastConnection ? moment(row.LastConnection).format(CONFIG('dateformatShort')) : '');
+                //res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
             }
 
             //console.log(res.datatable);
