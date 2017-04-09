@@ -84,7 +84,7 @@ var UserSchema = new Schema({
         }
     },
 
-    profile: { type: Number, ref: 'Profile', required: true },
+    profile: { type: Number, ref: 'Profile', required: false }, //TODO true by default
     groupe: String, //TODO Remove 
     groups: [String],
     lastConnection: Date,

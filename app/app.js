@@ -1399,8 +1399,18 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "EmployeesController"
         })
-        // Main
-        .state("employees.show.main", {
+        .state('employees.create', {
+            parent: "employees",
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/employees/create.html",
+            data: {
+                pageTitle: 'Nouveau Collaborateur'
+            },
+            controller: "EmployeesController"
+        })
+
+    // Main
+    .state("employees.show.main", {
             url: "/employees",
             templateUrl: "/views/employees/main.html",
             data: { pageTitle: 'Main' }
@@ -1416,14 +1426,12 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/employees/job.html",
             data: { pageTitle: 'Job' }
         })
-
-
-    // Assignees
-    .state("employees.show.assignees", {
-        url: "/assignees",
-        templateUrl: "/views/employees/assignees.html",
-        data: { pageTitle: 'Affectation' }
-    })
+        // Assignees
+        .state("employees.show.assignees", {
+            url: "/assignees",
+            templateUrl: "/views/employees/assignees.html",
+            data: { pageTitle: 'Affectation' }
+        })
 
 
 
