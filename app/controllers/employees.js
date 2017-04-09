@@ -127,18 +127,18 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
     };
 
     $scope.findOne = function() {
-        Users.users.get({
+        Employees.get({
             Id: $rootScope.$stateParams.id
-        }, function(user) {
-            //console.log(user);
-            $scope.user = user;
+        }, function(employee) {
+            console.log(employee);
+            $scope.employee = employee;
             $scope.editable = true; // TODO ajouter controle d'acces
 
             $http({
                 method: 'GET',
                 url: 'api/ticket',
                 params: {
-                    find: { "linked.id": user._id },
+                    find: { "linked.id": employee._id },
                     fields: "name ref updatedAt percentage Status task"
                 }
             }).success(function(data, status) {
