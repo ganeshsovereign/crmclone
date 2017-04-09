@@ -47,7 +47,7 @@
 
                             <div class="form-group" ng-class="{'has-error':!validLogin, 'has-success': validLogin}">
                                 <label class="col-md-4 control-label">@(users:Username)</label>
-                                <div class="col-md-4">
+                                <div class="col-md-8">
                                     <input class="form-control" ng-change="checkUserExist(user.username)" required ng-model="user.username" placeholder="@(users:Username)" type="text" autocomplete="off">
                                     <span class="help-block">
                                         <div class="alert alert-danger" ng-show="user.username.length >= 6 && !validLogin"> @(users:IdentifierAlReadyUsed)</div>
@@ -58,7 +58,7 @@
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(users:Password)</label>
-                                <div class="col-md-4">
+                                <div class="col-md-8">
                                     <input class="form-control" required ng-model="user.password" placeholder="@(users:Password)" type="text" autocomplete="off">
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
 
                             <div class="form-group" ng-class="{'has-error':!validEmail, 'has-success': validEmail}">
                                 <label class="col-md-4 control-label">@(Email)</label>
-                                <div class="col-md-4">
+                                <div class="col-md-8">
                                     <input class="form-control" ng-change="checkEmailExist(user.email)" required ng-model="user.email" placeholder="@(users:Email)" type="email" autocomplete="off">
                                     <span class="help-block">
                                         <div class="alert alert-warning" ng-show="!user.email"> @(users:EmailAddressNeeded)</div>
