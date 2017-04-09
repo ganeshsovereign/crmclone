@@ -355,9 +355,9 @@ Object.prototype = {
                 // Add id
                 res.datatable.data[i].DT_RowId = row._id.toString();
 
-                res.datatable.data[i].lastname = '<a class="with-tooltip" href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.lastname + '"><span class="fa fa-user"></span> ' + row.lastname + '</a>';
+                res.datatable.data[i].username = '<a class="with-tooltip" href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.username + '"><span class="fa fa-user"></span> ' + row.username + '</a>';
 
-                res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
+                //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
 
                 // Action
                 res.datatable.data[i].action = '<a href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';

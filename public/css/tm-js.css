@@ -225,7 +225,7 @@ pre {
 }
 
 .static-info {
-    margin-bottom: 4px;
+    margin-bottom: 10px;
 }
 
 hr {
@@ -437,4 +437,8 @@ h4 {
 .form-horizontal .form-group.form-md-line-input>label {
     padding-top: 5px;
     font-size: 12px;
+}
+
+.profile-stat-title {
+    font-size: 16px;
 }

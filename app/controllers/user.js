@@ -201,32 +201,14 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                 "columns": [{
                     data: 'bool'
                 }, {
-                    data: "lastname",
-                    defaultContent: ""
-                }, {
-                    data: "firstname",
-                    defaultContent: ""
-                }, {
                     data: "username",
                     defaultContent: ""
-                }, {
-                    data: "poste",
-                    defaultContent: ""
-                }, {
-                    data: "groupe",
-                    defaultContent: ""
-                }, {
-                    data: "entity",
-                    defaultContent: "",
-                    visible: user.multiEntities
                 }, {
                     data: "email",
                     defaultContent: ""
                 }, {
-                    data: "LastConnection",
+                    data: "namegroup",
                     defaultContent: ""
-                }, {
-                    data: "Status"
                 }, {
                     data: "updatedAt",
                     defaultContent: ""
