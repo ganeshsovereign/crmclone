@@ -15,6 +15,15 @@
     }
 }
 
+body {
+    font-size: 12px;
+}
+
+.table td,
+.table th {
+    font-size: 12px;
+}
+
 .page-header.navbar.navbar-fixed-top,
 .page-header.navbar.navbar-static-top {
     z-index: 1039;
@@ -216,7 +225,7 @@ pre {
 }
 
 .static-info {
-    margin-bottom: 4px;
+    margin-bottom: 10px;
 }
 
 hr {
@@ -408,4 +417,28 @@ h4 {
     background-color: #f6f9fb;
     border-left: 2px solid #F3C200;
     margin-left: -2px;
+}
+
+.btn:not(.md-skip).btn-sm {
+    font-size: 11px;
+    padding: 3px 9px;
+}
+
+.input-sm {
+    height: 27px;
+}
+
+.profile-usermenu ul li a {
+    color: #93a3b5;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.form-horizontal .form-group.form-md-line-input>label {
+    padding-top: 5px;
+    font-size: 12px;
+}
+
+.profile-stat-title {
+    font-size: 16px;
 }

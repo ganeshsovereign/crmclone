@@ -1,3 +1,109 @@
+<div ng-if="user.isremoved" class="alert alert-danger">
+    <strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)
+</div>
+
+<div class="page-bar" ng-init="findOne()">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a ui-sref="user.list">@(users:ListOfUsers)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(users:UserCard) </span>
+        </li>
+    </ul>
+    <div class="page-toolbar" ng-hide="user.isremoved">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn yellow-lemon dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                @(Tools) <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(user)" ng-confirm-click="@(ConfirmDeleteUser)" title="Delete Users ?">
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div ng-if="user.isremoved" class="alert alert-danger"><strong>Attention !</strong> Cet Utilisateur est supprimé </div>
+
+
+<div class="row">
+    <div class="col-md-offset-3 col-md-6">
+        <form editable-form name="editableUser" onaftersave="update()">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-red">
+                        <h5 class="page-title font-red">
+                            <i class="fa fa-user "></i> {{user.username}}
+                        </h5>
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" ng-click="editableUser.$show()" ng-hide="user.isremoved" ng-show="!editableUser.$visible && editable" class="btn green btn-sm">
+                            <i class="fa fa-pencil"></i> @(Edit) </a>
+                    </div>
+                    <div class="actions" ng-show="editableUser.$visible">
+                        <button type="submit" ng-disabled="editableUser.$waiting" class="btn blue btn-sm">@(Save)</button>
+                        <button type="button" ng-disabled="editableUser.$waiting" ng-click="editableUser.$cancel();
+                            findOne();" class="btn red btn-sm">@(Cancel)</button>
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="row static-info" ng-class="{'has-error':$error, 'has-success': !$error}">
+                        <div class="col-md-4 name">@(users:Username) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.username" onbeforesave="checkUserExist($data)"> {{user.username|| "Non defini"}}</span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Password) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-text="user.password">  </span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Email) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5" editable-text="user.email"> {{user.email|| '@(main:Undefined)'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(employees:Profile) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-select="user.groupe" e-ng-options="g.id as g.name for g in groups">
+                                <small class="label label-sm label-default">{{user.group|| 'Aucun groupe'}}</small>
+                           <!-- <span class="blue h5" editable-text="user.group"> {{user.group|| '@(main:Undefined)'}}</span>-->
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(DateLastModification) :</div>
+                        <div class="col-md-8 value">
+                            {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--
 <h3 class="page-title" ng-init="findOne()">
     <i class="fa fa-user font-blue-madison"></i> @(users:UserCard) {{user.fullname}} <small> @(From) {{user.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>
 </h3>
@@ -468,5 +574,6 @@
             </div>
         </form>
     </div>
-    -->
+    
 </div>
+-->

@@ -1,19 +1,19 @@
 "use strict";
 
-MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', '$filter', 'Employees', function($scope, $rootScope, $http, $filter, Employees) {
+MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '$filter', 'Employees', function($scope, $rootScope, $http, $filter, Employees) {
 
     var grid = new Datatable();
-    var user = $rootScope.login;
+    var employees = $rootScope.login;
 
     $scope.editable = false;
 
-    $scope.user = {
+    $scope.employee = {
         entity: $rootScope.login.entity,
         datec: new Date()
     };
 
     $scope.dict = {};
-    $scope.users = [];
+    $scope.employees = [];
     $scope.status_id = null;
     $scope.validLogin = false;
     $scope.validEmail = true;
@@ -26,7 +26,7 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
-        var dict = ["fk_user_status", "fk_rh_categorie", "fk_job", "fk_country", "fk_departements", "fk_rh_niveauEtude", "fk_rh_contrat", "fk_rh_situationFamiliale", "fk_rh_tempsTravail"];
+        var dict = ["fk_employees_status", "fk_rh_categorie", "fk_job", "fk_country", "fk_departements", "fk_rh_niveauEtude", "fk_rh_contrat", "fk_rh_situationFamiliale", "fk_rh_tempsTravail"];
 
         $http({
             method: 'GET',
@@ -58,7 +58,7 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
         $rootScope.settings.layout.pageSidebarClosed = false;
         $rootScope.settings.layout.pageBodySolid = false;
 
-        var dict = ["fk_user_status"];
+        var dict = ["fk_employees_status"];
 
         $http({
             method: 'GET',
@@ -81,25 +81,26 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
     };
 
     $scope.create = function() {
-        var user = new Users.users(this.user);
-        user.$save(function(response) {
-            $rootScope.$state.go("user.show", { id: response._id });
+        var employee = new Employees(this.employee);
+        console.log(employee);
+        employee.$save(function(response) {
+            $rootScope.$state.go("employees.show", { id: response._id });
         });
     };
 
     $scope.showStatus = function(val, dict) {
-        if (!($scope.dict[dict] && $scope.user[val]))
+        if (!($scope.dict[dict] && $scope.employee[val]))
             return;
-        var selected = $filter('filter')($scope.dict[dict].values, { id: $scope.user[val] });
+        var selected = $filter('filter')($scope.dict[dict].values, { id: $scope.employee[val] });
 
-        return ($scope.user[val] && selected && selected.length) ? selected[0].label : 'Non défini';
+        return ($scope.employee[val] && selected && selected.length) ? selected[0].label : 'Non défini';
     };
 
-    $scope.remove = function(user) {
-        if (!user && grid) {
+    $scope.remove = function(employees) {
+        if (!employees && grid) {
             return $http({
                 method: 'DELETE',
-                url: '/erp/api/user',
+                url: '/erp/api/employees',
                 params: {
                     id: grid.getSelectedRows()
                 }
@@ -109,17 +110,17 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
             });
         }
 
-        user.$remove(function() {
-            $rootScope.$state.go("user.list");
+        employees.$remove(function() {
+            $rootScope.$state.go("employees.list");
         });
     };
 
     $scope.update = function(options, callback) { //example options : {status: Status}
-        var user = $scope.user;
+        var employee = $scope.employee;
 
-        user.$update(options, function(response) {
+        employee.$update(options, function(response) {
 
-            $scope.user = response;
+            $scope.employee = response;
 
             if (callback)
                 callback(null, response);
@@ -147,7 +148,6 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
 
                 $scope.countTicket = $scope.tickets.length;
             });
-
         }, function(err) {
             if (err.status == 401)
                 $location.path("401.html");
@@ -197,34 +197,35 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
                 "columns": [{
                     data: 'bool'
                 }, {
-                    data: "name.last",
-                    defaultContent: ""
-                }, {
                     data: "name.first",
                     defaultContent: ""
                 }, {
-                    data: "username",
+                    data: "name.last",
                     defaultContent: ""
                 }, {
-                    data: "poste",
+                    data: "phones.mobile",
                     defaultContent: ""
                 }, {
-                    data: "groupe",
+                    data: "emails.work",
                     defaultContent: ""
                 }, {
-                    data: "entity",
+                    data: "skype",
+                    defaultContent: ""
+                }, {
+                    data: "department",
+                    defaultContent: ""
+                }, {
+                    data: "jobPosition",
                     defaultContent: "",
-                    visible: user.multiEntities
                 }, {
-                    data: "email",
+                    data: "manager",
+                    defaultContent: "",
+                    visible: employees.multiEntities
+                }, {
+                    data: "editedBy",
                     defaultContent: ""
                 }, {
-                    data: "LastConnection",
-                    defaultContent: ""
-                }, {
-                    data: "Status"
-                }, {
-                    data: "updatedAt",
+                    data: "createdBy",
                     defaultContent: ""
                 }, {
                     data: 'action'
@@ -301,28 +302,28 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
     };
 
     $scope.changeStatus = function(Status) {
-        $scope.user.Status = Status;
+        $scope.employee.Status = Status;
         $scope.update({ Status: Status });
     };
 
-    $scope.checkUserExist = function(data) {
+    $scope.checkemployeesExist = function(data) {
         if (!data || data.length < 6) {
             $scope.validLogin = false;
             return "Nom utilisateur trop court";
         }
 
-        return $http.get('/erp/api/user/' + data).then(function(user) {
-            if (!user.data)
+        return $http.get('/erp/api/employees/' + data).then(function(employee) {
+            if (!employee.data)
                 return true;
 
-            if ($scope.user && user.data._id && $scope.user._id == user.data._id) {
+            if ($scope.employee && employee.data._id && $scope.employee._id == employee.data._id) {
                 $scope.validLogin = true;
                 return true;
             }
 
-            if (user.data._id) {
+            if (employee.data._id) {
                 $scope.validLogin = false;
-                return 'Erreur de username';
+                return 'Erreur de employeesname';
             }
 
 
@@ -333,17 +334,17 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
     };
     $scope.checkEmailExist = function(data) {
 
-        return $http.get('/erp/api/user/email/?email=' + data).then(function(user) {
-            if (!user.data)
+        return $http.get('/erp/api/employees/email/?email=' + data).then(function(employee) {
+            if (!employee.data)
                 return true;
 
             // if edit mode
-            if ($scope.user && user.data._id && $scope.user._id == user.data._id) {
+            if ($scope.employee && employee.data._id && $scope.employee._id == employee.data._id) {
                 $scope.validEmail = true;
                 return true;
             }
 
-            if (user.data._id) {
+            if (employee.data._id) {
                 $scope.validEmail = false;
                 return 'Erreur adresse email';
             }

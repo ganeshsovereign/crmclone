@@ -1222,6 +1222,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "EEDHLController"
         })
+        //Absence
         .state('europexpress.absence', {
             parent: "europexpress",
             url: "/absence.html",
@@ -1249,6 +1250,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "UserRhAbsenceController"
         })
+        //Vehicule
         .state('europexpress.vehicule', {
             parent: "europexpress",
             url: "/list_vehicule.html",
@@ -1371,46 +1373,66 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             parent: "user",
             url: "/{id}",
             templateUrl: "/views/user/fiche.html",
-            data: {
-                pageTitle: 'Fiche collaborateur'
-            },
+            data: { pageTitle: 'Fiche collaborateur' },
             controller: "UserController"
         })
         // Menu employees
-        .state('employees', {
-            url: "/employees",
+        .state('employee', {
+            url: "/employee",
             abstract: true,
             templateUrl: "/views/employees/index.html"
         })
-        .state('employees.list', {
+        .state('employee.list', {
             url: "",
             templateUrl: "/views/employees/list.html",
             data: {
                 pageTitle: 'Liste des collaborateurs'
             },
-            controller: "EmployeesController"
+            controller: "EmployeeController"
         })
-        .state('employees.create', {
-            parent: "employees",
-            url: "/employees.html",
-            templateUrl: "/views/employees/create.html",
-            data: {
-                pageTitle: 'Nouveau collaborateur'
-            },
-            controller: "EmployeesController"
-        })
-        .state('employees.show', {
-            parent: "employees",
-            url: "/{id}",
+        .state('employee.show', {
+            parent: "employee",
+            url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/employees/fiche.html",
             data: {
-                pageTitle: 'Fiche collaborateur'
+                pageTitle: 'Fiche Collaborateur'
             },
-            controller: "EmployeesController"
+            controller: "EmployeeController"
         })
-
-    // Group management
-    .state('group', {
+        .state('employee.create', {
+            parent: "employee",
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/employees/create.html",
+            data: {
+                pageTitle: 'Nouveau Collaborateur'
+            },
+            controller: "EmployeeController"
+        })
+        // Main
+        .state("employee.show.main", {
+            url: "/employee",
+            templateUrl: "/views/employees/main.html",
+            data: { pageTitle: 'Main' }
+        })
+        // Personnal Information
+        .state("employee.show.personnalinformation", {
+            url: "/PersonnalInformation",
+            templateUrl: "/views/employees/personnal.html",
+            data: { pageTitle: 'PersonnalInformation' }
+        }) // Job
+        .state("employee.show.job", {
+            url: "/Job",
+            templateUrl: "/views/employees/job.html",
+            data: { pageTitle: 'Job' }
+        })
+        // Assignees
+        .state("employee.show.assignees", {
+            url: "/assignees",
+            templateUrl: "/views/employees/assignees.html",
+            data: { pageTitle: 'Affectation' }
+        })
+        // Group management
+        .state('group', {
             url: "/group",
             abstract: true,
             templateUrl: "/views/group/index.html"
