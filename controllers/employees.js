@@ -5,6 +5,8 @@ var fs = require('fs'),
     moment = require('moment'),
     async = require('async');
 
+const ObjectId = MODULE('utils').ObjectId;
+
 exports.install = function() {
 
     var object = new Object();
@@ -818,7 +820,8 @@ exports.install = function() {
     F.route('/erp/api/employees/getSalaryForChart', object.getSalaryForChart, ['authorize']);
     F.route('/erp/api/employees/getSalaryByDepartment', object.getSalaryForChartByDepartment, ['authorize']);
     F.route('/erp/api/employees/settings', object.getSettings, ['authorize']);
-    F.route('/erp/api/employees/{userId}', object.forProfile, ['authorize']);
+    F.route('/erp/api/employees/{userId}', object.getByViewTpe, ['authorize']);
+    //F.route('/erp/api/employees/{userId}', object.forProfile, ['authorize']);
 
     /**
      *@api {post} /employees/ Request for creating Employee
@@ -1169,14 +1172,14 @@ Object.prototype = {
                 // Add id
                 res.datatable.data[i].DT_RowId = row._id.toString();
 
-                res.datatable.data[i].name.first = '<a class="with-tooltip" href="#!/employees/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.first + '"><span class="fa fa-user"></span> ' + row.name.first + '</a>';
+                res.datatable.data[i].name.first = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.first + '"><span class="fa fa-user"></span> ' + row.name.first + '</a>';
 
                 res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
 
                 // Action
-                res.datatable.data[i].action = '<a href="#!/employees/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                res.datatable.data[i].action = '<a href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                 // Add url on name
-                res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/employees/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
+                res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
                 // Convert Date
                 //res.datatable.data[i].LastConnection = (row.LastConnection ? moment(row.LastConnection).format(CONFIG('dateformatShort')) : '');
                 //res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
@@ -2148,7 +2151,7 @@ Object.prototype = {
         }
     },
     createTransfer: function() {
-        var Model = MODEL('Transfers').Schema;
+        var Model = MODEL('transfers').Schema;
         var body = self.body;
         var transfer = new Model(body);
 
@@ -2161,7 +2164,7 @@ Object.prototype = {
         });
     },
     updateTransfer: function() {
-        var Model = MODEL('Transfers').Schema;
+        var Model = MODEL('transfers').Schema;
         var body = self.body;
 
         async.each(body, function(data, cb) {
@@ -2205,7 +2208,7 @@ Object.prototype = {
         });
     },
     removeTransfer: function() {
-        var TransferModel = MODEL('Transfers').Schema;
+        var TransferModel = MODEL('transfers').Schema;
         var body = self.body;
         var removeIdArray = body.removeTransfer;
 
@@ -2430,7 +2433,7 @@ Object.prototype = {
             }
 
             if (data.workflow === 0) {
-                data.workflow = objectId('528ce682f3f67bc40b00001a');
+                data.workflow = ObjectId('528ce682f3f67bc40b00001a');
             }
 
             waterfallTasks = [async.apply(updateEmployee, _id, { $set: data })];
@@ -2537,7 +2540,7 @@ Object.prototype = {
             event.emit('recalculate', req, null, next);
             event.emit('recollectVacationDash');
 
-            TransferModel.remove({ employee: objectId(_id) }, function(err, result) {
+            TransferModel.remove({ employee: ObjectId(_id) }, function(err, result) {
                 var _id;
 
                 if (err) {
@@ -2579,7 +2582,7 @@ Object.prototype = {
                 event.emit('recalculate', req, null, next);
                 event.emit('recollectVacationDash');
 
-                TransferModel.remove({ employee: objectId(id) }, function(err, result) {
+                TransferModel.remove({ employee: ObjectId(id) }, function(err, result) {
                     if (err) {
                         return self.throw500(err);
                     }
@@ -2623,14 +2626,16 @@ Object.prototype = {
     forProfile: function(userId) {
         var self = this;
         var _findUser;
+        var UserModel = MODEL('Users').Schema;
 
         function findUser(userId, waterfallCb) {
-            UserService.find({ _id: userId }, { relatedEmployee: 1 }, function(err, users) {
+            UserModel.find({ _id: userId }, { relatedEmployee: 1 }, function(err, users) {
                 var user;
 
-                if (err) {
+                if (err)
                     return waterfallCb(err);
-                }
+
+                console.log("user", user);
 
                 user = users && users[0];
 
@@ -2639,10 +2644,8 @@ Object.prototype = {
         }
 
         function findEmployee(user, waterfallCb) {
-            self.query = self.query || {};
-            self.query.id = user && user.relatedEmployee;
 
-            getById(req, function(err, employee) {
+            getById({ id: user && user.relatedEmployee }, self.user, function(err, employee) {
                 if (err) {
                     return waterfallCb(err);
                 }
@@ -2661,20 +2664,30 @@ Object.prototype = {
             self.json(employee);
         });
     },
-    getByViewTpe: function() { // toDO refactor id only by params or query
+    getByViewTpe: function(id) { // toDO refactor id only by params or query
         var self = this;
         var query = self.query;
         var viewType = query.viewType;
-        var id = self.query.id;
+
+        if (!id)
+            id = self.query.id;
 
         if (id && id.length >= 24) {
-            getById();
+            getById({ id: id }, self.user, function(err, employee) {
+                if (err)
+                    return self.throw500(err);
+                self.json(employee);
+            });
             return false;
         }
 
         switch (viewType) {
             case 'form':
-                getById();
+                getById(self.query, self.user, function(err, employee) {
+                    if (err)
+                        return self.throw500(err);
+                    self.json(employee);
+                });
                 break;
             case 'kanban':
                 getApplicationsForKanban();
@@ -2959,7 +2972,8 @@ function recalculate() {
 }
 
 function accessEmployeeSalary(profileId) {
-    var profiles = CONSTANTS.ACCESS_EMPLOYEE_SALARY;
+    //var profiles = CONSTANTS.ACCESS_EMPLOYEE_SALARY;
+    return true; //TODO add right user
 
     if (profileId)
         return !(profiles.indexOf(profileId.toString()) < 0);
@@ -3042,7 +3056,8 @@ function getAge(birthday) {
     return (years < 0) ? 0 : years;
 }
 
-function getById() {
+function getById(data, user, next) {
+    console.log(data);
     var projectSalary = {
         department: 1,
         jobPosition: 1,
@@ -3056,25 +3071,23 @@ function getById() {
         scheduledPay: 1,
         payrollStructureType: 1
     };
-    var data = self.query;
-    var profileId = req.session.profileId;
+
+    var profileId = user.profileId;
     var query;
     var getTransfer;
     var getEmployee;
     var parallelTasks;
     var transfers = MODEL('transfers').Schema;
 
-    var isMethod = typeof res === 'function';
-
     // todo refactor it
     getTransfer = function(pCb) {
-        if (req.notCheck || accessEmployeeSalary(profileId)) {
+        if (data.notCheck || accessEmployeeSalary(profileId)) {
             projectSalary.salary = 1;
         }
 
         transfers
             .aggregate([{
-                $match: { employee: objectId(data.id) }
+                $match: { employee: ObjectId(data.id) }
             }, {
                 $lookup: {
                     from: 'Department',
@@ -3167,9 +3180,10 @@ function getById() {
     };
 
     getEmployee = function(pCb) {
-        query = EmployeeService.findById(data.id);
-
-        query.populate('coach', 'name _id')
+        var EmployeeModel = MODEL('Employees').Schema;
+        console.log(data.id);
+        EmployeeModel.findById(data.id)
+            .populate('coach', 'name _id')
             .populate('relatedUser', 'login _id')
             .populate('workflow')
             .populate('createdBy')
@@ -3182,15 +3196,14 @@ function getById() {
             .populate('scheduledPay', '_id name')
             .populate('department', '_id name')
             .populate('groups.group')
-            .populate('groups.owner', '_id login');
+            .populate('groups.owner', '_id login')
+            .exec(function(err, foundEmployee) {
+                if (err)
+                    return pCb(err);
 
-        query.exec(function(err, foundEmployee) {
-            if (err) {
-                return pCb(err);
-            }
 
-            pCb(null, foundEmployee);
-        });
+                pCb(null, foundEmployee);
+            });
     };
 
     parallelTasks = [getEmployee, getTransfer];
@@ -3198,21 +3211,12 @@ function getById() {
     async.parallel(parallelTasks, function(err, result) {
         var response;
 
-        if (err) {
-            if (!isMethod) {
-                return self.throw500(err);
-            }
-
-            return res(err);
-        }
+        if (err)
+            return next(err);
 
         response = result && result[0].set('transfer', result[1]);
 
-        if (!isMethod) {
-            return self.json(response);
-        }
-
-        res(null, response);
+        next(null, response);
     });
 
 }
@@ -3577,7 +3581,7 @@ function getApplicationsForKanban() {
     contentSearcher = function(responseApplications, cb) {
         filterObj.$and = [];
         filterObj.$and.push({ isEmployee: false });
-        filterObj.$and.push({ workflow: objectId(data.workflowId) });
+        filterObj.$and.push({ workflow: ObjectId(data.workflowId) });
         filterObj.$and.push({ _id: { $in: responseApplications } });
 
         Model

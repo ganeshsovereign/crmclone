@@ -1,4 +1,4 @@
-<div ng-if="employees.isremoved" class="alert alert-danger">
+<div ng-if="employee.isremoved" class="alert alert-danger">
     <strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)</div>
 
 <div class="page-bar" ng-init="findOne()">
@@ -9,21 +9,21 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="employees.list">@(employees:ListOfEmployees)</a>
+            <a ui-sref="employee.list">@(employees:ListOfEmployees)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>@(employees:EmployeesCardOf) </span>
+            <span>@(employees:EmployeesCardOf) {{employee.fullName}}</span>
         </li>
     </ul>
-    <div class="page-toolbar" ng-hide="employees.isremoved">
+    <div class="page-toolbar" ng-hide="employee.isremoved">
         <div class="btn-group pull-right">
             <button type="button" class="btn btn-fit-height yellow-lemon dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                 @(Tools) <i class="fa fa-angle-down"></i>
             </button>
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a href="#" class="font-red" ng-show="login.rights.employees.delete" confirmed-click="remove(employee)" ng-confirm-click="@(ConfirmDeleteUser)" title="Delete Employees ?">
+                    <a href="#" class="font-red" ng-show="login.rights.employee.delete" confirmed-click="remove(employee)" ng-confirm-click="@(ConfirmDeleteUser)" title="Delete Employees ?">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
                 </li>
@@ -32,7 +32,7 @@
     </div>
 </div>
 
-<div ng-if="employees.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce Collaborateur est supprimé </div>
+<div ng-if="employee.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce Collaborateur est supprimé </div>
 
 
 <div class="row">
@@ -47,25 +47,25 @@
                 <!-- END SIDEBAR USERPIC -->
                 <!-- SIDEBAR USER TITLE -->
                 <div class="profile-usertitle">
-                    <div class="profile-usertitle-name"> {{employees.name.first}} {{employees.name.last}}</div>
+                    <div class="profile-usertitle-name"> {{employee.name.first}} {{employee.name.last}}</div>
                 </div>
 
                 <div class="profile-usermenu">
                     <ul class="nav">
-                        <li ng-class="{active: $state.includes('employees.show.main')}">
-                            <a ui-sref="employees.show.main">
+                        <li ng-class="{active: $state.includes('employee.show.main')}">
+                            <a ui-sref="employee.show.main">
                                 <i class="icon-info"></i> @(employees:Main) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('employees.show.personnalinformation')}">
-                            <a ui-sref="employees.show.personnalinformation">
+                        <li ng-class="{active: $state.includes('employee.show.personnalinformation')}">
+                            <a ui-sref="employee.show.personnalinformation">
                                 <i class="icon-speech"></i> @(employees:PersonnalInformation) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('employees.show.job')}">
-                            <a ui-sref="employees.show.job">
+                        <li ng-class="{active: $state.includes('employee.show.job')}">
+                            <a ui-sref="employee.show.job">
                                 <i class="icon-basket"></i> @(employees:Job) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('employees.show.assignees')}">
-                            <a ui-sref="employees.show.assignees">
+                        <li ng-class="{active: $state.includes('employee.show.assignees')}">
+                            <a ui-sref="employee.show.assignees">
                                 <i class="icon-share"></i> @(employees:Assignees) </a>
                         </li>
 
@@ -79,11 +79,11 @@
                 <!-- STAT -->
                 <div class="row list-separated profile-stat">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{employees.EditedBy}} </div>
+                        <div class="uppercase profile-stat-title"> {{employee.EditedBy}} </div>
                         <div class="uppercase profile-stat-text"> @(employees:EditedBy)</div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{employees.CreatedBy}} </div>
+                        <div class="uppercase profile-stat-title"> {{employee.CreatedBy}} </div>
                         <div class="uppercase profile-stat-text"> @(employees:CreatedBy) </div>
                     </div>
                 </div>
@@ -120,8 +120,8 @@
                                 <div class="row static-info">
                                     <div class="col-md-4 name">@(employees:FirstName) :</div>
                                     <div class="col-md-8 value">
-                                        <span class="blue h5" editable-text="employees.name.first">
-                                {{employees.name.first}}
+                                        <span class="blue h5" editable-text="employee.name.first">
+                                {{employee.name.first}}
                             </span>
                                     </div>
                                 </div>
@@ -129,7 +129,7 @@
                                 <div class="row static-info">
                                     <div class="col-md-4 name">@(employees:LastName) :</div>
                                     <div class="col-md-8 value">
-                                        <span class="blue h5" editable-text="user.lastname"> {{employees.name.last|| "Non defini"}} </span>
+                                        <span class="blue h5" editable-text="user.lastname"> {{employee.name.last|| "Non defini"}} </span>
                                     </div>
                                 </div>
 

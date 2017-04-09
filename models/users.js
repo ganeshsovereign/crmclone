@@ -211,25 +211,25 @@ UserSchema.path('hashed_password').validate(function(hashed_password) {
 /**
  * Pre-save hook
  */
-/*UserSchema.pre('save', function (next) {
- var self = this;
- 
- if (!this.isNew)
- return next();
- 
- var SeqModel = MODEL('Sequence').Schema;
- 
- //if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1)
- //    this.password = this.generatePassword(8);
- 
- /*if (!this._id && this.isNew)
- return SeqModel.incNumber("ext", 9, function (seq) {
- self._id = "ext:" + seq;
- next();
- });*/
+UserSchema.pre('save', function(next) {
+    var self = this;
 
-//    next();
-//});
+    //if (!this.isNew)
+    //    return next();
+
+    var SeqModel = MODEL('Sequence').Schema;
+
+    if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1)
+        this.password = this.generatePassword(8);
+
+    if (!this.ID)
+        return SeqModel.incCpt("user", function(seq) {
+            self.ID = seq;
+            next();
+        });
+
+    next();
+});
 
 /**
  * Authenticate - check if the passwords are the same

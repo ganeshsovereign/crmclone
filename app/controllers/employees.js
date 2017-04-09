@@ -1,13 +1,13 @@
 "use strict";
 
-MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', '$filter', 'Employees', function($scope, $rootScope, $http, $filter, Employees) {
+MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '$filter', 'Employees', function($scope, $rootScope, $http, $filter, Employees) {
 
     var grid = new Datatable();
     var employees = $rootScope.login;
 
     $scope.editable = false;
 
-    $scope.employees = {
+    $scope.employee = {
         entity: $rootScope.login.entity,
         datec: new Date()
     };
@@ -81,19 +81,19 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
     };
 
     $scope.create = function() {
-        var employees = new Employees.employees(this.employees);
-        console.log(employees);
-        employees.$save(function(response) {
+        var employee = new Employees(this.employee);
+        console.log(employee);
+        employee.$save(function(response) {
             $rootScope.$state.go("employees.show", { id: response._id });
         });
     };
 
     $scope.showStatus = function(val, dict) {
-        if (!($scope.dict[dict] && $scope.employees[val]))
+        if (!($scope.dict[dict] && $scope.employee[val]))
             return;
-        var selected = $filter('filter')($scope.dict[dict].values, { id: $scope.employees[val] });
+        var selected = $filter('filter')($scope.dict[dict].values, { id: $scope.employee[val] });
 
-        return ($scope.employees[val] && selected && selected.length) ? selected[0].label : 'Non défini';
+        return ($scope.employee[val] && selected && selected.length) ? selected[0].label : 'Non défini';
     };
 
     $scope.remove = function(employees) {
@@ -116,11 +116,11 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
     };
 
     $scope.update = function(options, callback) { //example options : {status: Status}
-        var employees = $scope.employees;
+        var employee = $scope.employee;
 
-        employees.$update(options, function(response) {
+        employee.$update(options, function(response) {
 
-            $scope.employees = response;
+            $scope.employee = response;
 
             if (callback)
                 callback(null, response);
@@ -128,18 +128,18 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
     };
 
     $scope.findOne = function() {
-        Employees.employees.get({
+        Employees.get({
             Id: $rootScope.$stateParams.id
-        }, function(employees) {
-            //console.log(employees);
-            $scope.employees = employees;
+        }, function(employee) {
+            console.log(employee);
+            $scope.employee = employee;
             $scope.editable = true; // TODO ajouter controle d'acces
 
             $http({
                 method: 'GET',
                 url: 'api/ticket',
                 params: {
-                    find: { "linked.id": employees._id },
+                    find: { "linked.id": employee._id },
                     fields: "name ref updatedAt percentage Status task"
                 }
             }).success(function(data, status) {
@@ -302,7 +302,7 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
     };
 
     $scope.changeStatus = function(Status) {
-        $scope.employees.Status = Status;
+        $scope.employee.Status = Status;
         $scope.update({ Status: Status });
     };
 
@@ -312,16 +312,16 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
             return "Nom utilisateur trop court";
         }
 
-        return $http.get('/erp/api/employees/' + data).then(function(employees) {
-            if (!employees.data)
+        return $http.get('/erp/api/employees/' + data).then(function(employee) {
+            if (!employee.data)
                 return true;
 
-            if ($scope.employees && employees.data._id && $scope.employees._id == employees.data._id) {
+            if ($scope.employee && employee.data._id && $scope.employee._id == employee.data._id) {
                 $scope.validLogin = true;
                 return true;
             }
 
-            if (employees.data._id) {
+            if (employee.data._id) {
                 $scope.validLogin = false;
                 return 'Erreur de employeesname';
             }
@@ -334,17 +334,17 @@ MetronicApp.controller('EmployeesController', ['$scope', '$rootScope', '$http', 
     };
     $scope.checkEmailExist = function(data) {
 
-        return $http.get('/erp/api/employees/email/?email=' + data).then(function(employees) {
-            if (!employees.data)
+        return $http.get('/erp/api/employees/email/?email=' + data).then(function(employee) {
+            if (!employee.data)
                 return true;
 
             // if edit mode
-            if ($scope.employees && employees.data._id && $scope.employees._id == employees.data._id) {
+            if ($scope.employee && employee.data._id && $scope.employee._id == employee.data._id) {
                 $scope.validEmail = true;
                 return true;
             }
 
-            if (employees.data._id) {
+            if (employee.data._id) {
                 $scope.validEmail = false;
                 return 'Erreur adresse email';
             }
