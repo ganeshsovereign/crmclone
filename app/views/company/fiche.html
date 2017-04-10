@@ -56,41 +56,37 @@
                 <!-- SIDEBAR MENU -->
                 <div class="profile-usermenu">
                     <ul class="nav">
-                        <li ng-class="{active: $state.includes('product.show.informations')}">
-                            <a ui-sref="product.show.informations({id:product._id})">
+                        <li ng-class="{active: $state.includes('societe.show.info')}">
+                            <a ui-sref="societe.show.info({id:societe._id})">
                                 <i class="icon-info"></i> @(Informations) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('product.show.marketing')}">
-                            <a ui-sref="product.show.marketing({id:product._id})">
-                                <i class="icon-speech"></i> @(Marketing) </a>
+                        <li ng-class="{active: $state.includes('societe.show.adresses')}">
+                            <a ui-sref="societe.show.adresses({id:societe._id})">
+                                <i class="icon-speech"></i> @(ContactsAddressesForCompany) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('product.show.price')}">
-                            <a ui-sref="product.show.price({id:product._id})">
-                                <i class="icon-basket"></i> @(Price) </a>
+                        <li ng-class="{active: $state.includes('societe.show.task')}">
+                            <a ui-sref="societe.show.task({id:societe._id})">
+                                <i class="icon-basket"></i> @(tasks:Tasks) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('product.show.categories')}">
-                            <a ui-sref="product.show.categories({id:product._id})">
-                                <i class="icon-share"></i> @(Categories) </a>
+                        <li ng-class="{active: $state.includes('societe.show.commercial')}">
+                            <a ui-sref="societe.show.commercial({id:societe._id})">
+                                <i class="icon-basket"></i> @(commercial:Commercial) </a>
                         </li>
-                        <li ng-if="product.isBundle || product.info.productType.isBunble" ng-class="{active: $state.includes('product.show.bundles')}">
-                            <a ui-sref="product.show.bundles({id:product._id})" class="nav-link">
-                                <i class="icon-settings"></i> @(products:Bundle) <span ng-if='product.pack.length' class='badge badge-success'>{{product.pack.length}}</span> </a>
+                        <li ng-class="{active: $state.includes('societe.show.billing')}">
+                            <a ui-sref="societe.show.billing({id:societe._id})">
+                                <i class="icon-share"></i> @(bills:Billing) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('product.show.attributes')}">
-                            <a ui-sref="product.show.attributes({id:product._id})">
-                                <i class="icon-target"></i> @(products:Attributes) </a>
+                        <li ng-class="{active: $state.includes('societe.show.files')}">
+                            <a ui-sref="societe.show.files({id:societe._id})">
+                                <i class="icon-social-dropbox"></i> @(products:Images/documents) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('product.show.stock')}">
-                            <a ui-sref="product.show.stock({id:product._id})">
-                                <i class="icon-social-dropbox"></i> @(stocks:Stocks) </a>
+                        <li ng-class="{active: $state.includes('societe.show.stats')}">
+                            <a ui-sref="societe.show.stats({id:societe._id})">
+                                <i class="icon-target"></i> @(Statistics) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('product.show.ecommerce')}">
-                            <a ui-sref="product.show.ecommerce({id:product._id})">
-                                <i class="icon-globe"></i> @(Ecommerce) </a>
-                        </li>
-                        <li ng-if="changedProductType.opts.length" ng-class="{active: $state.includes('product.show.declinations')}">
-                            <a ui-sref="product.show.declinations({id:product._id})">
-                                <i class="icon-magic-wand"></i> @(Declinations) </a>
+                        <li ng-class="{active: $state.includes('societe.show.feeds')}">
+                            <a ui-sref="societe.show.feeds({id:societe._id})">
+                                <i class="icon-target"></i> @(tasks:Actions) </a>
                         </li>
                     </ul>
                 </div>
@@ -102,11 +98,11 @@
                 <!-- STAT -->
                 <div class="row list-separated profile-stat">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{product.createdAt|date:'dd/MM/yyyy'}} </div>
+                        <div class="uppercase profile-stat-title"> {{societe.createdAt|date:'dd/MM/yyyy'}} </div>
                         <div class="uppercase profile-stat-text"> @(DateCreation)</div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{product.updatedAt|date:'dd/MM/yyyy'}} </div>
+                        <div class="uppercase profile-stat-title"> {{societe.updatedAt|date:'dd/MM/yyyy'}} </div>
                         <div class="uppercase profile-stat-text"> @(DateModification) </div>
                     </div>
                 </div>
