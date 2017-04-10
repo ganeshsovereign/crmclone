@@ -144,7 +144,7 @@ var EmployeeSchema = new Schema({
 
     skype: { type: String, default: '' },
     officeLocation: { type: String, default: '' },
-    relatedUser: { type: ObjectId, ref: 'Users', default: null },
+    relatedUser: { type: ObjectId, ref: 'Users', default: null, sparse: true },
     visibility: { type: String, default: 'Public' },
     department: { type: ObjectId, ref: 'Department', default: null },
     jobPosition: { type: ObjectId, ref: 'JobPosition', default: null },

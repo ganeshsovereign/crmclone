@@ -16,7 +16,7 @@ var entitySchema = new Schema({
     address: String,
     zip: String,
     town: String,
-    country_id: String,
+    country: { type: String, ref: 'countries', default: 'FR' },
     phone: String,
     email: String,
     url: String, // url website
