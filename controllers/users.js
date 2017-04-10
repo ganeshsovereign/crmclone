@@ -185,6 +185,9 @@ Object.prototype = {
         if (!user.entity)
             user.entity = self.user.entity;
 
+        if (!user.password)
+            user.password = user.generatePassword(8);
+
         user.save(function(err, doc) {
             if (err)
                 return self.throw500(err);
@@ -211,6 +214,9 @@ Object.prototype = {
         UserModel.findOne({ _id: id }, function(err, user) {
 
             user = _.extend(user, self.body);
+
+            if (!user.password)
+                user.password = user.generatePassword(8);
 
             user.save(function(err, doc) {
 

@@ -219,9 +219,6 @@ UserSchema.pre('save', function(next) {
 
     var SeqModel = MODEL('Sequence').Schema;
 
-    if (!validatePresenceOf(this.password) && authTypes.indexOf(this.provider) === -1)
-        this.password = this.generatePassword(8);
-
     if (!this.ID)
         return SeqModel.incCpt("user", function(seq) {
             self.ID = seq;

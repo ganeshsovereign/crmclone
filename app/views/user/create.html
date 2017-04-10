@@ -2,7 +2,7 @@
     <strong>@(users:BeCareful)</strong> @(users:UserHasBeenDeleted)
 </div>
 
-<div class="page-bar" ng-init="findOne()">
+<div class="page-bar">
     <ul class="page-breadcrumb">
         <li>
             <i class="fa fa-home"></i>
@@ -59,11 +59,9 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(users:Password)</label>
                                 <div class="col-md-8">
-                                    <input class="form-control" required ng-model="user.password" placeholder="@(users:Password)" type="text" autocomplete="off">
+                                    <input class="form-control" ng-model="user.password" placeholder="@(users:Password)" type="text" autocomplete="off">
                                 </div>
                             </div>
-
-
 
                             <div class="form-group" ng-class="{'has-error':!validEmail, 'has-success': validEmail}">
                                 <label class="col-md-4 control-label">@(Email)</label>
@@ -75,7 +73,12 @@
                                     </span>
                                 </div>
                             </div>
-
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(users:Group)</label>
+                                <div class="col-md-8">
+                                    <select class="form-control" data-ng-model="user.groupe" data-ng-options="s.id as s.name for s in groups"></select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
