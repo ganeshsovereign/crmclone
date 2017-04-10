@@ -1,0 +1,224 @@
+<h3 class="page-title">
+    <i class="fa fa-group font-blue-hoki"></i> @(companies:NewContact)
+</h3>
+
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i></li>
+        <li>
+            <span>@(companies:NewContact)</span></li>
+    </ul>
+</div>
+
+
+<form ng-submit="create()" role="form">
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="portlet light portlet-form bordered">
+                <div class="portlet-title">
+                    <div class="caption font-yellow-crusta">
+                        <i class="fa fa-group font-yellow-crusta"></i> @(GeneralParameters)
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-4 control-label">@(companies:UserTitle)</label>
+                                <div class="col-md-8">
+                                    <select class="form-control" data-ng-model="contact.civilite" data-ng-options="s.id as s.label for s in dict.fk_civilite.values"></select>
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-4 control-label">@(companies:Lastname)</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" ng-model="contact.lastname" required placeholder="@(companies:Lastname)" type="text">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-4 control-label">@(companies:Firstname)</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" ng-model="contact.firstname" required placeholder="@(companies:Firstname)" type="text">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-4 control-label">@(companies:Company)</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" ng-model="contact.societe" typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete') | filter:{name:$viewValue}" typeahead-on-select="updateAddress($item)" placeholder="@(companies:CompanyName)"
+                                        type="text" autocomplete="off" />
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-4 control-label">@(companies:PostOrFunction)</label>
+                                <div class="col-md-8">
+                                    <select class="form-control" data-ng-model="contact.poste" data-ng-options="s.id as s.label for s in dict.fk_job.values"></select>
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-4 control-label">@(companies:DetailsPostOrFunction)</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" ng-model="contact.firstname" required placeholder="@(companies:Firstname)" type="text">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(companies:birthday)</label>
+                                <div class="col-md-8">
+                                    <p class="input-group">
+                                        <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" placeholder="@(companies:birthdayDate)" ng-model="contact.birthday" is-open="opened" datepicker-options="dateOptions" close-text="Close" />
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">@(companies:SendNewsletter)</label>
+                                <div class="radio-list col-md-3">
+                                    <span>
+                                        <input type="radio" name="newsletter" required ng-model="contact.newsletter" value="true" class=""/> @(Yes)
+                                        <input type="radio" name="newsletter" required ng-model="contact.newsletter" value="false" class=""/> @(No)
+                                    </span>
+
+                                </div>
+                                <label class="col-md-3 control-label">@(companies:SendSMS)</label>
+                                <div class="radio-list col-md-3">
+                                    <span>
+                                        <input type="radio" name="sendSMS" required ng-model="contact.sendSMS" value="true" class=""/> @(Yes)
+                                        <input type="radio" name="sendSMS" required ng-model="contact.sendSMS" value="false" class=""/> @(No)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(companies:Soncas)</label>
+                                <div class="col-md-8">
+                                    <span class="help-inline">
+                                        <label class="checkbox" ng-repeat="s in soncas">
+                                            <input name="selectedSoncas[]" value="{{s.value}}" ng-checked="contact.soncas.indexOf(s.value) > -1" ng-click="toggleSelection(s)" type="checkbox"/> {{s.text}}
+                                        </label>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-4 control-label">@(Status)</label>
+                                <div class="col-md-8">
+                                    <select class="form-control" data-ng-model="contact.Status" data-ng-options="s.id as s.label for s in dict.fk_user_status.values"></select>
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+            <div class="portlet light portlet-form bordered">
+                <div class="portlet-title">
+                    <div class="caption font-grey-gallery">
+                        <i class="fa fa-group font-grey-gallery"></i> @(companies:ParticularsContact)
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-3 control-label">@(companies:PhonePro)</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" ng-model="contact.phone" placeholder="@(companies:PhonePro)" type="text" />
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-3 control-label">@(companies:PhonePerso)</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" ng-model="contact.phone_perso" placeholder="@(companies:PhonePerso)" type="text">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-3 control-label">@(companies:PhoneMobile)</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" ng-model="contact.phone_mobile" placeholder="@(companies:PhoneMobile)" type="text">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-3 control-label">@(Email)</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" ng-model="contact.email" placeholder="@(companies:AdressEmail)" type="email">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-3 control-label">Twitter</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" ng-model="contact.email" placeholder="Twitter URL" type="email">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-3 control-label">LinkedIn</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" ng-model="contact.email" placeholder="LinkedIn URL" type="email">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-md-line-input">
+                                <label class="col-md-3 control-label">Skype</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" ng-model="contact.email" placeholder="@(companies:AdressEmail)" type="email">
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+            <div class="portlet light portlet-form bordered">
+                <div class="portlet-title">
+                    <div class="caption font-grey-gallery">
+                        <i class="fa fa-group font-grey-gallery"></i> @(companies:AddressContact)
+                    </div>
+                </div>
+                <div class="portlet-body" crm-address mode="create" model="contact"></div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12">
+            <div class="portlet light portlet-form bordered">
+                <div class="portlet-title">
+                    <div class="caption font-dark">
+                        <i class="fa fa-group font-dark"></i> @(Notes)
+                    </div>
+                </div>
+
+                <div markdown-editor ng-model="contact.notes"></div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-actions">
+        <div class="row">
+            <div class="col-md-offset-5 col-md-7">
+                <button type="submit" class="btn btn-circle btn-success">@(Create)</button>
+                <a href="#" ng-click="goBack()" class="btn btn-circle red">@(Cancel)</a>
+            </div>
+        </div>
+    </div>
+</form>
