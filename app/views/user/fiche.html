@@ -59,41 +59,38 @@
                 <div class="portlet-body">
 
                     <div class="row static-info" ng-class="{'has-error':$error, 'has-success': !$error}">
-                        <div class="col-md-4 name">@(users:Username) :</div>
-                        <div class="col-md-8 value">
+                        <div class="col-md-5 name">@(users:Username) :</div>
+                        <div class="col-md-7 value">
                             <span class="blue h5" editable-text="user.username" onbeforesave="checkUserExist($data)"> {{user.username|| "Non defini"}}</span>
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(Password) :</div>
-                        <div class="col-md-8 value">
+                        <div class="col-md-5 name">@(Password) :</div>
+                        <div class="col-md-7 value">
                             <span editable-text="user.password">  </span>
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(Email) :</div>
-                        <div class="col-md-8 value">
+                        <div class="col-md-5 name">@(Email) :</div>
+                        <div class="col-md-7 value">
                             <span class="blue h5" editable-text="user.email"> {{user.email|| '@(main:Undefined)'}}</span>
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(employees:Profile) :</div>
-                        <div class="col-md-8 value">
+                        <div class="col-md-5 name">@(user:Group) :</div>
+                        <div class="col-md-7 value">
                             <span editable-select="user.groupe" e-ng-options="g.id as g.name for g in groups">
-                                <small class="label label-sm label-default">{{user.group|| 'Aucun groupe'}}</small>
+                                <small class="label label-sm label-default">{{user.profile}}</small>
                            <!-- <span class="blue h5" editable-text="user.group"> {{user.group|| '@(main:Undefined)'}}</span>-->
                         </div>
                     </div>
 
-
-
-
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(DateLastModification) :</div>
-                        <div class="col-md-8 value">
+                        <div class="col-md-5 name">@(DateLastModification) :</div>
+                        <div class="col-md-7 value">
                             {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}}
                         </div>
                     </div>
