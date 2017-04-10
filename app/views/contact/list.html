@@ -1,0 +1,110 @@
+<div>
+
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a ui-sref="home">@(Home)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(companies:ListOfContacts)</span>
+            </li>
+        </ul>
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <button class="btn btn-circle dark dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+                            </button>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+                                        @(PrintList) </a>
+                    </li>
+                    <!-- <li>
+                                     <a href="#">
+                                     @(Update) </a>
+                                 </li>-->
+                    <li class="divider">
+                    </li>
+                    <li>
+                        <a href="#" class="font-red" ng-show="login.rights.contact.delete" confirmed-click="remove()" ng-confirm-click="Confirmez-vous la suppression des contacts ? Ceci sera irrémédiable.">
+                            <i class="fa fa-trash-o font-red"></i> @(Delete)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <h3 class="page-title">
+        <i class="fa fa-users font-yellow-crusta"></i> @(companies:ListOfContacts)
+    </h3>
+
+    <div class="portlet light portlet-form bordered">
+        <div class="portlet-title">
+            <div class="caption font-yellow-crusta">
+                <i class="fa fa-users font-yellow-crusta"></i>Contacts dans les societes
+            </div>
+            <div class="actions">
+                <button class="btn btn-circle default" ui-sref="contact.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button title="@(Refresh)" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+            </div>
+        </div>
+        <div class="tools">
+        </div>
+        <div class="portlet-body">
+            <div class="table-toolbar">
+                <div class="row hidden-print">
+                    <div class="form-group form-md-line-input">
+                        <div class="col-md-3">
+                            <select ng-model="type" ng-change="setCache('type', type);
+                                find()" ng-options="c as c.name for c in types track by c.id" class="form-control"></select>
+                        </div>
+                        <div class="col-md-3">
+                            <select ng-show="login.rights.societe.seeAll" ng-model="commercial_id" ng-change="setCache('commercial_id', commercial_id);
+                                find();" ng-options="c._id.id as c._id.name +' (' + c.count + ')' for c in commercialList" class="form-control">
+                            <option value="">-- @(companies:Deal) --</option>
+                        </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select ng-model="status_id" ng-change="setCache('status_id', status_id);
+                                find();" ng-options="s.id as s.label for s in dict.fk_stcomm.values" class="form-control">
+                            <option value="">-- @(companies:ProspectStatus) --</option>
+                        </select>
+                        </div>
+                        <div class="col-md-3" ng-show="login.multiEntities">
+                            <select ng-model="entity" ng-change="setEntity(entity);
+                                find();" ng-options="s.id as s.name for s in entityList" class="form-control">
+                        </select>
+                        </div>
+                        <div class="col-md-3" ng-hide="login.multiEntities">
+                            <select ng-model="prospectlevel" ng-change="setCache('prospectlevel', prospectlevel);
+                                find();" ng-options="s.id as s.label for s in dict.fk_prospectlevel.values" class="form-control">
+                            <option value="">-- @(companies:ProspectLevelShort) --</option>
+                        </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dataTables_wrapper table-responsive">
+                <div class="col-md-12">
+                    <table class="table dataTable table-hover" id="contactList">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th width="2%">
+                                    <input type="checkbox" class="group-checkable" />
+                                </th>
+                                <th>@(Name)</th>
+                                <th>@(companies:PostOrFunction)</th>
+                                <th>@(companies:Company)</th>
+                                <th>@(companies:Phone)</th>
+                                <th>@(companies:PhoneMobile)</th>
+                                <th>@(Email)</th>
+                                <th>@(Status)</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
