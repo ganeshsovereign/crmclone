@@ -786,63 +786,63 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('societe.show.company', {
             url: "/company",
-            templateUrl: "/templates/company/company.html",
+            templateUrl: "/views/company/company.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
         })
         .state('societe.show.person', {
             url: "/person",
-            templateUrl: "/templates/company/person.html",
+            templateUrl: "/views/company/person.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
         })
         .state('societe.show.commercial', {
             url: "/commercial",
-            templateUrl: "/templates/company/commercial.html",
+            templateUrl: "/views/company/commercial.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
         })
-        .state('societe.show.adresses', {
-            url: "/adresses",
-            templateUrl: "/templates/company/adresses.html",
+        .state('societe.show.addresses', {
+            url: "/addresses",
+            templateUrl: "/views/company/addresses.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
         })
         .state('societe.show.billing', {
             url: "/billing",
-            templateUrl: "/templates/company/billing.html",
+            templateUrl: "/views/company/billing.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
         })
         .state('societe.show.task', {
             url: "/task",
-            templateUrl: "/templates/company/task.html",
+            templateUrl: "/views/company/task.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
         })
         .state('societe.show.files', {
             url: "/files",
-            templateUrl: "/templates/company/files.html",
+            templateUrl: "/views/company/files.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
         })
         .state('societe.show.feeds', {
             url: "/feeds",
-            templateUrl: "/templates/company/feeds.html",
+            templateUrl: "/views/company/feeds.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
         })
         .state('societe.show.stats', {
             url: "/stats",
-            templateUrl: "/templates/company/stats.html",
+            templateUrl: "/views/company/stats.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
