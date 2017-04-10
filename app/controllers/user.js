@@ -1,7 +1,6 @@
 "use strict";
 
 MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$filter', 'Users', 'Group', function($scope, $rootScope, $http, $filter, Users, Group) {
-
     var grid = new Datatable();
     var user = $rootScope.login;
 
@@ -78,8 +77,6 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
 
     });
 
-
-
     $scope.ngIncludeInit = function(params, length) {
         $scope.params = params;
         initDatatable(params, length);
@@ -132,31 +129,32 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
     };
 
     $scope.findOne = function() {
-        Users.users.get({
-            Id: $rootScope.$stateParams.id
-        }, function(user) {
-            //console.log(user);
-            $scope.user = user;
-            $scope.editable = true; // TODO ajouter controle d'acces
+        if ($rootScope.$stateParams.id)
+            Users.users.get({
+                Id: $rootScope.$stateParams.id
+            }, function(user) {
+                //console.log(user);
+                $scope.user = user;
+                $scope.editable = true; // TODO ajouter controle d'acces
 
-            $http({
-                method: 'GET',
-                url: 'api/ticket',
-                params: {
-                    find: { "linked.id": user._id },
-                    fields: "name ref updatedAt percentage Status task"
-                }
-            }).success(function(data, status) {
-                if (status == 200)
-                    $scope.tickets = data;
+                $http({
+                    method: 'GET',
+                    url: 'api/ticket',
+                    params: {
+                        find: { "linked.id": user._id },
+                        fields: "name ref updatedAt percentage Status task"
+                    }
+                }).success(function(data, status) {
+                    if (status == 200)
+                        $scope.tickets = data;
 
-                $scope.countTicket = $scope.tickets.length;
+                    $scope.countTicket = $scope.tickets.length;
+                });
+
+            }, function(err) {
+                if (err.status == 401)
+                    $location.path("401.html");
             });
-
-        }, function(err) {
-            if (err.status == 401)
-                $location.path("401.html");
-        });
     };
 
     function getUrl(params) {
@@ -319,6 +317,8 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
 
     };
     $scope.checkEmailExist = function(data) {
+        if (!data)
+            return;
 
         return $http.get('/erp/api/user/email/?email=' + data).then(function(user) {
             if (!user.data)
