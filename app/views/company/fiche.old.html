@@ -1,0 +1,801 @@
+<div ng-init="findOne()">
+    <h3 class="page-title">
+        <i class="fa fa-institution font-blue-steel"></i> @(companies:Company) {{societe.name}}</h3>
+    
+    <div ng-if="societe.isremoved" class="alert alert-danger"><strong>Attention !</strong> Cette societe est supprimee. </div>
+    
+    <div ng-repeat="error in societe.errors" class="alert alert-warning"><strong>Erreur !</strong> {{error}} </div>
+    
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a ui-sref="home">@(Home)</a>
+                <i class="fa fa-angle-right"></i></li>
+            <li>
+                <a ui-sref="societe.list" >@(companies:Companies)</a>
+                <i class="fa fa-angle-right"></i></li>
+            <li>
+                <span>{{societe.name}}</span></li>
+        </ul>
+        <div class="page-toolbar" ng-hide="societe.isremoved">
+            <div class="btn-group pull-right">
+                <button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                    @(Tools) <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li>
+                        <a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove(societe)" ng-confirm-click="Supprimer la societe ?" title="Supprimer la societe">
+                            <i class="fa fa-trash-o font-red"></i>
+                            @(Delete)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row profile">
+        <div class="col-md-12">
+            <tabset class="tabbable-line tabbable-full-width">
+                <tab heading="@(Overview)">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12">
+                            <form editable-form name="editableSociete" onaftersave="update()">
+                                <div class="portlet blue-steel box">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-institution "></i>@(GeneralParameters)
+                                        </div>
+                                        <div class="actions">
+                                            <a href="javascript:;" ng-click="editableSociete.$show()" ng-show="!editableSociete.$visible && editable" class="btn btn-default btn-sm">
+                                                <i class="fa fa-pencil"></i> @(Edit) </a>
+                                        </div>
+                                        <div class="actions" ng-show="editableSociete.$visible">
+                                            <button type="submit" ng-disabled="editableSociete.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                                            <button type="button" ng-disabled="editableSociete.$waiting" ng-click="editableSociete.$cancel();
+                                                findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="row static-info">
+                                            <div class="col-md-4 pull-left">
+                                                <div class="profile-userpic">
+                                                    <img ng-src="{{getLogo('societe', societe)}}" class="img-responsive" alt="logo société client et ou fournisseur"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row static-info">
+                                                    <div class="col-md-5 name">@(companies:Name) :</div>
+                                                    <div class="col-md-7 value">
+                                                        <span class="" editable-text="societe.name">{{ societe.name || '@(main:Undefined)' }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row static-info" ng-class="{'has-error':$error, 'has-success': !$error}">
+                                                    <div class="col-md-5 name">@(companies:IdThirdParty) :</div>
+                                                    <div class="col-md-7 value">
+                                                        <span editable-text="societe.code_client" onbeforesave="checkCodeClient($data)" >{{ societe.code_client || '@(main:Undefined)' }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row static-info">
+                                                    <div class="col-md-5 name">@(companies:SocGroupShort):</div>
+                                                    <div class="col-md-7 value">
+                                                        <span class="h5 thin" editable-text="societe.caFamily" e-typeahead="ca as ca for ca in AutoComplete($viewValue,'api/societe/autocomplete/caFamily',societe.entity)">{{ societe.caFamily || '@(main:Undefined)' }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name">@(main:Entity) :</div>
+                                            <div class="col-md-7 value">
+                                                <span class="label label-default label-sm" editable-select="societe.entity" e-ng-options="e.id as e.name for e in entityListAll">{{societe.entity}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name">@(companies:ProspectStatus) :</div>
+                                            <div class="col-md-7 value">
+                                                <span class="label label-sm" data-ng-class="societe.status.css" editable-select="societe.Status" e-ng-options="s.id as s.label for s in dict.fk_stcomm.values">{{societe.status.name}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-5 name">@(companies:SupplierStatus) :</div>
+                                            <div class="col-md-7 value">
+                                                <span editable-select="societe.fournisseur" e-ng-options="s.id as s.label for s in dict.fk_fournisseur.values">{{showStatus('fournisseur', 'fk_fournisseur')}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <!--<div class="col-md-5 name">@(companies:Address) :</div>-->
+                                            <div class="col-md-12 value">
+                                                <div crm-address model="societe"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(companies:Phone) :</div>
+                                            <div class="col-md-8 value">
+                                                <span editable-tel="societe.phone" e-title="+xxxxxxxxxxx">{{ societe.phone || '@(main:Undefined)' | phone }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(companies:Fax) :</div>
+                                            <div class="col-md-8 value">
+                                                <span editable-tel="societe.fax" e-title="+xxxxxxxxxxx">{{ societe.fax || '@(main:Undefined)' | phone }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(EMail) :</div>
+                                            <div class="col-md-8 value">
+                                                <a data-ng-href="mailto:{{societe.email}}" class="small" target="_blank" editable-email="societe.email">{{ societe.email || '@(main:Undefined)' }}</a>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(Web) :</div>
+                                            <div class="col-md-8 value">
+                                                <a ng-href="{{societe.url}}" target="_blank" editable-url="societe.url" e-title="http://www.mysite.com">{{ societe.url || '@(main:Undefined)' }}</a>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(companies:ProfId2FR)</div>
+                                            <div class="col-md-8 value">
+                                                <span editable-text="societe.idprof2">
+                                                    {{ societe.idprof2 || '@(main:Undefined)' }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(DateLastModification) :</div>
+                                            <div class="col-md-8 value">
+                                                {{ societe.updatedAt | date:'@(main:date.format.java.dayhour)' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-8 profile-info">
+                                    <form editable-form name="editableInfo" onaftersave="addNote()">
+                                        <div class="portlet light">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    Infos stratégiques
+                                                </div>
+                                                <div class="actions" ng-show="!editableInfo.$visible">
+                                                    <a href="#" ng-click="editableInfo.$show()" ng-show="!editableInfo.$visible && editable" class="btn btn-circle btn-default btn-sm" data-original-title="" title="@(Add)"><i class="fa fa-plus"></i>@(Add)</a>
+                                                    <a href="#" class="btn btn-circle btn-icon-only btn-default fullscreen" data-original-title="" title="@(FullScreen)"></a>
+                                                </div>
+                                                <div class="actions" ng-show="editableInfo.$visible">
+                                                    <button type="submit" ng-disabled="editableInfo.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                                                    <button type="button" ng-disabled="editableInfo.$waiting" ng-click="editableInfo.$cancel();
+                                                        findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                                                </div>
+
+                                            </div>
+                                            <div class="portlet-body">
+                                                <span editable-select="note.css" e-ng-options="s.id as s.name for s in noteStatus"></span>
+                                                <pre editable-textarea="note.note" e-name="note" e-rows="6" e-cols="400" e-required e-class="form-control"></pre>
+                                                <div class="" style="max-height:400px;overflow-y: auto">
+                                                    <div ng-repeat="vnote in societe.notes| orderBy:'-datec'">
+                                                        <div class="note row" ng-class="vnote.css">
+                                                            <h4 class="block icon-speech col-md-12"> <b>{{vnote.author.name}}</b> - <i>{{ vnote.datec | date:'@(main:date.format.java.dayhour)' }}</i> <span ng-if="login.rights.societe.delete" title="Supprimer note" class="pull-right icon icon-trash" ng-confirm-click="Supprimer la note ?" confirmed-click="removeNote(vnote)" ></span></h4>
+                                                            <pre class="col-md-12">{{vnote.note}}</pre>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p>
+                                                    <a ng-if="societe.url" ng-href="{{societe.url}}" target="_blank"> {{societe.url}}</a>
+                                                </p>
+                                                <ul class="list-inline">
+                                                    <li ng-if="societe.familyProduct.length">
+                                                        <i class="fa fa-briefcase"></i> {{societe.familyProduct| tag}}
+                                                    </li>
+                                                    <li ng-if="societe.email">
+                                                        <a data-ng-href="mailto:{{societe.email}}" target="_blank"><i ng-if="societe.email" class="fa fa-envelope"></i> {{societe.email}}</a>
+                                                    </li>
+                                                    <li ng-if="societe.phone">
+                                                        <i class="fa fa-phone"></i> {{societe.phone| phone}}
+                                                    </li>
+                                                    <li ng-if="societe.fax">
+                                                        <i class="fa fa-fax"></i> {{societe.fax| phone}}
+                                                    </li>
+                                                    <li ng-if="societe.Tag.length">
+                                                        <i class="fa fa-key"></i> {{societe.Tag| tag}}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!--end col-md-8-->
+                                <div class="col-md-4">
+                                    <div class="portlet light sale-summary">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                @(Summary)
+                                            </div>
+                                            <div class="tools">
+                                                <a class="reload" href="javascript:;" data-original-title="" title="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body">
+                                            <ul class="list-unstyled">
+                                                <li>
+                                                    <span class="sale-info">
+                                                        @(DateLastModification)
+                                                    </span>
+                                                    <span class="sale-num">
+                                                        {{ societe.updatedAt | date:'@(main:date.format.java.dayhour)' }} </span>
+                                                </li>
+                                                <li>
+                                                    <span class="sale-info">
+                                                        @(Status)
+                                                    </span>
+                                                    <span class="sale-num">
+                                                        {{societe.status.name}} </span>
+                                                </li>
+                                                <li>
+                                                    <span class="sale-info">
+                                                        @(commercial:Commercial)
+                                                    </span>
+                                                    <span class="sale-num">
+                                                        {{societe.commercial_id.name}} </span>
+                                                </li>
+                                                <li>
+                                                    <span class="sale-info">
+                                                        @(tasks:Tasks) </span>
+                                                    <span class="sale-num">
+                                                    </span>
+                                                </li>
+                                                <li>
+                                                    <span class="sale-info">
+                                                        @(leads:Leads) </span>
+                                                    <span class="sale-num">
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--end col-md-4-->
+                            </div>
+                            <!-- CONTACT TABLE-->
+                            <tabset class="tabbable-line tabbable-full-width">
+                                <tab heading="@(Contacts)">
+                                    <div class="portlet-body" ng-include="'/templates/_contact/list.html'" ng-controller="ContactController" onload="loadDatatable({'societe': $stateParams.id})">
+                                    </div>
+                                </tab>
+                                <!-- END CONTACT TABLE-->
+                                <!-- ADRESSES TABLE-->
+                                <tab>
+                                    <tab-heading>
+                                        @(companies:DeliveriesAddress) <span ng-if="societe.addresses.length" class="badge badge-info ng-binding ng-scope">{{societe.addresses.length}}</span>
+                                    </tab-heading>
+                                    <div class="portlet-body">
+                                        <div class="table-toolbar">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <button class="btn blue" data-ng-click="editAddress()">@(Add) <i class="fa fa-plus"></i></button>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <!--<div class="btn-group pull-right">
+                                                        <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu pull-right">
+                                                            <li>
+                                                                <a href="#">
+                                                                    @(Update) </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#">
+                                                                    @(Delete) </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script type="text/ng-template" id="addModalAddress.html">
+                                            <div class="modal-header">
+                                            <h3 class="no-margin-bottom">Edition d'une adresse de livraison</h3>
+                                            </div>
+                                            <div class="modal-body">
+                                            <div class="form-horizontal">
+                                            
+                                            <div class="portlet-body margin-bottom" crm-address mode="create" model="address"></div>
+                                            
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">@(Status)</label>
+                                                <div class="col-md-9">
+                                                    <select class="form-control" ng-model="address.Status" ng-options="c.id as c.label for c in dict.fk_user_status.values">
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            </div>
+                                            </div>
+                                            <div class="modal-footer">
+
+                                            <button type="button" ng-click="ok()" class="btn blue btn-sm">@(Save)</button>
+
+                                            </div>
+                                        </script>
+
+                                        <div class="table-scrollable">
+                                            <table class="table table-condensed table-hover">
+                                                <thead>
+                                                    <tr role="row" class="heading">
+                                                        <th width="2%">
+                                                            @(Default)
+                                                        </th>
+                                                        <th>@(Name)</th>
+                                                        <th>@(Address)</th>
+                                                        <th>@(Zip)</th>
+                                                        <th>@(Town)</th>
+                                                        <th>@(Status)</th>
+                                                        <th>@(Action)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="address in societe.addresses">
+                                                        <td><input uniform ng-model="_idAddress" type="checkbox" name="id[]" ng-checked="societe.deliveryAddressId == address.id" ng-click="setDefaultDelivery(address.id)"/></td>
+                                                        <td> {{address.name}} </td>
+                                                        <td><pre>{{ address.address ||  "Non defini" }}</pre></td>
+                                                        <td> {{address.zip}} </td>
+                                                        <td> {{address.town}} </td> {{address}}
+                                                        <td>
+                                                            <span class="label label-sm {{address.status.css}}"> {{address.status.name}} </span>
+                                                        </td>
+                                                        <td style="white-space: nowrap">
+                                                            <!-- form -->
+                                                            <div class="btn-group buttons" ng-if="$index != 0">
+                                                                <button type="button" class="btn btn-xs btn-primary" ng-click="editAddress(address)"><i class="fa fa-pencil"></i></button>
+                                                                <button type="button" class="btn btn-xs btn-danger" confirmed-click="removeAddress($index)" ng-confirm-click="Supprimer l'adresse ?"><i class="fa fa-trash-o"></i></button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </tab>
+                                <!-- END ADRESSES TABLE-->
+                                <!-- FEEDS TABLE-->
+                                <!--<tab heading="Feeds">
+                                                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 290px;"><div class="scroller" data-height="290px" data-always-visible="1" data-rail-visible1="1" data-initialized="1" style="overflow: hidden; width: auto; height: 290px;">
+                                                                                <ul class="feeds">
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-success">
+                                                                                                        <i class="fa fa-bell-o"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        You have 4 pending tasks. <span class="label label-danger label-sm">
+                                                                                                            Take action <i class="fa fa-share"></i>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                Just now
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <a href="#">
+                                                                                            <div class="col1">
+                                                                                                <div class="cont">
+                                                                                                    <div class="cont-col1">
+                                                                                                        <div class="label label-success">
+                                                                                                            <i class="fa fa-bell-o"></i>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="cont-col2">
+                                                                                                        <div class="desc">
+                                                                                                            New version v1.4 just lunched!
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col2">
+                                                                                                <div class="date">
+                                                                                                    20 mins
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </a>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-danger">
+                                                                                                        <i class="fa fa-bolt"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        Database server #12 overloaded. Please fix the issue.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                24 mins
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-info">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                30 mins
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-success">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                40 mins
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-warning">
+                                                                                                        <i class="fa fa-plus"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New user registered.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                1.5 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-success">
+                                                                                                        <i class="fa fa-bell-o"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        Web server hardware needs to be upgraded. <span class="label label-inverse label-sm">
+                                                                                                            Overdue </span>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                2 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-default">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                3 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-warning">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                5 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-info">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                18 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-default">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                21 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-info">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                22 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-default">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                21 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-info">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                22 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-default">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                21 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-info">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                22 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-default">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                21 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                    <li>
+                                                                                        <div class="col1">
+                                                                                            <div class="cont">
+                                                                                                <div class="cont-col1">
+                                                                                                    <div class="label label-info">
+                                                                                                        <i class="fa fa-bullhorn"></i>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                <div class="cont-col2">
+                                                                                                    <div class="desc">
+                                                                                                        New order received. Please take care of it.
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col2">
+                                                                                            <div class="date">
+                                                                                                22 hours
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </div><div class="slimScrollBar" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; background: rgb(187, 187, 187);"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(234, 234, 234);"></div></div>
+                                </tab>-->
+                                <!-- END FEEDS TABLE-->
+                            </tabset>
+                        </div>
+                    </div>
+                </tab>
+                <tab heading="@(commercial:Commercial)"><!-- OPPORTUNITES ET DEVIS -->
+                    <div ng-include="'/templates/_company/commercial.html'"></div>
+                </tab>
+
+                <tab heading="@(bills:Billing)" ng-if="login.rights.bill.read" ng-click="billing = 1">
+                    <div ng-if="billing" ng-include="'/templates/_bill/fiche.html'"></div>
+                </tab>
+
+                <tab heading="@(propal:Proposals)" ng-if="login.rights.offer.read">
+                    <div class="portlet-body">
+                        ng-include
+                    </div>
+                </tab>
+                <tab heading="@(orders:Orders)" ng-if="login.rights.order.read">
+                    <div class="portlet-body">
+                        ng-include
+                    </div>
+                </tab>
+                <tab heading="@(contracts:Contracts)" ng-if="login.rights.contract.read">
+                    <div class="portlet-body">
+                        ng-include
+                    </div>
+                </tab>
+                <!--<tab heading="@(Logistics)" ng-if="login.rights.delivery.read">
+                    <div ng-include="'/templates/_delivery/fiche.html'"></div>
+                </tab>-->
+                <!-- <tab heading="@(deliveries:Interventions)" ng-if="login.rights.delivery.read">
+                     <div ng-include="'/templates/intervention/fiche.html'"></div>
+                 </tab>-->
+                <tab heading="@(companies:Tasks)" ng-if="login.rights.ticket.read || login.rights.task.read" ng-click="task = 1">
+                    <div ng-if="task" ng-include="'/templates/_task/list.html'" ng-controller="TaskController" onload="ngIncludeInit({'societe.id': societe._id, type: 'ALLTASK'}, 25)"></div>
+                </tab>
+                <tab heading="@(buy:Purchases)" ng-if="login.rights.buy.read">
+                    <div ng-include="'/templates/_bill_supplier/fiche.html'"></div>
+                </tab>
+                <tab select="files = 1">
+                    <tab-heading>
+                        <span ng-if='societe.files.length' class='badge badge-success'>{{societe.files.length}}</span> @(Files)
+                    </tab-heading>
+                    <div ng-if="files" ng-include="'/templates/_gridfs/file.html'" ng-controller="FileCtrl" onload="init('societe', societe)"></div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>

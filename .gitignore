@@ -21,6 +21,7 @@ logs.txt
 *.sublime-workspace
 *.cache
 *.nosql
+*.orig
 /install/
 databases/reqstats.json
 debug.pid
