@@ -17,5 +17,6 @@
     "NewEmployees": "Nouveau Collaborateur",
     "LinkedIn": "LinkedIn",
     "Facebook": "Facebook",
-    "dateBirth": "Année de Naissance"
+    "dateBirth": "Année de Naissance",
+    "ConfirmDeleteEmployees": "Confirmation de supression du collaborateur ?"
 }

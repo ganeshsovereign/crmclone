@@ -1401,7 +1401,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('employee.create', {
             parent: "employee",
-            url: "/{id:[0-9a-z]{24}}",
+            url: "create.html",
             templateUrl: "/views/employees/create.html",
             data: {
                 pageTitle: 'Nouveau Collaborateur'
