@@ -45,11 +45,12 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
             $scope.groups = groups;
         });
 
-        if ($rootScope.$stateParams.Status) {
-            $scope.status_id = $rootScope.$stateParams.Status;
-            initDatatable({ status_id: $scope.status_id });
-        } else
-            initDatatable();
+        if (!$rootScope.$stateParams.id)
+            if ($rootScope.$stateParams.Status) {
+                $scope.status_id = $rootScope.$stateParams.Status;
+                initDatatable({ status_id: $scope.status_id });
+            } else
+                initDatatable();
 
     });
 

@@ -16,7 +16,9 @@ if (F.isDebug) {
         req.$begin = Date.now();
         req.on('end', function() {
             if (req.flags)
-                console.log(req.ip, req.flags, req.url, '[' + ((Date.now() - req.$begin)) + 'ms]');
+                req.res.once('finish', function() {
+                    console.log(req.ip, req.method, req.url, '[' + ((Date.now() - req.$begin)) + 'ms]', req.res.statusCode);
+                });
         });
     });
 }
