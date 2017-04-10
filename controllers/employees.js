@@ -1052,8 +1052,8 @@ exports.install = function() {
 
     F.route('/erp/api/employees/settings/', object.setSettings, ['put', 'json', 'authorize']);
 
-    F.route('/erp/api/employees/transfer', object.updateTransfer, ['put', 'json', 'authorize']);
-    F.route('/erp/api/employees/{userId}', object.updateOnlySelectedFields, ['put', 'json', 'authorize']);
+    F.route('/erp/api/employees/transfer', object.updateTransfer, ['patch', 'json', 'authorize']);
+    F.route('/erp/api/employees/{userId}', object.updateOnlySelectedFields, ['patch', 'json', 'authorize']);
 
 
     /**
