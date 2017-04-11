@@ -1,0 +1,183 @@
+<script type="text/ng-template" id="searchproduct.html">
+    <a ng-class="{'list-group-item font-green': match.model.price_level != 'BASE'}">
+        <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.price_level}} : {{match.model.pu_ht|currency}})
+    </a>
+</script>
+
+<script type="text/ng-template" id="searchsupplierproduct.html">
+    <a>
+        <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.totalCost |currency}})
+    </a>
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-yellow-crusta">
+                        <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard)
+                    </div>
+                    <div class="actions btn-set">
+                        <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
+                        <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
+                        <button type="button" ng-click="update()" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
+                        <div class="btn-group">
+                            <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
+                                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="#" ng-click="clone()">
+                                        <i class="fa fa-copy"></i> @(ToClone)
+                                    </a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <div class="row">
+
+
+                        <div class="col-md-6">
+                            <div class="portlet light bordered">
+                                <div class="portlet-title">
+                                    <div class="caption caption-md">
+                                        <i class="fa fa-bell font-yellow-crusta"></i>
+                                        <span class="caption-subject font-yellow-crusta bold uppercase">@(stock:StockStatus)</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-4 control-label" for="form_control_1">@(stock:RealStock):</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                            <span class="help-block">@(stock:PhysicalStock)</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-4 control-label" for="form_control_1">@(stock:AvailableStock):</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                            <span class="help-block">@(stock:AvailableStockDetails)</span>
+
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-4 control-label" for="form_control_1">@(stock:VirtualStock):</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                            <span class="help-block">@(stock:VirtualStockDetails)</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-4 control-label" for="form_control_1">@(stock:MininumStock):</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-4 control-label" for="form_control_1">@(stock:StockLimit):</label>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                            <span class="help-block">Niveau de stock entrainant le declenchement de commande</span>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-md-6">
+                            <div class="portlet light bordered">
+                                <div class="portlet-title">
+                                    <div class="caption caption-md">
+                                        <i class="fa fa-map-signs font-grey-gallery"></i>
+                                        <span class="caption-subject font-grey-gallery bold uppercase">@(stock:StockLocation)</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-3 control-label" for="form_control_1">@(stock:LieuWareHouse):</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-3 control-label" for="form_control_1">@(products:Zone):</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-3 control-label" for="form_control_1">@(products:Driveway):</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-3 control-label" for="form_control_1">@(products:Rack):</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-3 control-label" for="form_control_1">@(products:Floor):</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" placeholder="">
+                                            <div class="form-control-focus"> </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

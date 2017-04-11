@@ -1,0 +1,107 @@
+<div class="row">
+    <div class="col-md-12">
+        <div ng-if="product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-yellow-crusta">
+                        <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard) : @(Marketing) / PIM
+                    </div>
+                    <div class="actions btn-set">
+                        <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
+                        <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
+                        <button type="button" ng-click="update()" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
+                        <div class="btn-group">
+                            <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
+                                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="#" ng-click="clone()">
+                                        <i class="fa fa-copy"></i> @(ToClone)
+                                    </a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#" ng-click="clone()">
+                                        <i class="fa fa-copy"></i> @(PrintPDF)
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <tabset class="tabbable-line tabbable-full-width">
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">@(products:Selectlanguages)</label>
+                            <div class="col-md-9">
+                                <select class="form-control">
+                                                            <option>Option 1</option>
+                                                            <option>Option 2</option>
+                                                            <option>Option 3</option>
+                                                            <option>Option 4</option>
+                                                            <option>Option 5</option>
+                                                        </select>
+                            </div>
+                        </div>
+                        <hr>
+                        <tab heading="@(Description)">
+                            <div class="form-body">
+
+                                <div class="form-group form-md-line-input">
+                                    <label class="col-md-2 control-label" for="form_control_1">@(Name):</label>
+                                    <div class="col-md-10">
+                                        <input class="form-control" ng-model="product.info.langs[0].name" required placeholder="" type="text">
+                                        <div class="form-control-focus"> </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group form-md-line-input">
+                                    <label class="col-md-2 control-label" for="form_control_1">@(Description):</label>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control" ng-model="product.info.langs[0].shortDescription" rows="5"></textarea>
+                                        <div class="form-control-focus"> </div>
+                                        <span class="help-block">@(products:ShowOnBill).</span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-md-line-input">
+                                    <label class="col-md-2 control-label" for="form_control_1">@(LongueDescription):</label>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control" ng-model="product.info.langs[0].description" rows="10"></textarea>
+                                        <div class="form-control-focus"> </div>
+                                        <span class="help-block">@(products:ShowOnCatalog).</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </tab>
+
+                        <tab select="files = 1" ng-if="product._id">
+                            <tab-heading>
+                                <span ng-if='product.files.length' class='badge badge-success'>{{product.files.length}}</span> @(products:Images/documents)
+                            </tab-heading>
+                            <div ng-if="files" ng-include="'/templates/_gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
+                        </tab>
+
+
+
+                    </tabset>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
