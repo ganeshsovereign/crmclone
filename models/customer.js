@@ -36,7 +36,7 @@ var addressSchema = new Schema({
     city: { type: String, default: '' },
     state: { type: String, default: '' },
     zip: { type: String, default: '' },
-    country: { type: String, default: '' },
+    country: { type: String, ref: 'countries', default: null },
     name: { type: String, trim: true, uppercase: true, default: '' },
     Status: { type: String, default: 'ENABLE' }
 }, {
@@ -200,7 +200,7 @@ var customerSchema = new Schema({
         city: { type: String, default: '' },
         state: { type: String, default: '' },
         zip: { type: String, default: '' },
-        country: { type: String, uppercase: true, default: 'FRANCE' }
+        country: { type: String, ref: 'countries', default: null }
     },
 
     shippingAddress: [addressSchema], // list of deliveries address
@@ -221,6 +221,7 @@ var customerSchema = new Schema({
     title: { type: String, default: '' },
 
     salesPurchases: {
+        isProspect: { type: Boolean, default: false },
         isCustomer: { type: Boolean, default: true },
         isSupplier: { type: Boolean, default: false },
         isSubcontractor: { type: Boolean, default: false }, //fournisseur
@@ -301,7 +302,7 @@ var customerSchema = new Schema({
         idprof6: String, // TVA Intra
         category: { type: Schema.Types.ObjectId, ref: 'accountsCategories' }, //typent_id
         capital: { type: Number, default: 0 },
-        importExport: String, // null (no internal country), EUROP (Import/Export in EUROPE), INTER (Import/Export international)
+        //importExport: String, // null (no internal country), EUROP (Import/Export in EUROPE), INTER (Import/Export international) TODO Remove
         Tag: { type: [], set: MODULE('utils').setTags }
     },
 

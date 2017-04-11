@@ -1,0 +1,93 @@
+{
+    "name": "bill",
+    "version": "0.1.000",
+    "author": {
+        "name": "TM - ToManage"
+    },
+    "description": "Gestion des factures",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TM-js/bill.git"
+    },
+    "engines": {
+        "node": "4.6.x",
+        "TM": "0.5.x"
+    },
+    "contributors": [
+        "Herve Prot <herve.prot@tomanage.fr>"
+    ],
+    "license": "OSL v3",
+    "rights": {
+        "bill": [
+            {
+                "desc": "Lire les factures",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Creer/modifier les factures",
+                "perm": {
+                    "create": false
+                }
+            },
+            {
+                "desc": "Dévalider les factures",
+                "perm": {
+                    "unvalidate": false
+                }
+            },
+            {
+                "desc": "Valider les factures",
+                "perm": {
+                    "validate": true
+                }
+            },
+            {
+                "desc": "Envoyer les factures par mail",
+                "perm": {
+                    "send": true
+                }
+            },
+            {
+                "desc": "Emettre des paiements sur les factures",
+                "perm": {
+                    "paiment": false
+                }
+            },
+            {
+                "desc": "Supprimer les factures",
+                "perm": {
+                    "delete": false
+                }
+            },
+            {
+                "desc": "Exporter les factures clients, attributs et reglements",
+                "perm": {
+                    "export": false
+                }
+            }
+        ]
+    },
+    "menus": {
+        "menu:factures": {
+            "position": 43,
+            "perms": "bill.read",
+            "enabled": "$conf->facture->enabled",
+            "usertype": 2,
+            "icon": "fa-money",
+            "title": "bills:Invoices",
+            "submenus": {
+                "menu:billslist": {
+                    "position": 1,
+                    "url": "/erp/#!/bill",
+                    "perms": "bill.read",
+                    "icon": "fa-money",
+                    "enabled": "$conf->facture->enabled",
+                    "usertype": 2,
+                    "title": "bills:CustomersInvoices"
+                }
+            }
+        }
+    }
+}

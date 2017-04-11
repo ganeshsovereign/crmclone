@@ -1,177 +1,256 @@
-<div class="row">
-    <div class="col-md-4 col-sm-12">
-        <form editable-form name="editableCommercial" onaftersave="update()">
-            <div class="portlet blue-steel box">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-hand-o-right"></i>@(commercial:CommercialParameters)
-                    </div>
-                    <div class="actions">
-                        <a href="javascript:;" ng-click="editableCommercial.$show()" ng-show="!editableCommercial.$visible && editable" class="btn btn-default btn-sm">
-                            <i class="fa fa-pencil"></i> @(Edit) </a>
-                    </div>
-                    <div class="actions" ng-show="editableCommercial.$visible">
-                        <button type="submit" ng-disabled="editableCommercial.$waiting" class="btn btn-default btn-sm">@(Save)</button>
-                        <button type="button" ng-disabled="editableCommercial.$waiting" ng-click="editableCommercial.$cancel();
-                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
-                    </div>
-                </div>
-                <div class="portlet-body">
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:ProspectLevelShort) :
-                        </div>
-                        <div class="col-md-7 value">
-                            <span class="label label-sm" ng-class="societe.prospectLevel.css" editable-select="societe.prospectlevel" e-ng-options="s.id as s.label for s in dict.fk_prospectlevel.values">{{societe.prospectLevel.name}}</span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(commercial:Commercial)
-                        </div>
-                        <div class="col-md-7 value">
-                            <!--<span editable-text="societe.commercial_id" e-typeahead="user as user.name for user in userAutoComplete($viewValue) | filter:{name:$viewValue}">{{societe.commercial_id.name}}</span>-->
-                            <span editable-select="societe.commercial_id" onshow="loadUsers()" e-ng-options="user as user.name for user in userList track by user.id">{{societe.commercial_id.name}}</span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(zonegeo)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-text="societe.zonegeo">{{societe.zonegeo|| "Non défini"}}</span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:ThirdPartyType)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-select="societe.typent_id" e-ng-options="s.id as s.label for s in dict.fk_typent.values">{{ showStatus('typent_id', 'fk_typent')}}</span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:Staff)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-select="societe.effectif_id" e-ng-options = "s.id as s.label for s in dict.fk_effectif.values">{{ showStatus('effectif_id', 'fk_effectif')}}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:JuridicalStatus)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-select="societe.forme_juridique_code" e-ng-options = "s.id as s.label for s in dict.fk_forme_juridique.values">{{ showStatus('forme_juridique_code', 'fk_forme_juridique') || "-"}}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:Capital)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-text="societe.capital">{{ societe.capital || '@(main:Undefined)' | euro}}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:ProfId1FR)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-text="societe.idprof1">{{ societe.idprof1 || '@(main:Undefined)' }}</span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:ProfId2FR)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-text="societe.idprof2">{{ societe.idprof2 || '@(main:Undefined)' }}</span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:ProfId3FR)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-text="societe.idprof3">{{ societe.idprof3 ||'@(main:Undefined)' }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:ProfId4FR)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-text="societe.idprof4">{{societe.idprof4|| "Aucun"}}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:ProfId5FR)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:CustomerSegmentation)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-select="societe.segmentation" e-ng-options="s as s.label group by s.group for s in dict.fk_segmentation.values track by s.id">{{ societe.segmentation.label || '@(main:Undefined)' }} <small ng-if="societe.segmentation.group">({{societe.segmentation.group}})</small>
-                            </span></div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:ProductSegmentation)
-                        </div>
-                        <div class="col-md-7 value">
-                            <tags-input ng-show="editableCommercial.$visible" ng-model="societe.familyProduct" class="ti-input-sm" placeholder="@(Add)" on-tag-added='update()' on-tag-removed="update()">
-                                <auto-complete source="AutoComplete($query,'api/product/family/autocomplete',societe.entity)" min-length="1" max-results-to-show="10"></auto-complete>
-                            </tags-input>
-                            <span ng-hide="editableCommercial.$visible">{{societe.familyProduct| tag}}</span>
-                        </div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(companies:Rival)
-                        </div>
-                        <div class="col-md-7 value">
-                            <span editable-select="societe.rival" e-ng-options="s.label as s.label for s in dict.fk_rival.values">
-                                {{ societe.rival || '@(main:Undefined)' }}
-                            </span></div>
-                    </div>
-                    <div class="row static-info">
-                        <div class="col-md-5 name">
-                            @(main:Keywords)
-                        </div>
-                        <div class="col-md-7 value">
-                            <tags-input ng-show="editableCommercial.$visible" ng-model="societe.Tag" class="ti-input-sm" placeholder="@(Add)" on-tag-added='update()' on-tag-removed="update()">
-                                <auto-complete source="AutoComplete($query,'api/societe/autocomplete/Tag',societe.entity)" min-length="1" max-results-to-show="10"></auto-complete>
-                            </tags-input>
-                            <span ng-hide="editableCommercial.$visible">{{societe.Tag| tag}}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
+<div class="portlet light portlet-form bordered">
+    <div class="portlet-title">
+        <div class="caption font-yellow-crusta">
+            <i class="fa fa-shopping-cart font-yellow-crusta"></i> @(commercial:Commercial)
+        </div>
     </div>
-    <!-- END COL 4-->
-    <div class="col-md-8">
+    <div class="portlet-body">
         <div class="row">
-            <div class="col-md-8 profile-info">
-                <form editable-form name="editableReport" onaftersave="update()">
-                    <div class="portlet light">
+            <div class="col-md-8 col-sm-12">
+                <form editable-form name="editableCommercial" onaftersave="update()">
+                    <div class="portlet light portlet-form bordered">
                         <div class="portlet-title">
                             <div class="caption">
-                                Suivi commercial
+                                <i class="fa fa-cog"></i>@(commercial:CommercialParameters)
+                            </div>
+                            <div class="actions">
+                                <a href="javascript:;" ng-click="editableCommercial.$show()" ng-show="!editableCommercial.$visible && editable" class="btn btn-circle btn-default">
+                                    <i class="fa fa-pencil"></i> @(Edit) </a>
+                            </div>
+                            <div class="actions" ng-show="editableCommercial.$visible">
+                                <button type="submit" ng-disabled="editableCommercial.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save) </button>
+                                <button type="button" ng-disabled="editableCommercial.$waiting" ng-click="editableCommercial.$cancel();
+                            findOne();" class="btn btn-circle btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="form-group form-md-line-input">
+                                <div class="row static-info">
+                                    <div class="col-md-3 name">
+                                        @(commercial:Commercial)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <!--<span editable-text="societe.commercial_id" e-typeahead="user as user.name for user in userAutoComplete($viewValue) | filter:{name:$viewValue}">{{societe.commercial_id.name}}</span>-->
+                                        <span editable-select="societe.commercial_id" onshow="loadUsers()" e-ng-options="user as user.name for user in userList track by user.id">{{societe.commercial_id.name}}</span>
+                                    </div>
+                                    <div class="col-md-3 name">
+                                        @(zonegeo)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-text="societe.zonegeo">{{societe.zonegeo|| "Non défini"}}</span>
+                                    </div>
+                                </div>
+
+
+                                <div class="row static-info">
+                                    <div class="col-md-3 name">
+                                        @(companies:JuridicalStatus)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-select="societe.forme_juridique_code" e-ng-options="s.id as s.label for s in dict.fk_forme_juridique.values">{{ showStatus('forme_juridique_code', 'fk_forme_juridique') || "-"}}
+                            </span>
+                                    </div>
+                                    <div class="col-md-3 name">
+                                        @(companies:ThirdPartyType)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-select="societe.typent_id" e-ng-options="s.id as s.label for s in dict.fk_typent.values">{{ showStatus('typent_id', 'fk_typent')}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="row static-info">
+                                    <div class="col-md-3 name">
+                                        @(companies:Staff)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-select="societe.effectif_id" e-ng-options="s.id as s.label for s in dict.fk_effectif.values">{{ showStatus('effectif_id', 'fk_effectif')}}
+                            </span>
+                                    </div>
+                                    <div class="col-md-3 name">
+                                        @(companies:ProspectLevelShort)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span class="label label-sm" ng-class="societe.prospectLevel.css" editable-select="societe.prospectlevel" e-ng-options="s.id as s.label for s in dict.fk_prospectlevel.values">{{societe.prospectLevel.name}}</span>
+                                    </div>
+                                </div>
+
+                                <div class="row static-info">
+                                    <div class="col-md-3 name">
+                                        @(companies:RivalShort)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-select="societe.rival" e-ng-options="s.label as s.label for s in dict.fk_rival.values">
+                                {{ societe.rival || '@(main:Undefined)' }}
+                            </span></div>
+                                    <div class="col-md-3 name">
+                                        @(companies:PriceLevel)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span class="label label-sm" ng-class="societe.prospectLevel.css" editable-select="societe.prospectlevel" e-ng-options="s.id as s.label for s in dict.fk_prospectlevel.values">{{societe.prospectLevel.name}}</span>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
+                                    <div class="col-md-3 name">
+                                        @(companies:CustomerSegmentation)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-select="societe.segmentation" e-ng-options="s as s.label group by s.group for s in dict.fk_segmentation.values track by s.id">{{ societe.segmentation.label || '@(main:Undefined)' }} <small ng-if="societe.segmentation.group">({{societe.segmentation.group}})</small>
+                            </span></div>
+                                    <div class="col-md-3 name">
+                                        @(companies:ProductSegmentation)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <tags-input ng-show="editableCommercial.$visible" ng-model="societe.familyProduct" class="ti-input-sm" placeholder="@(Add)" on-tag-added='update()' on-tag-removed="update()">
+                                            <auto-complete source="AutoComplete($query,'api/product/family/autocomplete',societe.entity)" min-length="1" max-results-to-show="10"></auto-complete>
+                                        </tags-input>
+                                        <span ng-hide="editableCommercial.$visible">{{societe.familyProduct| tag}}</span>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
+                                    <div class="col-md-1 name">
+                                        @(companies:ProfId1FR)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-text="societe.idprof1">{{ societe.idprof1 || '@(main:Undefined)' }}</span>
+                                    </div>
+                                    <div class="col-md-1 name">
+                                        @(companies:ProfId2FR)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-text="societe.idprof2">{{ societe.idprof2 || '@(main:Undefined)' }}</span>
+                                    </div>
+                                    <div class="col-md-1 name">
+                                        @(companies:ProfId4FR)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-text="societe.idprof4">{{societe.idprof4|| "Aucun"}}
+                            </span>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
+                                    <div class="col-md-1 name">
+                                        @(companies:ProfId5FR)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
+                            </span>
+                                    </div>
+                                    <div class="col-md-1 name">
+                                        @(companies:ProfId3FR)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-text="societe.idprof3">{{ societe.idprof3 ||'@(main:Undefined)' }}
+                            </span>
+                                    </div>
+                                    <div class="col-md-1 name">
+                                        @(companies:Capital)
+                                    </div>
+                                    <div class="col-md-3 value">
+                                        <span editable-text="societe.capital">{{ societe.capital || '@(main:Undefined)' | euro}}
+                            </span>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
+
+                                    <div class="col-md-2 name">
+                                        @(main:Keywords)
+                                    </div>
+                                    <div class="col-md-10 value">
+                                        <tags-input ng-show="editableCommercial.$visible" ng-model="societe.Tag" class="ti-input-sm" placeholder="@(Add)" on-tag-added='update()' on-tag-removed="update()">
+                                            <auto-complete source="AutoComplete($query,'api/societe/autocomplete/Tag',societe.entity)" min-length="1" max-results-to-show="10"></auto-complete>
+                                        </tags-input>
+                                        <span ng-hide="editableCommercial.$visible">{{societe.Tag| tag}}</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- END COL 4-->
+
+            <div class="col-md-4">
+                <div class="portlet light portlet-form bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-line-chart"></i> @(Summary)
+                        </div>
+                        <div class="tools">
+                            <a class="reload" href="javascript:;" data-original-title="" title="">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row static-info">
+                            <div class="col-md-8 name">
+                                @(commercial:CAOrderByMonth)
+                            </div>
+                            <div class="col-md-4 value">
+                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
+                            </span>
+                            </div>
+                        </div>
+                        <div class="row static-info">
+                            <div class="col-md-8 name">
+                                @(commercial:CAOrderByYear)
+                            </div>
+                            <div class="col-md-4 value">
+                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
+                            </span>
+                            </div>
+                        </div>
+                        <div class="row static-info">
+                            <div class="col-md-8 name">
+                                @(orders:NumberOfOrdersByMonth)
+                            </div>
+                            <div class="col-md-4 value">
+                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
+                            </span>
+                            </div>
+                        </div>
+                        <div class="row static-info">
+                            <div class="col-md-8 name">
+                                @(commercial:CAPropalByMonth)
+                            </div>
+                            <div class="col-md-4 value">
+                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
+                            </span>
+                            </div>
+                        </div>
+                        <div class="row static-info">
+                            <div class="col-md-8 name">
+                                @(leads:OpenLeads)
+                            </div>
+                            <div class="col-md-4 value">
+                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
+                            </span>
+                            </div>
+                        </div>
+                        <div class="row static-info">
+                            <div class="col-md-8 name">
+                                Taux de conversion
+                            </div>
+                            <div class="col-md-4 value">
+                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
+                            </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+
+
+            <div class="col-md-12 profile-info">
+                <form editable-form name="editableReport" onaftersave="update()">
+                    <div class="portlet light portlet-form bordered">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-comments-o"></i> @(commercial:CommercialFollow)
                             </div>
                             <div class="actions" ng-show="!editableReport.$visible">
                                 <a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn btn-circle btn-default btn-sm" data-original-title="" title="@(Edit)"><i class="fa fa-pencil"></i>@(Edit)</a>
@@ -179,16 +258,15 @@
 
                             </div>
                             <div class="actions" ng-show="editableReport.$visible">
-                                <button type="submit" ng-disabled="editableReport.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                                <button type="submit" ng-disabled="editableReport.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save) </button>
                                 <button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel();
-                                    findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                                    findOne();" class="btn btn-circle btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i></button>
                             </div>
 
                         </div>
                         <div class="portlet-body">
                             <div ng-hide="editableReport.$visible" ng-if="societe.report.author.name" class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-                                @(DateLastModification) : <strong>{{societe.report.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By) {{societe.report.author.name}}
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{societe.report.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By) {{societe.report.author.name}}
                             </div>
                             <div ng-if="!editableReport.$visible" marked="societe.report.new"></div>
                             <div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.report"></div>
@@ -219,171 +297,7 @@
                     </div>
                 </form>
             </div>
-            <div class="col-md-4">
-                <div class="portlet light sale-summary">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            @(Summary)
-                        </div>
-                        <div class="tools">
-                            <a class="reload" href="javascript:;" data-original-title="" title="">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <ul class="list-unstyled">
-                            <li>
-                                <span class="sale-info">
-                                    @(commercial:CAOrderByMonth)
-                                </span>
-                                <span class="sale-num"> - </span>
-                            </li>
-                            <li>
-                                <span class="sale-info">
-                                    @(commercial:CAOrderByYear)
-                                </span>
-                                <span class="sale-num"> - </span>
-                            </li>
-                            <li>
-                                <span class="sale-info">
-                                    @(orders:NumberOfOrdersByMonth) </span>
-                                <span class="sale-num"> - </span>
-                            </li>
-                            <li>
-                                <span class="sale-info">
-                                    @(commercial:CAPropalByMonth)
-                                </span>
-                                <span class="sale-num"> - </span>
-                            </li>
-                            <li>
-                                <span class="sale-info">
-                                    @(leads:OpenLeads) </span>
-                                <span class="sale-num"> - </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!--end col-md-4-->
+
         </div>
+
     </div>
-    <div class='col-md-8'>
-        <tabset class="tabbable-line tabbable-full-width" ng-if="ReportController">
-            <tab heading="Comptes-rendus">
-                <div class="portlet-body" ng-include="'/templates/_report/list.html'" ng-controller="ReportController" onload="loadDatatable({'societe.id': $stateParams.id})">
-                </div>
-            </tab>
-            <tab heading="@(leads:Leads)">
-                <div class="portlet-body">
-                    <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="btn-group pull-left">
-                                    <button class="btn blue" data-ng-click="addNew()">@(Add) <i class="fa fa-plus"></i></button>
-                                    <button title="@(Refresh)" class="btn" data-ng-click="
-                                        commercialList = [];
-                                        commercial_id = '';
-                                        status_id = null;
-                                        filterOptionsSociete.filterText = '';
-                                        clearCache();
-                                        find();"><i class="fa fa-refresh"></i></button>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="btn-group pull-right">
-                                    <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <a href="#">
-                                                @(Update) </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                @(Delete) </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dataTables_wrapper no-footer">
-                        <table class="table table-striped table-bordered table-hover" id="societeListLeads">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th width="2%">
-                                        <input type="checkbox" class="group-checkable">
-                                    </th>
-                                    <th>@(Name)</th>
-                                    <th>@(Date)</th>
-                                    <th>@(leads:DateEcheance)</th>
-                                    <th>@(leads:Potential)</th>
-                                    <th>@(Status)</th>
-                                    <th>@(DateCreation)</th>
-                                    <th>@(DateLastModification)</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-            </tab>
-            <tab heading="@(commercial:ListProductsPrices)">
-                <div class="portlet-body">
-                    <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="btn-group pull-left">
-                                    <button class="btn blue" data-ng-click="addNew()">@(Add) <i class="fa fa-plus"></i></button>
-                                    <button title="@(Refresh)" class="btn" data-ng-click="
-                                        commercialList = [];
-                                        commercial_id = '';
-                                        status_id = null;
-                                        filterOptionsSociete.filterText = '';
-                                        clearCache();
-                                        find();"><i class="fa fa-refresh"></i></button>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="btn-group pull-right">
-                                    <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right">
-                                        <li>
-                                            <a href="#">
-                                                @(Update) </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                @(Delete) </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                @(BuildPDF) </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dataTables_wrapper no-footer">
-                        <table class="table table-striped table-bordered table-hover" id="societeListListProductsPricesCommercial">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th width="2%">
-                                        <input type="checkbox" class="group-checkable">
-                                    </th>
-                                    <th>@(products:ProductRef)</th>
-                                    <th>@(products:ProductId)</th>
-                                    <th>@(AmountHTShort)</th>
-                                    <th>@(products:Units)</th>
-                                    <th>@(Status)</th>
-                                    <th>@(DateLastModification)</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-            </tab>
-        </tabset>
-    </div>
-</div>

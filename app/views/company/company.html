@@ -1,1 +1,142 @@
-info
+<div class="portlet light portlet-form bordered">
+    <div class="portlet-title">
+        <div class="caption font-yellow-crusta">
+            <i class="fa fa-institution font-yellow-crusta"></i>@(companies:Companies)
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-md-6">
+
+                <div class="form-group form-md-line-input">
+                    <div class="row static-info">
+                        <div class="col-md-3 name">@(companies:Name) :</div>
+                        <div class="col-md-9 value">
+                            <span class="" editable-text="societe.name">{{ societe.name || '@(main:Undefined)' }}</span>
+                        </div>
+                    </div>
+                    <div class="row static-info" ng-class="{'has-error':$error, 'has-success': !$error}">
+                        <div class="col-md-3 name">@(companies:IdThirdParty) :</div>
+                        <div class="col-md-9 value">
+                            <span editable-text="societe.code_client" onbeforesave="checkCodeClient($data)">{{ societe.code_client || '@(main:Undefined)' }}</span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-3 name">@(companies:SocGroupShort):</div>
+                        <div class="col-md-9 value">
+                            <span class="h5 thin" editable-text="societe.caFamily" e-typeahead="ca as ca for ca in AutoComplete($viewValue,'api/societe/autocomplete/caFamily',societe.entity)">{{ societe.caFamily || '@(main:Undefined)' }}</span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-3 name">@(main:Entity) :</div>
+                        <div class="col-md-9 value">
+                            <span class="label label-default label-sm" editable-select="societe.entity" e-ng-options="e.id as e.name for e in entityListAll">{{societe.entity}}</span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-3 name">@(companies:ProspectStatus) :</div>
+                        <div class="col-md-9 value">
+                            <span class="label label-sm" data-ng-class="societe.status.css" editable-select="societe.Status" e-ng-options="s.id as s.label for s in dict.fk_stcomm.values">{{societe.status.name}}</span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-3 name">@(companies:SupplierStatus) :</div>
+                        <div class="col-md-9 value">
+                            <span editable-select="societe.fournisseur" e-ng-options="s.id as s.label for s in dict.fk_fournisseur.values">{{showStatus('fournisseur', 'fk_fournisseur')}}</span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-3 name">@(companies:Address) :</div>
+                        <div class="col-md-9 value">
+                            <div crm-address model="societe"></div>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-3 name">@(companies:ProfId2FR)</div>
+                        <div class="col-md-9 value">
+                            <span editable-text="societe.idprof2">
+                                                    {{ societe.idprof2 || '@(main:Undefined)' }}
+                                                </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-3 name">
+                            @(main:Keywords)
+                        </div>
+                        <div class="col-md-9 value">
+                            <tags-input ng-show="editableCommercial.$visible" ng-model="societe.Tag" class="ti-input-sm" placeholder="@(Add)" on-tag-added='update()' on-tag-removed="update()">
+                                <auto-complete source="AutoComplete($query,'api/societe/autocomplete/Tag',societe.entity)" min-length="1" max-results-to-show="10"></auto-complete>
+                            </tags-input>
+                            <span ng-hide="editableCommercial.$visible">{{societe.Tag| tag}}</span>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group form-md-line-input">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="form_control_1">Langue principale</la></label>
+                        <div class="col-md-8">
+                            <select class="form-control" name="">
+                                                            <option value="">Option 1</option>
+                                                            <option value="">Option 2</option>
+                                                            <option value="">Option 3</option>
+                                                        </select>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(companies:Phone) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-tel="societe.phone" e-title="+xxxxxxxxxxx">{{ societe.phone || '@(main:Undefined)' | phone }}</span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(companies:Fax) :</div>
+                        <div class="col-md-8 value">
+                            <span editable-tel="societe.fax" e-title="+xxxxxxxxxxx">{{ societe.fax || '@(main:Undefined)' | phone }}</span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(EMail) :</div>
+                        <div class="col-md-8 value">
+                            <a data-ng-href="mailto:{{societe.email}}" class="small" target="_blank" editable-email="societe.email">{{ societe.email || '@(main:Undefined)' }}</a>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Web) :</div>
+                        <div class="col-md-8 value">
+                            <a ng-href="{{societe.url}}" target="_blank" editable-url="societe.url" e-title="http://www.mysite.com">{{ societe.url || '@(main:Undefined)' }}</a>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-4 name">@(Web) :</div>
+                        <div class="col-md-8 value">
+                            <a ng-href="{{societe.url2}}" target="_blank" editable-url="societe.url" e-title="http://www.mysite.com">{{ societe.url || '@(main:Undefined)' }}</a>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-4 name">Twitter :</div>
+                        <div class="col-md-8 value">
+                            <a ng-href="{{societe.twitter}}" target="_blank" editable-url="societe.url" e-title="http://www.mysite.com">{{ societe.url || '@(main:Undefined)' }}</a>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-4 name">LinkedIn :</div>
+                        <div class="col-md-8 value">
+                            <a ng-href="{{societe.linkedin}}" target="_blank" editable-url="societe.url" e-title="http://www.mysite.com">{{ societe.url || '@(main:Undefined)' }}</a>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-4 name">Facebook :</div>
+                        <div class="col-md-8 value">
+                            <a ng-href="{{societe.facebook}}" target="_blank" editable-url="societe.url" e-title="http://www.mysite.com">{{ societe.url || '@(main:Undefined)' }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

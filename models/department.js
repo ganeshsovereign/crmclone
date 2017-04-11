@@ -12,7 +12,8 @@ var DepartmentSchema = new Schema({
     parentDepartment: { type: ObjectId, ref: 'Department', default: null },
     departmentManager: { type: ObjectId, ref: 'Employees', default: null },
     isDevelopment: Boolean,
-    users: [{ type: ObjectId, ref: 'Users', default: null }],
+    isSales: Boolean, // commercial
+    users: [{ type: ObjectId, ref: 'Users', default: null }], // ????
 
     createdBy: { type: ObjectId, ref: 'Users', default: null },
     editedBy: { type: ObjectId, ref: 'Users', default: null },

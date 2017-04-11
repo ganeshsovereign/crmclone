@@ -1,0 +1,369 @@
+<div class="row">
+    <div class="col-md-4 col-sm-12">
+        <form editable-form name="editableCommercial" onaftersave="update()">
+            <div class="portlet blue-steel box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-money"></i>@(bills:BillingSettings)
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" ng-click="editableCommercial.$show()" ng-show="!editableCommercial.$visible && editable" class="btn btn-default btn-sm">
+                            <i class="fa fa-pencil"></i> @(Edit) </a>
+                    </div>
+                    <div class="actions" ng-show="editableCommercial.$visible">
+                        <button type="submit" ng-disabled="editableCommercial.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                        <button type="button" ng-disabled="editableCommercial.$waiting" ng-click="editableCommercial.$cancel();
+                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(companies:ThirdPartyBilling) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-text="societe.cptBilling" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete') | filter:{name:$viewValue}" e-placeholder="@(companies:ThirdPartyBillingDesc)">
+                                {{societe.cptBilling.name|| "Lui-même"}}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(companies:ImportExport) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-select = "societe.importExport" e-ng-options = "s.id as s.name for s in importExport">
+                                {{ societe.importExport }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(compta:CustomerAccountancyCode) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-text="societe.code_compta">
+                                {{ societe.code_compta || '@(main:Undefined)' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(compta:SupplierAccountancyCode) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-text="societe.code_compta_fournisseur">
+                                {{ societe.code_compta_fournisseur || '@(main:Undefined)' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(companies:VATIsUsed) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <input uniform type="checkbox" ng-model="societe.VATIsUsed" ng-checked="societe.VATIsUsed" ng-disabled="!editableCommercial.$visible" />
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(companies:VATIntra) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-text="societe.idprof6">
+                                {{ societe.idprof6 || '@(main:Undefined)' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(bills:PaymentConditions) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-select="societe.cond_reglement" e-ng-options="s.id as s.label for s in dict.fk_payment_term.values">
+                                {{ showStatus('cond_reglement', 'fk_payment_term')}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(bills:PaymentMode) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-select = "societe.mode_reglement" e-ng-options = "s.id as s.label for s in dict.fk_paiement.values">
+                                {{ showStatus('mode_reglement', 'fk_paiement')}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(bills:PaymentBank) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-select = "societe.bank_reglement" e-ng-options = "s.ref as s.ref for s in banks">
+                                {{societe.bank_reglement|| '@(main:Undefined)'}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(products:PriceLevel) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-text="societe.price_level" e-typeahead="price_level.name for price_level in priceLevelAutoComplete($viewValue, 'name') | filter:{name:$viewValue}" >
+                                {{ societe.price_level || '@(main:Undefined)' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(companies:CustomerRelativeDiscountShort) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-number="societe.remise_client">
+                                {{ societe.remise_client | percent:2 }}
+                            </span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(bank:BankName) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-text="societe.iban.bank">
+                                {{ societe.iban.bank || '@(main:Undefined)' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(bank:IBAN) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-text="societe.iban.id">
+                                {{ societe.iban.id || '@(main:Undefined)' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(bank:BIC/SWIFT) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <span editable-text="societe.iban.swift">
+                                {{ societe.iban.swift || '@(main:Undefined)' }}
+                            </span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row static-info">
+                        <div class="col-md-5 name">
+                            @(companies:GroupDeliveries) : 
+                        </div>
+                        <div class="col-md-7 value">
+                            <input uniform type="checkbox" ng-model="societe.groupDelivery" ng-checked="societe.groupDelivery" ng-disabled="!editableCommercial.$visible" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- END COL 4-->
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-8 profile-info" ng-controller="BoxBillController" ng-init="loadCaFamily(date, societe._id)">
+                <div class="page-toolbar">
+                    <div report-date-range ng-model="date" class="pull-right tooltips btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
+                </div>
+
+                <div class="portlet" ng-repeat="(entity, value) in caFamily">
+                    <div class="portlet-title">
+                        <div class="caption caption-md">
+                            <i class="icon-bar-chart font-green-haze hide"></i>
+                            <span class="caption-subject font-green-haze bold uppercase"> Ventes {{entity}}</span>
+                            <span class="caption-helper"> {{date.start| date:'dd/MM/yyyy'}} - {{date.end| date:'dd/MM/yyyy'}}</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="mt-element-step">
+                            <div class="row step-thin">
+                                <div class="col-md-12 bg-grey mt-step-col" ng-repeat="line in value">
+                                    <div class="mt-step-number font-grey" ng-class="{'bg-green' : line.caN_1 <= line.caN, 'bg-red':line.caN_1 > line.caN}"><i class='fa' ng-class="{'fa-thumbs-o-up' : line.caN_1 <= line.caN, 'fa-thumbs-o-down':line.caN_1 > line.caN}"></i></div>
+                                    <div class="mt-step-title uppercase">{{line.caFamily}}</div>
+                                    <div class="mt-step-content"><span class='font-yellow-gold bold'>{{line.caN_1|number:0}}</span> <i class='fa fa-arrow-circle-right'></i> <span class='font-green-haze bold'>{{line.caN|number:0}}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="portlet sale-summary">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            @(Summary)
+                        </div>
+                        <div class="tools">
+                            <a class="reload" href="javascript:;" data-original-title="" title="">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <ul class="list-unstyled">
+                            <li>
+                                <span class="sale-info">
+                                    @(bills:LastBill)
+                                </span>
+                                <span class="sale-num"> - </span>
+                            </li>
+                            <li>
+                                <span class="sale-info">
+                                    @(bills:LastPayment)
+                                </span>
+                                <span class="sale-num"> - </span>
+                            </li>
+                            <li>
+                                <span class="sale-info">
+                                    @(bills:TotalInvoicedThisMonth)
+                                </span>
+                                <span class="sale-num"> - </span>
+                            </li>
+                            <li>
+                                <span class="sale-info">
+                                    @(bills:TotalInvoicedThisYear) </span>
+                                <span class="sale-num"> - </span>
+                            </li>
+                            <li>
+                                <span class="sale-info">
+                                    @(bills:RemainderToTake) </span>
+                                <span class="sale-num"> - </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--end col-md-4-->
+        </div>
+    </div>
+    <div class='col-md-8'>
+        <!--INVOICE TABLE-->
+        <tabset class="tabbable-line tabbable-full-width">
+            <tab heading="@(bills:BillsCustomer)">
+                <div ng-include="'/templates/_bill/list.html'" ng-controller="BillController" onload="ngIncludeInit({'client.id': societe._id}, 5)"></div>
+            </tab>
+
+            <tab heading="@(bills:BillsSupplier)">
+                <div class="portlet-body">
+                    <div class="table-toolbar">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="btn-group pull-left">
+                                    <button class="btn blue" data-ng-click="addNew()">@(Add) <i class="fa fa-plus"></i></button>
+                                    <button title="@(Refresh)" class="btn" data-ng-click="
+                                        commercialList = [];
+                                        commercial_id = '';
+                                        status_id = null;
+                                        filterOptionsSociete.filterText = '';
+                                        clearCache();
+                                        find();"><i class="fa fa-refresh"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="btn-group pull-right">
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li>
+                                            <a href="#">
+                                                @(Update) </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                @(Delete) </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dataTables_wrapper no-footer">
+                        <table class="table table-striped table-bordered table-hover" id="societeListInvoicesSuppliers">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th width="2%">
+                                        <input type="checkbox" class="group-checkable">
+                                    </th>
+                                    <th>@(bills:InvoiceId)</th>
+                                    <th>@(bills:Date)</th>
+                                    <th>@(bills:DateEcheance)</th>
+                                    <th>@(bills:NetToBePaid)</th>
+                                    <th>@(bills:AlreadyPaid)</th>
+                                    <th>@(bills:StillToBeDisbursed)</th>
+                                    <th>@(Status)</th>
+                                    <th>@(DateLastModification)</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </tab>
+            <tab heading="@(bills:InvoicePayment)">
+                <div class="portlet-body">
+                    <div class="table-toolbar">
+                        <div class="row">
+                            <div class="col-md-6"ng-show="!global.user.rights.bill.read">
+                                <div class="btn-group pull-left">
+                                    <button class="btn blue" disabled data-ng-click="paymentBills()">@(Add) <i class="fa fa-plus"></i></button>
+                                    <button title="@(Refresh)" class="btn" data-ng-click="
+                                        commercialList = [];
+                                        commercial_id = '';
+                                        status_id = null;
+                                        filterOptionsSociete.filterText = '';
+                                        clearCache();
+                                        find();"><i class="fa fa-refresh"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="btn-group pull-right">
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li>
+                                            <a href="#">
+                                                @(Update) </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                @(Delete) </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dataTables_wrapper no-footer">
+                        <table class="table table-striped table-bordered table-hover" id="societeListInvoicePayment">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th width="2%">
+                                        <input type="checkbox" class="group-checkable">
+                                    </th>
+                                    <th>@(bills:DatePayment)</th>
+                                    <th>@(bills:TypePayment)</th>
+                                    <th>@(bills:NumberCheckTrans)</th>
+                                    <th>@(bills:Bank)</th>
+                                    <th>@(bills:PaymentBank)</th>
+                                    <th>@(bills:PaymentAmout)</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </tab>
+        </tabset>
+    </div>
+</div>

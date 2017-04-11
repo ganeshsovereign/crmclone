@@ -1,0 +1,109 @@
+<div class="row">
+    <div class="col-md-12">
+        <div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-yellow-crusta">
+                        <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard)
+                    </div>
+                    <div class="actions btn-set">
+                        <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
+                        <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
+                        <button type="button" ng-click="update()" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
+                        <div class="btn-group">
+                            <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
+                                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="#" ng-click="clone()">
+                                        <i class="fa fa-copy"></i> @(ToClone)
+                                    </a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <tabset class="tabbable-line tabbable-full-width">
+                        <tab heading="@(products:CreateVariants)">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr class="forToggle" ng-repeat="line in thead">
+                                                    <th ng-repeat="col in line" colspan="{{col.colspan}}" class="text-center">
+                                                        {{col.value}}
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="forToggle" id="currencyTable">
+                                                <tr ng-repeat="line in variantesLines">
+                                                    <th ng-if="line.index2 === 0" rowspan="{{line.rowspan}}">{{line.elem3}}</th>
+                                                    <th>{{line.elem0}}</th>
+
+                                                    <td ng-repeat="col in line.col" class="text-center" id="{{col.id}}">{{col.value}}
+                                                        <div ng-if="col.html">
+                                                            <label ng-if="product.isVariant" ng-show="productVariants.valuesKeys.indexOf(col.id) < 0" class="_customCHeckbox"><input type="checkbox" class="newVariantCheck" ng-click="toggleSelection(variantsArray, col, 'id')" /><span></span></label>
+                                                            <span ng-hide="productVariants.valuesKeys.indexOf(col.id) < 0 && product.isVariant" class="fa fa-check font-blue"></span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <button ng-if="variantesLines.length" id="saveVariants" class="btn blue" ng-click="saveVariants()">Save Variants</button>
+                                        <button ng-if="variantesLines.length" id="cancelVariants" class="btn info">Cancel</button>
+                                    </div>
+                                </div>
+                                <div class="row" ng-hide="product.isVariant">
+                                    <div ng-if="(changedProductType && changedProductType.opts && changedProductType.opts.length)" class="col-md-12">
+                                        <div ng-repeat="option in changedProductType.opts" class="form-group form-md-line-input">
+                                            <div ng-if="option._id && (checkedObj[option._id] != null || !checkedObj.length)">
+                                                <label class="col-md-2 control-label">{{option.name}} : </label>
+                                                <input type="checkbox" class="md-check" name="checkedObj[]" ng-model="checkedObj[option._id]" id="{{option._id}}" ng-true-value="{values : [], optionId: '{{option._id}}', optionName:'{{option.name}}'}" ng-false-value="null" ng-checked="checkedObj[option._id] != null" ng-disabled="checkedObj[option._id].length" />
+                                                <div class="col-md-10">
+                                                    <div class="md-checkbox-inline">
+                                                        <div class="md-checkbox" ng-repeat="value in option.values">
+                                                            <input type="checkbox" class="md-check" name="checkedObj[]" id="{{value._id}}" ng-click="toggleSelection(checkedObj[option._id].values, value, '_id')" ng-checked="isCheckedObj(checkedObj[option._id], value._id)" ng-disabled="!checkedObj[option._id]" />
+                                                            <label for="{{value._id}}">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> {{value.value}} </label>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <button class="btn blue" ng-click="createVariants(checkedObj)">@(Create)</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </tab>
+                        <tab heading="@(products:CreateSKUs)">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-6"></div>
+                                </div>
+                            </div>
+                        </tab>
+                    </tabset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

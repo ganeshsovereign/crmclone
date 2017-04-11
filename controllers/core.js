@@ -70,7 +70,7 @@ exports.install = function() {
         });
     }, ['authorize']);
     F.route('/erp/convert/resource', convert_resource, ['authorize']);
-    F.route('/erp/convert/{type}', convert, ['authorize']);
+    F.route('/erp/convert/{type}', convert, []);
 
 
     // SHOW LAST 50 PROBLEMS
@@ -274,9 +274,10 @@ function convert(type) {
     switch (type) {
         case 'user':
             var UserModel = MODEL('Users').Schema;
+            var EmployeeModel = MODEL('Employees').Schema;
 
             mongoose.connection.db.collection('users', function(err, collection) {
-                collection.find({ _type: null }, function(err, users) {
+                collection.find({ _type: 'hr' }, function(err, users) {
                     if (err)
                         return console.log(err);
 
@@ -285,35 +286,107 @@ function convert(type) {
                         if (user == null)
                             return self.plain("Converted Users...");
 
+                        if (!user.email)
+                            return;
 
-                        user.username = user.name;
-                        var id = user._id;
-                        delete user._id;
-                        delete user.name;
+                        UserModel.findOne({ username: user.username }, function(err, newUser) {
+                            if (!newUser)
+                                newUser = new UserModel();
 
-                        if (user.Status !== 'ENABLE')
-                            delete user.password;
+                            delete user._id;
 
-                        //console.log(user);
+                            //console.log(newUser);
 
-                        var newUser = new UserModel(user);
-                        //console.log(newUser);
-                        collection.deleteOne({ _id: id }, function(err, results) {
-                            if (err)
-                                return console.log(err);
+                            newUser = _.extend(newUser, user);
+
+                            if (user.Status == 'ENABLE')
+                                newUser.isEnable = true;
+                            else
+                                newUser.isEnable = false;
 
                             newUser.save(function(err, doc) {
-                                if (err || !doc)
-                                    return console.log("Impossible de creer ", err);
+                                if (err)
+                                    return console.log(err);
+                                if (!doc)
+                                    return;
+
+                                EmployeeModel.findOne({ relatedUser: doc._id }, function(err, employee) {
+                                    if (err)
+                                        return console.log(err);
+
+                                    if (!employee)
+                                        employee = new EmployeeModel();
+
+                                    employee = _.extend(employee, {
+                                        relatedUser: doc._id,
+                                        isEmployee: true,
+                                        name: {
+                                            first: user.firstname,
+                                            last: user.lastname
+                                        },
+                                        emails: {
+                                            work: user.email
+                                        },
+                                        "jobPosition": "57cc0b0d2de00d14145d9929",
+                                        "department": "57cc0a2d2de00d14145d9922"
+                                    });
+
+                                    employee.save(function(err, employee) {
+                                        if (err)
+                                            return console.log(err);
+
+                                    });
+                                });
                             });
 
+                            /*collection.deleteOne({ _id: id }, function(err, results) {
+                                if (err)
+                                    return console.log(err);
+
+                                newUser.save(function(err, doc) {
+                                    if (err || !doc)
+                                        return console.log("Impossible de creer ", err);
+                                });
+
+                            });*/
+
                         });
-
                     });
-
                 });
             });
             return self.plain("Type is user");
+            break;
+
+        case 'fk_country':
+            var CountryModel = MODEL('countries').Schema;
+
+            mongoose.connection.db.collection('Dict', function(err, collection) {
+                collection.findOne({ _id: 'fk_country' }, function(err, countries) {
+                    if (!countries)
+                        return;
+
+                    for (let i in countries.values)
+                        CountryModel.findById(i, function(err, doc) {
+                            if (!doc)
+                                doc = new CountryModel();
+
+                            doc = _.extend(doc, {
+                                _id: i,
+                                code: i,
+                                langs: [{
+                                    lang: 'fr',
+                                    name: countries.values[i].label
+                                }]
+                            });
+
+                            doc.save(function(err, doc) {
+                                if (err)
+                                    return console.log(err);
+                            });
+                        });
+                });
+            });
+            return self.plain("Type is fk_country");
             break;
 
         case 'contact':

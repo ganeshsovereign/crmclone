@@ -1,11 +1,7 @@
 <div class="portlet light portlet-form bordered">
     <div class="portlet-title">
         <div class="caption font-yellow-crusta">
-            <i class="fa fa-institution font-yellow-crusta"></i>Sociétés / institutions
-        </div>
-        <div class="actions">
-            <button class="btn btn-circle default" ui-sref="societe.create" href="#!/societe/create.html">Ajouter <i class="fa fa-plus"></i></button>
-            <button title="Rafraîchir" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+            <i class="fa fa-envelope font-yellow-crusta"></i> @(ContactsAddressesForCompany)
         </div>
     </div>
     <div class="tools">
@@ -24,13 +20,10 @@
                 </tab-heading>
                 <div class="portlet-body">
                     <div class="table-toolbar">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <button class="btn blue" data-ng-click="editAddress()">@(Add) <i class="fa fa-plus"></i></button>
-                            </div>
-                            <div class="col-md-6">
-                                <!--<div class="btn-group pull-right">
-                                                        <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+                        <div class="btn-group pull-right">
+                            <button class="btn btn-circle default" data-ng-click="editAddress()">@(Add) <i class="fa fa-plus"></i></button>
+                            <!--<div class="btn-group pull-right">
+                                                        <button class="btn btn-circle dark dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
                                                         </button>
                                                         <ul class="dropdown-menu pull-right">
                                                             <li>
@@ -43,19 +36,20 @@
                                                             </li>
                                                         </ul>
                                                     </div>-->
-                            </div>
                         </div>
                     </div>
-                    <script type="text/ng-template" id="addModalAddress.html">
-                        <div class="modal-header">
-                            <h3 class="no-margin-bottom">Edition d'une adresse de livraison</h3>
-                        </div>
-                        <div class="modal-body">
+                </div>
+                <script type="text/ng-template" id="addModalAddress.html">
+                    <div class="modal-header">
+                        <h3 class="no-margin-bottom"><i class="fa fa-truck"></i> Edition d'une adresse de livraison</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12">
                             <div class="form-horizontal">
 
-                                <div class="portlet-body margin-bottom" crm-address mode="create" model="address"></div>
+                                <div class="portlet-body margin-bottom form-group form-md-line-input" crm-address mode="create" model="address"></div>
 
-                                <div class="form-group">
+                                <div class="form-group form-md-line-input">
                                     <label class="col-md-3 control-label">@(Status)</label>
                                     <div class="col-md-9">
                                         <select class="form-control" ng-model="address.Status" ng-options="c.id as c.label for c in dict.fk_user_status.values">
@@ -65,15 +59,16 @@
 
                             </div>
                         </div>
-                        <div class="modal-footer">
+                    </div>
+                    <div class="modal-footer">
 
-                            <button type="button" ng-click="ok()" class="btn blue btn-sm">@(Save)</button>
+                        <button type="button" ng-click="ok()" class="btn btn-circle btn-success">@(Save)</button>
+                    </div>
+                </script>
 
-                        </div>
-                    </script>
-
-                    <div class="table-scrollable">
-                        <table class="table table-condensed table-hover">
+                <div class="dataTables_wrapper table-responsive">
+                    <div class="col-md-12">
+                        <table class="table dataTable table-hover">
                             <thead>
                                 <tr role="row" class="heading">
                                     <th width="2%">
@@ -109,10 +104,11 @@
                         </table>
                     </div>
                 </div>
-            </tab>
-            <!-- END ADRESSES TABLE-->
-            <!-- FEEDS TABLE-->
-            <!--<tab heading="Feeds">
+    </div>
+    </tab>
+    <!-- END ADRESSES TABLE-->
+    <!-- FEEDS TABLE-->
+    <!--<tab heading="Feeds">
                                                                         <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 290px;"><div class="scroller" data-height="290px" data-always-visible="1" data-rail-visible1="1" data-initialized="1" style="overflow: hidden; width: auto; height: 290px;">
                                                                                 <ul class="feeds">
                                                                                     <li>
@@ -501,7 +497,7 @@
                                                                                 </ul>
                                                                             </div><div class="slimScrollBar" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; background: rgb(187, 187, 187);"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(234, 234, 234);"></div></div>
                                 </tab>-->
-            <!-- END FEEDS TABLE-->
-        </tabset>
-    </div>
+    <!-- END FEEDS TABLE-->
+    </tabset>
+</div>
 </div>

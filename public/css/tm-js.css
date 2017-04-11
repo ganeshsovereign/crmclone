@@ -371,6 +371,13 @@ hr {
     border-bottom: 4px solid #FFEB9A;
 }
 
+.profile-stat-text {
+    color: #F3C200;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+}
+
 .nav .badge {
     vertical-align: baseline;
     float: right

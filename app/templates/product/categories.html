@@ -1,0 +1,353 @@
+<script type="text/ng-template" id="searchproduct.html">
+    <a ng-class="{'list-group-item font-green': match.model.price_level != 'BASE'}">
+        <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.price_level}} : {{match.model.pu_ht|currency}})
+    </a>
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-yellow-crusta">
+                        <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard) : @(Associations)
+                    </div>
+                    <div class="actions btn-set">
+                        <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
+                        <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
+                        <button type="button" ng-click="update()" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
+                        <div class="btn-group">
+                            <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
+                                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="#" ng-click="clone()">
+                                        <i class="fa fa-copy"></i> @(ToClone)
+                                    </a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <tabset class="tabbable-line tabbable-full-width">
+                        <tab heading="@(Categories)" ng-if="product._id">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="portlet light bordered" ng-init="init()">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    <i class="fa fa-share-alt font-yellow-crusta"></i>
+                                                    <span class="caption-subject font-yellow-crusta bold uppercase">@(Categories) @(Ecommerce)</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="portlet-body">
+                                                <div class="table-toolbar">
+                                                    <div class="row">
+                                                        <div class="col-md-9">
+                                                            <div class="btn-group">
+                                                                <button class="btn" ng-click="expandAll()"><i class="fa fa-plus-square-o"></i> Expand all</button>
+                                                                <button class="btn" ng-click="collapseAll()"><i class="fa fa-minus-square-o"></i> Collapse all</button>
+                                                                <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="btn-group pull-right">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Nested node template -->
+                                                <script type="text/ng-template" id="nodes_renderer.html">
+                                                    <div ui-tree-handle class="tree-node tree-node-content">
+                                                        <a class="" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-plus-square-o': collapsed,'fa-minus-square-o': !collapsed}"></span></a>                                                        <input type="checkbox" ng-checked="product.info.categories.indexOf(node._id) >= 0" ng-click="checkCategory(product.info.categories, node._id); product.$update();" /> {{node.langs[0].name}}
+                                                        <span style="margin-left: 20px;" class="font-blue">/{{node.langs[0].linker}}/</span>
+                                                        <small class="pull-right bold h6" ng-show="node.productsCount">{{node.productsCount}} @(products:Products)</small>
+                                                        <h6 class="">{{node.langs[0].description}}</h6>
+                                                    </div>
+                                                    <ol ui-tree-nodes="" ng-model="node.nodes" data-nodrag ng-class="{hidden: collapsed}">
+                                                        <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+                                                        </li>
+                                                    </ol>
+                                                </script>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div ui-tree="treeOptions" id="tree-root" data-max-depth="5">
+                                                            <ol ui-tree-nodes ng-model="categories">
+                                                                <li ng-repeat="node in categories" ui-tree-node data-nodrag ng-include="'nodes_renderer.html'"></li>
+                                                            </ol>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </tab>
+                        <tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+                            <tab-heading>
+                                <span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(products:Cross-Sell)
+                            </tab-heading>
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr role="row" class="heading">
+                                                <th>
+                                                    @(products:Ref)
+                                                </th>
+                                                <th>
+                                                    @(Label)
+                                                </th>
+                                                <th>
+                                                    @(Qty)
+                                                </th>
+                                                <th>
+                                                    @(products:BuyingPriceHT)
+                                                </th>
+                                                <th>
+                                                    @(AmountHT)
+                                                </th>
+                                                <th>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input class="form-control" ng-model="newPack.id.name" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item)" placeholder="@(products:ProductRef)"
+                                                    />
+                                                </td>
+                                                <td>
+                                                    {{newPack.id.label}}
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
+                                                </td>
+                                                <td>
+                                                    {{newPack.pu_ht|currency}}
+                                                </td>
+                                                <td>
+                                                    {{newPack.total_ht|currency}}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-circle default" ng-click="addPack()">
+                                                <i class="fa fa-plus"></i></button>
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="pack in product.pack">
+                                                <td>
+                                                    <a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.ref}}"><span class="fa fa-cubes"></span> {{pack.id.ref}}</a>
+                                                </td>
+                                                <td>
+                                                    {{pack.id.label}}
+                                                </td>
+                                                <td>
+                                                    <span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
+                                                {{pack.qty}}
+                                            </span>
+                                                </td>
+                                                <td style="text-align: right; ">
+                                                    {{pack.id.totalCost| currency}}
+                                                </td>
+                                                <td style="text-align: right; ">
+                                                    {{pack.id.totalCost * pack.qty| currency}}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-circle red" ng-click="deletePack($index)">
+                                                <i class="fa fa-trash"></i> </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </tab>
+
+                        <tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+                            <tab-heading>
+                                <span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(products:Up-Sell)
+                            </tab-heading>
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr role="row" class="heading">
+                                                <th>
+                                                    @(products:Ref)
+                                                </th>
+                                                <th>
+                                                    @(Label)
+                                                </th>
+                                                <th>
+                                                    @(Qty)
+                                                </th>
+                                                <th>
+                                                    @(products:BuyingPriceHT)
+                                                </th>
+                                                <th>
+                                                    @(AmountHT)
+                                                </th>
+                                                <th>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input class="form-control" ng-model="newPack.id.name" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item)" placeholder="@(products:ProductRef)"
+                                                    />
+                                                </td>
+                                                <td>
+                                                    {{newPack.id.label}}
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
+                                                </td>
+                                                <td>
+                                                    {{newPack.pu_ht|currency}}
+                                                </td>
+                                                <td>
+                                                    {{newPack.total_ht|currency}}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-circle default" ng-click="addPack()">
+                                                <i class="fa fa-plus"></i></button>
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="pack in product.pack">
+                                                <td>
+                                                    <a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.ref}}"><span class="fa fa-cubes"></span> {{pack.id.ref}}</a>
+                                                </td>
+                                                <td>
+                                                    {{pack.id.label}}
+                                                </td>
+                                                <td>
+                                                    <span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
+                                                {{pack.qty}}
+                                            </span>
+                                                </td>
+                                                <td style="text-align: right; ">
+                                                    {{pack.id.totalCost| currency}}
+                                                </td>
+                                                <td style="text-align: right; ">
+                                                    {{pack.id.totalCost * pack.qty| currency}}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-circle red" ng-click="deletePack($index)">
+                                                <i class="fa fa-trash"></i> </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </tab>
+
+                        <tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+                            <tab-heading>
+                                <span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(products:SubstituteProduct)
+                            </tab-heading>
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr role="row" class="heading">
+                                                <th>
+                                                    @(products:Ref)
+                                                </th>
+                                                <th>
+                                                    @(Label)
+                                                </th>
+                                                <th>
+                                                    @(Qty)
+                                                </th>
+                                                <th>
+                                                    @(products:BuyingPriceHT)
+                                                </th>
+                                                <th>
+                                                    @(AmountHT)
+                                                </th>
+                                                <th>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <input class="form-control" ng-model="newPack.id.name" typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" typeahead-template-url="searchsupplierproduct.html" typeahead-on-select="addPackProduct($item)" placeholder="@(products:ProductRef)"
+                                                    />
+                                                </td>
+                                                <td>
+                                                    {{newPack.id.label}}
+                                                </td>
+                                                <td>
+                                                    <input class="form-control" type="number" min="0" step="any" ng-model="newPack.qty" ng-change="changePackQty()" />
+                                                </td>
+                                                <td>
+                                                    {{newPack.pu_ht|currency}}
+                                                </td>
+                                                <td>
+                                                    {{newPack.total_ht|currency}}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-circle default" ng-click="addPack()">
+                                                <i class="fa fa-plus"></i></button>
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="pack in product.pack">
+                                                <td>
+                                                    <a class="with-tooltip" ui-sref="product.show({id: pack.id._id})" data-tooltip-options='{"position":"top"}' title="{{pack.id.ref}}"><span class="fa fa-cubes"></span> {{pack.id.ref}}</a>
+                                                </td>
+                                                <td>
+                                                    {{pack.id.label}}
+                                                </td>
+                                                <td>
+                                                    <span editable-number="pack.qty" e-min="0" e-step="any" onaftersave="update()">
+                                                {{pack.qty}}
+                                            </span>
+                                                </td>
+                                                <td style="text-align: right; ">
+                                                    {{pack.id.totalCost| currency}}
+                                                </td>
+                                                <td style="text-align: right; ">
+                                                    {{pack.id.totalCost * pack.qty| currency}}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-circle red" ng-click="deletePack($index)">
+                                                <i class="fa fa-trash"></i> </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </tab>
+                </div>
+            </div>
+            </tabset>
+        </div>
+    </div>
+</div>

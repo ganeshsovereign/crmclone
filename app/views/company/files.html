@@ -1,6 +1,15 @@
-<tab select="files = 1" ng-if="product._id">
-    <tab-heading>
-        <span ng-if='product.files.length' class='badge badge-success'>{{product.files.length}}</span> @(products:Images/documents)
-    </tab-heading>
-    <div ng-if="files" ng-include="'/templates/_gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
-</tab>
+<div class="portlet light portlet-form bordered">
+    <div class="portlet-title">
+        <div class="caption font-yellow-crusta">
+            <i class="fa fa-image font-yellow-crusta"></i>@(Files)
+        </div>
+    </div>
+    <div class="portlet-body">
+        <tab select="files = 1">
+
+            <span ng-if='societe.files.length' class='badge badge-success'>{{societe.files.length}}</span> @(Files)
+
+            <div ng-if="files" ng-include="'/templates/_gridfs/file.html'" ng-controller="FileCtrl" onload="init('societe', societe)"></div>
+        </tab>
+    </div>
+</div>

@@ -29,6 +29,7 @@
     "SalesRepresentative": "Commercial",
     "SalesRepresentatives": "Commerciaux",
     "SalesRepresentativeFollowUp": "Commercial (suivi)",
+    "CommercialFollow": "Suivi commercial",
     "SalesRepresentativeSignature": "Commercial (signature)",
     "CommercialInterlocutor": "Interlocuteur commercial",
     "ErrorWrongCode": "Code incorrect",
@@ -100,8 +101,8 @@
     "Attractiveness": "Attractivité",
     "CAOrderByMonth": "CA du mois",
     "CAOrderByYear": "CA de l'année",
-    "CAPropalByMonth":"Total Propositions",
-    "DateLastAction":"Dernière action",
-    "ListProductsPrices":"Liste de prix",
-    "Buyer":"Acheteur"
+    "CAPropalByMonth": "Total Propositions",
+    "DateLastAction": "Dernière action",
+    "ListProductsPrices": "Liste de prix",
+    "Buyer": "Acheteur"
 }
