@@ -22,3 +22,6 @@ logs.txt
 *.cache
 *.nosql
 /install/
+databases/reqstats.json
+debug.pid
+dump/new/
