@@ -1,0 +1,93 @@
+\newcommand{\FOOT}{--FOOT--}
+
+%%ligne de tableau avec \\
+\newcommand{\specialcell}[2][c]{
+	\parbox[#1]{3.8cm}{#2}}
+	
+\begin{tabular}{p{9cm} p{8cm}}
+    \vspace{0pt} 
+    \includegraphics[width=7.5cm]{--LOGO--}
+    & 
+    \vspace{0pt}
+   \raggedleft
+	%\begin{flushright}
+	\textcolor{violet}{\textsc{\Large Relev\'e de factures}}\\
+	Date du relev\'e : --DATEC--\\
+\end{tabular}
+
+%\vspace{-0.7cm}
+
+\begin{minipage}[t]{0.40\textwidth}
+{\small Emetteur :}\\
+\begin{fminipage}
+--MYSOC--
+\end{fminipage}
+\end{minipage}
+\hspace{1cm}
+\begin{minipage}[t]{0.52\textwidth}
+{\small Destinataire :}
+
+\begin{fminipage}
+\textbf{\large --DESTINATAIRE.NAME--}\\
+--DESTINATAIRE.ADDRESS--\\
+\textsc{--DESTINATAIRE.ZIP-- --DESTINATAIRE.TOWN--}\\
+\begin{minipage}{\textwidth}
+\flushright
+{\tiny --CODECLIENT--}
+\end{minipage}
+\end{fminipage}
+\end{minipage}
+
+\begin{minipage}[t]{\textwidth}
+\begin{flushright}
+{\footnotesize \textit{Montants exprimés en €}}
+\end{flushright}
+\end{minipage}
+
+\setlength\LTleft{0pt}
+\setlength\LTright{0pt}
+\setlength\LTpre{5pt}
+\setlength\LTpost{0pt}
+\begin{longtable}{|p{3cm}|p{2.5cm}@{\extracolsep{1mm plus 1fil}}|c|r|r|r|}
+\hline
+\multicolumn{1}{|c}{Num facture} &
+\multicolumn{1}{c}{Date de facture} &
+Réf client &
+Date d'échéance &
+Montant HT &
+\multicolumn{1}{c|}{Montant TTC} \\
+\hline \hline
+\endfirsthead
+
+\hline
+\multicolumn{6}{|l|}{\small\sl suite de la page pr\'ec\'edente}\\
+\hline \multicolumn{1}{|c}{Num facture} &
+\multicolumn{1}{c}{Date de facture} &
+Réf client &
+Date d'échéance &
+Montant HT &
+\multicolumn{1}{c|}{Montant TTC} \\ \hline \hline
+\endhead
+
+\hline \multicolumn{6}{|r|}{{\small\sl suite sur la prochaine page}} \\ \hline
+\endfoot
+
+\hline
+\endlastfoot
+
+--TABULAR--
+
+\end{longtable}
+
+\begin{minipage}[t]{0.48\textwidth}
+{\footnotesize \textbf{Conditions de règlement :} --REGLEMENT--}\\
+{\footnotesize Règlement TTC par \textbf{--PAID--} --BK--}\\
+\end{minipage}
+\hspace{2mm}
+\begin{minipage}[t]{0.50\textwidth}
+\begin{flushright}
+\begin{tabular}{p{4.5cm} r}
+\rowcolor{violet}\textcolor{white}{Total à payer} &\textcolor{white}{--APAYER--} \\ 
+\end{tabular} 
+\end{flushright}
+\end{minipage}
