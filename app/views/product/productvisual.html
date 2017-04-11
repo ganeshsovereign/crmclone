@@ -1,0 +1,172 @@
+<h1 class="page-title"> @(products:ProductServiceCard) : {{product.ref}}
+</h1>
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a ui-sref="product.list">@(products:Products/Services)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>{{product.ref}}</span>
+        </li>
+    </ul>
+</div>
+<div class="col-md-12">
+    <!-- BEGIN Portlet PORTLET-->
+    <div class="portlet box white">
+        <div class="portlet-body portlet-empty">
+            <div class="col-md-7 col-xs-6">
+                <img src="../assets/pages/img/logos/logo5.jpg" class="img-responsive" alt="">
+            </div>
+            <div class="col-md-5 col-xs-6">
+                <div class="company-address">
+                    <span class="bold uppercase">{{login.entity}}</span>
+                    <br> {{entity.address}}
+                    <br>
+                    <span class="bold">@(companies:Phone) :</span> {{login.phone}}
+                    <br>
+                    <span class="bold">@(Email) :</span> {{login.email}}
+                    <br>
+                    <span class="bold">@(Web) :</span> {{login.url}} </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-xs-3">
+                    <h4>@(commercial:Commercial):</h4>
+                    <p>{{login.fullname}}</p>
+                </div>
+                <div class="col-xs-3">
+                    <h4>@(Date):</h4>
+                    <p>{{product.updatedAt|date:'dd/MM/yyyy HH:mm'}}</p>
+                </div>
+                <div class="col-xs-6">
+                    <h4>@(Label):</h4>
+                    <p>{{product.Label}}</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- BEGIN Portlet PORTLET-->
+                    <div class="portlet box grey-cascade">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-picture-o"></i>@(Images) </div>
+                        </div>
+                        <div class="portlet-body portlet-empty">
+                            <img src="/erp/api/file/product/57a0c75e379f2119472fde2c" class="img-responsive pic-bordered" data-width="400"
+                                data-height="400" alt=""> </div>
+                    </div>
+                    <!-- END Portlet PORTLET-->
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- BEGIN Portlet PORTLET-->
+                    <div class="portlet box grey-cascade">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-align-justify"></i>@(Description) </div>
+                        </div>
+                        <div class="portlet-body portlet-empty"> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>@(Label): </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{product.Label}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>@(Ref) (SKU): </p>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>{{product.ref}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>@(Description): </p>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>{{product.description}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>@(DateLastModification): </p>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>{{product.updatedAt|date:'dd/MM/yyyy HH:mm'}}</p>
+                                </div>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    <!-- END Portlet PORTLET-->
+                </div>
+            </div>
+
+
+<div class="row">
+                <div class="col-md-12">
+                    <!-- BEGIN Portlet PORTLET-->
+                    <div class="portlet box grey-cascade">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-align-justify"></i>@(OtherInformations) </div>
+                        </div>
+                        <div class="portlet-body portlet-empty"> 
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>@(products:Stock): </p>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>{{product.stock.floor}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>@(products:Zone): </p>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>{{product.stock.zone}}; {{product.stock.driveway}}; {{product.stock.rack}}</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>@(product:BarCode): </p>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>{{product.barCode}}</p>
+                                </div>
+                            </div>
+                            
+                            
+                            </div>
+                    </div>
+                    <!-- END Portlet PORTLET-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <a class="btn btn-lg yellow-crusta hidden-print uppercase print-btn" onclick="javascript:window.print();">@(Print)</a>
+    </div>
+</div>

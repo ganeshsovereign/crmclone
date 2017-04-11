@@ -1,0 +1,503 @@
+<script type="text/ng-template" id="searchproduct.html">
+    <a ng-class="{'list-group-item font-green': match.model.price_level != 'BASE'}">
+        <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.price_level}} : {{match.model.pu_ht|currency}})
+    </a>
+</script>
+
+<script type="text/ng-template" id="searchsupplierproduct.html">
+    <a>
+        <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.totalCost |currency}})
+    </a>
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-yellow-crusta">
+                        <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard)
+                    </div>
+                    <div class="actions btn-set">
+                        <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
+                        <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
+                        <button type="button" ng-click="update()" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
+                        <div class="btn-group">
+                            <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
+                                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="#" ng-click="clone()">
+                                        <i class="fa fa-copy"></i> @(ToClone)
+                                    </a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+
+                    <!-- end ngIf: product._id -->
+                    <div class="form-group form-md-line-input">
+                        <label class="col-md-5 control-label" for="form_control_1">importer une famille d'attributs : <span class="required">* </span></label>
+                        <div class="col-md-4">
+                            <select class="table-group-action-input form-control" ng-model="product.units" ng-options="s.id as s.label for s in dict.fk_units.values"></select>
+                            <div class="form-control-focus"> </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-circle default" ng-click="addNewPrice()">@(Add) <i class="fa fa-plus"></i></button>
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="mt-element-list">
+                        <div class="mt-list-head list-todo yellow-crusta">
+                            <div class="list-head-title-container">
+                                <h3 class="list-title">Attributs famille : Table</h3>
+                            </div>
+                        </div>
+                        <div class="mt-list-container list-todo" id="accordion1" role="tablist" aria-multiselectable="true">
+                            <div class="list-todo-line"></div>
+                            <ul>
+                                <li class="mt-list-item">
+                                    <div class="list-todo-icon bg-white">
+                                        <i class="fa fa-paint-brush"></i>
+                                    </div>
+                                    <div class="list-todo-item grey-gallery">
+                                        <a class="list-toggle-container" data-toggle="collapse" data-parent="#accordion1" onclick=" " href="#task-1" aria-expanded="true">
+                                            <div class="list-toggle done uppercase">
+                                                <div class="list-toggle-title bold">Marketing</div>
+                                                <div class="badge badge-default pull-right bold">3</div>
+                                            </div>
+                                        </a>
+                                        <div class="task-list panel-collapse collapse in" id="task-1" aria-expanded="true">
+                                            <ul>
+                                                <li class="task-list-item done">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Date</a>
+                                                        </h4>
+                                                        <div class="row">
+                                                            <input date-input ng-model="bill.datec" ng-required="true" /> </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-calculator"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Number</a>
+                                                        </h4>
+                                                        <div class="row"><input type="number" class="form-control" placeholder="enter number(s)">
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Text</a>
+                                                        </h4>
+                                                        <div class="row"><input type="text" class="form-control" placeholder="Enter text"></div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-pencil-square-o"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Text Area</a>
+                                                        </h4>
+                                                        <div class="row"><textarea class="form-control" rows="3" placeholder="Enter text"></textarea></div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-toggle-on"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Yes/No</a>
+                                                        </h4>
+                                                        <div class="row">
+                                                            <div class="btn-group" data-toggle="buttons">
+                                                                <label class="btn btn-default active">
+                                                                        <input type="radio" class="toggle">Yes </label>
+                                                                <label class="btn btn-default">
+                                                                        <input type="radio" class="toggle"> No </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-check"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Simple Select</a>
+                                                        </h4>
+                                                        <div class="row">
+                                                            <select class="form-control" name="select">
+                                                            <option value="">Select one...</option>
+                                                            <option value="Category 1">Category 1</option>
+                                                            <option value="Category 2">Category 2</option>
+                                                            <option value="Category 3">Category 5</option>
+                                                            <option value="Category 4">Category 4</option>
+                                                        </select>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-check-square-o"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;"> Multi Select</a>
+                                                        </h4>
+
+                                                        <div class="row">
+                                                            <select multiple="" class="form-control">
+                                                            <option>Option 1</option>
+                                                            <option>Option 2</option>
+                                                            <option>Option 3</option>
+                                                            <option>Option 4</option>
+                                                            <option>Option 5</option>
+                                                        </select>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <div class="task-footer bg-grey">
+                                                <div class="row">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="mt-list-item">
+                                    <div class="list-todo-icon bg-white">
+                                        <i class="fa fa-database"></i>
+                                    </div>
+                                    <div class="list-todo-item grey-gallery">
+                                        <a class="list-toggle-container" data-toggle="collapse" data-parent="#accordion1" href="#task-2" aria-expanded="true">
+                                            <div class="list-toggle done uppercase">
+                                                <div class="list-toggle-title bold">Technical</div>
+                                                <div class="badge badge-default pull-right bold">3</div>
+                                            </div>
+                                        </a>
+                                        <div class="task-list panel-collapse collapse in" id="task-2" aria-expanded="true">
+                                            <ul>
+                                                <li class="task-list-item done">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Date</a>
+                                                        </h4>
+                                                        <div class="row">
+                                                            <input date-input ng-model="bill.datec" ng-required="true" /> </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-calculator"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Number</a>
+                                                        </h4>
+                                                        <div class="row"><input type="number" class="form-control" placeholder="enter number(s)">
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Text</a>
+                                                        </h4>
+                                                        <div class="row"><input type="text" class="form-control" placeholder="Enter text"></div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-pencil-square-o"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Text Area</a>
+                                                        </h4>
+                                                        <div class="row"><textarea class="form-control" rows="3" placeholder="Enter text"></textarea></div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-toggle-on"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Yes/No</a>
+                                                        </h4>
+
+                                                        <div class="btn-group" data-toggle="buttons">
+                                                            <label class="btn btn-default active">
+                                                                        <input type="radio" class="toggle">Yes </label>
+                                                            <label class="btn btn-default">
+                                                                        <input type="radio" class="toggle"> No </label>
+                                                        </div>
+
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-check"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Simple Select</a>
+                                                        </h4>
+                                                        <div class="row">
+                                                            <select class="form-control" name="select">
+                                                            <option value="">Select one...</option>
+                                                            <option value="Category 1">Category 1</option>
+                                                            <option value="Category 2">Category 2</option>
+                                                            <option value="Category 3">Category 5</option>
+                                                            <option value="Category 4">Category 4</option>
+                                                        </select>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-check-square-o"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;"> Multi Select</a>
+                                                        </h4>
+
+                                                        <div class="row">
+                                                            <select multiple="" class="form-control">
+                                                            <option>Option 1</option>
+                                                            <option>Option 2</option>
+                                                            <option>Option 3</option>
+                                                            <option>Option 4</option>
+                                                            <option>Option 5</option>
+                                                        </select>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <div class="task-footer bg-grey">
+                                                <div class="row">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="mt-list-item">
+                                    <div class="list-todo-icon bg-white">
+                                        <i class="fa fa-bookmark"></i>
+                                    </div>
+                                    <div class="list-todo-item grey-gallery">
+                                        <a class="list-toggle-container font-white collapsed" data-toggle="collapse" data-parent="#accordion1" href="#task-3" aria-expanded="false">
+                                            <div class="list-toggle done uppercase">
+                                                <div class="list-toggle-title bold">Others</div>
+                                                <div class="badge badge-default pull-right bold">2</div>
+                                            </div>
+                                        </a>
+                                        <div class="task-list panel-collapse collapse" id="task-3" aria-expanded="false">
+                                            <ul>
+                                                <li class="task-list-item done">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Date</a>
+                                                        </h4>
+                                                        <div class="row">
+                                                            <input date-input ng-model="bill.datec" ng-required="true" /> </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-calculator"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Number</a>
+                                                        </h4>
+                                                        <div class="row"><input type="number" class="form-control" placeholder="enter number(s)">
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Text</a>
+                                                        </h4>
+                                                        <div class="row"><input type="text" class="form-control" placeholder="Enter text"></div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-pencil-square-o"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Text Area</a>
+                                                        </h4>
+                                                        <div class="row"><textarea class="form-control" rows="3" placeholder="Enter text"></textarea></div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-toggle-on"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Yes/No</a>
+                                                        </h4>
+                                                        <div class="row">
+                                                            <div class="btn-group" data-toggle="buttons">
+                                                                <label class="btn btn-default active">
+                                                                        <input type="radio" class="toggle">Yes </label>
+                                                                <label class="btn btn-default">
+                                                                        <input type="radio" class="toggle"> No </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-check"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;">Simple Select</a>
+                                                        </h4>
+                                                        <div class="row">
+                                                            <select class="form-control" name="select">
+                                                            <option value="">Select one...</option>
+                                                            <option value="Category 1">Category 1</option>
+                                                            <option value="Category 2">Category 2</option>
+                                                            <option value="Category 3">Category 5</option>
+                                                            <option value="Category 4">Category 4</option>
+                                                        </select>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="task-list-item">
+                                                    <div class="task-icon">
+                                                        <a href="javascript:;">
+                                                            <i class="fa fa-check-square-o"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="task-content">
+                                                        <h4 class="uppercase bold">
+                                                            <a href="javascript:;"> Multi Select</a>
+                                                        </h4>
+
+                                                        <div class="row">
+                                                            <select multiple="" class="form-control">
+                                                            <option>Option 1</option>
+                                                            <option>Option 2</option>
+                                                            <option>Option 3</option>
+                                                            <option>Option 4</option>
+                                                            <option>Option 5</option>
+                                                        </select>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <div class="task-footer bg-grey">
+                                                <div class="row">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    </ul>
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

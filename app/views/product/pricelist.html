@@ -1,0 +1,233 @@
+<div>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a ui-sref="home">@(Home)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <i class="fa fa-cogs"></i>
+                <a ui-sref="product.list">@(products:ProductsAndServices)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(products:PriceLevel)</span>
+            </li>
+        </ul>
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <a class="btn btn-circle dark dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
+                                                    <i class="fa fa-angle-down"></i>
+                                                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a ng-href="/erp/api/product/price_level/export/{{price_level}}">
+                            <i class="fa fa-download"></i> @(Download) XLS </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-click="clone()">
+                            <i class="fa fa-copy"></i> @(Clone) </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-show="login.rights.product.create" data-ng-click="updatePrices()">
+                            <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
+                        </a>
+                    </li>
+                    <!--    <li>
+                                        <a href="#">
+                                            @(Delete) </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            @(BuildPDF) </a>
+                                    </li>-->
+                </ul>
+            </div>
+        </div>
+    </div>
+    <h3 class="page-title">
+        <i class="fa fa-cubes font-grey-silver"></i> Liste des tarifs
+    </h3>
+
+
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="no-margin-bottom">@(products:NewPriceLevelProductService)</h3>
+        </div>
+        <div class="modal-body">
+
+            <p class="button-height inline-medium-label">
+                <label for="product">@(products:RefProductService)</label>
+                <input id="product" required data-ng-model="price.product" typeahead="product as product.name for product in productAutoComplete($viewValue) | filter:{name:$viewValue}" class="input">
+            </p>
+            <p class="button-height inline-medium-label">
+                <label>Libellé</label> {{price.product.label}}
+            </p>
+            <p class="button-height inline-medium-label">
+                <label for="price_level">@(products:GridPrice)</label>
+                <input id="price_level" required data-ng-model="price.price_level" typeahead="price_level.name as price_level.name for price_level in priceLevelAutoComplete($viewValue)" class="input">
+            </p>
+            <!--<p class="button-height inline-medium-label">
+        <label for="datec">Date</label>
+        <input kendo-date-picker id="datec" data-ng-model="datec" k-on-change="paiement.datec = kendoEvent.sender._value;" class="input">
+        </p>-->
+            <p class="button-height inline-medium-label">
+                <label for="pu_ht">@(products:RateHT)</label>
+                <input type="number" min="0" step="any" id="pu_ht" data-ng-model="price.prices.pu_ht" class="input">
+            </p>
+            <p class="button-height inline-medium-label">
+                <label for="discount">@(products:Discount)</label>
+                <input type="number" min="0" step="any" id="discount" data-ng-model="price.discount" class="input">
+            </p>
+
+        </div>
+        <div class="modal-footer">
+
+            <button type="button" ng-click="ok()" class="btn blue btn-sm">@(Add)</button>
+
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="cloneContent.html">
+        <div class="modal-header">
+            <h3 class="no-margin-bottom">@(products:DuplicatePriceList)</h3>
+        </div>
+        <div class="modal-body">
+
+            <p class="button-height inline-medium-label">
+                <label>@(products:PriceLevel)</label> {{price.price_level}}
+            </p>
+            <p class="button-height inline-medium-label">
+                <label for="price_level">@(products:NewPriceLevel)</label>
+                <input id="price_level" required data-ng-model="price.dest" class="input">
+            </p>
+        </div>
+        <div class="modal-footer">
+
+            <button type="button" ng-click="ok()" class="btn blue btn-sm">@(Clone)</button>
+
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="myModalPrice.html">
+        <div class="modal-header">
+            <h4 class="no-margin-bottom">@(products:ChangePrice)</h4>
+        </div>
+        <div class="modal-body">
+
+            <p class="button-height inline-medium-label">
+                <label for="coef">@(products:MultiplierLong)</label>
+                <input id="coef" required data-ng-model="coef" type="number" min="0.01" step="any" class="form-control">
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
+            <button type="button" ng-click="ok()" class="btn btn-info btn-sm">@(Apply)</button>
+
+        </div>
+    </script>
+
+    <div class="portlet light portlet-form bordered" ng-init="init()">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-cubes font-yellow-crusta"></i>
+                <i class="caption-subject font-yellow-crusta sbold uppercase"></i>@(products:PriceLevel)
+            </div>
+            <div class="actions">
+                <button class="btn btn-circle default" ng-click="addNewPrice()">@(Add) <i class="fa fa-plus"></i></button>
+                <button title="@(Refresh)" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="form-group form-md-line-input">
+                <div class="row hidden-print">
+                    <div class="col-md-12">
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-6">
+                            <select ng-model="price_level" ng-options="c.name as c.name for c in prices_level" data-ng-change="find()" class="form-control"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dataTables_wrapper table-responsive">
+                <div class="col-md-12">
+                    <table class="table dataTable table-hover">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th width="2%">
+                                    <input type="checkbox" class="group-checkable" />
+                                </th>
+                                <th>@(RefOrLabel)</th>
+                                <th>@(Description)</th>
+                                <th>@(Liste de prix)</th>
+                                <!--<th>@(Min de commande)</th>-->
+                                <th>@(Tarif HT)</th>
+                                <th>Remise Suppl.</th>
+                                <th>@(Base HT)</th>
+                                <th>Date MAJ</th>
+                                <th>@(Action)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="line in priceLevel| orderBy : 'product.name'">
+                                <td><input type="checkbox" ng-model="grid[line._id]" /></td>
+                                <td><a ui-sref="product.show({id:line.product._id})" class="fa fa-cubes"> {{line.product.name}}</a></td>
+                                <td>{{line.product.label}}</td>
+                                <td>{{line.price_level}}</td>
+                                <!--<td>{{line.qtyMin}}</td>-->
+                                <td>
+                                    <table class="table-condensed">
+                                        <tbody>
+                                            <tr ng-repeat="price in line.pricesDetails">
+                                                <td class="text-info">{{price.range}}</td>
+                                                <td><a href="#" editable-number="price.price" e-step="0.001" e-min="0" onaftersave="update(line.product._id, $data, price.rangeQty, line.price_level)">{{price.price}}</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <a ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>
+
+                                    <form ng-show="addNewRange" class="form-horizontal">
+                                        <div class="form-body">
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">@(Qty)</label>
+                                                <div class="col-md-9">
+                                                    <input type="number" class="form-control input-sm" min="0" step='1' ng-model="price.rangeQty" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">@(Price)</label>
+                                                <div class="col-md-9">
+                                                    <input type="number" class="form-control input-sm" min="0" step="0.001" ng-model="price.price" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-actions right1">
+                                            <button type="button" ng-click="addNewRange = false" class="btn default btn-sm">@(Cancel)</button>
+                                            <button type="button" ng-click="update(line.product._id, price.price, price.rangeQty, line.price_level)" class="btn green btn-sm">@(Add)</button>
+                                        </div>
+                                    </form>
+                                </td>
+                                <td><a href="#" editable-number="line.discount" e-step="0.01" e-min="0" onaftersave="updateDiscount(line.product._id, $data, line.price_level)">{{line.discount|| 0 | percent}}</a></td>
+                                <td>
+                                    <table class="table-condensed">
+                                        <tbody>
+                                            <tr ng-repeat="price in line.product.pricesDetails">
+                                                <td class="text-info">{{price.range}}</td>
+                                                <td>{{price.price}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td>{{line.updatedAt| date:'dd/MM/yyyy HH:mm'}}</td>
+                                <td><button class="btn btn-circle red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button></td>
+                            </tr>
+                        </tbody>
+                </div>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
