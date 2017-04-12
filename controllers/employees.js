@@ -1053,7 +1053,7 @@ exports.install = function() {
     F.route('/erp/api/employees/settings/', object.setSettings, ['put', 'json', 'authorize']);
 
     F.route('/erp/api/employees/transfer', object.updateTransfer, ['patch', 'json', 'authorize']);
-    F.route('/erp/api/employees/{userId}', object.updateOnlySelectedFields, ['patch', 'json', 'authorize']);
+    F.route('/erp/api/employees/{userId}', object.updateOnlySelectedFields, ['put', 'json', 'authorize']);
 
 
     /**
@@ -2030,7 +2030,7 @@ Object.prototype = {
     create: function() {
         var self = this;
         var Model = MODEL('Employees').Schema;
-        var userId = req.session.uId;
+        var userId = self.user._id;
         var currentDate = new Date();
         var body = self.body;
         var err;
@@ -2049,7 +2049,7 @@ Object.prototype = {
 
             noteObj._id = mongoose.Types.ObjectId();
             noteObj.date = currentDate;
-            noteObj.author = req.session.uName;
+            noteObj.author = self.user.username;
         }
 
         if (body.transfer && body.transfer.length) {
@@ -2253,17 +2253,16 @@ Object.prototype = {
         var startSequence;
         var obj;
 
-        var remove = req.headers.remove;
+        var remove = self.req.headers.remove;
 
         function updateEmployee(_id, updateObject, options, waterfallCb) {
-            EmployeeService.findByIdAndUpdate(_id, updateObject, options, waterfallCb);
+            Model.findByIdAndUpdate(_id, updateObject, options, waterfallCb);
         }
 
         function defaultProfile(employee, waterfallCb) {
             SettingsService.getSettings(function(err, _defaultProfile) {
-                if (err) {
+                if (err)
                     return waterfallCb(err);
-                }
 
                 waterfallCb(null, employee, _defaultProfile._id);
             });
@@ -2275,10 +2274,9 @@ Object.prototype = {
             var password = randomPass.generate(8);
 
             function findUser(query, options, _waterfallCb) {
-                UserService.find(query, options, function(err, _users) {
-                    if (err) {
+                UsersModel.find(query, options, function(err, _users) {
+                    if (err)
                         return _waterfallCb(err);
-                    }
 
                     _waterfallCb(null, _users);
                 });
@@ -2287,10 +2285,9 @@ Object.prototype = {
             function updateUser(_user, _waterfallCb) {
                 var id = _user._id;
 
-                UserService.findByIdAndUpdate(id, { $set: { profile: profileId } }, function(err, result) {
-                    if (err) {
+                UsersModel.findByIdAndUpdate(id, { $set: { profile: profileId } }, function(err, result) {
+                    if (err)
                         return _waterfallCb(err);
-                    }
 
                     _waterfallCb(null, result);
                 });
@@ -2299,31 +2296,31 @@ Object.prototype = {
             function userManipulator(users, _waterfallCb) {
                 var user = users && users[0];
                 var _user = {
-                    login: data.userName,
+                    username: data.userName,
                     imageSrc: employee.imageSrc,
-                    pass: password,
+                    password: password,
                     profile: profileId,
                     email: email,
                     relatedEmployee: employee._id
                 };
 
-                if (user && user._id) {
+                if (user && user._id)
                     return updateUser(user, _waterfallCb);
-                }
+
 
                 UserService.create(_user, function(err, user) {
-                    if (err) {
+                    if (err)
                         return _waterfallCb(err);
-                    }
+
 
                     _waterfallCb(null, user);
                 });
             }
 
             async.waterfall([async.apply(findUser, { $or: [{ login: data.userName }, { email: email }] }), userManipulator], function(err, user) {
-                if (err) {
+                if (err)
                     return waterfallCb(err);
-                }
+
 
                 waterfallCb(null, employee, user);
             });
@@ -2333,18 +2330,17 @@ Object.prototype = {
         function userUpdater(employee, waterfallCb) {
             var _id = employee.relatedUser;
 
-            if (!_id) {
+            if (!_id)
                 return waterfallCb(null, employee);
-            }
 
-            UserService.findByIdAndUpdate(_id, {
+
+            UsersModel.findByIdAndUpdate(_id, {
                 $set: {
                     profile: CONSTANTS.BANED_PROFILE
                 }
             }, function(err, user) {
-                if (err) {
+                if (err)
                     return waterfallCb(err);
-                }
 
                 waterfallCb(null, employee);
 
@@ -2358,18 +2354,18 @@ Object.prototype = {
             EmployeeService.findByIdAndUpdate(_id, { $set: { relatedUser: user._id } }, waterfallCb);
         }
 
-        data.editedBy = req.session.uId;
+        data.editedBy = self.user._id;
 
         if (data.notes && data.notes.length !== 0 && !remove) {
             obj = data.notes[data.notes.length - 1];
-            if (!obj._id) {
+            if (!obj._id)
                 obj._id = mongoose.Types.ObjectId();
-            }
+
             // obj.date = new Date();
 
-            if (!obj.author) {
-                obj.author = req.session.uName;
-            }
+            if (!obj.author)
+                obj.author = self.user._id;
+
             data.notes[data.notes.length - 1] = obj;
         }
 
@@ -2387,14 +2383,14 @@ Object.prototype = {
                     event.emit('updateSequence', Model, 'sequence', startSequence, data.sequence, data.workflow, data.workflow, true, false, function(sequence) {
                         data.sequence = sequence;
 
-                        if (data.workflow === startWorkflow) {
+                        if (data.workflow === startWorkflow)
                             data.sequence -= 1;
-                        }
+
 
                         Model.findByIdAndUpdate(_id, data, { new: true }, function(err, result) {
-                            if (err) {
+                            if (err)
                                 return self.throw500(err);
-                            }
+
 
                             self.json({ success: 'Employees updated', sequence: result.sequence });
                         });
@@ -2408,41 +2404,41 @@ Object.prototype = {
                     data.sequence = sequence;
 
                     Model.findByIdAndUpdate(_id, { $set: data }, { new: true }, function(err) {
-                        if (err) {
+                        if (err)
                             return self.throw500(err);
-                        }
 
-                        if (data.relatedUser) {
-                            // todo update user profile
+
+                        if (data.relatedUser)
+                        // todo update user profile
                             UsersModel.findByIdAndUpdate(data.relatedUser, { $set: { relatedEmployee: _id } }, function(error) {
-                                if (error) {
-                                    return next(error);
-                                }
+                            if (error)
+                                return next(error);
 
-                                self.json({ success: 'Employees updated' });
-                            });
-                        } else {
+
                             self.json({ success: 'Employees updated' });
-                        }
+                        });
+                        else
+                            self.json({ success: 'Employees updated' });
+
                     });
                 });
             }
         } else {
-            if (data.dateBirth) {
+            if (data.dateBirth)
                 data.age = getAge(data.dateBirth);
-            }
 
-            if (data.workflow === 0) {
+
+            if (data.workflow === 0)
                 data.workflow = ObjectId('528ce682f3f67bc40b00001a');
-            }
+
 
             waterfallTasks = [async.apply(updateEmployee, _id, { $set: data })];
 
-            if (data.isHire) {
+            if (data.isHire)
                 waterfallTasks.push(defaultProfile, userCreator, employeeUpdater);
-            } else if (data.isFire) {
+            else if (data.isFire)
                 waterfallTasks.push(userUpdater);
-            }
+
 
             async.waterfall(waterfallTasks, function(err, result) {
                 var os = require('os');
@@ -2453,12 +2449,19 @@ Object.prototype = {
                 var dir;
 
                 if (err) {
-                    return self.throw500(err);
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
                 }
 
-                if (data.dateBirth || data.hired) {
-                    event.emit('recalculate', req, null, next);
-                }
+
+                if (data.dateBirth || data.hired)
+                    event.emit('recalculate', self, null, next);
+
 
                 // todo refactor it
                 if (fileName) {
@@ -2484,37 +2487,41 @@ Object.prototype = {
 
                     fs.unlink(path, function(err) {
                         fs.readdir(dir, function(err, files) {
-                            if (files && files.length === 0) {
+                            if (files && files.length === 0)
                                 fs.rmdir(dir, function() {});
-                            }
                         });
                     });
 
                 }
 
-                event.emit('recollectVacationDash');
+                F.functions.PubSub.emit('employee:recollectVacationDash', {});
 
+                result = result.toObject();
+                result.successNotify = {
+                    title: "Success",
+                    message: "Employee enregistree"
+                };
                 self.json(result);
 
                 _userId = result && result.relatedUser;
 
                 if (data.imageSrc && _userId) {
 
-                    UserService.findByIdAndUpdate(_userId, {
+                    UsersModel.findByIdAndUpdate(_userId, {
                         $set: {
                             imageSrc: data.imageSrc
                         }
                     }, function(err) {
-                        if (err) {
-                            logger.error(err);
-                        }
+                        if (err)
+                            console.log(err);
 
                         console.log('>> User updated');
                     });
                 }
 
-                // todo add check if salary report need update
-                payrollHandler.composeSalaryReport(req);
+                // TODO add check if salary report need update
+                F.functions.PubSub.emit('payroll:composeSalaryReport', { data: id });
+                //payrollHandler.composeSalaryReport(self);
             });
         }
     },
@@ -2537,7 +2544,7 @@ Object.prototype = {
 
             employee = result;
 
-            event.emit('recalculate', req, null, next);
+            event.emit('recalculate', self, null, next);
             event.emit('recollectVacationDash');
 
             TransferModel.remove({ employee: ObjectId(_id) }, function(err, result) {
@@ -2579,7 +2586,7 @@ Object.prototype = {
                     event.emit('updateSequence', Model, 'sequence', result.sequence, 0, result.workflow, result.workflow, false, true);
                 }
 
-                event.emit('recalculate', req, null, next);
+                event.emit('recalculate', self, null, next);
                 event.emit('recollectVacationDash');
 
                 TransferModel.remove({ employee: ObjectId(id) }, function(err, result) {
@@ -2609,7 +2616,7 @@ Object.prototype = {
         var self = this;
         var Model = MODEL('Employees').Schema;
         var result = {};
-        var uId = req.session.uId;
+        var uId = self.user._id;
 
         var query = Model.find({ relatedUser: uId, isEmployee: true }, { name: 1 }).sort({ 'name.first': 1 });
 
@@ -2837,7 +2844,7 @@ Object.prototype = {
             }
 
             result.forEach(function(object) {
-                if (object.count > req.session.kanbanSettings.applications.countPerPage) {
+                if (object.count > self.user.kanbanSettings.applications.countPerPage) {
                     data.showMore = true;
                 }
             });
@@ -3590,7 +3597,7 @@ function getApplicationsForKanban() {
             .populate('workflow', '_id')
             .populate('jobPosition', '_id name')
             .sort({ lastFire: -1, sequence: -1 })
-            .limit(req.session.kanbanSettings.applications.countPerPage)
+            .limit(self.user.kanbanSettings.applications.countPerPage)
             .exec(function(err, result) {
                 if (err) {
                     return cb(err);
@@ -3610,7 +3617,7 @@ function getApplicationsForKanban() {
         response.data = result;
         response.time = (new Date() - startTime);
         response.workflowId = data.workflowId;
-        response.fold = (req.session.kanbanSettings.applications.foldWorkflows && req.session.kanbanSettings.applications.foldWorkflows.indexOf(data.workflowId.toString()) !== -1);
+        response.fold = (self.user.kanbanSettings.applications.foldWorkflows && self.user.kanbanSettings.applications.foldWorkflows.indexOf(data.workflowId.toString()) !== -1);
 
         self.json(response);
     });
