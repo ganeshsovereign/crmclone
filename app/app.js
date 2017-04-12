@@ -1412,7 +1412,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('user.create', {
             parent: "user",
             url: "/create.html",
-            templateUrl: "/views/user/create.html",
+            templateUrl: "/views/user/fiche.html",
             data: {
                 pageTitle: 'Nouvel utilisateur'
             },
@@ -1450,8 +1450,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('employee.create', {
             parent: "employee",
-            url: "/fiche.html",
-            templateUrl: "/views/employees/fiche.html",
+            url: "/create.html",
+            templateUrl: "/views/employees/main.html",
             data: {
                 pageTitle: 'Nouveau Collaborateur'
             },

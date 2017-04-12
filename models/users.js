@@ -89,6 +89,7 @@ var UserSchema = new Schema({
     groups: [String],
     lastConnection: Date,
     newConnection: Date,
+    creationDate: { type: Date, default: Date.now },
 
     rights: mongoose.Schema.Types.Mixed, // TODO Remove
 
