@@ -47,6 +47,7 @@
                         </h5>
                     </div>
                     <div class="actions">
+                        <a class="btn sbold uppercase red" ui-sref="user.list"><i class="fa fa-angle-left"></i> @(Back)</a>
                         <a href="javascript:;" ng-click="editableUser.$show()" ng-hide="user.isremoved" ng-show="!editableUser.$visible && editable" class="btn green btn-sm">
                             <i class="fa fa-pencil"></i> @(Edit) </a>
                     </div>
@@ -56,48 +57,48 @@
                             findOne();" class="btn red btn-sm">@(Cancel)</button>
                     </div>
                 </div>
-                <div class="portlet-body">
+                <div class="portlet-body"></div>
 
-                    <div class="row static-info" ng-class="{'has-error':$error, 'has-success': !$error}">
-                        <div class="col-md-5 name">@(users:Username) :</div>
-                        <div class="col-md-7 value">
-                            <span class="blue h5" editable-text="user.username" onbeforesave="checkUserExist($data)"> {{user.username|| "Non defini"}}</span>
-                        </div>
+                <div class="row static-info" ng-class="{'has-error':$error, 'has-success': !$error}">
+                    <div class="col-md-5 name">@(users:Username) :</div>
+                    <div class="col-md-7 value">
+                        <span class="blue h5" editable-text="user.username" onbeforesave="checkUserExist($data)"> {{user.username|| "Non defini"}}</span>
                     </div>
+                </div>
 
-                    <div class="row static-info">
-                        <div class="col-md-5 name">@(Password) :</div>
-                        <div class="col-md-7 value">
-                            <span editable-text="user.password">  </span>
-                        </div>
+                <div class="row static-info">
+                    <div class="col-md-5 name">@(Password) :</div>
+                    <div class="col-md-7 value">
+                        <span editable-text="user.password">  </span>
                     </div>
+                </div>
 
-                    <div class="row static-info">
-                        <div class="col-md-5 name">@(Email) :</div>
-                        <div class="col-md-7 value">
-                            <span class="blue h5" editable-text="user.email"> {{user.email|| '@(main:Undefined)'}}</span>
-                        </div>
+                <div class="row static-info">
+                    <div class="col-md-5 name">@(Email) :</div>
+                    <div class="col-md-7 value">
+                        <span class="blue h5" editable-text="user.email"> {{user.email|| '@(main:Undefined)'}}</span>
                     </div>
+                </div>
 
-                    <div class="row static-info">
-                        <div class="col-md-5 name">@(user:Group) :</div>
-                        <div class="col-md-7 value">
-                            <span editable-select="user.groupe" e-ng-options="g.id as g.name for g in groups">
+                <div class="row static-info">
+                    <div class="col-md-5 name">@(user:Group) :</div>
+                    <div class="col-md-7 value">
+                        <span editable-select="user.groupe" e-ng-options="g.id as g.name for g in groups">
                                 <small class="label label-sm label-default">{{user.profile}}</small>
                            <!-- <span class="blue h5" editable-text="user.group"> {{user.group|| '@(main:Undefined)'}}</span>-->
-                        </div>
                     </div>
+                </div>
 
-                    <div class="row static-info">
-                        <div class="col-md-5 name">@(DateLastModification) :</div>
-                        <div class="col-md-7 value">
-                            {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}}
-                        </div>
+                <div class="row static-info">
+                    <div class="col-md-5 name">@(DateLastModification) :</div>
+                    <div class="col-md-7 value">
+                        {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}}
                     </div>
                 </div>
             </div>
-        </form>
     </div>
+    </form>
+</div>
 </div>
 
 <!--
