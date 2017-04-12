@@ -23,7 +23,7 @@
                                 <li class="divider">
                                 </li>
                                 <li>
-                                    <a href="#" class="font-red" ng-show="login.rights.employees.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le collaborateur ?" title="Supprimer le collaborateur">
+                                    <a href="#" class="font-red" ng-show="login.rights.employee.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le collaborateur ?" title="Supprimer le collaborateur">
                                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                                     </a>
                                 </li>
@@ -40,7 +40,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(employees:LastName):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employees.name.last" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.name.last" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -48,7 +48,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(employees:FirstName):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employees.name.first" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.name.first" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -56,7 +56,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(employees:dateBirth):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employees.dateBirth" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.dateBirth" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -64,7 +64,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(Tel-Mobile):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employees.phones.mobile" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.phones.mobile" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -72,7 +72,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(Email):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employees.emails.personnal" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.emails.personnal" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -80,7 +80,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(employees:Skype):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employees.skype" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.skype" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -88,7 +88,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(employees:LinkedIn):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employees.social.LI" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.social.LI" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -96,7 +96,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(employees:Facebook):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employees.social.FB" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.social.FB" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -109,7 +109,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(employees:JobPosition):</label>
                                     <div class="col-md-8">
-                                        <input class="form-control" ng-model="employees.name.last" placeholder="" type="text">
+                                        <input class="form-control" ng-model="employee.JobPosition" placeholder="" type="text">
 
                                         <div class="form-control-focus"> </div>
                                     </div>
@@ -117,7 +117,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(employees:Department):</label>
                                     <div class="col-md-8">
-                                        <input class="form-control" ng-model="employees.name.first" placeholder="" type="text">
+                                        <input class="form-control" ng-model="employee.department" placeholder="" type="text">
 
                                         <div class="form-control-focus"> </div>
                                     </div>
@@ -125,7 +125,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(employees:Manager):</label>
                                     <div class="col-md-8">
-                                        <input class="form-control" ng-model="employees.dateBirth" placeholder="" type="text">
+                                        <input class="form-control" ng-model="employee.manager" placeholder="" type="text">
 
                                         <div class="form-control-focus"> </div>
                                     </div>
@@ -133,39 +133,16 @@
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(employees:JobType):</label>
                                     <div class="col-md-8">
-                                        <input class="form-control" ng-model="employees.phones.mobile" placeholder="" type="text">
+                                        <input class="form-control" ng-model="employee.JobType" placeholder="" type="text">
 
                                         <div class="form-control-focus"> </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-md-line-input">
-                                    <label class="col-md-4 control-label">@(Email):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" ng-model="employees.emails.personnal" placeholder="" type="text">
 
-                                        <div class="form-control-focus"> </div>
-                                    </div>
-                                </div>
                                 <div class="form-group form-md-line-input">
-                                    <label class="col-md-4 control-label">@(employees:Skype):</label>
+                                    <label class="col-md-4 control-label">@(employees:WorkPhone):</label>
                                     <div class="col-md-8">
-                                        <input class="form-control" ng-model="employees.skype" placeholder="" type="text">
-
-                                        <div class="form-control-focus"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group form-md-line-input">
-                                    <label class="col-md-4 control-label">@(employees:LinkedIn):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" ng-model="employees.social.LI" placeholder="" type="text">
-
-                                        <div class="form-control-focus"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group form-md-line-input">
-                                    <label class="col-md-4 control-label">@(employees:Facebook):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" ng-model="employees.social.FB" placeholder="" type="text">
+                                        <input class="form-control" ng-model="employee.phones.phone" placeholder="" type="text">
 
                                         <div class="form-control-focus"> </div>
                                     </div>
