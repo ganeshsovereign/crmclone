@@ -27,6 +27,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
+        if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "employee.show")
+            return $rootScope.$state.go('employee.show.main');
+
         var dict = ["fk_employees_status", "fk_rh_categorie", "fk_job", "fk_country", "fk_departements", "fk_rh_niveauEtude", "fk_rh_contrat", "fk_rh_situationFamiliale", "fk_rh_tempsTravail"];
 
         $http({
@@ -83,7 +86,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
 
     $scope.create = function() {
         var employee = new Employees(this.employee);
-        console.log(employee);
+        //console.log(employee);
         employee.$save(function(response) {
             $rootScope.$state.go("employees.show", { id: response._id });
         });

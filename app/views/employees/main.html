@@ -31,14 +31,6 @@
                                         </div>
                                     </div>
                                     <div class="form-group form-md-line-input">
-                                        <label class="col-md-4 control-label">@(users:dateBirth):</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.dateBirth" placeholder="" type="text">
-
-                                            <div class="form-control-focus"> </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(Tel-Mobile):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.phones.mobile" placeholder="" type="text">
@@ -82,13 +74,18 @@
                             </div>
 
 
+
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(users:Department):</label>
                                     <div class="col-md-8">
-                                        <input class="form-control" ng-model="employee.department" placeholder="" type="text">
-
-                                        <div class="form-control-focus"> </div>
+                                        <select class="form-control" ng-model="employee.department">
+                                                        <option ng-model=""></option>
+                                                        <option value="1">Option 1</option>
+                                                        <option value="2">Option 2</option>
+                                                        <option value="3">Option 3</option>
+                                                        <option value="4">Option 4</option>
+                                       </select>
                                     </div>
                                 </div>
                                 <div class="form-group form-md-line-input">

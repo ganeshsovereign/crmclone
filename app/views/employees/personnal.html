@@ -12,7 +12,7 @@
                     <div class="form-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div crm-address ng-model="employee.homeAddress"></div>
+                                <!--<div crm-address ng-model="employee.homeAddress"></div>-->
 
                                 <div class="form-group form-md-line-input">
 
@@ -27,7 +27,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:City):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.homeAdress.city" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.homeAddress.city" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -35,7 +35,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(Zip):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.homeAdress.zip" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.homeAddress.zip" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -43,7 +43,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(Region):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.homeAdress.state" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.homeAddress.state" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
@@ -52,11 +52,30 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:CountryOfBirth):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.homeAdress.country" placeholder="" type="text">
+                                            <input class="form-control" ng-model="employee.homeAddress.country" placeholder="" type="text">
 
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-4 control-label">@(users:Nationality):</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" ng-model="employee.nationality" placeholder="" type="text">
+
+                                            <div class="form-control-focus"> </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-4 control-label">@(users:dateBirth):</label>
+                                        <div class="col-md-8">
+                                            <input class="form-control" ng-model="employee.dateBirth|date:'dd/MM/yyyy'" placeholder="" type="text">
+
+                                            <div class="form-control-focus"> </div>
+                                        </div>
+                                    </div>
+
+
 
                                 </div>
                             </div>

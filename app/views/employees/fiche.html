@@ -37,7 +37,7 @@
     </div>
 </div>
 
-<div ng-if="employee.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce Collaborateur est supprimé </div>
+<div ng-if="employee.isremoved" class="alert alert-danger"><strong>@(BeCareful) !</strong> @(users:EmployeeUserHasBeenDeleted) </div>
 
 
 <div class="row">
@@ -67,10 +67,10 @@
                             <a ui-sref="employee.show.personnalinformation">
                                 <i class="icon-speech"></i> @(users:PersonnalInformation) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('employee.show.job')}">
+                        <!--<li ng-class="{active: $state.includes('employee.show.job')}">
                             <a ui-sref="employee.show.job">
                                 <i class="icon-basket"></i> @(users:Job) </a>
-                        </li>
+                        </li>-->
                         <li ng-class="{active: $state.includes('employee.show.assignees')}">
                             <a ui-sref="employee.show.assignees">
                                 <i class="icon-share"></i> @(users:Assignees) </a>
@@ -87,7 +87,7 @@
                 <div class="row list-separated profile-stat">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <div class="uppercase profile-stat-text"> @(users:CreatedAt)</div>
-                        <div class="uppercase profile-stat-title"> {{employee.creationDate}} </div>
+                        <div class="uppercase profile-stat-title"> {{employee.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
 
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
