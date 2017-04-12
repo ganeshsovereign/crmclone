@@ -88,7 +88,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
         var employee = new Employees(this.employee);
         //console.log(employee);
         employee.$save(function(response) {
-            $rootScope.$state.go("employees.show", { id: response._id });
+            $rootScope.$state.go("employee.show", { id: response._id });
         });
     };
 

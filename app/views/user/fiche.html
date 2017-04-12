@@ -47,9 +47,10 @@
                         </h5>
                     </div>
                     <div class="actions">
-                        <a class="btn sbold uppercase red" ui-sref="user.list"><i class="fa fa-angle-left"></i> @(Back)</a>
+
                         <a href="javascript:;" ng-click="editableUser.$show()" ng-hide="user.isremoved" ng-show="!editableUser.$visible && editable" class="btn green btn-sm">
                             <i class="fa fa-pencil"></i> @(Edit) </a>
+                        <a class="btn sbold uppercase red" ui-sref="user.list"><i class="fa fa-angle-left"></i> @(Back)</a>
                     </div>
                     <div class="actions" ng-show="editableUser.$visible">
                         <button type="submit" ng-disabled="editableUser.$waiting" class="btn blue btn-sm">@(Save)</button>
@@ -58,6 +59,7 @@
                     </div>
                 </div>
                 <div class="portlet-body"></div>
+
 
                 <div class="row static-info" ng-class="{'has-error':$error, 'has-success': !$error}">
                     <div class="col-md-5 name">@(users:Username) :</div>
