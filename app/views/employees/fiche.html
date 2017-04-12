@@ -1,5 +1,5 @@
 <div ng-if="employee.isremoved" class="alert alert-danger">
-    <strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)</div>
+    <strong>@(users:BeCareful)</strong>&nbsp;@(users:EmployeeUserHasBeenDeleted)</div>
 
 <div class="page-bar" ng-init="findOne()">
     <ul class="page-breadcrumb">
@@ -23,7 +23,7 @@
             </button>
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a href="#" class="font-red" ng-show="login.rights.employee.delete" confirmed-click="remove(employee)" ng-confirm-click="@(ConfirmDeleteUser)" title="Delete Employees ?">
+                    <a href="#" class="font-red" ng-show="login.rights.employee.delete" confirmed-click="remove(employee)" ng-confirm-click="@(ConfirmDeleteEmployee)" title="@(ConfirmDeleteEmployee) ?">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
                 </li>
@@ -86,12 +86,14 @@
                 <!-- STAT -->
                 <div class="row list-separated profile-stat">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{employee.EditedBy}} </div>
-                        <div class="uppercase profile-stat-text"> @(users:EditedBy)</div>
+                        <div class="uppercase profile-stat-text"> @(users:CreatedAt)</div>
+                        <div class="uppercase profile-stat-title"> {{employee.creationDate}} </div>
+
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{employee.CreatedBy}} </div>
                         <div class="uppercase profile-stat-text"> @(users:CreatedBy) </div>
+                        <div class="uppercase profile-stat-title"> {{employee.createdBy}} </div>
+
                     </div>
                 </div>
                 <!-- END STAT -->
