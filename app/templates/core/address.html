@@ -1,19 +1,43 @@
 <div class="row static-info">
     <div class="col-md-12 value">
-        <div class="row static-info">            
+        <div class="row static-info">
             <!--<div class="col-md-2 name">
                 @(Address) :
             </div>-->
             <div class="col-md-12">
+                <div class="form-group form-md-line-input">
+                    <div class="form-group form-md-line-input">
+                        <label class="col-md-4 control-label">@(Address):</label>
+                        <div class="col-md-8">
+                            <input class="form-control" ng-model="addressModel.street" placeholder="" type="text">
+
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-md-line-input">
+                        <label class="col-md-4 control-label">@(Zip):</label>
+                        <div class="col-md-8">
+                            <input class="form-control" ng-model="addressModel.zip" placeholder="" type="text">
+
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
                 <div class="well">
                     <address>
+                        
+                        
                         <strong ng-if="!addressModel.name">{{addressModel.client.name || addressModel.supplier.name || addressModel.societe.name || addressModel.name }}<br></strong>
                         <span ng-if="addressModel.name && !addressModel.typent_id" editable-text="addressModel.name" e-class="form-control" e-name="name" e-placeholder="@(Name)" e-title="@(Name)">{{addressModel.name}}</span>
-                        <span editable-textarea="addressModel.address" e-name="address" e-rows="4" e-cols="400" e-required e-class="form-control"><pre>{{ addressModel.address ||  "Non defini" }}</pre></span>
+                        <span editable-textarea="addressModel.street" e-name="address" e-rows="4" e-cols="400" e-required e-class="form-control"><pre>{{ addressModel.street ||  "Non defini" }}</pre></span>
                     
-                            <span editable-text="addressModel.zip" e-class="form-control" e-name="zip" e-placeholder="@(companies:Zip)" e-title="@(companies:Zip)">{{addressModel.zip}}</span>
+                        <span editable-text="addressModel.zip" e-class="form-control" e-name="zip" e-placeholder="@(Zip)" e-title="@(Zip)">{{addressModel.zip}}</span>
                         
-                            <span editable-text="addressModel.town" e-class="form-control" e-name="town" e-placeholder="@(companies:Town)" e-title="@(companies:Town)">{{addressModel.town}}</span>
+                        <span editable-text="addressModel.city" e-class="form-control" e-name="town" e-placeholder="@(Town)" e-title="@(Town)">{{addressModel.city}}</span>
                     </address>
                 </div>
             </div>

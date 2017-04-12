@@ -1,6 +1,7 @@
 "use strict";
 
 MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '$filter', 'Employees', function($scope, $rootScope, $http, $filter, Employees) {
+    $scope.backTo = 'employee.list';
 
     var grid = new Datatable();
     var employees = $rootScope.login;
@@ -128,6 +129,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     };
 
     $scope.findOne = function() {
+        if (!$rootScope.$stateParams.id)
+            return;
+
         Employees.get({
             Id: $rootScope.$stateParams.id
         }, function(employee) {
