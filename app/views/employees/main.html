@@ -89,7 +89,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(users:Manager):</label>
                                     <div class="col-md-8">
-                                        <select class="table-group-action-input form-control" required ng-model="employee.manager" ng-options="g.id as g.name for g in groups"></select>
+                                        <select class="table-group-action-input form-control" required ng-model="employee.manager" ng-options=""></select>
                                         <div class="form-control-focus"> </div>
                                     </div>
                                 </div>
@@ -113,7 +113,7 @@
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(users:Classes):</label>
                                     <div class="col-md-8">
-                                        <select class="table-group-action-input form-control" required ng-model="employee.jobType" ng-options="s.id as s.label for s in dict.fk_rh_contrat.values"></select>
+                                        <select class="table-group-action-input form-control" required ng-model="employee.classes" ng-options="s.id as s.label for s in dict._.values"></select>
                                         <div class="form-control-focus"> </div>
                                     </div>
                                 </div>

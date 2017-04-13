@@ -208,7 +208,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                     data: "email",
                     defaultContent: ""
                 }, {
-                    data: "namegroup",
+                    data: "groups",
                     defaultContent: ""
                 }, {
                     data: "lastConnection",

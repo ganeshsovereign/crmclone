@@ -20,31 +20,30 @@
                                         <label class="col-md-4 control-label">@(users:HomeAdress):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.homeAddress.street" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:City):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.homeAddress.city" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(Zip):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.homeAddress.zip" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(Region):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.homeAddress.state" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
@@ -53,7 +52,6 @@
                                         <label class="col-md-4 control-label">@(users:CountryOfBirth):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.homeAddress.country" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
@@ -61,17 +59,15 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:Nationality):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.nationality" placeholder="" type="text">
-
+                                            <select class="table-group-action-input form-control" required ng-model="employee.nationality" ng-options="s.id as s.label for s in dict.fk_country.values"></select>
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:dateBirth):</label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.dateBirth|date:'dd/MM/yyyy'" placeholder="" type="text">
-
-                                            <div class="form-control-focus"> </div>
+                                            <input date-input ng-model="employee.dateBirth" placeholder="" type="text">
                                         </div>
                                     </div>
 
@@ -87,44 +83,39 @@
                                         <label class="col-md-4 control-label">@(users:SocialeSecurityNumber):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.socialSecurityNumber" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:BankingEtablishment):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.iban.id" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:IBAN):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.iban.bank" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:BIC):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.iban.swift" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
 
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>

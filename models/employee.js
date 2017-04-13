@@ -153,7 +153,7 @@ var EmployeeSchema = new Schema({
     scheduledPay: { type: ObjectId, ref: 'scheduledPay', default: null },
     manager: { type: ObjectId, ref: 'Employees', default: null },
     coach: { type: ObjectId, ref: 'Employees', default: null },
-    nationality: { type: String, default: '' },
+    nationality: { type: String, default: 'FR' },
     socialSecurityNumber: { type: String, default: '' },
     identNo: String,
     passportNo: String,

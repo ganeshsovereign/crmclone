@@ -1,6 +1,6 @@
 <a class="btn sbold uppercase red" ui-sref="{{backTo}}"><i class="fa fa-angle-left"></i> @(Back)</a>
-<button type="button" ng-hide="create" ng-click="update(true)" class="btn sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
-<button type="button" ng-show="create" ng-click="create()" class="btn sbold uppercase green"><i class="fa fa-plus"></i> @(Create)</button>
+<button type="button" ng-hide="!create" ng-click="update(true)" class="btn sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
+<button type="button" ng-show="!create" ng-click="create()" class="btn sbold uppercase green"><i class="fa fa-plus"></i> @(Create)</button>
 <!--<button type="button" ng-click="update()" class="btn sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
 <div class="btn-group">
                             <a class="btn dark sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
