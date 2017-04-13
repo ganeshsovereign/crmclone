@@ -121,6 +121,9 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = true;
 
+            if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
+                return $rootScope.$state.go('societe.show.company');
+
             var dict = ["fk_stcomm", "fk_fournisseur", "fk_prospectlevel", "fk_typent", "fk_effectif", "fk_forme_juridique", "fk_payment_term", "fk_paiement", "fk_segmentation", "fk_rival", "fk_user_status"];
 
             $http({
