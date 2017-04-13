@@ -573,11 +573,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('offer', {
             url: "/offer",
             abstract: true,
-            templateUrl: "/views/_offer/index.html"
+            templateUrl: "/views/offer/index.html"
         })
         .state('offer.list', {
             url: "",
-            templateUrl: "/views/_offer/list.html",
+            templateUrl: "/views/offer/list.html",
             data: {
                 pageTitle: 'Liste des devis'
             },
@@ -586,7 +586,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('offer.show', {
             parent: "offer",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_offer/fiche.html",
+            templateUrl: "/views/offer/fiche.html",
             data: {
                 pageTitle: 'Offre'
             },
@@ -595,7 +595,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('offer.create', {
             parent: "offer",
             url: "/create.html",
-            templateUrl: "/views/_offer/create.html",
+            templateUrl: "/views/offer/create.html",
             data: {
                 pageTitle: 'Nouvelle offre'
             },
@@ -605,11 +605,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('order', {
             url: "/order",
             abstract: true,
-            templateUrl: "/views/_order/index.html"
+            templateUrl: "/views/order/index.html"
         })
         .state('order.list', {
             url: "",
-            templateUrl: "/views/_order/list.html",
+            templateUrl: "/views/order/list.html",
             data: {
                 pageTitle: 'Liste des commandes'
             },
@@ -618,7 +618,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('order.show', {
             parent: "order",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_order/fiche.html",
+            templateUrl: "/views/order/fiche.html",
             data: {
                 pageTitle: 'Commande'
             },
@@ -627,7 +627,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('order.create', {
             parent: "order",
             url: "/create.html",
-            templateUrl: "/views/_order/create.html",
+            templateUrl: "/views/order/create.html",
             data: {
                 pageTitle: 'Nouvelle commande'
             },
@@ -637,11 +637,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('delivery', {
             url: "/delivery",
             abstract: true,
-            templateUrl: "/views/_delivery/index.html"
+            templateUrl: "/views/delivery/index.html"
         })
         .state('delivery.list', {
             url: "",
-            templateUrl: "/views/_delivery/list.html",
+            templateUrl: "/views/delivery/list.html",
             data: {
                 pageTitle: 'Liste des bons de livraison'
             },
@@ -650,7 +650,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('delivery.show', {
             parent: "delivery",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_delivery/fiche.html",
+            templateUrl: "/views/delivery/fiche.html",
             data: {
                 pageTitle: 'Bon de livraison'
             },
@@ -659,7 +659,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('delivery.create', {
             parent: "delivery",
             url: "/create.html",
-            templateUrl: "/views/_delivery/create.html",
+            templateUrl: "/views/delivery/create.html",
             data: {
                 pageTitle: 'Nouveau bon de livraison'
             },
@@ -669,11 +669,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('bill', {
             url: "/bill",
             abstract: true,
-            templateUrl: "/views/_bill/index.html"
+            templateUrl: "/views/bill/index.html"
         })
         .state('bill.list', {
             url: "?Status",
-            templateUrl: "/views/_bill/list.html",
+            templateUrl: "/views/bill/list.html",
             data: {
                 pageTitle: 'Liste des factures clients'
             },
@@ -682,7 +682,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('bill.show', {
             parent: "bill",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_bill/fiche.html",
+            templateUrl: "/views/bill/fiche.html",
             data: {
                 pageTitle: 'Facture client'
             },
@@ -691,7 +691,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('bill.create', {
             parent: "bill",
             url: "/create.html",
-            templateUrl: "/views/_bill/create.html",
+            templateUrl: "/views/bill/create.html",
             data: {
                 pageTitle: 'Nouvelle facture client'
             },
@@ -701,11 +701,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('orderSupplier', {
             url: "/orderSupplier",
             abstract: true,
-            templateUrl: "/views/_order_supplier/index.html"
+            templateUrl: "/views/order_supplier/index.html"
         })
         .state('orderSupplier.list', {
             url: "",
-            templateUrl: "/views/_order_supplier/list.html",
+            templateUrl: "/views/order_supplier/list.html",
             data: {
                 pageTitle: 'Liste des commandes fournisseurs'
             },
@@ -714,7 +714,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('orderSupplier.show', {
             parent: "orderSupplier",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_order_supplier/fiche.html",
+            templateUrl: "/views/order_supplier/fiche.html",
             data: {
                 pageTitle: 'Commande fournisseur'
             },
@@ -723,7 +723,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('orderSupplier.create', {
             parent: "orderSupplier",
             url: "/create.html",
-            templateUrl: "/views/_order_supplier/create.html",
+            templateUrl: "/views/order_supplier/create.html",
             data: {
                 pageTitle: 'Nouvelle commande fournisseur'
             },
@@ -733,11 +733,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('billSupplier', {
             url: "/billSupplier",
             abstract: true,
-            templateUrl: "/views/_bill_supplier/index.html"
+            templateUrl: "/views/bill_supplier/index.html"
         })
         .state('billSupplier.list', {
             url: "",
-            templateUrl: "/views/_bill_supplier/list.html",
+            templateUrl: "/views/bill_supplier/list.html",
             data: {
                 pageTitle: 'Liste des factures fournisseurs'
             },
@@ -746,7 +746,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('billSupplier.show', {
             parent: "billSupplier",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_bill_supplier/fiche.html",
+            templateUrl: "/views/bill_supplier/fiche.html",
             data: {
                 pageTitle: 'Facture fournisseur'
             },
@@ -755,7 +755,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('billSupplier.create', {
             parent: "billSupplier",
             url: "/create.html",
-            templateUrl: "/views/_bill_supplier/create.html",
+            templateUrl: "/views/bill_supplier/create.html",
             data: {
                 pageTitle: 'Nouvelle facture fournisseur'
             },
@@ -869,11 +869,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('contact', {
             url: "/contact",
             abstract: true,
-            templateUrl: "/views/_contact/index.html"
+            templateUrl: "/views/contact/index.html"
         })
         .state('contact.list', {
             url: "",
-            templateUrl: "/views/_contact/list.html",
+            templateUrl: "/views/contact/list.html",
             data: {
                 pageTitle: 'Liste des contacts'
             },
@@ -882,7 +882,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('contact.show', {
             parent: "contact",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_contact/fiche.html",
+            templateUrl: "/views/contact/fiche.html",
             data: {
                 pageTitle: 'Fiche contact'
             },
@@ -891,7 +891,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('contact.create', {
             parent: "contact",
             url: "/create.html?societe",
-            templateUrl: "/views/_contact/create.html",
+            templateUrl: "/views/contact/create.html",
             data: {
                 pageTitle: 'Creation contact'
             },
@@ -901,12 +901,12 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('product', {
             url: "/product",
             abstract: true,
-            templateUrl: "/views/_product/index.html"
+            templateUrl: "/views/product/index.html"
         })
         .state('product.list', {
             parent: "product",
             url: "",
-            templateUrl: "/views/_product/list.html",
+            templateUrl: "/views/product/list.html",
             data: {
                 pageTitle: 'Liste des produits / services'
             },
@@ -915,7 +915,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('product.show', {
             parent: "product",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_product/fiche.html",
+            templateUrl: "/views/product/fiche.html",
             data: {
                 pageTitle: 'Fiche produit / service'
             },
@@ -924,7 +924,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('product.create', {
             parent: "product",
             url: "/create.html",
-            templateUrl: "/views/_product/create.html",
+            templateUrl: "/views/product/create.html",
             data: {
                 pageTitle: 'Nouveau produit / service'
             },
@@ -933,7 +933,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('product.pricelist', {
             parent: "product",
             url: "/pricelevel.html",
-            templateUrl: "/views/_product/pricelist.html",
+            templateUrl: "/views/product/pricelist.html",
             data: {
                 pageTitle: 'Liste de prix'
             },
@@ -942,7 +942,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('product.consumption', {
             parent: "product",
             url: "/consumption.html",
-            templateUrl: "/views/_product/consumption.html",
+            templateUrl: "/views/product/consumption.html",
             data: {
                 pageTitle: 'Statistiques de consommation des produits'
             },
@@ -951,7 +951,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('product.visual', {
             parent: "product",
             url: "/visual/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_product/productvisual.html",
+            templateUrl: "/views/product/productvisual.html",
             data: {
                 pageTitle: 'Fiche produit print'
             },
@@ -960,31 +960,31 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // marketing
         .state("product.show.marketing", {
             url: "/marketing",
-            templateUrl: "/templates/_product/marketing.html",
+            templateUrl: "/templates/product/marketing.html",
             data: { pageTitle: 'Marketing - Product' }
         })
         // attributes
         .state("product.show.attributes", {
             url: "/attributes",
-            templateUrl: "/templates/_product/attributes.html",
+            templateUrl: "/templates/product/attributes.html",
             data: { pageTitle: 'Attributes - Product' }
         })
         // information
         .state("product.show.informations", {
             url: "/informations",
-            templateUrl: "/templates/_product/informations.html",
+            templateUrl: "/templates/product/informations.html",
             data: { pageTitle: 'Informations - Product' }
         })
         // price
         .state("product.show.price", {
             url: "/price",
-            templateUrl: "/templates/_product/price.html",
+            templateUrl: "/templates/product/price.html",
             data: { pageTitle: 'Prices - Product' }
         })
         // associations
         .state("product.show.categories", {
             url: "/categories",
-            templateUrl: "/templates/_product/categories.html",
+            templateUrl: "/templates/product/categories.html",
             data: {
                 pageTitle: 'Categories - Product '
             },
@@ -993,7 +993,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // declinaisons
         .state("product.show.declinations", {
             url: "/declinations",
-            templateUrl: "/templates/_product/declinations.html",
+            templateUrl: "/templates/product/declinations.html",
             data: {
                 pageTitle: 'Declinaisons - Product '
             }
@@ -1001,7 +1001,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // stocks
         .state("product.show.stock", {
             url: "/stock",
-            templateUrl: "/templates/_product/stock.html",
+            templateUrl: "/templates/product/stock.html",
             data: {
                 pageTitle: 'Stock - Product '
             }
@@ -1009,7 +1009,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // ecommerce
         .state("product.show.ecommerce", {
             url: "/ecommerce",
-            templateUrl: "/templates/_product/ecommerce.html",
+            templateUrl: "/templates/product/ecommerce.html",
             data: {
                 pageTitle: 'Ecommerce - Product '
             }
@@ -1017,7 +1017,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // ecommerce
         .state("product.show.bundles", {
             url: "/bundle",
-            templateUrl: "/templates/_product/bundles.html",
+            templateUrl: "/templates/product/bundles.html",
             data: {
                 pageTitle: 'Compositions - Product '
             }
@@ -1026,17 +1026,17 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('bank', {
             url: "/bank",
             abstract: true,
-            templateUrl: "/views/_bank/index.html"
+            templateUrl: "/views/bank/index.html"
         })
         .state('payment', {
             url: "/payment",
             abstract: true,
-            templateUrl: "/views/_payment/index.html"
+            templateUrl: "/views/payment/index.html"
         })
         .state('payment.create', {
             parent: "payment",
             url: "?societe&entity",
-            templateUrl: "/views/_payment/create.html",
+            templateUrl: "/views/payment/create.html",
             data: {
                 pageTitle: 'Nouveau règlement'
             },
@@ -1045,7 +1045,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('task', {
             url: "/task",
             abstract: true,
-            templateUrl: "/views/_task/index.html",
+            templateUrl: "/views/task/index.html",
             resolve: {
                 deps: ['$ocLazyLoad', function($ocLazyLoad) {
                     return $ocLazyLoad.load({
@@ -1060,7 +1060,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('task.list', {
             url: "",
-            templateUrl: "/views/_task/list.html",
+            templateUrl: "/views/task/list.html",
             data: {
                 pageTitle: 'Liste des taches'
             },
@@ -1068,7 +1068,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('task.todo', {
             url: "/todo?menuclose?group",
-            templateUrl: "/views/_task/todo.html",
+            templateUrl: "/views/task/todo.html",
             data: {
                 pageTitle: 'Liste des taches'
             },
@@ -1077,7 +1077,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('task.show', {
             parent: "task",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_task/fiche.html",
+            templateUrl: "/views/task/fiche.html",
             data: {
                 pageTitle: 'Tache'
             },
@@ -1086,7 +1086,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('task.create', {
             parent: "task",
             url: "/create.html?societe",
-            templateUrl: "/views/_task/create.html",
+            templateUrl: "/views/task/create.html",
             data: {
                 pageTitle: 'Creation d\'une tache'
             },
@@ -1095,7 +1095,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('accounting', {
             url: "/accounting",
             abstract: true,
-            templateUrl: "/views/_accounting/index.html"
+            templateUrl: "/views/accounting/index.html"
                 /*resolve: {
                     deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                             return $ocLazyLoad.load({
@@ -1113,7 +1113,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('accounting.journal', {
             parent: "accounting",
             url: "/journal?journal&account",
-            templateUrl: "/views/_accounting/journal.html",
+            templateUrl: "/views/accounting/journal.html",
             data: {
                 pageTitle: 'Journaux'
             },
@@ -1122,7 +1122,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('accounting.bank', {
             parent: "accounting",
             url: "/bank?bank",
-            templateUrl: "/views/_accounting/bank.html",
+            templateUrl: "/views/accounting/bank.html",
             data: {
                 pageTitle: 'Releves bancaires'
             },
@@ -1131,7 +1131,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('accounting.estimated', {
             parent: "accounting",
             url: "/estimated",
-            templateUrl: "/views/_accounting/estimated.html",
+            templateUrl: "/views/accounting/estimated.html",
             data: {
                 pageTitle: 'Previsionnel'
             },
@@ -1140,7 +1140,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('accounting.balance', {
             parent: "accounting",
             url: "/balance",
-            templateUrl: "/views/_accounting/balance.html",
+            templateUrl: "/views/accounting/balance.html",
             data: {
                 pageTitle: 'Balance comptable'
             },
@@ -1150,7 +1150,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('report', {
             url: "/report",
             abstract: true,
-            templateUrl: "/views/_report/index.html"
+            templateUrl: "/views/report/index.html"
         })
         /*.state('contact.list', {
          url: "",
@@ -1163,7 +1163,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('report.show', {
             parent: "report",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/_report/fiche.html",
+            templateUrl: "/views/report/fiche.html",
             data: {
                 pageTitle: 'Fiche compte-rendu'
             },
@@ -1172,7 +1172,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('report.create', {
             parent: "report",
             url: "/create.html?societe",
-            templateUrl: "/views/_report/create.html",
+            templateUrl: "/views/report/create.html",
             data: {
                 pageTitle: 'Creation compte-rendu'
             },
@@ -1182,11 +1182,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('stock', {
             url: "/stock",
             abstract: true,
-            templateUrl: "/views/_stock/index.html"
+            templateUrl: "/views/stock/index.html"
         })
         .state('stock.list', {
             url: "",
-            templateUrl: "/views/_stock/list.html",
+            templateUrl: "/views/stock/list.html",
             data: {
                 pageTitle: 'Mouvements de stock'
             },
@@ -1195,7 +1195,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('stock.inventory', {
             parent: "stock",
             url: "/inventory.html",
-            templateUrl: "/views/_stock/inventory.html",
+            templateUrl: "/views/stock/inventory.html",
             data: {
                 pageTitle: 'Etat des stocks'
             },

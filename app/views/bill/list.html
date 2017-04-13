@@ -1,7 +1,4 @@
 <div>
-    <h3 class="page-title">
-        <i class="fa fa-money font-green"></i> @(bills:BillsCustomers)
-    </h3>
     <div class="page-bar">
         <ul class="page-breadcrumb">
             <li>
@@ -13,105 +10,120 @@
                 <span>@(bills:BillsCustomers)</span>
             </li>
         </ul>
-    </div>
-
-    <div class="portlet box green">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-money"></i>@(bills:BillsCustomers)
-            </div>
-        </div>
-        <div class="tools">
-        </div>
-        <div class="portlet-body">
-            <div class="table-toolbar">
-                <div class="row hidden-print">
-                    <div class="col-md-3">
-                        <div class="btn-group">
-                            <button class="btn blue" ui-sref="bill.create">@(Add) <i class="fa fa-plus"></i></button>
-                            <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="col-md-4">
-                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_bill_status.values" class="form-control">
-                                <option value="">-- @(All) --</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
-                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="btn-group pull-right">
-                            <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
-                            </button>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+        <div class="page-toolbar">
+            <div class="btn-group  pull-right">
+                <a class="btn btn-circle dark dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
+                                                    <i class="fa fa-angle-down"></i>
+                                                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
                                         @(PrintList) </a>
-                                </li>
-                                <li>
-                                    <a ng-show="login.rights.bill.read" ng-click="openUrl('/erp/api/bill/pdf/', 'id')" target="_blank">
-                                        <i class="fa fa-file-pdf-o"></i>
-                                        @(BuildPDF)</a>
-                                </li>
-                                <li>
-                                    <a href="#" ng-click="changeStatus('NOT_PAID','id')"><i class="fa fa-thumbs-o-up"></i>
+                    </li>
+                    <li>
+                        <a ng-show="login.rights.bill.read" ng-click="openUrl('/erp/api/bill/pdf/', 'id')" target="_blank">
+                            <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-click="changeStatus('NOT_PAID','id')"><i class="fa fa-thumbs-o-up"></i>
                                         @(Validate) </a>
-                                </li>
-                                <li>
-                                    <a href="#" ng-show="login.rights.bill.validate" data-ng-click="exportAccounting()">
-                                        <i class="fa fa-mail-forward"></i>
-                                        @(bills:SendAccounting)
-                                    </a>
-                                </li>
+                    </li>
+                    <li>
+                        <a href="#" ng-show="login.rights.bill.validate" data-ng-click="exportAccounting()">
+                            <i class="fa fa-mail-forward"></i> @(bills:SendAccounting)
+                        </a>
+                    </li>
 
-                                <!--<li>
+                    <!--<li>
                                     <a href="#">
                                         @(BuildPDF) </a>
                                 </li>-->
-                                <!--<li>
+                    <!--<li>
                                     <a ng-show="login.rights.delivery.createBills" ng-confirm-click="@(deliveries:ConfirmCloseDelivery)" ng-confirm-title="@(deliveries:CloseDelivery)" confirmed-click="createBills()">
                                         <i class="fa fa-money"></i>
                                         @(bills:CreateBills)
                                     </a>
                                 </li>-->
-                                <li class="divider">
-                                </li>
-                                <li>
-                                    <a href="#" class="font-red" ng-show="login.rights.bill.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les factures ?">
-                                        <i class="fa fa-trash-o font-red"></i>
-                                        @(Delete)
-                                    </a>
-                                </li>
-                            </ul>
+                    <li>
+                        <a href="#" class="font-red" ng-show="login.rights.bill.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les factures ?">
+                            <i class="fa fa-trash-o font-red"></i> @(Delete)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <h3 class="page-title">
+        <i class="fa fa-plus-circle"></i> @(bills:BillsCustomers)
+    </h3>
+
+
+    <div class="portlet light portlet-form bordered">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-plus-circle font-yellow-crusta"></i>
+                <span class="caption-subject font-yellow-crusta sbold uppercase">@(bills:BillsCustomers)</span>
+            </div>
+            <div class="actions">
+                <button class="btn btn-circle default" ui-sref="bill.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button title="@(Refresh)" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+            </div>
+
+
+        </div>
+        <div class="tools">
+        </div>
+        <div class="portlet-body">
+            <div class="table-toolbar">
+                <div class="col-md-12">
+                    <div class="form-group form-md-line-input">
+
+                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
+
+                        <div class="col-md-3">
+                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_bill_status.values" class="form-control">
+                                <option value="">-- @(All) --</option>
+                            </select>
+                            <div class="form-control-focus"> </div>
                         </div>
+                        <div class="col-md-1"></div>
+                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyEntity)</label>
+
+                        <div class="col-md-3">
+                            <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
+                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
+                            </select>
+                            <div class="form-control-focus"> </div>
+                        </div>
+                        <div class="col-md-1"></div>
+
                     </div>
                 </div>
             </div>
-            <div class="dataTables_wrapper no-footer">
-                <table class="table table-striped table-bordered table-hover dataTable no-footer" id="billList">
-                    <thead>
-                        <tr role="row" class="heading">
-                            <th width="2%">
-                                <input type="checkbox" class="group-checkable"/>
-                            </th>
-                            <th>Ref.</th>
-                            <th>@(companies:Company)</th>
-                            <th>@(RefCustomer)</th>
-                            <th>@(bills:DateInvoice)</th>
-                            <th>@(bills:DateEcheance)</th>
-                            <th>@(commercial:Commercial)</th>
-                            <th>@(TotalTTC)</th>
-                            <th>@(Status)</th>
-                            <th>@(Entity)</th>
-                            <th>@(DateModification)</th>
-                            <th>@(Action)</th>
-                        </tr>
-                        <!--<tr role="row" class="filter">
+            <div class="dataTables_wrapper no-footer table-responsive">
+                <div class="col-md-12">
+                    <table class="table dataTable no-footer table-hover" id="billList">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th width="2%">
+                                    <input type="checkbox" class="group-checkable" />
+                                </th>
+                                <th>Ref.</th>
+                                <th>@(companies:Company)</th>
+                                <th>@(RefCustomer)</th>
+                                <th>@(bills:DateInvoice)</th>
+                                <th>@(bills:DateEcheance)</th>
+                                <th>@(commercial:Commercial)</th>
+                                <th>@(TotalTTC)</th>
+                                <th>@(Status)</th>
+                                <th>@(Entity)</th>
+                                <th>@(DateModification)</th>
+                                <th>@(Action)</th>
+                            </tr>
+                            <!--<tr role="row" class="filter">
                             <td>
                             </td>
                             <td>
@@ -165,8 +177,9 @@
                                 <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
                             </td>
                         </tr>-->
-                    </thead>
-                </table>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
