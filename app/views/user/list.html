@@ -21,7 +21,7 @@
                                         @(PrintList) </a>
                     </li>
                     <li>
-                        <a href="#" ng-show="login.rights.user.delete" confirmed-click="remove()" ng-confirm-click="@(ConfirmDeleteUser)">
+                        <a href="#" confirmed-click="remove()" ng-confirm-click="@(users:ConfirmDeleteUser)">
                             <i class="fa fa-mail-forward"></i>@(Delete)
                         </a>
                     </li>
@@ -91,6 +91,7 @@
                                     <th>@(Email)</th>
                                     <th>@(users:Group)</th>
                                     <th>@(users:LastConnection)</th>
+                                    <th>@(users:CreatedAt)</th>
                                     <th>@(Action)</th>
                                 </tr>
 

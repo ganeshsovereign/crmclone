@@ -154,6 +154,7 @@ var EmployeeSchema = new Schema({
     manager: { type: ObjectId, ref: 'Employees', default: null },
     coach: { type: ObjectId, ref: 'Employees', default: null },
     nationality: { type: String, default: '' },
+    socialSecurityNumber: { type: String, default: '' },
     identNo: String,
     passportNo: String,
     iban: {

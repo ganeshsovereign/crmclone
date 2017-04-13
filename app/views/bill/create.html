@@ -1,5 +1,5 @@
 <h3 class="page-title">
-    <i class="fa fa-money font-green"></i> @(bills:NewBill)
+    @(bills:NewBill)
 </h3>
 
 <div class="page-bar">
@@ -14,7 +14,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>@(bills:NewBill)</span>
+            <span><i class="fa fa-plus-circle"></i> @(bills:NewBill)</span>
         </li>
     </ul>
 </div>
@@ -24,35 +24,37 @@
 <form ng-submit="create()" name="form" role="form">
     <div class="row">
         <div class="col-md-6 col-sm-12">
-            <div class="portlet green box">
+            <div class="portlet portlet light bordered">
                 <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-shopping-cart"></i> @(GeneralParameters)
+                    <div class="caption font-yellow-crusta">
+                        <i class="fa fa-cog font-yellow-crusta"></i> @(GeneralParameters)
                     </div>
                 </div>
                 <div class="portlet-body form">
                     <div class="form-horizontal">
                         <div class="form-body">
-                            <div ng-if="login.multiEntities" class="form-group">
+                            <div ng-if="login.multiEntities" class="form-group form-md-line-input">
                                 <label class="col-md-4 control-label">@(Entity)</label>
                                 <div class="col-md-8">
                                     <select class="form-control" data-ng-model="bill.entity" data-ng-options="s.id as s.name for s in entityList"></select>
+                                    <div class="form-control-focus"> </div>
                                 </div>
                             </div>
-                            <div crm-id label="@(companies:Company)" name="societeId" ng-model="bill.client" entity="bill.entity" url="/erp/api/societe/autocomplete" required="true"  on-select="updateAddress" placeholder="@(companies:CompanyName)"></div>
-                            <!--<div class="form-group">
+                            <div crm-id label="@(companies:Company)" name="societeId" ng-model="bill.client" entity="bill.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input has-error"></div>
+                            <!--<div class="form-group form-md-line-input">
                                 <label class="col-md-4 control-label">@(Title)</label>
                                 <div class="col-md-8">
                                     <input class="form-control" ng-model="bill.title.ref" placeholder="@(TitleRef)" type="text">
                                 </div>
                             </div>-->
-                            <div class="form-group">
+                            <div class="form-group form-md-line-input">
                                 <label class="col-md-4 control-label">@(orders:RefCustomerOrder)</label>
                                 <div class="col-md-8">
                                     <input class="form-control" ng-model="bill.ref_client" placeholder="@(orders:RefCustomerOrder)" type="text">
+                                    <div class="form-control-focus"> </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group form-md-line-input">
                                 <label class="col-md-4 control-label">@(products:PriceLevel)</label>
                                 <div class="col-md-8 value">
                                     <p class="form-control-static">{{bill.price_level}}</p>
@@ -87,20 +89,22 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group form-md-line-input">
                                 <label class="col-md-4 control-label">@(bills:PaymentConditions)</label>
                                 <div class="col-md-8">
                                     <select class="form-control" data-ng-model="bill.cond_reglement_code" data-ng-options="s.id as s.label for s in dict.fk_payment_term.values"></select>
+                                    <div class="form-control-focus"> </div>
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group form-md-line-input">
                                 <label class="col-md-4 control-label">@(bills:PaymentMode)</label>
                                 <div class="col-md-8">
                                     <select class="form-control" data-ng-model="bill.mode_reglement_code" data-ng-options="s.id as s.label for s in dict.fk_paiement.values"></select>
+                                    <div class="form-control-focus"> </div>
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group form-md-line-input">
                                 <label class="col-md-4 control-label">@(commercial:Commercial)</label>
                                 <div class="col-md-8">
                                     <input class="form-control" ng-model="bill.commercial_id" typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}" placeholder="@(commercial:Commercial)" type="text">
@@ -114,23 +118,21 @@
         </div>
 
         <div class="col-md-6 col-sm-12">
-            <div class="portlet gen">
+            <div class="portlet portlet light bordered">
 
                 <div class="portlet-title">
-                    <div class="caption font-green">
-                        <i class="fa fa-money font-green"></i>
-                        @(bills:BillAddress)
+                    <div class="caption font-grey-gallery">
+                        <i class="fa fa-money font-grey-gallery"></i> @(bills:BillAddress)
                     </div>
                 </div>
                 <div class="portlet-body" crm-address mode="create" model="bill"></div>
             </div>
         </div>
         <div class="col-md-6 col-sm-12">
-            <div class="portlet gen">
+            <div class="portlet portlet light bordered">
                 <div class="portlet-title">
-                    <div class="caption font-blue-hoki">
-                        <i class="fa fa-group font-blue-hoki"></i>
-                        @(Contacts)
+                    <div class="caption font-dark">
+                        <i class="fa fa-group font-dark"></i> @(Contacts)
                     </div>
                 </div>
                 <div class="portlet-body" crm-contact mode="create" model="bill.contact"></div>
@@ -140,8 +142,8 @@
     <div class="form-actions">
         <div class="row">
             <div class="col-md-offset-5 col-md-7">
-                <button type="submit" class="btn blue">@(Create)</button>
-                <a ui-sref="bill.list" class="btn default">@(Cancel)</a>
+                <button type="submit" class="btn btn-circle btn-success"><i class="fa fa-check"></i> @(Create)</button>
+                <a ui-sref="bill.list" class="btn btn-circle red">@(Cancel) <i class="fa fa-angle-right"></i></a>
             </div>
         </div>
     </div>

@@ -1,30 +1,31 @@
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span> @(employees:ListOfEmployees)</span>
-        </li>
-    </ul>
-    <div class="page-toolbar">
-        <div class="btn-group pull-right">
-            <a class="btn yellow-lemon dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
+<div>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a ui-sref="home">@(Home)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span> @(users:ListOfEmployees)</span>
+            </li>
+        </ul>
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <a class="btn yellow-lemon dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
                                                     <i class="fa fa-angle-down"></i>
                                                 </a>
-            <ul class="dropdown-menu pull-right">
-                <li>
-                    <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
                                         @(PrintList) </a>
-                </li>
-                <li>
-                    <a href="#" ng-show="login.rights.employees.delete" confirmed-click="remove()" ng-confirm-click="@(employees:ConfirmDeleteEmployees)">
-                        <i class="fa fa-mail-forward"></i>@(Delete)
-                    </a>
-                </li>
-                <!--    <li>
+                    </li>
+                    <li>
+                        <a href="#" ng-show="login.rights.employees.delete" confirmed-click="remove()" ng-confirm-click="@(employees:ConfirmDeleteEmployees)">
+                            <i class="fa fa-mail-forward"></i>@(Delete)
+                        </a>
+                    </li>
+                    <!--    <li>
                                         <a href="#">
                                             @(Delete) </a>
                                     </li>
@@ -32,17 +33,17 @@
                                         <a href="#">
                                             @(BuildPDF) </a>
                                     </li>-->
-            </ul>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
 
-<div>
+
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
             <h3 class="caption">
-                <i class="fa fa-user font-blue"></i> <span class="caption-subject font-blue sbold uppercase">@(employees:ListOfEmployees)</span>
+                <i class="fa fa-user font-blue"></i> <span class="caption-subject font-blue sbold uppercase">@(users:ListOfEmployees)</span>
             </h3>
             <!--<div class="caption">
                 <i class="fa fa-user font-blue"></i>
@@ -86,72 +87,18 @@
                                 <th width="2%">
                                     <input type="checkbox" class="group-checkable" />
                                 </th>
-                                <th>@(employees:FirstName)</th>
-                                <th>@(employees:LastName)</th>
+                                <th>@(users:FirstName)</th>
+                                <th>@(users:LastName)</th>
                                 <th>@(Tel-Mobile)</th>
                                 <th>@(Email)</th>
-                                <th>@(employees:Skype)</th>
-                                <th>@(employees:Departement)</th>
-                                <th>@(employees:Job)</th>
-                                <th>@(employees:Manager)</th>
-                                <th>@(employees:EditedBy)</th>
-                                <th>@(employees:CreatedBy)</th>
+                                <th>@(users:Skype)</th>
+                                <th>@(users:Departement)</th>
+                                <th>@(users:Job)</th>
+                                <th>@(users:Manager)</th>
+                                <th>@(users:EditedBy)</th>
+                                <th>@(users:CreatedBy)</th>
                                 <th>@(Action)</th>
                             </tr>
-                            <!--<tr role="row" class="filter">
-                            <td>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="ref">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="societe_name">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="contact_name">
-                            </td>
-                            <td>
-                                <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="order_date_from" placeholder="From">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
-                                    </span>
-                                </div>
-                                <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="order_date_to" placeholder="To">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="margin-bottom-5">
-                                    <input type="text" class="form-control form-filter input-sm" name="order_price_from" placeholder="From"/>
-                                </div>
-                                <input type="text" class="form-control form-filter input-sm" name="order_price_to" placeholder="To"/>
-                            </td>
-                            <td>
-                                <select name="order_status" class="form-control form-filter input-sm">
-                                    <option value="">Select...</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="closed">Closed</option>
-                                    <option value="hold">On Hold</option>
-                                    <option value="fraud">Fraud</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="order_ship_to">
-                            </td>
-                            <td>
-                            </td>
-                            
-                            <td>
-                                <div class="margin-bottom-5">
-                                    <button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
-                                </div>
-                                <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
-                            </td>
-                        </tr>-->
                         </thead>
                     </table>
                 </div>

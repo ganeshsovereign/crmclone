@@ -51,10 +51,10 @@
                     "position": 1,
                     "url": "/erp/#!/employee",
                     "perms": "employee.read",
-                    "enabled": "$conf->bank->enabled",
+                    "enabled": "$conf->employees->enabled",
                     "usertype": 2,
                     "icon": "fa-user",
-                    "title": "employees:Employees"
+                    "title": "users:Employees"
                 }
             }
         }

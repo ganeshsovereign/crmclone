@@ -118,8 +118,8 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = false;
-            $rootScope.settings.layout.pageBodySolid = false;
+            $rootScope.settings.layout.pageSidebarClosed = true;
+            $rootScope.settings.layout.pageBodySolid = true;
 
             if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
                 return $rootScope.$state.go('societe.show.company');
