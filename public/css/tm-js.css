@@ -384,7 +384,7 @@ hr {
 }
 
 .page-content {
-    background-color: #ededed;
+    background-color: #F4F6F7;
 }
 
 .page-bar {
@@ -421,7 +421,7 @@ h4 {
 
 .profile-usermenu ul li.active a {
     color: #F3C200;
-    background-color: #f6f9fb;
+    background-color: #F4F6F7;
     border-left: 2px solid #F3C200;
     margin-left: -2px;
 }

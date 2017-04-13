@@ -3,7 +3,17 @@
         <div class="caption font-yellow-crusta">
             <i class="fa fa-institution font-yellow-crusta"></i>@(companies:Companies)
         </div>
+        <div class="actions">
+            <a href="javascript:;" ng-click="editableSociete.$show()" ng-show="!editableSociete.$visible && editable" class="btn btn-circle btn-default">
+                <i class="fa fa-pencil"></i> @(Edit) </a>
+        </div>
+        <div class="actions" ng-show="editableSociete.$visible">
+            <button type="submit" ng-disabled="editableSociete.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save) </button>
+            <button type="button" ng-disabled="editableSociete.$waiting" ng-click="editableSociete.$cancel();
+                                                findOne();" class="btn btn-circle btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i></button>
+        </div>
     </div>
+
     <div class="portlet-body">
         <div class="row">
             <div class="col-md-6">

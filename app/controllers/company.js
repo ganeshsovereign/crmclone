@@ -28,7 +28,7 @@
 /* global angular: true, $: true, jQuery: true */
 
 MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$modal', '$filter', /*'Upload',*/ '$timeout', 'dialogs', 'superCache', 'Societes',
-    function ($scope, $rootScope, $http, $modal, $filter, /*Upload,*/ $timeout, $dialogs, superCache, Societe) {
+    function($scope, $rootScope, $http, $modal, $filter, /*Upload,*/ $timeout, $dialogs, superCache, Societe) {
 
         var user = $rootScope.login;
 
@@ -63,21 +63,21 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         $scope.editable = $rootScope.login.rights.societe.write;
 
         $scope.types = [{
-                name: "Client/Prospect",
-                id: "CUSTOMER"
-            }, {
-                name: "Fournisseur",
-                id: "SUPPLIER"
-            }, {
-                name: "Sous-traitants",
-                id: "SUBCONTRACTOR"
-            }, {
-                name: "Non determine",
-                id: "SUSPECT"
-            }, {
-                name: "Tous",
-                id: "ALL"
-            }];
+            name: "Client/Prospect",
+            id: "CUSTOMER"
+        }, {
+            name: "Fournisseur",
+            id: "SUPPLIER"
+        }, {
+            name: "Sous-traitants",
+            id: "SUBCONTRACTOR"
+        }, {
+            name: "Non determine",
+            id: "SUSPECT"
+        }, {
+            name: "Tous",
+            id: "ALL"
+        }];
 
         if (typeof superCache.get("SocieteController.type") == "undefined")
             superCache.put("SocieteController.type", {
@@ -103,16 +103,16 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         $scope.commercial_id = superCache.get("SocieteController.commercial_id");
         $scope.status_id = superCache.get("SocieteController.status_id");
 
-        $scope.setCache = function (idx, value) {
+        $scope.setCache = function(idx, value) {
             superCache.put("SocieteController." + idx, value);
         };
 
-        $scope.clearCache = function () {
+        $scope.clearCache = function() {
             superCache.removeAll();
         };
 
         // Init
-        $scope.$on('$viewContentLoaded', function () {
+        $scope.$on('$viewContentLoaded', function() {
 
             // initialize core components
             Metronic.initAjax();
@@ -120,6 +120,9 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             // set default layout mode
             $rootScope.settings.layout.pageSidebarClosed = false;
             $rootScope.settings.layout.pageBodySolid = false;
+
+            if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
+                return $rootScope.$state.go('societe.show.company');
 
             var dict = ["fk_stcomm", "fk_fournisseur", "fk_prospectlevel", "fk_typent", "fk_effectif", "fk_forme_juridique", "fk_payment_term", "fk_paiement", "fk_segmentation", "fk_rival", "fk_user_status"];
 
@@ -129,7 +132,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 params: {
                     dictName: dict
                 }
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 $scope.dict = data;
             });
 
@@ -139,7 +142,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 params: {
                     //entity: Global.user.entity
                 }
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 $scope.banks = data;
             });
 
@@ -169,7 +172,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
          });
          };*/
 
-        $scope.showStatus = function (idx, dict) {
+        $scope.showStatus = function(idx, dict) {
             if (!($scope.dict[dict] && $scope.societe[idx]))
                 return 'Non défini';
             var selected = $filter('filter')($scope.dict[dict].values, {
@@ -179,25 +182,27 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             return ($scope.societe[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
-        $scope.remove = function (societe) {
+        $scope.remove = function(societe) {
             if (!societe && gridSociete) {
-                return $http({method: 'DELETE', url: '/erp/api/societe', params:
-                            {
-                                id: gridSociete.getSelectedRows()
-                            }
-                }).success(function (data, status) {
+                return $http({
+                    method: 'DELETE',
+                    url: '/erp/api/societe',
+                    params: {
+                        id: gridSociete.getSelectedRows()
+                    }
+                }).success(function(data, status) {
                     if (status === 200)
                         $scope.find();
                 });
             }
 
-            societe.$remove(function () {
+            societe.$remove(function() {
                 $rootScope.$state.go("societe.list");
             });
         };
 
-        $scope.checkCodeClient = function (data) {
-            return $http.get('/erp/api/societe/' + data).then(function (societe) {
+        $scope.checkCodeClient = function(data) {
+            return $http.get('/erp/api/societe/' + data).then(function(societe) {
                 if (!societe.data)
                     return true;
 
@@ -211,20 +216,20 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
         };
 
-        $scope.create = function () {
+        $scope.create = function() {
             var societe = new Societe(this.societe);
 
-            societe.$save(function (response) {
+            societe.$save(function(response) {
                 //console.log(response);
-                $rootScope.$state.go("societe.show", {id: response._id});
+                $rootScope.$state.go("societe.show", { id: response._id });
                 //$location.path("societe/" + response._id);
             });
         };
 
-        $scope.update = function () {
+        $scope.update = function() {
             var societe = $scope.societe;
 
-            societe.$update(function (response) {
+            societe.$update(function(response) {
                 //tle.setTitle('Fiche ' + societe.name);
                 $scope.checklist = 0;
                 for (var i in response.checklist)
@@ -233,21 +238,21 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             });
         };
 
-        $scope.findSegmentation = function () {
+        $scope.findSegmentation = function() {
             $http({
                 method: 'GET',
                 url: '/erp/api/societe/segmentation'
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 $scope.segmentations = data;
                 $scope.countSegmentations = data.length;
             });
         };
 
-        $scope.findOne = function () {
+        $scope.findOne = function() {
 
             Societe.get({
                 Id: $rootScope.$stateParams.id
-            }, function (societe) {
+            }, function(societe) {
                 $scope.societe = societe;
 
                 //console.log(societe);
@@ -261,7 +266,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         },
                         fields: "dateReport model author.name comment realised lead actions createdAt"
                     }
-                }).success(function (data, status) {
+                }).success(function(data, status) {
 
                     $scope.reports = data;
 
@@ -274,7 +279,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     params: {
                         "societe.id": societe._id
                     }
-                }).success(function (data, status) {
+                }).success(function(data, status) {
 
                     $scope.leads = data;
 
@@ -290,7 +295,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         },
                         fields: "title ref datec Status total_ht"
                     }
-                }).success(function (data, status) {
+                }).success(function(data, status) {
                     if (status !== 200)
                         return;
                     if (!data.requestBuy)
@@ -300,7 +305,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     $scope.requestBuy = data;
 
                     $scope.TotalBuy = 0;
-                    angular.forEach($scope.requestBuy, function (row) {
+                    angular.forEach($scope.requestBuy, function(row) {
                         if (row.Status.id === "PAYED")
                             $scope.TotalBuy += row.total_ht;
                     });
@@ -313,7 +318,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     params: {
                         "client.id": societe._id
                     }
-                }).success(function (data, status) {
+                }).success(function(data, status) {
 
                     $scope.bills = data;
                     $scope.countBills = $scope.bills.length;
@@ -324,7 +329,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 for (var i in societe.checklist)
                     if (societe.checklist[i])
                         $scope.checklist++;
-            }, function (err) {
+            }, function(err) {
                 if (err.status == 401)
                     $location.path("401.html");
             });
@@ -335,12 +340,12 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 params: {
                     field: "Status"
                 }
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 $scope.status = data;
             });
         };
 
-        $scope.updateInPlace = function (api, field, row, newdata) {
+        $scope.updateInPlace = function(api, field, row, newdata) {
             if (!$scope.save) {
                 $scope.save = {
                     promise: null,
@@ -352,7 +357,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             if (!$scope.save.pending) {
                 $scope.save.pending = true;
-                $scope.save.promise = $timeout(function () {
+                $scope.save.promise = $timeout(function() {
                     $http({
                         method: 'PUT',
                         url: '/' + api + '/' + row.entity._id + '/' + field,
@@ -361,13 +366,13 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                             value: newdata
                         }
                     }).
-                            success(function (data, status) {
-                                if (status == 200) {
-                                    if (data) {
-                                        row.entity = data;
-                                    }
-                                }
-                            });
+                    success(function(data, status) {
+                        if (status == 200) {
+                            if (data) {
+                                row.entity = data;
+                            }
+                        }
+                    });
 
                     $scope.save.pending = false;
                 }, 200);
@@ -398,28 +403,28 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             enableCellEditOnFocus: true,
             i18n: 'fr',
             columnDefs: [{
-                    field: '_id',
-                    displayName: 'Segmentation',
-                    enableCellEdit: false
-                }, {
-                    field: 'count',
-                    displayName: 'Nombre',
-                    cellClass: "align-right",
-                    enableCellEdit: false
-                }, {
-                    field: 'attractivity',
-                    displayName: 'Attractivité',
-                    cellClass: "align-right",
-                    editableCellTemplate: '<input type="number" step="1" ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-blur="updateSegmentation(row)"/>'
-                }, {
-                    displayName: "Actions",
-                    enableCellEdit: false,
-                    width: "100px",
-                    cellTemplate: '<div class="ngCellText align-center"><div class="button-group align-center compact children-tooltip"><button ng-disabled="!login.societe.segmentation" class="button icon-pencil" title="Renommer" ng-click="renameSegmentation(row)"></button></button><button ng-disabled="!login.societe.segmentation" class="button red-gradient icon-trash" title="Supprimer" ng-confirm-click="Supprimer la segmentation ?" confirmed-click="removeSegmentation(row)"></button></div></div>'
-                }]
+                field: '_id',
+                displayName: 'Segmentation',
+                enableCellEdit: false
+            }, {
+                field: 'count',
+                displayName: 'Nombre',
+                cellClass: "align-right",
+                enableCellEdit: false
+            }, {
+                field: 'attractivity',
+                displayName: 'Attractivité',
+                cellClass: "align-right",
+                editableCellTemplate: '<input type="number" step="1" ng-class="\'colt\' + col.index" ng-input="COL_FIELD" ng-model="COL_FIELD" ng-blur="updateSegmentation(row)"/>'
+            }, {
+                displayName: "Actions",
+                enableCellEdit: false,
+                width: "100px",
+                cellTemplate: '<div class="ngCellText align-center"><div class="button-group align-center compact children-tooltip"><button ng-disabled="!login.societe.segmentation" class="button icon-pencil" title="Renommer" ng-click="renameSegmentation(row)"></button></button><button ng-disabled="!login.societe.segmentation" class="button red-gradient icon-trash" title="Supprimer" ng-confirm-click="Supprimer la segmentation ?" confirmed-click="removeSegmentation(row)"></button></div></div>'
+            }]
         };
 
-        $scope.updateSegmentation = function (row) {
+        $scope.updateSegmentation = function(row) {
             if (!$scope.save) {
                 $scope.save = {
                     promise: null,
@@ -433,26 +438,26 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             if (!$scope.save.pending) {
                 $scope.save.pending = true;
-                $scope.save.promise = $timeout(function () {
+                $scope.save.promise = $timeout(function() {
                     $http({
                         method: 'PUT',
                         url: '/erp/api/societe/segmentation',
                         data: row.entity
-                    }).success(function (data, status) {
+                    }).success(function(data, status) {
                         $scope.save.pending = false;
                     });
                 }, 200);
             }
         };
 
-        $scope.removeSegmentation = function (row) {
+        $scope.removeSegmentation = function(row) {
             for (var i = 0; i < $scope.segmentations.length; i++) {
                 if (row.entity._id === $scope.segmentations[i]._id) {
                     $http({
                         method: 'DELETE',
                         url: '/erp/api/societe/segmentation',
                         data: row.entity
-                    }).success(function (data, status) { // FIXME function in a loop !
+                    }).success(function(data, status) { // FIXME function in a loop !
                         $scope.segmentations.splice(i, 1);
                         $scope.countSegmentations--;
                     });
@@ -461,7 +466,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             }
         };
 
-        $scope.renameSegmentation = function (row) {
+        $scope.renameSegmentation = function(row) {
             var dlg = null;
             for (var i = 0; i < $scope.segmentations.length; i++) {
                 if (row.entity._id === $scope.segmentations[i]._id) {
@@ -469,7 +474,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         key: false,
                         back: 'static'
                     });
-                    dlg.result.then(function (newval) { // FIXME function in a loop !
+                    dlg.result.then(function(newval) { // FIXME function in a loop !
 
                         //console.log(newval);
                         $http({
@@ -477,12 +482,12 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                             url: '/erp/api/societe/segmentation',
                             data: {
                                 old: row.entity._id,
-                                new : newval
+                                new: newval
                             }
-                        }).success(function (data, status) { // FIXME function in a loop !
+                        }).success(function(data, status) { // FIXME function in a loop !
                             $scope.findSegmentation();
                         });
-                    }, function () { // FIXME function in a loop !
+                    }, function() { // FIXME function in a loop !
                     });
 
                     break;
@@ -502,7 +507,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     //name: Global.user.name,
                     commercial_id: $scope.commercial_id
                 }
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 console.log(data);
                 //$scope.chartData = data.data;
 
@@ -645,7 +650,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
          }
          };*/
 
-        $scope.addNote = function () {
+        $scope.addNote = function() {
             if (!this.note && !this.note.note)
                 return;
 
@@ -670,19 +675,19 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         /**
          * Get fileType for icon
          */
-        $scope.getFileTypes = function () {
+        $scope.getFileTypes = function() {
             $http({
                 method: 'GET',
                 url: '/erp/api/dict/filesIcons'
             }).
-                    success(function (data, status) {
-                        if (status == 200) {
-                            iconsFilesList = data;
-                        }
-                    });
+            success(function(data, status) {
+                if (status == 200) {
+                    iconsFilesList = data;
+                }
+            });
         };
 
-        $scope.onFileSelect = function ($files, varname) {
+        $scope.onFileSelect = function($files, varname) {
             //$files: an array of files selected, each file has name, size, and type.
             for (var i = 0; i < $files.length; i++) {
                 var file = $files[i];
@@ -694,9 +699,9 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                             varname: varname
                         },
                         file: file
-                    }).progress(function (evt) { // FIXME function in a loop !
+                    }).progress(function(evt) { // FIXME function in a loop !
                         console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total, 10));
-                    }).success(function (data, status, headers, config) { // FIXME function in a loop !
+                    }).success(function(data, status, headers, config) { // FIXME function in a loop !
                         // file is uploaded successfully
                         //$scope.myFiles = "";
                         //console.log(data);
@@ -710,19 +715,19 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             }
         };
 
-        $scope.suppressFile = function (id, fileName, idx) {
+        $scope.suppressFile = function(id, fileName, idx) {
             $http({
                 method: 'DELETE',
                 url: '/erp/api/societe/file/' + id + '/' + fileName
             }).
-                    success(function (data, status) {
-                        if (status == 200) {
-                            $scope.societe.files.splice(idx, 1);
-                        }
-                    });
+            success(function(data, status) {
+                if (status == 200) {
+                    $scope.societe.files.splice(idx, 1);
+                }
+            });
         };
 
-        $scope.fileType = function (name) {
+        $scope.fileType = function(name) {
             if (typeof iconsFilesList[name.substr(name.lastIndexOf(".") + 1)] == 'undefined')
                 return iconsFilesList["default"];
 
@@ -750,21 +755,21 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             i18n: 'fr',
             enableColumnResize: true,
             columnDefs: [{
-                    field: 'name',
-                    displayName: 'Titre',
-                    cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/ticket/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"right"}\'><span class="icon-ticket"></span> {{row.getProperty("ref")}} - {{row.getProperty(col.field)}}</a>'
-                }, {
-                    field: 'task',
-                    displayName: 'Tâche'
-                }, {
-                    field: 'percentage',
-                    displayName: 'Etat',
-                    cellTemplate: '<div class="ngCellText"><progressbar class="progress-striped thin" value="row.getProperty(col.field)" type="success"></progressbar></div>'
-                }, {
-                    field: 'updatedAt',
-                    displayName: 'Dernière MAJ',
-                    cellFilter: "date:'dd-MM-yyyy HH:mm:ss'"
-                }]
+                field: 'name',
+                displayName: 'Titre',
+                cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/ticket/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"right"}\'><span class="icon-ticket"></span> {{row.getProperty("ref")}} - {{row.getProperty(col.field)}}</a>'
+            }, {
+                field: 'task',
+                displayName: 'Tâche'
+            }, {
+                field: 'percentage',
+                displayName: 'Etat',
+                cellTemplate: '<div class="ngCellText"><progressbar class="progress-striped thin" value="row.getProperty(col.field)" type="success"></progressbar></div>'
+            }, {
+                field: 'updatedAt',
+                displayName: 'Dernière MAJ',
+                cellFilter: "date:'dd-MM-yyyy HH:mm:ss'"
+            }]
         };
 
         $scope.gridOptionsLeads = {
@@ -871,29 +876,29 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             enableColumnResize: true,
             enableCellSelection: false,
             columnDefs: [{
-                    field: 'ref',
-                    displayName: 'Facture',
-                    cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/bills/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"top"}\' title=\'{{row.getProperty(col.field)}}\'> {{row.getProperty(col.field)}} </a></div>'
-                }, {
-                    field: 'createdAt',
-                    displayName: 'Date',
-                    cellFilter: "date:'dd-MM-yyyy'"
-                }, {
-                    field: 'total_ttc',
-                    displayName: 'Montant',
-                    cellFilter: "currency:''"
-                }, {
-                    field: 'amount.set',
-                    displayName: 'Reçu',
-                    cellFilter: "currency:''"
-                }, {
-                    field: 'amount.rest',
-                    displayName: 'Reste à encaisser',
-                    cellFilter: "currency:''"
-                }]
+                field: 'ref',
+                displayName: 'Facture',
+                cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/bills/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"top"}\' title=\'{{row.getProperty(col.field)}}\'> {{row.getProperty(col.field)}} </a></div>'
+            }, {
+                field: 'createdAt',
+                displayName: 'Date',
+                cellFilter: "date:'dd-MM-yyyy'"
+            }, {
+                field: 'total_ttc',
+                displayName: 'Montant',
+                cellFilter: "currency:''"
+            }, {
+                field: 'amount.set',
+                displayName: 'Reçu',
+                cellFilter: "currency:''"
+            }, {
+                field: 'amount.rest',
+                displayName: 'Reste à encaisser',
+                cellFilter: "currency:''"
+            }]
         };
 
-        $scope.priceLevelAutoComplete = function (val, field) {
+        $scope.priceLevelAutoComplete = function(val, field) {
             return $http.post('/erp/api/product/price_level/select', {
                 take: '5',
                 skip: '0',
@@ -902,22 +907,22 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 filter: {
                     logic: 'and',
                     filters: [{
-                            value: val
-                        }]
+                        value: val
+                    }]
                 }
-            }).then(function (res) {
+            }).then(function(res) {
                 return res.data;
             });
 
         };
 
-        $scope.addNewLead = function () {
+        $scope.addNewLead = function() {
 
             var modalInstance = $modal.open({
                 templateUrl: '/partials/leads/create.html',
                 controller: "LeadCreateController",
                 resolve: {
-                    object: function () {
+                    object: function() {
                         return {
                             societe: $scope.societe
                         };
@@ -925,19 +930,19 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 }
             });
 
-            modalInstance.result.then(function (leads) {
+            modalInstance.result.then(function(leads) {
                 $scope.leads.push({
                     id: leads._id,
                     name: leads.name,
                     dueDate: leads.dueDate
                 });
 
-            }, function () {
+            }, function() {
 
             });
         };
 
-        $scope.findReport = function (id) {
+        $scope.findReport = function(id) {
 
             $rootScope.idReport = id;
             var modalInstance = $modal.open({
@@ -947,7 +952,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             });
         };
 
-        $scope.findLead = function (id) {
+        $scope.findLead = function(id) {
 
             // $routeParams.lead = id;
             var modalInstance = $modal.open({
@@ -963,7 +968,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             });
         };
 
-        $scope.refreshReport = function () {
+        $scope.refreshReport = function() {
 
             $http({
                 method: 'GET',
@@ -974,21 +979,21 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     },
                     fields: "dateReport model author.name comment realised lead actions createdAt"
                 }
-            }).success(function (data, status) {
+            }).success(function(data, status) {
 
                 $scope.reports = data;
                 $scope.countReports = $scope.reports.length;
             });
         };
 
-        $scope.paymentBills = function () {
+        $scope.paymentBills = function() {
 
             var modalInstance = $modal.open({
                 templateUrl: '/partials/transaction/regulationBills.html',
                 controller: "TransactionController",
                 windowClass: "steps",
                 resolve: {
-                    object: function () {
+                    object: function() {
                         return {
                             societe: $scope.societe,
                             bills: $scope.bills
@@ -996,16 +1001,15 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     }
                 }
             });
-            modalInstance.result.then(function (bills) {
+            modalInstance.result.then(function(bills) {
                 $scope.bills.push(bills);
                 $scope.countBills++;
                 $scope.findOne();
-            }, function () {
-            });
+            }, function() {});
         };
 
-        $scope.removeNote = function (note) {
-            var i = $scope.societe.notes.map(function (e) {
+        $scope.removeNote = function(note) {
+            var i = $scope.societe.notes.map(function(e) {
                 return e._id;
             }).indexOf(note._id);
             $scope.societe.notes.splice(i, 1);
@@ -1027,10 +1031,10 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             gridSociete.init({
                 src: $("#societeList"),
-                onSuccess: function (grid) {
+                onSuccess: function(grid) {
                     // execute some code after table records loaded
                 },
-                onError: function (grid) {
+                onError: function(grid) {
                     // execute some code on network or other general error 
                 },
                 loadingMessage: 'Loading...',
@@ -1049,46 +1053,46 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         [1, "asc"]
                     ], // set first column as a default sort by asc
                     "columns": [{
-                            data: 'bool',
-                            "searchable": false
-                        }, {
-                            "data": "name"
-                        }, {
-                            "data": "code_client",
-                            defaultContent: ""
-                        }, {
-                            "data": "commercial_id.name",
-                            defaultContent: ""
-                        }, {
-                            "data": "zip",
-                            defaultContent: ""
-                        }, {
-                            "data": "town",
-                            defaultContent: ""
-                        }, {
-                            "data": "idprof3",
-                            defaultContent: ""
-                        }, {
-                            "data": "Status"
-                        }, {
-                            data: "entity",
-                            visible: user.multiEntities,
-                            searchable: false
-                        }, {
-                            data: "Tag",
-                            defaultContent: ""
-                        }, {
-                            "data": "prospectlevel",
-                            defaultContent: ""
-                        }, {
-                            data: "updatedAt",
-                            defaultContent: ""
-                        }]
+                        data: 'bool',
+                        "searchable": false
+                    }, {
+                        "data": "name"
+                    }, {
+                        "data": "code_client",
+                        defaultContent: ""
+                    }, {
+                        "data": "commercial_id.name",
+                        defaultContent: ""
+                    }, {
+                        "data": "zip",
+                        defaultContent: ""
+                    }, {
+                        "data": "town",
+                        defaultContent: ""
+                    }, {
+                        "data": "idprof3",
+                        defaultContent: ""
+                    }, {
+                        "data": "Status"
+                    }, {
+                        data: "entity",
+                        visible: user.multiEntities,
+                        searchable: false
+                    }, {
+                        data: "Tag",
+                        defaultContent: ""
+                    }, {
+                        "data": "prospectlevel",
+                        defaultContent: ""
+                    }, {
+                        data: "updatedAt",
+                        defaultContent: ""
+                    }]
                 }
             });
 
             // handle group actionsubmit button click
-            gridSociete.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+            gridSociete.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
                 e.preventDefault();
                 var action = $(".table-group-action-input", grid.getTableWrapper());
                 if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
@@ -1116,14 +1120,14 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 }
             });
 
-            $scope.find = function () {
+            $scope.find = function() {
                 initCharts();
                 var url = getUrl();
                 gridSociete.resetFilter(url);
             };
         }
 
-        $scope.isValidSiret = function () {
+        $scope.isValidSiret = function() {
             var siret = $scope.societe.idprof2;
             $scope.siretFound = "";
             $scope.societe.idprof1 = "";
@@ -1162,7 +1166,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     params: {
                         idprof2: siret
                     }
-                }).success(function (data, status) {
+                }).success(function(data, status) {
                     $scope.validSiret = isValide;
                     if (data.name) { // already exist
                         $scope.siretFound = data;
@@ -1172,7 +1176,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 $scope.validSiret = isValide;
         };
 
-        $scope.editAddress = function (data) {
+        $scope.editAddress = function(data) {
             var address = {
                 Status: 'ENABLE'
             };
@@ -1186,44 +1190,44 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 controller: ModalAddressCtrl,
                 //windowClass: "steps",
                 resolve: {
-                    options: function () {
+                    options: function() {
                         return {
                             address: address,
                             dict: $scope.dict
                         };
-                    }}
+                    }
+                }
             });
 
-            modalInstance.result.then(function (address) {
+            modalInstance.result.then(function(address) {
                 if (!data) // Is new address
                     $scope.societe.addresses.push(address);
 
                 $scope.update();
-            }, function () {
-            });
+            }, function() {});
         };
 
-        $scope.removeAddress = function (id) {
+        $scope.removeAddress = function(id) {
             $scope.societe.addresses.splice(id, 1);
             $scope.update();
         };
 
-        $scope.setDefaultDelivery = function (id) {
+        $scope.setDefaultDelivery = function(id) {
             $scope.societe.deliveryAddressId = id;
             $scope.update();
         };
 
-        var ModalAddressCtrl = function ($scope, $modalInstance, options) {
+        var ModalAddressCtrl = function($scope, $modalInstance, options) {
 
             $scope.address = options.address;
 
             $scope.dict = options.dict;
 
-            $scope.ok = function () {
+            $scope.ok = function() {
                 $modalInstance.close($scope.address);
             };
 
-            $scope.cancel = function () {
+            $scope.cancel = function() {
                 $modalInstance.dismiss('cancel');
             };
         };
@@ -1231,70 +1235,73 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
     }
 ]);
 
-MetronicApp.controller('SocieteSegmentationRenameController', function ($scope, $modalInstance, data) {
+MetronicApp.controller('SocieteSegmentationRenameController', function($scope, $modalInstance, data) {
     $scope.data = {
         id: data._id
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $modalInstance.dismiss('canceled');
     }; // end cancel
 
-    $scope.save = function () {
+    $scope.save = function() {
         //console.log($scope.data.id);
         $modalInstance.close($scope.data.id);
     }; // end save
 
-    $scope.hitEnter = function (evt) {
+    $scope.hitEnter = function(evt) {
         if (angular.equals(evt.keyCode, 13) && !(angular.equals($scope.data.id, null) || angular.equals($scope.data.id, '')))
             $scope.save();
     }; // end hitEnter
 });
 
-MetronicApp.controller('BoxSocieteController', ['$rootScope', '$scope', '$http', '$timeout', function ($rootScope, $scope, $http, $timeout) {
+MetronicApp.controller('BoxSocieteController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
 
-        var loadReport = false;
+    var loadReport = false;
 
-        $scope.findReport = function (dateRange) {
-            loadReport = true;
+    $scope.findReport = function(dateRange) {
+        loadReport = true;
 
-            $http({method: 'GET', url: '/erp/api/societe/report', params: {
-                    month: dateRange.start.getMonth(),
-                    year: dateRange.start.getFullYear(),
-                    fields: "dateReport model author.name comment societe realised lead createdAt"
-                }
-            }).success(function (data, status) {
-                $scope.reports = data;
-                //console.log(data);
-            });
-        };
-
-        $scope.showReport = function (id) {
-
-            $rootScope.idReport = id;
-            var modalInstance = $modal.open({
-                templateUrl: '/partials/reports/fiche.html',
-                controller: "ReportController",
-                windowClass: "steps"
-            });
-        };
-
-
-        $rootScope.$on('reportDateRange', function (event, data) {
+        $http({
+            method: 'GET',
+            url: '/erp/api/societe/report',
+            params: {
+                month: dateRange.start.getMonth(),
+                year: dateRange.start.getFullYear(),
+                fields: "dateReport model author.name comment societe realised lead createdAt"
+            }
+        }).success(function(data, status) {
+            $scope.reports = data;
             //console.log(data);
-            if (loadReport)
-                $scope.findReport(data);
         });
+    };
 
-    }]);
+    $scope.showReport = function(id) {
+
+        $rootScope.idReport = id;
+        var modalInstance = $modal.open({
+            templateUrl: '/partials/reports/fiche.html',
+            controller: "ReportController",
+            windowClass: "steps"
+        });
+    };
+
+
+    $rootScope.$on('reportDateRange', function(event, data) {
+        //console.log(data);
+        if (loadReport)
+            $scope.findReport(data);
+    });
+
+}]);
 
 MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http', '$filter', '$timeout', 'Societes',
-    function ($scope, $rootScope, $http, $filter, $timeout, Societe) {
+    function($scope, $rootScope, $http, $filter, $timeout, Societe) {
 
         $scope.commercial = null;
 
         // Init
-        $scope.$on('$viewContentLoaded', function () {
+        $scope.$on('$viewContentLoaded', function() {
             // initialize core components
             Metronic.initAjax();
 
@@ -1307,34 +1314,34 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
 
         // Estimated https://handsontable.com/features.html
 
-        var products = [
-            {
-                description: 'Big Mac',
-                options: [
-                    {description: 'Big Mac'},
-                    {description: 'Big Mac & Co'},
-                    {description: 'McRoyal'},
-                    {description: 'Hamburger'},
-                    {description: 'Cheeseburger'},
-                    {description: 'Double Cheeseburger'}
-                ]
-            },
-            {
-                description: 'Fried Potatoes',
-                options: [
-                    {description: 'Fried Potatoes'},
-                    {description: 'Fried Onions'}
-                ]
-            }
-        ],
-                firstNames = ['Ted', 'John', 'Macy', 'Rob', 'Gwen', 'Fiona', 'Mario', 'Ben', 'Kate', 'Kevin', 'Thomas', 'Frank'],
-                lastNames = ['Tired', 'Johnson', 'Moore', 'Rocket', 'Goodman', 'Farewell', 'Manson', 'Bentley', 'Kowalski', 'Schmidt', 'Tucker', 'Fancy'],
-                address = ['Turkey', 'Japan', 'Michigan', 'Russia', 'Greece', 'France', 'USA', 'Germany', 'Sweden', 'Denmark', 'Poland', 'Belgium'];
+        var products = [{
+                    description: 'Big Mac',
+                    options: [
+                        { description: 'Big Mac' },
+                        { description: 'Big Mac & Co' },
+                        { description: 'McRoyal' },
+                        { description: 'Hamburger' },
+                        { description: 'Cheeseburger' },
+                        { description: 'Double Cheeseburger' }
+                    ]
+                },
+                {
+                    description: 'Fried Potatoes',
+                    options: [
+                        { description: 'Fried Potatoes' },
+                        { description: 'Fried Onions' }
+                    ]
+                }
+            ],
+            firstNames = ['Ted', 'John', 'Macy', 'Rob', 'Gwen', 'Fiona', 'Mario', 'Ben', 'Kate', 'Kevin', 'Thomas', 'Frank'],
+            lastNames = ['Tired', 'Johnson', 'Moore', 'Rocket', 'Goodman', 'Farewell', 'Manson', 'Bentley', 'Kowalski', 'Schmidt', 'Tucker', 'Fancy'],
+            address = ['Turkey', 'Japan', 'Michigan', 'Russia', 'Greece', 'France', 'USA', 'Germany', 'Sweden', 'Denmark', 'Poland', 'Belgium'];
 
         function dataFactory() {
             return {
-                generateArrayOfObjects: function (rows, keysToInclude) {
-                    var items = [], item;
+                generateArrayOfObjects: function(rows, keysToInclude) {
+                    var items = [],
+                        item;
 
                     rows = rows || 10;
 
@@ -1352,7 +1359,7 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
                             COURSES: Math.floor(Math.random() * 100000) / 100,
                             product: angular.extend({}, products[Math.floor(Math.random() * products.length)])
                         };
-                        angular.forEach(keysToInclude, function (key) {
+                        angular.forEach(keysToInclude, function(key) {
                             if (item[key]) {
                                 delete item[key];
                             }
@@ -1362,7 +1369,7 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
 
                     return items;
                 },
-                generateArrayOfArrays: function (rows, cols) {
+                generateArrayOfArrays: function(rows, cols) {
                     return Handsontable.helper.createSpreadsheetData(rows || 10, cols || 10);
                 }
             };
@@ -1373,15 +1380,18 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
 
         var dataF = new dataFactory();
 
-        $scope.find = function () {
+        $scope.find = function() {
 
             //console.log(dataF.generateArrayOfObjects(10));
 
-            $http({method: 'GET', url: '/erp/api/stats/DetailsClient', params: {
+            $http({
+                method: 'GET',
+                url: '/erp/api/stats/DetailsClient',
+                params: {
                     entity: $rootScope.entity,
                     commercial: ($scope.commercial ? $scope.commercial.id : null)
                 }
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 console.log(data);
                 $scope.dataClients = data;
             });
@@ -1390,26 +1400,27 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
 
         };
 
-        $scope.colorRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+        $scope.colorRenderer = function(instance, td, row, col, prop, value, cellProperties) {
             Handsontable.renderers.NumericRenderer.apply(this, arguments);
 
             td.className = ' bg-yellow-saffron htNumeric htDimmed';
         };
 
 
-        $scope.db = {items: []};
+        $scope.db = { items: [] };
         $scope.settings = {
             colHeaders: true,
             contextMenu: ['row_above', 'row_below', 'remove_row'],
             //manualColumnMove: [1, 4],
 
-            onAfterInit: function () {
+            onAfterInit: function() {
                 console.log("init");
             },
-            onAfterChange: function (err, data) {
+            onAfterChange: function(err, data) {
                 console.log("change");
                 console.log(err, data);
             }
         };
 
-    }]);
+    }
+]);
