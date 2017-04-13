@@ -960,31 +960,31 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // marketing
         .state("product.show.marketing", {
             url: "/marketing",
-            templateUrl: "/templates/_product/marketing.html",
+            templateUrl: "/templates/product/marketing.html",
             data: { pageTitle: 'Marketing - Product' }
         })
         // attributes
         .state("product.show.attributes", {
             url: "/attributes",
-            templateUrl: "/templates/_product/attributes.html",
+            templateUrl: "/templates/product/attributes.html",
             data: { pageTitle: 'Attributes - Product' }
         })
         // information
         .state("product.show.informations", {
             url: "/informations",
-            templateUrl: "/templates/_product/informations.html",
+            templateUrl: "/templates/product/informations.html",
             data: { pageTitle: 'Informations - Product' }
         })
         // price
         .state("product.show.price", {
             url: "/price",
-            templateUrl: "/templates/_product/price.html",
+            templateUrl: "/templates/product/price.html",
             data: { pageTitle: 'Prices - Product' }
         })
         // associations
         .state("product.show.categories", {
             url: "/categories",
-            templateUrl: "/templates/_product/categories.html",
+            templateUrl: "/templates/product/categories.html",
             data: {
                 pageTitle: 'Categories - Product '
             },
@@ -993,7 +993,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // declinaisons
         .state("product.show.declinations", {
             url: "/declinations",
-            templateUrl: "/templates/_product/declinations.html",
+            templateUrl: "/templates/product/declinations.html",
             data: {
                 pageTitle: 'Declinaisons - Product '
             }
@@ -1001,7 +1001,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // stocks
         .state("product.show.stock", {
             url: "/stock",
-            templateUrl: "/templates/_product/stock.html",
+            templateUrl: "/templates/product/stock.html",
             data: {
                 pageTitle: 'Stock - Product '
             }
@@ -1009,7 +1009,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // ecommerce
         .state("product.show.ecommerce", {
             url: "/ecommerce",
-            templateUrl: "/templates/_product/ecommerce.html",
+            templateUrl: "/templates/product/ecommerce.html",
             data: {
                 pageTitle: 'Ecommerce - Product '
             }
@@ -1017,7 +1017,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // ecommerce
         .state("product.show.bundles", {
             url: "/bundle",
-            templateUrl: "/templates/_product/bundles.html",
+            templateUrl: "/templates/product/bundles.html",
             data: {
                 pageTitle: 'Compositions - Product '
             }
