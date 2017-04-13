@@ -1,6 +1,7 @@
 "use strict";
 
 MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '$filter', 'Employees', function($scope, $rootScope, $http, $filter, Employees) {
+    $scope.backTo = 'employee.list';
 
     var grid = new Datatable();
     var employees = $rootScope.login;
@@ -25,6 +26,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
         // set default layout mode
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
+
+        if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "employee.show")
+            return $rootScope.$state.go('employee.show.main');
 
         var dict = ["fk_employees_status", "fk_rh_categorie", "fk_job", "fk_country", "fk_departements", "fk_rh_niveauEtude", "fk_rh_contrat", "fk_rh_situationFamiliale", "fk_rh_tempsTravail"];
 
@@ -82,9 +86,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
 
     $scope.create = function() {
         var employee = new Employees(this.employee);
-        console.log(employee);
+        //console.log(employee);
         employee.$save(function(response) {
-            $rootScope.$state.go("employees.show", { id: response._id });
+            $rootScope.$state.go("employee.show", { id: response._id });
         });
     };
 
@@ -128,6 +132,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     };
 
     $scope.findOne = function() {
+        if (!$rootScope.$stateParams.id)
+            return;
+
         Employees.get({
             Id: $rootScope.$stateParams.id
         }, function(employee) {

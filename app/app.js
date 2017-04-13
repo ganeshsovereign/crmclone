@@ -1412,7 +1412,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('user.create', {
             parent: "user",
             url: "/create.html",
-            templateUrl: "/views/user/create.html",
+            templateUrl: "/views/user/fiche.html",
             data: {
                 pageTitle: 'Nouvel utilisateur'
             },
@@ -1450,8 +1450,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('employee.create', {
             parent: "employee",
-            url: "create.html",
-            templateUrl: "/views/employees/create.html",
+            url: "/create.html",
+            templateUrl: "/views/employees/main.html",
             data: {
                 pageTitle: 'Nouveau Collaborateur'
             },
@@ -1459,26 +1459,34 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         // Main
         .state("employee.show.main", {
-            url: "/employee",
+            url: "/main",
             templateUrl: "/views/employees/main.html",
-            data: { pageTitle: 'Main' }
+            data: {
+                pageTitle: 'Main'
+            },
         })
         // Personnal Information
         .state("employee.show.personnalinformation", {
             url: "/PersonnalInformation",
             templateUrl: "/views/employees/personnal.html",
-            data: { pageTitle: 'PersonnalInformation' }
+            data: {
+                pageTitle: 'PersonnalInformation'
+            }
         }) // Job
         .state("employee.show.job", {
             url: "/Job",
             templateUrl: "/views/employees/job.html",
-            data: { pageTitle: 'Job' }
+            data: {
+                pageTitle: 'Job'
+            }
         })
         // Assignees
         .state("employee.show.assignees", {
             url: "/assignees",
             templateUrl: "/views/employees/assignees.html",
-            data: { pageTitle: 'Affectation' }
+            data: {
+                pageTitle: 'Affectation'
+            }
         })
         // Group management
         .state('group', {

@@ -4,6 +4,8 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
     var grid = new Datatable();
     var user = $rootScope.login;
 
+    $scope.backTo = 'user.list';
+
     $scope.editable = false;
 
     $scope.user = {
@@ -209,7 +211,10 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                     data: "namegroup",
                     defaultContent: ""
                 }, {
-                    data: "updatedAt",
+                    data: "lastConnection",
+                    defaultContent: ""
+                }, {
+                    data: "createdAt",
                     defaultContent: ""
                 }, {
                     data: 'action'
