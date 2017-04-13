@@ -22,93 +22,98 @@
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:FirstName):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.name.first" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(Tel-Mobile):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.phones.mobile" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(Email):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.emails.work" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:Skype):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.skype" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:LinkedIn):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.social.LI" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:Facebook):</label>
                                         <div class="col-md-8">
                                             <input class="form-control" ng-model="employee.social.FB" placeholder="" type="text">
-
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
 
 
 
                             <div class="col-md-6">
+
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(users:Department):</label>
                                     <div class="col-md-8">
-                                        <select class="form-control" ng-model="employee.department">
-                                                        <option ng-model=""></option>
-                                                        <option value="1">Option 1</option>
-                                                        <option value="2">Option 2</option>
-                                                        <option value="3">Option 3</option>
-                                                        <option value="4">Option 4</option>
-                                       </select>
+                                        <select class="table-group-action-input form-control" required ng-model="employee.department" ng-options="g.id as g.name for g in groups"></select>
+                                        <div class="form-control-focus"> </div>
                                     </div>
                                 </div>
+
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(users:Manager):</label>
                                     <div class="col-md-8">
-                                        <input class="form-control" ng-model="employee.manager" placeholder="" type="text">
-
+                                        <select class="table-group-action-input form-control" required ng-model="employee.manager" ng-options="g.id as g.name for g in groups"></select>
                                         <div class="form-control-focus"> </div>
                                     </div>
                                 </div>
+
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(users:JobPosition):</label>
                                     <div class="col-md-8">
-                                        <input class="form-control" ng-model="employee.jobPosition" placeholder="" type="text">
-
+                                        <select class="table-group-action-input form-control" required ng-model="employee.jobPosition" ng-options="s.id as s.label for s in dict.fk_job.values"></select>
                                         <div class="form-control-focus"> </div>
                                     </div>
                                 </div>
+
                                 <div class="form-group form-md-line-input">
                                     <label class="col-md-4 control-label">@(users:JobType):</label>
                                     <div class="col-md-8">
-                                        <input class="form-control" ng-model="employee.jobType" placeholder="" type="text">
+                                        <select class="table-group-action-input form-control" required ng-model="employee.jobType" ng-options="s.id as s.label for s in dict.fk_rh_contrat.values"></select>
+                                        <div class="form-control-focus"> </div>
+                                    </div>
+                                </div>
 
+                                <div class="form-group form-md-line-input">
+                                    <label class="col-md-4 control-label">@(users:Classes):</label>
+                                    <div class="col-md-8">
+                                        <select class="table-group-action-input form-control" required ng-model="employee.jobType" ng-options="s.id as s.label for s in dict.fk_rh_contrat.values"></select>
                                         <div class="form-control-focus"> </div>
                                     </div>
                                 </div>
@@ -117,18 +122,14 @@
                                     <label class="col-md-4 control-label">@(users:WorkPhone):</label>
                                     <div class="col-md-8">
                                         <input class="form-control" ng-model="employee.phones.phone" placeholder="" type="text">
-
                                         <div class="form-control-focus"> </div>
                                     </div>
                                 </div>
 
-
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
