@@ -59,7 +59,7 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-4 control-label">@(users:Nationality):</label>
                                         <div class="col-md-8">
-                                            <select class="table-group-action-input form-control" required ng-model="employee.nationality" ng-options="s.id as s.label for s in dict.fk_country.values"></select>
+                                            <select class="table-group-action-input form-control" ng-model="employee.nationality" ng-options="s.id as s.name for s in $dict.nationality.data"></select>
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>

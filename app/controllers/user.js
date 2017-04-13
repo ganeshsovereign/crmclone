@@ -5,6 +5,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
     var user = $rootScope.login;
 
     $scope.backTo = 'user.list';
+    $scope.createMod = true;
 
     $scope.editable = false;
 
@@ -131,32 +132,34 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
     };
 
     $scope.findOne = function() {
-        if ($rootScope.$stateParams.id)
-            Users.users.get({
-                Id: $rootScope.$stateParams.id
-            }, function(user) {
-                //console.log(user);
-                $scope.user = user;
-                $scope.editable = true; // TODO ajouter controle d'acces
+        if (!$rootScope.$stateParams.id)
+            return;
+        $scope.createMod = false;
+        Users.users.get({
+            Id: $rootScope.$stateParams.id
+        }, function(user) {
+            //console.log(user);
+            $scope.user = user;
+            $scope.editable = true; // TODO ajouter controle d'acces
 
-                $http({
-                    method: 'GET',
-                    url: 'api/ticket',
-                    params: {
-                        find: { "linked.id": user._id },
-                        fields: "name ref updatedAt percentage Status task"
-                    }
-                }).success(function(data, status) {
-                    if (status == 200)
-                        $scope.tickets = data;
+            $http({
+                method: 'GET',
+                url: 'api/ticket',
+                params: {
+                    find: { "linked.id": user._id },
+                    fields: "name ref updatedAt percentage Status task"
+                }
+            }).success(function(data, status) {
+                if (status == 200)
+                    $scope.tickets = data;
 
-                    $scope.countTicket = $scope.tickets.length;
-                });
-
-            }, function(err) {
-                if (err.status == 401)
-                    $location.path("401.html");
+                $scope.countTicket = $scope.tickets.length;
             });
+
+        }, function(err) {
+            if (err.status == 401)
+                $location.path("401.html");
+        });
     };
 
     function getUrl(params) {

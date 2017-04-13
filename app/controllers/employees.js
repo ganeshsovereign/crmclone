@@ -5,6 +5,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
 
     var grid = new Datatable();
     var employees = $rootScope.login;
+    $scope.createMod = true;
 
     $scope.editable = false;
 
@@ -42,6 +43,44 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
             $scope.dict = data;
             //console.log(data);
         });
+
+        $scope.$dict = {};
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/employees/nationality'
+        }).success(function(data, status) {
+            $scope.$dict.nationality = data;
+            //console.log(data);
+        });
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/employees/getForDD',
+            params: {
+                isEmployee: true
+            }
+        }).success(function(data, status) {
+            $scope.$dict.employees = data;
+            //console.log(data);
+        });
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/employees/byDepartment',
+        }).success(function(data, status) {
+            $scope.$dict.department = data;
+            //console.log(data);
+        });
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/employees/byDepartment',
+        }).success(function(data, status) {
+            $scope.$dict.department = data;
+            //console.log(data);
+        });
+
 
 
 
@@ -134,7 +173,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     $scope.findOne = function() {
         if (!$rootScope.$stateParams.id)
             return;
-
+        $scope.createMod = false;
         Employees.get({
             Id: $rootScope.$stateParams.id
         }, function(employee) {
