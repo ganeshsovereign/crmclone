@@ -676,7 +676,7 @@ function convert(type) {
                         //console.log(docs);
 
                         docs.forEach(function(doc) {
-                            console.log(doc.commercial_id);
+                            //console.log(doc.commercial_id);
                             if (!doc.commercial_id.id)
                                 return;
 
@@ -694,6 +694,38 @@ function convert(type) {
                                 //return;
 
                                 collection.update({ _id: doc._id }, { $set: { 'commercial_id.id': user._id, 'commercial_id.name': user.fullname } }, function(err, doc) {
+                                    if (err)
+                                        console.log(err);
+                                });
+                            });
+                        });
+                    });
+                });
+                mongoose.connection.db.collection(model, function(err, collection) {
+                    collection.find({ "author.id": { $type: 2 } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+                        //console.log(docs);
+
+                        docs.forEach(function(doc) {
+                            //console.log(doc.commercial_id);
+                            if (!doc.author.id)
+                                return;
+
+                            /*  if (doc.commercial_id.id.toString().length == 24)
+                                  return doc.update({ $set: { 'commercial_id.id': ObjectId(doc.commercial_id.id) } }, function(err, doc) {
+                                      console.log(doc);
+                                      if (err)
+                                          console.log(err);
+                                  });*/
+                            //console.log(doc.commercial_id.id.substr(0, 5));
+                            if (doc.author.id.substr(0, 5) == 'user:') //Not an automatic code
+                                UserModel.findOne({ username: doc.author.id.substr(5) }, "_id lastname firstname", function(err, user) {
+
+                                //console.log(user);
+                                //return;
+
+                                collection.update({ _id: doc._id }, { $set: { 'author.id': user._id, 'author.name': user.fullname } }, function(err, doc) {
                                     if (err)
                                         console.log(err);
                                 });
