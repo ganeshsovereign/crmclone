@@ -664,9 +664,16 @@ function convert(type) {
             var BillSupplierModel = MODEL('billSupplier').Schema;
             var DeliveryModel = MODEL('delivery').Schema;
             var ObjectId = MODULE('utils').ObjectId;
+            if (MODEL('userAbsence'))
+                var UserAbsenceModel = MODEL('userAbsence').Schema;
 
             var Model = [SocieteModel, BillModel, OfferModel, OrderModel, DeliveryModel, OrderSupplierModel, BillSupplierModel];
             var Collections = ['Societe', 'Facture', 'Commande', 'Offer', 'OrderSupplier', 'BillSupplier', 'Delivery'];
+
+            if (MODEL('userAbsence')) {
+                Model.push(UserAbsenceModel);
+                Collections.push('Absence');
+            }
 
             Collections.forEach(function(model) {
                 mongoose.connection.db.collection(model, function(err, collection) {
@@ -688,7 +695,7 @@ function convert(type) {
                                   });*/
                             //console.log(doc.commercial_id.id.substr(0, 5));
                             if (doc.commercial_id.id.substr(0, 5) == 'user:') //Not an automatic code
-                                UserModel.findOne({ username: doc.commercial_id.id.substr(5) }, "_id lastname firstname", function(err, user) {
+                                UserModel.findOne({ username: doc.commercial_id.id.substr(5).toLowerCase() }, "_id lastname firstname", function(err, user) {
 
                                 //console.log(user);
                                 //return;
@@ -720,12 +727,44 @@ function convert(type) {
                                   });*/
                             //console.log(doc.commercial_id.id.substr(0, 5));
                             if (doc.author.id.substr(0, 5) == 'user:') //Not an automatic code
-                                UserModel.findOne({ username: doc.author.id.substr(5) }, "_id lastname firstname", function(err, user) {
+                                UserModel.findOne({ username: doc.author.id.substr(5).toLowerCase() }, "_id lastname firstname", function(err, user) {
 
                                 //console.log(user);
                                 //return;
 
                                 collection.update({ _id: doc._id }, { $set: { 'author.id': user._id, 'author.name': user.fullname } }, function(err, doc) {
+                                    if (err)
+                                        console.log(err);
+                                });
+                            });
+                        });
+                    });
+                });
+                mongoose.connection.db.collection(model, function(err, collection) {
+                    collection.find({ "user.id": { $type: 2 } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+                        //console.log(docs);
+
+                        docs.forEach(function(doc) {
+                            //console.log(doc.commercial_id);
+                            if (!doc.user.id)
+                                return;
+
+                            /*  if (doc.commercial_id.id.toString().length == 24)
+                                  return doc.update({ $set: { 'commercial_id.id': ObjectId(doc.commercial_id.id) } }, function(err, doc) {
+                                      console.log(doc);
+                                      if (err)
+                                          console.log(err);
+                                  });*/
+                            //console.log(doc.commercial_id.id.substr(0, 5));
+                            if (doc.user.id.substr(0, 5) == 'user:') //Not an automatic code
+                                UserModel.findOne({ username: doc.user.id.substr(5).toLowerCase() }, "_id lastname firstname", function(err, user) {
+
+                                //console.log(user, doc.user);
+                                //return;
+
+                                collection.update({ _id: doc._id }, { $set: { 'user.id': user._id, 'user.name': user.fullname } }, function(err, doc) {
                                     if (err)
                                         console.log(err);
                                 });
