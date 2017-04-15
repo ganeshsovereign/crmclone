@@ -441,11 +441,38 @@ h4 {
     font-weight: 400;
 }
 
-.form-horizontal .form-group.form-md-line-input>label {
-    padding-top: 5px;
-    font-size: 12px;
-}
-
 .profile-stat-title {
     font-size: 16px;
+}
+
+.form-group.form-md-line-input.form-md-floating-label .form-control~label {
+    top: 0px;
+}
+
+.form-horizontal .form-group.form-md-line-input .form-control~.form-control-focus,
+.form-horizontal .form-group.form-md-line-input .form-control~label {
+    left: 0px;
+}
+
+.form-group.form-md-line-input.has-success .form-control {
+    border-bottom: 1px solid #dedede;
+}
+
+.form-group.form-md-line-input.form-md-floating-label .form-control.input-lg~label {
+    font-size: 20px;
+    top: 20px;
+}
+
+.form-horizontal .form-group.form-md-line-input {
+    padding-top: 15px;
+    margin: 0 10px 15px;
+}
+
+.form-group.form-md-line-input {
+    margin: 0 0 25px;
+}
+
+.form-group.form-md-line-input .form-control~label {
+    font-size: 10px;
+    color: #ff6600;
 }
