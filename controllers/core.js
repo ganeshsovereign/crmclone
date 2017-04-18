@@ -778,38 +778,47 @@ function convert(type) {
                         });
                     });
                 });
-                /*mongoose.connection.db.collection(model, function(err, collection) {
+                mongoose.connection.db.collection(model, function(err, collection) {
                     collection.find({ "details.driver.id": { $type: 2 } }, function(err, docs) {
                         if (err)
                             return console.log(err);
                         //console.log(docs);
 
                         docs.forEach(function(doc) {
-                            //console.log(doc.commercial_id);
-                            if (!doc.user.id)
-                                return;
+                            for (let i = 1; i < doc.details.length; i++) {
 
-                            /*  if (doc.commercial_id.id.toString().length == 24)
-                                  return doc.update({ $set: { 'commercial_id.id': ObjectId(doc.commercial_id.id) } }, function(err, doc) {
-                                      console.log(doc);
-                                      if (err)
-                                          console.log(err);
-                                  });*/
-                //console.log(doc.commercial_id.id.substr(0, 5));
-                /*if (doc.user.id.substr(0, 5) == 'user:') //Not an automatic code
-                                UserModel.findOne({ username: doc.user.id.substr(5).toLowerCase() }, "_id lastname firstname", function(err, user) {
+                                if (!doc.details[i] || !doc.details[i].driver || !doc.details[i].driver.id)
+                                    continue;
 
-                                //console.log(user, doc.user);
-                                //return;
+                                if (doc.details[i].driver.id.toString().length == 24) {
+                                    let query = {};
+                                    query['details.' + i + '.driver.id'] = ObjectId(doc.details[i].driver.id);
 
-                                collection.update({ _id: doc._id }, { $set: { 'user.id': user._id, 'user.name': user.fullname } }, function(err, doc) {
-                                    if (err)
-                                        console.log(err);
+                                    return doc.update({ $set: query }, function(err, doc) {
+                                        if (err)
+                                            console.log(err);
+                                    });
+                                }
+                                //console.log(doc.commercial_id.id.substr(0, 5));
+                                if (doc.details[i].driver.id.substr(0, 5) == 'user:') //Not an automatic code
+                                    UserModel.findOne({ username: doc.details[i].driver.id.substr(5).toLowerCase() }, "_id lastname firstname", function(err, user) {
+
+                                    //console.log(user, doc.user);
+                                    //return;
+
+                                    let query = {};
+                                    query['details.' + i + '.driver.id'] = user._id;
+                                    query['details.' + i + '.driver.name'] = user.fullname;
+
+                                    collection.update({ _id: doc._id }, { $set: query }, function(err, doc) {
+                                        if (err)
+                                            console.log(err);
+                                    });
                                 });
-                            });
+                            }
                         });
                     });
-                });*/
+                });
             });
             return self.plain("Type is commercial_id");
             break;
