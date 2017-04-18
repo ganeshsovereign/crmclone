@@ -819,6 +819,47 @@ function convert(type) {
                         });
                     });
                 });
+                mongoose.connection.db.collection(model, function(err, collection) {
+                    collection.find({ "details.formation.id": { $type: 2 } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+                        //console.log(docs);
+
+                        docs.forEach(function(doc) {
+                            for (let i = 1; i < doc.details.length; i++) {
+
+                                if (!doc.details[i] || !doc.details[i].formation || !doc.details[i].formation.id)
+                                    continue;
+
+                                if (doc.details[i].formation.id.toString().length == 24) {
+                                    let query = {};
+                                    query['details.' + i + '.formation.id'] = ObjectId(doc.details[i].formation.id);
+
+                                    return doc.update({ $set: query }, function(err, doc) {
+                                        if (err)
+                                            console.log(err);
+                                    });
+                                }
+                                //console.log(doc.commercial_id.id.substr(0, 5));
+                                if (doc.details[i].formation.id.substr(0, 5) == 'user:') //Not an automatic code
+                                    UserModel.findOne({ username: doc.details[i].formation.id.substr(5).toLowerCase() }, "_id lastname firstname", function(err, user) {
+
+                                    //console.log(user, doc.user);
+                                    //return;
+
+                                    let query = {};
+                                    query['details.' + i + '.formation.id'] = user._id;
+                                    query['details.' + i + '.formation.name'] = user.fullname;
+
+                                    collection.update({ _id: doc._id }, { $set: query }, function(err, doc) {
+                                        if (err)
+                                            console.log(err);
+                                    });
+                                });
+                            }
+                        });
+                    });
+                });
             });
             return self.plain("Type is commercial_id");
             break;
