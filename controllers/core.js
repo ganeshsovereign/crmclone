@@ -881,7 +881,7 @@ function convert(type) {
 
                                         let query = {};
                                         //query['details.' + i + '.formation.id'] = user._id;
-                                        query['details.' + i + '.formation.name'] = user.firstname;
+                                        query['details.' + i + '.formation.name'] = user.lastname;
 
                                         collection.update({ _id: doc._id }, { $set: query }, function(err, doc) {
                                             if (err)
@@ -912,7 +912,7 @@ function convert(type) {
                                         //return;
 
                                         let query = {};
-                                        query['details.' + i + '.driver.name'] = user.firstname;
+                                        query['details.' + i + '.driver.name'] = user.lastname;
 
                                         collection.update({ _id: doc._id }, { $set: query }, function(err, doc) {
                                             if (err)
