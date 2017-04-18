@@ -666,6 +666,8 @@ function convert(type) {
             var ObjectId = MODULE('utils').ObjectId;
             if (MODEL('userAbsence'))
                 var UserAbsenceModel = MODEL('userAbsence').Schema;
+            if (MODEL('europexpress_planning'))
+                var PlanningModel = MODEL('europexpress_planning').Schema;
 
             var Model = [SocieteModel, BillModel, OfferModel, OrderModel, DeliveryModel, OrderSupplierModel, BillSupplierModel];
             var Collections = ['Societe', 'Facture', 'Commande', 'Offer', 'OrderSupplier', 'BillSupplier', 'Delivery'];
@@ -673,6 +675,11 @@ function convert(type) {
             if (MODEL('userAbsence')) {
                 Model.push(UserAbsenceModel);
                 Collections.push('Absence');
+            }
+
+            if (MODEL('europexpress_planning')) {
+                Model.push(PlanningModel);
+                Collections.push('europexpress_planning');
             }
 
             Collections.forEach(function(model) {
