@@ -338,11 +338,13 @@ productSchema.statics.findPrice = function(options, fields, callback) {
     if (options._id)
         query._id = options._id;
 
+    if (options.ref)
+        query.ref = options.ref;
+
     if (typeof fields === 'function') {
         callback = fields;
         fields = "prices discount";
-    } else if (options.ref)
-        query.ref = options.ref;
+    }
 
     this.findOne(query, fields, function(err, doc) {
         if (err)
