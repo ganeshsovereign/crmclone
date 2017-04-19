@@ -470,5 +470,8 @@
     "Tasks": "Tâches / Tickets",
     "ErrEmptyReglement": "Mode de reglement manquant",
     "ErrEmptyCondition": "Conditions de reglement manquantes",
-    "ErrIBAN": "IBAN incorrect : cle de verification incorrecte"
+    "ErrIBAN": "IBAN incorrect : cle de verification incorrecte",
+    "Twitter": "Twitter",
+    "LinkedIn": "LinkedIn",
+    "FaceBook": "FaceBook"
 }
