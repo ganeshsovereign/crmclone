@@ -1056,9 +1056,9 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         data: 'bool',
                         "searchable": false
                     }, {
-                        "data": "name"
+                        "data": "name.last"
                     }, {
-                        "data": "code_client",
+                        "data": "salesPurchases.ref",
                         defaultContent: ""
                     }, {
                         "data": "commercial_id.name",

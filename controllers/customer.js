@@ -27,14 +27,14 @@
 "use strict";
 
 var fs = require('fs'),
-        csv = require('csv'),
-        _ = require('lodash'),
-        moment = require('moment'),
-        async = require('async');
+    csv = require('csv'),
+    _ = require('lodash'),
+    moment = require('moment'),
+    async = require('async');
 
 var Dict = INCLUDE('dict');
 
-exports.install = function () {
+exports.install = function() {
 
     var object = new Object();
     var report = new Report();
@@ -60,9 +60,9 @@ exports.install = function () {
     F.route('/erp/api/societe/{societeId}/{field}', object.updateField, ['put', 'json', 'authorize']);
 
     // list for autocomplete
-    F.route('/erp/api/societe/autocomplete', function () {
+    F.route('/erp/api/societe/autocomplete', function() {
         //console.dir(req.body.filter);
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
         var self = this;
 
         if (self.body.filter == null)
@@ -72,7 +72,7 @@ exports.install = function () {
         //(david|doma) create regex or search if 2 words
         if (self.body.filter.filters[0].value.indexOf(" ")) {
             var search = filter.split(' ');
-            search = _.map(search, function (text) {
+            search = _.map(search, function(text) {
                 return text.trim();
             });
 
@@ -87,12 +87,12 @@ exports.install = function () {
 
         var query = {
             "$or": [{
-                    name: new RegExp(filter, "gi")
-                }, {
-                    ref: new RegExp(self.body.filter.filters[0].value, "i")
-                }, {
-                    code_client: new RegExp(self.body.filter.filters[0].value, "i")
-                }],
+                name: new RegExp(filter, "gi")
+            }, {
+                ref: new RegExp(self.body.filter.filters[0].value, "i")
+            }, {
+                code_client: new RegExp(self.body.filter.filters[0].value, "i")
+            }],
             entity: {
                 $in: [self.body.entity || self.user.entity, "ALL"]
             }
@@ -117,76 +117,76 @@ exports.install = function () {
                 }
             } else // customer Only
                 query.Status = {
-                    "$nin": ["ST_NO", "ST_NEVER"]
-                };
+                "$nin": ["ST_NO", "ST_NEVER"]
+            };
 
-        //console.log(query);
+            //console.log(query);
         SocieteModel.find(query, {}, {
-            limit: 50 /*self.body.take*/,
-            sort: {
-                name: 1
-            }
-        })
-                .populate("cptBilling.id", "name address zip town")
-                .exec(function (err, docs) {
-                    if (err)
-                        return console.log("err : /erp/api/societe/autocomplete", err);
+                limit: 50 /*self.body.take*/ ,
+                sort: {
+                    name: 1
+                }
+            })
+            .populate("cptBilling.id", "name address zip town")
+            .exec(function(err, docs) {
+                if (err)
+                    return console.log("err : /erp/api/societe/autocomplete", err);
 
 
-                    //console.log(docs);
+                //console.log(docs);
 
-                    var result = [];
+                var result = [];
 
-                    if (docs !== null)
-                        for (var i = 0, len = docs.length; i < len; i++) {
-                            //console.log(docs[i].ref);
-                            result[i] = {};
-                            result[i].name = docs[i].name;
-                            result[i].id = docs[i]._id;
-                            result[i].code_client = docs[i].code_client;
+                if (docs !== null)
+                    for (var i = 0, len = docs.length; i < len; i++) {
+                        //console.log(docs[i].ref);
+                        result[i] = {};
+                        result[i].name = docs[i].name;
+                        result[i].id = docs[i]._id;
+                        result[i].code_client = docs[i].code_client;
 
-                            if (docs[i].cptBilling.id == null) {
-                                result[i].cptBilling = {};
-                                result[i].cptBilling.name = docs[i].name;
-                                result[i].cptBilling.id = docs[i]._id;
-                                result[i].cptBilling.address = docs[i].address;
-                                result[i].cptBilling.zip = docs[i].zip;
-                                result[i].cptBilling.town = docs[i].town;
-                            } else {
-                                result[i].cptBilling = {};
-                                result[i].cptBilling.name = docs[i].cptBilling.id.name;
-                                result[i].cptBilling.id = docs[i].cptBilling.id._id;
-                                result[i].cptBilling.address = docs[i].cptBilling.id.address;
-                                result[i].cptBilling.zip = docs[i].cptBilling.id.zip;
-                                result[i].cptBilling.town = docs[i].cptBilling.id.town;
-                            }
-
-                            result[i].price_level = docs[i].price_level;
-
-                            // add address
-                            result[i].address = {};
-                            result[i].address.name = docs[i].name;
-                            result[i].address.address = docs[i].address;
-                            result[i].address.zip = docs[i].zip;
-                            result[i].address.town = docs[i].town;
-                            result[i].address.country = docs[i].country;
-                            result[i].addresses = docs[i].addresses;
-                            result[i].deliveryAddressId = docs[i].deliveryAddressId;
-
-                            result[i].mode_reglement_code = docs[i].mode_reglement;
-                            result[i].cond_reglement_code = docs[i].cond_reglement;
-                            result[i].bank_reglement = docs[i].bank_reglement;
-                            result[i].commercial_id = docs[i].commercial_id;
+                        if (docs[i].cptBilling.id == null) {
+                            result[i].cptBilling = {};
+                            result[i].cptBilling.name = docs[i].name;
+                            result[i].cptBilling.id = docs[i]._id;
+                            result[i].cptBilling.address = docs[i].address;
+                            result[i].cptBilling.zip = docs[i].zip;
+                            result[i].cptBilling.town = docs[i].town;
+                        } else {
+                            result[i].cptBilling = {};
+                            result[i].cptBilling.name = docs[i].cptBilling.id.name;
+                            result[i].cptBilling.id = docs[i].cptBilling.id._id;
+                            result[i].cptBilling.address = docs[i].cptBilling.id.address;
+                            result[i].cptBilling.zip = docs[i].cptBilling.id.zip;
+                            result[i].cptBilling.town = docs[i].cptBilling.id.town;
                         }
 
-                    return self.json(result);
-                });
+                        result[i].price_level = docs[i].price_level;
+
+                        // add address
+                        result[i].address = {};
+                        result[i].address.name = docs[i].name;
+                        result[i].address.address = docs[i].address;
+                        result[i].address.zip = docs[i].zip;
+                        result[i].address.town = docs[i].town;
+                        result[i].address.country = docs[i].country;
+                        result[i].addresses = docs[i].addresses;
+                        result[i].deliveryAddressId = docs[i].deliveryAddressId;
+
+                        result[i].mode_reglement_code = docs[i].mode_reglement;
+                        result[i].cond_reglement_code = docs[i].cond_reglement;
+                        result[i].bank_reglement = docs[i].bank_reglement;
+                        result[i].commercial_id = docs[i].commercial_id;
+                    }
+
+                return self.json(result);
+            });
     }, ['post', 'json', 'authorize']);
 
-    F.route('/erp/api/societe/autocomplete/{field}', function (field) {
+    F.route('/erp/api/societe/autocomplete/{field}', function(field) {
         //console.dir(req.body);
         var self = this;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         if (self.body.filter == null)
             return self.json({});
@@ -196,39 +196,39 @@ exports.install = function () {
         query[field] = new RegExp(self.body.filter.filters[0].value, "i");
 
         if (typeof SocieteModel.schema.paths[field].options.type == "object")
-            //console.log(query);
+        //console.log(query);
             SocieteModel.aggregate([{
-                    $project: {
-                        _id: 0,
-                        Tag: 1
-                    }
-                }, {
-                    $unwind: "$" + field
-                }, {
-                    $match: query
-                }, {
-                    $group: {
-                        _id: "$" + field
-                    }
-                }, {
-                    $limit: self.body.take
-                }], function (err, docs) {
-                if (err)
-                    return console.log("err : /api/societe/autocomplete/" + field, err);
+            $project: {
+                _id: 0,
+                Tag: 1
+            }
+        }, {
+            $unwind: "$" + field
+        }, {
+            $match: query
+        }, {
+            $group: {
+                _id: "$" + field
+            }
+        }, {
+            $limit: self.body.take
+        }], function(err, docs) {
+            if (err)
+                return console.log("err : /api/societe/autocomplete/" + field, err);
 
-                //console.log(docs);
-                var result = [];
+            //console.log(docs);
+            var result = [];
 
-                if (docs !== null)
-                    for (var i in docs) {
-                        //result.push({text: docs[i]._id});
-                        result.push(docs[i]._id);
-                    }
+            if (docs !== null)
+                for (var i in docs) {
+                    //result.push({text: docs[i]._id});
+                    result.push(docs[i]._id);
+                }
 
-                return self.json(result);
-            });
+            return self.json(result);
+        });
         else
-            SocieteModel.distinct(field, query, function (err, docs) {
+            SocieteModel.distinct(field, query, function(err, docs) {
                 if (err)
                     return console.log("err : /api/societe/autocomplete/" + field, err);
 
@@ -1020,10 +1020,10 @@ exports.install = function () {
      }
      });*/
 
-    F.route('/erp/api/societe/import', function () {
+    F.route('/erp/api/societe/import', function() {
         var fixedWidthString = require('fixed-width-string');
         var UserModel = MODEL('user').Schema;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
         var ContactModel = MODEL('contact').Schema;
         var self = this;
 
@@ -1048,7 +1048,7 @@ exports.install = function () {
 
         UserModel.find({
             //Status: "ENABLE"
-        }, function (err, users) {
+        }, function(err, users) {
             //console.log(users);
 
             for (var i = 0; i < users.length; i++) {
@@ -1110,7 +1110,7 @@ exports.install = function () {
                 "Tag"
             ];
 
-            var convertRow = function (tab, row, index, cb) {
+            var convertRow = function(tab, row, index, cb) {
                 var societe = {};
                 societe.country_id = "FR";
                 societe.Tag = [];
@@ -1163,7 +1163,7 @@ exports.install = function () {
                             break;
                         case "zip":
                             if (row[i])
-                                societe.zip = fixedWidthString(row[i], 5, {padding: '0', align: 'right'});
+                                societe.zip = fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
                         case "BP":
                             if (row[i]) {
                                 societe.address += "\n" + row[i].substr(0, row[i].indexOf(','));
@@ -1292,20 +1292,20 @@ exports.install = function () {
                                 if (!societe.iban)
                                     societe.iban = {};
 
-                                societe.iban.id = 'FR76' + fixedWidthString(row[i], 5, {padding: '0', align: 'right'});
+                                societe.iban.id = 'FR76' + fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
                             }
                             break;
                         case "rib.guichet":
                             if (row[i])
-                                societe.iban.id += fixedWidthString(row[i], 5, {padding: '0', align: 'right'});
+                                societe.iban.id += fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
                             break;
                         case "rib.cpt":
                             if (row[i])
-                                societe.iban.id += fixedWidthString(row[i], 11, {padding: '0', align: 'right'});
+                                societe.iban.id += fixedWidthString(row[i], 11, { padding: '0', align: 'right' });
                             break;
                         case "rib.key":
                             if (row[i])
-                                societe.iban.id += fixedWidthString(row[i], 2, {padding: '0', align: 'right'});
+                                societe.iban.id += fixedWidthString(row[i], 2, { padding: '0', align: 'right' });
                             break;
                         default:
                             if (row[i])
@@ -1322,197 +1322,197 @@ exports.install = function () {
                 var tab = [];
 
                 csv()
-                        .from.path(self.files[0].path, {
-                            delimiter: ';',
-                            escape: '"'
-                        })
-                        .transform(function (row, index, callback) {
-                            if (index === 0) {
-                                tab = row; // Save header line
-                                return callback();
-                            }
-                            //console.log(tab);
-                            //console.log(row);
+                    .from.path(self.files[0].path, {
+                        delimiter: ';',
+                        escape: '"'
+                    })
+                    .transform(function(row, index, callback) {
+                        if (index === 0) {
+                            tab = row; // Save header line
+                            return callback();
+                        }
+                        //console.log(tab);
+                        //console.log(row);
 
-                            //console.log(row[0]);
+                        //console.log(row[0]);
 
-                            //return;
+                        //return;
 
-                            var already_imported = {};
+                        var already_imported = {};
 
-                            convertRow(tab, row, index, function (data) {
+                        convertRow(tab, row, index, function(data) {
 
-                                async.series([
-                                    // import societe
-                                    function (cb) {
-                                        //
-                                        //  Test si societe deja importe
-                                        //
+                            async.series([
+                                // import societe
+                                function(cb) {
+                                    //
+                                    //  Test si societe deja importe
+                                    //
 
-                                        if (!data.entity)
-                                            return cb("Entity missing");
+                                    if (!data.entity)
+                                        return cb("Entity missing");
 
-                                        if (typeof already_imported[data[idx]] === 'undefined') {
+                                    if (typeof already_imported[data[idx]] === 'undefined') {
 
-                                            //import societe
-                                            if (data[idx]) {
-                                                var req = {};
-                                                req[idx] = data[idx];
+                                        //import societe
+                                        if (data[idx]) {
+                                            var req = {};
+                                            req[idx] = data[idx];
 
-                                                SocieteModel.findOne(req, function (err, societe) {
+                                            SocieteModel.findOne(req, function(err, societe) {
+                                                if (err) {
+                                                    console.log(err);
+                                                    return callback(err);
+                                                }
+
+                                                if (societe == null) {
+                                                    societe = new SocieteModel(data);
+                                                    console.log("Create new societe");
+                                                } else {
+                                                    societe = _.extend(societe, data);
+                                                    console.log("Update societe ", societe._id);
+                                                }
+
+                                                //console.log(row[10]);
+                                                //if (societe.commercial_id) {
+                                                //console.log(societe)
+                                                //console.log(societe.datec);
+                                                //}
+
+                                                societe.save(function(err, doc) {
                                                     if (err) {
-                                                        console.log(err);
-                                                        return callback(err);
+                                                        console.log(societe, err);
+                                                        return cb(err);
                                                     }
 
-                                                    if (societe == null) {
-                                                        societe = new SocieteModel(data);
-                                                        console.log("Create new societe");
-                                                    } else {
-                                                        societe = _.extend(societe, data);
-                                                        console.log("Update societe ", societe._id);
-                                                    }
+                                                    already_imported[doc[idx]] = {
+                                                        id: doc._id,
+                                                        name: doc.name
+                                                    };
 
-                                                    //console.log(row[10]);
-                                                    //if (societe.commercial_id) {
-                                                    //console.log(societe)
-                                                    //console.log(societe.datec);
-                                                    //}
-
-                                                    societe.save(function (err, doc) {
-                                                        if (err) {
-                                                            console.log(societe, err);
-                                                            return cb(err);
-                                                        }
-
-                                                        already_imported[doc[idx]] = {
-                                                            id: doc._id,
-                                                            name: doc.name
-                                                        };
-
-                                                        cb(err, already_imported[doc[idx]]);
-
-                                                    });
+                                                    cb(err, already_imported[doc[idx]]);
 
                                                 });
-                                            } else
-                                                cb("_id or code_client or oldId missing", null);
-                                        } else {
-                                            cb(null, already_imported[data[idx]]);
-                                        }
-                                    },
-                                    //import contact
-                                    function (cb) {
-                                        var res_contact = data.contact;
 
-                                        if (!res_contact.lastname || already_imported[data[idx]].id == null)
-                                            return cb(null, null);
-
-                                        res_contact.societe = already_imported[data[idx]];
-                                        //console.log(res_contact);
-
-                                        var query = {
-                                            $or: []
-                                        };
-
-                                        if (res_contact._id)
-                                            query.$or.push({
-                                                _id: res_contact._id
                                             });
-
-                                        if (res_contact.email)
-                                            query.$or.push({
-                                                email: res_contact.email.toLowerCase()
-                                            });
-                                        //if (data.phone !== null)
-                                        //	query.$or.push({phone: data.phone});
-                                        if (res_contact.phone_mobile)
-                                            query.$or.push({
-                                                phone_mobile: res_contact.phone_mobile
-                                            });
-
-                                        if (!query.$or.length) {
-                                            //console.log(data.name);
-                                            //console.log(already_imported[data.name]);
-                                            query = {
-                                                "societe.id": already_imported[data[idx]].id,
-                                                lastname: (res_contact.lastname ? res_contact.lastname.toUpperCase() : "")
-                                            };
-                                        }
-
-                                        //console.log(query);
-
-                                        ContactModel.findOne(query, function (err, contact) {
-
-                                            if (err) {
-                                                console.log(err);
-                                                return callback();
-                                            }
-
-                                            if (contact == null) {
-                                                console.log("contact created");
-                                                contact = new ContactModel(res_contact);
-                                            } else {
-                                                console.log("Contact found");
-
-                                                if (res_contact.Tag)
-                                                    res_contact.Tag = _.union(contact.Tag, res_contact.Tag); // Fusion Tag
-
-                                                contact = _.extend(contact, res_contact);
-                                            }
-
-                                            // Copy address societe
-                                            if (!contact.zip) {
-                                                contact.address = data.address;
-                                                contact.zip = data.zip;
-                                                contact.town = data.town;
-                                            }
-
-                                            //console.log(data);
-
-                                            //console.log(row[10]);
-                                            //console.log(contact);
-                                            //console.log(societe.datec);
-
-                                            contact.save(function (err, doc) {
-                                                if (err)
-                                                    console.log(err);
-
-                                                cb(null, doc);
-                                            });
-                                        });
+                                        } else
+                                            cb("_id or code_client or oldId missing", null);
+                                    } else {
+                                        cb(null, already_imported[data[idx]]);
                                     }
-                                ], function (err, results) {
-                                    if (err)
-                                        return console.log(err);
+                                },
+                                //import contact
+                                function(cb) {
+                                    var res_contact = data.contact;
+
+                                    if (!res_contact.lastname || already_imported[data[idx]].id == null)
+                                        return cb(null, null);
+
+                                    res_contact.societe = already_imported[data[idx]];
+                                    //console.log(res_contact);
+
+                                    var query = {
+                                        $or: []
+                                    };
+
+                                    if (res_contact._id)
+                                        query.$or.push({
+                                            _id: res_contact._id
+                                        });
+
+                                    if (res_contact.email)
+                                        query.$or.push({
+                                            email: res_contact.email.toLowerCase()
+                                        });
+                                    //if (data.phone !== null)
+                                    //	query.$or.push({phone: data.phone});
+                                    if (res_contact.phone_mobile)
+                                        query.$or.push({
+                                            phone_mobile: res_contact.phone_mobile
+                                        });
+
+                                    if (!query.$or.length) {
+                                        //console.log(data.name);
+                                        //console.log(already_imported[data.name]);
+                                        query = {
+                                            "societe.id": already_imported[data[idx]].id,
+                                            lastname: (res_contact.lastname ? res_contact.lastname.toUpperCase() : "")
+                                        };
+                                    }
+
+                                    //console.log(query);
+
+                                    ContactModel.findOne(query, function(err, contact) {
+
+                                        if (err) {
+                                            console.log(err);
+                                            return callback();
+                                        }
+
+                                        if (contact == null) {
+                                            console.log("contact created");
+                                            contact = new ContactModel(res_contact);
+                                        } else {
+                                            console.log("Contact found");
+
+                                            if (res_contact.Tag)
+                                                res_contact.Tag = _.union(contact.Tag, res_contact.Tag); // Fusion Tag
+
+                                            contact = _.extend(contact, res_contact);
+                                        }
+
+                                        // Copy address societe
+                                        if (!contact.zip) {
+                                            contact.address = data.address;
+                                            contact.zip = data.zip;
+                                            contact.town = data.town;
+                                        }
+
+                                        //console.log(data);
+
+                                        //console.log(row[10]);
+                                        //console.log(contact);
+                                        //console.log(societe.datec);
+
+                                        contact.save(function(err, doc) {
+                                            if (err)
+                                                console.log(err);
+
+                                            cb(null, doc);
+                                        });
+                                    });
+                                }
+                            ], function(err, results) {
+                                if (err)
+                                    return console.log(err);
 
 
 
-                                    callback();
-                                });
+                                callback();
                             });
-
-                            //return row;
-                        })
-                        .on("end", function (count) {
-                            console.log('Number of lines: ' + count);
-                            /*fs.unlink(self.files[0].path, function(err) {
-                             if (err)
-                             console.log(err);
-                             });*/
-                            return self.json({
-                                count: count
-                            });
-                        })
-                        .on('error', function (error) {
-                            console.log(error.message);
                         });
+
+                        //return row;
+                    })
+                    .on("end", function(count) {
+                        console.log('Number of lines: ' + count);
+                        /*fs.unlink(self.files[0].path, function(err) {
+                         if (err)
+                         console.log(err);
+                         });*/
+                        return self.json({
+                            count: count
+                        });
+                    })
+                    .on('error', function(error) {
+                        console.log(error.message);
+                    });
             }
         });
     }, ['upload'], 10240);
-    F.route('/erp/api/societe/import/deliveryAddress', function () {
+    F.route('/erp/api/societe/import/deliveryAddress', function() {
         var fixedWidthString = require('fixed-width-string');
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
         var self = this;
 
         if (self.query.key !== "COvy9NRXD2FEYjSQU6q3LM7HcdKesflGTB")
@@ -1531,7 +1531,7 @@ exports.install = function () {
          * Tri par name obligatoire
          */
 
-        var convertRow = function (tab, row, index, cb) {
+        var convertRow = function(tab, row, index, cb) {
             var societe = {};
             societe.country_id = "FR";
             societe.Tag = [];
@@ -1559,7 +1559,7 @@ exports.install = function () {
                         break;
                     case "zip":
                         if (row[i])
-                            societe.zip = fixedWidthString(row[i], 5, {padding: '0', align: 'right'});
+                            societe.zip = fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
                     case "BP":
                         if (row[i]) {
                             societe.address += "\n" + row[i].substr(0, row[i].indexOf(','));
@@ -1580,99 +1580,99 @@ exports.install = function () {
             var tab = [];
 
             csv()
-                    .from.path(self.files[0].path, {
-                        delimiter: ';',
-                        escape: '"'
-                    })
-                    .transform(function (row, index, callback) {
-                        if (index === 0) {
-                            tab = row; // Save header line
-                            return callback();
-                        }
-                        //console.log(tab);
-                        //console.log(row);
+                .from.path(self.files[0].path, {
+                    delimiter: ';',
+                    escape: '"'
+                })
+                .transform(function(row, index, callback) {
+                    if (index === 0) {
+                        tab = row; // Save header line
+                        return callback();
+                    }
+                    //console.log(tab);
+                    //console.log(row);
 
-                        //console.log(row[0]);
+                    //console.log(row[0]);
 
-                        //return;
-                        convertRow(tab, row, index, function (data) {
-                            //
-                            //  Test si societe deja importe
-                            //
+                    //return;
+                    convertRow(tab, row, index, function(data) {
+                        //
+                        //  Test si societe deja importe
+                        //
 
-                            //import societe
-                            if (data[idx]) {
-                                var req = {};
-                                req[idx] = data[idx];
+                        //import societe
+                        if (data[idx]) {
+                            var req = {};
+                            req[idx] = data[idx];
 
-                                SocieteModel.findOne(req, function (err, societe) {
-                                    if (err) {
-                                        console.log(err);
-                                        return callback(err);
-                                    }
+                            SocieteModel.findOne(req, function(err, societe) {
+                                if (err) {
+                                    console.log(err);
+                                    return callback(err);
+                                }
 
-                                    if (societe == null)
-                                        return callback("Societe not found", null);
+                                if (societe == null)
+                                    return callback("Societe not found", null);
 
-                                    // search if address already exist ?
-                                    var found = false;
-                                    for (var i = 0, len = societe.addresses.length; i < len; i++) {
+                                // search if address already exist ?
+                                var found = false;
+                                for (var i = 0, len = societe.addresses.length; i < len; i++) {
 
-                                        if (societe.addresses[i].name == data.name) {
-                                            found = true;
-                                            societe.addresses[i] = {
-                                                name: data.name,
-                                                address: data.address,
-                                                zip: data.zip,
-                                                town: data.town
-                                            };
-                                        }
-                                    }
-
-                                    if (!found) {
-                                        societe.addresses.push({
+                                    if (societe.addresses[i].name == data.name) {
+                                        found = true;
+                                        societe.addresses[i] = {
                                             name: data.name,
                                             address: data.address,
                                             zip: data.zip,
                                             town: data.town
-                                        });
-                                        console.log("Update societe ", societe._id);
+                                        };
+                                    }
+                                }
+
+                                if (!found) {
+                                    societe.addresses.push({
+                                        name: data.name,
+                                        address: data.address,
+                                        zip: data.zip,
+                                        town: data.town
+                                    });
+                                    console.log("Update societe ", societe._id);
+                                }
+
+                                //console.log(row[10]);
+                                //if (societe.commercial_id) {
+                                //console.log(societe)
+                                //console.log(societe.datec);
+                                //}
+
+                                societe.save(function(err, doc) {
+                                    if (err) {
+                                        console.log(societe, err);
+                                        return callback(err);
                                     }
 
-                                    //console.log(row[10]);
-                                    //if (societe.commercial_id) {
-                                    //console.log(societe)
-                                    //console.log(societe.datec);
-                                    //}
-
-                                    societe.save(function (err, doc) {
-                                        if (err) {
-                                            console.log(societe, err);
-                                            return callback(err);
-                                        }
-
-                                        callback(err);
-
-                                    });
+                                    callback(err);
 
                                 });
-                            } else
-                                callback("_id or code_client or oldId missing", null);
-                        });
-                    })
-                    .on("end", function (count) {
-                        console.log('Number of lines: ' + count);
-                        /*fs.unlink(self.files[0].path, function(err) {
-                         if (err)
-                         console.log(err);
-                         });*/
-                        return self.json({
-                            count: count
-                        });
-                    })
-                    .on('error', function (error) {
-                        console.log(error.message);
+
+                            });
+                        } else
+                            callback("_id or code_client or oldId missing", null);
                     });
+                })
+                .on("end", function(count) {
+                    console.log('Number of lines: ' + count);
+                    /*fs.unlink(self.files[0].path, function(err) {
+                     if (err)
+                     console.log(err);
+                     });*/
+                    return self.json({
+                        count: count
+                    });
+                })
+                .on('error', function(error) {
+                    console.log(error.message);
+                });
         }
     }, ['upload'], 10240);
     /*
@@ -1894,11 +1894,10 @@ function view_index() {
  self.view('fiche', {id: id});
  }*/
 
-function Object() {
-}
+function Object() {}
 
 function societe(id, cb) {
-    var SocieteModel = MODEL('societe').Schema;
+    var SocieteModel = MODEL('Customers').Schema;
 
     var self = this;
 
@@ -1917,7 +1916,7 @@ function societe(id, cb) {
 
     //console.log(query);
 
-    SocieteModel.findOne(query, function (err, doc) {
+    SocieteModel.findOne(query, function(err, doc) {
         if (err)
             return next(err);
 
@@ -1927,8 +1926,8 @@ function societe(id, cb) {
 }
 
 Object.prototype = {
-    read: function () {
-        var SocieteModel = MODEL('societe').Schema;
+    read: function() {
+        var SocieteModel = MODEL('Customers').Schema;
         var self = this;
 
         var query = {
@@ -1973,14 +1972,14 @@ Object.prototype = {
 
         if (self.req.query.filter) {
             query.$or = [{
-                    name: new RegExp(req.query.filter, "gi")
-                }, {
-                    code_client: new RegExp(req.query.filter, "gi")
-                }, {
-                    Tag: new RegExp(req.query.filter, "gi")
-                }, {
-                    "segmentation.label": new RegExp(req.query.filter, "g")
-                }];
+                name: new RegExp(req.query.filter, "gi")
+            }, {
+                code_client: new RegExp(req.query.filter, "gi")
+            }, {
+                Tag: new RegExp(req.query.filter, "gi")
+            }, {
+                "segmentation.label": new RegExp(req.query.filter, "g")
+            }];
             //query.$text = {$search: req.query.filter, $language: "fr"};
         }
 
@@ -1998,7 +1997,7 @@ Object.prototype = {
             skip: parseInt(self.query.skip, 10) * parseInt(self.query.limit, 10) || 0,
             limit: self.query.limit || 100,
             sort: JSON.parse(self.query.sort || {})
-        }, function (err, doc) {
+        }, function(err, doc) {
             if (err) {
                 console.log(err);
                 self.send(500, doc);
@@ -2010,25 +2009,27 @@ Object.prototype = {
             self.json(doc);
         });
     },
-    readDT: function () {
+    readDT: function() {
         var self = this;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         var query = JSON.parse(self.req.body.query);
 
         //console.log(self.query);
 
         var conditions = {
-            isremoved: {$ne: true},
-            entity: {
-                $in: ["ALL", self.query.entity]
-            }
+            isremoved: { $ne: true }
         };
 
-        if (!self.user.multiEntities)
-            conditions.entity = {$in: ["ALL", self.user.entity]};
+        if (self.query.entity != 'null')
+            conditions.entity = self.query.entity;
+        //                $in: [self.query.entity]
+        //}
 
-        if (!query.search.value)
+        //if (!self.user.multiEntities)
+        //    conditions.entity = { $in: ["ALL", self.user.entity] };
+
+        /*if (!query.search.value)
             switch (self.query.type) {
                 case "CUSTOMER":
                     conditions.Status = {
@@ -2048,14 +2049,13 @@ Object.prototype = {
                     break;
                 default: //ALL
                     break;
-            }
+            }*/
 
 
         if (!query.search.value) {
             if (self.query.status_id !== 'null')
                 conditions.Status = self.query.status_id;
-        }
-        else
+        } else
             delete conditions.Status;
 
         if (self.query.prospectlevel !== 'null')
@@ -2068,27 +2068,29 @@ Object.prototype = {
             conditions["commercial_id.id"] = self.user._id;
 
         var options = {
-            conditions: conditions
-                    //select: ''
+            conditions: conditions,
+            select: 'type'
         };
 
+        console.log(options);
+
         async.parallel({
-            status: function (cb) {
+            status: function(cb) {
                 Dict.dict({
                     dictName: "fk_stcomm",
                     object: true
                 }, cb);
             },
-            level: function (cb) {
+            level: function(cb) {
                 Dict.dict({
                     dictName: "fk_prospectlevel",
                     object: true
                 }, cb);
             },
-            datatable: function (cb) {
+            datatable: function(cb) {
                 SocieteModel.dataTable(query, options, cb);
             }
-        }, function (err, res) {
+        }, function(err, res) {
             if (err)
                 console.log(err);
 
@@ -2105,7 +2107,7 @@ Object.prototype = {
                 if (row.Tag)
                     res.datatable.data[i].Tag = row.Tag.toString();
                 // Add url on name
-                res.datatable.data[i].name = '<a class="with-tooltip" href="#!/societe/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name + '"><span class="icon-home"></span> ' + row.name + '</a>';
+                res.datatable.data[i].name.last = '<a class="with-tooltip" href="#!/societe/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.last + '"><span class="icon-home"></span> ' + row.name.last + '</a>';
                 // Convert Date
                 res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
                 // Convert Status
@@ -2125,27 +2127,27 @@ Object.prototype = {
             self.json(res.datatable);
         });
     },
-    show: function (id) {
+    show: function(id) {
         var self = this;
         if (self.user.rights.societe.read)
-            return societe(id, function (societe) {
+            return societe(id, function(societe) {
                 self.json(societe);
             });
 
         return self.throw403(); // access forbidden
 
     },
-    count: function () {
+    count: function() {
         var self = this;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         var query = {
-            isremoved: {$ne: true},
+            isremoved: { $ne: true },
             $or: [{
-                    entity: "ALL"
-                }, {
-                    entity: self.user.entity // Add a comment
-                }]
+                entity: "ALL"
+            }, {
+                entity: self.user.entity // Add a comment
+            }]
         };
 
         if (self.req.query.query) {
@@ -2180,7 +2182,7 @@ Object.prototype = {
         if (!self.user.rights.societe.seeAll && !self.user.admin)
             query["commercial_id.id"] = self.user._id;
 
-        SocieteModel.count(query, function (err, doc) {
+        SocieteModel.count(query, function(err, doc) {
             if (err) {
                 console.log(err);
                 self.send(500, doc);
@@ -2192,9 +2194,9 @@ Object.prototype = {
             });
         });
     },
-    create: function () {
+    create: function() {
         var self = this;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         var societe = new SocieteModel(self.body);
         societe.author = {};
@@ -2219,22 +2221,22 @@ Object.prototype = {
             data: societe.toObject()
         };
 
-        SocieteModel.saveVersion(oldData, function (err, doc) {
+        SocieteModel.saveVersion(oldData, function(err, doc) {
             if (err)
                 console.log(err);
             self.json(doc);
         });
     },
-    uniqId: function () {
+    uniqId: function() {
         var self = this;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         if (!self.query.idprof2)
             return res.send(404);
 
         SocieteModel.findOne({
             idprof2: self.query.idprof2
-        }, "name entity", function (err, doc) {
+        }, "name entity", function(err, doc) {
             if (err)
                 return next(err);
             if (!doc)
@@ -2244,11 +2246,11 @@ Object.prototype = {
         });
 
     },
-    update: function (id) {
+    update: function(id) {
         var self = this;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
-        societe(id, function (societe) {
+        societe(id, function(societe) {
 
             societe = _.extend(societe, self.body);
             societe.user_modif = self.user._id;
@@ -2260,10 +2262,11 @@ Object.prototype = {
                 data: societe.toObject()
             };
 
-            SocieteModel.saveVersion(oldData, function (err, doc) {
+            SocieteModel.saveVersion(oldData, function(err, doc) {
                 if (err) {
                     console.log(err);
-                    return  self.json({errorNotify: {
+                    return self.json({
+                        errorNotify: {
                             title: 'Erreur',
                             message: err
                         }
@@ -2282,35 +2285,35 @@ Object.prototype = {
         });
         //});
     },
-    updateField: function (id, field) {
+    updateField: function(id, field) {
         var self = this;
-        societe(id, function (societe) {
+        societe(id, function(societe) {
 
             if (self.body.value) {
                 societe[field] = self.body.value;
 
-                societe.save(function (err, doc) {
+                societe.save(function(err, doc) {
                     self.json(doc);
                 });
             } else
                 self.send(500);
         });
     },
-    destroy: function (id) {
-        var SocieteModel = MODEL('societe').Schema;
+    destroy: function(id) {
+        var SocieteModel = MODEL('Customers').Schema;
         var self = this;
 
         SocieteModel.update({
             _id: id
-        }, {$set: {isremoved: true}}, function (err) {
+        }, { $set: { isremoved: true } }, function(err) {
             if (err)
                 self.throw500(err);
             else
                 self.json({});
         });
     },
-    destroyList: function () {
-        var SocieteModel = MODEL('societe').Schema;
+    destroyList: function() {
+        var SocieteModel = MODEL('Customers').Schema;
         var self = this;
 
         if (!this.query.id)
@@ -2329,40 +2332,40 @@ Object.prototype = {
             ids.push(list);
 
         SocieteModel.update({
-            _id: {$in: ids}
-        }, {$set: {isremoved: true}}, function (err) {
+            _id: { $in: ids }
+        }, { $set: { isremoved: true } }, function(err) {
             if (err)
                 self.throw500(err);
             else
                 self.json({});
         });
     },
-    segmentation: function (req, res) {
-        var SocieteModel = MODEL('societe').Schema;
+    segmentation: function(req, res) {
+        var SocieteModel = MODEL('Customers').Schema;
 
         var segmentationList = {};
         DictModel.findOne({
             _id: "fk_segmentation"
-        }, function (err, docs) {
+        }, function(err, docs) {
             if (docs) {
                 segmentationList = docs.values;
             }
 
             SocieteModel.aggregate([{
-                    $project: {
-                        _id: 0,
-                        segmentation: 1
+                $project: {
+                    _id: 0,
+                    segmentation: 1
+                }
+            }, {
+                $unwind: "$segmentation"
+            }, {
+                $group: {
+                    _id: "$segmentation.text",
+                    count: {
+                        $sum: 1
                     }
-                }, {
-                    $unwind: "$segmentation"
-                }, {
-                    $group: {
-                        _id: "$segmentation.text",
-                        count: {
-                            $sum: 1
-                        }
-                    }
-                }], function (err, docs) {
+                }
+            }], function(err, docs) {
                 if (err)
                     return console.log("err : /api/societe/segmentation/autocomplete", err);
 
@@ -2383,10 +2386,10 @@ Object.prototype = {
             });
         });
     },
-    segmentationUpdate: function (req, res) {
+    segmentationUpdate: function(req, res) {
         DictModel.findOne({
             _id: "fk_segmentation"
-        }, function (err, doc) {
+        }, function(err, doc) {
             if (doc == null)
                 return console.log("fk_segmentation doesn't exist !");
 
@@ -2400,7 +2403,7 @@ Object.prototype = {
 
             doc.markModified('values');
 
-            doc.save(function (err, doc) {
+            doc.save(function(err, doc) {
                 if (err)
                     console.log(err);
             });
@@ -2409,75 +2412,75 @@ Object.prototype = {
 
         });
     },
-    segmentationDelete: function (req, res) {
-        var SocieteModel = MODEL('societe').Schema;
+    segmentationDelete: function(req, res) {
+        var SocieteModel = MODEL('Customers').Schema;
 
         //console.log(req.body);
         SocieteModel.update({
-            'segmentation.text': req.body._id
-        }, {
-            $pull: {
-                segmentation: {
-                    text: req.body._id
-                }
-            }
-        }, {
-            multi: true
-        },
-        function (err) {
-            res.send(200);
-        });
-    },
-    segmentationRename: function (req, res) {
-        var SocieteModel = MODEL('societe').Schema;
-
-        console.log(req.body);
-        SocieteModel.update({
-            'segmentation.text': req.body.old
-        }, {
-            $push: {
-                segmentation: {
-                    text: req.body.new
-                }
-            }
-        }, {
-            multi: true
-        },
-        function (err) {
-            if (err)
-                return console.log(err);
-
-            SocieteModel.update({
-                'segmentation.text': req.body.old
+                'segmentation.text': req.body._id
             }, {
                 $pull: {
                     segmentation: {
-                        text: req.body.old
+                        text: req.body._id
                     }
                 }
             }, {
                 multi: true
             },
-            function (err) {
-                if (err)
-                    console.log(err);
+            function(err) {
                 res.send(200);
             });
-        });
     },
-    statistic: function () {
-        var SocieteModel = MODEL('societe').Schema;
+    segmentationRename: function(req, res) {
+        var SocieteModel = MODEL('Customers').Schema;
+
+        console.log(req.body);
+        SocieteModel.update({
+                'segmentation.text': req.body.old
+            }, {
+                $push: {
+                    segmentation: {
+                        text: req.body.new
+                    }
+                }
+            }, {
+                multi: true
+            },
+            function(err) {
+                if (err)
+                    return console.log(err);
+
+                SocieteModel.update({
+                        'segmentation.text': req.body.old
+                    }, {
+                        $pull: {
+                            segmentation: {
+                                text: req.body.old
+                            }
+                        }
+                    }, {
+                        multi: true
+                    },
+                    function(err) {
+                        if (err)
+                            console.log(err);
+                        res.send(200);
+                    });
+            });
+    },
+    statistic: function() {
+        var SocieteModel = MODEL('Customers').Schema;
         var self = this;
 
         //console.log(self.req.query);
 
         async.parallel({
-            own: function (cb) {
-                Dict.dict({
-                    dictName: "fk_stcomm",
-                    object: true
-                }, function (err, dict) {
-                    SocieteModel.aggregate([{
+                own: function(cb) {
+                    Dict.dict({
+                        dictName: "fk_stcomm",
+                        object: true
+                    }, function(err, dict) {
+                        SocieteModel.aggregate([{
                             $match: {
                                 entity: {
                                     $in: ["ALL", self.user.entity]
@@ -2499,41 +2502,41 @@ Object.prototype = {
                                     $sum: 1
                                 }
                             }
-                        }], function (err, docs) {
+                        }], function(err, docs) {
 
-                        for (var i = 0; i < docs.length; i++) {
-                            docs[i]._id = dict.values[docs[i]._id];
-                        }
+                            for (var i = 0; i < docs.length; i++) {
+                                docs[i]._id = dict.values[docs[i]._id];
+                            }
 
-                        cb(err, docs || []);
+                            cb(err, docs || []);
+                        });
                     });
-                });
-            },
-            commercial: function (cb) {
-                var query = {};
+                },
+                commercial: function(cb) {
+                    var query = {};
 
-                if (self.user.rights.societe.seeAll || self.user.admin) {
-                    query = {
-                        entity: {
-                            $in: ["ALL", self.user.entity]
-                        },
-                        "commercial_id.id": {
-                            $ne: null
-                        }
-                    };
-                    if (self.req.query.commercial_id)
-                        query["commercial_id.id"] = self.req.query.commercial_id;
-                } else
-                    query = {
-                        entity: {
-                            $in: ["ALL", self.user.entity]
-                        },
-                        "commercial_id.id": self.user._id
-                    };
+                    if (self.user.rights.societe.seeAll || self.user.admin) {
+                        query = {
+                            entity: {
+                                $in: ["ALL", self.user.entity]
+                            },
+                            "commercial_id.id": {
+                                $ne: null
+                            }
+                        };
+                        if (self.req.query.commercial_id)
+                            query["commercial_id.id"] = self.req.query.commercial_id;
+                    } else
+                        query = {
+                            entity: {
+                                $in: ["ALL", self.user.entity]
+                            },
+                            "commercial_id.id": self.user._id
+                        };
 
-                query.isremoved = {$ne: true};
+                    query.isremoved = { $ne: true };
 
-                SocieteModel.aggregate([{
+                    SocieteModel.aggregate([{
                         $match: query
                     }, {
                         $project: {
@@ -2555,13 +2558,13 @@ Object.prototype = {
                         $sort: {
                             "_id.name": 1
                         }
-                    }], function (err, docs) {
-                    //console.log(docs);
-                    cb(err, docs || []);
-                });
-            },
-            status: function (cb) {
-                SocieteModel.aggregate([{
+                    }], function(err, docs) {
+                        //console.log(docs);
+                        cb(err, docs || []);
+                    });
+                },
+                status: function(cb) {
+                    SocieteModel.aggregate([{
                         $match: {
                             entity: {
                                 $in: ["ALL", self.user.entity]
@@ -2586,102 +2589,102 @@ Object.prototype = {
                                 $sum: 1
                             }
                         }
-                    }], function (err, docs) {
-                    cb(err, docs || []);
-                });
-            },
-            fk_status: function (cb) {
-                cb(null, {});
-                return;
-                Dict.dict({
-                    dictName: "fk_stcomm",
-                    object: true
-                }, function (err, doc) {
-                    var result = [];
-
-                    for (var i in doc.values) {
-
-                        if (doc.values[i].enable && doc.values[i].order) {
-                            doc.values[i].id = i;
-                            result.push(doc.values[i]);
-                        }
-                    }
-
-                    result.sort(function (a, b) {
-                        return a.order > b.order;
+                    }], function(err, docs) {
+                        cb(err, docs || []);
                     });
+                },
+                fk_status: function(cb) {
+                    cb(null, {});
+                    return;
+                    Dict.dict({
+                        dictName: "fk_stcomm",
+                        object: true
+                    }, function(err, doc) {
+                        var result = [];
 
-                    cb(err, result);
-                });
-            }
-        },
-        function (err, results) {
-            if (err)
-                return console.log(err);
+                        for (var i in doc.values) {
 
-            var output = {
-                data: [],
-                commercial: results.commercial,
-                status: results.fk_status,
-                own: results.own
-            };
-
-            for (var i = 0; i < results.commercial.length; i++) {
-                for (var j = 0; j < results.fk_status.length; j++) {
-
-                    if (j === 0)
-                        output.data[i] = [];
-
-                    output.data[i][j] = 0;
-
-                    for (var k = 0; k < results.status.length; k++) {
-                        //console.log(results.commercial[i]);
-                        //console.log(results.fk_status[j]);
-                        //console.log(results.status[k]);
-                        //console.log("----------------------------");
-
-                        if (results.commercial[i]._id.id === results.status[k]._id.commercial &&
-                                results.fk_status[j].id === results.status[k]._id.Status) {
-                            output.data[i][j] = results.status[k].count;
-                            break;
+                            if (doc.values[i].enable && doc.values[i].order) {
+                                doc.values[i].id = i;
+                                result.push(doc.values[i]);
+                            }
                         }
 
+                        result.sort(function(a, b) {
+                            return a.order > b.order;
+                        });
+
+                        cb(err, result);
+                    });
+                }
+            },
+            function(err, results) {
+                if (err)
+                    return console.log(err);
+
+                var output = {
+                    data: [],
+                    commercial: results.commercial,
+                    status: results.fk_status,
+                    own: results.own
+                };
+
+                for (var i = 0; i < results.commercial.length; i++) {
+                    for (var j = 0; j < results.fk_status.length; j++) {
+
+                        if (j === 0)
+                            output.data[i] = [];
+
+                        output.data[i][j] = 0;
+
+                        for (var k = 0; k < results.status.length; k++) {
+                            //console.log(results.commercial[i]);
+                            //console.log(results.fk_status[j]);
+                            //console.log(results.status[k]);
+                            //console.log("----------------------------");
+
+                            if (results.commercial[i]._id.id === results.status[k]._id.commercial &&
+                                results.fk_status[j].id === results.status[k]._id.Status) {
+                                output.data[i][j] = results.status[k].count;
+                                break;
+                            }
+
+                        }
                     }
                 }
-            }
 
-            //console.log(output);
-            self.json(output);
-        });
+                //console.log(output);
+                self.json(output);
+            });
     },
-    export: function () {
+    export: function() {
         var Stream = require('stream');
         var stream = new Stream();
 
         var self = this;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         if (!self.user.admin)
             return console.log("export non autorised");
 
         var json2csv = require('json2csv');
 
-        SocieteModel.find({isremoved: {$ne: true}}, function (err, societes) {
+        SocieteModel.find({ isremoved: { $ne: true } }, function(err, societes) {
             //console.log(societe);
 
-            async.forEach(societes, function (societe, cb) {
+            async.forEach(societes, function(societe, cb) {
                 json2csv({
                     data: societe,
                     fields: ['_id', 'code_client', 'name', 'address', 'zip', 'town', 'Status', 'commercial_id', 'phone', 'fax', 'email', 'url', 'prospectlevel', 'rival', 'Tag', 'segmentation', 'familyProduct', 'entity', 'idprof1', 'idprof2', 'idprof3', 'idprof6'],
                     del: ";"
-                }, function (err, csv) {
+                }, function(err, csv) {
                     if (err)
                         return console.log(err);
 
                     stream.emit('data', csv);
                     cb();
                 });
-            }, function () {
+            }, function() {
                 stream.emit('end');
 
                 //self.res.setHeader('application/text');
@@ -2696,8 +2699,8 @@ Object.prototype = {
 
         self.stream('application/text', stream, 'societe_' + moment().format('YYYYMMDD_HHmm') + '.csv');
     },
-    listCommercial: function (req, res) {
-        var SocieteModel = MODEL('societe').Schema;
+    listCommercial: function(req, res) {
+        var SocieteModel = MODEL('Customers').Schema;
 
         var query = {};
 
@@ -2711,21 +2714,21 @@ Object.prototype = {
         };
 
         SocieteModel.aggregate([{
-                $match: query
-            }, {
-                $project: {
-                    _id: 0,
-                    "commercial_id.id": 1,
-                    "commercial_id.name": 1
+            $match: query
+        }, {
+            $project: {
+                _id: 0,
+                "commercial_id.id": 1,
+                "commercial_id.name": 1
+            }
+        }, {
+            $group: {
+                _id: {
+                    id: "$commercial_id.id",
+                    name: "$commercial_id.name"
                 }
-            }, {
-                $group: {
-                    _id: {
-                        id: "$commercial_id.id",
-                        name: "$commercial_id.name"
-                    }
-                }
-            }], function (err, doc) {
+            }
+        }], function(err, doc) {
 
             if (err)
                 return console.log(err);
@@ -2737,14 +2740,13 @@ Object.prototype = {
     }
 };
 
-function Report() {
-}
+function Report() {}
 
 Report.prototype = {
-    report: function (req, res, next, id) {
+    report: function(req, res, next, id) {
         var ReportModel = MODEL('report').Schema;
 
-        ReportModel.findOne({_id: id}, function (err, doc) {
+        ReportModel.findOne({ _id: id }, function(err, doc) {
             if (err)
                 return next(err);
             if (!doc)
@@ -2754,7 +2756,7 @@ Report.prototype = {
             next();
         });
     },
-    create: function (req, res, usersSocket) {
+    create: function(req, res, usersSocket) {
 
         var reportModel = new ReportModel(req.body);
         //console.log(req.body);
@@ -2768,7 +2770,7 @@ Report.prototype = {
             return out;
         }
 
-        object2array(req.body.actions).forEach(function (action) {
+        object2array(req.body.actions).forEach(function(action) {
             if (!action.type || action.type == "NONE")
                 return;
 
@@ -2793,23 +2795,21 @@ Report.prototype = {
                 datef: datef || null,
                 type: action.type,
                 entity: req.user.entity,
-                notes: [
-                    {
-                        author: {
-                            id: req.user._id,
-                            name: req.user.firstname + " " + req.user.lastname
-                        },
-                        datec: new Date(),
-                        percentage: 0,
-                        note: i18n.t("tasks:" + action.id) + " " + i18n.t("tasks:" + action.type) + "\nCompte rendu du " + moment(req.body.datec).format(CONFIG('dateformatShort'))
-                    }
-                ],
+                notes: [{
+                    author: {
+                        id: req.user._id,
+                        name: req.user.firstname + " " + req.user.lastname
+                    },
+                    datec: new Date(),
+                    percentage: 0,
+                    note: i18n.t("tasks:" + action.id) + " " + i18n.t("tasks:" + action.type) + "\nCompte rendu du " + moment(req.body.datec).format(CONFIG('dateformatShort'))
+                }],
                 lead: req.body.lead
             };
 
             //console.log(task);
 
-            Task.create(task, req.user, usersSocket, function (err, task) {
+            Task.create(task, req.user, usersSocket, function(err, task) {
                 if (err)
                     console.log(err);
                 //	console.log(task);
@@ -2817,7 +2817,7 @@ Report.prototype = {
 
         });
 
-        reportModel.save(function (err, doc) {
+        reportModel.save(function(err, doc) {
             if (err) {
                 return console.log(err);
             }
@@ -2825,7 +2825,7 @@ Report.prototype = {
             res.json(doc);
         });
     },
-    read: function () {
+    read: function() {
         var ReportModel = MODEL('report').Schema;
         var query = {};
         var fields = "";
@@ -2842,27 +2842,27 @@ Report.prototype = {
             var dateStart = new Date(self.query.year, self.query.month, 1);
             var dateEnd = new Date(self.query.year, parseInt(self.query.month, 10) + 1, 1);
 
-            query.createdAt = {$gte: dateStart, $lt: dateEnd};
+            query.createdAt = { $gte: dateStart, $lt: dateEnd };
         }
 
         ReportModel.find(query, fields)
-                .populate("lead.id", "status")
-                .sort({createdAt: -1})
-                .exec(function (err, doc) {
-                    if (err) {
-                        console.log(err);
-                        self.throw500(err);
-                        return;
-                    }
+            .populate("lead.id", "status")
+            .sort({ createdAt: -1 })
+            .exec(function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    self.throw500(err);
+                    return;
+                }
 
-                    self.json(doc);
-                });
+                self.json(doc);
+            });
     },
-    show: function (req, res) {
+    show: function(req, res) {
         //console.log("show : " + req.report);
         res.json(req.report);
     },
-    listReports: function (req, res) {
+    listReports: function(req, res) {
         var ReportModel = MODEL('report').Schema;
 
         var user = req.query.user;
@@ -2873,9 +2873,12 @@ Report.prototype = {
             },
             entity: req.query.entity
         };
-        ReportModel.find(query, {}, {limit: req.query.limit, sort: {
+        ReportModel.find(query, {}, {
+            limit: req.query.limit,
+            sort: {
                 createdAt: -1 //Sort by Date created DESC
-            }}, function (err, doc) {
+            }
+        }, function(err, doc) {
             if (err) {
                 console.log(err);
                 res.send(500, doc);
@@ -2885,12 +2888,12 @@ Report.prototype = {
             res.send(200, doc);
         });
     },
-    update: function (req, res) {
+    update: function(req, res) {
 
         var report = req.report;
         report = _.extend(report, req.body);
 
-        report.save(function (err, doc) {
+        report.save(function(err, doc) {
 
             if (err)
                 return console.log(err);

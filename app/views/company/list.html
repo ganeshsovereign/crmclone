@@ -76,6 +76,7 @@
                         </div>
                         <div class="col-md-3" ng-show="login.multiEntities">
                             <select ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control">
+                                <option value="">@(All)</option>
                         </select>
                             <div class="form-control-focus"> </div>
                         </div>

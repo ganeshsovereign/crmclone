@@ -318,7 +318,7 @@ var customerSchema = new Schema({
 
     oldId: String // only use for migration
 
-}, { collection: 'Customer' });
+}, { collection: 'Customers' });
 
 customerSchema.virtual('fullName').get(function() {
     if (this.name.first)
