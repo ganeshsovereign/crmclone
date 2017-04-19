@@ -13,9 +13,10 @@ var ProductAttributesSchema = new Schema({
         lang: { type: String, default: "fr" },
         name: String
     }],
+    isVariant: { type: Boolean, default: false },
     allowedExtension: [String], //png,pdf...
-    dateMin: {type: Date},
-    dateMin: {type: Date},
+    dateMin: { type: Date },
+    dateMin: { type: Date },
     steps: { type: Number, default: 1 },
     metricUnit: String, //See dict.units
     group: { type: Schema.Types.ObjectId, ref: 'groupAttribues', default: null },
@@ -25,7 +26,7 @@ var ProductAttributesSchema = new Schema({
     minNumber: Number,
     sort: Number,
     mode: { type: String, enum: ['text', 'number', 'metric', 'textarea', 'boolean', 'simpleselect', 'multiselect', 'date', 'file', 'image'] },
-    wysiwyg: Boolean,
+    isWysiwyg: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 

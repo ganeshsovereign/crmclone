@@ -1462,7 +1462,7 @@ Object.prototype = {
                     }
                 }, {
                     $lookup: {
-                        from: 'ProductOptionsValues',
+                        from: 'ProductAttributesValues',
                         localField: 'variants',
                         foreignField: '_id',
                         as: 'variants'
@@ -1644,7 +1644,7 @@ Object.prototype = {
                     }
                 }, {
                     $lookup: {
-                        from: 'ProductOptionsValues',
+                        from: 'ProductAttributesValues',
                         localField: 'variants',
                         foreignField: '_id',
                         as: 'variants'
@@ -1656,7 +1656,7 @@ Object.prototype = {
                     }
                 }, {
                     $lookup: {
-                        from: 'ProductOptions',
+                        from: 'ProductAttributes',
                         localField: 'variants.optionId',
                         foreignField: '_id',
                         as: 'variants.optionId'
@@ -2792,7 +2792,7 @@ ProductTypes.prototype = {
             }
         }, {
             $lookup: {
-                from: 'ProductOptions',
+                from: 'ProductAttributes',
                 localField: 'options',
                 foreignField: '_id',
                 as: 'options'
@@ -2804,7 +2804,7 @@ ProductTypes.prototype = {
             }
         }, {
             $lookup: {
-                from: 'ProductOptionsValues',
+                from: 'ProductAttributesValues',
                 localField: 'options._id',
                 foreignField: 'optionId',
                 as: 'optionsValue'
@@ -2877,7 +2877,7 @@ ProductTypes.prototype = {
             }
         }, {
             $lookup: {
-                from: 'ProductOptions',
+                from: 'ProductAttributes',
                 localField: 'options',
                 foreignField: '_id',
                 as: 'productOptions'

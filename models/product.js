@@ -71,7 +71,11 @@ LangSchema.pre('save', function(next) {
     next();
 });
 
-
+var product = {
+    _id: false,
+    id: { type: Schema.Types.ObjectId, ref: 'product' },
+    qty: { type: Number, default: 0 }
+};
 
 var productSchema = new Schema({
     isBundle: { type: Boolean, default: false },
@@ -127,18 +131,16 @@ var productSchema = new Schema({
         minStockLevel: { type: Number, default: 0 }
     },
 
-    variants: [{ type: Schema.Types.ObjectId, ref: 'productOptionsValues' }],
+    variants: [{ type: Schema.Types.ObjectId, ref: 'productAttributesValues' }],
     attributes: [{
+        _id: false,
         attribute: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
-        value: { type: String, default: null }
+        value: { type: String, default: null },
+        options: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }]
     }],
 
-    //bundles
-    pack: [{
-        _id: false,
-        id: { type: Schema.Types.ObjectId, ref: 'product' },
-        qty: { type: Number, default: 0 }
-    }],
+    pack: [product], // conditionned pack from MP + production form supplier -> be in stock need prepare
+    bundles: [product], // bundles or promotion pack of sell products -> Not prepare before order
 
     search: [String],
 

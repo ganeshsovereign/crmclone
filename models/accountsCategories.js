@@ -13,7 +13,7 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var CategorySchema = new Schema({
-    name: { type: String }, //Meta Title
+    //name: { type: String }, //Meta Title
     fullName: { type: String, default: 'All' },
     //parent: { type: ObjectId, ref: 'productCategory', default: null },
     // child: [{ type: ObjectId, default: null }],
@@ -21,7 +21,7 @@ var CategorySchema = new Schema({
     createdBy: { type: Schema.Types.ObjectId, ref: 'Users' },
     editedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 
-    entity: [String],
+    //entity: [String],
     idx: { type: Number, default: 0 }, //order in array for nodes
 
     langs: [{
@@ -241,11 +241,17 @@ CategorySchema.statics.removeAllChild = function(id, callback) {
     });
 };
 
+CategorySchema.virtual('value')
+    .get(function() {
+        return this.langs[0].value;
+    });
+
+
 CategorySchema.pre('save', function(next) {
     var self = this;
 
-    if (self.langs[0])
-        self.name = self.langs[0].name;
+    //if (self.langs[0])
+    //    self.name = self.langs[0].name;
 
     next();
 });
