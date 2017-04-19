@@ -69,13 +69,13 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 $rootScope.$stateParams.type === 'PROSPECT' ||
                 $rootScope.$stateParams.type === 'CUSTOMER')
                 $scope.types.push({
-                    name: "Client/Prospect",
+                    name: "Clients/Prospects",
                     id: "PROSPECT_CUSTOMER"
                 }, {
-                    name: "Client seulement",
+                    name: "Clients seulement",
                     id: "CUSTOMER"
                 }, {
-                    name: "Prospect seulement",
+                    name: "Prospects seulement",
                     id: "PROSPECT"
                 });
 
@@ -83,10 +83,10 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 $rootScope.$stateParams.type === 'SUPPLIER' ||
                 $rootScope.$stateParams.type === 'SUBCONTRACTOR')
                 $scope.types.push({
-                    name: "Fournisseur",
+                    name: "Fournisseurs/Sous-traitants",
                     id: "SUPPLIER_SUBCONTRACTOR"
                 }, {
-                    name: "Fournisseur seulement",
+                    name: "Fournisseurs seulement",
                     id: "SUPPLIER"
                 }, {
                     name: "Sous-traitants seulement",

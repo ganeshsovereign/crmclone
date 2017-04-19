@@ -1,7 +1,7 @@
 {
     "name": "company",
     "version": "0.1.000",
-    "description":"Gestion des societes (prospects, clients, fournisseurs)",
+    "description": "Gestion des societes (prospects, clients, fournisseurs)",
     "author": {
         "name": "TM - ToManage"
     },
@@ -18,8 +18,7 @@
     ],
     "license": "OSL v3",
     "rights": {
-        "societe": [
-            {
+        "societe": [{
                 "desc": "Lire les societes",
                 "perm": {
                     "read": true
@@ -84,13 +83,23 @@
             "title": "companies:ThirdParties",
             "icon": "fa-institution",
             "submenus": {
-                "menu:thirdpartyenable": {
-                    "position": 2,
-                    "url": "/erp/#!/societe",
+                "menu:customers": {
+                    "position": 1,
+                    "url": "/erp/#!/societe?type=PROSPECT_CUSTOMER",
                     "perms": "societe.read",
                     "enabled": "$conf->societe->enabled",
                     "usertype": 2,
-                    "title": "companies:ListOfThirdParties",
+                    "title": "companies:ListCustomersShort",
+                    "fk_menu": "menu:companies",
+                    "icon": "fa-institution"
+                },
+                "menu:suppliers": {
+                    "position": 2,
+                    "url": "/erp/#!/societe?type=SUPPLIER_SUBCONTRACTOR",
+                    "perms": "societe.read",
+                    "enabled": "$conf->societe->enabled",
+                    "usertype": 2,
+                    "title": "companies:ListSuppliersShort",
                     "fk_menu": "menu:companies",
                     "icon": "fa-institution"
                 },

@@ -2052,8 +2052,8 @@ Object.prototype = {
                 break;
             case "SUPPLIER_SUBCONTRACTOR":
                 conditions.$or = [
-                    { 'salesPurchases.isProspect': true },
-                    { 'salesPurchases.isCustomer': true }
+                    { 'salesPurchases.isSupplier': true },
+                    { 'salesPurchases.isSubcontractor': true }
                 ];
                 break;
             default: //ALL
