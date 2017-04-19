@@ -31,6 +31,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
     function($scope, $rootScope, $http, $modal, $filter, /*Upload,*/ $timeout, $dialogs, superCache, Societe) {
 
         var user = $rootScope.login;
+        $scope.backTo = 'societe.list';
 
         // This month
         $scope.date = {
