@@ -53,57 +53,43 @@
                         <div class="portlet-body">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-md-10">
+                                    <div class="col-md-offset-1 col-md-10">
                                         <div class="form-group form-md-line-input">
 
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-4 control-label">@(users:UserName):</label>
-                                                <div class="col-md-8">
-                                                    <input class="form-control" ng-model="user.username" placeholder="" type="text">
 
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
+                                            <div class="form-group form-md-line-input has-success">
+                                                <input type="text" class="form-control" id="form_control_1" onbeforesave="checkUserExist($data)" ng-model="user.username">
+                                                <label for="form_control_1">@(users:UserName)<span class="required">
+                                        * </span></label>
                                             </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-4 control-label">@(users:Password):</label>
-                                                <div class="col-md-8">
-                                                    <input class="form-control" ng-model="user.password" placeholder="" type="text">
 
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
+                                            <div class="form-group form-md-line-input has-success">
+                                                <input type="text" class="form-control" id="form_control_1" ng-model="user.password">
+                                                <label for="form_control_1">@(users:Password)</label>
                                             </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-4 control-label">@(Email):</label>
-                                                <div class="col-md-8">
-                                                    <input class="form-control" ng-change="checkEmailExist" ng-model="user.email" placeholder="" type="text">
 
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
+                                            <div class="form-group form-md-line-input has-success">
+                                                <input type="text" class="form-control" id="form_control_1" ng-change="checkEmailExist" ng-model="user.email">
+                                                <label for="form_control_1">@(Email)<span class="required">
+                                        * </span></label>
                                             </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-4 control-label">@(users:Group):</label>
-                                                <div class="col-md-8">
-                                                    <input class="form-control" ng-model="user.profile" placeholder="" type="text">
 
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
+                                            <div class="form-group form-md-line-input has-success">
+                                                <input type="text" class="form-control" id="form_control_1" ng-model="user.groups" ng-options="g.id as g.name for g in groups">
+                                                <label for="form_control_1">@(users:Group)</label>
                                             </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-4 control-label">@(users:LastConnection):</label>
-                                                <div class="col-md-8">
-                                                    <input class="form-control" ng-model="user.lastConnection|date:'dd/MM/yyyy'" placeholder="" type="text">
 
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
+                                            <div class="form-group form-md-line-input has-success">
+                                                <input type="text" class="form-control" id="form_control_1" ng-model="user.lastConnection|date:'dd/MM/yyyy'">
+                                                <label for="form_control_1">@(users:LastConnection)</label>
                                             </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-4 control-label">@(users:CreatedAt):</label>
-                                                <div class="col-md-8">
-                                                    <input class="form-control" ng-model="user.creationDate|date:'dd/MM/yyyy'" placeholder="" type="text">
 
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
+
+                                            <div class="form-group form-md-line-input has-success">
+                                                <input type="text" class="form-control" id="form_control_1" ng-model="user.creationDate|date:'dd/MM/yyyy'">
+                                                <label for="form_control_1">@(users:CreatedAt)</label>
                                             </div>
+
                                         </div>
                                     </div>
 

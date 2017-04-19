@@ -1121,6 +1121,7 @@ Object.prototype = {
     readDT: function() {
         var self = this;
         var EmployeesModel = MODEL('Employees').Schema;
+        var DepartmentModel = MODEL('Department').Schema;
         var query = JSON.parse(self.body.query);
         var Status;
         //console.log(self.query);
@@ -1162,32 +1163,51 @@ Object.prototype = {
 
             //console.log(res);
 
-            for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                var row = res.datatable.data[i];
+            DepartmentModel.populate(res.datatable.data, { path: "department" }, function(err, lines) {
+                if (err)
+                    return self.throw500(err);
 
-                // Add checkbox
-                res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                // Add link company                
+                EmployeesModel.populate(res.datatable.data, { path: "manager" }, function(err, lines) {
+                    if (err)
+                        return self.throw500(err);
 
-                // Add id
-                res.datatable.data[i].DT_RowId = row._id.toString();
+                    EmployeesModel.populate(res.datatable.data, { path: "editedBy" }, function(err, lines) {
+                        if (err)
+                            return self.throw500(err);
 
-                res.datatable.data[i].name.first = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.first + '"><span class="fa fa-user"></span> ' + row.name.first + '</a>';
 
-                res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
+                        for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                            var row = lines[i];
+                            console.log(row);
+                            // Add checkbox
+                            res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                            // Add link company                
 
-                // Action
-                res.datatable.data[i].action = '<a href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                // Add url on name
-                res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
-                // Convert Date
-                //res.datatable.data[i].LastConnection = (row.LastConnection ? moment(row.LastConnection).format(CONFIG('dateformatShort')) : '');
-                //res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-            }
+                            // Add id
+                            res.datatable.data[i].DT_RowId = row._id.toString();
 
-            //console.log(res.datatable);
+                            res.datatable.data[i].name.first = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.first + '"><span class="fa fa-user"></span> ' + row.name.first + '</a>';
 
-            self.json(res.datatable);
+                            res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
+                            res.datatable.data[i].department = (row.department ? row.department.name : "");
+                            res.datatable.data[i].manager = (row.manager ? row.manager.name : "");
+                            res.datatable.data[i].editedBy = (row.editedBy ? row.editedBy.name : "");
+
+                            // Action
+                            res.datatable.data[i].action = '<a href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                            // Add url on name
+                            res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
+                            // Convert Date
+                            //res.datatable.data[i].LastConnection = (row.LastConnection ? moment(row.LastConnection).format(CONFIG('dateformatShort')) : '');
+                            //res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                        }
+
+                        //console.log(res.datatable);
+
+                        self.json(res.datatable);
+                    });
+                });
+            });
         });
     },
 
@@ -2252,6 +2272,7 @@ Object.prototype = {
         var startWorkflow;
         var startSequence;
         var obj;
+        //console.log(data);
 
         var remove = self.req.headers.remove;
 

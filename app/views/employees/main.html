@@ -4,7 +4,9 @@
             <div class="portlet portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption font-yellow-crusta">
-                        <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(users:Main)
+                        <h3 class="portlet-title">
+                            <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(users:Main)
+                        </h3>
                     </div>
                     <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
                 </div>
@@ -12,123 +14,77 @@
                     <div class="form-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
 
-                                    <div class="form-group form-md-line-input">
-                                        <label class="col-md-4 control-label">@(users:LastName):</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.name.last" placeholder="" type="text">
-
-                                            <div class="form-control-focus"> </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-md-line-input">
-                                        <label class="col-md-4 control-label">@(users:FirstName):</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.name.first" placeholder="" type="text">
-
-                                            <div class="form-control-focus"> </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-md-line-input">
-                                        <label class="col-md-4 control-label">@(Tel-Mobile):</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.phones.mobile" placeholder="" type="text">
-
-                                            <div class="form-control-focus"> </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-md-line-input">
-                                        <label class="col-md-4 control-label">@(Email):</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.emails.work" placeholder="" type="text">
-
-                                            <div class="form-control-focus"> </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-md-line-input">
-                                        <label class="col-md-4 control-label">@(users:Skype):</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.skype" placeholder="" type="text">
-
-                                            <div class="form-control-focus"> </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-md-line-input">
-                                        <label class="col-md-4 control-label">@(users:LinkedIn):</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.social.LI" placeholder="" type="text">
-
-                                            <div class="form-control-focus"> </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group form-md-line-input">
-                                        <label class="col-md-4 control-label">@(users:Facebook):</label>
-                                        <div class="col-md-8">
-                                            <input class="form-control" ng-model="employee.social.FB" placeholder="" type="text">
-
-                                            <div class="form-control-focus"> </div>
-                                        </div>
-                                    </div>
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.name.last">
+                                    <label for="form_control_1">@(users:LastName)</label>
                                 </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.name.first">
+                                    <label for="form_control_1">@(users:FirstName)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.phones.mobile">
+                                    <label for="form_control_1">@(Tel-Mobile)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.emails.work">
+                                    <label for="form_control_1">@(Email)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.skype">
+                                    <label for="form_control_1">@(users:Skype)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.social.LI">
+                                    <label for="form_control_1">@(users:LinkedIn)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.social.FB">
+                                    <label for="form_control_1">@(users:Facebook)</label>
+                                </div>
+
                             </div>
 
-
-
                             <div class="col-md-6">
-                                <div class="form-group form-md-line-input">
-                                    <label class="col-md-4 control-label">@(users:Department):</label>
-                                    <div class="col-md-8">
-                                        <select class="form-control" ng-model="employee.department">
-                                                        <option ng-model=""></option>
-                                                        <option value="1">Option 1</option>
-                                                        <option value="2">Option 2</option>
-                                                        <option value="3">Option 3</option>
-                                                        <option value="4">Option 4</option>
-                                       </select>
-                                    </div>
-                                </div>
-                                <div class="form-group form-md-line-input">
-                                    <label class="col-md-4 control-label">@(users:Manager):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" ng-model="employee.manager" placeholder="" type="text">
 
-                                        <div class="form-control-focus"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group form-md-line-input">
-                                    <label class="col-md-4 control-label">@(users:JobPosition):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" ng-model="employee.jobPosition" placeholder="" type="text">
+                                <div class="form-group form-md-line-input has-success">
+                                    <select class="table-group-action-input form-control" required ng-model="employee.department" ng-options="s.id as s.name for s in $dict.department.data"></select>
 
-                                        <div class="form-control-focus"> </div>
-                                    </div>
-                                </div>
-                                <div class="form-group form-md-line-input">
-                                    <label class="col-md-4 control-label">@(users:JobType):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" ng-model="employee.jobType" placeholder="" type="text">
-
-                                        <div class="form-control-focus"> </div>
-                                    </div>
+                                    <label for="form_control_1">@(users:Department)</label>
                                 </div>
 
-                                <div class="form-group form-md-line-input">
-                                    <label class="col-md-4 control-label">@(users:WorkPhone):</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" ng-model="employee.phones.phone" placeholder="" type="text">
+                                <div class="form-group form-md-line-input has-success">
+                                    <select class="table-group-action-input form-control" required ng-model="employee.manager" ng-options="s.id as s.fullName for s in $dict.employees.data"></select>
 
-                                        <div class="form-control-focus"> </div>
-                                    </div>
+                                    <label for="form_control_1">@(users:Manager)</label>
                                 </div>
 
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.jobPosition">
+                                    <label for="form_control_1">@(users:JobPosition)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.jobType">
+                                    <label for="form_control_1">@(users:JobType)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.classes">
+                                    <label for="form_control_1">@(users:Classes)</label>
+                                </div>
 
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>

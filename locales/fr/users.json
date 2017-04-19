@@ -214,8 +214,8 @@
     "ListOfEmployees": "Liste des collaborateurs",
     "EmployeesCardOf": "Fiche Collaborateur de",
     "Skype": "Skype",
-    "Department": "Département",
-    "Manager": "Chef d'équipe",
+    "Department": "Secteur",
+    "Manager": "Responsable",
     "CreatedBy": "Créé par",
     "EditedBy": "Edité par",
     "Main": "Résumé",
@@ -230,6 +230,6 @@
     "ConfirmDeleteEmployees": "Confirmation de supression du collaborateur ?",
     "WorkPhone": "Téléphone Bureau",
     "JobPosition": "Poste",
-    "HomeAdress": "Adresse",
+    "HomeAddress": "Adresse",
     "City": "Ville"
 }
