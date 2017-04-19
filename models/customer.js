@@ -217,7 +217,7 @@ var customerSchema = new Schema({
         fax: { type: String, set: MODULE('utils').setPhone, default: '' }
     },
 
-    contacts: { type: Array, default: [] },
+    //contacts: { type: Array, default: [] },
     internalNotes: { type: String, default: '' },
     title: { type: String, default: '' },
 

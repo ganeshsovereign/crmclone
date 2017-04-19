@@ -2018,7 +2018,8 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            isremoved: { $ne: true }
+            isremoved: { $ne: true },
+            company: null
         };
 
         if (self.query.entity != 'null')
