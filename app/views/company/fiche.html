@@ -104,12 +104,12 @@
                 <!-- STAT -->
                 <div class="row list-separated profile-stat">
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{societe.createdAt|date:'dd/MM/yyyy'}} </div>
                         <div class="uppercase profile-stat-text"> @(DateCreation)</div>
+                        <div class="uppercase profile-stat-title"> {{customer.createdAt|date:'dd/MM/yyyy'}} </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{societe.updatedAt|date:'dd/MM/yyyy'}} </div>
                         <div class="uppercase profile-stat-text"> @(DateModification) </div>
+                        <div class="uppercase profile-stat-title"> {{societe.updatedAt|date:'dd/MM/yyyy'}} </div>
                     </div>
                 </div>
                 <!-- END STAT -->

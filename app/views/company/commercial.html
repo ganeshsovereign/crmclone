@@ -8,8 +8,8 @@
                             <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(commercial:Commercial)
                         </h3>
                     </div>
-
                 </div>
+
                 <div class="portlet-body">
                     <div class="form-body">
                         <div class="row">
@@ -28,7 +28,7 @@
 
                                                     <div class="form-group form-md-line-input has-success">
                                                         <input type="text" class="form-control" e-ng-options="user as user.name for user in userList track by user.id" id="form_control_1" ng-model="societe.commercial_id">
-                                                        <label for="form_control_1">@(commercial:Commercial)</label>
+                                                        <label class="font-red" for="form_control_1">@(commercial:Commercial)</label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
@@ -117,7 +117,6 @@
                                 </div>
 
                             </div>
-                            <!-- END COL 4-->
 
                             <div class="col-md-4">
                                 <div class="portlet light portlet-form bordered">
@@ -167,63 +166,63 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
 
+                            <div class="col-md-12 profile-info">
+                                <form editable-form name="editableReport" onaftersave="update()">
+                                    <div class="portlet light portlet-form bordered">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-comments-o"></i> @(commercial:CommercialFollow)
+                                            </div>
+                                            <div class="actions" ng-show="!editableReport.$visible">
+                                                <a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn btn-circle btn-default btn-sm" data-original-title="" title="@(Edit)"><i class="fa fa-pencil"></i>@(Edit)</a>
+                                                <a href="#" class="btn btn-circle btn-icon-only btn-default fullscreen" data-original-title="" title="@(FullScreen)"></a>
 
-                                <div class="col-md-12 profile-info">
-                                    <form editable-form name="editableReport" onaftersave="update()">
-                                        <div class="portlet light portlet-form bordered">
-                                            <div class="portlet-title">
-                                                <div class="caption">
-                                                    <i class="fa fa-comments-o"></i> @(commercial:CommercialFollow)
-                                                </div>
-                                                <div class="actions" ng-show="!editableReport.$visible">
-                                                    <a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn btn-circle btn-default btn-sm" data-original-title="" title="@(Edit)"><i class="fa fa-pencil"></i>@(Edit)</a>
-                                                    <a href="#" class="btn btn-circle btn-icon-only btn-default fullscreen" data-original-title="" title="@(FullScreen)"></a>
-
-                                                </div>
-                                                <div class="actions" ng-show="editableReport.$visible">
-                                                    <button type="submit" ng-disabled="editableReport.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save) </button>
-                                                    <button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel();
+                                            </div>
+                                            <div class="actions" ng-show="editableReport.$visible">
+                                                <button type="submit" ng-disabled="editableReport.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save) </button>
+                                                <button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel();
                                     findOne();" class="btn btn-circle btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i></button>
-                                                </div>
-
                                             </div>
-                                            <div class="portlet-body">
-                                                <div ng-hide="editableReport.$visible" ng-if="societe.report.author.name" class="alert alert-info alert-dismissable">
-                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{societe.report.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By)
-                                                    {{societe.report.author.name}}
-                                                </div>
-                                                <div ng-if="!editableReport.$visible" marked="societe.report.new"></div>
-                                                <div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.report"></div>
 
-                                                <!--<div markdown-diff origin="societe.report.old" new="societe.report.new"></div>-->
-                                                <hr>
-                                                <p>
-                                                    <a ng-if="societe.url" ng-href="{{societe.url}}" target="_blank"> {{societe.url}}</a>
-                                                </p>
-                                                <ul class="list-inline">
-                                                    <li ng-if="societe.familyProduct.length">
-                                                        <i class="fa fa-briefcase"></i> {{societe.familyProduct| tag}}
-                                                    </li>
-                                                    <li ng-if="societe.email">
-                                                        <a data-ng-href="mailto:{{societe.email}}" target="_blank"><i ng-if="societe.email" class="fa fa-envelope"></i> {{societe.email}}</a>
-                                                    </li>
-                                                    <li ng-if="societe.phone">
-                                                        <i class="fa fa-phone"></i> {{societe.phone| phone}}
-                                                    </li>
-                                                    <li ng-if="societe.fax">
-                                                        <i class="fa fa-fax"></i> {{societe.fax| phone}}
-                                                    </li>
-                                                    <li ng-if="societe.Tag.length">
-                                                        <i class="fa fa-key"></i> {{societe.Tag| tag}}
-                                                    </li>
-                                                </ul>
-                                            </div>
                                         </div>
-                                    </form>
-                                </div>
+                                        <div class="portlet-body">
+                                            <div ng-hide="editableReport.$visible" ng-if="societe.report.author.name" class="alert alert-info alert-dismissable">
+                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{societe.report.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By) {{societe.report.author.name}}
+                                            </div>
+                                            <div ng-if="!editableReport.$visible" marked="societe.report.new"></div>
+                                            <div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.report"></div>
+
+                                            <!--<div markdown-diff origin="societe.report.old" new="societe.report.new"></div>-->
+                                            <hr>
+                                            <p>
+                                                <a ng-if="societe.url" ng-href="{{societe.url}}" target="_blank"> {{societe.url}}</a>
+                                            </p>
+                                            <ul class="list-inline">
+                                                <li ng-if="societe.familyProduct.length">
+                                                    <i class="fa fa-briefcase"></i> {{societe.familyProduct| tag}}
+                                                </li>
+                                                <li ng-if="societe.email">
+                                                    <a data-ng-href="mailto:{{societe.email}}" target="_blank"><i ng-if="societe.email" class="fa fa-envelope"></i> {{societe.email}}</a>
+                                                </li>
+                                                <li ng-if="societe.phone">
+                                                    <i class="fa fa-phone"></i> {{societe.phone| phone}}
+                                                </li>
+                                                <li ng-if="societe.fax">
+                                                    <i class="fa fa-fax"></i> {{societe.fax| phone}}
+                                                </li>
+                                                <li ng-if="societe.Tag.length">
+                                                    <i class="fa fa-key"></i> {{societe.Tag| tag}}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

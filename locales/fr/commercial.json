@@ -105,5 +105,6 @@
     "NumberOfOrdersByMonth": "Nombre de commandes par mois",
     "DateLastAction": "Dernière action",
     "ListProductsPrices": "Liste de prix",
-    "Buyer": "Acheteur"
+    "Buyer": "Acheteur",
+    "ConversionRate": "Taux de conversion"
 }
