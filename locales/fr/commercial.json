@@ -101,7 +101,8 @@
     "Attractiveness": "Attractivité",
     "CAOrderByMonth": "CA du mois",
     "CAOrderByYear": "CA de l'année",
-    "CAPropalByMonth": "Total Propositions",
+    "CAPropalByMonth": "Total des propositions",
+    "NumberOfOrdersByMonth": "Nombre de commandes par mois",
     "DateLastAction": "Dernière action",
     "ListProductsPrices": "Liste de prix",
     "Buyer": "Acheteur"

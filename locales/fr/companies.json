@@ -473,5 +473,7 @@
     "ErrIBAN": "IBAN incorrect : cle de verification incorrecte",
     "Twitter": "Twitter",
     "LinkedIn": "LinkedIn",
-    "FaceBook": "FaceBook"
+    "FaceBook": "FaceBook",
+    "PriceLevel": "Niveau de prix",
+    "ConversionRate": "Taux de conversion",
 }

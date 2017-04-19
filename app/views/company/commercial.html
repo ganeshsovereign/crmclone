@@ -1,303 +1,229 @@
-<div class="portlet light portlet-form bordered">
-    <div class="portlet-title">
-        <div class="caption font-yellow-crusta">
-            <i class="fa fa-shopping-cart font-yellow-crusta"></i> @(commercial:Commercial)
-        </div>
-    </div>
-    <div class="portlet-body">
-        <div class="row">
-            <div class="col-md-8 col-sm-12">
-                <form editable-form name="editableCommercial" onaftersave="update()">
-                    <div class="portlet light portlet-form bordered">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class="fa fa-cog"></i>@(commercial:CommercialParameters)
-                            </div>
-                            <div class="actions">
-                                <a href="javascript:;" ng-click="editableCommercial.$show()" ng-show="!editableCommercial.$visible && editable" class="btn btn-circle btn-default">
-                                    <i class="fa fa-pencil"></i> @(Edit) </a>
-                            </div>
-                            <div class="actions" ng-show="editableCommercial.$visible">
-                                <button type="submit" ng-disabled="editableCommercial.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save) </button>
-                                <button type="button" ng-disabled="editableCommercial.$waiting" ng-click="editableCommercial.$cancel();
-                            findOne();" class="btn btn-circle btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i></button>
-                            </div>
-                        </div>
-                        <div class="portlet-body">
-                            <div class="form-group form-md-line-input">
-                                <div class="row static-info">
-                                    <div class="col-md-3 name">
-                                        @(commercial:Commercial)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <!--<span editable-text="societe.commercial_id" e-typeahead="user as user.name for user in userAutoComplete($viewValue) | filter:{name:$viewValue}">{{societe.commercial_id.name}}</span>-->
-                                        <span editable-select="societe.commercial_id" onshow="loadUsers()" e-ng-options="user as user.name for user in userList track by user.id">{{societe.commercial_id.name}}</span>
-                                    </div>
-                                    <div class="col-md-3 name">
-                                        @(zonegeo)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-text="societe.zonegeo">{{societe.zonegeo|| "Non défini"}}</span>
-                                    </div>
-                                </div>
-
-
-                                <div class="row static-info">
-                                    <div class="col-md-3 name">
-                                        @(companies:JuridicalStatus)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-select="societe.forme_juridique_code" e-ng-options="s.id as s.label for s in dict.fk_forme_juridique.values">{{ showStatus('forme_juridique_code', 'fk_forme_juridique') || "-"}}
-                            </span>
-                                    </div>
-                                    <div class="col-md-3 name">
-                                        @(companies:ThirdPartyType)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-select="societe.typent_id" e-ng-options="s.id as s.label for s in dict.fk_typent.values">{{ showStatus('typent_id', 'fk_typent')}}</span>
-                                    </div>
-                                </div>
-
-                                <div class="row static-info">
-                                    <div class="col-md-3 name">
-                                        @(companies:Staff)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-select="societe.effectif_id" e-ng-options="s.id as s.label for s in dict.fk_effectif.values">{{ showStatus('effectif_id', 'fk_effectif')}}
-                            </span>
-                                    </div>
-                                    <div class="col-md-3 name">
-                                        @(companies:ProspectLevelShort)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span class="label label-sm" ng-class="societe.prospectLevel.css" editable-select="societe.prospectlevel" e-ng-options="s.id as s.label for s in dict.fk_prospectlevel.values">{{societe.prospectLevel.name}}</span>
-                                    </div>
-                                </div>
-
-                                <div class="row static-info">
-                                    <div class="col-md-3 name">
-                                        @(companies:RivalShort)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-select="societe.rival" e-ng-options="s.label as s.label for s in dict.fk_rival.values">
-                                {{ societe.rival || '@(main:Undefined)' }}
-                            </span></div>
-                                    <div class="col-md-3 name">
-                                        @(companies:PriceLevel)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span class="label label-sm" ng-class="societe.prospectLevel.css" editable-select="societe.prospectlevel" e-ng-options="s.id as s.label for s in dict.fk_prospectlevel.values">{{societe.prospectLevel.name}}</span>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-3 name">
-                                        @(companies:CustomerSegmentation)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-select="societe.segmentation" e-ng-options="s as s.label group by s.group for s in dict.fk_segmentation.values track by s.id">{{ societe.segmentation.label || '@(main:Undefined)' }} <small ng-if="societe.segmentation.group">({{societe.segmentation.group}})</small>
-                            </span></div>
-                                    <div class="col-md-3 name">
-                                        @(companies:ProductSegmentation)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <tags-input ng-show="editableCommercial.$visible" ng-model="societe.familyProduct" class="ti-input-sm" placeholder="@(Add)" on-tag-added='update()' on-tag-removed="update()">
-                                            <auto-complete source="AutoComplete($query,'api/product/family/autocomplete',societe.entity)" min-length="1" max-results-to-show="10"></auto-complete>
-                                        </tags-input>
-                                        <span ng-hide="editableCommercial.$visible">{{societe.familyProduct| tag}}</span>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-1 name">
-                                        @(companies:ProfId1FR)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-text="societe.idprof1">{{ societe.idprof1 || '@(main:Undefined)' }}</span>
-                                    </div>
-                                    <div class="col-md-1 name">
-                                        @(companies:ProfId2FR)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-text="societe.idprof2">{{ societe.idprof2 || '@(main:Undefined)' }}</span>
-                                    </div>
-                                    <div class="col-md-1 name">
-                                        @(companies:ProfId4FR)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-text="societe.idprof4">{{societe.idprof4|| "Aucun"}}
-                            </span>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-1 name">
-                                        @(companies:ProfId5FR)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                                    </div>
-                                    <div class="col-md-1 name">
-                                        @(companies:ProfId3FR)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-text="societe.idprof3">{{ societe.idprof3 ||'@(main:Undefined)' }}
-                            </span>
-                                    </div>
-                                    <div class="col-md-1 name">
-                                        @(companies:Capital)
-                                    </div>
-                                    <div class="col-md-3 value">
-                                        <span editable-text="societe.capital">{{ societe.capital || '@(main:Undefined)' | euro}}
-                            </span>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-
-                                    <div class="col-md-2 name">
-                                        @(main:Keywords)
-                                    </div>
-                                    <div class="col-md-10 value">
-                                        <tags-input ng-show="editableCommercial.$visible" ng-model="societe.Tag" class="ti-input-sm" placeholder="@(Add)" on-tag-added='update()' on-tag-removed="update()">
-                                            <auto-complete source="AutoComplete($query,'api/societe/autocomplete/Tag',societe.entity)" min-length="1" max-results-to-show="10"></auto-complete>
-                                        </tags-input>
-                                        <span ng-hide="editableCommercial.$visible">{{societe.Tag| tag}}</span>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-yellow-crusta">
+                        <h3 class="portlet-title">
+                            <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(commercial:Commercial)
+                        </h3>
                     </div>
-                </form>
-            </div>
-            <!-- END COL 4-->
 
-            <div class="col-md-4">
-                <div class="portlet light portlet-form bordered">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-line-chart"></i> @(Summary)
-                        </div>
-                        <div class="tools">
-                            <a class="reload" href="javascript:;" data-original-title="" title="">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="row static-info">
-                            <div class="col-md-8 name">
-                                @(commercial:CAOrderByMonth)
-                            </div>
-                            <div class="col-md-4 value">
-                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                            </div>
-                        </div>
-                        <div class="row static-info">
-                            <div class="col-md-8 name">
-                                @(commercial:CAOrderByYear)
-                            </div>
-                            <div class="col-md-4 value">
-                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                            </div>
-                        </div>
-                        <div class="row static-info">
-                            <div class="col-md-8 name">
-                                @(orders:NumberOfOrdersByMonth)
-                            </div>
-                            <div class="col-md-4 value">
-                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                            </div>
-                        </div>
-                        <div class="row static-info">
-                            <div class="col-md-8 name">
-                                @(commercial:CAPropalByMonth)
-                            </div>
-                            <div class="col-md-4 value">
-                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                            </div>
-                        </div>
-                        <div class="row static-info">
-                            <div class="col-md-8 name">
-                                @(leads:OpenLeads)
-                            </div>
-                            <div class="col-md-4 value">
-                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                            </div>
-                        </div>
-                        <div class="row static-info">
-                            <div class="col-md-8 name">
-                                Taux de conversion
-                            </div>
-                            <div class="col-md-4 value">
-                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
+                <div class="portlet-body">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="col-md-8 col-sm-12">
+                                <div class="portlet light portlet-form bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-cog"></i>@(commercial:CommercialParameters)
+                                        </div>
+                                        <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="form-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
 
-            </div>
-        </div>
-        <div class="row">
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" e-ng-options="user as user.name for user in userList track by user.id" id="form_control_1" ng-model="societe.commercial_id">
+                                                        <label for="form_control_1">@(commercial:Commercial)</label>
+                                                    </div>
 
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.zonegeo">
+                                                        <label for="form_control_1">@(zonegeo) </label>
+                                                    </div>
 
-            <div class="col-md-12 profile-info">
-                <form editable-form name="editableReport" onaftersave="update()">
-                    <div class="portlet light portlet-form bordered">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class="fa fa-comments-o"></i> @(commercial:CommercialFollow)
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.forme_juridique_code" ng-options="s.id as s.label for s in dict.fk_forme_juridique.values"></select>
+                                                        <label for="form_control_1">@(companies:JuridicalStatus)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.typent_id" ng-options="s.id as s.label for s in dict.fk_typent.values"></select>
+                                                        <label for="form_control_1">@(companies:ThirdPartyType)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.effectif_id" ng-options="s.id as s.label for s in dict.fk_effectif.values"></select>
+                                                        <label for="form_control_1">@(companies:Staff)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.prospectlevel" ng-options="s.id as s.label for s in dict.fk_prospectlevel.values"></select>
+                                                        <label for="form_control_1">@(companies:ProspectLevelShort)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.rival" ng-options="s.label as s.label for s in dict.fk_rival.values"></select>
+                                                        <label for="form_control_1">@(companies:RivalShort)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.prospectlevel" ng-class="societe.prospectLevel.css" ng-options="s.id as s.label for s in dict.fk_prospectlevel.values"></select>
+                                                        <label for="form_control_1">@(companies:PriceLevel)</label>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-md-6">
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof1">
+                                                        <label for="form_control_1">@(companies:ProfId1FR) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof2">
+                                                        <label for="form_control_1">@(companies:ProfId2FR) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof3">
+                                                        <label for="form_control_1">@(companies:ProfId3FR) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof4">
+                                                        <label for="form_control_1">@(companies:ProfId4FR) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof5">
+                                                        <label for="form_control_1">@(companies:ProfId5FR) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.capital">
+                                                        <label for="form_control_1">@(companies:Capital) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.segmentation" ng-options="s as s.label group by s.group for s in dict.fk_segmentation.values track by s.id"></select>
+                                                        <label for="form_control_1">@(companies:CustomerSegmentation)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.familyProduct" ng-options="s as s.label group by s.group for s in dict.fk_segmentation.values track by s.id"></select>
+                                                        <label for="form_control_1">@(companies:ProductSegmentation)</label>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
-                            <div class="actions" ng-show="!editableReport.$visible">
-                                <a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn btn-circle btn-default btn-sm" data-original-title="" title="@(Edit)"><i class="fa fa-pencil"></i>@(Edit)</a>
-                                <a href="#" class="btn btn-circle btn-icon-only btn-default fullscreen" data-original-title="" title="@(FullScreen)"></a>
+                            <!-- END COL 4-->
 
+                            <div class="col-md-4">
+                                <div class="portlet light portlet-form bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-line-chart"></i> @(Summary)
+                                        </div>
+                                        <div class="tools">
+                                            <a class="reload" href="javascript:;" data-original-title="" title="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="row static-info">
+
+                                            <div class="form-group form-md-line-input has-error">
+                                                <input type="text" class="form-control" readonly="" value="{{societe.idprof5}}" id="form_control_1">
+                                                <label for="form_control_1">@(commercial:CAOrderByMonth)</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input has-error">
+                                                <input type="text" class="form-control" readonly="" value="{{societe.idprof5}}" id="form_control_1">
+                                                <label for="form_control_1">@(commercial:CAOrderByYear)</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input has-error">
+                                                <input type="text" class="form-control" readonly="" value="{{societe.idprof5}}" id="form_control_1">
+                                                <label for="form_control_1">@(commercial:NumberOfOrdersByMonth)</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input has-error">
+                                                <input type="text" class="form-control" readonly="" value="{{societe.idprof5}}" id="form_control_1">
+                                                <label for="form_control_1">@(commercial:CAPropalByMonth)</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input has-error">
+                                                <input type="text" class="form-control" readonly="" value="{{societe.idprof5}}" id="form_control_1">
+                                                <label for="form_control_1">@(commercial:OpenLeads)</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input has-error">
+                                                <input type="text" class="form-control" readonly="" value="{{societe.idprof5}}" id="form_control_1">
+                                                <label for="form_control_1">@(commercial:ConversionRate)</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="actions" ng-show="editableReport.$visible">
-                                <button type="submit" ng-disabled="editableReport.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save) </button>
-                                <button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel();
+                            <div class="row">
+
+
+                                <div class="col-md-12 profile-info">
+                                    <form editable-form name="editableReport" onaftersave="update()">
+                                        <div class="portlet light portlet-form bordered">
+                                            <div class="portlet-title">
+                                                <div class="caption">
+                                                    <i class="fa fa-comments-o"></i> @(commercial:CommercialFollow)
+                                                </div>
+                                                <div class="actions" ng-show="!editableReport.$visible">
+                                                    <a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn btn-circle btn-default btn-sm" data-original-title="" title="@(Edit)"><i class="fa fa-pencil"></i>@(Edit)</a>
+                                                    <a href="#" class="btn btn-circle btn-icon-only btn-default fullscreen" data-original-title="" title="@(FullScreen)"></a>
+
+                                                </div>
+                                                <div class="actions" ng-show="editableReport.$visible">
+                                                    <button type="submit" ng-disabled="editableReport.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save) </button>
+                                                    <button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel();
                                     findOne();" class="btn btn-circle btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i></button>
-                            </div>
+                                                </div>
 
-                        </div>
-                        <div class="portlet-body">
-                            <div ng-hide="editableReport.$visible" ng-if="societe.report.author.name" class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{societe.report.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By) {{societe.report.author.name}}
-                            </div>
-                            <div ng-if="!editableReport.$visible" marked="societe.report.new"></div>
-                            <div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.report"></div>
+                                            </div>
+                                            <div class="portlet-body">
+                                                <div ng-hide="editableReport.$visible" ng-if="societe.report.author.name" class="alert alert-info alert-dismissable">
+                                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{societe.report.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By)
+                                                    {{societe.report.author.name}}
+                                                </div>
+                                                <div ng-if="!editableReport.$visible" marked="societe.report.new"></div>
+                                                <div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.report"></div>
 
-                            <!--<div markdown-diff origin="societe.report.old" new="societe.report.new"></div>-->
-                            <hr>
-                            <p>
-                                <a ng-if="societe.url" ng-href="{{societe.url}}" target="_blank"> {{societe.url}}</a>
-                            </p>
-                            <ul class="list-inline">
-                                <li ng-if="societe.familyProduct.length">
-                                    <i class="fa fa-briefcase"></i> {{societe.familyProduct| tag}}
-                                </li>
-                                <li ng-if="societe.email">
-                                    <a data-ng-href="mailto:{{societe.email}}" target="_blank"><i ng-if="societe.email" class="fa fa-envelope"></i> {{societe.email}}</a>
-                                </li>
-                                <li ng-if="societe.phone">
-                                    <i class="fa fa-phone"></i> {{societe.phone| phone}}
-                                </li>
-                                <li ng-if="societe.fax">
-                                    <i class="fa fa-fax"></i> {{societe.fax| phone}}
-                                </li>
-                                <li ng-if="societe.Tag.length">
-                                    <i class="fa fa-key"></i> {{societe.Tag| tag}}
-                                </li>
-                            </ul>
+                                                <!--<div markdown-diff origin="societe.report.old" new="societe.report.new"></div>-->
+                                                <hr>
+                                                <p>
+                                                    <a ng-if="societe.url" ng-href="{{societe.url}}" target="_blank"> {{societe.url}}</a>
+                                                </p>
+                                                <ul class="list-inline">
+                                                    <li ng-if="societe.familyProduct.length">
+                                                        <i class="fa fa-briefcase"></i> {{societe.familyProduct| tag}}
+                                                    </li>
+                                                    <li ng-if="societe.email">
+                                                        <a data-ng-href="mailto:{{societe.email}}" target="_blank"><i ng-if="societe.email" class="fa fa-envelope"></i> {{societe.email}}</a>
+                                                    </li>
+                                                    <li ng-if="societe.phone">
+                                                        <i class="fa fa-phone"></i> {{societe.phone| phone}}
+                                                    </li>
+                                                    <li ng-if="societe.fax">
+                                                        <i class="fa fa-fax"></i> {{societe.fax| phone}}
+                                                    </li>
+                                                    <li ng-if="societe.Tag.length">
+                                                        <i class="fa fa-key"></i> {{societe.Tag| tag}}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
-                </form>
-            </div>
-
-        </div>
-
-    </div>
