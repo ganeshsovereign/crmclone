@@ -56,8 +56,7 @@
                 <div class="row hidden-print">
                     <div class="form-group form-md-line-input">
                         <div class="col-md-3">
-                            <select ng-model="type" ng-change="setCache('type', type);
-                        find()" ng-options="c as c.name for c in types track by c.id" class="form-control"></select>
+                            <select ng-model="type" ng-change="changeType()" ng-options="c.id as c.name for c in types" class="form-control"></select>
                             <div class="form-control-focus"> </div>
                         </div>
                         <div class="col-md-3">
@@ -68,15 +67,15 @@
                             <div class="form-control-focus"> </div>
                         </div>
                         <div class="col-md-3">
-                            <select ng-model="status_id" ng-change="setCache('status_id', status_id);
+                            <!--<select ng-model="status_id" ng-change="setCache('status_id', status_id);
                             find();" ng-options="s.id as s.label for s in dict.fk_stcomm.values" class="form-control">
-                            <option value="">-- @(companies:ProspectStatus) --</option>
-                        </select>
+                            <option value="">-- @(companies:ProspectStatus) --</option>-->
+                            </select>
                             <div class="form-control-focus"> </div>
                         </div>
                         <div class="col-md-3" ng-show="login.multiEntities">
                             <select ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control">
-                                <option value="">@(All)</option>
+                                <option value="">--@(All)--</option>
                         </select>
                             <div class="form-control-focus"> </div>
                         </div>

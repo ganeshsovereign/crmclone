@@ -768,7 +768,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/company/index.html"
         })
         .state('societe.list', {
-            url: "",
+            url: "?type",
             templateUrl: "/views/company/list.html",
             data: {
                 pageTitle: 'Liste des societes'

@@ -2029,30 +2029,38 @@ Object.prototype = {
         //if (!self.user.multiEntities)
         //    conditions.entity = { $in: ["ALL", self.user.entity] };
 
-        /*if (!query.search.value)
-            switch (self.query.type) {
-                case "CUSTOMER":
-                    conditions.Status = {
-                        "$nin": ["ST_NO", "ST_NEVER"]
-                    };
-                    break;
-                case "SUPPLIER":
-                    conditions.fournisseur = "SUPPLIER";
-                    break;
-                case "SUBCONTRACTOR":
-                    conditions.fournisseur = "SUBCONTRACTOR";
-                    break;
-                case "SUSPECT":
-                    conditions.Status = {
-                        "$in": ["ST_NO", "ST_NEVER"]
-                    };
-                    break;
-                default: //ALL
-                    break;
-            }*/
+        //if (!query.search.value)
+        switch (self.query.type) {
+            case "CUSTOMER":
+                conditions['salesPurchases.isCustomer'] = true;
+                break;
+            case "PROSPECT":
+                conditions['salesPurchases.isProspect'] = true;
+                break;
+            case "PROSPECT_CUSTOMER":
+                conditions.$or = [
+                    { 'salesPurchases.isProspect': true },
+                    { 'salesPurchases.isCustomer': true }
+                ];
+                break;
+            case "SUPPLIER":
+                conditions['salesPurchases.isSupplier'] = true;
+                break;
+            case "SUBCONTRACTOR":
+                conditions['salesPurchases.isSubcontractor'] = true;
+                break;
+            case "SUPPLIER_SUBCONTRACTOR":
+                conditions.$or = [
+                    { 'salesPurchases.isProspect': true },
+                    { 'salesPurchases.isCustomer': true }
+                ];
+                break;
+            default: //ALL
+                break;
+        }
 
 
-        if (!query.search.value) {
+        /*if (!query.search.value) {
             if (self.query.status_id !== 'null')
                 conditions.Status = self.query.status_id;
         } else
@@ -2060,7 +2068,7 @@ Object.prototype = {
 
         if (self.query.prospectlevel !== 'null')
             conditions.prospectlevel = self.query.prospectlevel;
-
+        */
         if (self.req.query.commercial_id !== 'null')
             conditions["commercial_id.id"] = self.query.commercial_id;
 
@@ -2072,7 +2080,7 @@ Object.prototype = {
             select: 'type'
         };
 
-        console.log(options);
+        //console.log(options);
 
         async.parallel({
             status: function(cb) {

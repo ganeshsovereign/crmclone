@@ -63,22 +63,40 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
         $scope.editable = $rootScope.login.rights.societe.write;
 
-        $scope.types = [{
-            name: "Client/Prospect",
-            id: "CUSTOMER"
-        }, {
-            name: "Fournisseur",
-            id: "SUPPLIER"
-        }, {
-            name: "Sous-traitants",
-            id: "SUBCONTRACTOR"
-        }, {
-            name: "Non determine",
-            id: "SUSPECT"
-        }, {
-            name: "Tous",
-            id: "ALL"
-        }];
+        $scope.types = [];
+        if ($rootScope.$state.current.name == 'societe.list' && $rootScope.$stateParams.type) {
+            if ($rootScope.$stateParams.type === 'PROSPECT_CUSTOMER' ||
+                $rootScope.$stateParams.type === 'PROSPECT' ||
+                $rootScope.$stateParams.type === 'CUSTOMER')
+                $scope.types.push({
+                    name: "Client/Prospect",
+                    id: "PROSPECT_CUSTOMER"
+                }, {
+                    name: "Client seulement",
+                    id: "CUSTOMER"
+                }, {
+                    name: "Prospect seulement",
+                    id: "PROSPECT"
+                });
+
+            if ($rootScope.$stateParams.type === 'SUPPLIER_SUBCONTRACTOR' ||
+                $rootScope.$stateParams.type === 'SUPPLIER' ||
+                $rootScope.$stateParams.type === 'SUBCONTRACTOR')
+                $scope.types.push({
+                    name: "Fournisseur",
+                    id: "SUPPLIER_SUBCONTRACTOR"
+                }, {
+                    name: "Fournisseur seulement",
+                    id: "SUPPLIER"
+                }, {
+                    name: "Sous-traitants seulement",
+                    id: "SUBCONTRACTOR"
+                });
+        }
+
+        $scope.changeType = function() {
+            return $rootScope.$state.go('societe.list', { type: $scope.type });
+        }
 
         if (typeof superCache.get("SocieteController.type") == "undefined")
             superCache.put("SocieteController.type", {
@@ -100,7 +118,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             }
         ];
 
-        $scope.type = superCache.get("SocieteController.type");
+        $scope.type = $rootScope.$stateParams.type;
         $scope.commercial_id = superCache.get("SocieteController.commercial_id");
         $scope.status_id = superCache.get("SocieteController.status_id");
 
@@ -1024,7 +1042,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         function getUrl() {
             var url = "/erp/api/societe/dt";
             url += "?entity=" + $rootScope.entity;
-            url += "&type=" + $scope.type.id;
+            url += "&type=" + $scope.type;
             url += "&commercial_id=" + ($scope.commercial_id || null);
             url += "&status_id=" + ($scope.status_id || null);
             url += "&prospectlevel=" + ($scope.prospectlevel || null);
