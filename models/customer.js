@@ -185,6 +185,7 @@ var customerSchema = new Schema({
     },
 
     emails: [{
+        _id: false,
         type: { type: String, default: "pro" }, //billing, delivery...
         email: { type: String, lowercase: true, trim: true, default: '' }
     }],
@@ -228,7 +229,7 @@ var customerSchema = new Schema({
         salesPerson: { type: ObjectId, ref: 'Employees', default: null }, //commercial_id
         salesTeam: { type: ObjectId, ref: 'Department', default: null },
         implementedBy: { type: ObjectId, ref: 'Customers', default: null },
-        active: { type: Boolean, default: true },
+        isActive: { type: Boolean, default: true },
         ref: { type: String, trim: true, uppercase: true, sparse: true, default: '' }, //code_client or code_fournisseur
         language: { type: String, default: 'fr' },
         receiveMessages: { type: Number, default: 0 },
@@ -336,14 +337,14 @@ customerSchema.pre('save', function(next) {
 
     // Update first address delivery copy main address
     if (self.shippingAddress && self.shippingAddress.length != 0) {
-        self.shippingAddress[0].name = self.address.fullName;
+        self.shippingAddress[0].name = self.fullName;
         self.shippingAddress[0].street = self.address.street;
         self.shippingAddress[0].zip = self.address.zip;
         self.shippingAddress[0].city = self.address.city;
         self.shippingAddress[0].country = self.address.country;
     } else
         self.shippingAddress.push({
-            name: self.address.fullName,
+            name: self.fullName,
             street: self.address.street,
             zip: self.address.zip,
             city: self.address.city,
