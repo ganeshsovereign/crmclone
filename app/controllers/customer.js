@@ -138,7 +138,10 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             // set default layout mode
             $rootScope.settings.layout.pageSidebarClosed = true;
-            $rootScope.settings.layout.pageBodySolid = true;
+            $rootScope.settings.layout.pageBodySolid = false;
+
+            if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
+                return $rootScope.$state.go('societe.show.company');
 
             var dict = ["fk_stcomm", "fk_fournisseur", "fk_prospectlevel", "fk_typent", "fk_effectif", "fk_forme_juridique", "fk_payment_term", "fk_paiement", "fk_segmentation", "fk_rival", "fk_user_status"];
 
@@ -150,6 +153,24 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 }
             }).success(function(data, status) {
                 $scope.dict = data;
+            });
+
+            $scope.$dict = {};
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/nationality'
+            }).success(function(data, status) {
+                $scope.$dict.nationality = data;
+                //console.log(data);
+            });
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/language'
+            }).success(function(data, status) {
+                $scope.$dict.language = data;
+                //console.log(data);
             });
 
             $http({

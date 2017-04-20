@@ -48,7 +48,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
 
         $http({
             method: 'GET',
-            url: '/erp/api/employees/nationality'
+            url: '/erp/api/nationality'
         }).success(function(data, status) {
             $scope.$dict.nationality = data;
             //console.log(data);

@@ -432,5 +432,6 @@
     "Period": "Période de facturation",
     "SendAccounting": "Passer les écritures comptables",
     "PaymentStatement": "Relevé de factures",
-    "DefaultBank": "Banque par défaut"
+    "DefaultBank": "Banque par défaut",
+    "PaymentPeriod": "Délai de paiement"
 }

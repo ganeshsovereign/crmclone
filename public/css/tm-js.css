@@ -475,7 +475,11 @@ h4 {
 }
 
 .form-group.form-md-line-input .form-control~label {
-    font-size: 10px;
+    font-size: 12px;
+    color: #f7ca18;
+}
+
+.form-group.form-md-line-input.form-md-floating-label .form-control~label {
     color: #f7ca18;
 }
 
@@ -486,4 +490,14 @@ h4 {
 .portlet.light>.portlet-title>.caption>i {
     font-size: 24px;
     margin-top: 3px;
+}
+
+label {
+    font-weight: 500;
+}
+
+b,
+optgroup,
+strong {
+    font-weight: 500;
 }

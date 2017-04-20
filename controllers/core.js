@@ -9,6 +9,93 @@ var Dict = INCLUDE('dict');
 
 exports.install = function() {
     F.route('/erp/api/dict', load_dict, ['authorize']);
+    /**
+     *@api {get} /employees/nationality/ Request Employees nationality
+     *
+     * @apiVersion 0.0.1
+     * @apiName getEmployeesNationality
+     * @apiGroup Employee
+     *
+     * @apiSuccess {Object} EmployeesNationality
+     * @apiSuccessExample Success-Response:
+     HTTP/1.1 304 Not Modified
+     {
+       "data": [
+         {
+           "_id": "British",
+           "__v": 0
+         },
+         {
+           "_id": "Canadian",
+           "__v": 0
+         },
+         {
+           "_id": "Czech",
+           "__v": 0
+         },
+         {
+           "_id": "Danish",
+           "__v": 0
+         },
+         {
+           "_id": "English",
+           "__v": 0
+         },
+         {
+           "_id": "Finnish",
+           "__v": 0
+         },
+         {
+           "_id": "Georgian",
+           "__v": 0
+         },
+         {
+           "_id": "German",
+           "__v": 0
+         },
+         {
+           "_id": "Romanian",
+           "__v": 0
+         },
+         {
+           "_id": "Serbian",
+           "__v": 0
+         },
+         {
+           "_id": "Turkish",
+           "__v": 0
+         },
+         {
+           "_id": "Ukrainian",
+           "__v": 0
+         }
+       ]
+     }
+     */
+    F.route('/erp/api/nationality', getNationality, ['authorize']);
+    /**
+     *@api {get} /languages/ Request Employees languages
+     *
+     * @apiVersion 0.0.1
+     * @apiName getEmployeesLanguages
+     * @apiGroup Employee
+     *
+     * @apiSuccess {Object} EmployeesLanguages
+     * @apiSuccessExample Success-Response:
+     HTTP/1.1 200 OK
+     {
+         "data": [
+             {
+                 "_id": "5301e61b3d8b9898d5896e67",
+                 "attachments": [],
+                 "name": "English"
+             }
+         ]
+     }
+     */
+
+    F.route('/erp/api/languages', getLanguages, ['authorize']);
+
     F.route('/erp/api/extrafield', load_extrafield, ['authorize']);
     F.route('/erp/api/sendEmail', sendEmail, ['post', 'json', 'authorize']);
     F.route('/erp/api/task/count', task_count, ['authorize']);
@@ -1038,4 +1125,30 @@ function convert_resource() {
 
     writeresource.end();
     self.plain("Ok"); //text
+}
+
+function getNationality() {
+    var self = this;
+    var Nationality = MODEL('nationality').Schema;
+
+    Nationality.find({}).exec(function(err, result) {
+        if (err) {
+            return self.throw500(err);
+        }
+
+        self.json({ data: result });
+    });
+}
+
+function getLanguages() {
+    var self = this;
+    var Languages = MODEL('languages').Schema;
+
+    Languages.find({}).exec(function(err, result) {
+        if (err) {
+            return self.throw500(err);
+        }
+
+        self.json({ data: result });
+    });
 }

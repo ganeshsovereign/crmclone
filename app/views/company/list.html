@@ -1,5 +1,4 @@
 <div>
-
     <div class="page-bar">
         <ul class="page-breadcrumb">
             <li>
@@ -8,9 +7,10 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(companies:CompanyList)</span>
+                <span>@(companies:CustomerList)</span>
             </li>
         </ul>
+
         <div class="page-toolbar">
             <div class="btn-group pull-right">
                 <button class="btn btn-circle dark dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
@@ -35,14 +35,11 @@
             </div>
         </div>
     </div>
-    <h3 class="page-title">
-        <i class="fa fa-institution font-yellow-crusta"></i> @(companies:CompanyList)
-    </h3>
 
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
-            <div class="caption font-yellow-crusta">
-                <i class="fa fa-institution font-yellow-crusta"></i>Sociétés / institutions
+            <div class="caption">
+                <i class="fa fa-institution font-yellow-crusta"></i> @(companies:CustomerList)
             </div>
             <div class="actions">
                 <button class="btn btn-circle default" ui-sref="societe.create">@(Add) <i class="fa fa-plus"></i></button>

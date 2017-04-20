@@ -106,5 +106,7 @@
     "DateLastAction": "Dernière action",
     "ListProductsPrices": "Liste de prix",
     "Buyer": "Acheteur",
-    "ConversionRate": "Taux de conversion"
+    "ConversionRate": "Taux de conversion",
+    "ThirdPartyBilling": "Facturation de tiers",
+    "ImportExport": "Import - Export"
 }

@@ -3,9 +3,9 @@
         <div class="form-horizontal form-row-seperated">
             <div class="portlet portlet light bordered">
                 <div class="portlet-title">
-                    <div class="caption font-yellow-crusta">
+                    <div class="caption">
                         <h3 class="portlet-title">
-                            <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(users:Main)
+                            <i class="fa fa-cubes sbold"></i>@(users:Main)
                         </h3>
                     </div>
                     <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
@@ -15,17 +15,35 @@
                     <div class="form-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group form-md-line-input has-success">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="contact.name">
+
+                                <!-- Person -->
+                                <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                    <select class="table-group-action-input form-control" required ng-model="contact.civilite" ng-options="s.id as s.label for s in dict.fk_civilite.values"></select>
+                                    <label for="form_control_1">@(companies:UserTitle)</label>
+                                </div>
+
+                                <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="contact.lastname">
+                                    <label for="form_control_1">@(companies:Lastname) </label>
+                                </div>
+
+                                <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="contact.firstname">
+                                    <label for="form_control_1">@(companies:Firstname) </label>
+                                </div>
+
+                                <!-- Company -->
+                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="societe.fullname">
                                     <label for="form_control_1">@(companies:Name) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
+                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input has-success">
                                     <input type="text" class="form-control" id="form_control_1" onbeforesave="checkCodeClient($data)" ng-model="contact.code_client">
                                     <label for="form_control_1">@(companies:IdThirdParty) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
+                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input has-success">
                                     <input type="text" class="form-control" id="form_control_1" e-typeahead="ca as ca for ca in AutoComplete($viewValue,'api/societe/autocomplete/caFamily',societe.entity)" ng-model="contact.caFamily">
                                     <label for="form_control_1">@(companies:SocGroupShort) </label>
                                 </div>
@@ -51,12 +69,7 @@
                                     <label for="form_control_1">@(companies:Address) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="contact.idprof2">
-                                    <label for="form_control_1">@(companies:ProfId2FR) </label>
-                                </div>
-
-                                <div class="form-group form-md-line-input has-success">
+                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input has-success">
                                     <input type="text" class="form-control" id="form_control_1" ng-model="contact.idprof2">
                                     <label for="form_control_1">@(companies:ProfId2FR) </label>
                                 </div>
@@ -65,7 +78,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input has-success">
-                                    <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.language" ng-options="e.id as e.name for e in entityListAll"></select>
+                                    <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.language" ng-options="s.id as s.name for s in $dict.language.data"></select>
                                     <label for="form_control_1">@(Language)</label>
                                 </div>
 

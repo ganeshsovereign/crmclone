@@ -17,7 +17,7 @@
                                 <div class="portlet light portlet-form bordered">
                                     <div class="portlet-title">
                                         <div class="caption">
-                                            <i class="fa fa-cog"></i> @(bills:BillingSettings)
+                                            <i class="fa fa-cog"></i>@(bills:BillingSettings)
                                         </div>
                                         <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
                                     </div>
@@ -46,139 +46,77 @@
                                                         <label for="form_control_1">@(compta:CustomerAccountancyCodeShort) </label>
                                                     </div>
 
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof6">
+                                                        <label for="form_control_1">@(companies:VATIntra) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.cond_reglement" ng-options="s.id as s.label for s in dict.fk_payment_term.values"></select>
+                                                        <label for="form_control_1">@(bills:PaymentConditions)</label>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-md-6">
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.mode_reglement" e-ng-options="s.id as s.label for s in dict.fk_paiement.values"></select>
+                                                        <label for="form_control_1">@(bills:PaymentMode)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.bank_reglement" e-ng-options="s.ref as s.ref for s in banks"></select>
+                                                        <label for="form_control_1">@(bills:PaymentBank)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.price_level" e-typeahead="price_level.name for price_level in priceLevelAutoComplete($viewValue, 'name') | filter:{name:$viewValue}">
+                                                        <label for="form_control_1">@(products:PriceLevel) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.bank">
+                                                        <label for="form_control_1">@(bank:BankName) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.swift">
+                                                        <label for="form_control_1">@(bank:BIC/SWIFT) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input has-success">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.id">
+                                                        <label for="form_control_1">@(bank:IBAN) </label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-offset-2 col-md-10">
+
                                                     <div class="md-checkbox-inline">
-                                                        <div class="md-checkbox">
+                                                        <div class="md-checkbox has-warning">
                                                             <input type="checkbox" id="checkbox6" class="md-check" ng-model="societe.groupDelivery">
                                                             <label for="checkbox6">
                                                             <span class="inc"></span>
                                                             <span class="check"></span>
                                                             <span class="box"></span> @(companies:GroupDeliveries) </label>
                                                         </div>
-                                                        <div class="md-checkbox">
-                                                            <input type="checkbox" id="checkbox7" class="md-check" checked="" ng-model="societe.VATIsUsed" <label for="checkbox7">
+                                                        <div class="md-checkbox has-warning">
+                                                            <input type="checkbox" id="checkbox7" class="md-check" checked="" ng-model="societe.VATIsUsed">
+                                                            <label for="checkbox7">
                                                             <span class="inc"></span>
                                                             <span class="check"></span>
                                                             <span class="box"></span> @(companies:VATIsUsed) </label>
                                                         </div>
-                                                        <div class="md-checkbox">
-                                                            <input type="checkbox" id="checkbox8" class="md-check">
-                                                            <label for="checkbox8">
-                                                            <span class="inc"></span>
-                                                            <span class="check"></span>
-                                                            <span class="box"></span>  @(companies:VATIntra) </label>
-                                                        </div>
                                                     </div>
-
                                                 </div>
 
                                             </div>
-
-
-                                            <div class="row static-info">
-
-
-                                            </div>
-
-                                            <div class="row static-info">
-                                                <div class="col-md-3 name">
-                                                    @(companies:GroupDeliveries)
-                                                </div>
-                                                <div class="col-md-1 value">
-                                                    <input uniform type="checkbox" ng-model="societe.groupDelivery" ng-checked="societe.groupDelivery" ng-disabled="!editableCommercial.$visible" />
-                                                </div>
-
-                                                <div class="col-md-1 name">
-                                                    @(companies:VATIsUsed)
-                                                </div>
-                                                <div class="col-md-1 value">
-                                                    <input uniform type="checkbox" ng-model="societe.VATIsUsed" ng-checked="societe.VATIsUsed" ng-disabled="!editableCommercial.$visible" />
-                                                </div>
-
-                                                <div class="col-md-3 name">
-                                                    @(companies:VATIntra)
-                                                </div>
-                                                <div class="col-md-3 value">
-                                                    <span editable-text="societe.idprof6">
-                                {{ societe.idprof6 || '@(main:Undefined)' }}
-                            </span>
-                                                </div>
-                                            </div>
-
-                                            <div class="row static-info">
-                                                <div class="col-md-3 name">
-                                                    @(bills:PaymentConditions)
-                                                </div>
-                                                <div class="col-md-3 value">
-                                                    <span editable-select="societe.cond_reglement" e-ng-options="s.id as s.label for s in dict.fk_payment_term.values">
-                                {{ showStatus('cond_reglement', 'fk_payment_term')}}
-                            </span>
-                                                </div>
-                                                <div class="col-md-3 name">
-                                                    @(bills:PaymentMode)
-                                                </div>
-                                                <div class="col-md-3 value">
-                                                    <span editable-select="societe.mode_reglement" e-ng-options="s.id as s.label for s in dict.fk_paiement.values">
-                                {{ showStatus('mode_reglement', 'fk_paiement')}}
-                            </span>
-                                                </div>
-                                            </div>
-                                            <div class="row static-info">
-                                                <div class="col-md-3 name">
-                                                    @(bills:PaymentBank)
-                                                </div>
-                                                <div class="col-md-3 value">
-                                                    <span editable-select="societe.bank_reglement" e-ng-options="s.ref as s.ref for s in banks">
-                                {{societe.bank_reglement|| '@(main:Undefined)'}}
-                            </span>
-                                                </div>
-                                                <div class="col-md-3 name">
-                                                    @(products:PriceLevel)
-                                                </div>
-                                                <div class="col-md-3 value">
-                                                    <span editable-text="societe.price_level" e-typeahead="price_level.name for price_level in priceLevelAutoComplete($viewValue, 'name') | filter:{name:$viewValue}">
-                                {{ societe.price_level || '@(main:Undefined)' }}
-                            </span>
-                                                </div>
-                                            </div>
-
-                                            <div class="row static-info">
-                                                <div class="col-md-3 name">
-                                                    @(bank:BankName) :
-                                                </div>
-                                                <div class="col-md-3 value">
-                                                    <span editable-text="societe.iban.bank">
-                                {{ societe.iban.bank || '@(main:Undefined)' }}
-                            </span>
-                                                </div>
-                                                <div class="col-md-3 name">
-                                                    @(bank:BIC/SWIFT) :
-                                                </div>
-                                                <div class="col-md-3 value">
-                                                    <span editable-text="societe.iban.swift">
-                                {{ societe.iban.swift || '@(main:Undefined)' }}
-                            </span>
-                                                </div>
-                                            </div>
-                                            <div class="row static-info">
-                                                <div class="col-md-3 name">
-                                                    @(bank:IBAN) :
-                                                </div>
-                                                <div class="col-md-9 value">
-                                                    <span editable-text="societe.iban.id">
-                                {{ societe.iban.id || '@(main:Undefined)' }}
-                            </span>
-                                                </div>
-                                            </div>
-
                                         </div>
                                     </div>
-
-
                                 </div>
-                                </form>
                             </div>
 
-                            <!-- END COL 4-->
                             <div class="col-md-4">
                                 <div class="portlet light portlet-form bordered">
                                     <div class="portlet-title">
@@ -186,189 +124,170 @@
                                             <i class="fa fa-line-chart"></i> @(Summary)
                                         </div>
                                         <div class="tools">
-                                            <a class="reload" href="javascript:;" data-original-title="" title="">
+                                            <a class="reload" href="javascript:;" data-original-title="" title="@(ReLoad)">
                                             </a>
                                         </div>
                                     </div>
                                     <div class="portlet-body">
                                         <div class="row static-info">
-                                            <div class="col-md-8 name">
-                                                @(bills:LastBill)
-                                            </div>
-                                            <div class="col-md-4 value">
-                                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-8 name">
-                                                @(bills:LastPayment)
-                                            </div>
-                                            <div class="col-md-4 value">
-                                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-8 name">
-                                                @(bills:TotalInvoicedThisMonth)
-                                            </div>
-                                            <div class="col-md-4 value">
-                                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-8 name">
-                                                @(bills:TotalInvoicedThisYear)
-                                            </div>
-                                            <div class="col-md-4 value">
-                                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-8 name">
-                                                @(bills:RemainderToTake)
-                                            </div>
-                                            <div class="col-md-4 value">
-                                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-8 name">
-                                                Délai de paiement
-                                            </div>
-                                            <div class="col-md-4 value">
-                                                <span editable-text="societe.idprof5">{{societe.idprof5|| "Non défini"}}
-                            </span>
-                                            </div>
-                                        </div>
 
+                                            <div class="form-group form-md-line-input form-md-floating-label">
+                                                <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                <label for="form_control_1">@(bills:LastBill) :</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input form-md-floating-label">
+                                                <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                <label for="form_control_1">@(bills:LastPayment) :</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input form-md-floating-label">
+                                                <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                <label for="form_control_1">@(bills:TotalInvoicedThisMonth) :</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input form-md-floating-label">
+                                                <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                <label for="form_control_1">@(bills:TotalInvoicedThisYear) :</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input form-md-floating-label">
+                                                <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                <label for="form_control_1">@(bills:RemainderToTake) :</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input form-md-floating-label">
+                                                <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                <label for="form_control_1">@(bills:PaymentPeriod) :</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class='col-md-12'>
-                                <!--INVOICE TABLE-->
-                                <tabset class="tabbable-line tabbable-full-width">
-                                    <tab heading="@(bills:BillsCustomer)">
-                                        <div ng-include="'/templates/_bill/list.html'" ng-controller="BillController" onload="ngIncludeInit({'client.id': societe._id}, 5)"></div>
-                                    </tab>
-
-                                    <tab heading="@(bills:BillsSupplier)">
-                                        <div class="portlet-body">
-                                            <div class="table-toolbar">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="btn-group pull-left">
-                                                            <button class="btn blue" data-ng-click="addNew()">@(Add) <i class="fa fa-plus"></i></button>
-                                                            <button title="@(Refresh)" class="btn" data-ng-click="
-                                        commercialList = [];
-                                        commercial_id = '';
-                                        status_id = null;
-                                        filterOptionsSociete.filterText = '';
-                                        clearCache();
-                                        find();"><i class="fa fa-refresh"></i></button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="btn-group pull-right">
-                                                            <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
-                                    </button>
-                                                            <ul class="dropdown-menu pull-right">
-                                                                <li>
-                                                                    <a href="#">
-                                                @(Update) </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                @(Delete) </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="dataTables_wrapper no-footer">
-                                                <table class="table table-striped table-bordered table-hover" id="societeListInvoicesSuppliers">
-                                                    <thead>
-                                                        <tr role="row" class="heading">
-                                                            <th width="2%">
-                                                                <input type="checkbox" class="group-checkable">
-                                                            </th>
-                                                            <th>@(bills:InvoiceId)</th>
-                                                            <th>@(bills:Date)</th>
-                                                            <th>@(bills:DateEcheance)</th>
-                                                            <th>@(bills:NetToBePaid)</th>
-                                                            <th>@(bills:AlreadyPaid)</th>
-                                                            <th>@(bills:StillToBeDisbursed)</th>
-                                                            <th>@(Status)</th>
-                                                            <th>@(DateLastModification)</th>
-                                                        </tr>
-                                                    </thead>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </tab>
-                                    <tab heading="@(bills:InvoicePayment)">
-                                        <div class="portlet-body">
-                                            <div class="table-toolbar">
-                                                <div class="row">
-                                                    <div class="col-md-6" ng-show="!global.user.rights.bill.read">
-                                                        <div class="btn-group pull-left">
-                                                            <button class="btn blue" disabled data-ng-click="paymentBills()">@(Add) <i class="fa fa-plus"></i></button>
-                                                            <button title="@(Refresh)" class="btn" data-ng-click="
-                                        commercialList = [];
-                                        commercial_id = '';
-                                        status_id = null;
-                                        filterOptionsSociete.filterText = '';
-                                        clearCache();
-                                        find();"><i class="fa fa-refresh"></i></button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="btn-group pull-right">
-                                                            <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
-                                    </button>
-                                                            <ul class="dropdown-menu pull-right">
-                                                                <li>
-                                                                    <a href="#">
-                                                @(Update) </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#">
-                                                @(Delete) </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="dataTables_wrapper no-footer">
-                                                <table class="table table-striped table-bordered table-hover" id="societeListInvoicePayment">
-                                                    <thead>
-                                                        <tr role="row" class="heading">
-                                                            <th width="2%">
-                                                                <input type="checkbox" class="group-checkable">
-                                                            </th>
-                                                            <th>@(bills:DatePayment)</th>
-                                                            <th>@(bills:TypePayment)</th>
-                                                            <th>@(bills:NumberCheckTrans)</th>
-                                                            <th>@(bills:Bank)</th>
-                                                            <th>@(bills:PaymentBank)</th>
-                                                            <th>@(bills:PaymentAmout)</th>
-                                                        </tr>
-                                                    </thead>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </tab>
-                                </tabset>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class='col-md-12'>
+                        <!--INVOICE TABLE-->
+                        <tabset class="tabbable-line tabbable-full-width">
+                            <tab heading="@(bills:BillsCustomer)">
+                                <div ng-include="'/templates/_bill/list.html'" ng-controller="BillController" onload="ngIncludeInit({'client.id': societe._id}, 5)"></div>
+                            </tab>
+
+                            <tab heading="@(bills:BillsSupplier)">
+                                <div class="portlet-body">
+                                    <div class="table-toolbar">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="btn-group pull-left">
+                                                    <button class="btn blue" data-ng-click="addNew()">@(Add) <i class="fa fa-plus"></i></button>
+                                                    <button title="@(Refresh)" class="btn" data-ng-click="
+                                        commercialList = [];
+                                        commercial_id = '';
+                                        status_id = null;
+                                        filterOptionsSociete.filterText = '';
+                                        clearCache();
+                                        find();"><i class="fa fa-refresh"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="btn-group pull-right">
+                                                    <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+                                    </button>
+                                                    <ul class="dropdown-menu pull-right">
+                                                        <li>
+                                                            <a href="#">
+                                                @(Update) </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#">
+                                                @(Delete) </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTables_wrapper no-footer">
+                                        <table class="table table-striped table-bordered table-hover" id="societeListInvoicesSuppliers">
+                                            <thead>
+                                                <tr role="row" class="heading">
+                                                    <th width="2%">
+                                                        <input type="checkbox" class="group-checkable">
+                                                    </th>
+                                                    <th>@(bills:InvoiceId)</th>
+                                                    <th>@(bills:Date)</th>
+                                                    <th>@(bills:DateEcheance)</th>
+                                                    <th>@(bills:NetToBePaid)</th>
+                                                    <th>@(bills:AlreadyPaid)</th>
+                                                    <th>@(bills:StillToBeDisbursed)</th>
+                                                    <th>@(Status)</th>
+                                                    <th>@(DateLastModification)</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </tab>
+                            <tab heading="@(bills:InvoicePayment)">
+                                <div class="portlet-body">
+                                    <div class="table-toolbar">
+                                        <div class="row">
+                                            <div class="col-md-6" ng-show="!global.user.rights.bill.read">
+                                                <div class="btn-group pull-left">
+                                                    <button class="btn blue" disabled data-ng-click="paymentBills()">@(Add) <i class="fa fa-plus"></i></button>
+                                                    <button title="@(Refresh)" class="btn" data-ng-click="
+                                        commercialList = [];
+                                        commercial_id = '';
+                                        status_id = null;
+                                        filterOptionsSociete.filterText = '';
+                                        clearCache();
+                                        find();"><i class="fa fa-refresh"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="btn-group pull-right">
+                                                    <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+                                    </button>
+                                                    <ul class="dropdown-menu pull-right">
+                                                        <li>
+                                                            <a href="#">
+                                                @(Update) </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#">
+                                                @(Delete) </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTables_wrapper no-footer">
+                                        <table class="table table-striped table-bordered table-hover" id="societeListInvoicePayment">
+                                            <thead>
+                                                <tr role="row" class="heading">
+                                                    <th width="2%">
+                                                        <input type="checkbox" class="group-checkable">
+                                                    </th>
+                                                    <th>@(bills:DatePayment)</th>
+                                                    <th>@(bills:TypePayment)</th>
+                                                    <th>@(bills:NumberCheckTrans)</th>
+                                                    <th>@(bills:Bank)</th>
+                                                    <th>@(bills:PaymentBank)</th>
+                                                    <th>@(bills:PaymentAmout)</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </tab>
+                        </tabset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

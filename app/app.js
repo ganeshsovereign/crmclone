@@ -793,7 +793,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('societe.show.person', {
             url: "/person",
-            templateUrl: "/views/company/person.html",
+            templateUrl: "/views/company/company.html", //TODO company > person
             data: {
                 pageTitle: 'Fiche societe'
             }
