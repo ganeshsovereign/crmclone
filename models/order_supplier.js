@@ -48,8 +48,9 @@ var orderSupplierSchema = new Schema({
     datec: { type: Date, default: Date.now, set: setDate },
     date_livraison: { type: Date, default: Date.now, set: setDate },
     notes: [{
+        _id: false,
         author: {
-            id: { type: String, ref: 'User' },
+            id: { type: Schema.Types.ObjectId, ref: 'hr' },
             name: String
         },
         datec: Date,
@@ -105,6 +106,7 @@ var orderSupplierSchema = new Schema({
     }],
     weight: { type: Number, default: 0 }, // Poids total
     lines: [{
+        _id: false,
         //pu: {type: Number, default: 0},
         qty: {
             type: Number,
@@ -160,9 +162,13 @@ var orderSupplierSchema = new Schema({
         optional: { type: Schema.Types.Mixed }
     }],
     history: [{
+        _id: false,
         date: { type: Date, default: Date.now },
         author: {
-            id: String,
+            id: {
+                type: Schema.Types.ObjectId,
+                ref: 'hr'
+            },
             name: String
         },
         mode: String, //email, order, alert, new, ...
@@ -194,7 +200,7 @@ orderSupplierSchema.pre('save', function(next) {
         self.total_tva = result.total_tva;
         self.total_ttc = result.total_ttc;
 
-        if (self.isNew)
+        if (self.isNew && !self.ref)
         //console.log(self.entity);
             return EntityModel.findOne({ _id: self.entity }, "cptRef", function(err, entity) {
             if (err)

@@ -12,8 +12,8 @@
     "OrderDate": "Date commande",
     "OrderToProcess": "Commande à traiter",
     "NewOrder": "Nouvelle commande",
-    "NewCustomerOrder":"Nouvelle commande client",
-    "NewSupplierOrder":"Nouvelle commande fournisseur",
+    "NewCustomerOrder": "Nouvelle commande client",
+    "NewSupplierOrder": "Nouvelle commande fournisseur",
     "ToOrder": "Passer commande",
     "MakeOrder": "Passer commande",
     "SupplierOrder": "Commande fournisseur",
@@ -32,9 +32,9 @@
     "StatusOrderDraftShort": "Brouillon",
     "StatusOrderValidatedShort": "Validée",
     "StatusOrderSentShort": "Envoi en cours",
-    "RemovingOrder":"Retrait de commande",
-    "DateDeliveryPlannedShort":"Date d'expédition",
-    "DateReceiptPlannedShort":"Date de réception",
+    "RemovingOrder": "Retrait de commande",
+    "DateDeliveryPlannedShort": "Date d'expédition",
+    "DateReceiptPlannedShort": "Date de réception",
     "StatusOrderSent": "Envoi en cours",
     "StatusOrderOnProcessShort": "Traitement en cours",
     "StatusOrderProcessedShort": "Traitée",
@@ -173,5 +173,6 @@
     "DeliveryTo": "Expédiée à",
     "BillTo": "Facturée à",
     "Details": "Détails de la commande",
-    "CreateDelivery": "Créer un nouveau BI / BL"
+    "CreateDelivery": "Créer un nouveau BI / BL",
+    "Material": "Materiel"
 }

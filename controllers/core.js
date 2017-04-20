@@ -926,24 +926,64 @@ function convert(type) {
             });
             return self.plain("Type is commercial_id");
             break;
-        case 'bill_reset_commercial':
-            var BillModel = MODEL('bill').Schema;
+        case 'requestBuyEE':
+            var UserModel = MODEL('hr').Schema;
+            var RequestBuyModel = MODEL('europexpress_buy').Schema;
+            var OrderSupplierModel = MODEL('orderSupplier').Schema;
 
-            BillModel.find({})
-                .populate("client.id", "_id name commercial_id")
+            RequestBuyModel.find({})
+                //.populate("client.id", "_id name commercial_id")
                 .exec(function(err, docs) {
                     docs.forEach(function(elem) {
-                        //console.log(elem);
+                        console.log(elem);
 
-                        elem.update({ $set: { commercial_id: elem.client.id.commercial_id } }, { w: 1 }, function(err, doc) {
+                        var order = new OrderSupplierModel({
+                            ref: elem.ref,
+                            createdAt: elem.createdAt,
+                            updatedAt: elem.updatedAt,
+                            ref_supplier: elem.title,
+                            datec: elem.datec,
+                            date_livraison: elem.date_livraison,
+                            Status: elem.Status,
+                            notes: [{
+                                author: {},
+                                datec: elem.datec,
+                                note: elem.desc
+                            }],
+                            author: {},
+                            supplier: elem.fournisseur,
+                            optional: { SN: elem.vehicule.id },
+                            entity: self.user.entity
+                        });
+
+                        //if (elem.author.id.substr(0, 5) == 'user:') //Not an automatic code
+                        UserModel.findOne({ username: elem.author.id.substr(5).toLowerCase() }, "_id lastname firstname", function(err, user) {
+
+                            //console.log(user);
+                            //return;
+
+                            order.author = {
+                                id: user._id,
+                                name: user.fullname
+                            }
+
+                            order.notes[0].author = order.author;
+
+                            order.save(function(err, doc) {
+                                if (err)
+                                    return console.log(err);
+                            });
+                        });
+
+                        /*elem.update({ $set: { commercial_id: elem.client.id.commercial_id } }, { w: 1 }, function(err, doc) {
                             if (err)
                                 console.log(err);
 
                             //console.log(doc);
-                        });
+                        });*/
                     });
                 });
-            return self.plain("Type is bill_reset_commercial_id");
+            return self.plain("Type is requestBuyEE : Pensez a mettre le max ref dans la sequence !");
             break;
     }
 
