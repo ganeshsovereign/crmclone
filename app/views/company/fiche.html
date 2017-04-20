@@ -1,4 +1,7 @@
-<div class="page-bar">
+<div ng-if="employee.isremoved" class="alert alert-danger">
+    <strong>@(BeCareful)</strong>&nbsp;@(companies:CompanyDeleted)</div>
+
+<div class="page-bar" ng-init="findOne()">
     <ul class="page-breadcrumb">
         <li>
             <i class="fa fa-home"></i>
@@ -7,12 +10,15 @@
         </li>
         <li>
             <a ui-sref="societe.list">@(companies:CustomerList)</a>
-
-
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>{{societe.fullName}}</span>
+            <span ng-hide="societe.type == 'Company'"> @(companies:CustomerCardOf) {{societe.fullName}}</span>
+            <span ng-hide="societe.type == 'Person'"> @(companies:CardCompanyOf) {{societe.fullName}}</span>
+        </li>
+
+        <li>
+            <small ng-hide="!societe.salesPurchases.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!societe.salesPurchases.isActive" class="font-grey">@(Disabled)</small>
         </li>
     </ul>
 </div>
@@ -98,7 +104,7 @@
                 <div class="row list-separated profile-stat">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <div class="uppercase profile-stat-text"> @(DateCreation)</div>
-                        <div class="uppercase profile-stat-title"> {{customer.createdAt|date:'dd/MM/yyyy'}} </div>
+                        <div class="uppercase profile-stat-title"> {{societe.createdAt|date:'dd/MM/yyyy'}} </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <div class="uppercase profile-stat-text"> @(DateModification) </div>

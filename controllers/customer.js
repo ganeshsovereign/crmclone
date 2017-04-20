@@ -41,6 +41,7 @@ exports.install = function() {
 
     F.route('/erp/api/societe', object.read, ['authorize']);
     F.route('/erp/api/societe/dt', object.readDT, ['post', 'authorize']);
+    F.route('/erp/api/societe/dt_supplier', object.readDT_supplier, ['post', 'authorize']);
     F.route('/erp/api/societe/uniqId', object.uniqId, ['authorize']);
     F.route('/erp/api/societe/count', object.count, ['authorize']);
     F.route('/erp/api/societe/export', object.export, ['authorize']);
@@ -2010,6 +2011,133 @@ Object.prototype = {
         });
     },
     readDT: function() {
+        var self = this;
+        var SocieteModel = MODEL('Customers').Schema;
+
+        var query = JSON.parse(self.req.body.query);
+
+        //console.log(self.query);
+
+        var conditions = {
+            isremoved: { $ne: true },
+            company: null
+        };
+
+        if (self.query.entity != 'null')
+            conditions.entity = self.query.entity;
+        //                $in: [self.query.entity]
+        //}
+
+        //if (!self.user.multiEntities)
+        //    conditions.entity = { $in: ["ALL", self.user.entity] };
+
+        //if (!query.search.value)
+        switch (self.query.type) {
+            case "CUSTOMER":
+                conditions['salesPurchases.isCustomer'] = true;
+                break;
+            case "PROSPECT":
+                conditions['salesPurchases.isProspect'] = true;
+                break;
+            case "PROSPECT_CUSTOMER":
+                conditions.$or = [
+                    { 'salesPurchases.isProspect': true },
+                    { 'salesPurchases.isCustomer': true }
+                ];
+                break;
+            case "SUPPLIER":
+                conditions['salesPurchases.isSupplier'] = true;
+                break;
+            case "SUBCONTRACTOR":
+                conditions['salesPurchases.isSubcontractor'] = true;
+                break;
+            case "SUPPLIER_SUBCONTRACTOR":
+                conditions.$or = [
+                    { 'salesPurchases.isSupplier': true },
+                    { 'salesPurchases.isSubcontractor': true }
+                ];
+                break;
+            default: //ALL
+                break;
+        }
+
+
+        /*if (!query.search.value) {
+            if (self.query.status_id !== 'null')
+                conditions.Status = self.query.status_id;
+        } else
+            delete conditions.Status;
+
+        if (self.query.prospectlevel !== 'null')
+            conditions.prospectlevel = self.query.prospectlevel;
+        */
+        if (self.req.query.commercial_id !== 'null')
+            conditions["commercial_id.id"] = self.query.commercial_id;
+
+        if (!self.user.rights.societe.seeAll && !self.user.admin)
+            conditions["commercial_id.id"] = self.user._id;
+
+        var options = {
+            conditions: conditions,
+            select: 'type'
+        };
+
+        //console.log(options);
+
+        async.parallel({
+            status: function(cb) {
+                Dict.dict({
+                    dictName: "fk_stcomm",
+                    object: true
+                }, cb);
+            },
+            level: function(cb) {
+                Dict.dict({
+                    dictName: "fk_prospectlevel",
+                    object: true
+                }, cb);
+            },
+            datatable: function(cb) {
+                SocieteModel.dataTable(query, options, cb);
+            }
+        }, function(err, res) {
+            if (err)
+                console.log(err);
+
+            //console.log(res);
+
+            for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                var row = res.datatable.data[i];
+
+                // Add checkbox
+                res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                // Add id
+                res.datatable.data[i].DT_RowId = row._id.toString();
+
+                if (row.Tag)
+                    res.datatable.data[i].Tag = row.Tag.toString();
+                // Add url on name
+                res.datatable.data[i].name.last = '<a class="with-tooltip" href="#!/societe/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.last + '"><span class="icon-home"></span> ' + row.name.last + '</a>';
+                // Convert Date
+                res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                // Convert Status
+                res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + res.status.values[row.Status].label + '</span>' : row.Status);
+                // Convert Potentiel
+                if (res.level.values[row.prospectlevel])
+                    if (res.level.values[row.prospectlevel].label)
+                        res.datatable.data[i].prospectlevel = res.level.values[row.prospectlevel].label;
+                    else
+                        res.datatable.data[i].prospectlevel = i18n.t("companies:" + row.prospectlevel);
+                else
+                    res.datatable.data[i].prospectlevel = row.prospectlevel;
+            }
+
+            //console.log(res.datatable);
+
+            self.json(res.datatable);
+        });
+    },
+    readDT_supplier: function() {
         var self = this;
         var SocieteModel = MODEL('Customers').Schema;
 

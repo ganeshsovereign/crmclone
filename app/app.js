@@ -775,6 +775,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "SocieteController"
         })
+        .state('societe.list_supplier', {
+            url: "/supplier?type",
+            templateUrl: "/views/company/list_supplier.html",
+            data: {
+                pageTitle: 'Liste des societes'
+            },
+            controller: "SocieteController"
+        })
         .state('societe.show', {
             parent: "societe",
             url: "/{id:[0-9a-z]{24}}",

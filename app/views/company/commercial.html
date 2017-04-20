@@ -3,9 +3,9 @@
         <div class="form-horizontal form-row-seperated">
             <div class="portlet portlet light bordered">
                 <div class="portlet-title">
-                    <div class="caption font-yellow-crusta">
+                    <div class="caption">
                         <h3 class="portlet-title">
-                            <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(commercial:Commercial)
+                            <i class="fa fa-cubes sbold"></i>@(commercial:Commercial)
                         </h3>
                     </div>
                 </div>
@@ -27,13 +27,8 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <input type="text" class="form-control" e-ng-options="user as user.name for user in userList track by user.id" id="form_control_1" ng-model="societe.commercial_id">
+                                                        <input type="text" class="form-control" e-ng-options="user as user.name for user in userList track by user.id" id="form_control_1" ng-model="societe.salesPurchases.salesPerson">
                                                         <label for="form_control_1">@(commercial:Commercial)</label>
-                                                    </div>
-
-                                                    <div class="form-group form-md-line-input has-success">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.zonegeo">
-                                                        <label for="form_control_1">@(zonegeo) </label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
@@ -42,71 +37,56 @@
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <select class="table-group-action-input form-control" required ng-model="societe.typent_id" ng-options="s.id as s.label for s in dict.fk_typent.values"></select>
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.companyInfo.category" ng-options="s.id as s.label for s in dict.fk_typent.values"></select>
                                                         <label for="form_control_1">@(companies:ThirdPartyType)</label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <select class="table-group-action-input form-control" required ng-model="societe.effectif_id" ng-options="s.id as s.label for s in dict.fk_effectif.values"></select>
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.companyInfo.size" ng-options="s.id as s.label for s in dict.fk_effectif.values"></select>
                                                         <label for="form_control_1">@(companies:Staff)</label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <select class="table-group-action-input form-control" required ng-model="societe.prospectlevel" ng-options="s.id as s.label for s in dict.fk_prospectlevel.values"></select>
-                                                        <label for="form_control_1">@(companies:ProspectLevelShort)</label>
-                                                    </div>
-
-                                                    <div class="form-group form-md-line-input has-success">
-                                                        <select class="table-group-action-input form-control" required ng-model="societe.rival" ng-options="s.label as s.label for s in dict.fk_rival.values"></select>
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.rival" ng-options="s.label as s.label for s in dict.fk_rival.values"></select>
                                                         <label for="form_control_1">@(companies:RivalShort)</label>
-                                                    </div>
-
-                                                    <div class="form-group form-md-line-input has-success">
-                                                        <select class="table-group-action-input form-control" required ng-model="societe.prospectlevel" ng-class="societe.prospectLevel.css" ng-options="s.id as s.label for s in dict.fk_prospectlevel.values"></select>
-                                                        <label for="form_control_1">@(companies:PriceLevel)</label>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof1">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof1">
                                                         <label for="form_control_1">@(companies:ProfId1FR) </label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof2">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof2">
                                                         <label for="form_control_1">@(companies:ProfId2FR) </label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof3">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof3">
                                                         <label for="form_control_1">@(companies:ProfId3FR) </label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof4">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof4">
                                                         <label for="form_control_1">@(companies:ProfId4FR) </label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.idprof5">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof5">
                                                         <label for="form_control_1">@(companies:ProfId5FR) </label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.capital">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.capital">
                                                         <label for="form_control_1">@(companies:Capital) </label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input has-success">
                                                         <select class="table-group-action-input form-control" required ng-model="societe.segmentation" ng-options="s as s.label group by s.group for s in dict.fk_segmentation.values track by s.id"></select>
                                                         <label for="form_control_1">@(companies:CustomerSegmentation)</label>
-                                                    </div>
-
-                                                    <div class="form-group form-md-line-input has-success">
-                                                        <select class="table-group-action-input form-control" required ng-model="societe.familyProduct" ng-options="s as s.label group by s.group for s in dict.fk_segmentation.values track by s.id"></select>
-                                                        <label for="form_control_1">@(companies:ProductSegmentation)</label>
                                                     </div>
                                                 </div>
                                             </div>

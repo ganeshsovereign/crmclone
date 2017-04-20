@@ -264,7 +264,8 @@ var customerSchema = new Schema({
 
     social: {
         FB: { type: String, default: '' },
-        LI: { type: String, default: '' }
+        LI: { type: String, default: '' },
+        TW: { type: String, default: '' }
     },
 
     whoCanRW: { type: String, enum: ['owner', 'group', 'everyOne'], default: 'everyOne' },

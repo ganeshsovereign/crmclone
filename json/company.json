@@ -95,7 +95,7 @@
                 },
                 "menu:suppliers": {
                     "position": 2,
-                    "url": "/erp/#!/societe?type=SUPPLIER_SUBCONTRACTOR",
+                    "url": "/erp/#!/societe/supplier?type=SUPPLIER_SUBCONTRACTOR",
                     "perms": "societe.read",
                     "enabled": "$conf->societe->enabled",
                     "usertype": 2,
