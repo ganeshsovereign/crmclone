@@ -7,7 +7,7 @@
     <div class="portlet-body">
 
 
-        <span ng-if='societe.files.length' class='badge badge-success'>{{societe.files.length}}</span>
+        <span ng-if='product.files.length' class='badge badge-success'>{{product.files.length}}</span>
 
         <div ng-include="'/templates/gridfs/file.html'" ng-controller="FileCtrl" onload="init('societe', societe)"></div>
 

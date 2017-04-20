@@ -5,7 +5,7 @@
             <div class="portlet-title">
                 <div class="caption font-green-sharp">
                     <i class="icon-settings font-green-sharp"></i>
-                    <span class="caption-subject bold uppercase">@(SelectFiles)</span>
+                    <span class="caption-subject bold ">@(SelectFiles)</span>
                     <span class="caption-helper hide"></span>
                 </div>
             </div>
@@ -13,14 +13,14 @@
                 <div ng-show="uploader.isHTML5">
                     <!-- 3. nv-file-over uploader="link" over-class="className" -->
                     <div class="file-drop-zone margin-bottom-20" nv-file-over="" uploader="uploader" over-class="file-drop-zone-over">
-                        Base drop zone
+                        @(DragAndDrop)
                     </div>
                     <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
                 </div>
                 <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
-                <input type="file" nv-file-select="" uploader="uploader" multiple  />
+                <input type="file" nv-file-select="" uploader="uploader" multiple />
             </div>
-        </div>		
+        </div>
         <!-- END: ACCORDION DEMO -->
     </div>
     <div class="col-md-8" ng-show="upload">
@@ -29,8 +29,8 @@
             <div class="portlet-title">
                 <div class="caption font-green-sharp">
                     <i class="icon-settings font-green-sharp"></i>
-                    <span class="caption-subject bold uppercase">@(Upload)</span>
-                    <span class="caption-helper">Queue length: {{ uploader.queue.length}}</span>
+                    <span class="caption-subject bold ">@(Upload)</span>
+                    <span class="caption-helper">@(QueueLength): {{ uploader.queue.length}}</span>
                 </div>
                 <div class="actions">
                     <a class="btn btn-circle btn-default" href="javascript:;" ng-click="find()">
@@ -43,11 +43,11 @@
                     <table class="table table-hover table-light">
                         <thead>
                             <tr class="uppercase">
-                                <th width="50%">Name</th>
-                                <th ng-show="uploader.isHTML5">Size</th>
-                                <th ng-show="uploader.isHTML5">Progress</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th width="50%">@(Name)</th>
+                                <th ng-show="uploader.isHTML5">@(Size)</th>
+                                <th ng-show="uploader.isHTML5">@(Progress)</th>
+                                <th>@(Status)</th>
+                                <th>@(Actions)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,13 +66,13 @@
                                 </td>
                                 <td nowrap>
                                     <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-                                        <span class="glyphicon glyphicon-upload"></span> Upload
+                                        <span class="glyphicon glyphicon-upload"></span> @(Upload)
                                     </button>
                                     <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                                        <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                        <span class="glyphicon glyphicon-ban-circle"></span> @(Cancel)
                                     </button>
                                     <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
-                                        <span class="glyphicon glyphicon-trash"></span> Remove
+                                        <span class="glyphicon glyphicon-trash"></span> @(Delete)
                                     </button>
                                 </td>
                             </tr>
@@ -87,16 +87,16 @@
                     </div>
                 </div>
                 <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
-                    <span class="glyphicon glyphicon-upload"></span> Upload all
+                    <span class="glyphicon glyphicon-upload"></span> @(UploadAll)
                 </button>
                 <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
-                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+                    <span class="glyphicon glyphicon-ban-circle"></span> @(CancelAll)
                 </button>
                 <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
-                    <span class="glyphicon glyphicon-trash"></span> Remove all
+                    <span class="glyphicon glyphicon-trash"></span> @(DeleteAll)
                 </button>
             </div>
-        </div>		
+        </div>
         <!-- END: ACCORDION DEMO -->
     </div>
 </div>
@@ -106,7 +106,7 @@
         <div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
             <a id="tab_images_uploader_pickfiles" ng-click="find()" href="javascript:;" class="btn yellow">
                 <i class="fa fa-refresh"></i> @(Refresh) </a>
-            <a  ng-click="upload = true" ng-disabled="upload" id="tab_images_uploader_uploadfiles" href="javascript:;" class="btn green">
+            <a ng-click="upload = true" ng-disabled="upload" id="tab_images_uploader_uploadfiles" href="javascript:;" class="btn green">
                 <i class="fa fa-share"></i> @(Upload) </a>
         </div>
         <div class="row">
@@ -135,7 +135,7 @@
                 <tr ng-repeat="file in object.files">
                     <td>
                         <a ng-if="isImg(file)" ng-href="/erp/api/file/{{model}}/{{file._id}}" target="_blank" class="fancybox-button" data-rel="fancybox-button">
-                            <img ng-src="/erp/api/file/{{model}}/{{file._id}}" class="img-responsive" alt=""/>
+                            <img ng-src="/erp/api/file/{{model}}/{{file._id}}" class="img-responsive" alt="" />
                         </a>
                     </td>
                     <td>

@@ -54,114 +54,46 @@
                             <div class="form-body">
                                 <div class="row">
                                     <div class="col-md-offset-1 col-md-10">
-                                        <div class="form-group form-md-line-input">
 
-
-                                            <div class="form-group form-md-line-input has-success">
-                                                <input type="text" class="form-control" id="form_control_1" onbeforesave="checkUserExist($data)" ng-model="user.username">
-                                                <label for="form_control_1">@(users:UserName)<span class="required">
+                                        <div class="form-group form-md-line-input has-success">
+                                            <input type="text" class="form-control" id="form_control_1" onbeforesave="checkUserExist($data)" ng-model="user.username">
+                                            <label for="form_control_1">@(users:UserName)<span class="required">
                                         * </span></label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input has-success">
-                                                <input type="text" class="form-control" id="form_control_1" ng-model="user.password">
-                                                <label for="form_control_1">@(users:Password)</label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input has-success">
-                                                <input type="text" class="form-control" id="form_control_1" ng-change="checkEmailExist" ng-model="user.email">
-                                                <label for="form_control_1">@(Email)<span class="required">
-                                        * </span></label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input has-success">
-                                                <input type="text" class="form-control" id="form_control_1" ng-model="user.groups" ng-options="g.id as g.name for g in groups">
-                                                <label for="form_control_1">@(users:Group)</label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input has-success">
-                                                <input type="text" class="form-control" id="form_control_1" ng-model="user.lastConnection|date:'dd/MM/yyyy'">
-                                                <label for="form_control_1">@(users:LastConnection)</label>
-                                            </div>
-
-
-                                            <div class="form-group form-md-line-input has-success">
-                                                <input type="text" class="form-control" id="form_control_1" ng-model="user.creationDate|date:'dd/MM/yyyy'">
-                                                <label for="form_control_1">@(users:CreatedAt)</label>
-                                            </div>
-
                                         </div>
-                                    </div>
 
+                                        <div class="form-group form-md-line-input has-success">
+                                            <input type="text" class="form-control" id="form_control_1" ng-model="user.password">
+                                            <label for="form_control_1">@(users:Password)</label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input has-success">
+                                            <input type="text" class="form-control" id="form_control_1" ng-change="checkEmailExist" ng-model="user.email">
+                                            <label for="form_control_1">@(Email)<span class="required">
+                                        * </span></label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input has-success">
+                                            <input type="text" class="form-control" id="form_control_1" ng-model="user.groups" ng-options="g.id as g.name for g in groups">
+                                            <label for="form_control_1">@(users:Group)</label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input has-success">
+                                            <input type="text" class="form-control" id="form_control_1" ng-model="user.lastConnection|date:'dd/MM/yyyy'">
+                                            <label for="form_control_1">@(users:LastConnection)</label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input has-success">
+                                            <input type="text" class="form-control" id="form_control_1" ng-model="user.creationDate|date:'dd/MM/yyyy'">
+                                            <label for="form_control_1">@(users:CreatedAt)</label>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-        <!--<form editable-form name="editableUser" onaftersave="update()">
-            <div class="portlet portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption font-red">
-                        <h5 class="page-title font-red">
-                            <i class="fa fa-user "></i> {{user.username}}
-                        </h5>
-                    </div>
-                    <div class="actions">
-
-                        <a href="javascript:;" ng-click="editableUser.$show()" ng-hide="user.isremoved" ng-show="!editableUser.$visible && editable" class="btn green btn-sm">
-                            <i class="fa fa-pencil"></i> @(Edit) </a>
-                        <a class="btn sbold uppercase red" ui-sref="user.list"><i class="fa fa-angle-left"></i> @(Back)</a>
-                    </div>
-                    <div class="actions" ng-show="editableUser.$visible">
-                        <button type="submit" ng-disabled="editableUser.$waiting" class="btn blue btn-sm">@(Save)</button>
-                        <button type="button" ng-disabled="editableUser.$waiting" ng-click="editableUser.$cancel();
-                            findOne();" class="btn red btn-sm">@(Cancel)</button>
-                    </div>
-                </div>
-                <div class="portlet-body"></div>
-
-
-                <div class="row static-info" ng-class="{'has-error':$error, 'has-success': !$error}">
-                    <div class="col-md-5 name">@(users:Username) :</div>
-                    <div class="col-md-7 value">
-                        <span class="blue h5" editable-text="user.username" onbeforesave="checkUserExist($data)"> {{user.username|| "Non defini"}}</span>
-                    </div>
-                </div>
-
-                <div class="row static-info">
-                    <div class="col-md-5 name">@(Password) :</div>
-                    <div class="col-md-7 value">
-                        <span editable-text="user.password">  </span>
-                    </div>
-                </div>
-
-                <div class="row static-info">
-                    <div class="col-md-5 name">@(Email) :</div>
-                    <div class="col-md-7 value">
-                        <span class="blue h5" editable-text="user.email"> {{user.email|| '@(main:Undefined)'}}</span>
-                    </div>
-                </div>
-
-                <div class="row static-info">
-                    <div class="col-md-5 name">@(user:Group) :</div>
-                    <div class="col-md-7 value">
-                        <span editable-select="user.groupe" e-ng-options="g.id as g.name for g in groups">
-                                <small class="label label-sm label-default">{{user.profile}}</small>
-                           <!-- <span class="blue h5" editable-text="user.group"> {{user.group|| '@(main:Undefined)'}}</span>
-                    </div>
-                </div>
-
-                <div class="row static-info">
-                    <div class="col-md-5 name">@(DateLastModification) :</div>
-                    <div class="col-md-7 value">
-                        {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}}
-                    </div>
-                </div>
-            </div>
-        </form>-->
     </div>
 </div>

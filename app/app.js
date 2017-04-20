@@ -929,6 +929,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductController"
         })
+        .state('product.show.files', {
+            url: "/files",
+            templateUrl: "/views/company/files.html",
+            data: {
+                pageTitle: 'Images / Documents'
+            }
+        })
         .state('product.create', {
             parent: "product",
             url: "/create.html",
@@ -968,7 +975,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // marketing
         .state("product.show.marketing", {
             url: "/marketing",
-            templateUrl: "/templates/product/marketing.html",
+            templateUrl: "/views/product/marketing.html",
             data: { pageTitle: 'Marketing - Product' }
         })
         // attributes
@@ -980,13 +987,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // information
         .state("product.show.informations", {
             url: "/informations",
-            templateUrl: "/templates/product/informations.html",
+            templateUrl: "/views/product/informations.html",
             data: { pageTitle: 'Informations - Product' }
         })
         // price
         .state("product.show.price", {
             url: "/price",
-            templateUrl: "/templates/product/price.html",
+            templateUrl: "/views/product/price.html",
             data: { pageTitle: 'Prices - Product' }
         })
         // associations

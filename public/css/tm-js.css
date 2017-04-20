@@ -509,3 +509,13 @@ strong {
 label {
     margin-bottom: 25px;
 }
+
+.btn:not(.md-skip) {
+    font-size: 12px;
+    text-transform: lowercase;
+}
+
+.small,
+small {
+    font-size: 100%;
+}

@@ -1,0 +1,311 @@
+<script type="text/ng-template" id="searchproduct.html">
+    <a ng-class="{'list-group-item font-green': match.model.price_level != 'BASE'}">
+        <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.price_level}} : {{match.model.pu_ht|currency}})
+    </a>
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-info sbold"></i>@(Informations)
+                    </div>
+                    <div class="actions btn-set">
+                        <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
+                        <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
+                        <button type="button" ng-click="update()" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
+                        <div class="btn-group">
+                            <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
+                                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="#" ng-click="clone()">
+                                        <i class="fa fa-copy"></i> @(ToClone)
+                                    </a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="col-md-6">
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" maxlength="13" required placeholder="" id="form_control_1" onbeforesave="checkUserExist($data)" ng-model="product.info.SKU">
+                                    <label for="form_control_1">@(SKU)<span class="required">
+                                        * </span></label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <select class="table-group-action-input form-control" required ng-model="product.info.productType._id" ng-options="t._id as t.name for t in productTypes"></select>
+                                    <label for="form_control_1">@(Type)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <select class="table-group-action-input form-control" required ng-model="product.Status" ng-options="s.id as s.label for s in dict.fk_product_status.values"></select>
+                                    <label for="form_control_1">@(Status2)</label>
+                                </div>
+
+                                <!--     <div class="form-group form-md-line-input">
+                                    <label class="col-md-4 control-label" for="form_control_1">@(Activated): </label>
+                                    <div class="col-md-8">
+                                        <label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.info.isActive" ng-checked="product.info.isActive"/> @(Enabled) </label>
+                                    </div>
+                                </div> -->
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <select class="table-group-action-input form-control" required ng-model="s" ng-options="s.id as s.label for s in dict.fk_product_status.values"></select>
+                                    <label for="form_control_1">@(Visibility)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input">
+                                    <label class="col-md-4 control-label" for="form_control_1">@(Activated): </label>
+                                    <div class="col-md-8">
+                                        <input uniform type="checkbox" ng-model="product.info.isActive" ng-checked="product.info.isActive" /> @(Activated) </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="product.info.UPC">
+                                    <label for="form_control_1">@(products:UpcCode)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="product.product.info.ISBN">
+                                    <label for="form_control_1">@(products:IsbnCode)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input has-success">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="product.info.aclCode">
+                                    <label for="form_control_1">@(products:AclCode)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input">
+                                    <label class="col-md-4 font-yellow-crusta control-label">@(products:BarCode):</label>
+                                    <div class="col-md-8">
+                                        <div class="col-md-5">
+                                            <label class="control-label">
+                                            <input uniform type="checkbox" ng-model="product.info.autoBarCode" ng-checked="product.info.autoBarCode"/> @(Automatic) </label>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input class="form-control" maxlength="13" ng-model="product.info.EAN" ng-disabled="product.info.autoBarCode" placeholder="EAN13" type="text">
+                                            <div class="form-control-focus"> </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!--         <div class="form-group form-md-radios">
+                                    <label class="col-md-4 control-label">@(Type):</label>
+                                    <div class="col-md-8">
+
+                                        <div class="md-radio-list">
+                                            <div class="md-radio">
+                                                <label>
+                                            <input uniform type="radio" ng-model="product.type" value="PRODUCT"/> @(products:StandardProduct)</label>
+                                            </div>
+                                            <div class="md-radio">
+
+                                                <label>
+                                            <input uniform type="radio" ng-model="product.type" value="SERVICE"/> @(products:Services)</label>
+
+                                            </div>
+                                            <div class="md-radio">
+                                                <label>
+                                            <input uniform type="radio" ng-model="product.type" ng-disabled="product.Status == 'BUY'" value="PACK"/> @(products:PackProduct) </label>
+
+                                            </div>
+                                            <div class="md-radio">
+                                                <label>
+                                            <input uniform type="radio" ng-model="product.type" ng-disabled="product.Status == 'BUY'" value="VIRTUAL"/> @(products:ProductDematerialized) </label>
+
+                                            </div>
+                                            <div class="md-radio">
+                                                <label>
+                                            <input uniform type="radio" ng-model="product.type" ng-disabled="product.Status == 'BUY'" value="DYNAMIC"/> @(products:ConfigurableProduct) </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div class="form-group form-md-line-input has-success">
+                                <input type="text" class="form-control" id="form_control_1" ng-model="product.info.langs[0].name" required placeholder="">
+                                <label for="form_control_1">@(Label)</label>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-6">
+
+                            <div class="form-group form-md-line-input has-success">
+                                <select class="table-group-action-input form-control" id="form_control_1" ng-model="product.units" ng-options="s.id as s.label for s in dict.fk_units.values"></select>
+                                <label for="form_control_1">@(products:Units)</label>
+                            </div>
+
+                            <div class="form-group form-md-line-input">
+                                <input type="text" class="form-control" id="form_control_1" ng-model="product.size.weight" min="0" step="0.0001">
+                                <label for="form_control_1">@(products:Weight)</label>
+                                <div class="form-control-focus"> </div>
+                            </div>
+
+
+                            <!--<div class="form-group form-md-line-input">
+                                <label class="col-md-2 control-label">@(products:Weight): 
+                                </label>
+                                <div class="col-md-4">
+                                    <input type="number" class="form-control" ng-model="product.size.weight" min="0" step="0.0001" />
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                            </div>-->
+
+                        </div>
+
+                    </div>
+                    <div class="form-body">
+                        <div class="row">
+                            <!--<div class="col-md-12">
+                                <div class="portlet light portlet-form bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i></i>@(InternalDescription)
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-md-line-input">
+                                        <div class="col-md-12">
+                                            <textarea class="form-control" ng-model="product.info.notePrivate" rows="5"></textarea>
+                                            <div class="form-control-focus"> </div>
+                                            <span class="help-block">@(products:InternalOnly).</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+                            <div class="col-md-12">
+                                <div class="portlet light portlet-form bordered">
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-3 control-label" for="form_control_1">@(InternalDescription):</label>
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" ng-model="product.info.notePrivate" rows="5"></textarea>
+                                            <div class="form-control-focus"> </div>
+                                            <span class="help-block">@(products:InternalOnly).</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-3 control-label">@(Keywords):
+                                </label>
+                                        <div class="col-md-9">
+                                            <tags-input ng-model="product.info.langs[0].Tag" class="ti-input" placeholder="@(Add)">
+                                                <auto-complete source="AutoComplete($query,'/erp/api/product/Tag/autocomplete','')" min-length="1" max-results-to-show="10"></auto-complete>
+                                            </tags-input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div ng-if="product.type == 'DYNAMIC'" class="form-group">
+                        <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
+                                        * </span>
+                                </label>
+                        <div class="col-md-4" ng-init="loadDynForms()">
+                            <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
+                        </div>
+
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="form-group form-md-line-input" ng-if="product.isVariant">
+                    <div class="row hidden-print">
+                        <div class="col-md-12">
+                            <div class="col-md-8">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">@(products:Filters) :</label>
+                                    <div class="col-md-8" ng-init="loadDynForms()">
+                                        <select ng-model="type" ng-change="setCache('type', type); find();" ng-options="s.id as s.name for s in types" class="form-control"></select>
+                                    </div>
+                                </div>
+                                <div class="form-control-focus"> </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="no-footer table-responsive" ng-if="product.isVariant">
+                    <div class="col-md-12">
+                        <table class="table no-footer table-hover">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="20%">
+                                <col width="20%">
+                                <col width="20%">
+                                <col width="20%">
+                                <col width="10%">
+                                <col width="80px">
+                            </colgroup>
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th>Image</th>
+                                    <th>@(Name)</th>
+                                    <th>@(SKU)</th>
+                                    <th>@(Variant)</th>
+                                    <th>@(Channel)</th>
+                                    <th>@(TotalHTsell)</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="variant in productVariants.variantsArray" ng-class="{'font-red':product._id == variant._id}">
+                                    <td></td>
+                                    <td>{{variant.info.langs[0].name}}</td>
+                                    <td><a ui-sref="product.show({id:variant._id})">{{variant.info.SKU}}</a></td>
+                                    <td><span ng-repeat="v in variant.variants[0]">{{v.value}} / </span></td>
+                                    <td></td>
+                                    <td>{{variant.prices.pu_ht | currency}}</td>
+                                    <td>
+                                        <button ng-hide="product._id == variant._id" type="button" confirmed-click="remove(variant)" ng-confirm-click="Retirer la variantes ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</div>
+</div>

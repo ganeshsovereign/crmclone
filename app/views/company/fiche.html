@@ -23,10 +23,10 @@
     </ul>
 </div>
 
-<h3 ng-show="societe.type == 'Person'" class="page-title" ng-class="{'font-red':!societe.salesPurchases.isActive}">
+<!--<h3 ng-show="societe.type == 'Person'" class="page-title" ng-class="{'font-red':!societe.salesPurchases.isActive}">
     <i class="fa fa-cubes font-grey-silver"></i> @(companies:CustomerCard) / @(companies:Contact) : {{societe.fullName}} <small ng-hide="!societe.salesPurchases.isActive" class="font-yellow">@(Enabled)</small><small ng-show="!societe.salesPurchases.isActive"
         class="font-grey">@(Disabled)</small>
-</h3>
+</h3>-->
 
 <h3 ng-show="societe.type == 'Company'" class="page-title" ng-class="{'font-red':!societe.salesPurchases.isActive}">
     <i class="fa fa-cubes font-grey-silver"></i> @(companies:CardCompany) / @(companies:Contact) : {{societe.fullName}} <small ng-hide="!societe.salesPurchases.isActive" class="font-yellow">@(Enabled)</small><small ng-show="!societe.salesPurchases.isActive"
@@ -50,11 +50,12 @@
                         <span class="sr-only"> 60% Complete </span>
                     </div>
                 </div>
-                <!-- SIDEBAR BUTTONS -->
-                <!--        <div class="profile-userbuttons">
-                    <button type="button" class="btn btn-circle green-haze btn-sm">Follow</button>
-                    <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
-                </div> -->
+                
+                 <!-- SIDEBAR BUTTONS -->
+                <div class="profile-userbuttons">
+                    <button type="button" class="btn btn-circle green-haze btn-sm">Person</button>
+                    <button type="button" class="btn btn-circle btn-danger btn-sm">Company</button>
+                </div>
                 <!-- END SIDEBAR BUTTONS -->
                 <!-- SIDEBAR MENU -->
                 <div class="profile-usermenu">
