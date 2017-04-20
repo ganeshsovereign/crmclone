@@ -433,5 +433,6 @@
     "SendAccounting": "Passer les écritures comptables",
     "PaymentStatement": "Relevé de factures",
     "DefaultBank": "Banque par défaut",
-    "PaymentPeriod": "Délai de paiement"
+    "PaymentPeriod": "Délai de paiement",
+    "AccountParameters": "Paramètres Comptables"
 }

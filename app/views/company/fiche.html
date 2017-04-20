@@ -83,19 +83,18 @@
                             <a ui-sref="societe.show.task({id:societe._id})">
                                 <i class="icon-bubbles"></i> @(tasks:Tasks) </a>
                         </li>
-
-                        <li ng-class="{active: $state.includes('societe.show.feeds')}">
+                       <!-- <li ng-class="{active: $state.includes('societe.show.feeds')}">
                             <a ui-sref="societe.show.feeds({id:societe._id})">
                                 <i class="icon-bell"></i> @(tasks:Actions) </a>
-                        </li>
+                        </li>-->
                         <li ng-class="{active: $state.includes('societe.show.files')}">
                             <a ui-sref="societe.show.files({id:societe._id})">
                                 <i class="icon-picture"></i> @(products:Images/documents) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('societe.show.stats')}">
+                        <!--<li ng-class="{active: $state.includes('societe.show.stats')}">
                             <a ui-sref="societe.show.stats({id:societe._id})">
                                 <i class="icon-bar-chart"></i> @(Statistics) </a>
-                        </li>
+                        </li>-->
                     </ul>
                 </div>
             </div>

@@ -100,7 +100,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         var dict = ["fk_tva", "fk_product_status", "fk_units"];
 
         $rootScope.settings.layout.pageSidebarClosed = true;
-        $rootScope.settings.layout.pageBodySolid = true;
+        $rootScope.settings.layout.pageBodySolid = false;
 
         if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "product.show")
             return $rootScope.$state.go('product.show.informations');
