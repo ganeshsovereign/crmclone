@@ -1912,14 +1912,14 @@ function societe(id, cb) {
         };
     else
         query = {
-            code_client: id
+            'salesPurchases.ref': id
         };
 
     //console.log(query);
 
     SocieteModel.findOne(query, function(err, doc) {
         if (err)
-            return next(err);
+            return console.log(err);
 
         //console.log(doc);
         cb(doc);

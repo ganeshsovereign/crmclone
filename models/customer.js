@@ -314,7 +314,7 @@ var customerSchema = new Schema({
         sex: { type: String, default: "H" }
     },
 
-    ID: { type: Number, unique: true },
+    ID: { type: Number /*, unique: true -> BUG with versioner*/ },
     integrationId: { type: String, default: '' },
     channel: { type: ObjectId, ref: 'integrations', default: null },
 
