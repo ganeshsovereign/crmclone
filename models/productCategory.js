@@ -27,7 +27,6 @@ var CategorySchema = new Schema({
 
     langs: [{
         _id: false,
-        lang: { type: String, default: 'fr' },
         name: { type: String, default: 'All', unique: true },
         meta: {
             title: { type: String, default: '' },

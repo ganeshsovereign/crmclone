@@ -10,7 +10,6 @@ var ProductAttributesSchema = new Schema({
     code: String,
     langs: [{
         _id: false,
-        lang: { type: String, default: "fr" },
         name: String
     }],
     isVariant: { type: Boolean, default: false },

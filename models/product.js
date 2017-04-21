@@ -46,7 +46,6 @@ var supplierPriceSchema = new Schema({
 
 var LangSchema = new Schema({
     _id: false,
-    lang: { type: String, default: "fr" },
     description: { type: String, default: '' },
     shortDescription: { type: String, default: '' },
     body: { type: String, default: '' },
@@ -79,6 +78,8 @@ var product = {
 };
 
 var productSchema = new Schema({
+    isSell: { type: Boolean, default: true },
+    isBuy: { type: Boolean, default: false },
     isBundle: { type: Boolean, default: false },
     isVariant: { type: Boolean, default: false },
     groupId: { type: String, default: null },
@@ -91,17 +92,17 @@ var productSchema = new Schema({
     istop: { type: Boolean, default: false },
     ischat: { type: Boolean, default: false },
     //sourceDocument: { type: Schema.Types.ObjectId, ref: 'ProductImages', default: null },
-    /*imageSrc: {
+    imageSrc: {
         type: Schema.Types.ObjectId,
         ref: 'Images',
         default: null
-    },*/
+    },
 
     oldId: String, // Only for import migration
 
     //ref: { type: String, required: true, unique: true, uppercase: true }, //TODO Remove
-    name: { type: String, default: '' },
-    ID: { type: Number, unique: true },
+    //name: { type: String, default: '' },
+    ID: { type: Number },
     isremoved: { type: Boolean, default: false },
 
     // TODO Migrate to this model with PIM module 
@@ -162,13 +163,6 @@ var productSchema = new Schema({
 
     attachments: { type: Array, default: [] },
 
-    compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
-
     //label: { type: String, default: "" },
     //description: { type: String, default: "" },
     //body: { type: String, default: "" }, // Description For SEO
@@ -192,10 +186,10 @@ var productSchema = new Schema({
     template: { type: String },
     dynForm: String,
 
-    caFamily: { type: String, uppercase: true },
-    subFamily: { type: String, uppercase: true },
-    costCenter: { type: String, uppercase: true },
-    subCostCenter: { type: String, uppercase: true },
+    //caFamily: { type: String, uppercase: true },//producType
+    //subFamily: { type: String, uppercase: true },
+    //costCenter: { type: String, uppercase: true },
+    //subCostCenter: { type: String, uppercase: true },
 
     units: { type: String, default: "unit" },
 

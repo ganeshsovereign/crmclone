@@ -13,7 +13,6 @@ var nationalitySchema = new Schema({
     _id: String,
     langs: [{
         _id: false,
-        lang: { type: String, default: 'fr' },
         name: { type: String, default: '' }
     }],
 }, {
