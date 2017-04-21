@@ -1,20 +1,19 @@
-
 var Symeos = require('symeos-mqtt');
 var config = JSON.parse(CONFIG('symeosnet'));
 
 if (config && config.uuid) {
     var symeos = new Symeos(config);
-//console.log('starting symeosNet...');
+    console.log('starting symeosNet...');
 
-//F.functions.EE = EE;
+    //F.functions.EE = EE;
 
-    symeos.connect(function (response) {
-        console.log('Connected to SymeosNet'/*, response*/);
+    symeos.connect(function(response) {
+        console.log('Connected to SymeosNet', response);
         // Update Device - response emits event 'config'
-        symeos.update({uuid: config.uuid, type: CONFIG('name')});
+        symeos.update({ uuid: config.uuid, type: CONFIG('name') });
 
         // On message
-        symeos.on('message', function (message) {
+        symeos.on('message', function(message) {
             //console.log('recieved message', message);
 
             var MODEL;
@@ -22,10 +21,10 @@ if (config && config.uuid) {
             if (message.payload.include) {
                 MODEL = INCLUDE(message.payload.include);
 
-                MODEL.create(message.payload.model, {_id: 'user:symeosnet', firstname: message.payload.name, lastname: message.payload.service}, F.functions.EE, function (err, doc) {
-                    if (err) {
+                MODEL.create(message.payload.model, { _id: 'user:symeosnet', firstname: message.payload.name, lastname: message.payload.service }, F.functions.EE, function(err, doc) {
+                    if (err)
                         return console.log(err);
-                    }
+
                 });
             }
 
@@ -79,32 +78,32 @@ if (config && config.uuid) {
      console.log('recieved data', data);
      });*/
 
-    symeos.on('error', function (data) {
+    symeos.on('error', function(data) {
         console.log('recieved error', data);
-        F.functions.EE.emit('symeosnet', {type: 'symeosnet', data: {online: false}});
+        F.functions.EE.emit('symeosnet', { type: 'symeosnet', data: { online: false } });
     });
 
     /*symeos.on('reconnect', function () {
      console.log('recieved reconnect');
      });*/
 
-    symeos.on('offline', function () {
+    symeos.on('offline', function() {
         //console.log('recieved offline');
-        F.functions.EE.emit('symeosnet', {type: 'symeosnet', data: {online: false}});
+        F.functions.EE.emit('symeosnet', { type: 'symeosnet', data: { online: false } });
     });
 
-    symeos.on('connect', function () {
+    symeos.on('connect', function() {
         //console.log('recieved connect');
-        F.functions.EE.emit('symeosnet', {type: 'symeosnet', data: {online: true}});
+        F.functions.EE.emit('symeosnet', { type: 'symeosnet', data: { online: true } });
     });
 
-    F.functions.EE.on('publish', function (data) {
+    F.functions.EE.on('publish', function(data) {
         console.log(data);
         console.log("Send to SymeosNet");
 
         var message = {
             devices: ['c19f34e4-fd73-4010-a33c-b1c589ea8b03'],
-            payload: {reload: true},
+            payload: { reload: true },
             qos: 1
         };
         symeos.message(message);
