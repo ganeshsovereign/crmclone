@@ -1,4 +1,8 @@
 var Symeos = require('symeos-mqtt');
+
+if(!CONFIG('symeosnet'))
+    return;
+
 var config = JSON.parse(CONFIG('symeosnet'));
 
 if (config && config.uuid) {
