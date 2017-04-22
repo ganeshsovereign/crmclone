@@ -29,6 +29,9 @@
 
 MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout', '$http', '$modal', '$filter', 'Products', function($scope, $rootScope, $timeout, $http, $modal, $filter, Products) {
 
+    var user = $rootScope.login;
+    $scope.backTo = 'product.list';
+
     var loadedProduct = false;
     $scope.newPack = {};
 
@@ -380,6 +383,10 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 }, {
                     "data": "size.weight",
                     defaultContent: ""
+                }, {
+                    "data": "updatedAt"
+                }, {
+                    "data": "info.isActive"
                 }, {
                     "data": "Status"
                 }, {

@@ -17,8 +17,7 @@
         </li>
 
         <li>
-            <!--<span ng-hide="!product.info.isActive" class="badge badge-warning ng-binding ng-scope">@(Enabled)</span><span ng-show="!product.info.isActive" class="badge badge-error ng-binding ng-scope">@(Disabled)</span>-->
-            <small ng-hide="!product.info.isActive" class="font-green sbold">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
+            <small ng-hide="!product.info.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
         </li>
     </ul>
     <div class="page-toolbar" ng-if="product.zone">
@@ -48,7 +47,17 @@
                 <!-- END SIDEBAR USERPIC -->
                 <!-- SIDEBAR USER TITLE -->
                 <div class="profile-usertitle">
-                    <div class="profile-usertitle-name" ng-class="{'font-red':!product.info.isActive}"> {{product.info.SKU}} </div>
+                    <div class="profile-usertitle-name" ng-class="{'font-red':!product.info.isActive}"> {{product.info.SKU}}
+                    </div>
+                    <div class="md-checkbox-inline">
+                        <div class="md-checkbox has-warning">
+                            <input type="checkbox" id="checkbox14" class="md-check" ng-model="product.info.isActive" ng-checked="product.info.isActive">
+                            <label for="checkbox14">
+                         <span></span>
+                         <span class="check"></span>
+                        <span class="box"></span> @(Activate)</label>
+                        </div>
+                    </div>
                 </div>
                 <!-- END SIDEBAR USER TITLE -->
                 <div class="progress">
@@ -58,17 +67,8 @@
                 </div>
                 <!-- SIDEBAR BUTTONS -->
 
-                <div class="md-checkbox-inline">
-                    <div class="md-checkbox has-success">
-                        <input type="checkbox" id="checkbox14" class="md-check" ng-model="product.info.isActive" ng-checked="product.info.isActive">
-                        <label for="checkbox14">
-                         <span></span>
-                         <span class="check"></span>
-                        <span class="box"></span> @(Activated) </label>
-                    </div>
-                </div>
 
-                <!--        <div class="profile-userbuttons">
+                <!--<div class="profile-userbuttons">
                     <button type="button" class="btn btn-circle green-haze btn-sm">Follow</button>
                     <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
                 </div> -->
