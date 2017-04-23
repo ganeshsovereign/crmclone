@@ -28,6 +28,8 @@
 /* global angular: true */
 
 MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout', '$http', '$modal', '$filter', 'Products', function($scope, $rootScope, $timeout, $http, $modal, $filter, Products) {
+
+    $scope.backTo = 'product.list';
     $scope.newPack = {};
 
     $scope.product = {
@@ -374,6 +376,10 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 }, {
                     "data": "size.weight",
                     defaultContent: ""
+                }, {
+                    "data": "updatedAt"
+                }, {
+                    "data": "info.isActive"
                 }, {
                     "data": "Status"
                 }, {

@@ -475,5 +475,6 @@
     "FaceBook": "FaceBook",
     "PriceLevel": "Niveau de prix",
     "ConversionRate": "Taux de conversion",
-    "BeCarefulThisCompanyIsDeleted": "Attention cette société à été suprimée"
+    "BeCarefulThisCompanyIsDeleted": "Attention cette société à été suprimée",
+    "Actif/Inactif": "Actif/Inactif"
 }

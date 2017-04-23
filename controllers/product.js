@@ -1175,7 +1175,7 @@ Object.prototype = {
 
                     //res.datatable.data[i].info.name = row.info.langs[0].name;
                     // Convert Date
-                    //res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                    res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
                     if (row.weight)
                         res.datatable.data[i].weight = MODULE('utils').printWeight(row.size.weight, 3);
                     // Convert Status

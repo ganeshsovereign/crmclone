@@ -26,12 +26,12 @@
 <!--<h3 ng-show="societe.type == 'Person'" class="page-title" ng-class="{'font-red':!societe.salesPurchases.isActive}">
     <i class="fa fa-cubes font-grey-silver"></i> @(companies:CustomerCard) / @(companies:Contact) : {{societe.fullName}} <small ng-hide="!societe.salesPurchases.isActive" class="font-yellow">@(Enabled)</small><small ng-show="!societe.salesPurchases.isActive"
         class="font-grey">@(Disabled)</small>
-</h3>-->
+</h3>
 
 <h3 ng-show="societe.type == 'Company'" class="page-title" ng-class="{'font-red':!societe.salesPurchases.isActive}">
     <i class="fa fa-cubes font-grey-silver"></i> @(companies:CardCompany) / @(companies:Contact) : {{societe.fullName}} <small ng-hide="!societe.salesPurchases.isActive" class="font-yellow">@(Enabled)</small><small ng-show="!societe.salesPurchases.isActive"
         class="font-grey">@(Disabled)</small>
-</h3>
+</h3>-->
 
 <div ng-if="societe.isremoved" class="alert alert-danger"><strong>@(companies:BeCarefulThisCompanyIsDeleted) </div>
 
