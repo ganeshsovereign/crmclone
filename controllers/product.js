@@ -813,6 +813,18 @@ Object.prototype = {
         product.editedBy = self.user._id;
         product.createdBy = self.user._id;
 
+        if (!product.info || !product.info.productType || !product.info.categories || !product.info.categories.length) {
+            error = new Error('Product type and productCategories are required');
+
+            return self.json({
+                errorNotify: {
+                    title: 'Erreur',
+                    message: error
+                }
+            });
+        }
+
+        product.groupId = product._id.toString();
 
         //console.log(product);
 
@@ -1072,10 +1084,10 @@ Object.prototype = {
                 case "ALL":
                     break;
                 case "SELL":
-                    conditions.Status = { $in: ["SELL", "SELLBUY"] };
+                    conditions.isSell = true;
                     break;
                 case "BUY":
-                    conditions.Status = { $in: ["BUY", "SELLBUY"] };
+                    conditions.isBuy = true;
                     break;
                 default: //ALL
                     break;
@@ -1619,9 +1631,6 @@ Object.prototype = {
                 if (err)
                     return waterfallCallback(err);
 
-
-                //console.dir(result);
-
                 if (result.length)
                     waterfallCallback(null, result[0]);
                 else
@@ -1661,7 +1670,6 @@ Object.prototype = {
                         foreignField: '_id',
                         as: 'variants.optionId'
                     }
-
                 }, {
                     $group: {
                         _id: '$variants.optionId._id',
@@ -1670,10 +1678,8 @@ Object.prototype = {
                     }
                 }],
                 function(err, productOptions) {
-                    //console.log(productOptions);
                     if (err)
                         return waterfallCallback(err);
-
 
                     product.currentValues = productOptions;
 
@@ -1695,7 +1701,6 @@ Object.prototype = {
 
                 if (err)
                     return waterfallCallback(err);
-
 
                 values.forEach(function(item) {
                     var itemJSON = item.toJSON();

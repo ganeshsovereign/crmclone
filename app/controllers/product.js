@@ -28,8 +28,6 @@
 /* global angular: true */
 
 MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout', '$http', '$modal', '$filter', 'Products', function($scope, $rootScope, $timeout, $http, $modal, $filter, Products) {
-
-    var loadedProduct = false;
     $scope.newPack = {};
 
     $scope.product = {
@@ -118,10 +116,6 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             if (!$rootScope.$stateParams.id)
             // Is a list
                 initDatatable();
-            else if (!loadedProduct) {
-                $scope.findOne();
-                loadedProduct = true;
-            }
         });
 
         if ($rootScope.$stateParams.id) {

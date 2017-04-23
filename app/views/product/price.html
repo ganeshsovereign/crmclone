@@ -41,9 +41,8 @@
                 </div>
                 <div class="portlet-body">
                     <tabset class="tabbable-line tabbable-full-width">
-                        <tab heading="@(companies:ThirdPartyCustomers)" ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+                        <tab heading="@(products:Sell)" ng-if="product._id && product.isSell">
                             <div class="row">
-
                                 <div class="col-md-3">
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
@@ -325,7 +324,7 @@
                         </tab>
 
 
-                        <tab heading="@(companies:ThirdPartySuppliers)" ng-if="product._id && product.type != 'PACK' && (product.Status == 'BUY' || product.Status == 'SELLBUY')">
+                        <tab heading="@(products:Buy)" ng-if="product._id && product.type != 'PACK' && product.isBuy">
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="portlet light bordered">
