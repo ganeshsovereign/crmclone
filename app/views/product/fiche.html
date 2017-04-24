@@ -108,7 +108,7 @@
                         </li>
                         <li ng-class="{active: $state.includes('product.show.categories')}">
                             <a ui-sref="product.show.categories({id:product._id})">
-                                <i class="icon-share"></i> @(Categories) </a>
+                                <i class="icon-share"></i> @(Categories) <span ng-if="product.info.categories.length" class="badge badge-success">{{product.info.categories.length}}</span></a>
                         </li>
                         <li ng-if="product.isBundle || product.info.productType.isBunble" ng-class="{active: $state.includes('product.show.bundles')}">
                             <a ui-sref="product.show.bundles({id:product._id})" class="nav-link">

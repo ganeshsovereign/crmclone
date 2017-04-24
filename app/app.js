@@ -1008,7 +1008,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // associations
         .state("product.show.categories", {
             url: "/categories",
-            templateUrl: "/templates/product/categories.html",
+            templateUrl: "/views/product/categories.html",
             data: {
                 pageTitle: 'Categories - Product '
             },

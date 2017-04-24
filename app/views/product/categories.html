@@ -72,7 +72,7 @@
 
                                                 <!-- Nested node template -->
                                                 <script type="text/ng-template" id="nodes_renderer.html">
-                                                    <div ui-tree-handle class="tree-node tree-node-content">
+                                                    <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'bg-yellow': product.info.categories.indexOf(node._id) >= 0}">
                                                         <a class="" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-plus-square-o': collapsed,'fa-minus-square-o': !collapsed}"></span></a>                                                        <input type="checkbox" ng-checked="product.info.categories.indexOf(node._id) >= 0" ng-click="checkCategory(product.info.categories, node._id); product.$update();" /> {{node.langs[0].name}}
                                                         <span style="margin-left: 20px;" class="font-blue">/{{node.langs[0].linker}}/</span>
                                                         <small class="pull-right bold h6" ng-show="node.productsCount">{{node.productsCount}} @(products:Products)</small>
