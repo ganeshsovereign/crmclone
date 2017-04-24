@@ -94,7 +94,7 @@ var productSchema = new Schema({
     //sourceDocument: { type: Schema.Types.ObjectId, ref: 'ProductImages', default: null },
     imageSrc: {
         type: Schema.Types.ObjectId,
-        ref: 'Images',
+        //    ref: 'Images',
         default: null
     },
 

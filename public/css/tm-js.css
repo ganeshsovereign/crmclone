@@ -536,3 +536,8 @@ small {
 .checkboxDIV {
     margin: 30px 0px 0px 120px;
 }
+
+.profile img {
+    float: none;
+    margin: 0 auto;
+}

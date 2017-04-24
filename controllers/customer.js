@@ -30,7 +30,8 @@ var fs = require('fs'),
     csv = require('csv'),
     _ = require('lodash'),
     moment = require('moment'),
-    async = require('async');
+    async = require('async'),
+    Image = require('total.js/image');
 
 var Dict = INCLUDE('dict');
 
@@ -2391,7 +2392,7 @@ Object.prototype = {
 
             societe = _.extend(societe, self.body);
             societe.user_modif = self.user._id;
-            //console.log(req.body);
+            //console.log(self.body);
 
             var oldData = {
                 versionId: null,

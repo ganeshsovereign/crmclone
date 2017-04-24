@@ -228,10 +228,10 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
             $rootScope.languages = data.data;
         });
 
-        // Return url logo
-        $rootScope.getLogo = function(model, data) {
-            if (data && data.logo)
-                return "/erp/api/file/" + model + "/" + data.logo;
+        // Return url Image
+        $rootScope.getImage = function(model, data) {
+            if (data)
+                return "/erp/api/file/" + model + "/" + data;
             else
                 return "/assets/admin/layout/img/nophoto.jpg";
         };

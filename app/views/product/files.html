@@ -3,6 +3,7 @@
         <div class="caption font-yellow-crusta">
             <i class="fa fa-image font-yellow-crusta"></i>@(AttachedFiles)
         </div>
+        <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
     </div>
     <div class="portlet-body">
         <div ng-include="'/templates/gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
