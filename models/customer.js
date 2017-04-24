@@ -231,7 +231,7 @@ var customerSchema = new Schema({
         implementedBy: { type: ObjectId, ref: 'Customers', default: null },
         isActive: { type: Boolean, default: true },
         ref: { type: String, trim: true, uppercase: true, sparse: true, default: '' }, //code_client or code_fournisseur
-        language: { type: String, default: 'fr' },
+        language: { type: Number, default: 0 },
         receiveMessages: { type: Number, default: 0 },
         cptBilling: { type: Schema.Types.ObjectId, ref: 'Customers' },
         priceList: { type: Schema.Types.ObjectId, ref: 'priceList' }, //price_level

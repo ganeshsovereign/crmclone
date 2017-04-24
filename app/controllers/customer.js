@@ -25,7 +25,6 @@
 
 
 "use strict";
-/* global angular: true, $: true, jQuery: true */
 
 MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$modal', '$filter', /*'Upload',*/ '$timeout', 'dialogs', 'superCache', 'Societes',
     function($scope, $rootScope, $http, $modal, $filter, /*Upload,*/ $timeout, $dialogs, superCache, Societe) {
@@ -42,8 +41,8 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         $scope.validSiret = false;
         $scope.societe = {
             entity: $rootScope.entity,
-            Status: "ST_PFROI",
-            fournisseur: "NO",
+            isCutomer: true,
+            isSupplier: false,
             VATIsUsed: true,
             price_level: "BASE",
             iban: {}
@@ -165,13 +164,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 //console.log(data);
             });
 
-            $http({
-                method: 'GET',
-                url: '/erp/api/language'
-            }).success(function(data, status) {
-                $scope.$dict.language = data;
-                //console.log(data);
-            });
+            $scope.$dict.language = $rootScope.languages;
 
             $http({
                 method: 'GET',

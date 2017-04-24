@@ -940,7 +940,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('product.show.files', {
             url: "/files",
-            templateUrl: "/views/company/files.html",
+            templateUrl: "/views/product/files.html",
             data: {
                 pageTitle: 'Images / Documents'
             }

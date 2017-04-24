@@ -1,6 +1,5 @@
 <div class="row" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
-    <div class="col-md-4" ng-show="upload">
-        <!-- BEGIN: ACCORDION DEMO -->
+    <div class="col-md-4">
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption font-green-sharp">
@@ -21,21 +20,14 @@
                 <input type="file" nv-file-select="" uploader="uploader" multiple />
             </div>
         </div>
-        <!-- END: ACCORDION DEMO -->
     </div>
-    <div class="col-md-8" ng-show="upload">
-        <!-- BEGIN: ACCORDION DEMO -->
+    <div class="col-md-8">
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption font-green-sharp">
                     <i class="icon-settings font-green-sharp"></i>
                     <span class="caption-subject bold ">@(Upload)</span>
                     <span class="caption-helper">@(QueueLength): {{ uploader.queue.length}}</span>
-                </div>
-                <div class="actions">
-                    <a class="btn btn-circle btn-default" href="javascript:;" ng-click="find()">
-                        <i class="fa fa-file-o"></i> @(Hide)
-                    </a>
                 </div>
             </div>
             <div class="portlet-body">
@@ -106,8 +98,8 @@
         <div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
             <a id="tab_images_uploader_pickfiles" ng-click="find()" href="javascript:;" class="btn yellow">
                 <i class="fa fa-refresh"></i> @(Refresh) </a>
-            <a ng-click="upload = true" ng-disabled="upload" id="tab_images_uploader_uploadfiles" href="javascript:;" class="btn green">
-                <i class="fa fa-share"></i> @(Upload) </a>
+            <!--<a ng-click="upload = true" ng-disabled="upload" id="tab_images_uploader_uploadfiles" href="javascript:;" class="btn green">
+                <i class="fa fa-share"></i> @(Upload) </a>-->
         </div>
         <div class="row">
             <div id="tab_images_uploader_filelist" class="col-md-6 col-sm-12"></div>
