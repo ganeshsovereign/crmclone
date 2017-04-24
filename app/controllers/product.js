@@ -34,9 +34,9 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
     $scope.product = {
         new: true,
-        minPrice: 0,
-        billingMode: "QTY",
-        Status: "SELL",
+        //minPrice: 0,
+        //billingMode: "QTY",
+        isSell: true,
         tva_tx: 20,
         units: "unit",
         info: {
@@ -69,7 +69,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     var grid = new Datatable();
 
     $scope.isValidRef = function() {
-        var ref = $scope.product.ref.trim().toUpperCase();
+        var ref = this.product.info.SKU.trim().toUpperCase();
         $scope.refFound = false;
 
         var isValide = true;
@@ -81,8 +81,8 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 method: 'GET',
                 url: '/erp/api/product/' + ref
             }).success(function(data, status) {
-                //console.log(data);
-                if (data && data._id) // REF found
+                console.log(data);
+                if (data && data._id && this.product._id !== data._id) // REF found
                     $scope.refFound = true;
             });
 
@@ -104,7 +104,6 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
         if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "product.show")
             return $rootScope.$state.go('product.show.informations');
-        //expect($stateParams).toBe({contactId: "42"});
 
         $http({
             method: 'GET',
@@ -120,26 +119,24 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 initDatatable();
         });
 
-        if ($rootScope.$stateParams.id) {
-            $http({
-                method: 'GET',
-                url: '/erp/api/product/productTypes'
-            }).success(function(data, status) {
-                //console.log(data);
-                $scope.productTypes = data.data;
-            });
+        $http({
+            method: 'GET',
+            url: '/erp/api/product/productTypes'
+        }).success(function(data, status) {
+            //console.log(data);
+            $scope.productTypes = data.data;
+        });
 
-            $http({
-                method: 'POST',
-                url: '/erp/api/product/prices/select',
-                data: { cost: false }
-            }).success(function(data) {
-                $scope.pricesLists = data;
-            });
-        }
+        $http({
+            method: 'POST',
+            url: '/erp/api/product/prices/select',
+            data: { cost: false }
+        }).success(function(data) {
+            $scope.pricesLists = data;
+        });
     });
 
-    $scope.update = function(redirect) {
+    $scope.update = function() {
         var product = $scope.product;
         var self = this;
 
@@ -152,9 +149,6 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         }
 
         product.$update(function(response) {
-            if (redirect)
-                return $rootScope.$state.go('product.list');
-
             $scope.findOne(); // refresh product with populate
         });
     };

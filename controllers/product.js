@@ -2856,6 +2856,8 @@ ProductTypes.prototype = {
         var sortObj;
         var key;
 
+        var lang = 0;
+
         if (query.sort) {
             key = Object.keys(query.sort)[0];
             req.query.sort[key] = parseInt(query.sort[key], 10);
@@ -2866,7 +2868,6 @@ ProductTypes.prototype = {
                 'data.createdAt': 1
             };
         }
-
 
         ProductTypesModel.aggregate([{
             $lookup: {
@@ -2890,16 +2891,25 @@ ProductTypes.prototype = {
         }, {
             $project: {
                 countProducts: { $size: '$Products' },
-                name: '$name',
+                name: '$langs',
                 inventory: '$inventory',
                 createdAt: '$createdAt',
                 opts: { $arrayElemAt: ['$productOptions', 0] }
             }
         }, {
+            $unwind: {
+                path: '$name',
+                includeArrayIndex: 'langId'
+            }
+        }, {
+            $match: {
+                langId: lang
+            }
+        }, {
             $group: {
                 _id: '$_id',
                 options: { $push: '$opts' },
-                name: { $first: '$name' },
+                name: { $first: '$name.name' },
                 inventory: { $first: '$inventory' },
                 createdAt: { $first: '$createdAt' },
                 countProducts: { $first: '$countProducts' }
