@@ -399,6 +399,11 @@ hr {
     padding: 10px 0;
 }
 
+.block-spinner-bar>div,
+.page-spinner-bar>div {
+    background: #F3C200;
+}
+
 h4 {
     font-size: 14px;
 }
@@ -445,8 +450,6 @@ select.input-sm {
     line-height: 27px;
 }
 
-
-
 .profile-usermenu ul li a {
     color: #93a3b5;
     font-size: 14px;
@@ -486,7 +489,7 @@ select.input-sm {
 
 .form-group.form-md-line-input .form-control~label {
     font-size: 12px;
-    color: #f7ca18;
+    color: #333;
 }
 
 .form-group.form-md-line-input.form-md-floating-label .form-control~label {

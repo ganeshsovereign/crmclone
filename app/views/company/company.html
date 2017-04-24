@@ -17,59 +17,59 @@
                             <div class="col-md-6">
 
                                 <!-- Person -->
-                                <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input">
                                     <select class="table-group-action-input form-control" required ng-model="societe.name.civilite" ng-options="s.id as s.label for s in dict.fk_civilite.values"></select>
                                     <label for="form_control_1">@(companies:UserTitle)</label>
                                 </div>
 
-                                <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" ng-model="societe.name.last">
                                     <label for="form_control_1">@(companies:Lastname) </label>
                                 </div>
 
-                                <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" ng-model="societe.name.first">
                                     <label for="form_control_1">@(companies:Firstname) </label>
                                 </div>
 
                                 <!-- Company -->
-                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" ng-model="societe.fullName">
                                     <label for="form_control_1">@(companies:Name) </label>
                                 </div>
 
-                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" onbeforesave="checkCodeClient($data)" ng-model="societe.salesPurchases.ref">
                                     <label for="form_control_1">@(companies:IdThirdParty) </label>
                                 </div>
 
-                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" e-typeahead="ca as ca for ca in AutoComplete($viewValue,'api/societe/autocomplete/caFamily',societe.entity)" ng-model="contact.caFamily">
                                     <label for="form_control_1">@(companies:SocGroupShort) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
+                                <div class="form-group form-md-line-input">
                                     <select class="table-group-action-input form-control" required ng-model="societe.entity" ng-options="e.id as e.name for e in entityListAll"></select>
                                     <label for="form_control_1">@(main:Entity)</label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
+                                <div class="form-group form-md-line-input">
                                     <select class="table-group-action-input form-control" required ng-model="societe.Status" ng-options="s.id as s.label for s in dict.fk_stcomm.values"></select>
                                     <label for="form_control_1">@(companies:ProspectStatus)</label>
                                 </div>
 
 
-                                <div class="form-group form-md-line-input has-success">
+                                <div class="form-group form-md-line-input">
                                     <select class="table-group-action-input form-control" required ng-model="societe.fournisseur" ng-options="s.id as s.label for s in dict.fk_fournisseur.values"></select>
                                     <label for="form_control_1">@(companies:SupplierStatus)</label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
+                                <div class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" crm-address model="societe">
                                     <label for="form_control_1">@(companies:Address) </label>
                                 </div>
 
-                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input has-success">
+                                <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
                                     <input type="text" maxlength="13" class="form-control" id="form_control_1" ng-model="contact.idprof2">
                                     <label for="form_control_1">@(companies:ProfId2FR) </label>
                                 </div>
@@ -77,43 +77,43 @@
                             </div>
 
                             <div class="col-md-6">
-                                <div class="form-group form-md-line-input has-success">
+                                <div class="form-group form-md-line-input">
                                     <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.language" ng-options="s.id as s.name for s in $dict.language.data"></select>
                                     <label for="form_control_1">@(Language)</label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
+                                <div class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" ng-model="societe.phones.phone">
                                     <label for="form_control_1">@(companies:Phone) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
+                                <div class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" ng-model="societe.phones.fax">
                                     <label for="form_control_1">@(companies:Fax) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
+                                <div class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" ng-model="societe.emails[0].email">
                                     <label for="form_control_1">@(Email) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="societe.url">
+                                <div class="form-group form-md-line-input">
+                                    <input type="text" placeholder="@(companies:WithHttp)" class="form-control" id="form_control_1" ng-model="societe.url">
                                     <label for="form_control_1">@(Web) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="societe.social.TW">
+                                <div class="form-group form-md-line-input">
+                                    <input type="text" placeholder="@(companies:WithHttp)" class="form-control" id="form_control_1" ng-model="societe.social.TW">
                                     <label for="form_control_1">@(companies:Twitter) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="societe.social.LI">
+                                <div class="form-group form-md-line-input">
+                                    <input type="text" placeholder="@(companies:WithHttp)" class="form-control" id="form_control_1" ng-model="societe.social.LI">
                                     <label for="form_control_1">@(companies:LinkedIn) </label>
                                 </div>
 
-                                <div class="form-group form-md-line-input has-success">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="societe.social.FB">
+                                <div class="form-group form-md-line-input">
+                                    <input type="text" placeholder="@(companies:WithHttp)" class="form-control" id="form_control_1" ng-model="societe.social.FB">
                                     <label for="form_control_1">@(companies:FaceBook) </label>
                                 </div>
 
