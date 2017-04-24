@@ -32,6 +32,8 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     $scope.backTo = 'product.list';
     $scope.newPack = {};
 
+    $scope._language = 0;
+
     $scope.product = {
         new: true,
         //minPrice: 0,

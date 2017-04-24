@@ -437,6 +437,16 @@ h4 {
     height: 27px;
 }
 
+.input-group-sm>.input-group-btn>select.btn,
+.input-group-sm>select.form-control,
+.input-group-sm>select.input-group-addon,
+select.input-sm {
+    height: 27px;
+    line-height: 27px;
+}
+
+
+
 .profile-usermenu ul li a {
     color: #93a3b5;
     font-size: 14px;

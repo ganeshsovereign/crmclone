@@ -20,10 +20,12 @@
             <small ng-hide="!product.info.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
         </li>
     </ul>
-    <div class="page-toolbar" ng-if="product.zone">
+    <div class="page-toolbar">
         <div class="pull-right btn btn-fit-height" ng-class="{'yellow-gold':!product.entity.length, 'purple':product.entity.length}">
-            <i class="icon-globe"></i>&nbsp; @(eshop:OnWebSale) :
-            <span class="thin uppercase hidden-xs">{{product.entity.length}}</span>
+            <span class="col-md-7 thin uppercase hidden-xs" for="_language"><i class="icon-globe"></i> @(products:Selectlanguages)</span>
+            <div class="col-md-5">
+                <select class="form-control input-sm" id="_language" ng-model="_language" ng-options="s.idx as s.name for s in languages"></select>
+            </div>
         </div>
     </div>
 </div>

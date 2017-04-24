@@ -225,7 +225,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
             url: '/erp/api/languages'
         }).success(function(data, status) {
             //console.log(data);
-            $rootScope.languages = data;
+            $rootScope.languages = data.data;
         });
 
         // Return url logo
