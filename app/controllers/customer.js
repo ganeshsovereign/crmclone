@@ -262,6 +262,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             societe.$update(function(response) {
                 //tle.setTitle('Fiche ' + societe.name);
+                return $scope.findOne();
                 $scope.checklist = 0;
                 for (var i in response.checklist)
                     if (response.checklist[i])

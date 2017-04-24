@@ -34,8 +34,8 @@
 
                                 <!-- Company -->
                                 <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="societe.fullName">
-                                    <label for="form_control_1">@(companies:Name) </label>
+                                    <input type="text" class="form-control" id="name.last" ng-model="societe.name.last">
+                                    <label for="name.last">@(companies:Name) </label>
                                 </div>
 
                                 <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
@@ -54,17 +54,6 @@
                                 </div>
 
                                 <div class="form-group form-md-line-input">
-                                    <select class="table-group-action-input form-control" required ng-model="societe.Status" ng-options="s.id as s.label for s in dict.fk_stcomm.values"></select>
-                                    <label for="form_control_1">@(companies:ProspectStatus)</label>
-                                </div>
-
-
-                                <div class="form-group form-md-line-input">
-                                    <select class="table-group-action-input form-control" required ng-model="societe.fournisseur" ng-options="s.id as s.label for s in dict.fk_fournisseur.values"></select>
-                                    <label for="form_control_1">@(companies:SupplierStatus)</label>
-                                </div>
-
-                                <div class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" crm-address model="societe">
                                     <label for="form_control_1">@(companies:Address) </label>
                                 </div>
@@ -78,7 +67,7 @@
 
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
-                                    <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.language" ng-options="s.id as s.name for s in $dict.language.data"></select>
+                                    <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.language" ng-options="s.idx as s.name for s in $dict.language"></select>
                                     <label for="form_control_1">@(Language)</label>
                                 </div>
 

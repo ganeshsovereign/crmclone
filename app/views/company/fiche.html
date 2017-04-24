@@ -50,11 +50,56 @@
                         <span class="sr-only"> 60% Complete </span>
                     </div>
                 </div>
-<div class="profile-userbuttons">
-                <div class="btn-group">
-                                                                    <button type="button" class="btn btn-default">@(company:Person)</button>
-                                                                    <button type="button" class="btn btn-default">@(company:Company)</button>
-                                                                </div>
+                <div class="profile-usertitle">
+                    <div class="profile-usertitle-name" ng-class="{'font-red':!product.info.isActive}"> {{product.info.SKU}}
+                    </div>
+                    <div class="md-checkbox-inline">
+                        <div class="md-checkbox has-success">
+                            <input type="checkbox" id="isActive" class="md-check" ng-model="societe.salesPurchases.isActive" ng-checked="societe.salesPurchases.isActive">
+                            <label for="isActive">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(Activated)</label>
+                        </div>
+                    </div>
+                    <div class="md-checkbox-inline">
+                        <div class="md-checkbox">
+                            <input type="checkbox" id="isProspect" class="md-check" ng-change="(societe.salesPurchases.isProspect?societe.salesPurchases.isCustomer = false:null)" ng-model="societe.salesPurchases.isProspect" ng-checked="societe.salesPurchases.isProspect">
+                            <label for="isProspect">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(companies:Prospect)</label>
+                        </div>
+                        <div class="md-checkbox">
+                            <input type="checkbox" id="isCustomer" class="md-check" ng-change="(societe.salesPurchases.isCustomer?societe.salesPurchases.isProspect = false:null)" ng-model="societe.salesPurchases.isCustomer" ng-checked="societe.salesPurchases.isCustomer">
+                            <label for="isCustomer">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(companies:Customer)</label>
+                        </div>
+                    </div>
+                    <div class="md-checkbox-inline">
+                        <div class="md-checkbox">
+                            <input type="checkbox" id="isSupplier" class="md-check" ng-model="societe.salesPurchases.isSupplier" ng-checked="societe.salesPurchases.isSupplier">
+                            <label for="isSupplier">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(companies:Supplier)</label>
+                        </div>
+                        <div class="md-checkbox">
+                            <input type="checkbox" id="isSubcontractor" class="md-check" ng-model="societe.salesPurchases.isSubcontractor" ng-checked="societe.salesPurchases.isSubcontractor">
+                            <label for="isSubcontractor">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(companies:Subcontractor)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-userbuttons">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default">@(company:Person)</button>
+                        <button type="button" class="btn btn-default">@(company:Company)</button>
+                    </div>
                 </div>
 
                 <!-- SIDEBAR MENU -->
