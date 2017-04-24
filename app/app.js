@@ -1033,7 +1033,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // ecommerce
         .state("product.show.ecommerce", {
             url: "/ecommerce",
-            templateUrl: "/templates/product/ecommerce.html",
+            templateUrl: "/views/product/ecommerce.html",
             data: {
                 pageTitle: 'Ecommerce - Product '
             }

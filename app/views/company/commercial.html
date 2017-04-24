@@ -147,13 +147,14 @@
 
                                         </div>
                                         <div class="portlet-body">
-                                            <div ng-hide="editableReport.$visible" ng-if="societe.report.author.name" class="alert alert-info alert-dismissable">
-                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{societe.report.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By) {{societe.report.author.name}}
+                                            <div ng-hide="editableReport.$visible" ng-if="societe.internalNotes.author.name" class="alert alert-info alert-dismissable">
+                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{societe.internalNotes.datec| date:'@(main:date.format.java.dayhour)'}}</strong> @(By)
+                                                {{societe.internalNotes.author.name}}
                                             </div>
-                                            <div ng-if="!editableReport.$visible" marked="societe.report.new"></div>
-                                            <div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.report"></div>
+                                            <div ng-if="!editableReport.$visible" marked="societe.internalNotes.new"></div>
+                                            <div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.internalNotes"></div>
 
-                                            <!--<div markdown-diff origin="societe.report.old" new="societe.report.new"></div>-->
+                                            <!--<div markdown-diff origin="societe.internalNotes.old" new="societe.internalNotes.new"></div>-->
                                             <hr>
                                             <p>
                                                 <a ng-if="societe.url" ng-href="{{societe.url}}" target="_blank"> {{societe.url}}</a>

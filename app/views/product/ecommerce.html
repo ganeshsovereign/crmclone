@@ -1,0 +1,112 @@
+<div class="row">
+    <div class="col-md-12">
+        <div ng-if="product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
+
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption font-yellow-crusta">
+                        <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard)
+                    </div>
+                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                </div>
+
+
+                <div class="portlet-body">
+                    <div class="form-body">
+
+                        <div class="form-group form-md-line-input">
+                            <label class="col-md-2 control-label">@(Name): <span class="required">
+                                        * </span>
+                                </label>
+                            <div class="col-md-10">
+                                <input class="form-control" ng-model="product.info.langs[0].meta.title" required placeholder="" type="text">
+                                <div class="form-control-focus"> </div>
+                                <span class="help-block">META @(products:Title).</span>
+                            </div>
+                        </div>
+                        <div class="form-group form-md-line-input">
+                            <label class="col-md-2 control-label">@(Url): <span class="required">
+                                        * </span>
+                                </label>
+                            <div class="form-control-focus"> </div>
+                            <div class="col-md-10">
+                                <input class="form-control" ng-model="product.info.langs[0].linker" required placeholder="nom-du-produit" type="text">
+                            </div>
+                            <div class="form-control-focus"> </div>
+                        </div>
+                        <div class="form-group form-md-line-input">
+                            <label class="col-md-2 control-label">@(Options): <span class="required">
+                                        * </span>
+                                </label>
+                            <div class="col-md-10">
+                                <div class="md-checkbox-inline">
+                                    <div class="md-checkbox">
+                                        <label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.canBePurchased" ng-checked="product.canBePurchased"/> @(eshop:AvailableSale) </label>
+                                    </div>
+                                    <div class="md-checkbox">
+                                        <label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.onlyWeb" ng-checked="product.onlyWeb"/> @(eshop:WebExclusivity) </label>
+                                    </div>
+                                    <div class="md-checkbox">
+                                        <label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.canBeExpensed" ng-checked="product.canBeExpensed"/> @(eshop:ShowPrice) </label>
+                                    </div>
+                                    <div class="md-checkbox">
+                                        <label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.istop" ng-checked="product.istop"/> @(products:OnTop) </label>
+                                    </div>
+                                    <div class="md-checkbox">
+                                        <label class="control-label">
+                                        <input uniform type="checkbox" ng-model="product.ischat" ng-checked="product.ischat"/> @(Chat) </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group form-md-line-input">
+                            <label class="col-md-3 control-label" for="form_control_1">META @(products:Description) :</label>
+                            <div class="col-md-9">
+                                <textarea class="form-control" ng-model="product.info.langs[0].meta.description" rows="5"></textarea>
+                                <div class="form-control-focus"> </div>
+                                <span class="help-block">META @(products:Description).</span>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="form-group form-md-line-input">
+                            <label class="col-md-2 control-label">@(eshop:abstract) : <span class="required">
+                                        * </span>
+                                </label>
+                            <div class="col-md-10">
+                                <summernote height="100" ng-model="product.info.langs[0].shortDescription"></summernote>
+                                <div class="form-control-focus"> </div>
+                                <span class="help-block">
+                                        Description pour les sites e-commerce SEO. </span>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group form-md-line-input">
+                            <label class="col-md-2 control-label">@(Description) : <span class="required">
+                                        * </span>
+                                </label>
+                            <div class="col-md-10">
+                                <summernote height="500" ng-model="product.info.langs[0].body"></summernote>
+                                <div class="form-control-focus"> </div>
+                                <span class="help-block">
+                                        Description pour les sites e-commerce SEO. </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -219,7 +219,13 @@ var customerSchema = new Schema({
     },
 
     //contacts: { type: Array, default: [] },
-    internalNotes: { type: String, default: '' },
+
+    internalNotes: {
+        new: String,
+        old: String,
+        author: { type: ObjectId, ref: 'User' },
+        datec: { type: Date, default: Date.now }
+    },
     title: { type: String, default: '' },
 
     salesPurchases: {
