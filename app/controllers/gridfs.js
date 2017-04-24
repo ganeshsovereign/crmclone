@@ -27,14 +27,14 @@ International Registered Trademark & Property of ToManage SAS
 "use strict";
 
 MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUploader',
-    function ($scope, $rootScope, $http, FileUploader) {
+    function($scope, $rootScope, $http, FileUploader) {
         $scope.upload = false;
 
         $scope.files = [];
 
-        var uploader = $scope.uploader = new FileUploader({autoUpload: true});
+        var uploader = $scope.uploader = new FileUploader({ autoUpload: true });
 
-        $scope.init = function (model, object) {
+        $scope.init = function(model, object) {
             uploader.url = '/erp/api/file/' + model + '/' + object._id;
             $scope.model = model;
             $scope.id = object._id;
@@ -42,7 +42,7 @@ MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUpload
             $scope.find();
         };
 
-        $scope.find = function () {
+        $scope.find = function() {
             this.upload = false;
             //console.log($scope.object.files);
 
@@ -58,22 +58,15 @@ MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUpload
                 console.log(data);
             });*/
         };
-        
-        $scope.isImg = function(file) {
-            if(file.type.search('image') !== null)
-                return true;
-            
-            return false;
-        };
 
-        $scope.delete = function (id) {
+        $scope.delete = function(id) {
             $http({
                 method: 'DELETE',
                 url: '/erp/api/file/' + $scope.model + '/' + $scope.id,
                 params: {
                     fileId: id
                 }
-            }).success(function (data, status) {
+            }).success(function(data, status) {
 
                 //console.log(data);
                 if ($scope.object) {
@@ -89,7 +82,7 @@ MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUpload
         // FILTERS
         uploader.filters.push({
             name: 'customFilter',
-            fn: function (item /*{File|FileLikeObject}*/, options) {
+            fn: function(item /*{File|FileLikeObject}*/ , options) {
                 return this.queue.length < 10;
             }
         });
@@ -104,18 +97,18 @@ MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUpload
         };
 
         // CALLBACKS
-        uploader.onErrorItem = function (fileItem, response, status, headers) {
+        uploader.onErrorItem = function(fileItem, response, status, headers) {
             console.info('onErrorItem', fileItem, response, status, headers);
         };
-        uploader.onCancelItem = function (fileItem, response, status, headers) {
+        uploader.onCancelItem = function(fileItem, response, status, headers) {
             console.info('onCancelItem', fileItem, response, status, headers);
         };
-        uploader.onCompleteAll = function () {
+        uploader.onCompleteAll = function() {
             console.info('onCompleteAll');
             $scope.find();
         };
 
-        uploader.onCompleteItem = function (item, response, status, headers) {
+        uploader.onCompleteItem = function(item, response, status, headers) {
             //console.log(response);
             if ($scope.object) {
                 $scope.object.files = response.files;
@@ -125,4 +118,5 @@ MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUpload
 
         //console.info('uploader', uploader);
 
-    }]);
+    }
+]);

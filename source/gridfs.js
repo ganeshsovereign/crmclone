@@ -164,11 +164,12 @@ exports.pluginGridFs = function(schema, opt) {
         options.root = opt.root;
 
         return putGridFileByPath(file.path, (this._id) + "_" + file.filename, file.filename, options, function(err, result) {
-            //console.log(result);
+            //console.log("Grifs : ", err, result);
             var files = {};
             files.name = result.filename;
             files.originalFilename = result.metadata.originalFilename;
             files.type = result.contentType;
+            files.isImg = result.contentType.split("/")[0] === "image";
             files.size = result.internalChunkSize;
             files._id = result.fileId;
             files.datec = result.uploadDate;

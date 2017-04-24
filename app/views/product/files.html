@@ -1,31 +1,10 @@
-<div class="portlet light portlet-form bordered">
-    <div class="portlet-title">
-        <div class="caption font-yellow-crusta">
-            <i class="fa fa-image font-yellow-crusta"></i>@(Pictures)
-        </div>
-    </div>
-    <div class="portlet-body">
-
-
-        <span ng-if='product.files.length' class='badge badge-success'>{{product.files.length}}</span>
-
-        <div ng-include="'/templates/gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
-
-    </div>
-</div>
-
-<div class="portlet light portlet-form bordered">
+<div class="portlet light portlet-form bordered" ng-if="product._id">
     <div class="portlet-title">
         <div class="caption font-yellow-crusta">
             <i class="fa fa-image font-yellow-crusta"></i>@(AttachedFiles)
         </div>
     </div>
     <div class="portlet-body">
-
-
-        <span ng-if='product.files.length' class='badge badge-success'>{{product.files.length}}</span>
-
         <div ng-include="'/templates/gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
-
     </div>
 </div>

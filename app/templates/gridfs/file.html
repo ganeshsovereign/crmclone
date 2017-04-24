@@ -126,7 +126,7 @@
             <tbody>
                 <tr ng-repeat="file in object.files">
                     <td>
-                        <a ng-if="isImg(file)" ng-href="/erp/api/file/{{model}}/{{file._id}}" target="_blank" class="fancybox-button" data-rel="fancybox-button">
+                        <a ng-if="file.isImg" ng-href="/erp/api/file/{{model}}/{{file._id}}" target="_blank" class="fancybox-button" data-rel="fancybox-button">
                             <img ng-src="/erp/api/file/{{model}}/{{file._id}}" class="img-responsive" alt="" />
                         </a>
                     </td>
@@ -134,10 +134,10 @@
                         <a ng-href="/erp/api/file/{{model}}/{{file._id}}?download=1" target="_blank">{{file.originalFilename}}</a>
                     </td>
                     <td>
-                        <input class="form-control" type="text" ng-model="file.description">
+                        <input ng-if="file.isImg" class="form-control" type="text" ng-model="file.description">
                     </td>
                     <td>
-                        <label ng-if="isImg(file)">
+                        <label ng-if="file.isImg">
                             <input uniform ng-model="file.icon" ng-checked="file.icon" type="radio"/>
                         </label>
                     </td>

@@ -27,58 +27,39 @@ International Registered Trademark & Property of ToManage SAS
 "use strict";
 
 var async = require('async'),
-        _ = require('lodash'),
-        fs = require('fs'),
-        Image = require('total.js/image');
+    _ = require('lodash'),
+    fs = require('fs'),
+    Image = require('total.js/image');
 
 var Dict = INCLUDE('dict');
 
-exports.install = function () {
+exports.install = function() {
 
-    F.route('/erp/api/file/{Model}/{Id}', function (model, id) {
+    F.route('/erp/api/file/{Model}/{Id}', function(model, id) {
         var self = this;
         var Model = MODEL(model).Schema;
 
         if (self.body.data)
             var body = JSON.parse(self.body.data);
 
-        console.log(self.body);
+        //console.log(self.body);
 
-        var saveFile = function () {
+        var saveFile = function() {
 
-            self.module('gridfs').addFile(Model, id, self.files[0], function (err, doc, file) {
-                console.log(file);
+            self.module('gridfs').addFile(Model, id, self.files[0], function(err, doc, file) {
+                //console.log(file);
 
                 if (body && body.varname) {
                     doc[body.varname] = file._id;
-                    doc.save(function (err, doc) {
-                    });
+                    doc.save(function(err, doc) {});
                 }
 
                 if (err)
-                    self.throw500(err);
-                else
-                    self.json(/*{
-                        status: "ok"
-                    }*/doc);
+                    return self.throw500(err);
+
+                self.json(doc);
             });
         };
-
-        /*var saveFile = function () {
-         var filestorage = self.filestorage('societe');
-         
-         filestorage.insert(self.files[0].filename, self.files[0].path, function (err, stat, id) {
-         console.log(err);
-         console.log(stat);
-         console.log(id);
-         if (err)
-         self.throw500(err);
-         else
-         self.json({
-         status: "ok"
-         });
-         });
-         };*/
 
         if (self.files.length > 0) {
 
@@ -91,7 +72,7 @@ exports.install = function () {
                     image.thumbnail(200, 200);
 
                 image.minify();
-                return image.save(self.files[0].path, function () {
+                return image.save(self.files[0].path, function() {
                     saveFile();
                 });
             }
@@ -102,11 +83,11 @@ exports.install = function () {
             self.throw500("Error in request file");
     }, ['upload', 'authorize'], 10240);
 
-    F.route('/erp/api/file/{Model}/{fileId}', function (model, fileId) {
+    F.route('/erp/api/file/{Model}/{fileId}', function(model, fileId) {
         var self = this;
         var Model = MODEL(model).Schema;
 
-        Model.getFile(fileId, function (err, store) {
+        Model.getFile(fileId, function(err, store) {
             if (err)
                 return self.throw500(err);
 
@@ -123,7 +104,7 @@ exports.install = function () {
 
     }, ['authorize']);
 
-    F.route('/erp/api/file', function () {
+    F.route('/erp/api/file', function() {
         var self = this;
 
         if (!self.query.model)
@@ -138,7 +119,7 @@ exports.install = function () {
             };
 
         // get file list for a specifiq id link to a model collection
-        return Model.listFiles(query, function (err, items) {
+        return Model.listFiles(query, function(err, items) {
             if (err)
                 return self.throw500(err);
 
@@ -147,7 +128,7 @@ exports.install = function () {
 
             //console.log(items);
 
-            var result = items.map(function (item) {
+            var result = items.map(function(item) {
                 //File type
                 var type;
 
@@ -178,22 +159,22 @@ exports.install = function () {
     }, ['authorize']);
 
 
-    F.route('/erp/api/file/{Model}/{Id}', function (model, id) {
+    F.route('/erp/api/file/{Model}/{Id}', function(model, id) {
         var self = this;
         var Model = MODEL(model).Schema;
 
         Model.findOne({
             _id: id
-        }, function (err, doc) {
+        }, function(err, doc) {
 
             if (err)
                 return self.throw500(err);
 
-            doc.removeFile(self.query.fileId, function (err, result) {
+            doc.removeFile(self.query.fileId, function(err, result) {
                 if (err)
                     return self.throw500(err);
 
-                return self.json(/*{status: "ok"}*/result);
+                return self.json( /*{status: "ok"}*/ result);
             });
         });
     }, ['delete', 'authorize']);

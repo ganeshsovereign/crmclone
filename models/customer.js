@@ -286,7 +286,7 @@ var customerSchema = new Schema({
         css: { type: String, default: "note-info" }
     }],
 
-    attachments: { type: Array, default: [] },
+    files: { type: Array, default: [] },
     history: { type: Array, default: [] },
 
     createdBy: { type: ObjectId, ref: 'Users', default: null },
