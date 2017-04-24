@@ -219,6 +219,15 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
             $rootScope.entityListAll.push({ id: "ALL", name: "ALL" });
         });
 
+        // Get Entity list
+        $http({
+            method: 'GET',
+            url: '/erp/api/languages'
+        }).success(function(data, status) {
+            //console.log(data);
+            $rootScope.languages = data;
+        });
+
         // Return url logo
         $rootScope.getLogo = function(model, data) {
             if (data && data.logo)
