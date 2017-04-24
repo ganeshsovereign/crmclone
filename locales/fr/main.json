@@ -614,7 +614,6 @@
     "DateFrom": "A partir du %s",
     "AllOver": "Partout",
     "Catalog": "Catalogue",
-    "Ecommerce": "Ecommerce",
     "DateUntil": "Jusqu'au %s",
     "Check": "Vérifier",
     "Internal": "Interne",
@@ -822,5 +821,6 @@
     "Hide": "Cacher",
     "Progress": "Progression",
     "Filename": "Nom du fichier",
-    "Pictures": "Images"
+    "Pictures": "Images",
+    "Setting": "Propriétés"
 }

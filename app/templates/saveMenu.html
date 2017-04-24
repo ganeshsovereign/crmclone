@@ -1,22 +1,33 @@
+<!--
 <a class="btn sbold uppercase red" ui-sref="{{backTo}}"><i class="fa fa-angle-left"></i> @(Back)</a>
 <button type="button" ng-hide="createMod" ng-click="update(true)" class="btn sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
 <button type="button" ng-show="createMod" ng-click="create()" class="btn sbold uppercase green"><i class="fa fa-plus"></i> @(Create)</button>
-<!--<button type="button" ng-click="update()" class="btn sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
+-->
+
+<a class="btn red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
+<button type="button" ng-hide="createMod" ng-click="update(true)" class="btn green"><i class="fa fa-check"></i> @(Save)</button>
+<button type="button" ng-show="createMod" ng-click="update()" class="btn green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
 <div class="btn-group">
-                            <a class="btn dark sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
-                                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="#" ng-click="clone()">
-                                        <i class="fa fa-copy"></i> @(ToClone)
-                                    </a>
-                                </li>
-                                <li class="divider">
-                                </li>
-                                <li>
-                                    <a href="#" class="font-red" ng-show="login.rights.employee.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le collaborateur ?" title="Supprimer le collaborateur">
-                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
-                                    </a>
-                                </li>
-                            </ul>
+    <a class="btn yellow-crusta dropdown-toggle" href="javascript:;" data-toggle="dropdown">
+        <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+    </a>
+    <ul class="dropdown-menu pull-right">
+        <li>
+            <a href="#" ng-click="clone()">
+                <i class="fa fa-copy"></i> @(ToClone)
+            </a>
+        </li>
+        <li class="divider">
+        </li>
+        <li>
+            <a href="#" ng-click="clone()">
+                <i class="fa fa-copy"></i> @(PrintPDF)
+            </a>
+        </li>
+        <li>
+            <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                <i class="fa fa-trash-o font-red"></i> @(Delete)
+            </a>
+        </li>
+    </ul>
+</div>

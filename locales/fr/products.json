@@ -311,5 +311,9 @@
     "Consumptions": "Statisques des consommations",
     "Variants": "Variantes",
     "EditVariants": "Edit. variantes",
-    "CreateVariants": "Creat. variantes"
+    "CreateVariants": "Creat. variantes",
+    "Costs": "Coûts",
+    "DirectCost": "Coût Direct",
+    "IndirectCost": "Coût Indirect",
+    "TotalCost": "Coût Total"
 }
