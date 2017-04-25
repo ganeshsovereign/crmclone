@@ -37,6 +37,19 @@
                 <div class="portlet-body form">
                     <div class="form-horizontal">
                         <div class="form-body">
+                            <div class="col-md-6">
+                                <div class="form-group form-md-line-input">
+                                    <select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
+                                    <label for="form_control_1">@(Entity)</label>
+                                    <div class="form-control-focus"> </div>
+                                </div>
+                                <div class="form-group form-md-line-input">
+                                    <div class="col-md-12">
+                                        <select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
+                                        <span class="help-block">@(Entity).</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div ng-if="login.multiEntities" class="form-group">
                                 <label class="col-md-1 control-label">@(Entity)</label>
                                 <div class="col-md-5">

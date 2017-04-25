@@ -38,6 +38,14 @@
                                     <input type="text" class="form-control" id="name" ng-model="product.info.langs[0].name" required placeholder="">
                                     <label for="name">@(Label)</label>
                                 </div>
+                                <div class="form-group form-md-line-input">
+                                    <select class="form-control" name="">
+                                                        <option value="">Option 1</option>
+                                                        <option value="">Option 2</option>
+                                                        <option value="">Option 3</option>
+                                                    </select>
+                                    <label for="form_control_1"> @(products:MainCategory)</label>
+                                </div>
 
                                 <!--<div class="form-group form-md-line-input ">
                                     <select class="table-group-action-input form-control" required ng-model="s" ng-options="s.id as s.label for s in dict.fk_product_status.values"></select>
@@ -64,7 +72,7 @@
                                 </div>
 
                                 <div class="form-group form-md-line-input">
-                                    <label class="col-md-2 control-label">@(products:BarCode):</label>
+                                    <label class="col-md-2 control-label">@(products:EANCode):</label>
                                     <div class="col-md-10">
                                         <div class="col-md-3">
                                             <label class="control-label">
@@ -164,12 +172,11 @@
                             </div>-->
                             <div class="col-md-12">
 
-
                                 <tabset class="tabbable-line tabbable-full-width">
                                     <tab heading="@(Description)" ng-if="product._id && product.isSell">
                                         <div class="row">
                                             <p> @(Description) : @(products:ShowOnBill). </p>
-                                            <summernote height="100" ng-model="product.info.langs[0].description"></summernote>
+                                            <textarea class="form-control" ng-model="product.info.langs[0].description" rows="5"></textarea>
                                         </div>
                                     </tab>
                                     <tab heading="@(LongueDescription)" ng-if="product._id && product.isSell">

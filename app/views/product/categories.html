@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                         </tab>
-                        <tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+                        <tab ng-if="product._id">
                             <tab-heading>
                                 <span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(products:Cross-Sell)
                             </tab-heading>
@@ -161,7 +161,7 @@
                             </div>
                         </tab>
 
-                        <tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+                        <tab ng-if="product._id">
                             <tab-heading>
                                 <span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(products:Up-Sell)
                             </tab-heading>
@@ -243,7 +243,7 @@
                             </div>
                         </tab>
 
-                        <tab ng-if="product._id && (product.Status == 'SELL' || product.Status == 'SELLBUY')">
+                        <tab ng-if="product._id">
                             <tab-heading>
                                 <span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(products:SubstituteProduct)
                             </tab-heading>

@@ -75,17 +75,14 @@
 
 
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_sell" placeholder="Normal" type="text">
+                                                        <input class="form-control" ng-model="product.compta_sell" placeholder="Normal" type="text" readonly>
                                                         <label for="ProductAccountancySellCode">@(products:ProductAccountancySellCode)</label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_sell_eu" placeholder="Export EU" type="text">
+                                                        <input class="form-control" ng-model="product.compta_sell_eu" placeholder="Export EU" type="text" readonly>
                                                         <label for="ProductAccountancySellCodeEU">@(products:ProductAccountancySellCode) EU</label>
                                                     </div>
-                                                    <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_sell_exp" placeholder="Export" type="text">
-                                                        <label for="ProductAccountancySellCodeEX">@(products:ProductAccountancySellCode) Export</label>
-                                                    </div>
+
                                                 </div>
 
 
@@ -96,18 +93,9 @@
                                                         <select class="table-group-action-input form-control" ng-model="product.tva_tx" ng-options="c.value as c.value for c in dict.fk_tva.values"></select>
                                                         <label for="VATRate">@(products:VATRate) </label>
                                                     </div>
-                                                    <div class="row"></div>
-                                                    <div class="caption caption-md">
-                                                        <span class="caption-subject font-grey-cascade bold uppercase">@(products:SellSegmentation)</span>
-                                                        <span class="caption-helper"> @(products:UsedForStatistics)</span>
-                                                    </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.costCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'costCenter')" />
-                                                        <label for="FamilyProducts">@(products:Family) </label>
-                                                    </div>
-                                                    <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-disabled="!product.costCenter" ng-model="product.subCostCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subCostCenter',{costCenter:product.costCenter})" />
-                                                        <label for="SubFamilyProducts">@(products:SubFamily) </label>
+                                                        <input class="form-control" ng-model="product.compta_sell_exp" placeholder="Export" type="text" readonly>
+                                                        <label for="ProductAccountancySellCodeEX">@(products:ProductAccountancySellCode) Export</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -327,15 +315,15 @@
                                                         <span class="caption-subject font-grey-cascade bold uppercase">@(products:ProductAccountancyBuyCode)</span>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_buy" placeholder="Normal" type="text">
+                                                        <input class="form-control" ng-model="product.compta_buy" readonly placeholder="Normal" type="text">
                                                         <label for="ProductAccountancyBuyCode">@(products:ProductAccountancyBuyCode)</label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_buy_eu" placeholder="Export EU" type="text">
+                                                        <input class="form-control" ng-model="product.compta_buy_eu" readonly placeholder="Export EU" type="text">
                                                         <label for="ProductAccountancyBuyCodeEU">@(products:ProductAccountancyBuyCode) EU</label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_buy_exp" placeholder="Export" type="text">
+                                                        <input class="form-control" ng-model="product.compta_buy_exp" readonly placeholder="Export" type="text">
                                                         <label for="ProductAccountancyBuyCodeEX">@(products:ProductAccountancyBuyCode) Export</label>
                                                     </div>
                                                 </div>
@@ -343,11 +331,6 @@
 
 
                                                 <div class="col-md-6">
-                                                    <div class="form-group form-md-line-input ">
-                                                        <select class="table-group-action-input form-control" ng-model="product.tva_tx_buy" ng-options="c.value as c.value for c in dict.fk_tva.values"></select>
-                                                        <label for="VATRateBuy">@(products:VATRate) </label>
-                                                    </div>
-                                                    <div class="row"></div>
                                                     <div class="caption caption-md">
                                                         <span class="caption-subject font-grey-cascade bold uppercase">@(products:BuySegmentation)</span>
                                                         <span class="caption-helper"> @(products:UsedForStatistics)</span>

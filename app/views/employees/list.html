@@ -41,16 +41,16 @@
 
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-user font-blue"></i> @(users:ListOfEmployees)
-            </div>
             <!--<div class="caption">
-                <i class="fa fa-user font-blue"></i>
-                <span class="caption-subject font-blue sbold uppercase">@(users:ListOfUsers)</span>
+                <i class="fa fa-user font-blue"></i> @(users:ListOfEmployees)
             </div>-->
+            <div class="caption">
+                <i class="fa fa-user"></i>
+                <span class="caption-subject sbold uppercase"> @(users:ListOfEmployees)</span>
+            </div>
             <div class="actions">
-                <button class="btn green" ui-sref="employee.create">@(Add) <i class="fa fa-plus"></i></button>
-                <button title="@(Refresh)" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                <button class="btn blue" ui-sref="employee.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
         <div class="portlet-body">
