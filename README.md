@@ -2,24 +2,24 @@
 <img src="https://www.tomanage.fr/images/gestion-de-production-tomanage-logo.png" alt="ERP software open source with IOT ToManage" data-canonical-src="https://www.tomanage.fr/images/gestion-de-production-tomanage-logo.png" style="max-width:100%;">
 </a>
 
-# Framework base to build your ToManage ERP/CRM and IoT
+# Framework base to build your ToManage open source ERP software with objects connected network (IoT)
 
-ToManage is the first ERP software with internet of things (IOT) network in open source.
+ToManage is the first open source ERP software with objects connected network (IoT : Internet of Things).
 
-ERP software manage your organization's activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).
-The objects connected network (IOT) allow for faster and further (to collect relevant external data, to relay sensor data through, to create alerts, ...) to work in real time .
+open source ERP software ToManage manage your organization's activity (contacts, suppliers, invoices, orders, stocks, agenda, ecommerce, planning, etc ...).
+Objects connected network (IOT) integrating in open source ERP software ToManage allow for faster and further (to collect relevant external data, to relay sensor data through, to create alerts, ...) to work in real time .
 
 <a href="https://www.tomanage.fr" target="_blank">
 <img src="https://www.tomanage.fr/images/logiciel-cms-prise-de-commande-en-ligne-to-manage.png" alt="ERP software open source with IOT ToManage screen" data-canonical-src="https://www.tomanage.fr/images/logiciel-cms-prise-de-commande-en-ligne-to-manage.png" style="max-width:100%;">
 </a>
 
 
-It's an Open Source ERP software with javascript language and use Nodejs MongoDB Angularjs and Totaljs .
+The ToManage open Source ERP software with javascript language and use Nodejs MongoDB Angularjs and Totaljs .
 <p><a href="https://www.tomanage.fr/logiciel-open-source" target="_blank">
 <img src="https://cdn.evbuc.com/eventlogos/188938959/angularnodejstotaljsmongodb-1.jpg" alt="ERP software open source with Internet of things network totaljs nodejs angularjs mongodb" data-canonical-src="https://www.tomanage.fr/logiciel-open-source" style="max-width:100%;">
 </a></p>
 
-You can freely use, study, modify or distribute it according to its Free Software licence.
+You can freely use, study, modify or distribute it according to its Free Software licence (licence Apache V2.0).
 
 You can use it as a standalone application or as a web application to be able to access it from the Internet or a LAN.
 
