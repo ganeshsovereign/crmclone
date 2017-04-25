@@ -425,9 +425,9 @@ h4 {
 }
 
 .profile-usermenu ul li.active a {
-    color: #000;
+    color: #fff;
     /*#F3C200;*/
-    background-color: #F3C200;
+    background-color: #364150;
     /* #F4F6F7;*/
     border-left: 2px solid #F3C200;
     margin-left: -2px;
@@ -440,6 +440,34 @@ h4 {
 
 .input-sm {
     height: 27px;
+}
+
+.form-group.form-md-line-input .form-control.edited:not([readonly])~.form-control-focus:after,
+.form-group.form-md-line-input .form-control.edited:not([readonly])~label:after,
+.form-group.form-md-line-input .form-control:focus:not([readonly])~.form-control-focus:after,
+.form-group.form-md-line-input .form-control:focus:not([readonly])~label:after {
+    visibility: visible;
+    left: 0;
+    width: 100%;
+    background: #F3C200;
+}
+
+.md-checkbox label>.check {
+    top: -4px;
+    left: 6px;
+    width: 10px;
+    height: 20px;
+    border: 2px solid #F3C200;
+    border-top: none;
+    border-left: none;
+    opacity: 0;
+    z-index: 5;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    transform: rotate(180deg);
+    -webkit-transition-delay: .3s;
+    -moz-transition-delay: .3s;
+    transition-delay: .3s;
 }
 
 .input-group-sm>.input-group-btn>select.btn,
@@ -478,7 +506,8 @@ select.input-sm {
     top: 20px;
 }
 
-.form-horizontal .form-group.form-md-line-input {
+.form-horizontal .form-group.form-md-line-input,
+.form-horizontal .form-md-checkboxes {
     padding-top: 15px;
     margin: 0 10px 15px;
 }

@@ -21,7 +21,7 @@
         </li>
     </ul>
     <div class="page-toolbar">
-        <div class="pull-right btn btn-fit-height" ng-class="{'yellow-gold':!product.entity.length, 'purple':product.entity.length}">
+        <div class="pull-right btn btn-fit-height" ng-class="{'blue-ebonyclay':!product.entity.length, 'purple':product.entity.length}">
             <span class="col-md-7 thin uppercase hidden-xs" for="_language"><i class="icon-globe"></i> @(products:Selectlanguages)</span>
             <div class="col-md-5">
                 <select class="form-control input-sm" id="_language" ng-model="_language" ng-options="s.idx as s.name for s in languages"></select>
@@ -96,12 +96,12 @@
                     <ul class="nav">
                         <li ng-class="{active: $state.includes('product.show.informations')}">
                             <a ui-sref="product.show.informations({id:product._id})">
-                                <i class="icon-info"></i> @(Informations) </a>
+                                <i class="icon-info"></i> @(Marketing) / PIM </a>
                         </li>
-                        <li ng-class="{active: $state.includes('product.show.marketing')}">
+                        <!--       <li ng-class="{active: $state.includes('product.show.marketing')}">
                             <a ui-sref="product.show.marketing({id:product._id})">
                                 <i class="icon-speech"></i> @(Marketing) </a>
-                        </li>
+                        </li>  -->
                         <li ng-class="{active: $state.includes('product.show.price')}">
                             <a ui-sref="product.show.price({id:product._id})">
                                 <i class="icon-basket"></i> @(Price) </a>
