@@ -2,9 +2,9 @@
     <div class="col-md-4">
         <div class="portlet light bordered">
             <div class="portlet-title">
-                <div class="caption font-green-sharp">
-                    <i class="icon-settings font-green-sharp"></i>
-                    <span class="caption-subject bold ">@(SelectFiles)</span>
+                <div class="caption">
+                    <i class="fa fa-file-image-o"></i>
+                    <span class="caption-subject bold">@(SelectFiles)</span>
                     <span class="caption-helper hide"></span>
                 </div>
             </div>
@@ -25,8 +25,8 @@
         <div class="portlet light bordered">
             <div class="portlet-title">
                 <div class="caption font-green-sharp">
-                    <i class="icon-settings font-green-sharp"></i>
-                    <span class="caption-subject bold ">@(Upload)</span>
+                    <i class="fa fa-download font-yellow-crusta"></i>
+                    <span class="caption-subject bold font-yellow-crusta ">@(Upload)</span>
                     <span class="caption-helper">@(QueueLength): {{ uploader.queue.length}}</span>
                 </div>
             </div>
@@ -96,7 +96,7 @@
 <div class="form-body">
     <div class="tab-pane" id="tab_images">
         <div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
-            <a id="tab_images_uploader_pickfiles" ng-click="find()" href="javascript:;" class="btn yellow">
+            <a id="tab_images_uploader_pickfiles" ng-click="find()" href="javascript:;" class="btn default">
                 <i class="fa fa-refresh"></i> @(Refresh) </a>
             <!--<a ng-click="upload = true" ng-disabled="upload" id="tab_images_uploader_uploadfiles" href="javascript:;" class="btn green">
                 <i class="fa fa-share"></i> @(Upload) </a>-->

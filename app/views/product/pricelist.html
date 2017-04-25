@@ -17,7 +17,7 @@
         </ul>
         <div class="page-toolbar">
             <div class="btn-group pull-right">
-                <a class="btn btn-circle dark dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
+                <a class="btn yellow-crusta dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
                                                     <i class="fa fa-angle-down"></i>
                                                 </a>
                 <ul class="dropdown-menu pull-right">
@@ -47,7 +47,7 @@
         </div>
     </div>
     <h3 class="page-title">
-        <i class="fa fa-cubes font-grey-silver"></i> Liste des tarifs
+        <i class="fa fa-list-ol font-grey-silver"></i> @(products:PriceLevel)
     </h3>
 
 
@@ -131,12 +131,12 @@
     <div class="portlet light portlet-form bordered" ng-init="init()">
         <div class="portlet-title">
             <div class="caption">
-                <i class="fa fa-cubes font-yellow-crusta"></i>
-                <i class="caption-subject font-yellow-crusta sbold uppercase"></i>@(products:PriceLevel)
+                <i class="fa fa-list-ol"></i>
+                <i class="caption-subject dark bold uppercase"></i>@(products:PriceLevel)
             </div>
             <div class="actions">
-                <button class="btn btn-circle default" ng-click="addNewPrice()">@(Add) <i class="fa fa-plus"></i></button>
-                <button title="@(Refresh)" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                <button class="btn blue" ng-click="addNewPrice()">@(Add) <i class="fa fa-plus"></i></button>
+                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
         <div class="portlet-body">

@@ -4,22 +4,23 @@
             <div class="portlet portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption">
-                        <h3 class="portlet-title">
-                            <i class="fa fa-cubes sbold"></i>@(bills:Billing)
-                        </h3>
+                        <i class="icon-credit-card"></i>
+                        <span class="caption-subject dark bold uppercase"> @(bills:Billing)</span>
+                        <span class="caption-helper"> - @(companies:CardCompany)</span>
                     </div>
+                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
                 </div>
 
                 <div class="portlet-body">
                     <div class="form-body">
                         <div class="row">
-                            <div class="col-md-8 col-sm-12">
+                            <div class="col-md-12 col-sm-12">
                                 <div class="portlet light portlet-form bordered">
                                     <div class="portlet-title">
                                         <div class="caption">
                                             <i class="fa fa-cog"></i>@(bills:AccountParameters)
                                         </div>
-                                        <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+
                                     </div>
                                     <div class="portlet-body">
                                         <div class="form-body">

@@ -442,6 +442,11 @@ h4 {
     height: 27px;
 }
 
+.profile-usermenu ul li a:hover {
+    background-color: #F4F6F7;
+    color: #364150;
+}
+
 .form-group.form-md-line-input .form-control.edited:not([readonly])~.form-control-focus:after,
 .form-group.form-md-line-input .form-control.edited:not([readonly])~label:after,
 .form-group.form-md-line-input .form-control:focus:not([readonly])~.form-control-focus:after,
@@ -518,7 +523,7 @@ select.input-sm {
 
 .form-group.form-md-line-input .form-control~label {
     font-size: 12px;
-    color: #333;
+    color: #c29d0b;
 }
 
 .form-group.form-md-line-input.form-md-floating-label .form-control~label {

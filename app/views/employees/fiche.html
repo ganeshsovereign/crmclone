@@ -9,14 +9,14 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="employee.list">@(users:ListOfEmployees)</a>
+            <a ui-sref="employee.list"> @(users:ListOfEmployees)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
             <span>@(users:EmployeesCardOf) {{employee.fullName}}</span>
         </li>
     </ul>
-    <div class="page-toolbar" ng-hide="employee.isremoved">
+    <!-- <div class="page-toolbar" ng-hide="employee.isremoved">
         <div class="btn-group pull-right">
             <button type="button" class="btn btn-fit-height yellow-lemon dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                 @(Tools) <i class="fa fa-angle-down"></i>
@@ -34,7 +34,7 @@
                 </li>
             </ul>
         </div>
-    </div>
+    </div> -->
 </div>
 
 <div ng-if="employee.isremoved" class="alert alert-danger"><strong>@(users:BeCareful) !</strong> @(users:EmployeeUserHasBeenDeleted) </div>
