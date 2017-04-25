@@ -102,11 +102,11 @@
                                                         <span class="caption-helper"> @(products:UsedForStatistics)</span>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.costCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'costCenter')" />
+                                                        <input class="form-control" ng-model="product.caFamily" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'caFamily')" />
                                                         <label for="FamilyProducts">@(products:Family) </label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-disabled="!product.costCenter" ng-model="product.subCostCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subCostCenter',{costCenter:product.costCenter})" />
+                                                        <input class="form-control" ng-disabled="!product.caFamily" ng-model="product.subFamily" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subFamily',{caFamily:product.caFamily})" />
                                                         <label for="SubFamilyProducts">@(products:SubFamily) </label>
                                                     </div>
                                                 </div>
@@ -398,7 +398,7 @@
                                                 <span class="caption-subject font-grey-gallery bold uppercase">Prix d'achat</span>
                                             </div>
                                             <div class="actions">
-                                                <a class="btn blue" ng-click="addNewPrice()" href="javascript:;">
+                                                <a class="btn blue" ng-if="prices.length==0" ng-click="addNewPrice()" href="javascript:;">
                                                     <i class="fa fa-plus"></i> @(Add)
                                                 </a>
                                                 <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;">
@@ -419,8 +419,8 @@
                                                             </th>
                                                             <th>@(Liste de prix)</th>
                                                             <!--<th>@(products:Promo)</th>-->
-                                                            <th>@(products:SellingPriceHT)</th>
-                                                            <th>@(products:SellingPriceTTC)</th>
+                                                            <th>@(products:CostPriceHT)</th>
+                                                            <th>@(products:CostPrice)</th>
                                                             <th>Date MAJ</th>
                                                             <th>@(Action)</th>
                                                         </tr>

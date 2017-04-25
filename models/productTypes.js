@@ -18,7 +18,7 @@ var productTypesSchema = new Schema({
     coef: { type: Boolean, default: false }, //Price was calculated from a coefficient
     createdAt: { type: Date, default: Date.now },
 
-    accountsBuy: [{
+    /*accountsBuy: [{
         _id: false,
         code: String,
         account: { type: String, set: MODULE('utils').setAccount, trim: true }
@@ -28,11 +28,9 @@ var productTypesSchema = new Schema({
         _id: false,
         code: String,
         account: { type: String, set: MODULE('utils').setAccount, trim: true }
-    }]
+    }]*/
 
-    //compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true },
-    //compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
-    //compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
+
 });
 
 exports.Schema = mongoose.model('productTypes', productTypesSchema, 'productTypes');

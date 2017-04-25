@@ -130,6 +130,8 @@
     "NoPhotoYet": "Pas de photo disponible pour l'instant",
     "BuyingPriceHT": "Prix d'achat HT",
     "BuyingPrice": "Prix d'achat",
+    "CostPriceHT": "Prix de revient HT",
+    "CostPrice": "Prix de revient TTC",
     "SupplierCard": "Fiche fournisseur",
     "CommercialCard": "Fiche commerciale",
     "AllWays": "Chemin pour trouver votre produit dans le stock",

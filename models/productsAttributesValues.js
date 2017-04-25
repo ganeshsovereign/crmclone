@@ -12,7 +12,7 @@ var AttributesValuesSchema = new Schema({
         _id: false,
         value: String
     }],
-    sort: Number,
+    //sort: Number,
     optionId: { type: Schema.Types.ObjectId, ref: 'productsAttributes', default: null }
 }, {
     toObject: { virtuals: true },
