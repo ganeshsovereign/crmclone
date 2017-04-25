@@ -1,6 +1,6 @@
 var Symeos = require('symeos-mqtt');
 
-if(!CONFIG('symeosnet'))
+if (!CONFIG('symeosnet'))
     return;
 
 var config = JSON.parse(CONFIG('symeosnet'));
