@@ -17,7 +17,7 @@ var Dict = INCLUDE('dict');
 
 var supplierPriceSchema = new Schema({
     _id: false,
-    societe: { type: Schema.Types.ObjectId, ref: 'societe' },
+    societe: { type: Schema.Types.ObjectId, ref: 'Customers' },
     ref: String,
     tva_tx: Number,
     minQty: Number,

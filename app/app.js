@@ -277,8 +277,8 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
         };
 
         $rootScope.loadUsers = function() {
-            return $http.get('/erp/api/user/select').then(function(res) {
-                //console.log(res.data);
+            return $http.get('/erp/api/employees/select').then(function(res) {
+                console.log(res.data);
                 $rootScope.userList = res.data;
                 //return res.data;
             });
@@ -788,7 +788,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/supplier?type",
             templateUrl: "/views/company/list_supplier.html",
             data: {
-                pageTitle: 'Liste des societes'
+                pageTitle: 'Liste des fournisseurs'
             },
             controller: "SocieteController"
         })
