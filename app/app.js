@@ -948,7 +948,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('product.create', {
             parent: "product",
             url: "/create.html",
-            templateUrl: "/views/product/create.html",
+            templateUrl: "/views/product/informations.html",
             data: {
                 pageTitle: 'Nouveau produit / service'
             },

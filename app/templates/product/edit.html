@@ -19,30 +19,7 @@
                 <div class="caption font-yellow-crusta">
                     <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard)
                 </div>
-                <div class="actions btn-set">
-                    <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
-                    <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
-                    <button type="button" ng-click="update()" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
-                    <div class="btn-group">
-                        <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
-                            <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="dropdown-menu pull-right">
-                            <li>
-                                <a href="#" ng-click="clone()">
-                                    <i class="fa fa-copy"></i> @(ToClone)
-                                </a>
-                            </li>
-                            <li class="divider">
-                            </li>
-                            <li>
-                                <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
-                                    <i class="fa fa-trash-o font-red"></i> @(Delete)
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
             </div>
             <div class="portlet-body">
                 <tabset class="tabbable-line tabbable-full-width">
@@ -52,11 +29,10 @@
                                 <div class="col-md-6">
                                     <div class="form-group form-md-line-input">
 
-                                        <label class="col-md-4 control-label" for="form_control_1">@(Ref): <span class="required">
-                                        * </span>
-                                </label>
+                                        <label class="col-md-4 control-label" for="form_control_1">@(SKU): <span class="required">
+                                        * </span></label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="product.ref" maxlength="13" required placeholder="" type="text">
+                                            <input class="form-control" ng-model="product.info.SKU" maxlength="13" required placeholder="" type="text">
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
@@ -69,11 +45,10 @@
                                     </div>
                                     <div class="form-group form-md-line-input">
 
-                                        <label class="col-md-4 control-label" for="form_control_1">@(SKU): <span class="required">
-                                        * </span>
-                                </label>
+                                        <label class="col-md-4 control-label" for="form_control_1">@(Label): <span class="required">
+                                        * </span></label>
                                         <div class="col-md-8">
-                                            <input class="form-control" ng-model="product.ref" maxlength="13" required placeholder="" type="text">
+                                            <input class="form-control" ng-model="product.info.langs[0].name" maxlength="13" required placeholder="" type="text">
                                             <div class="form-control-focus"> </div>
                                         </div>
                                     </div>
@@ -88,38 +63,9 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <div class="form-group form-md-radios">
-                                        <label class="col-md-4 control-label">@(Type):</label>
-                                        <div class="col-md-8">
-
-                                            <div class="md-radio-list">
-                                                <div class="md-radio">
-                                                    <label>
-                                            <input uniform type="radio" ng-model="product.type" value="PRODUCT"/> @(products:StandardProduct)</label>
-                                                </div>
-                                                <div class="md-radio">
-
-                                                    <label>
-                                            <input uniform type="radio" ng-model="product.type" value="SERVICE"/> @(products:Services)</label>
-
-                                                </div>
-                                                <div class="md-radio">
-                                                    <label>
-                                            <input uniform type="radio" ng-model="product.type" ng-disabled="product.Status == 'BUY'" value="PACK"/> @(products:PackProduct) </label>
-
-                                                </div>
-                                                <div class="md-radio">
-                                                    <label>
-                                            <input uniform type="radio" ng-model="product.type" ng-disabled="product.Status == 'BUY'" value="VIRTUAL"/> @(products:ProductDematerialized) </label>
-
-                                                </div>
-                                                <div class="md-radio">
-                                                    <label>
-                                            <input uniform type="radio" ng-model="product.type" ng-disabled="product.Status == 'BUY'" value="DYNAMIC"/> @(products:ConfigurableProduct) </label>
-
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="form-group form-md-line-input ">
+                                        <select class="table-group-action-input form-control" required ng-model="product.info.productType._id" ng-options="t._id as t.name for t in productTypes"></select>
+                                        <label for="form_control_1">@(Type)</label>
                                     </div>
                                 </div>
                             </div>

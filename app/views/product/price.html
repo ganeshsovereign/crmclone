@@ -82,7 +82,10 @@
                                                         <input class="form-control" ng-model="product.compta_sell_eu" placeholder="Export EU" type="text" readonly>
                                                         <label for="ProductAccountancySellCodeEU">@(products:ProductAccountancySellCode) EU</label>
                                                     </div>
-
+                                                    <div class="form-group form-md-line-input ">
+                                                        <input class="form-control" ng-model="product.compta_sell_exp" placeholder="Export" type="text" readonly>
+                                                        <label for="ProductAccountancySellCodeEX">@(products:ProductAccountancySellCode) Export</label>
+                                                    </div>
                                                 </div>
 
 
@@ -94,17 +97,13 @@
                                                         <label for="VATRate">@(products:VATRate) </label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-<<<<<<< HEAD
-                                                        <input class="form-control" ng-model="product.compta_sell_exp" placeholder="Export" type="text" readonly>
-                                                        <label for="ProductAccountancySellCodeEX">@(products:ProductAccountancySellCode) Export</label>
-=======
                                                         <input class="form-control" ng-model="product.caFamily" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'caFamily')" />
                                                         <label for="FamilyProducts">@(products:Family) </label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
                                                         <input class="form-control" ng-disabled="!product.caFamily" ng-model="product.subFamily" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subFamily',{caFamily:product.caFamily})" />
                                                         <label for="SubFamilyProducts">@(products:SubFamily) </label>
->>>>>>> 8597b34140ade3187e314b7258d3fda379f86a4d
+
                                                     </div>
                                                 </div>
                                             </div>

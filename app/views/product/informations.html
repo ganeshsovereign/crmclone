@@ -38,14 +38,14 @@
                                     <input type="text" class="form-control" id="name" ng-model="product.info.langs[0].name" required placeholder="">
                                     <label for="name">@(Label)</label>
                                 </div>
-                                <div class="form-group form-md-line-input">
+                                <!--<div class="form-group form-md-line-input">
                                     <select class="form-control" name="">
                                                         <option value="">Option 1</option>
                                                         <option value="">Option 2</option>
                                                         <option value="">Option 3</option>
                                                     </select>
                                     <label for="form_control_1"> @(products:MainCategory)</label>
-                                </div>
+                                </div>-->
 
                                 <!--<div class="form-group form-md-line-input ">
                                     <select class="table-group-action-input form-control" required ng-model="s" ng-options="s.id as s.label for s in dict.fk_product_status.values"></select>
@@ -55,6 +55,10 @@
                             </div>
 
                             <div class="col-md-6">
+                                <div class="form-group form-md-line-input">
+                                    <input type="text" class="form-control" id="EANCode" ng-model="product.info.EAN">
+                                    <label for="EANCode">@(products:EANCode)</label>
+                                </div>
 
                                 <div class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="UpcCode" ng-model="product.info.UPC">
@@ -72,52 +76,18 @@
                                 </div>
 
                                 <div class="form-group form-md-line-input">
-                                    <label class="col-md-2 control-label">@(products:EANCode):</label>
+                                    <label class="col-md-2 control-label">@(products:BarCode):</label>
                                     <div class="col-md-10">
                                         <div class="col-md-3">
                                             <label class="control-label">
                                             <input uniform type="checkbox" ng-model="product.info.autoBarCode" ng-checked="product.info.autoBarCode"/> @(Automatic) </label>
                                         </div>
                                         <div class="col-md-9">
-                                            <input class="form-control" maxlength="13" ng-model="product.info.EAN" ng-disabled="product.info.autoBarCode" placeholder="EAN13" type="text">
+                                            <input class="form-control" maxlength="13" ng-model="product.info.barCode" ng-disabled="product.info.autoBarCode" placeholder="EAN13" type="text">
                                         </div>
 
                                     </div>
                                 </div>
-
-                                <!--         <div class="form-group form-md-radios">
-                                    <label class="col-md-4 control-label">@(Type):</label>
-                                    <div class="col-md-8">
-
-                                        <div class="md-radio-list">
-                                            <div class="md-radio">
-                                                <label>
-                                            <input uniform type="radio" ng-model="product.type" value="PRODUCT"/> @(products:StandardProduct)</label>
-                                            </div>
-                                            <div class="md-radio">
-
-                                                <label>
-                                            <input uniform type="radio" ng-model="product.type" value="SERVICE"/> @(products:Services)</label>
-
-                                            </div>
-                                            <div class="md-radio">
-                                                <label>
-                                            <input uniform type="radio" ng-model="product.type" ng-disabled="product.Status == 'BUY'" value="PACK"/> @(products:PackProduct) </label>
-
-                                            </div>
-                                            <div class="md-radio">
-                                                <label>
-                                            <input uniform type="radio" ng-model="product.type" ng-disabled="product.Status == 'BUY'" value="VIRTUAL"/> @(products:ProductDematerialized) </label>
-
-                                            </div>
-                                            <div class="md-radio">
-                                                <label>
-                                            <input uniform type="radio" ng-model="product.type" ng-disabled="product.Status == 'BUY'" value="DYNAMIC"/> @(products:ConfigurableProduct) </label>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -152,10 +122,9 @@
                         </div>
 
                     </div>
-                    <div class="form-body">
-                        <div class="row">
-                            <!--<div class="col-md-12">
-                                <div class="portlet light portlet-form bordered">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!--        <div class="portlet light portlet-form bordered">
                                     <div class="portlet-title">
                                         <div class="caption">
                                             <i></i>@(InternalDescription)
@@ -170,120 +139,119 @@
                                     </div>
                                 </div>
                             </div>-->
-                            <div class="col-md-12">
 
-                                <tabset class="tabbable-line tabbable-full-width">
-                                    <tab heading="@(Description)" ng-if="product._id && product.isSell">
-                                        <div class="row">
-                                            <p> @(Description) : @(products:ShowOnBill). </p>
-                                            <textarea class="form-control" ng-model="product.info.langs[0].description" rows="5"></textarea>
-                                        </div>
-                                    </tab>
-                                    <tab heading="@(LongueDescription)" ng-if="product._id && product.isSell">
-                                        <div class="row">
-                                            <p> @(LongueDescription) : @(products:ShowOnCatalog). </p>
-                                            <summernote height="100" ng-model="product.info.langs[0].CatalogDescription"></summernote>
-                                        </div>
-                                    </tab>
-                                    <tab heading="@(InternalDescription)" ng-if="product._id && product.isSell">
-                                        <div class="row">
-                                            <p> @(InternalDescription) : @(products:InternalOnly). </p>
-                                            <summernote height="100" ng-model="product.info.langs[0].notePrivate"></summernote>
-                                        </div>
-                                    </tab>
-                                </tabset>
-
-
-
-
-                                <div class="form-group form-md-line-input ">
-                                    <label for="tags">@(Keywords) / @(Tags)</label>
-                                    <tags-input ng-model="product.info.langs[0].Tag" class="ti-input" placeholder="@(Add)">
-                                        <auto-complete source="AutoComplete($query,'/erp/api/product/Tag/autocomplete','')" min-length="1" max-results-to-show="10"></auto-complete>
-                                    </tags-input>
-
-                                </div>
-
-                            </div>
+                            <tabset class="tabbable-line tabbable-full-width">
+                                <tab heading="@(Description)" ng-if="product._id && product.isSell">
+                                    <div class="row">
+                                        <p> @(Description) : @(products:ShowOnBill). </p>
+                                        <textarea class="form-control" ng-model="product.info.langs[0].description" rows="5"></textarea>
+                                    </div>
+                                </tab>
+                                <tab heading="@(LongueDescription)" ng-if="product._id && product.isSell">
+                                    <div class="row">
+                                        <p> @(LongueDescription) : @(products:ShowOnCatalog). </p>
+                                        <summernote height="100" ng-model="product.info.langs[0].CatalogDescription"></summernote>
+                                    </div>
+                                </tab>
+                                <tab heading="@(InternalDescription)" ng-if="product._id && product.isSell">
+                                    <div class="row">
+                                        <p> @(InternalDescription) : @(products:InternalOnly). </p>
+                                        <textarea class="form-control" ng-model="product.info.notePrivate" rows="5"></textarea>
+                                    </div>
+                                </tab>
+                            </tabset>
                         </div>
+
                     </div>
 
+                    <div class="form-group form-md-line-input ">
+                        <label for="tags">@(Keywords) / @(Tags)</label>
+                        <tags-input ng-model="product.info.langs[0].Tag" class="ti-input" placeholder="@(Add)">
+                            <auto-complete source="AutoComplete($query,'/erp/api/product/Tag/autocomplete','')" min-length="1" max-results-to-show="10"></auto-complete>
+                        </tags-input>
 
-                    <div ng-if="product.type == 'DYNAMIC'" class="form-group">
-                        <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div ng-if="product.type == 'DYNAMIC'" class="form-group">
+            <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
                                         * </span>
                                 </label>
-                        <div class="col-md-4" ng-init="loadDynForms()">
-                            <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
-                        </div>
-
-                    </div>
-
-
-
-
-                </div>
-
-                <div class="form-group form-md-line-input" ng-if="product.isVariant">
-                    <div class="row hidden-print">
-                        <div class="col-md-12">
-                            <div class="col-md-8">
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="col-md-4 control-label">@(products:Filters) :</label>
-                                    <div class="col-md-8" ng-init="loadDynForms()">
-                                        <select ng-model="type" ng-change="setCache('type', type); find();" ng-options="s.id as s.name for s in types" class="form-control"></select>
-                                    </div>
-                                </div>
-                                <div class="form-control-focus"> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="no-footer table-responsive" ng-if="product.isVariant">
-                    <div class="col-md-12">
-                        <table class="table no-footer table-hover">
-                            <colgroup>
-                                <col width="10%">
-                                <col width="20%">
-                                <col width="20%">
-                                <col width="20%">
-                                <col width="20%">
-                                <col width="10%">
-                                <col width="80px">
-                            </colgroup>
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>Image</th>
-                                    <th>@(Name)</th>
-                                    <th>@(SKU)</th>
-                                    <th>@(Variant)</th>
-                                    <th>@(Channel)</th>
-                                    <th>@(TotalHTsell)</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="variant in productVariants.variantsArray" ng-class="{'font-red':product._id == variant._id}">
-                                    <td></td>
-                                    <td>{{variant.info.langs[0].name}}</td>
-                                    <td><a ui-sref="product.show({id:variant._id})">{{variant.info.SKU}}</a></td>
-                                    <td><span ng-repeat="v in variant.variants[0]">{{v.value}} / </span></td>
-                                    <td></td>
-                                    <td>{{variant.prices.pu_ht | currency}}</td>
-                                    <td>
-                                        <button ng-hide="product._id == variant._id" type="button" confirmed-click="remove(variant)" ng-confirm-click="Retirer la variantes ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="col-md-4" ng-init="loadDynForms()">
+                <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
             </div>
 
         </div>
+
+
+
+
     </div>
+
+    <div class="form-group form-md-line-input" ng-if="product.isVariant">
+        <div class="row hidden-print">
+            <div class="col-md-12">
+                <div class="col-md-8">
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="col-md-4 control-label">@(products:Filters) :</label>
+                        <div class="col-md-8" ng-init="loadDynForms()">
+                            <select ng-model="type" ng-change="setCache('type', type); find();" ng-options="s.id as s.name for s in types" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="form-control-focus"> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="no-footer table-responsive" ng-if="product.isVariant">
+        <div class="col-md-12">
+            <table class="table no-footer table-hover">
+                <colgroup>
+                    <col width="10%">
+                    <col width="20%">
+                    <col width="20%">
+                    <col width="20%">
+                    <col width="20%">
+                    <col width="10%">
+                    <col width="80px">
+                </colgroup>
+                <thead>
+                    <tr role="row" class="heading">
+                        <th>Image</th>
+                        <th>@(Name)</th>
+                        <th>@(SKU)</th>
+                        <th>@(Variant)</th>
+                        <th>@(Channel)</th>
+                        <th>@(TotalHTsell)</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="variant in productVariants.variantsArray" ng-class="{'font-red':product._id == variant._id}">
+                        <td></td>
+                        <td>{{variant.info.langs[0].name}}</td>
+                        <td><a ui-sref="product.show({id:variant._id})">{{variant.info.SKU}}</a></td>
+                        <td><span ng-repeat="v in variant.variants[0]">{{v.value}} / </span></td>
+                        <td></td>
+                        <td>{{variant.prices.pu_ht | currency}}</td>
+                        <td>
+                            <button ng-hide="product._id == variant._id" type="button" confirmed-click="remove(variant)" ng-confirm-click="Retirer la variantes ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
 </div>
 </div>
 </div>

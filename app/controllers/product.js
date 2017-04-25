@@ -364,20 +364,18 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                     "data": "name",
                     defaultContent: ""
                 }, {
-                    "data": "pu_ht",
+                    "data": "prices.pu_ht",
                     defaultContent: ""
                 }, {
                     "data": "directCost",
                     defaultContent: ""
                 }, {
-                    "data": "size.weight",
+                    "data": "weight",
                     defaultContent: ""
                 }, {
                     "data": "updatedAt"
                 }, {
                     "data": "info.isActive"
-                }, {
-                    "data": "Status"
                 }, {
                     "data": "caFamily",
                     defaultContent: ""

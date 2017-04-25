@@ -101,7 +101,7 @@ var productSchema = new Schema({
     oldId: String, // Only for import migration
 
     //ref: { type: String, required: true, unique: true, uppercase: true }, //TODO Remove
-    //name: { type: String, default: '' },
+    name: { type: String, default: '' },
     ID: { type: Number },
     isremoved: { type: Boolean, default: false },
 
@@ -181,7 +181,6 @@ var productSchema = new Schema({
     //ischat: { type: Boolean, default: false },
     //negociate: { type: Number, default: 0 }, // 0 is no negociate
     tva_tx: { type: Number, default: 20 },
-    tva_tx_buy : { type: Number, default: 20 },
     //datec: { type: Date, default: Date.now },
     //billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
 

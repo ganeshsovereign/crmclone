@@ -814,7 +814,7 @@ Object.prototype = {
         product.createdBy = self.user._id;
 
         if (!product.info || !product.info.productType || !product.info.categories || !product.info.categories.length) {
-            error = new Error('Product type and productCategories are required');
+            let error = ('Product type and productCategories are required');
 
             return self.json({
                 errorNotify: {
@@ -1104,7 +1104,7 @@ Object.prototype = {
         async.parallel({
             status: function(cb) {
                 Dict.dict({
-                    dictName: "fk_product_status",
+                    dictName: "fk_user_status",
                     object: true
                 }, cb);
             },
@@ -1141,9 +1141,9 @@ Object.prototype = {
                     else if (row.Status == 'BUY' || row.Status == 'SELLBUY')
                         res.datatable.data[i].directCost = '<span class="text-danger">Inconnu</span>';
 
-                    if (res.datatable.data[i].info.isActive == false)
+                    //if (res.datatable.data[i].info.isActive == false)
                     // Add color line 
-                        res.datatable.data[i].DT_RowClass = "bg-red-haze";
+                    //    res.datatable.data[i].DT_RowClass = "bg-red-haze";
 
                     // Action
                     res.datatable.data[i].action = '<a href="#!/product/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.info.SKU + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
@@ -1177,9 +1177,10 @@ Object.prototype = {
                     // Convert Date
                     res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
                     if (row.weight)
-                        res.datatable.data[i].weight = MODULE('utils').printWeight(row.size.weight, 3);
+                        res.datatable.data[i].weight = MODULE('utils').printWeight(row.weight, 3);
                     // Convert Status
-                    res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+                    //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+                    res.datatable.data[i].info.isActive = (row.info.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
                 }
 
                 //console.log(res.datatable);
