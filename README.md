@@ -32,7 +32,7 @@ You can use it as a standalone application or as a web application to be able to
 
 # Getting Started
 
-## Install
+## Install the open source ERP software ToManage
 
 Need :
  - install Node.js > 4.0
