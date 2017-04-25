@@ -16,14 +16,14 @@ var ProductAttributesSchema = new Schema({
     allowedExtension: [String], //png,pdf...
     dateMin: { type: Date },
     dateMin: { type: Date },
-    steps: { type: Number, default: 1 },
+    steps: { type: Number, default: 1 }, // steps for number 0.01
     metricUnit: String, //See dict.units
     group: { type: Schema.Types.ObjectId, ref: 'groupAttribues', default: null },
     maxCharacters: Number,
     minCharacters: Number,
     maxNumber: Number,
     minNumber: Number,
-    sort: Number,
+    sort: Number, // Order idx
     mode: { type: String, enum: ['text', 'number', 'metric', 'textarea', 'boolean', 'simpleselect', 'multiselect', 'date', 'file', 'image'] },
     isWysiwyg: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
