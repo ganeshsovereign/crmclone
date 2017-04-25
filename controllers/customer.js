@@ -2080,7 +2080,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            select: 'type'
+            select: 'type salesPurchases.isActive'
         };
 
         //console.log(options);
@@ -2088,7 +2088,8 @@ Object.prototype = {
         async.parallel({
             status: function(cb) {
                 Dict.dict({
-                    dictName: "fk_stcomm",
+                    //dictName: "fk_stcomm",
+                    dictName: "fk_user_status",
                     object: true
                 }, cb);
             },
@@ -2122,7 +2123,8 @@ Object.prototype = {
                 // Convert Date
                 res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
                 // Convert Status
-                res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + res.status.values[row.Status].label + '</span>' : row.Status);
+                //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + res.status.values[row.Status].label + '</span>' : row.Status);
+                res.datatable.data[i].Status = (row.salesPurchases.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
                 // Convert Potentiel
                 if (res.level.values[row.prospectlevel])
                     if (res.level.values[row.prospectlevel].label)

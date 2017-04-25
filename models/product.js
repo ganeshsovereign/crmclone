@@ -17,7 +17,7 @@ var Dict = INCLUDE('dict');
 
 var supplierPriceSchema = new Schema({
     _id: false,
-    societe: { type: Schema.Types.ObjectId, ref: 'societe' },
+    societe: { type: Schema.Types.ObjectId, ref: 'Customers' },
     ref: String,
     tva_tx: Number,
     minQty: Number,
@@ -126,7 +126,15 @@ var productSchema = new Schema({
         langs: [LangSchema]
             /* need to Add  alt des images TODO */
 
+
     },
+
+    compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
 
     inventory: {
         warehouseMsg: { type: String, default: '' },
@@ -173,6 +181,7 @@ var productSchema = new Schema({
     //ischat: { type: Boolean, default: false },
     //negociate: { type: Number, default: 0 }, // 0 is no negociate
     tva_tx: { type: Number, default: 20 },
+    tva_tx_buy : { type: Number, default: 20 },
     //datec: { type: Date, default: Date.now },
     //billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
 
@@ -186,10 +195,10 @@ var productSchema = new Schema({
     template: { type: String },
     dynForm: String,
 
-    //caFamily: { type: String, uppercase: true },//producType
-    //subFamily: { type: String, uppercase: true },
-    //costCenter: { type: String, uppercase: true },
-    //subCostCenter: { type: String, uppercase: true },
+    caFamily: { type: String, uppercase: true },
+    subFamily: { type: String, uppercase: true },
+    costCenter: { type: String, uppercase: true },
+    subCostCenter: { type: String, uppercase: true },
 
     units: { type: String, default: "unit" },
 

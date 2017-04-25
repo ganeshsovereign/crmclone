@@ -58,10 +58,10 @@
                             <div class="form-control-focus"> </div>
                         </div>
                         <div class="col-md-3">
-                            <select ng-show="login.rights.societe.seeAll" ng-model="commercial_id" ng-change="setCache('commercial_id', commercial_id);
+                            <!--<select ng-show="login.rights.societe.seeAll" ng-model="commercial_id" ng-change="setCache('commercial_id', commercial_id);
                             find();" ng-options="c._id.id as c._id.name +' (' + c.count + ')' for c in commercialList" class="form-control">
                             <option value="">-- @(companies:Deal) --</option>
-                        </select>
+                            </select>-->
                             <div class="form-control-focus"> </div>
                         </div>
                         <div class="col-md-3">
@@ -104,9 +104,7 @@
                                 <th>@(Status)</th>
                                 <th>@(Entity)</th>
                                 <th>@(Tag)</th>
-                                <th>@(companies:ProspectLevelShort)</th>
-                                <th>@(DateLastModification)</th>
-                                <th>@(Action)</th>
+                                <th>@(DateModificationShort)</th>
                             </tr>
                         </thead>
                     </table>

@@ -63,10 +63,16 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         $scope.editable = $rootScope.login.rights.societe.write;
 
         $scope.types = [];
-        if ($rootScope.$state.current.name == 'societe.list' && $rootScope.$stateParams.type) {
+
+        var isSupplier = false;
+
+        console.log($rootScope.$state.current.name);
+        if (($rootScope.$state.current.name == 'societe.list' || $rootScope.$state.current.name == 'societe.list_supplier') && $rootScope.$stateParams.type) {
             if ($rootScope.$stateParams.type === 'PROSPECT_CUSTOMER' ||
                 $rootScope.$stateParams.type === 'PROSPECT' ||
-                $rootScope.$stateParams.type === 'CUSTOMER')
+                $rootScope.$stateParams.type === 'CUSTOMER') {
+                isSupplier = false;
+
                 $scope.types.push({
                     name: "Clients/Prospects",
                     id: "PROSPECT_CUSTOMER"
@@ -77,10 +83,12 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     name: "Prospects seulement",
                     id: "PROSPECT"
                 });
+            }
 
             if ($rootScope.$stateParams.type === 'SUPPLIER_SUBCONTRACTOR' ||
                 $rootScope.$stateParams.type === 'SUPPLIER' ||
-                $rootScope.$stateParams.type === 'SUBCONTRACTOR')
+                $rootScope.$stateParams.type === 'SUBCONTRACTOR') {
+                isSupplier = true;
                 $scope.types.push({
                     name: "Fournisseurs/Sous-traitants",
                     id: "SUPPLIER_SUBCONTRACTOR"
@@ -91,6 +99,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     name: "Sous-traitants seulement",
                     id: "SUBCONTRACTOR"
                 });
+            }
         }
 
         $scope.changeType = function() {
@@ -1100,15 +1109,16 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         defaultContent: ""
                     }, {
                         "data": "commercial_id.name",
+                        visible: isSupplier == false,
                         defaultContent: ""
                     }, {
-                        "data": "zip",
+                        "data": "address.zip",
                         defaultContent: ""
                     }, {
-                        "data": "town",
+                        "data": "address.city",
                         defaultContent: ""
                     }, {
-                        "data": "idprof3",
+                        "data": "companyInfo.idprof3",
                         defaultContent: ""
                     }, {
                         "data": "Status"
@@ -1118,9 +1128,6 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         searchable: false
                     }, {
                         data: "Tag",
-                        defaultContent: ""
-                    }, {
-                        "data": "prospectlevel",
                         defaultContent: ""
                     }, {
                         data: "updatedAt",

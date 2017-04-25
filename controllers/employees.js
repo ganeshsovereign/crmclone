@@ -17,7 +17,7 @@ exports.install = function() {
         var employeesModel = MODEL('Employees').Schema;
         var self = this;
 
-        employeesModel.find({ isremoved: { $ne: true }, Status: { $ne: "DISABLE" } }, "", { sort: { lastname: 1 } }, function(err, docs) {
+        employeesModel.find({ isremoved: { $ne: true }, Status: { $ne: "DISABLE" } }, "name", { sort: { "name.last": 1 } }, function(err, docs) {
             if (err)
                 return self.throw500("err : /erp/api/employees/select {0}".format(err));
 
@@ -28,18 +28,18 @@ exports.install = function() {
                 //console.log(docs[i]);
                 if (self.query.agenda) { // for calendar
                     result[i] = {};
-                    result[i].text = docs[i].firstname + " " + docs[i].lastname;
+                    result[i].text = docs[i].name.first + " " + docs[i].name.last;
                     result[i].value = docs[i]._id;
                     result[i].color = object.colors[i];
                 } else if (self.query.lastname) {
                     result[i] = {};
-                    result[i].name = docs[i].lastname;
+                    result[i].name = docs[i].name.last;
                     result[i].id = docs[i]._id;
                 } else {
                     result[i] = {};
-                    result[i].firstname = docs[i].firstname;
-                    result[i].lastname = docs[i].lastname;
-                    result[i].name = docs[i].firstname + " " + docs[i].lastname;
+                    result[i].firstname = docs[i].name.first;
+                    result[i].lastname = docs[i].name.last;
+                    result[i].name = docs[i].name.first + " " + docs[i].name.last;
                     result[i].id = docs[i]._id;
                     //console.log(result[i]);
                 }
