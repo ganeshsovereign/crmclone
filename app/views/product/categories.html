@@ -14,30 +14,7 @@
                     <div class="caption font-yellow-crusta">
                         <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard) : @(Associations)
                     </div>
-                    <div class="actions btn-set">
-                        <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
-                        <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
-                        <button type="button" ng-click="update()" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
-                        <div class="btn-group">
-                            <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
-                                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="#" ng-click="clone()">
-                                        <i class="fa fa-copy"></i> @(ToClone)
-                                    </a>
-                                </li>
-                                <li class="divider">
-                                </li>
-                                <li>
-                                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
-                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
                 </div>
                 <div class="portlet-body">
                     <tabset class="tabbable-line tabbable-full-width">
@@ -58,9 +35,9 @@
                                                     <div class="row">
                                                         <div class="col-md-9">
                                                             <div class="btn-group">
-                                                                <button class="btn" ng-click="expandAll()"><i class="fa fa-plus-square-o"></i> Expand all</button>
-                                                                <button class="btn" ng-click="collapseAll()"><i class="fa fa-minus-square-o"></i> Collapse all</button>
-                                                                <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                                                                <button class="btn btn-default" ng-click="expandAll()"><i class="fa fa-plus-square"></i> @(categories:ExpandAll)</button>
+                                                                <button class="btn btn-default" ng-click="collapseAll()"><i class="fa fa-minus-square"></i> @(categories:CollapseAll)</button>
+                                                                <button title="@(Refresh)" class="btn btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-3">

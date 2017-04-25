@@ -23,6 +23,8 @@
     "CatList": "Liste des catégories",
     "AllCats": "Toutes les catégories",
     "ViewCat": "Visualisation de la catégorie",
+    "ExpandAll": "Tout developper",
+    "CollapseAll": "Tout plier",
     "NewCat": "Nouvelle catégorie",
     "NewCategory": "Nouvelle catégorie",
     "ModifCat": "Modifier une catégorie",
