@@ -27,12 +27,12 @@
                                             <div class="row">
                                                 <div class="col-md-6">
 
-                                                    <div ng-if="societe.isCustomer" class="form-group form-md-line-input">
+                                                    <div ng-if="societe.salesPurchases.isCustomer" class="form-group form-md-line-input">
                                                         <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.customerAccount">
                                                         <label for="form_control_1">@(compta:CustomerAccountancyCodeShort) </label>
                                                     </div>
 
-                                                    <div ng-if="societe.isSupplier || societe.isSubcontractor" class="form-group form-md-line-input">
+                                                    <div ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor" class="form-group form-md-line-input">
                                                         <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.supplierAccount">
                                                         <label for="form_control_1">@(compta:SupplierAccountancyCodeShort) </label>
                                                     </div>
@@ -163,11 +163,11 @@
                     <div class='col-md-12'>
                         <!--INVOICE TABLE-->
                         <tabset class="tabbable-line tabbable-full-width">
-                            <tab heading="@(bills:BillsCustomer)" ng-if="societe.isCustomer">
+                            <tab heading="@(bills:BillsCustomer)" ng-if="societe.salesPurchases.isCustomer">
                                 <div ng-include="'/templates/_bill/list.html'" ng-controller="BillController" onload="ngIncludeInit({'client.id': societe._id}, 5)"></div>
                             </tab>
 
-                            <tab heading="@(bills:BillsSupplier)" ng-if="societe.isSupplier || societe.isSubcontractor">
+                            <tab heading="@(bills:BillsSupplier)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor">
                                 <div class="portlet-body">
                                     <div class="table-toolbar">
                                         <div class="row">
@@ -222,7 +222,7 @@
                                     </div>
                                 </div>
                             </tab>
-                            <tab heading="@(bills:InvoicePayment)" ng-if="societe.isSupplier || societe.isSubcontractor || societe.isCustomer">
+                            <tab heading="@(bills:InvoicePayment)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor || societe.salesPurchases.isCustomer">
                                 <div class="portlet-body">
                                     <div class="table-toolbar">
                                         <div class="row">

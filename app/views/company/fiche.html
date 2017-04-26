@@ -117,7 +117,7 @@
                             <a ui-sref="societe.show.addresses({id:societe._id})">
                                 <i class="icon-user"></i> @(ContactsAddressesForCompany) </a>
                         </li>
-                        <li ng-if="societe.isCustomer || societe.isProspect" ng-class="{active: $state.includes('societe.show.commercial')}">
+                        <li ng-if="societe.salesPurchases.isCustomer || societe.salesPurchases.isProspect" ng-class="{active: $state.includes('societe.show.commercial')}">
                             <a ui-sref="societe.show.commercial({id:societe._id})">
                                 <i class="icon-basket"></i> @(commercial:Commercial) </a>
                         </li>
