@@ -28,7 +28,7 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group form-md-line-input">
-                                                        <input type="text" class="form-control" e-ng-options="user as user.name for user in userList track by user.id" id="form_control_1" ng-model="societe.salesPurchases.salesPerson">
+                                                        <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees"></select>
                                                         <label for="form_control_1">@(commercial:Commercial)</label>
                                                     </div>
 

@@ -185,6 +185,17 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             $http({
                 method: 'GET',
+                url: '/erp/api/employees/getForDd',
+                params: {
+                    isEmployee: true
+                }
+            }).success(function(data, status) {
+                $scope.$dict.employees = data.data;
+                //console.log(data);
+            });
+
+            $http({
+                method: 'GET',
                 url: '/erp/api/bank',
                 params: {
                     //entity: Global.user.entity

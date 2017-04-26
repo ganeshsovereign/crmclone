@@ -292,8 +292,8 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
         };
 
         $rootScope.loadUsers = function() {
-            return $http.get('/erp/api/employees/select').then(function(res) {
-                console.log(res.data);
+            return $http.get('/erp/api/employees/getForDd').then(function(res) {
+                //console.log(res.data);
                 $rootScope.userList = res.data;
                 //return res.data;
             });

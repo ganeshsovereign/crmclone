@@ -290,7 +290,7 @@ exports.install = function() {
      }
      * */
 
-    F.route('/erp/api/employees/getForDD', object.getForDD, ['authorize']);
+    //F.route('/erp/api/employees/getForDD', object.getForDD, ['authorize']);
 
     F.route('/erp/api/employees/bySales', object.getBySales, ['authorize']);
     F.route('/erp/api/employees/byDepartment', object.byDepartment, ['authorize']);
@@ -2666,16 +2666,16 @@ Object.prototype = {
         var self = this;
         var Model = MODEL('Employees').Schema;
         var result = {};
-        var query = Model.find( /* {'isEmployee': true}*/ {}, { name: 1 }).sort({ 'name.first': 1 });
 
-        query.exec(function(err, employees) {
-            if (err) {
-                return self.throw500(err);
-            }
+        Model.find({ 'isEmployee': true }, { name: 1 })
+            .sort({ 'name.first': 1 })
+            .exec(function(err, employees) {
+                if (err)
+                    return self.throw500(err);
 
-            result.data = employees;
-            self.json(result);
-        });
+                result.data = employees;
+                self.json(result);
+            });
 
     },
     getEmployeesAlphabet: function() {

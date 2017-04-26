@@ -230,7 +230,11 @@ var EmployeeSchema = new Schema({
     lastFire: { type: Number, default: null },
     externalId: { type: String, default: null },
     userName: String
-}, { collection: 'Employees' });
+}, {
+    collection: 'Employees',
+    toObject: { getters: true, virtuals: true },
+    toJSON: { getters: true, virtuals: true }
+});
 
 EmployeeSchema.virtual('fullName').get(function() {
     if (this.name.first)
@@ -251,8 +255,6 @@ EmployeeSchema.virtual('iban.isOk')
 
         return null;
     });
-
-EmployeeSchema.set('toJSON', { virtuals: true });
 
 if (CONFIG('storing-files')) {
     var gridfs = INCLUDE(CONFIG('storing-files'));
