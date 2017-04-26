@@ -1075,7 +1075,8 @@ Object.prototype = {
         //console.log(self.body);
 
         var conditions = {
-            isremoved: { $ne: true }
+            isremoved: { $ne: true },
+            "info.isActive" : true,
         };
 
 
