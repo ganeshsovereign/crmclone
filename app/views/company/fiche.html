@@ -97,8 +97,8 @@
                 </div>
                 <div class="profile-userbuttons">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default">@(company:Person)</button>
-                        <button type="button" class="btn btn-default">@(company:Company)</button>
+                        <button ng-if="societe.type == 'Person'" type="button" class="btn btn-circle red btn-sm"><i class="fa fa-user"></i> @(companies:Person)</button>
+                        <button ng-if="societe.type == 'Company'" type="button" class="btn btn-circle green btn-sm"><i class="fa fa-home"></i> @(companies:Company)</button>
                     </div>
                 </div>
 

@@ -512,7 +512,8 @@ select.input-sm {
 }
 
 .form-horizontal .form-group.form-md-line-input,
-.form-horizontal .form-md-checkboxes {
+.form-horizontal .form-md-checkboxes,
+.form-horizontal .form-md-radios {
     padding-top: 15px;
     margin: 0 10px 15px;
 }

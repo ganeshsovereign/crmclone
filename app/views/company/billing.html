@@ -58,7 +58,7 @@
                                                             <span class="box"></span> @(companies:GroupDeliveries) </label>
                                                         </div>
                                                         <div class="md-checkbox">
-                                                            <input type="checkbox" id="checkbox7" class="md-check" checked="" ng-model="societe.salesPurchases.VATIsUsed">
+                                                            <input type="checkbox" id="checkbox7" class="md-check" ng-model="societe.salesPurchases.VATIsUsed">
                                                             <label for="checkbox7">
                                                             <span class="inc"></span>
                                                             <span class="check"></span>
@@ -71,17 +71,17 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group form-md-line-input">
-                                                        <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.cond_reglement" ng-options="s.id as s.label for s in dict.fk_payment_term.values"></select>
+                                                        <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.cond_reglement" ng-options="s.id as s.label for s in dict.fk_payment_term.values"></select>
                                                         <label for="form_control_1">@(bills:PaymentConditions)</label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input">
-                                                        <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.mode_reglement" e-ng-options="s.id as s.label for s in dict.fk_paiement.values"></select>
+                                                        <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.mode_reglement" ng-options="s.id as s.label for s in dict.fk_paiement.values"></select>
                                                         <label for="form_control_1">@(bills:PaymentMode)</label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input">
-                                                        <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.bank_reglement" e-ng-options="s.ref as s.ref for s in banks"></select>
+                                                        <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.bank_reglement" ng-options="s.ref as s.ref for s in banks"></select>
                                                         <label for="form_control_1">@(bills:PaymentBank)</label>
                                                     </div>
 
