@@ -54,6 +54,19 @@ passport.use(new LocalStrategy({
                 });
             }
 
+            user.update({
+                $set: {
+                    lastConnection: user.newConnection,
+                    newConnection: new Date()
+                }
+            }, function(err, doc) {
+                if (err)
+                    console.log(err);
+
+                //console.log(doc);
+            });
+
+
             done(null, user.toObject());
         });
 }));
@@ -214,8 +227,8 @@ passport.use(new GoogleStrategy({
              return done(err, user);
              });*/
         } else {
-            //user.LastConnection = user.NewConnection;
-            //user.NewConnection = new Date();
+            //user.lastConnection = user.newConnection;
+            //user.newConnection = new Date();
 
             if (!user.google.user_id)
                 user.google.user_id = profile.id;
@@ -328,10 +341,15 @@ passport.serializeUser(function(user, done) {
         _id: user._id
     }, {
         $set: {
-            LastConnection: user.NewConnection,
-            NewConnection: new Date()
+            lastConnection: user.newConnection,
+            newConnection: new Date()
         }
-    }, function(err) {});
+    }, function(err, doc) {
+        if (err)
+            console.log(err);
+
+        //console.log(doc);
+    });
 
     /*var rights = {
         societe: {

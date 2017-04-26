@@ -61,8 +61,8 @@ function passport_login_local() {
             _id: user._id
         }, {
             $set: {
-                LastConnection: user.NewConnection,
-                NewConnection: new Date()
+                lastConnection: user.newConnection,
+                newConnection: new Date()
             }
         }, function(err) {});
 

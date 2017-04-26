@@ -332,8 +332,8 @@ Object.prototype = {
         //console.log(self.query);
 
         var options = {
-            conditions: conditions
-                //select: ""
+            conditions: conditions,
+            select: "isEnable"
         };
 
         //console.log(options);
@@ -363,13 +363,14 @@ Object.prototype = {
 
                 res.datatable.data[i].username = '<a class="with-tooltip" href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.username + '"><span class="fa fa-user"></span> ' + row.username + '</a>';
 
-                res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
+                //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
+                res.datatable.data[i].Status = (row.isEnable ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
                 // Action
                 res.datatable.data[i].action = '<a href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                 // Add url on name
                 res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/user/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
                 // Convert Date
-                res.datatable.data[i].lastConnection = (row.lastConnection ? moment(row.lastConnection).format(CONFIG('dateformatShort')) : '');
+                res.datatable.data[i].lastConnection = (row.lastConnection ? moment(row.lastConnection).format(CONFIG('dateformatLong')) : '');
                 res.datatable.data[i].createdAt = (row.createdAt ? moment(row.createdAt).format(CONFIG('dateformatShort')) : '');
                 res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
             }

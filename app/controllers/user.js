@@ -211,7 +211,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                     data: "email",
                     defaultContent: ""
                 }, {
-                    data: "groups",
+                    data: "groupe",
                     defaultContent: ""
                 }, {
                     data: "lastConnection",
@@ -220,7 +220,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                     data: "createdAt",
                     defaultContent: ""
                 }, {
-                    data: 'action'
+                    data: 'Status'
                 }]
             }
         });
