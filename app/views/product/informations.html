@@ -51,6 +51,18 @@
                                     <select class="table-group-action-input form-control" required ng-model="s" ng-options="s.id as s.label for s in dict.fk_product_status.values"></select>
                                     <label for="form_control_1">@(Visibility)</label>
                                 </div>-->
+                                 <div class="form-group form-md-line-input">
+                                    <label for="">@(Entities)</label>
+                                    <div class="md-checkbox-inline">
+                                        <div class="md-checkbox" ng-repeat="value in entityList">
+                                            <input type="checkbox" class="md-check" name="checkedObj[]" id="{{value.id}}" ng-click="toggleSelection(product.entity, value.id)" ng-checked="product.entity.indexOf(value.id) >= 0" />
+                                            <label for="{{value.id}}">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> {{value.name}} </label>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
 

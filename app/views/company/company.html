@@ -49,8 +49,16 @@
                                 </div>
 
                                 <div class="form-group form-md-line-input">
-                                    <select class="table-group-action-input form-control" required ng-model="societe.entity" ng-options="e.id as e.name for e in entityListAll"></select>
-                                    <label for="form_control_1">@(main:Entity)</label>
+                                    <label for="">@(Entities)</label>
+                                    <div class="md-checkbox-inline">
+                                        <div class="md-checkbox" ng-repeat="value in entityList">
+                                            <input type="checkbox" class="md-check" name="checkedObj[]" id="{{value.id}}" ng-click="toggleSelection(societe.entity, value.id)" ng-checked="societe.entity.indexOf(value.id) >= 0" />
+                                            <label for="{{value.id}}">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> {{value.name}} </label>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group form-md-line-input">

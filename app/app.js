@@ -236,6 +236,21 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
                 return "/assets/admin/layout/img/nophoto.jpg";
         };
 
+        // toggle selection for a given soncas by value
+        $rootScope.toggleSelection = function toggleSelection(tab, value) {
+            var idx;
+            idx = tab.indexOf(value);
+
+            // is currently selected
+            if (idx > -1)
+                tab.splice(idx, 1);
+
+            // is newly selected
+            else
+                tab.push(value);
+
+        };
+
         // Calcul la somme d'une liste
         $rootScope.getTotal = function(data, key) {
             var total = 0;
@@ -867,9 +882,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('societe.create', {
             parent: "societe",
             url: "/create.html",
-            templateUrl: "/views/company/create.html",
+            templateUrl: "/views/company/company.html",
             data: {
-                pageTitle: 'Creation societe'
+                pageTitle: 'Creation clients/fournisseur'
             },
             controller: "SocieteController"
         })
