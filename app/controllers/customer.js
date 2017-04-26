@@ -1247,7 +1247,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             if (data)
                 address = data;
             else
-                address.name = $scope.societe.name;
+                address.name = $scope.societe.fullName;
 
             var modalInstance = $modal.open({
                 templateUrl: 'addModalAddress.html',
@@ -1265,14 +1265,14 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             modalInstance.result.then(function(address) {
                 if (!data) // Is new address
-                    $scope.societe.addresses.push(address);
+                    $scope.societe.shippingAddress.push(address);
 
                 $scope.update();
             }, function() {});
         };
 
         $scope.removeAddress = function(id) {
-            $scope.societe.addresses.splice(id, 1);
+            $scope.societe.shippingAddress.splice(id, 1);
             $scope.update();
         };
 
