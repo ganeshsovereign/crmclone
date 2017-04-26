@@ -44,8 +44,8 @@
                     <div class="portlet portlet light bordered">
                         <div class="portlet-title">
                             <div class="caption font-yellow-crusta">
-                                <h5 class="page-title font-red">
-                                    <i class="fa fa-user "></i> {{user.username}}
+                                <h5 class="page-title" ng-class="{'font-red':!user.isEnable}">
+                                    <i class="fa fa-user"></i> {{user.username}}
                                 </h5>
                             </div>
                             <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
@@ -54,6 +54,15 @@
                             <div class="form-body">
                                 <div class="row">
                                     <div class="col-md-offset-1 col-md-10">
+                                        <div class="md-checkbox-inline">
+                                            <div class="md-checkbox has-success">
+                                                <input type="checkbox" id="isEnable" class="md-check" ng-model="user.isEnable" ng-checked="user.isEnable">
+                                                <label for="isEnable">
+                                                    <span></span>
+                                                     <span class="check"></span>
+                                                    <span class="box"></span> @(Activated)</label>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group form-md-line-input has-success">
                                             <input type="text" class="form-control" id="form_control_1" onbeforesave="checkUserExist($data)" ng-model="user.username">
