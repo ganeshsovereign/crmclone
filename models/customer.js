@@ -241,7 +241,7 @@ var customerSchema = new Schema({
         language: { type: Number, default: 0 },
         receiveMessages: { type: Number, default: 0 },
         cptBilling: { type: Schema.Types.ObjectId, ref: 'Customers' },
-        priceList: { type: Schema.Types.ObjectId, ref: 'priceList' }, //price_level
+        priceList: { type: Schema.Types.ObjectId, require: true, ref: 'priceList', default: "58c962f7d3e1802b17fe95a4" }, //price_level
         //prospectlevel: { type: String, default: 'PL_NONE' },
 
         cond_reglement: { type: String, default: 'RECEP' },

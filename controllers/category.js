@@ -28,8 +28,8 @@ International Registered Trademark & Property of ToManage SAS
 var fs = require('fs'),
     csv = require('csv'),
     _ = require('lodash'),
-    moment = require("moment");
-async = require('async');
+    moment = require("moment"),
+    async = require('async');
 
 var Dict = INCLUDE('dict');
 
