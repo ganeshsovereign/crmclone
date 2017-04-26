@@ -202,7 +202,7 @@ var customerSchema = new Schema({
         city: { type: String, default: '' },
         state: { type: String, default: '' },
         zip: { type: String, default: '' },
-        country: { type: String, ref: 'countries', default: null }
+        country: { type: String, ref: 'countries', default: 'FR' }
     },
 
     shippingAddress: [addressSchema], // list of deliveries address

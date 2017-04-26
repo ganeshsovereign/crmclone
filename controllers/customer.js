@@ -2021,6 +2021,7 @@ Object.prototype = {
 
         var conditions = {
             isremoved: { $ne: true },
+            "salesPurchases.isActive" : true,
             company: null
         };
 
