@@ -2014,6 +2014,7 @@ Object.prototype = {
     readDT: function() {
         var self = this;
         var SocieteModel = MODEL('Customers').Schema;
+        var EmployeeModel = MODEL('Employees').Schema;
 
         var query = JSON.parse(self.req.body.query);
 
@@ -2021,7 +2022,7 @@ Object.prototype = {
 
         var conditions = {
             isremoved: { $ne: true },
-            "salesPurchases.isActive" : true,
+            "salesPurchases.isActive": true,
             company: null
         };
 
@@ -2074,10 +2075,10 @@ Object.prototype = {
             conditions.prospectlevel = self.query.prospectlevel;
         */
         if (self.req.query.commercial_id !== 'null')
-            conditions["commercial_id.id"] = self.query.commercial_id;
+            conditions["salesPurchases.salesPerson"] = self.query.commercial_id;
 
         if (!self.user.rights.societe.seeAll && !self.user.admin)
-            conditions["commercial_id.id"] = self.user._id;
+            conditions["salesPurchases.salesPerson"] = self.user._id;
 
         var options = {
             conditions: conditions,
@@ -2109,36 +2110,42 @@ Object.prototype = {
 
             //console.log(res);
 
-            for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                var row = res.datatable.data[i];
+            EmployeeModel.populate(res, { path: "datatable.data.salesPurchases.salesPerson" }, function(err, res) {
 
-                // Add checkbox
-                res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                // Add id
-                res.datatable.data[i].DT_RowId = row._id.toString();
+                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                    var row = res.datatable.data[i];
 
-                if (row.Tag)
-                    res.datatable.data[i].Tag = row.Tag.toString();
-                // Add url on name
-                res.datatable.data[i].name.last = '<a class="with-tooltip" href="#!/societe/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.last + '"><span class="icon-home"></span> ' + row.name.last + '</a>';
-                // Convert Date
-                res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                // Convert Status
-                //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + res.status.values[row.Status].label + '</span>' : row.Status);
-                res.datatable.data[i].Status = (row.salesPurchases.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
-                // Convert Potentiel
-                if (res.level.values[row.prospectlevel])
-                    if (res.level.values[row.prospectlevel].label)
-                        res.datatable.data[i].prospectlevel = res.level.values[row.prospectlevel].label;
+                    // Add checkbox
+                    res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                    // Add id
+                    res.datatable.data[i].DT_RowId = row._id.toString();
+
+                    if (row.Tag)
+                        res.datatable.data[i].Tag = row.Tag.toString();
+                    // Add url on name
+                    res.datatable.data[i].name.last = '<a class="with-tooltip" href="#!/societe/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.last + '"><span class="icon-home"></span> ' + row.name.last + '</a>';
+                    // Convert Date
+                    res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                    // Convert Status
+                    //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + res.status.values[row.Status].label + '</span>' : row.Status);
+                    res.datatable.data[i].Status = (row.salesPurchases.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
+                    // Convert Potentiel
+                    if (res.level.values[row.prospectlevel])
+                        if (res.level.values[row.prospectlevel].label)
+                            res.datatable.data[i].prospectlevel = res.level.values[row.prospectlevel].label;
+                        else
+                            res.datatable.data[i].prospectlevel = i18n.t("companies:" + row.prospectlevel);
                     else
-                        res.datatable.data[i].prospectlevel = i18n.t("companies:" + row.prospectlevel);
-                else
-                    res.datatable.data[i].prospectlevel = row.prospectlevel;
-            }
+                        res.datatable.data[i].prospectlevel = row.prospectlevel;
 
-            //console.log(res.datatable);
+                    if (row.salesPurchases.salesPerson)
+                        res.datatable.data[i].salesPurchases.salesPerson = row.salesPurchases.salesPerson.fullName;
+                }
 
-            self.json(res.datatable);
+                //console.log(res.datatable);
+
+                self.json(res.datatable);
+            });
         });
     },
     readDT_supplier: function() {

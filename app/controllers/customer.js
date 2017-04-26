@@ -1127,7 +1127,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         "data": "salesPurchases.ref",
                         defaultContent: ""
                     }, {
-                        "data": "commercial_id.name",
+                        "data": "salesPurchases.salesPerson",
                         visible: isSupplier == false,
                         defaultContent: ""
                     }, {
