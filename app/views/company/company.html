@@ -16,9 +16,28 @@
                         <div class="row">
                             <div class="col-md-6">
 
+                                <div class="form-group form-md-radios">
+                                    <div class="md-radio-inline">
+                                        <div class="md-radio">
+                                            <input type="radio" id="person" name="type" class="md-radiobtn" ng-model="societe.type" value="Person">
+                                            <label for="person">
+                                                            <span class="inc"></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> @(companies:Person) </label>
+                                        </div>
+                                        <div class="md-radio">
+                                            <input type="radio" id="company" name="type" class="md-radiobtn" ng-model="societe.type" value="Company">
+                                            <label for="company">
+                                                            <span class="inc"></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> @(companies:Company) </label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Person -->
                                 <div ng-show="societe.type == 'Person'" class="form-group form-md-line-input">
-                                    <select class="table-group-action-input form-control" required ng-model="societe.name.civilite" ng-options="s.id as s.label for s in dict.fk_civilite.values"></select>
+                                    <select class="table-group-action-input form-control" ng-model="societe.name.civilite" ng-options="s.id as s.label for s in dict.fk_civilite.values"></select>
                                     <label for="form_control_1">@(companies:UserTitle)</label>
                                 </div>
 
@@ -44,8 +63,8 @@
                                 </div>
 
                                 <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" e-typeahead="ca as ca for ca in AutoComplete($viewValue,'api/societe/autocomplete/caFamily',societe.entity)" ng-model="contact.caFamily">
-                                    <label for="form_control_1">@(companies:SocGroupShort) </label>
+                                    <input type="text" class="form-control" id="brand" ng-model="societe.compnyInfo.brand">
+                                    <label for="brand">@(companies:SocGroupShort) </label>
                                 </div>
 
                                 <div class="form-group form-md-line-input">
@@ -61,6 +80,7 @@
                                     </div>
                                 </div>
 
+<<<<<<< HEAD
                                 <div class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="form_control_1" crm-address model="societe">
                                     <label for="form_control_1">@(companies:Address) </label>
@@ -70,6 +90,9 @@
                                     <input type="text" maxlength="13" class="form-control" id="form_control_1" ng-model="societe.idprof2">
                                     <label for="form_control_1">@(companies:ProfId2FR) </label>
                                 </div>
+=======
+                                <address ng-model=societe.address></address>
+>>>>>>> 0b01c6031509170a9654ee7335af46f648386adf
 
                             </div>
 

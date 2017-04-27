@@ -95,6 +95,7 @@ exports.install = function() {
      */
 
     F.route('/erp/api/languages', getLanguages, ['authorize']);
+    F.route('/erp/api/countries', getCountries, ['authorize']);
 
     F.route('/erp/api/extrafield', load_extrafield, ['authorize']);
     F.route('/erp/api/sendEmail', sendEmail, ['post', 'json', 'authorize']);
@@ -1132,9 +1133,8 @@ function getNationality() {
     var Nationality = MODEL('nationality').Schema;
 
     Nationality.find({}).exec(function(err, result) {
-        if (err) {
+        if (err)
             return self.throw500(err);
-        }
 
         self.json({ data: result });
     });
@@ -1145,10 +1145,23 @@ function getLanguages() {
     var Languages = MODEL('languages').Schema;
 
     Languages.find({}).exec(function(err, result) {
-        if (err) {
+        if (err)
             return self.throw500(err);
-        }
 
         self.json({ data: result });
     });
+}
+
+function getCountries() {
+    var self = this;
+    var Countries = MODEL('countries').Schema;
+
+    Countries.find({})
+        .sort({ '_id': 1 })
+        .exec(function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({ data: result });
+        });
 }

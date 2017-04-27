@@ -301,6 +301,7 @@ var customerSchema = new Schema({
     editedBy: { type: ObjectId, ref: 'Users', default: null },
 
     companyInfo: {
+        brand: { type: String, default: '' }, // Old caFamily
         size: { type: String, default: 'EF0' }, // effectif_id
         industry: { type: ObjectId, ref: 'Industries', default: null }, //brand
         idprof1: String, // SIREN
@@ -311,6 +312,7 @@ var customerSchema = new Schema({
         idprof6: String, // TVA Intra
         forme_juridique_code: String, //forme juridique
         category: { type: Schema.Types.ObjectId, ref: 'accountsCategories' }, //typent_id
+        forme_juridique: String,
         capital: { type: Number, default: 0 },
         //importExport: String, // null (no internal country), EUROP (Import/Export in EUROPE), INTER (Import/Export international) TODO Remove
         Tag: { type: [], set: MODULE('utils').setTags }

@@ -151,7 +151,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
                 return $rootScope.$state.go('societe.show.company');
 
-            var dict = ["fk_stcomm", "fk_fournisseur", "fk_prospectlevel", "fk_typent", "fk_effectif", "fk_forme_juridique", "fk_payment_term", "fk_paiement", "fk_segmentation", "fk_rival", "fk_user_status"];
+            var dict = ["fk_typent", "fk_effectif", "fk_forme_juridique", "fk_payment_term", "fk_paiement", "fk_civilite", "fk_user_status"];
 
             $http({
                 method: 'GET',
@@ -1247,7 +1247,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             if (data)
                 address = data;
             else
-                address.name = $scope.societe.name;
+                address.name = $scope.societe.fullName;
 
             var modalInstance = $modal.open({
                 templateUrl: 'addModalAddress.html',
@@ -1265,14 +1265,14 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             modalInstance.result.then(function(address) {
                 if (!data) // Is new address
-                    $scope.societe.addresses.push(address);
+                    $scope.societe.shippingAddress.push(address);
 
                 $scope.update();
             }, function() {});
         };
 
         $scope.removeAddress = function(id) {
-            $scope.societe.addresses.splice(id, 1);
+            $scope.societe.shippingAddress.splice(id, 1);
             $scope.update();
         };
 

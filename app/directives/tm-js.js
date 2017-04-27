@@ -249,6 +249,84 @@ MetronicApp.directive('crmAddress', ['$http',
     }
 ]);
 
+MetronicApp.directive('address', ['$http',
+    function($http) {
+        return {
+            restrict: 'E',
+            scope: {
+                addressModel: '=ngModel',
+                mode: '=?'
+            },
+            templateUrl: function(el, attr) {
+                if (attr.mode) {
+                    if (attr.mode === 'edit')
+                        return '/templates/core/address2.html';
+
+                    if (attr.mode === 'show')
+                        return '/templates/core/address_show.html';
+
+                } else
+                    return '/templates/core/address2.html';
+            },
+            link: function(scope) {
+
+                $http({
+                    method: 'GET',
+                    url: '/erp/api/countries'
+                }).success(function(data, status) {
+                    scope.countries = data.data;
+                });
+
+                scope.updateAddressDir = true;
+
+                scope.deletedAddress = {
+                    name: null,
+                    street: null,
+                    city: null,
+                    state: null,
+                    zip: null,
+                    country: null,
+                    societe: {}
+                };
+
+                scope.enableUpdateAddress = function() {
+                    scope.deletedAddress = {
+                        name: scope.addressModel.name,
+                        street: scope.addressModel.street,
+                        city: scope.addressModel.city,
+                        state: scope.addressModel.state,
+                        zip: scope.addressModel.zip,
+                        country: scope.addressModel.country
+                    };
+
+                    scope.updateAddressDir = !scope.updateAddressDir;
+                };
+
+                scope.cancelUpdateAddress = function() {
+                    scope.addressModel.name = scope.deletedAddress.name;
+                    scope.addressModel.street = scope.deletedAddress.street;
+                    scope.addressModel.city = scope.deletedAddress.city;
+                    scope.addressModel.state = scope.deletedAddress.state;
+                    scope.addressModel.zip = scope.deletedAddress.zip;
+                    scope.addressModel.country = scope.deletedAddress.country;
+                    scope.updateAddressDir = !scope.updateAddressDir;
+                };
+                scope.getLocation = function(val) {
+                    return $http.jsonp('https://modules.tomanage.fr/api/zipcode/autocomplete?callback=JSON_CALLBACK&q=' + val)
+                        .then(function(res) {
+                            return res.data;
+                        });
+                };
+
+                scope.generateZip = function(item) {
+                    scope.addressModel.zip = item.code;
+                    scope.addressModel.city = item.city;
+                };
+            }
+        };
+    }
+]);
+
 MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
     function($http, $modal, Contacts) {
         return {
