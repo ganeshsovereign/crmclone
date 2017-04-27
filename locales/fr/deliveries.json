@@ -16,6 +16,7 @@
     "ReceivedDate": "Date de réception",
     "DeliveryDateShort": "Date réc.",
     "CreateDeliveryOrder": "Générer bon de réception",
+    "ShippingCost": "Frais de transport",
     "QtyOrdered": "Qté cmdée",
     "QtyDelivered": "Qté livrée",
     "URLtracking": "URL de suivi",
