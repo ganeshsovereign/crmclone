@@ -1,30 +1,32 @@
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(products:Products/Services)</span>
-        </li>
-    </ul>
-    <div class="page-toolbar">
-        <div class="btn-group pull-right">
-            <a class="btn yellow-crusta dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
+<div>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a ui-sref="home">@(Home)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(products:ListProductsAndServices)</span>
+            </li>
+        </ul>
+
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <a class="btn yellow-crusta dropdown-toggle" href="javascript:;" data-toggle="dropdown"> @(Tools)
                                                     <i class="fa fa-angle-down"></i>
                                                 </a>
-            <ul class="dropdown-menu pull-right">
-                <li>
-                    <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
                                         @(PrintList) </a>
-                </li>
-                <li>
-                    <a href="#" ng-show="login.rights.product.create" data-ng-click="updatePrices()">
-                        <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
-                    </a>
-                </li>
-                <!--    <li>
+                    </li>
+                    <li>
+                        <a href="#" ng-show="login.rights.product.create" data-ng-click="updatePrices()">
+                            <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
+                        </a>
+                    </li>
+                    <!--    <li>
                                         <a href="#">
                                             @(Delete) </a>
                                     </li>
@@ -32,88 +34,79 @@
                                         <a href="#">
                                             @(BuildPDF) </a>
                                     </li>-->
-            </ul>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
-<h3 class="page-title">
-    <i class="fa fa-cubes font-grey-silver"></i> @(products:ProductsAndServices)
-</h3>
 
-<div>
-    <script type="text/ng-template" id="myModalPrice.html">
-        <div class="modal-header">
-            <h4 class="no-margin-bottom">Modifier les prix</h4>
-        </div>
-        <div class="modal-body">
+    <!--<div>
+        <script type="text/ng-template" id="myModalPrice.html">
+            <div class="modal-header">
+                <h4 class="no-margin-bottom">Modifier les prix</h4>
+            </div>
+            <div class="modal-body">
 
-            <p class="button-height inline-medium-label">
-                <label for="coef">Coefficient multiplicateur</label>
-                <input id="coef" required data-ng-model="coef" type="number" min="0.01" step="any" class="form-control">
-            </p>
-        </div>
-        <div class="modal-footer">
-            <button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
-            <button type="button" ng-click="ok()" class="btn btn-info btn-sm">@(Apply)</button>
+                <p class="button-height inline-medium-label">
+                    <label for="coef">Coefficient multiplicateur</label>
+                    <input id="coef" required data-ng-model="coef" type="number" min="0.01" step="any" class="form-control">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
+                <button type="button" ng-click="ok()" class="btn btn-info btn-sm">@(Apply)</button>
 
-        </div>
-    </script>
+            </div>
+        </script>-->
 
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
             <div class="caption">
-                <i class="fa fa-cubes font-yellow-crusta"></i>
-                <span class="caption-subject font-yellow-crusta sbold uppercase">@(products:ListProductsAndServices)</span>
+                <i class="fa fa-cubes"></i>
+                <span class="caption-subject dark sbold uppercase">@(products:ListProductsAndServices)</span>
             </div>
             <div class="actions">
                 <button class="btn blue" ui-sref="product.create">@(Add) <i class="fa fa-plus"></i></button>
                 <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
+        <div class="tools">
+        </div>
         <div class="portlet-body">
-            <div class="form-group form-md-line-input">
+            <div class="table-toolbar">
                 <div class="row hidden-print">
                     <div class="form-group form-md-line-input">
-
-                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
                         <div class="col-md-3">
                             <select ng-model="type" ng-change="setCache('type', type);
-                                    find();" ng-options="s.id as s.name for s in types" class="form-control">
-                            </select>
+                                    find();" ng-options="s.id as s.name for s in types" class="form-control"></select>
                             <div class="form-control-focus"> </div>
                         </div>
-                        <div class="col-md-1"></div>
-                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyFamily)</label>
                         <div class="col-md-3">
-                            <div class="input-icon input-icon-sm right">
-                                <i class="fa fa-times" ng-click="family = null;
-                                        find();"></i>
-                                <input class="form-control" placeholder="@(Family)" ng-model="family" typeahead="f.id as f.name for f in AutoComplete($viewValue,'/erp/api/product/family/autocomplete')" typeahead-on-select="find()" type="text" autocomplete="off" />
-                                <div class="form-control-focus"> </div>
-                            </div>
+                            <input class="form-control" placeholder="@(Family)" ng-model="family" typeahead="f.id as f.name for f in AutoComplete($viewValue,'/erp/api/product/family/autocomplete')" typeahead-on-select="find()" type="text" autocomplete="off" />
+                            <div class="form-control-focus"> </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="dataTables_wrapper table-responsive">
-                <div class="col-md-12">
-                    <table class="table dataTable table-hover" id="productList">
-                        <thead>
-                            <tr role="row" class="heading">
-                                <th width="2%">
-                                    <input type="checkbox" class="group-checkable" />
-                                </th>
-                                <th>@(Ref)</th>
-                                <th>@(Type)</th>
-                                <th>@(Name)</th>
-                                <th>@(TotalHTsell)</th>
-                                <th>@(TotalHTbuy)</th>
-                                <th>@(Weight)</th>
-                                <th>@(DateModificationShort)</th>
-                                <th>@(companies:Actif/Inactif)</th>
-                                <th>@(Family)</th>
-                            </tr>
-                            <!--<tr role="row" class="filter">
+        </div>
+        <div class="dataTables_wrapper table-responsive">
+            <div class="col-md-12">
+                <table class="table dataTable table-hover" id="productList">
+                    <thead>
+                        <tr role="row" class="heading">
+                            <th width="2%">
+                                <input type="checkbox" class="group-checkable" />
+                            </th>
+                            <th>@(Ref)</th>
+                            <th>@(Type)</th>
+                            <th>@(Name)</th>
+                            <th>@(TotalHTsell)</th>
+                            <th>@(TotalHTbuy)</th>
+                            <th>@(Weight)</th>
+                            <th>@(DateModificationShort)</th>
+                            <th>@(Status)</th>
+                            <th>@(Family)</th>
+                        </tr>
+                        <!--<tr role="row" class="filter">
                             <td>
                             </td>
                             <td>
@@ -167,10 +160,11 @@
                                 <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
                             </td>
                         </tr>-->
-                        </thead>
-                    </table>
-                </div>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>

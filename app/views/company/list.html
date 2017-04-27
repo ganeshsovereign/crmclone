@@ -57,6 +57,7 @@
                             <select ng-model="type" ng-change="changeType()" ng-options="c.id as c.name for c in types" class="form-control"></select>
                             <div class="form-control-focus"> </div>
                         </div>
+
                         <div class="col-md-3">
                             <select ng-show="login.rights.societe.seeAll" ng-model="commercial_id" ng-change="setCache('commercial_id', commercial_id);
                             find();" ng-options="c._id as c.fullName +' (' + c.count + ')' for c in $dict.employees" class="form-control">
