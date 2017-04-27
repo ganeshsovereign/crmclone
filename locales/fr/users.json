@@ -39,6 +39,7 @@
     "ConfirmReinitPassword": "Êtes-vous sûr de vouloir générer un nouveau mot de passe pour l'utilisateur <b>%s</b> ?",
     "ConfirmSendNewPassword": "Êtes-vous sûr de vouloir générer et envoyer un nouveau mot de passe pour l'utilisateur <b>%s</b> ?",
     "NewUser": "Nouvel utilisateur",
+    "NewEmployee": "Nouveau collaborateur",
     "CreateUser": "Créer l'utilisateur",
     "SearchAGroup": "Rechercher un groupe",
     "SearchAUser": "Rechercher un utilisateur",
