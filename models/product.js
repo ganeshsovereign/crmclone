@@ -19,7 +19,11 @@ var supplierPriceSchema = new Schema({
     _id: false,
     societe: { type: Schema.Types.ObjectId, ref: 'Customers' },
     ref: String,
-    tva_tx: Number,
+    taxes: [{
+        _id: false,
+        taxe: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        value: { type: Number, default: null } //for ecotaxe
+    }],
     minQty: Number,
     replenishmentTime: { type: Number, default: 0 }, // delai de reappro en jr
     prices: {
@@ -180,7 +184,12 @@ var productSchema = new Schema({
     //enabled: { type: Boolean, default: true },
     //ischat: { type: Boolean, default: false },
     //negociate: { type: Number, default: 0 }, // 0 is no negociate
-    tva_tx: { type: Number, default: 20 },
+    taxes: [{
+        _id: false,
+        taxe: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        value: { type: Number, default: null }
+    }],
+    //tva_tx: { type: Number, default: 20 },
     //datec: { type: Date, default: Date.now },
     //billingMode: { type: String, uppercase: true, default: "QTY" }, //MONTH, QTY, ...
 
@@ -194,10 +203,8 @@ var productSchema = new Schema({
     template: { type: String },
     dynForm: String,
 
-    caFamily: { type: String, uppercase: true },
-    subFamily: { type: String, uppercase: true },
-    costCenter: { type: String, uppercase: true },
-    subCostCenter: { type: String, uppercase: true },
+    sellFamily: { type: Schema.Types.ObjectId, ref: 'productFamily', require: true },
+    costFamily: { type: Schema.Types.ObjectId, ref: 'productFamily', default: null },
 
     units: { type: String, default: "unit" },
 

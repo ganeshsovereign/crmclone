@@ -70,7 +70,7 @@ var offerSchema = new Schema({
     },
     contacts: [{
         type: Schema.Types.ObjectId,
-        ref: 'contact'
+        ref: 'Customers'
     }],
     ref_client: {
         type: String,
