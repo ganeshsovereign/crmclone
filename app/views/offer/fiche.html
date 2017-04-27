@@ -81,91 +81,99 @@
         <i class="fa fa-calculator"></i> @(propal:CommercialProposal) {{offer.ref}} {{offer.client.name}}<small> @(From) {{offer.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>
     </h3>
 
+    <div class="form-horizontal form-row-seperated">
+        <div class="portlet portlet light bordered">
+            <div ng-show="product._id" class="portlet-title">
+                <div class="caption">
+                    <i class="icon-info"></i>
+                    <span class="caption-subject dark bold uppercase"> @(Marketing) / PIM</span>
+                    <span class="caption-helper"> - @(products:ProductServiceCard)</span>
+                </div>
+                <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+            </div>
+            <div ng-hide="product._id" class="portlet-title">
+                <div class="caption">
+                    <i class="icon-magic-wand"></i>
+                    <span class="caption-subject dark bold uppercase"> @(products:NewProduct)</span>
+                </div>
+                <div ng-include="'/templates/createMenu.html'" class="actions btn-set"></div>
+            </div>
+            <div class="portlet-body">
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="col-md-6 col-sm-12">
-                <form editable-form name="editableOffer" onaftersave="update()">
-                    <div class="portlet portlet light bordered">
-                        <div class="portlet-title">
-                            <div class="caption font-yellow-crusta">
-                                <i class="fa fa-cog font-yellow-crusta"></i>@(propal:Details)
-                            </div>
-                            <div class="actions">
-                                <a href="javascript:;" ng-click="editableOffer.$show()" ng-show="!editableOffer.$visible && editable" class="btn btn-circle btn-default">
-                                    <i class="fa fa-pencil"></i> @(Edit) </a>
-                            </div>
-                            <div class="actions" ng-show="editableOffer.$visible">
-                                <button type="submit" ng-disabled="editableOffer.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save)</button>
-
-                                <button type="button" ng-disabled="editableOffer.$waiting" ng-click="editableOffer.$cancel();
-                                                findOne();" class="btn btn-circle btn-outline uppercase red"> @(Cancel) <i class="fa fa-angle-right"></i></button>
-                            </div>
-                        </div>
-                        <div class="portlet-body">
-                            <div class="form-group form-md-line-input">
-                                <div class="row static-info" ng-if="offer.client.id !== '5333032036f43f0e1882efce'">
-
-                                    <div class="col-md-4 name">@(companies:Company) :</div>
-                                    <div class="col-md-7 value">
-                                        <a href="#" ui-sref="societe.show({id:offer.client.id})" class="fa fa-institution" editable-text="offer.client" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', offer.entity) | filter:{name:$viewValue}"
-                                            e-typeahead-template-url="searchcompany.html" e-typeahead-on-select="updateAddress($item)"> {{offer.client.name|| "Non defini"}} </a>
-                                        <div class="form-control-focus"> </div>
+                            <div class="portlet portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption font-yellow-crusta">
+                                        <i class="fa fa-cog font-yellow-crusta"></i>@(propal:Details)
                                     </div>
+
                                 </div>
-                                <div class="row static-info" ng-if="offer.client.id === '5333032036f43f0e1882efce'">
-                                    <div class="col-md-4 name">@(companies:Company) :</div>
-                                    <div class="col-md-7 value">
-                                        <a href="#" ui-sref="societe.show({id:offer.client.id})" class="fa fa-institution" editable-text="offer.client.name" onbeforesave="updateAddress($data)"> {{offer.client.name|| "Non defini"}} (Accueil)</a>
-                                        <div class="form-control-focus"> </div>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(Ref) :</div>
-                                    <div class="col-md-7 value">{{offer.ref}}</div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(orders:RefCustomerOrder):</div>
-                                    <div class="col-md-7 value">
-                                        <span editable-text="offer.ref_client">
+                                <div class="portlet-body">
+                                    <div class="form-group form-md-line-input">
+                                        <div class="row static-info" ng-if="offer.client.id !== '5333032036f43f0e1882efce'">
+
+                                            <div class="col-md-4 name">@(companies:Company) :</div>
+                                            <div class="col-md-7 value">
+                                                <a href="#" ui-sref="societe.show({id:offer.client.id})" class="fa fa-institution" editable-text="offer.client" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', offer.entity) | filter:{name:$viewValue}"
+                                                    e-typeahead-template-url="searchcompany.html" e-typeahead-on-select="updateAddress($item)"> {{offer.client.name|| "Non defini"}} </a>
+                                                <div class="form-control-focus"> </div>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info" ng-if="offer.client.id === '5333032036f43f0e1882efce'">
+                                            <div class="col-md-4 name">@(companies:Company) :</div>
+                                            <div class="col-md-7 value">
+                                                <a href="#" ui-sref="societe.show({id:offer.client.id})" class="fa fa-institution" editable-text="offer.client.name" onbeforesave="updateAddress($data)"> {{offer.client.name|| "Non defini"}} (Accueil)</a>
+                                                <div class="form-control-focus"> </div>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(Ref) :</div>
+                                            <div class="col-md-7 value">{{offer.ref}}</div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(orders:RefCustomerOrder):</div>
+                                            <div class="col-md-7 value">
+                                                <span editable-text="offer.ref_client">
                                                     {{offer.ref_client|| "Non défini"}}
                                                 </span>
-                                        <div class="form-control-focus"> </div>
-                                    </div>
-                                </div>
-                                <!--<div class="row static-info">
+                                                <div class="form-control-focus"> </div>
+                                            </div>
+                                        </div>
+                                        <!--<div class="row static-info">
                                             <div class="col-md-4 name">@(Title) :</div>
                                             <div class="col-md-8 value">
                                                 <span ng-hide="offer.title.autoGenerated" editable-text="offer.title.ref">{{offer.title.ref}}</span>
                                                 <span ng-show="offer.title.autoGenerated">{{offer.title.ref}}</span>
                                             </div>
                                         </div>-->
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(Status) : </div>
-                                    <div class="col-md-7 value">
-                                        <span class="label label-sm" data-ng-class="offer.status.css" editable-select="offer.Status" e-ng-options="s.id as s.label for s in dict.fk_offer_status.values"> {{offer.status.name}}</span>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(Entity) :</div>
-                                    <div class="col-md-7 value">
-                                        <small class="label label-sm label-default">{{offer.entity}}</small>
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(products:PriceLevel) :</div>
-                                    <div class="col-md-7 value">{{offer.price_level}}</div>
-                                </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(Status) : </div>
+                                            <div class="col-md-7 value">
+                                                <span class="label label-sm" data-ng-class="offer.status.css" editable-select="offer.Status" e-ng-options="s.id as s.label for s in dict.fk_offer_status.values"> {{offer.status.name}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(Entity) :</div>
+                                            <div class="col-md-7 value">
+                                                <small class="label label-sm label-default">{{offer.entity}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(products:PriceLevel) :</div>
+                                            <div class="col-md-7 value">{{offer.price_level}}</div>
+                                        </div>
 
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(orders:OrderMode) : </div>
-                                    <div class="col-md-7 value">
-                                        <span editable-select="offer.type" e-ng-options="s.id as s.label for s in dict.fk_input_reason.values">
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(orders:OrderMode) : </div>
+                                            <div class="col-md-7 value">
+                                                <span editable-select="offer.type" e-ng-options="s.id as s.label for s in dict.fk_input_reason.values">
                                                     {{showStatus('type', 'fk_input_reason')}}</span>
-                                    </div>
-                                </div>
+                                            </div>
+                                        </div>
 
-                                <!--<div class="row static-info">
+                                        <!--<div class="row static-info">
                                             <div class="col-md-4 name">@(orders:DateDeliveryPlanned) : </div>
                                             <div class="col-md-8 value">
                                                 <span editable-bsdate="offer.date_livraison" e-datepicker-popup="dd/MM/yyyy">
@@ -174,118 +182,105 @@
                                             </div>
                                         </div>-->
 
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(orders:RemovingOrder) :</div>
-                                    <div class="col-md-7 value">
-                                        <span editable-radiolist="offer.delivery_mode" e-ng-options="s as s for s in delivery_mode">
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(orders:RemovingOrder) :</div>
+                                            <div class="col-md-7 value">
+                                                <span editable-radiolist="offer.delivery_mode" e-ng-options="s as s for s in delivery_mode">
                                                     {{offer.delivery_mode}}
                                                 </span>
-                                    </div>
-                                </div>
+                                            </div>
+                                        </div>
 
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">
-                                        @(deliveries:PaymentConditions) :
-                                    </div>
-                                    <div class="col-md-7 value">
-                                        <span editable-select="offer.cond_reglement_code" e-ng-options="s.id as s.label for s in dict.fk_payment_term.values">
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">
+                                                @(deliveries:PaymentConditions) :
+                                            </div>
+                                            <div class="col-md-7 value">
+                                                <span editable-select="offer.cond_reglement_code" e-ng-options="s.id as s.label for s in dict.fk_payment_term.values">
                                                     {{ showStatus('cond_reglement_code', 'fk_payment_term')}}
                                                 </span>
-                                    </div>
-                                </div>
+                                            </div>
+                                        </div>
 
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">
-                                        @(bills:PaymentMode) :
-                                    </div>
-                                    <div class="col-md-7 value">
-                                        <span editable-select="offer.mode_reglement_code" e-ng-options="s.id as s.label for s in dict.fk_paiement.values">
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">
+                                                @(bills:PaymentMode) :
+                                            </div>
+                                            <div class="col-md-7 value">
+                                                <span editable-select="offer.mode_reglement_code" e-ng-options="s.id as s.label for s in dict.fk_paiement.values">
                                                     {{ showStatus('mode_reglement_code', 'fk_paiement')}}
                                                 </span>
-                                    </div>
-                                </div>
+                                            </div>
+                                        </div>
 
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(commercial:Commercial):</div>
-                                    <div class="col-md-7 value">
-                                        <span editable-text="offer.commercial_id" e-typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}">
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(commercial:Commercial):</div>
+                                            <div class="col-md-7 value">
+                                                <span editable-text="offer.commercial_id" e-typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}">
                                                     {{offer.commercial_id.name|| "Non defini"}}
                                                 </span>
-                                    </div>
-                                </div>
+                                            </div>
+                                        </div>
 
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">
-                                        @(Amounts) @(propal:CommercialProposal) :
-                                    </div>
-                                    <div class="col-md-7 value">
-                                        {{offer.total_ht| currency}} @(HT)
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">
+                                                @(Amounts) @(propal:CommercialProposal) :
+                                            </div>
+                                            <div class="col-md-7 value">
+                                                {{offer.total_ht| currency}} @(HT)
 
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">
-                                    </div>
-                                    <div class="col-md-7 value">{{offer.total_ttc| currency}} @(TTC)
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">
+                                            </div>
+                                            <div class="col-md-7 value">{{offer.total_ttc| currency}} @(TTC)
 
-                                    </div>
-                                </div>
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(DateLastModification) :</div>
-                                    <div class="col-md-7 value">{{offer.updatedAt|date:'dd/MM/yyyy HH:mm'}}</div>
-                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(DateLastModification) :</div>
+                                            <div class="col-md-7 value">{{offer.updatedAt|date:'dd/MM/yyyy HH:mm'}}</div>
+                                        </div>
 
 
-                                <div class="row static-info">
-                                    <div class="col-md-4 name">@(Logs):</div>
-                                    <div class="col-md-7 value">
-                                        <div ng-repeat="history in offer.history">
-                                            {{history.date| date:'dd/MM/yyyy HH:mm'}} {{history.msg}}
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(Logs):</div>
+                                            <div class="col-md-7 value">
+                                                <div ng-repeat="history in offer.history">
+                                                    {{history.date| date:'dd/MM/yyyy HH:mm'}} {{history.msg}}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
-                    </div>
-                </form>
-            </div>
 
-            <div class="col-md-6 col-sm-12">
-                <form editable-form name="billingAddress" onaftersave="update()">
-                    <div class="portlet portlet light bordered">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="portlet portlet light">
 
-                        <div class="portlet-title">
-                            <div class="caption font-dark">
-                                <i class="fa fa-envelope font-dark"></i> @(Adresses)
-                            </div>
-                            <div class="actions">
-                                <a href="javascript:;" ng-click="billingAddress.$show()" ng-show="!billingAddress.$visible && editable" class="btn btn-circle btn-default">
-                                    <i class="fa fa-pencil"></i> @(Edit) </a>
-                            </div>
-                            <div class="actions" ng-show="billingAddress.$visible">
-
-
-                                <button type="submit" ng-disabled="billingAddress.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save)</button>
-                                <button type="button" ng-disabled="billingAddress.$waiting" ng-click="billingAddress.$cancel()" class="btn btn-circle btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i></button>
+                                <div class="portlet-title">
+                                    <div class="caption font-dark">
+                                        <i class="fa fa-envelope font-dark"></i> @(Adresses)
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <h5><i class="fa fa-money font-dark"></i> @(bills:BillAddress)</h5>
+                                    <div class="form-body" crm-address model="offer.billing"></div>
+                                    <h5><i class="fa fa-truck font-dark"></i> @(deliveries:DeliveryAddress)</h5>
+                                    <div class="portlet-body" crm-address model="offer.bl[0]"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="portlet-body">
-                            <h5><i class="fa fa-money font-dark"></i> @(bills:BillAddress)</h5>
-                            <div class="form-body" crm-address model="offer.billing"></div>
-                            <h5><i class="fa fa-truck font-dark"></i> @(deliveries:DeliveryAddress)</h5>
-                            <div class="portlet-body" crm-address model="offer.bl[0]"></div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-6 col-sm-12">
-                <form editable-form name="contactOffer" onaftersave="update()">
-                    <div class="portlet portlet light bordered">
-                        <div class="portlet-title">
-                            <div class="caption font-yellow">
-                                <i class="fa fa-group font-yellow"></i> @(Contacts)
-                            </div>
-                            <!--<div class="actions">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="portlet portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption font-yellow">
+                                        <i class="fa fa-group font-yellow"></i> @(Contacts)
+                                    </div>
+                                    <!--<div class="actions">
                                             <a href="javascript:;" ng-click="contactOffer.$show()" ng-show="!contactOffer.$visible" class="btn btn-default btn-sm">
                                                 <i class="fa fa-pencil"></i> @(Edit) </a>
                                         </div>
@@ -294,32 +289,39 @@
                                             <button type="button" ng-disabled="contactOffer.$waiting" ng-click="contactOffer.$cancel();
                                                 findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
                                         </div>-->
+                                </div>
+                                <div class="portlet-body" crm-contact model="offer.contacts" societe="offer.client"></div>
+                            </div>
                         </div>
-                        <div class="portlet-body" crm-contact model="offer.contacts" societe="offer.client"></div>
                     </div>
-                </form>
+
+
+                </div>
             </div>
-
-
-
         </div>
+
+
+
+
 
         <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="portlet portlet light bordered">
                     <div class="portlet-title">
-                        <div class="caption font-dark sbold">
-                            <i class="fa fa-opencart"></i> @(ShoppingCard)
+                        <div class="caption">
+                            <i class="fa fa-opencart"></i>
+                            <span class="caption-subject dark bold uppercase"> @(ShoppingCard)</span>
+                            <span class="caption-helper"> - @(products:ProductServiceCard)</span>
                         </div>
                         <div class="actions">
                             <a href="javascript:;" ng-click="tableform.$show();
-                                            settings.layout.pageSidebarClosed = true;" ng-show="!tableform.$visible && editable" class="btn btn-circle btn-default">
+                                            settings.layout.pageSidebarClosed = true;" ng-show="!tableform.$visible && editable" class="btn btn-default">
                                 <i class="fa fa-pencil"></i> @(Edit) </a>
                         </div>
                         <div class="actions">
                             <div class="btn-form" ng-show="tableform.$visible">
 
-                                <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(offer.lines)" class="btn btn-circle btn-outline sbold uppercase dark"> @(AddNewLine) <i class="fa fa-plus"></i></button>
+                                <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(offer.lines)" class="btn blue sbold uppercase dark"> @(AddNewLine) <i class="fa fa-plus"></i></button>
                             </div>
                         </div>
 
@@ -426,11 +428,11 @@
 
                             <div class="btn-form" ng-show="tableform.$visible">
 
-                                <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(offer.lines)" class="btn btn-circle btn-outline sbold uppercase dark "><i class="fa fa-plus"></i> @(AddNewLine)</button>
+                                <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(offer.lines)" class="btn sbold uppercase blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
 
 
-                                <button type="submit" ng-disabled="tableform.$waiting" class="btn btn-circle btn-outline uppercase green pull-right"><i class="fa fa-check"></i> @(Save) </button>
-                                <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn btn-circle btn-outline uppercase red pull-right"> @(Cancel) <i class="fa fa-angle-right"></i></button>
+                                <button type="submit" ng-disabled="tableform.$waiting" class="btn uppercase green pull-right"><i class="fa fa-check"></i> @(Save) </button>
+                                <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn uppercase red pull-right"> @(Cancel) <i class="fa fa-angle-right"></i></button>
                             </div>
                         </form>
                     </div>
@@ -441,40 +443,65 @@
             <div class="col-md-7">
                 <crm-notes ng-model="offer.notes[0]" ng-change="update()"></crm-notes>
             </div>
+
             <div class="col-md-5">
-                <div class="well">
-                    <h4>Frais de transport</h4>
-                    <div class="row static-info align-reverse">
-                        <div class="col-md-7 name">@(TotalWeight) : </div>
-                        <div class="col-md-5 value">{{offer.weight| number : 2}} kg</div>
-                    </div>
-                    <div class="row static-info align-reverse">
-                        <div class="col-md-7 name">@(AmountHT) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
-                        <div class="col-md-5 value"><span editable-text="offer.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
-                                            {{offer.shipping.total_ht| currency}}
-                                        </span></div>
-                    </div>
-                </div>
-                <div class="well">
-                    <h4>@(Totaux)</h4>
-                    <div class="row static-info align-reverse">
-                        <div class="col-md-7 name">@(AmountHT) :</div>
-                        <div class="col-md-5 value">{{offer.total_ht| currency}}</div>
-                    </div>
-                    <div class="row static-info align-reverse">
-                        <div class="col-md-7 name">@(AmountVAT) :</div>
-                        <div class="col-md-5 value">
-                            <div class="row static-info align-reverse" ng-repeat="vat in offer.total_tva| orderBy:'tva_tx'">
-                                <div class="col-md-6 name">{{vat.tva_tx| number:2}} %</div>
-                                <div class="col-md-6 value">{{vat.total| currency}}</div>
-                            </div>
+
+
+                <div class="portlet portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="icon-plane font-grey-gallery"></i>
+                            <span class="caption-subject bold font-grey-gallery uppercase"> @(deliveries:ShippingCost) </span>
                         </div>
                     </div>
-                    <div class="row static-info align-reverse">
-                        <div class="col-md-7 name">@(AmountTTC) :</div>
-                        <div class="col-md-5 value">{{offer.total_ttc| currency}}</div>
+                    <div class="portlet-body">
+                        <div class="row static-info align-reverse">
+                            <div class="col-md-5 name">@(TotalWeight) : </div>
+                            <div class="col-md-7 value">{{offer.weight| number : 2}} kg</div>
+                        </div>
+                        <div class="row static-info align-reverse">
+                            <div class="col-md-5 name">@(AmountHT) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
+                            <div class="col-md-7 value"><span editable-text="offer.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
+                                            {{offer.shipping.total_ht| currency}}
+                                        </span></div>
+                        </div>
                     </div>
                 </div>
+
+
+
+                <div class="portlet mt-element-ribbon light portlet-fit bordered">
+                    <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase">
+                        <div class="ribbon-sub ribbon-bookmark"></div>
+                        <i class="fa fa-pause"></i>
+                    </div>
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class=" icon-control-pause font-yellow-crusta"></i>
+                            <span class="caption-subject font-yellow-crusta bold uppercase">@(Totaux)</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row static-info align-reverse">
+                            <div class="col-md-5 name">@(AmountHT) :</div>
+                            <div class="col-md-7 value">{{offer.total_ht| currency}}</div>
+                        </div>
+                        <div class="row static-info align-reverse">
+                            <div class="col-md-5 name">@(AmountVAT) :</div>
+                            <div class="col-md-7 value">
+                                <div class="row static-info align-reverse" ng-repeat="vat in offer.total_tva| orderBy:'tva_tx'">
+                                    <div class="col-md-6 name">{{vat.tva_tx| number:2}} %</div>
+                                    <div class="col-md-6 value">{{vat.total| currency}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row static-info align-reverse">
+                            <div class="col-md-5 name bold">@(AmountTTC) :</div>
+                            <div class="col-md-7 value bold">{{offer.total_ttc| currency}}</div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         </tab>

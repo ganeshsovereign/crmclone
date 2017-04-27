@@ -169,7 +169,7 @@ address {
 }
 
 .well {
-    background-color: #FAFAFA;
+    background-color: #FFF;
 }
 
 address pre {
@@ -279,7 +279,7 @@ table.table-bordered.dataTable tbody td {
 }
 
 .page-container-bg-solid .page-content {
-    background: #ffffff;
+    background: #F4F6F7;
 }
 
 .mt-element-step .step-default .mt-step-title {
