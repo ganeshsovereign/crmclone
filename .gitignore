@@ -25,7 +25,5 @@ logs.txt
 /install/
 databases/reqstats.json
 debug.pid
-dump/new/
-dump/tm/
-dump/atlankit/
+dump/
 dump_old/
