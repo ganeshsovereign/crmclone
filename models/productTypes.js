@@ -10,27 +10,16 @@ var productTypesSchema = new Schema({
     code: String,
     langs: [{
         _id: false,
-        name: String
+        name: String,
+        label: { type: String, default: '' } // On select in product
     }],
     options: [{ type: Schema.Types.ObjectId, ref: 'productOptions' }], //variants
     attributes: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }],
     inventory: { type: Boolean, default: true },
     coef: { type: Boolean, default: false }, //Price was calculated from a coefficient
     createdAt: { type: Date, default: Date.now },
-
-    /*accountsBuy: [{
-        _id: false,
-        code: String,
-        account: { type: String, set: MODULE('utils').setAccount, trim: true }
-    }],
-
-    accountsSell: [{
-        _id: false,
-        code: String,
-        account: { type: String, set: MODULE('utils').setAccount, trim: true }
-    }]*/
-
-
+    isActive: { type: Boolean, default: true },
+    sequence: { type: Number, default: 0 } // sort list
 });
 
 exports.Schema = mongoose.model('productTypes', productTypesSchema, 'productTypes');

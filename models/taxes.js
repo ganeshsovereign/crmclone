@@ -10,14 +10,14 @@ var taxSchema = new mongoose.Schema({
         label: { type: String, default: '' } // On bill PDF
     }],
     code: { type: String, require: true, unique: true },
+    isFixValue: { type: Boolean, default: false }, // For ecotaxe it's true
     rate: { type: Number, default: 0 }, // On percent
-    value: { type: Number, default: 0 }, // Fix value
     sequence: { type: Number, default: 0 },
     country: { type: String, default: 'FR' },
     isDefault: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
-    sellAccount: { type: String, default: null },
-    buyAccount: { type: String, default: null },
+    sellAccount: { type: String, set: MODULE('utils').setAccount, trim: true, default: null },
+    buyAccount: { type: String, set: MODULE('utils').setAccount, trim: true, default: null },
     isOnPaid: { type: Boolean, default: false }
 }, {
     collection: 'taxes',

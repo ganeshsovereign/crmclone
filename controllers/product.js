@@ -1076,7 +1076,7 @@ Object.prototype = {
 
         var conditions = {
             isremoved: { $ne: true },
-            "info.isActive" : true,
+            "info.isActive": true,
         };
 
 
@@ -2867,11 +2867,13 @@ ProductTypes.prototype = {
             sortObj = query.sort;
         } else {
             sortObj = {
-                'data.createdAt': 1
+                'data.sequence': 1
             };
         }
 
         ProductTypesModel.aggregate([{
+            $match: { isActive: true }
+        }, {
             $lookup: {
                 from: 'Product',
                 localField: '_id',
@@ -2895,6 +2897,7 @@ ProductTypes.prototype = {
                 countProducts: { $size: '$Products' },
                 name: '$langs',
                 inventory: '$inventory',
+                sequence: 1,
                 createdAt: '$createdAt',
                 opts: { $arrayElemAt: ['$productOptions', 0] }
             }
@@ -2913,6 +2916,7 @@ ProductTypes.prototype = {
                 options: { $push: '$opts' },
                 name: { $first: '$name.name' },
                 inventory: { $first: '$inventory' },
+                sequence: { $first: '$sequence' },
                 createdAt: { $first: '$createdAt' },
                 countProducts: { $first: '$countProducts' }
             }
@@ -2933,6 +2937,7 @@ ProductTypes.prototype = {
                     name: '$root.name',
                     options: '$root.options',
                     inventory: '$root.inventory',
+                    sequence: '$root.sequence',
                     countProducts: '$root.countProducts',
                     createdAt: '$root.createdAt'
                 }
