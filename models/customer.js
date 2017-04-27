@@ -309,6 +309,7 @@ var customerSchema = new Schema({
         idprof4: String,
         idprof5: String,
         idprof6: String, // TVA Intra
+        forme_juridique_code: String, //forme juridique
         category: { type: Schema.Types.ObjectId, ref: 'accountsCategories' }, //typent_id
         capital: { type: Number, default: 0 },
         //importExport: String, // null (no internal country), EUROP (Import/Export in EUROPE), INTER (Import/Export international) TODO Remove
