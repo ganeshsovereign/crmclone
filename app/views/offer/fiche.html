@@ -102,6 +102,7 @@
                 <div class="form-body">
                     <div class="row">
                         <div class="col-md-6 col-sm-12">
+                            <h3>Bootstrap Text States</h3>
                             <div class="form-group form-md-line-input">
                                 <div class="input-group">
                                     <div class="input-group-control">
@@ -171,15 +172,11 @@
                                 </div>
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="price_level" disabled ng-model="offer.price_level">
-                                        <label for="price_level">@(products:PriceLevel)</label>
+                                        <div class="form-control form-control-static"> {{offer.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                                        <label for="form_control_1">@(DateLastModification)</label>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <select class="form-control" id="Status" ng-model="offer.Status" ng-options="s.id as s.label for s in dict.fk_offer_status.values">
-                                </select>
-                                <label for="Status">@(Status)</label>
+
                             </div>
                             <div class="form-group form-md-line-input">
                                 <select class="form-control" id="type" ng-model="offer.type" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
@@ -203,7 +200,7 @@
                             </div>
                             <div class="form-group form-md-line-input ">
                                 <input type="text" class="form-control" id="commercial_id" ng-model="offer.commercial_id" typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}">
-                                <label for="commercial_id">@(commercial:Commercial) :</label>
+                                <label for="commercial_id">@(commercial:Commercial)</label>
                             </div>
 
 
