@@ -28,8 +28,8 @@
         </ul>
         <div class="page-toolbar">
             <div class="btn-group pull-right">
-                <button type="button" class="btn btn-circle dark dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
-                    @(Tools) <i class="fa fa-angle-down"></i>
+                <button type="button" class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                   <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
                 </button>
                 <ul class="dropdown-menu pull-right" role="menu">
                     <li>
@@ -83,18 +83,18 @@
 
     <div class="form-horizontal form-row-seperated">
         <div class="portlet portlet light bordered">
-            <div ng-show="product._id" class="portlet-title">
+            <div ng-show="offer._id" class="portlet-title">
                 <div class="caption">
-                    <i class="icon-info"></i>
-                    <span class="caption-subject dark bold uppercase"> @(Marketing) / PIM</span>
-                    <span class="caption-helper"> - @(products:ProductServiceCard)</span>
+                    <i class="icon-calculator"></i>
+                    <span class="caption-subject dark bold uppercase"> @(propal:ProposalShort) {{offer.ref}}</span>
+                    <span class="caption-helper"> - {{offer.client.name}}</span>
                 </div>
                 <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
             </div>
-            <div ng-hide="product._id" class="portlet-title">
+            <div ng-hide="offer._id" class="portlet-title">
                 <div class="caption">
                     <i class="icon-magic-wand"></i>
-                    <span class="caption-subject dark bold uppercase"> @(products:NewProduct)</span>
+                    <span class="caption-subject dark bold uppercase"> @(propal:NewPropal)</span>
                 </div>
                 <div ng-include="'/templates/createMenu.html'" class="actions btn-set"></div>
             </div>
@@ -102,159 +102,182 @@
                 <div class="form-body">
                     <div class="row">
                         <div class="col-md-6 col-sm-12">
-                            <blockquote>
-                                <p><i class="fa fa-cogs"></i> @(propal:Details)</p>
-                            </blockquote>
-
-                            <div class="form-group form-md-line-input">
-                                <div class="input-group">
-                                    <div class="input-group-control">
-                                        <input type="text" class="form-control">
-                                        <label for="form_control_1">Input Group</label>
+                            <div class="portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-cogs"></i>
+                                        <span class="caption-subject uppercase"> @(propal:Details)</span>
                                     </div>
-                                    <span class="input-group-btn btn-right">
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="form-group form-md-line-input">
+                                        <div class="input-group">
+                                            <div class="input-group-control">
+                                                <input type="text" class="form-control">
+                                                <label for="form_control_1">Input Group</label>
+                                            </div>
+                                            <span class="input-group-btn btn-right">
                                                             <button class="btn yellow" type="button" ui-sref="societe.show({id:offer.client.id})">Go!</button>
                                                         </span>
-                                </div>
-                            </div>
-
-                            <div class="form-group form-md-line-input " ng-if="offer.client.id !== '5333032036f43f0e1882efce'">
-                                <input type="text" class="form-control" id="ref" ng-model="offer.client">
-                                <label for="ref">@(companies:Company) :</label>
-                            </div>
-
-
-
-                            <div class="form-group form-md-line-input " ng-if="offer.client.id === '5333032036f43f0e1882efce'">
-                                <input type="text" class="form-control" id="ref" disabled ng-model="offer.ref">
-                                <label for="ref">@(companies:Company) :</label>
-                            </div>
-                            <div class="form-group form-md-line-input ">
-                                <input type="text" class="form-control" id="ref_client" ng-model="offer.ref_client">
-                                <label for="ref_client">@(orders:RefCustomerOrder)</label>
-                            </div>
-
-
-                            <div class="row">
-
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="entity" disabled ng-model="offer.entity">
-                                        <label for="entity">@(Entity)</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="form-group form-md-line-input">
-                                        <div class="form-control form-control-static"> {{offer.ref}} </div>
-                                        <label for="form_control_1">@(Ref) @(propal:CommercialProposal)</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="price_level" disabled ng-model="offer.price_level">
-                                        <label for="price_level">@(products:PriceLevel)</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="form-group form-md-line-input">
-                                        <div class="form-control form-control-static"> {{offer.total_ht| currency}} @(HT) </div>
-                                        <label for="form_control_1">@(Amounts) @(propal:CommercialProposal)</label>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="form-group form-md-line-input">
-                                        <select class="form-control" id="Status" ng-model="offer.Status" ng-options="s.id as s.label for s in dict.fk_offer_status.values">
+                                    <div class="form-group form-md-line-input " ng-if="offer.client.id !== '5333032036f43f0e1882efce'">
+                                        <input type="text" class="form-control" id="ref" ng-model="offer.client">
+                                        <label for="ref">@(companies:Company) :</label>
+                                    </div>
+
+
+
+                                    <div class="form-group form-md-line-input " ng-if="offer.client.id === '5333032036f43f0e1882efce'">
+                                        <input type="text" class="form-control" id="ref" disabled ng-model="offer.ref">
+                                        <label for="ref">@(companies:Company) :</label>
+                                    </div>
+                                    <div class="form-group form-md-line-input ">
+                                        <input type="text" class="form-control" id="ref_client" ng-model="offer.ref_client">
+                                        <label for="ref_client">@(orders:RefCustomerOrder)</label>
+                                    </div>
+
+
+                                    <div class="row">
+
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="entity" disabled ng-model="offer.entity">
+                                                <label for="entity">@(Entity)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group form-md-line-input">
+                                                <div class="form-control form-control-static"> {{offer.ref}} </div>
+                                                <label for="form_control_1">@(Ref) @(propal:CommercialProposal)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="price_level" disabled ng-model="offer.price_level">
+                                                <label for="price_level">@(products:PriceLevel)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group form-md-line-input">
+                                                <div class="form-control form-control-static"> {{offer.total_ht| currency}} @(HT) </div>
+                                                <label for="form_control_1">@(Amounts) @(propal:CommercialProposal)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group form-md-line-input">
+                                                <select class="form-control" id="Status" ng-model="offer.Status" ng-options="s.id as s.label for s in dict.fk_offer_status.values">
                                 </select>
-                                        <label for="Status">@(Status)</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-sm-12">
-                                    <div class="form-group form-md-line-input">
-                                        <div class="form-control form-control-static"> {{offer.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
-                                        <label for="form_control_1">@(DateLastModification)</label>
-                                    </div>
-                                </div>
+                                                <label for="Status">@(Status)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <div class="form-group form-md-line-input">
+                                                <div class="form-control form-control-static"> {{offer.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                                                <label for="form_control_1">@(DateLastModification)</label>
+                                            </div>
+                                        </div>
 
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <select class="form-control" id="type" ng-model="offer.type" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
+                                    </div>
+                                    <div class="form-group form-md-line-input">
+                                        <select class="form-control" id="type" ng-model="offer.type" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
                                 </select>
-                                <label for="type">@(orders:OrderMode)</label>
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <select class="form-control" id="delivery_mode" ng-model="offer.delivery_mode" ng-options="s as s for s in delivery_mode">
+                                        <label for="type">@(orders:OrderMode)</label>
+                                    </div>
+                                    <div class="form-group form-md-line-input">
+                                        <select class="form-control" id="delivery_mode" ng-model="offer.delivery_mode" ng-options="s as s for s in delivery_mode">
                                 </select>
-                                <label for="delivery_mode">@(orders:RemovingOrder)</label>
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <select class="form-control" id="cond_reglement_code" ng-model="offer.cond_reglement_code" ng-options="s.id as s.label for s in dict.fk_payment_term.values">
+                                        <label for="delivery_mode">@(orders:RemovingOrder)</label>
+                                    </div>
+                                    <div class="form-group form-md-line-input">
+                                        <select class="form-control" id="cond_reglement_code" ng-model="offer.cond_reglement_code" ng-options="s.id as s.label for s in dict.fk_payment_term.values">
                                 </select>
-                                <label for="cond_reglement_code">@(deliveries:PaymentConditions)</label>
-                            </div>
-                            <div class="form-group form-md-line-input">
-                                <select class="form-control" id="mode_reglement_code" ng-model="offer.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
+                                        <label for="cond_reglement_code">@(deliveries:PaymentConditions)</label>
+                                    </div>
+                                    <div class="form-group form-md-line-input">
+                                        <select class="form-control" id="mode_reglement_code" ng-model="offer.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
                                 </select>
-                                <label for="mode_reglement_code">@(bills:PaymentMode)</label>
-                            </div>
-                            <div class="form-group form-md-line-input ">
-                                <input type="text" class="form-control" id="commercial_id" ng-model="offer.commercial_id" typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}">
-                                <label for="commercial_id">@(commercial:Commercial)</label>
-                            </div>
-                            <hr>
-                            <div class="form-group form-md-line-input">
-                                <div class="form-control form-control-static"> {{history.date| date:'dd/MM/yyyy HH:mm'}} {{history.msg}}</div>
-                                <label for="form_control_1">@(Logs)</label>
+                                        <label for="mode_reglement_code">@(bills:PaymentMode)</label>
+                                    </div>
+                                    <div class="form-group form-md-line-input ">
+                                        <input type="text" class="form-control" id="commercial_id" ng-model="offer.commercial_id" typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}">
+                                        <label for="commercial_id">@(commercial:Commercial)</label>
+                                    </div>
+                                    <hr>
+                                    <div class="form-group form-md-line-input">
+                                        <div class="form-control form-control-static"> {{history.date| date:'dd/MM/yyyy HH:mm'}} {{history.msg}}</div>
+                                        <label for="form_control_1">@(Logs)</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div class="col-md-6 col-sm-12">
-                            <blockquote>
-                                <p><i class="fa fa-money"></i> @(bills:BillAddress)</p>
-                            </blockquote>
-
-                            <div class="form-group form-md-line-input ">
-                                <address ng-model=societe.address></address>
-                            </div>
-
-                            <hr>
-                            <blockquote>
-                                <p><i class="fa fa-truck"></i> @(deliveries:DeliveryAddress)</p>
-                            </blockquote>
-
-                            <div class="form-group form-md-line-input">
-                                <div class="input-group">
-                                    <div class="input-group-control">
-                                        <select class="form-control" id="mode_reglement_code" ng-model="offer.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
-                                </select>
-                                        <label for="form_control_1">@(deliveries:ChoiseDeliveryAddress)</label>
+                            <div class="portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-money"></i>
+                                        <span class="caption-subject uppercase"> @(bills:BillAddress)</span>
                                     </div>
-                                    <span class="input-group-btn btn-right">
-                                                                <button class="btn default" type="button"><i class="fa fa-check"></i></button>
-                                                            </span>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="form-group form-md-line-input ">
+                                        <address ng-model=societe.address></address>
+                                    </div>
                                 </div>
                             </div>
-                            <hr>
-                            <blockquote>
-                                <p><i class="fa fa-user"></i> @(Contacts)</p>
-                            </blockquote>
-                            <div class="form-group form-md-line-input">
-                                <div class="input-group">
-                                    <div class="input-group-control">
-                                        <select class="form-control" id="mode_reglement_code" ng-model="offer.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
-                                </select>
-                                        <label for="form_control_1">@(commercial:ChoiseContact)</label>
+                            <div class="portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-truck"></i>
+                                        <span class="caption-subject uppercase"> @(deliveries:DeliveryAddress)</span>
                                     </div>
-                                    <span class="input-group-btn btn-right">
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="form-group form-md-line-input">
+                                        <div class="input-group">
+                                            <div class="input-group-control">
+                                                <select class="form-control" id="mode_reglement_code" ng-model="offer.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
+                                </select>
+                                                <label for="form_control_1">@(deliveries:ChoiseDeliveryAddress)</label>
+                                            </div>
+                                            <span class="input-group-btn btn-right">
                                                                 <button class="btn default" type="button"><i class="fa fa-check"></i></button>
                                                             </span>
-                                    <span class="input-group-btn btn-right">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="fa fa-user"></i>
+                                        <span class="caption-subject uppercase"> @(Contacts)</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="form-group form-md-line-input">
+                                        <div class="input-group">
+                                            <div class="input-group-control">
+                                                <select class="form-control" id="mode_reglement_code" ng-model="offer.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
+                                </select>
+                                                <label for="form_control_1">@(commercial:ChoiseContact)</label>
+                                            </div>
+                                            <span class="input-group-btn btn-right">
+                                                                <button class="btn default" type="button"><i class="fa fa-check"></i></button>
+                                                            </span>
+                                            <span class="input-group-btn btn-right">
                                                                 <button class="btn blue" type="button">@(Create)</button>
                                                             </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
