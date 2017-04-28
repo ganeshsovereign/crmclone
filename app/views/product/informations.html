@@ -154,20 +154,26 @@
                             <tabset class="tabbable-line tabbable-full-width">
                                 <tab heading="@(Description)" ng-if="product._id && product.isSell">
                                     <div class="row">
-                                        <p> @(Description) : @(products:ShowOnBill). </p>
-                                        <textarea class="form-control" ng-model="product.info.langs[0].description" rows="5"></textarea>
+                                        <div class="col-md-12">
+                                            <p> @(Description) : @(products:ShowOnBill). </p>
+                                            <textarea class="form-control" ng-model="product.info.langs[0].description" rows="5"></textarea>
+                                        </div>
                                     </div>
                                 </tab>
                                 <tab heading="@(LongueDescription)" ng-if="product._id && product.isSell">
                                     <div class="row">
-                                        <p> @(LongueDescription) : @(products:ShowOnCatalog). </p>
-                                        <summernote height="100" ng-model="product.info.langs[0].CatalogDescription"></summernote>
+                                        <div class="col-md-12">
+                                            <p> @(LongueDescription) : @(products:ShowOnCatalog). </p>
+                                            <summernote height="100" ng-model="product.info.langs[0].CatalogDescription"></summernote>
+                                        </div>
                                     </div>
                                 </tab>
                                 <tab heading="@(InternalDescription)" ng-if="product._id && product.isSell">
                                     <div class="row">
-                                        <p> @(InternalDescription) : @(products:InternalOnly). </p>
-                                        <textarea class="form-control" ng-model="product.info.notePrivate" rows="5"></textarea>
+                                        <div class="col-md-12">
+                                            <p> @(InternalDescription) : @(products:InternalOnly). </p>
+                                            <textarea class="form-control" ng-model="product.info.notePrivate" rows="5"></textarea>
+                                        </div>
                                     </div>
                                 </tab>
                             </tabset>
