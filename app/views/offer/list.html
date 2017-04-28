@@ -7,7 +7,7 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(propal:CommercialProposals)</span>
+                <span>@(propal:ListOfProposals)</span>
             </li>
         </ul>
         <div class="page-toolbar">
@@ -36,12 +36,6 @@
         </div>
     </div>
 
-
-
-    <h3 class="page-title">
-        <i class="fa fa-calculator"></i> @(propal:ListOfProposals)
-    </h3>
-
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
             <div class="caption">
@@ -60,7 +54,19 @@
                 <div class="row hidden-print">
                     <div class="form-group form-md-line-input">
 
-                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
+                        <div class="col-md-3">
+                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_offer_status.values" class="form-control"></select>
+                            <div class="form-control-focus"> </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
+                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control"></select>
+                            <div class="form-control-focus"> </div>
+                        </div>
+
+
+                        <!--<label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
 
                         <div class="col-md-3">
                             <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_offer_status.values" class="form-control">
@@ -68,7 +74,7 @@
                             </select>
                             <div class="form-control-focus"> </div>
                         </div>
-                        <div class="col-md-1"></div>
+
                         <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyEntity)</label>
 
                         <div class="col-md-3">
@@ -77,29 +83,32 @@
                             </select>
                             <div class="form-control-focus"> </div>
                         </div>
-                        <div class="col-md-1"></div>
+                        <div class="col-md-1"></div>-->
+
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="dataTables_wrapper no-footer table-responsive">
-                    <div class="col-md-12">
-                        <table class="table dataTable no-footer table-hover" id="offerList">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th width="2%">
-                                        <input type="checkbox" class="group-checkable" />
-                                    </th>
-                                    <th>Ref.</th>
-                                    <th>@(companies:Company)</th>
-                                    <th>@(RefCustomer)</th>
-                                    <th>@(DateLivraison)</th>
-                                    <th>@(TotalHT)</th>
-                                    <th>@(Status)</th>
-                                    <th>@(Entity)</th>
-                                    <th>@(DateCreation)</th>
-                                    <th>@(Action)</th>
-                                </tr>
-                                <!--<tr role="row" class="filter">
+        <div class="dataTables_wrapper no-footer table-responsive">
+            <div class="col-md-12">
+                <table class="table dataTable no-footer table-hover" id="offerList">
+                    <thead>
+                        <tr role="row" class="heading">
+                            <th width="2%">
+                                <input type="checkbox" class="group-checkable" />
+                            </th>
+                            <th>@(Ref)</th>
+                            <th>@(companies:Company)</th>
+                            <th>@(RefCustomer)</th>
+                            <th>@(DateLivraison)</th>
+                            <th>@(TotalHT)</th>
+                            <th>@(Status)</th>
+                            <th>@(Entity)</th>
+                            <th>@(DateCreation)</th>
+                            <th>@(Action)</th>
+                        </tr>
+                        <!--<tr role="row" class="filter">
                             <td>
                             </td>
                             <td>
@@ -153,10 +162,10 @@
                                 <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
                             </td>
                         </tr>-->
-                            </thead>
-                        </table>
-                    </div>
-                </div>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>
+</div>
+</div>
