@@ -227,6 +227,7 @@
                     <col width="10%">
                     <col width="20%">
                     <col width="20%">
+                    <col width="10px">
                     <col width="20%">
                     <col width="20%">
                     <col width="10%">
@@ -237,6 +238,7 @@
                         <th>Image</th>
                         <th>@(Name)</th>
                         <th>@(SKU)</th>
+                        <th>@(Top)</th>
                         <th>@(Variant)</th>
                         <th>@(Channel)</th>
                         <th>@(TotalHTsell)</th>
@@ -244,25 +246,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="variant in productVariants.variantsArray" ng-class="{'font-red':product._id == variant._id}">
+                    <tr ng-repeat="variant in productVariants.variantsArray" ng-class="{'font-red':product._id == variant._id, 'font-green':product._id !== variant._id && product.groupId === variant._id}">
                         <td></td>
                         <td>{{variant.info.langs[0].name}}</td>
                         <td><a ui-sref="product.show({id:variant._id})">{{variant.info.SKU}}</a></td>
-                        <td><span ng-repeat="v in variant.variants[0]">{{v.code}} / </span></td>
+                        <td><span ng-if="variant._id == product.groupId">X</span></td>
+                        <td><span ng-repeat="v in variant.variants[0]">{{v.langs[0].value}} / </span></td>
                         <td></td>
                         <td>{{variant.prices.pu_ht | currency}}</td>
                         <td>
-                            <button ng-hide="product._id == variant._id" type="button" confirmed-click="remove(variant)" ng-confirm-click="Retirer la variantes ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>
+                            <button ng-hide="product._id == variant._id || variant._id == product.groupId" type="button" confirmed-click="remove(variant)" ng-confirm-click="Retirer la variantes ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-</div>
-
-</div>
-</div>
-</div>
-</div>
 </div>
