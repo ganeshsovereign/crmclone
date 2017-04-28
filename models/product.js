@@ -22,7 +22,7 @@ var supplierPriceSchema = new Schema({
     taxes: [{
         _id: false,
         taxe: { type: Schema.Types.ObjectId, ref: 'taxes' },
-        value: { type: Number, default: null } //for ecotaxe
+        value: { type: Number } //for ecotaxe
     }],
     minQty: Number,
     replenishmentTime: { type: Number, default: 0 }, // delai de reappro en jr
@@ -149,7 +149,7 @@ var productSchema = new Schema({
     attributes: [{
         _id: false,
         attribute: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
-        value: { type: String, default: null },
+        value: { type: String }, // Not a select or multiselect
         options: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }]
     }],
 
@@ -187,7 +187,7 @@ var productSchema = new Schema({
     taxes: [{
         _id: false,
         taxe: { type: Schema.Types.ObjectId, ref: 'taxes' },
-        value: { type: Number, default: null }
+        value: { type: Number }
     }],
     //tva_tx: { type: Number, default: 20 },
     //datec: { type: Date, default: Date.now },
