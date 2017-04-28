@@ -1675,8 +1675,8 @@ Object.prototype = {
                 }, {
                     $group: {
                         _id: '$variants.optionId._id',
-                        name: { $first: '$variants.optionId.name' },
-                        values: { $addToSet: { _id: '$variants._id', value: '$variants.value' } }
+                        name: { $first: '$variants.optionId.code' }, // TODO replace with langs
+                        values: { $addToSet: { _id: '$variants._id', value: '$variants.code' } } //TODO replace with langs
                     }
                 }],
                 function(err, productOptions) {

@@ -248,7 +248,7 @@
                         <td></td>
                         <td>{{variant.info.langs[0].name}}</td>
                         <td><a ui-sref="product.show({id:variant._id})">{{variant.info.SKU}}</a></td>
-                        <td><span ng-repeat="v in variant.variants[0]">{{v.value}} / </span></td>
+                        <td><span ng-repeat="v in variant.variants[0]">{{v.code}} / </span></td>
                         <td></td>
                         <td>{{variant.prices.pu_ht | currency}}</td>
                         <td>
