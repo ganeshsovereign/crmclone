@@ -821,6 +821,14 @@ function Product(id, cb) {
             path: 'sellFamily'
                 //    populate: { path: "options" }
         })
+        .populate({
+            path: 'attributes.attribute',
+            populate: { path: "group" }
+        })
+        .populate({
+            path: 'attributes.options'
+                //    populate: { path: "options" }
+        })
         .exec(cb);
 }
 

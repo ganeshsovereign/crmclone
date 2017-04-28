@@ -18,7 +18,7 @@ var ProductAttributesSchema = new Schema({
     dateMin: { type: Date },
     steps: { type: Number, default: 1 }, // steps for number 0.01
     metricUnit: String, //See dict.units
-    group: { type: Schema.Types.ObjectId, ref: 'groupAttribues', default: null },
+    group: { type: Schema.Types.ObjectId, ref: 'groupAttributes', default: null },
     maxCharacters: Number,
     minCharacters: Number,
     maxNumber: Number,

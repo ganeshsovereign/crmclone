@@ -24,7 +24,8 @@ var MetronicApp = angular.module("MetronicApp", [
     'notification',
     'ngHandsontable',
     'summernote',
-    'ui.tree'
+    'ui.tree',
+    'angular.filter'
 ]);
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
