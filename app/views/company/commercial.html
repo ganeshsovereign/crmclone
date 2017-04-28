@@ -73,8 +73,8 @@
                                                     </div>
 
                                                     <div class="form-group form-md-line-input">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.priceList" e-typeahead="price_level.name for price_level in priceLevelAutoComplete($viewValue, 'name') | filter:{name:$viewValue}">
-                                                        <label for="form_control_1">@(products:PriceLevel) </label>
+                                                        <select class="form-control" id="priceList" ng-model="societe.salesPurchases.priceList" ng-options="p._id as p.priceListCode for p in $dict.pricesLists"></select>
+                                                        <label for="priceList">@(products:PriceLevel) </label>
                                                     </div>
                                                 </div>
                                             </div>

@@ -133,6 +133,14 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         });
 
         $http({
+            method: 'GET',
+            url: '/erp/api/product/family',
+            params: { isCost: false }
+        }).success(function(data, status) {
+            $scope.sellFamilies = data.data;
+        });
+
+        $http({
             method: 'POST',
             url: '/erp/api/product/prices/select',
             data: { cost: false }
@@ -380,7 +388,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 }, {
                     "data": "info.isActive"
                 }, {
-                    "data": "caFamily",
+                    "data": "sellFamily",
                     defaultContent: ""
                 }]
             }
@@ -994,7 +1002,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
                 costFind = true;
             $scope.find();
         }
-        /*if (!cost)
+        if (!cost)
             $http({
                 method: 'GET',
                 url: '/erp/api/product/prices/select',
@@ -1003,8 +1011,6 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
                 $scope.pricesLists = data;
                 //console.log("PriceLists", data);
             });
-        */
-
     };
 
     $scope.find = function() {
@@ -1032,7 +1038,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
             url: '/erp/api/product/prices',
             params: query
         }).success(function(data, status) {
-            //console.log("prices", data);
+            console.log("prices", data);
             $scope.prices = data;
 
             Metronic.unblockUI('.waiting');
@@ -1057,8 +1063,9 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
             price.price = price[key] / (1 + line.product.tva_tx / 100);
 
         /*if price update with coef -> update coef*/
-        if ($scope.product.info.productType.coef && $scope.product.directCost)
-            price.coef = price.price / $scope.product.directCost;
+        if ($scope.product)
+            if ($scope.product.info.sellFamily.coef && $scope.product.directCost)
+                price.coef = price.price / $scope.product.directCost;
 
         $http({
             method: 'PUT',
@@ -1156,7 +1163,6 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
                 return res.data;
             });
         };
-
 
         $http({
             method: 'POST',
