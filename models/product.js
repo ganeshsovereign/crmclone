@@ -102,6 +102,8 @@ var productSchema = new Schema({
         default: null
     },
 
+    entity: [String],
+
     oldId: String, // Only for import migration
 
     //ref: { type: String, required: true, unique: true, uppercase: true }, //TODO Remove
