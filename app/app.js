@@ -1005,7 +1005,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // attributes
         .state("product.show.attributes", {
             url: "/attributes",
-            templateUrl: "/templates/product/attributes.html",
+            templateUrl: "/views/product/attributes.html",
             data: { pageTitle: 'Attributes - Product' }
         })
         // information
