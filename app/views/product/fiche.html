@@ -132,7 +132,7 @@
                                 <i class="icon-share"></i> @(Categories) <span ng-if="product.info.categories.length" class="badge badge-success">{{product.info.categories.length}}</span></a>
                         </li>
 
-                        <li ng-if="changedProductType.opts.length" ng-class="{active: $state.includes('product.show.declinations')}">
+                        <li ng-if="!changedProductType.opts.length" ng-class="{active: $state.includes('product.show.declinations')}">
                             <a ui-sref="product.show.declinations({id:product._id})">
                                 <i class="icon-magic-wand"></i> @(Declinations) </a>
                         </li>

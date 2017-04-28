@@ -1032,7 +1032,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // declinaisons
         .state("product.show.declinations", {
             url: "/declinations",
-            templateUrl: "/templates/product/declinations.html",
+            templateUrl: "/views/product/declinations.html",
             data: {
                 pageTitle: 'Declinaisons - Product '
             }

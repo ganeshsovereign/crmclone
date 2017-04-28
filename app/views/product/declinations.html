@@ -5,37 +5,78 @@
         <div class="form-horizontal form-row-seperated">
             <div class="portlet portlet light bordered">
                 <div class="portlet-title">
-                    <div class="caption font-yellow-crusta">
-                        <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard)
+                    <div class="caption">
+                        <i class="icon-magic-wand"></i>
+                        <span class="caption-subject dark bold uppercase"> @(Declinations)</span>
                     </div>
-                    <div class="actions btn-set">
-                        <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
-                        <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
-                        <button type="button" ng-click="update()" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check-circle"></i> @(SaveAndContinueEdit)</button>
-                        <div class="btn-group">
-                            <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
-                                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a href="#" ng-click="clone()">
-                                        <i class="fa fa-copy"></i> @(ToClone)
-                                    </a>
-                                </li>
-                                <li class="divider">
-                                </li>
-                                <li>
-                                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
-                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+
                 </div>
                 <div class="portlet-body">
-
-                    <tabset class="tabbable-line tabbable-full-width">
+                    <div class="form-group form-md-line-input" ng-if="product.isVariant">
+                        <div class="row hidden-print">
+                            <div class="col-md-12">
+                                <a class="btn blue" ng-click="addNewPrice()" href="javascript:;">
+                                    <i class="fa fa-plus"></i> Ajouter
+                                </a>
+                                <a class="btn btn-default btn-icon-only" ng-click="find()" href="javascript:;">
+                                    <i class="fa fa-refresh"></i>
+                                </a>
+                                <!--       <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="col-md-4 control-label">@(products:Filters) :</label>
+                                        <div class="col-md-8" ng-init="loadDynForms()">
+                                            <select ng-model="type" ng-change="setCache('type', type); find();" ng-options="s.id as s.name for s in types" class="form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="form-control-focus"> </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="no-footer table-responsive" ng-if="product.isVariant">
+                        <div class="col-md-12">
+                            <table class="table no-footer table-hover">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="10px">
+                                    <col width="20%">
+                                    <col width="20%">
+                                    <col width="10%">
+                                    <col width="80px">
+                                </colgroup>
+                                <thead>
+                                    <tr role="row" class="heading">
+                                        <th>Image</th>
+                                        <th>@(Name)</th>
+                                        <th>@(SKU)</th>
+                                        <th>@(Top)</th>
+                                        <th>@(Variant)</th>
+                                        <th>@(Channel)</th>
+                                        <th>@(TotalHTsell)</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="variant in productVariants.variantsArray" ng-class="{'font-red':product._id == variant._id, 'font-green':product._id !== variant._id && product.groupId === variant._id}">
+                                        <td></td>
+                                        <td>{{variant.info.langs[0].name}}</td>
+                                        <td><a ui-sref="product.show({id:variant._id})">{{variant.info.SKU}}</a></td>
+                                        <td><span ng-if="variant._id == product.groupId">X</span></td>
+                                        <td><span ng-repeat="v in variant.variants[0]">{{v.langs[0].value}} / </span></td>
+                                        <td></td>
+                                        <td>{{variant.prices.pu_ht | currency}}</td>
+                                        <td>
+                                            <button ng-hide="product._id == variant._id || variant._id == product.groupId" type="button" confirmed-click="remove(variant)" ng-confirm-click="Retirer la variantes ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--          <tabset class="tabbable-line tabbable-full-width">
                         <tab heading="@(products:CreateVariants)">
                             <div class="form-body">
                                 <div class="row">
@@ -101,7 +142,7 @@
                                 </div>
                             </div>
                         </tab>
-                    </tabset>
+                    </tabset> -->
                 </div>
             </div>
         </div>
