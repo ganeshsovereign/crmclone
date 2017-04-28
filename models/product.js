@@ -526,12 +526,12 @@ productSchema.pre('save', function(next) {
     }, 1000);
 
 
-    if (this.isNew || !this.seq) {
+    if (this.isNew || this.ID === null) {
         //if (!this.body)
         //    this.body = this.description;
 
         return SeqModel.incNumber("P", 7, function(seq) {
-            self.seq = seq;
+            self.ID = seq;
 
             if (self.info.autoBarCode == true) {
                 self.info.EAN = "";
