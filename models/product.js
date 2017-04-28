@@ -115,7 +115,7 @@ var productSchema = new Schema({
     info: {
         productType: { type: Schema.Types.ObjectId, ref: 'productTypes', default: null },
         isActive: { type: Boolean, default: true },
-        autoBarCode: { type: Boolean, default: true },
+        autoBarCode: { type: Boolean, default: false },
         //barCode: { type: String, index: true, uppercase: true, sparse: true },
         aclCode: { type: String, uppercase: true },
         SKU: { type: String, default: null },

@@ -24,7 +24,7 @@ var ProductAttributesSchema = new Schema({
     maxNumber: Number,
     minNumber: Number,
     sort: Number, // Order idx
-    mode: { type: String, enum: ['text', 'number', 'metric', 'textarea', 'boolean', 'simpleselect', 'multiselect', 'date', 'file', 'image'] },
+    mode: { type: String, enum: ['text', 'number', 'metric', 'textarea', 'boolean', 'select', 'date', 'file', 'image'] },
     isWysiwyg: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });

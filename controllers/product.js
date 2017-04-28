@@ -648,6 +648,26 @@ exports.install = function() {
         });
         return;
     }, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/family', function() {
+        var self = this;
+        var FamilyModel = MODEL('productFamily').Schema;
+        //console.log(self.body);
+
+        var query = {
+            isCost: false
+        };
+
+        if (self.query.isCost == 'true')
+            query.isCost = true;
+
+        console.log(query);
+        FamilyModel.find(query, "_id name langs", function(err, data) {
+            if (err)
+                return self.throw500('Erreur : ' + err);
+
+            self.json({ data: data });
+        });
+    }, ['authorize']);
     // Autocomplete on attributes
     F.route('/erp/api/product/attributes', function() {
         //console.log(req.body);
@@ -797,6 +817,10 @@ function Product(id, cb) {
             path: 'info.productType'
                 //    populate: { path: "options" }
         })
+        .populate({
+            path: 'sellFamily'
+                //    populate: { path: "options" }
+        })
         .exec(cb);
 }
 
@@ -813,8 +837,8 @@ Object.prototype = {
         product.editedBy = self.user._id;
         product.createdBy = self.user._id;
 
-        if (!product.info || !product.info.productType || !product.info.categories || !product.info.categories.length) {
-            let error = ('Product type and productCategories are required');
+        if (!product.info || !product.info.productType || !product.sellFamily) {
+            let error = ('Product type and Family are required');
 
             return self.json({
                 errorNotify: {
@@ -1753,15 +1777,18 @@ Object.prototype = {
             delete product.createdAt;
             delete product.updatedAt;
             delete product.history;
-            delete product.seq;
-            product.ref = product.ref + " (copie)";
+            delete product.ID;
+            product.info.SKU += "-copy";
+            delete product.oldId;
+            product.files = [];
+            product.variants = [];
+            product.imageSrc = null;
 
             product = new ProductModel(product);
 
             product.save(function(err, doc) {
-                if (err) {
-                    return console.log(err);
-                }
+                if (err)
+                    return self.throw500(err);
 
                 self.json(doc);
             });
@@ -2293,7 +2320,7 @@ Prices.prototype = {
             cost = true;
 
         ProductPricesModel.find(query)
-            .populate("product", "weight name tva_tx")
+            .populate("product", "weight name tva_tx info")
             .populate("priceLists")
             .lean()
             .exec(function(err, prices) {

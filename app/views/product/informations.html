@@ -30,29 +30,34 @@
                         <div class="row">
                             <div class="col-md-6 col-sm-12">
 
-                                <div class="form-group form-md-line-input ">
-                                    <input type="text" class="form-control" maxlength="13" required placeholder="" id="SKU" ng-change="isValidRef()" ng-model="product.info.SKU">
-                                    <label for="SKU">@(SKU)<span class="required">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <input type="text" class="form-control" maxlength="13" required placeholder="" id="SKU" ng-change="isValidRef()" ng-model="product.info.SKU">
+                                            <label for="SKU">@(SKU)<span class="required">
                                         * </span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-md-line-input ">
+                                            <select class="table-group-action-input form-control" required ng-model="product.info.productType._id" ng-options="t._id as t.name for t in productTypes"></select>
+                                            <label for="form_control_1">@(Type)<span class="required">
+                                        * </span></label>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group form-md-line-input ">
-                                    <select class="table-group-action-input form-control" required ng-model="product.info.productType._id" ng-options="t._id as t.name for t in productTypes"></select>
-                                    <label for="form_control_1">@(Type)</label>
+                                    <select class="table-group-action-input form-control" required ng-model="product.sellFamily" ng-options="s._id as s.name for s in sellFamilies"></select>
+                                    <label for="FamilyProducts">@(products:Family) <span class="required">
+                                        * </span></label>
                                 </div>
+
 
                                 <div class="form-group form-md-line-input ">
                                     <input type="text" class="form-control" id="name" ng-model="product.info.langs[0].name" required placeholder="">
                                     <label for="name">@(Label)</label>
                                 </div>
-                                <!--<div class="form-group form-md-line-input">
-                                    <select class="form-control" name="">
-                                                        <option value="">Option 1</option>
-                                                        <option value="">Option 2</option>
-                                                        <option value="">Option 3</option>
-                                                    </select>
-                                    <label for="form_control_1"> @(products:MainCategory)</label>
-                                </div>-->
 
                                 <!--<div class="form-group form-md-line-input ">
                                     <select class="table-group-action-input form-control" required ng-model="s" ng-options="s.id as s.label for s in dict.fk_product_status.values"></select>
@@ -70,12 +75,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-md-line-input ">
-                                    <select class="table-group-action-input form-control" required ng-model="product.sellFamily" ng-options="t._id as t.name for t in sellFamily"></select>
-                                    <!--               <input class="table-group-action-input form-control" ng-model="product.sellFamily" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'sellFamily')" /> -->
-                                    <label for="FamilyProducts">@(products:Family) </label>
-                                </div>
-
                             </div>
 
                             <div class="col-md-6 col-sm-12">
@@ -99,7 +98,7 @@
                                 </div>
 
                                 <div class="form-group form-md-line-input ">
-                                    <input type="text" class="form-control" id="IsbnCode" ng-model="product.product.info.ISBN">
+                                    <input type="text" class="form-control" id="IsbnCode" ng-model="product.info.ISBN">
                                     <label for="IsbnCode">@(products:IsbnCode)</label>
                                 </div>
 
@@ -156,7 +155,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <p> @(Description) : @(products:ShowOnBill). </p>
-                                            <textarea class="form-control" ng-model="product.info.langs[0].description" rows="5"></textarea>
+                                            <textarea class="form-control" ng-model="product.info.langs[0].shortDescription" rows="5"></textarea>
                                         </div>
                                     </div>
                                 </tab>
@@ -164,7 +163,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <p> @(LongueDescription) : @(products:ShowOnCatalog). </p>
-                                            <summernote height="100" ng-model="product.info.langs[0].CatalogDescription"></summernote>
+                                            <summernote height="100" ng-model="product.info.langs[0].description"></summernote>
                                         </div>
                                     </div>
                                 </tab>
