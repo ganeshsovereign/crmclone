@@ -41,6 +41,7 @@
     "ListOfCustomers": "Liste des clients",
     "ListOfSuspects": "Liste des suspects",
     "ListOfAll": "Liste de tous les comptes",
+    "ChoiseContact": "Choisir le contact",
     "ListSuspectsShort": "Liste suspects",
     "ListAllShort": "Liste tous les comptes",
     "LastDoneTasks": "Les %s dernières actions effectuées",

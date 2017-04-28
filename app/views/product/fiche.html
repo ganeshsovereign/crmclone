@@ -21,8 +21,8 @@
         </li>
     </ul>
     <div class="page-toolbar">
-        <div class="pull-right btn btn-fit-height" ng-class="{'blue-ebonyclay':!product.entity.length, 'purple':product.entity.length}">
-            <span class="col-md-7 thin uppercase hidden-xs" for="_language"><i class="icon-globe"></i> @(products:Selectlanguages)</span>
+        <div class="pull-right btn btn-fit-height blue-ebonyclay">
+            <span class="col-md-7 thin uppercase hidden-xs" for="_language"><i class="icon-flag"></i> @(products:Selectlanguages)</span>
             <div class="col-md-5">
                 <select class="form-control input-sm" id="_language" ng-model="_language" ng-options="s.idx as s.name for s in languages"></select>
             </div>
@@ -134,7 +134,7 @@
 
                         <li ng-if="!changedProductType.opts.length" ng-class="{active: $state.includes('product.show.declinations')}">
                             <a ui-sref="product.show.declinations({id:product._id})">
-                                <i class="icon-magic-wand"></i> @(Declinations) </a>
+                                <i class="icon-docs"></i> @(Declinations) </a>
                         </li>
                     </ul>
                 </div>
