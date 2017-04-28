@@ -385,7 +385,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 }, {
                     "data": "info.isActive"
                 }, {
-                    "data": "caFamily",
+                    "data": "sellFamily",
                     defaultContent: ""
                 }]
             }

@@ -1093,6 +1093,7 @@ Object.prototype = {
         var self = this;
         var ProductModel = MODEL('product').Schema;
         var ProductTypesModel = MODEL('productTypes').Schema;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
 
         var query = JSON.parse(self.req.body.query);
 
@@ -1141,76 +1142,78 @@ Object.prototype = {
                 console.log(err);
 
             ProductTypesModel.populate(res, { path: "datatable.data.info.productType" }, function(err, res) {
+                ProductFamilyModel.populate(res, { path: "datatable.data.sellFamily" }, function(err, res) {
 
+                    //console.log(res);
 
-                //console.log(res);
+                    for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                        var row = res.datatable.data[i];
+                        //console.log(row);
 
-                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                    var row = res.datatable.data[i];
-                    //console.log(row);
+                        // Add checkbox
+                        res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                        // Add id
+                        res.datatable.data[i].DT_RowId = row._id.toString();
+                        //Prices 
+                        if (row.prices && row.prices.pu_ht)
+                            res.datatable.data[i].pu_ht = MODULE('utils').printPrice(row.prices.pu_ht, 3);
+                        else if (row.Status == 'SELL' || row.Status == 'SELLBUY')
+                            res.datatable.data[i].pu_ht = '<span class="text-danger">Inconnu</span>';
+                        else if (row.prices && row.prices.pu_ht == 0)
+                            res.datatable.data[i].pu_ht = '';
 
-                    // Add checkbox
-                    res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                    // Add id
-                    res.datatable.data[i].DT_RowId = row._id.toString();
-                    //Prices 
-                    if (row.prices && row.prices.pu_ht)
-                        res.datatable.data[i].pu_ht = MODULE('utils').printPrice(row.prices.pu_ht, 3);
-                    else if (row.Status == 'SELL' || row.Status == 'SELLBUY')
-                        res.datatable.data[i].pu_ht = '<span class="text-danger">Inconnu</span>';
-                    else if (row.prices && row.prices.pu_ht == 0)
-                        res.datatable.data[i].pu_ht = '';
+                        if (row.directCost)
+                            res.datatable.data[i].directCost = MODULE('utils').printPrice(row.directCost, 3);
+                        else if (row.Status == 'BUY' || row.Status == 'SELLBUY')
+                            res.datatable.data[i].directCost = '<span class="text-danger">Inconnu</span>';
 
-                    if (row.directCost)
-                        res.datatable.data[i].directCost = MODULE('utils').printPrice(row.directCost, 3);
-                    else if (row.Status == 'BUY' || row.Status == 'SELLBUY')
-                        res.datatable.data[i].directCost = '<span class="text-danger">Inconnu</span>';
+                        //if (res.datatable.data[i].info.isActive == false)
+                        // Add color line 
+                        //    res.datatable.data[i].DT_RowClass = "bg-red-haze";
 
-                    //if (res.datatable.data[i].info.isActive == false)
-                    // Add color line 
-                    //    res.datatable.data[i].DT_RowClass = "bg-red-haze";
+                        // Action
+                        res.datatable.data[i].action = '<a href="#!/product/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.info.SKU + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                        // Add url on name
+                        res.datatable.data[i].info.SKU = '<a class="with-tooltip" href="#!/product/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.info.SKU + '">' + row.info.SKU;
 
-                    // Action
-                    res.datatable.data[i].action = '<a href="#!/product/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.info.SKU + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                    // Add url on name
-                    res.datatable.data[i].info.SKU = '<a class="with-tooltip" href="#!/product/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.info.SKU + '">' + row.info.SKU;
+                        /*switch (row.type) {
+                            case 'PRODUCT':
+                                res.datatable.data[i].ref += ' <span class="badge pull-right badge-info"> P </span></a>';
+                                break;
+                            case 'PACK':
+                                res.datatable.data[i].ref += ' <span class="badge pull-right badge-success"> C </span></a>';
+                                break;
+                            case 'VIRTUAL':
+                                res.datatable.data[i].ref += ' <span class="badge pull-right badge-danger"> V </span></a>';
+                                break;
+                            case 'DYNAMIC':
+                                res.datatable.data[i].ref += ' <span class="badge pull-right badge-warning"> D </span></a>';
+                                break;
+                            case 'SERVICE':
+                                res.datatable.data[i].ref += ' <span class="badge pull-right badge-default"> S </span></a>';
+                                break;
+                            default:
+                                res.datatable.data[i].ref += '</a>';
+                        }*/
 
-                    /*switch (row.type) {
-                        case 'PRODUCT':
-                            res.datatable.data[i].ref += ' <span class="badge pull-right badge-info"> P </span></a>';
-                            break;
-                        case 'PACK':
-                            res.datatable.data[i].ref += ' <span class="badge pull-right badge-success"> C </span></a>';
-                            break;
-                        case 'VIRTUAL':
-                            res.datatable.data[i].ref += ' <span class="badge pull-right badge-danger"> V </span></a>';
-                            break;
-                        case 'DYNAMIC':
-                            res.datatable.data[i].ref += ' <span class="badge pull-right badge-warning"> D </span></a>';
-                            break;
-                        case 'SERVICE':
-                            res.datatable.data[i].ref += ' <span class="badge pull-right badge-default"> S </span></a>';
-                            break;
-                        default:
-                            res.datatable.data[i].ref += '</a>';
-                    }*/
+                        //console.log(res.datatable.data[i].info.productType);
+                        res.datatable.data[i].info.productType = row.info.productType.langs[0].name;
+                        res.datatable.data[i].sellFamily = row.sellFamily.langs[0].name;
 
-                    //console.log(res.datatable.data[i].info.productType);
-                    res.datatable.data[i].info.productType = row.info.productType.langs[0].name;
+                        //res.datatable.data[i].info.name = row.info.langs[0].name;
+                        // Convert Date
+                        res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                        if (row.weight)
+                            res.datatable.data[i].weight = MODULE('utils').printWeight(row.weight, 3);
+                        // Convert Status
+                        //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+                        res.datatable.data[i].Status = (row.info.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
+                    }
 
-                    //res.datatable.data[i].info.name = row.info.langs[0].name;
-                    // Convert Date
-                    res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                    if (row.weight)
-                        res.datatable.data[i].weight = MODULE('utils').printWeight(row.weight, 3);
-                    // Convert Status
-                    //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-                    res.datatable.data[i].Status = (row.info.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
-                }
+                    //console.log(res.datatable);
 
-                //console.log(res.datatable);
-
-                self.json(res.datatable);
+                    self.json(res.datatable);
+                });
             });
         });
     },
