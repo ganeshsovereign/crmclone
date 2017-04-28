@@ -21,11 +21,40 @@
         </li>
     </ul>
     <div class="page-toolbar">
-        <div class="pull-right btn btn-fit-height blue-ebonyclay">
-            <span class="col-md-7 thin uppercase hidden-xs" for="_language"><i class="icon-flag"></i> @(products:Selectlanguages)</span>
-            <div class="col-md-5">
-                <select class="form-control input-sm" id="_language" ng-model="_language" ng-options="s.idx as s.name for s in languages"></select>
-            </div>
+        <div class="btn-group">
+            <a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-flag"></i> {{languages[_language].name}} <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li ng-repeat="s in languages">
+                    <a href="#" ng-click="setLanguage(s.idx)">
+                        <i class="fa fa-copy"></i> {{s.name}}
+                    </a>
+
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li>
+                    <a href="#" ng-click="clone()">
+                        <i class="fa fa-copy"></i> @(ToClone)
+                    </a>
+                </li>
+                <!--   <li>
+                    <a href="#" ng-click="clone()">
+                        <i class="fa fa-copy"></i> @(PrintPDF)
+                    </a>
+                </li> -->
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
