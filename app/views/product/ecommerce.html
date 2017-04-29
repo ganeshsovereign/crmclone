@@ -16,66 +16,64 @@
 
                 <div class="portlet-body">
                     <div class="form-body">
+                        <div class="portlet light bordered">
 
-                        <div class="form-group form-md-line-input ">
-                            <input class="form-control" ng-model="product.info.langs[0].meta.title" required placeholder="" type="text">
-                            <label for="MetaTitle">@(Name)<span class="required">
+                            <div class="form-group form-md-line-input ">
+                                <input class="form-control" ng-model="product.info.langs[0].meta.title" required placeholder="" type="text">
+                                <label for="MetaTitle">@(Name)<span class="required">
                                         * </span></label>
-                            <span class="help-block">META @(products:Title).</span>
-                        </div>
+                                <span class="help-block">META @(products:Title).</span>
+                            </div>
 
-                        <div class="form-group form-md-line-input ">
-                            <input class="form-control" ng-model="product.info.langs[0].linker" required placeholder="@(products:ProductNameURL)" type="text">
-                            <label for="ProductURL">@(Url)<span class="required">
+                            <div class="form-group form-md-line-input ">
+                                <input class="form-control" ng-model="product.info.langs[0].linker" required placeholder="@(products:ProductNameURL)" type="text">
+                                <label for="ProductURL">@(Url)<span class="required">
                                         * </span></label>
-                            <span class="help-block">@(products:ProductURL).</span>
-                        </div>
+                                <span class="help-block">@(products:ProductURL).</span>
+                            </div>
 
 
-                        <div class="form-group form-md-checkboxes">
-                            <label for="Checkboxes">@(Options)</label>
-                            <div class="md-checkbox-inline">
-                                <div class="md-checkbox">
-                                    <input type="checkbox" id="AvailableSaleEco" class="md-check" ng-model="product.canBePurchased" ng-checked="product.canBePurchased">
-                                    <label for="AvailableSaleEco">
+                            <div class="form-group form-md-checkboxes">
+                                <label for="Checkboxes">@(Options)</label>
+                                <div class="md-checkbox-inline">
+                                    <div class="md-checkbox">
+                                        <input type="checkbox" id="AvailableSaleEco" class="md-check" ng-model="product.canBePurchased" ng-checked="product.canBePurchased">
+                                        <label for="AvailableSaleEco">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(eshop:AvailableSale)</label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" id="onlyWeb" class="md-check" ng-model="product.onlyWeb" ng-checked="product.onlyWeb">
-                                    <label for="onlyWeb">
+                                    </div>
+                                    <div class="md-checkbox">
+                                        <input type="checkbox" id="onlyWeb" class="md-check" ng-model="product.onlyWeb" ng-checked="product.onlyWeb">
+                                        <label for="onlyWeb">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(eshop:WebExclusivity)</label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" id="ShowPrice" class="md-check" ng-model="product.canBeExpensed" ng-checked="product.canBeExpensed">
-                                    <label for="ShowPrice">
+                                    </div>
+                                    <div class="md-checkbox">
+                                        <input type="checkbox" id="ShowPrice" class="md-check" ng-model="product.canBeExpensed" ng-checked="product.canBeExpensed">
+                                        <label for="ShowPrice">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span>  @(eshop:ShowPrice)</label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" id="istop" class="md-check" ng-model="product.istop" ng-checked="product.istop">
-                                    <label for="istop">
+                                    </div>
+                                    <div class="md-checkbox">
+                                        <input type="checkbox" id="istop" class="md-check" ng-model="product.istop" ng-checked="product.istop">
+                                        <label for="istop">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:OnTop)</label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" id="ischat" class="md-check" ng-model="product.ischat" ng-checked="product.ischat">
-                                    <label for="ischat">
+                                    </div>
+                                    <div class="md-checkbox">
+                                        <input type="checkbox" id="ischat" class="md-check" ng-model="product.ischat" ng-checked="product.ischat">
+                                        <label for="ischat">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(Chat)</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-
-
-
 
                         <div class="form-group form-md-line-input ">
                             <label for="Abstract">@(eshop:abstract) <span class="required">
@@ -99,9 +97,8 @@
                             <span class="help-block">META @(products:Description) : @(eshop:MetaAdvice).</span>
                         </div>
 
+
                     </div>
-
-
                 </div>
             </div>
         </div>
