@@ -2022,7 +2022,7 @@ Object.prototype = {
 
         var conditions = {
             isremoved: { $ne: true },
-            "salesPurchases.isActive": true,
+            //"salesPurchases.isActive": true,
             company: null
         };
 
@@ -2065,10 +2065,10 @@ Object.prototype = {
         }
 
 
-        /*if (!query.search.value) {
-            if (self.query.status_id !== 'null')
-                conditions.Status = self.query.status_id;
-        } else
+        if (!query.search.value)
+            conditions["salesPurchases.isActive"] = true;
+
+        /*} else
             delete conditions.Status;
 
         if (self.query.prospectlevel !== 'null')
