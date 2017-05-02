@@ -566,6 +566,8 @@ exports.install = function() {
 
     }, ['put', 'json', 'authorize']);
 
+
+    var productFamily = new ProductFamily();
     F.route('/erp/api/product/family/autocomplete', function() {
         var self = this;
         var ProductModel = MODEL('product').Schema;
@@ -648,26 +650,9 @@ exports.install = function() {
         });
         return;
     }, ['post', 'json', 'authorize']);
-    F.route('/erp/api/product/family', function() {
-        var self = this;
-        var FamilyModel = MODEL('productFamily').Schema;
-        //console.log(self.body);
+    F.route('/erp/api/product/family', productFamily.getAllProductFamily, ['authorize']);
+    F.route('/erp/api/product/family/{id}', productFamily.getProductFamilyById, ['authorize']);
 
-        var query = {
-            isCost: false
-        };
-
-        if (self.query.isCost == 'true')
-            query.isCost = true;
-
-        console.log(query);
-        FamilyModel.find(query, "_id name langs", function(err, data) {
-            if (err)
-                return self.throw500('Erreur : ' + err);
-
-            self.json({ data: data });
-        });
-    }, ['authorize']);
     // Autocomplete on attributes
     F.route('/erp/api/product/attributes', function() {
         //console.log(req.body);
@@ -788,7 +773,7 @@ exports.install = function() {
     F.route('/erp/api/product/{productId}', object.destroy, ['delete', 'authorize']);
     F.route('/erp/api/product/{productId}', object.show, ['authorize']);
     F.route('/erp/api/product/{productId}/{field}', object.updateField, ['put', 'json', 'authorize']);
-    F.route('/erp/api/product/{productId}', object.update, ['put', 'json', 'authorize']);
+    F.route('/erp/api/product/{productId}', object.update, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/product/{productId}', object.clone, ['post', 'json', 'authorize']);
     //other routes..
 };
@@ -818,17 +803,17 @@ function Product(id, cb) {
                 //    populate: { path: "options" }
         })
         .populate({
-            path: 'sellFamily'
-                //    populate: { path: "options" }
+            path: 'sellFamily',
+            populate: { path: "options", populate: { path: "group" } }
         })
-        .populate({
+        /*.populate({
             path: 'attributes.attribute',
             populate: { path: "group" }
         })
         .populate({
             path: 'attributes.options'
                 //    populate: { path: "options" }
-        })
+        })*/
         .exec(cb);
 }
 
@@ -3110,4 +3095,302 @@ ProductTypes.prototype = {
         });
     },
     deleteProductType: function(id) {}
+};
+
+function ProductFamily() {}
+
+ProductFamily.prototype = {
+    getProductFamilyById: function(id) {
+        var self = this;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var _id = id;
+        var model;
+
+        _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
+
+        ProductFamilyModel.aggregate([{
+            $match: { _id: MODULE('utils').ObjectId(_id) }
+        }, {
+            $unwind: {
+                path: '$options',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $lookup: {
+                from: 'ProductAttributes',
+                localField: 'options',
+                foreignField: '_id',
+                as: 'options'
+            }
+        }, {
+            $unwind: {
+                path: '$options',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $lookup: {
+                from: 'ProductAttributesValues',
+                localField: 'options._id',
+                foreignField: 'optionId',
+                as: 'optionsValue'
+            }
+        }, {
+            $project: {
+                name: '$name',
+                opts: {
+                    name: '$options.name',
+                    _id: '$options._id',
+                    values: '$optionsValue'
+                }
+            }
+        }, {
+            $group: {
+                _id: '$_id',
+                opts: { $push: '$opts' },
+                name: { $first: '$name' }
+            }
+        }], function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            if (result.length) {
+                model = result[0];
+                model.opts = _.filter(model.opts, function(elem) {
+                    return elem._id != null;
+                });
+            } else
+                model = {};
+
+            self.json(model);
+        });
+    },
+    getAllProductFamily: function() {
+        var self = this;
+        var query = self.query;
+        var paginationObject = MODULE('helper').page(query);
+        var skip = paginationObject.skip;
+        var limit = paginationObject.limit;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var sortObj;
+        var key;
+
+        var isCost = (self.query.isCost == 'true' ? true : false);
+
+        var lang = 0;
+
+        if (query.sort) {
+            key = Object.keys(query.sort)[0];
+            req.query.sort[key] = parseInt(query.sort[key], 10);
+
+            sortObj = query.sort;
+        } else {
+            sortObj = {
+                'data.sequence': 1
+            };
+        }
+
+        ProductFamilyModel.aggregate([{
+                $match: { isActive: true, isCost: isCost }
+            }, {
+                $lookup: {
+                    from: 'Product',
+                    localField: '_id',
+                    foreignField: 'sellFamily',
+                    as: 'Products'
+                }
+            }, {
+                $unwind: {
+                    path: '$options',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $lookup: {
+                    from: 'ProductAttributes',
+                    localField: 'options',
+                    foreignField: '_id',
+                    as: 'productOptions'
+                }
+            }, {
+                $project: {
+                    countProducts: { $size: '$Products' },
+                    name: '$langs',
+                    sequence: 1,
+                    createdAt: '$createdAt',
+                    opts: { $arrayElemAt: ['$productOptions', 0] }
+                }
+            }, {
+                $unwind: {
+                    path: '$name',
+                    includeArrayIndex: 'langId'
+                }
+            }, {
+                $match: {
+                    langId: lang
+                }
+            }, {
+                $group: {
+                    _id: '$_id',
+                    options: { $push: '$opts' },
+                    name: { $first: '$name.name' },
+                    sequence: { $first: '$sequence' },
+                    createdAt: { $first: '$createdAt' },
+                    countProducts: { $first: '$countProducts' }
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    total: { $sum: 1 },
+                    root: { $push: '$$ROOT' }
+                }
+            }, {
+                $unwind: '$root'
+            }, {
+                $project: {
+                    _id: 1,
+                    total: 1,
+                    data: {
+                        _id: '$root._id',
+                        name: '$root.name',
+                        options: '$root.options',
+                        sequence: '$root.sequence',
+                        countProducts: '$root.countProducts',
+                        createdAt: '$root.createdAt'
+                    }
+                }
+            },
+            /* {
+                            $sort: sortObj
+                        },*/
+            {
+                $sort: { 'data.name': 1 }
+            },
+            /*{
+                       $skip: skip
+                   }, {
+                       $limit: limit
+                   }, */
+            {
+                $group: {
+                    _id: null,
+                    total: { $first: '$total' },
+                    data: { $push: '$data' }
+                }
+            }, {
+                $project: {
+                    _id: 1,
+                    total: '$total',
+                    data: '$data'
+                }
+            }
+        ]).exec(function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            if (result && result.length)
+                return self.json(result[0]);
+
+            self.json({});
+        });
+    },
+    createProductFamily: function() {
+        var self = this;
+        var body = self.body;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var model;
+        var err;
+
+        if (!body.name) {
+            err = new Error('Please provide Product Type name');
+            err.status = 404;
+            self.throw404(err);
+        }
+
+        model = new ProductFamilyModel(body);
+        model.save(function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.getProductFamilyById(result._id.toString());
+        });
+    },
+    updateProductFamily: function(id) {
+        var self = this;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var body = self.body;
+        var _id = id;
+        var currentOptions;
+
+        if (!body.options)
+            return ProductFamilyModel.findByIdAndUpdate(_id, body, { new: true }, function(err) {
+                if (err)
+                    return self.throw500(err);
+
+                self.getProductFamilyById(_id.toString());
+            });
+
+        function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, callback) {
+            var deletedOptions;
+            var addedOptions;
+            var addingOption;
+            var deletingOptions;
+
+            currentOpts = currentOpts.toStringObjectIds();
+
+            deletedOptions = _.difference(currentOpts, newOpts);
+            addedOptions = _.difference(newOpts, currentOpts);
+
+            addingOption = function(pCb) {
+                if (!addedOptions.length)
+                    return pCb();
+
+                addedOptions = addedOptions.objectID();
+
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $pushAll: { options: addedOptions } }, { new: true }, function(err, result) {
+                    if (err)
+                        return pCb(err);
+
+                    pCb();
+                });
+            };
+
+            deletingOptions = function(pCb) {
+                if (!deletedOptions.length)
+                    return pCb();
+
+                deletedOptions = deletedOptions.objectID();
+
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { options: deletedOptions } }, { new: true }, function(err, result) {
+                    if (err)
+                        return pCb(err);
+
+                    pCb();
+                });
+            };
+
+            async.parallel([
+                addingOption,
+                deletingOptions
+            ], function(err) {
+                if (err)
+                    return callback(err);
+
+                callback();
+            });
+        }
+
+        ProductFamilyModel.findOne({ _id: _id }, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            currentOptions = result.options;
+
+            updateOptionsForProdTypes(_id, currentOptions, body.options, ProductFamilyModel, function(err) {
+                if (err)
+                    return self.throw500(err);
+
+                self.getProductFamilyById(_id.toString());
+            });
+        });
+    },
+    deleteProductFamily: function(id) {}
 };

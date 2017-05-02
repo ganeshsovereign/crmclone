@@ -55,6 +55,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     $scope.dict = {};
     $scope.newSupplierPrice = {};
     $scope.productTypes = [];
+    $scope.attributeMap = {};
 
     $scope.refFound = false;
     $scope.validRef = true;
@@ -229,7 +230,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     };
 
     $scope.findOne = function() {
-        $scope.changedProductType = null;
+        $scope.changedProductFamily = null;
 
         /*Get product variants */
         $http({
@@ -244,39 +245,71 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             //    return $rootScope.$state.go("product.show", { id: data.groupId });
 
             Products.get({
-                Id: $rootScope.$stateParams.id
-            }, function(product) {
+                    Id: $rootScope.$stateParams.id
+                }, function(product) {
 
-                console.log('product', product);
-                $scope.product = product;
+                    console.log('product', product);
+                    $scope.product = product;
 
-                if (product.isVariant)
-                    $scope.createVariants(data.currentValues);
+                    if (product.isVariant)
+                        $scope.createVariants(data.currentValues);
 
 
-                //product.variantsArray[0];
-                //console.log($scope.product.info.productType._id);
+                    //product.variantsArray[0];
+                    //console.log($scope.product.info.productType._id);
 
-                if ($scope.product.info && $scope.product.info.productType)
-                    $http({
-                        method: 'GET',
-                        url: '/erp/api/product/productTypes/' + $scope.product.info.productType._id
-                    }).success(function(data, status) {
-                        console.log(data);
-                        $scope.changedProductType = data;
+                    if ($scope.product.sellFamily)
+                        $http({
+                            method: 'GET',
+                            url: '/erp/api/product/family/' + $scope.product.sellFamily._id
+                        }).success(function(data, status) {
+                            console.log(data);
+                            $scope.changedProductFamily = data;
 
-                        for (var i = 0, len = data.opts.length; i < len; i++) {
-                            for (var j = 0, lenj = data.opts[i].values.length; j < lenj; j++) {
-                                $scope.checkedObj = {};
+                            for (var i = 0, len = data.opts.length; i < len; i++) {
+                                for (var j = 0, lenj = data.opts[i].values.length; j < lenj; j++) {
+                                    $scope.checkedObj = {};
+                                }
                             }
-                        }
-                    });
+
+                            $scope.attributeMap = {};
+                            for (var i = 0; i < product.attributes.length; i++) {
+                                //console.log("attr ", product.attributes[i]);
+                                $scope.attributeMap[product.attributes[i].attribute] = i;
+                            }
+
+                            //Fusion saved attributes with new attibutes
+                            angular.forEach(data.opts, function(attr) {
+                                for (var i = 0; i < product.attributes.length; i++) {
+                                    //console.log("attr product ", attr);
+                                    if (product.attributes[i].attribute == attr._id) // Found attribute
+                                        return product.attributes[i].values = attr.values;
+                                }
+
+                                // Add new attribute
+                                product.attributes.push({
+                                    attribute: attr._id,
+                                    value: null,
+                                    options: [],
+                                    values: attr.values
+                                });
+
+                                $scope.attributeMap = {};
+                                for (var i = 0; i < product.attributes.length; i++) {
+                                    //console.log("attr ", product.attributes[i]);
+                                    $scope.attributeMap[product.attributes[i].attribute] = i;
+                                }
+                            });
 
 
-            }, function(err) {
-                if (err.status === 401)
-                    $location.path("401.html");
-            });
+                        });
+
+
+                },
+                function(err) {
+                    if (err.status === 401)
+                        $location.path("401.html");
+                });
 
         });
     };

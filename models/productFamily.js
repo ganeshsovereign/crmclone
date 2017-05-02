@@ -19,6 +19,8 @@ var productFamiliesSchema = new Schema({
     isCost: { type: Boolean, default: false },
     sequence: { type: Number, default: 0 }, // sort list
 
+    options: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }], //attributes
+
     accounts: [{
         _id: false,
         code: String,

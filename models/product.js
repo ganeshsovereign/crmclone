@@ -151,7 +151,7 @@ var productSchema = new Schema({
     attributes: [{
         _id: false,
         attribute: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
-        value: { type: String }, // Not a select or multiselect
+        value: { type: Schema.Types.Mixed }, // Not for select
         options: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }]
     }],
 

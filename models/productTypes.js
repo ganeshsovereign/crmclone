@@ -14,7 +14,7 @@ var productTypesSchema = new Schema({
         label: { type: String, default: '' } // On select in product
     }],
     //options: [{ type: Schema.Types.ObjectId, ref: 'productOptions' }], //variants
-    attributes: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }],
+    //attributes: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }],
     inventory: { type: Boolean, default: true },
 
     createdAt: { type: Date, default: Date.now },
