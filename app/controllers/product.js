@@ -565,9 +565,11 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         thead[0].push({});
         if (collection[3])
             thead[0].push({});
-        for (var elem1 in collection[1].values) {
-            thead[0].push({ colspan: (collection[2] ? collection[2].values.length : ''), value: collection[1].values[elem1].value });
-        }
+
+        if (collection[1])
+            for (var elem1 in collection[1].values) {
+                thead[0].push({ colspan: (collection[2] ? collection[2].values.length : ''), value: collection[1].values[elem1].value });
+            }
 
         if (collection[2]) {
             thead[1].push({});
