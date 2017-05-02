@@ -1093,12 +1093,12 @@ Object.prototype = {
         //console.log(self.body);
 
         var conditions = {
-            isremoved: { $ne: true },
-            "info.isActive": true,
+            isremoved: { $ne: true }
         };
 
 
-        if (!query.search.value)
+        if (!query.search.value) {
+            conditions["info.isActive"] = true;
             switch (self.query.Status) {
                 case "ALL":
                     break;
@@ -1111,6 +1111,7 @@ Object.prototype = {
                 default: //ALL
                     break;
             }
+        }
 
         if (self.query.family !== 'null')
             conditions["caFamily"] = self.query.family;
@@ -1160,9 +1161,9 @@ Object.prototype = {
                         else if (row.Status == 'BUY' || row.Status == 'SELLBUY')
                             res.datatable.data[i].directCost = '<span class="text-danger">Inconnu</span>';
 
-                        //if (res.datatable.data[i].info.isActive == false)
+                        if (res.datatable.data[i].info.isActive == false)
                         // Add color line 
-                        //    res.datatable.data[i].DT_RowClass = "bg-red-haze";
+                            res.datatable.data[i].DT_RowClass = "bg-red-haze";
 
                         // Action
                         res.datatable.data[i].action = '<a href="#!/product/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.info.SKU + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';

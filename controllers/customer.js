@@ -2064,7 +2064,7 @@ Object.prototype = {
                 break;
         }
 
-
+        //console.log(query);
         if (!query.search.value)
             conditions["salesPurchases.isActive"] = true;
 
