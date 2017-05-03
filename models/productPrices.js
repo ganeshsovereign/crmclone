@@ -36,12 +36,13 @@ productPricesSchema.pre('save', function(next) {
     var self = this;
     var ProductModel = MODEL('product').Schema;
 
-    ProductModel.findOne({ _id: this.product }, "info directCost prices pack createdAt")
-        .populate("sellFamily", "coef")
+    ProductModel.findOne({ _id: this.product }, "info directCost prices pack createdAt sellFamily")
+        .populate("sellFamily")
         .exec(function(err, product) {
             if (err)
                 return next(err);
 
+            console.log(self);
             var coef = product.sellFamily.coef;
 
             if (self.priceLists.cost == true && self.isModified('prices')) {
@@ -103,7 +104,7 @@ F.on('load', function() {
             case 'product:updateDirectCost':
                 if (data.data._id)
                     exports.Schema.find({ 'product': data.data._id })
-                    .populate({ path: 'product', select: 'info', populate: { path: "sellFamily", select: "coef" } })
+                    .populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                     .populate("priceLists")
                     .exec(function(err, pricesList) {
                         pricesList.forEach(function(prices) {

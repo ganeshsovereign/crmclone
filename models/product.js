@@ -21,7 +21,7 @@ var supplierPriceSchema = new Schema({
     ref: String,
     taxes: [{
         _id: false,
-        taxe: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
         value: { type: Number } //for ecotaxe
     }],
     minQty: Number,
@@ -188,7 +188,7 @@ var productSchema = new Schema({
     //negociate: { type: Number, default: 0 }, // 0 is no negociate
     taxes: [{
         _id: false,
-        taxe: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
         value: { type: Number }
     }],
     //tva_tx: { type: Number, default: 20 },
