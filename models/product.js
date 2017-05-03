@@ -135,12 +135,12 @@ var productSchema = new Schema({
 
     },
 
-    compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
 
     inventory: {
         warehouseMsg: { type: String, default: '' },
