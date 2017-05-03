@@ -33,35 +33,6 @@
                                 </div>
 
                                 <div class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.phones.mobile">
-                                    <label for="form_control_1">@(Tel-Mobile)</label>
-                                </div>
-
-                                <div class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.emails.work">
-                                    <label for="form_control_1">@(Email)</label>
-                                </div>
-
-                                <div class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.skype">
-                                    <label for="form_control_1">@(users:Skype)</label>
-                                </div>
-
-                                <div class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.social.LI">
-                                    <label for="form_control_1">@(users:LinkedIn)</label>
-                                </div>
-
-                                <div class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.social.FB">
-                                    <label for="form_control_1">@(users:Facebook)</label>
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-6">
-
-                                <div class="form-group form-md-line-input">
                                     <select class="table-group-action-input form-control" required ng-model="employee.department" ng-options="s.id as s.name for s in $dict.department.data"></select>
                                     <label for="form_control_1">@(users:Department)</label>
                                 </div>
@@ -75,6 +46,57 @@
                                     <input type="text" class="form-control" id="form_control_1" ng-model="employee.jobPosition">
                                     <label for="form_control_1">@(users:JobPosition)</label>
                                 </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="form-group form-md-line-input">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.phones.mobile">
+                                    <label for="form_control_1">@(Tel-Mobile)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input">
+                                    <div class="input-group">
+                                        <div class="input-group-control">
+                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.emails.work">
+                                            <label for="form_control_1">@(Email)</label>
+                                        </div>
+                                        <span class="input-group-btn btn-right">
+                                                            <a ng-href="mailto:{{employee.emails.work}}"  class="btn yellow" type="button">Go!</a>
+                                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-md-line-input">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="employee.skype">
+                                    <label for="form_control_1">@(users:Skype)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input">
+                                    <div class="input-group">
+                                        <div class="input-group-control">
+                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.social.LI" placeholder="@(companies:WithHttp)">
+                                            <label for="form_control_1">@(users:LinkedIn)</label>
+                                        </div>
+                                        <span class="input-group-btn btn-right">
+                                                            <a ng-href="{{employee.social.LI}}"  class="btn yellow" type="button">Go!</a>
+                                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-group form-md-line-input">
+                                    <div class="input-group">
+                                        <div class="input-group-control">
+                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.social.FB" placeholder="@(companies:WithHttp)">
+                                            <label for="form_control_1">@(users:Facebook)</label>
+                                        </div>
+                                        <span class="input-group-btn btn-right">
+                                                            <a ng-href="{{employee.social.FB}}"  target="_blank" class="btn yellow" type="button">Go!</a>
+                                                        </span>
+                                    </div>
+                                </div>
+
+
 
                             </div>
 
