@@ -337,6 +337,9 @@ exports.install = function() {
         }
     }, ['upload'], 10240); //10MB Max
 
+    var taxes = new Taxes();
+    F.route('/erp/api/product/taxes', taxes.read, ['authorize']);
+
     var prices = new Prices();
 
     /* get prices and prices list */
@@ -806,6 +809,10 @@ function Product(id, cb) {
             path: 'sellFamily',
             populate: { path: "options", populate: { path: "group" } }
         })
+        .populate({
+            path: 'costFamily'
+        })
+        .populate({ path: 'taxes.taxeId' })
         /*.populate({
             path: 'attributes.attribute',
             populate: { path: "group" }
@@ -2317,7 +2324,11 @@ Prices.prototype = {
             cost = true;
 
         ProductPricesModel.find(query)
-            .populate("product", "weight name tva_tx info")
+            .populate({
+                path: "product",
+                select: "weight name taxes info",
+                populate: { path: 'taxes.taxeId' }
+            })
             .populate("priceLists")
             .lean()
             .exec(function(err, prices) {
@@ -2338,9 +2349,9 @@ Prices.prototype = {
                     //build TTC price
                     for (var i = 0; i < price.prices.length; i++)
                         if (price.prices[i].specialPrice)
-                            price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].specialPrice * (1 + price.product.tva_tx / 100));
+                            price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].specialPrice * (1 + price.product.taxes[0].taxeId.rate / 100));
                         else
-                            price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].price * (1 + price.product.tva_tx / 100), 3);
+                            price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].price * (1 + price.product.taxes[0].taxeId.rate / 100), 3);
                 }
 
                 //console.log(prices);
@@ -2428,24 +2439,26 @@ Prices.prototype = {
         if (!price.product || !price.priceLists)
             return self.throw500("Empty product or priceLists");
 
-        price.save(function(err, doc) {
-            if (err) {
-                console.log(err);
-                return self.json({
-                    errorNotify: {
-                        title: 'Erreur',
-                        message: err
-                    }
-                });
-            }
+        return price.populate("priceLists", function(err, price) {
+            price.save(function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+                }
 
-            //console.log(doc);
-            doc = doc.toObject();
-            doc.successNotify = {
-                title: "Success",
-                message: "Nouveau prix enregistree"
-            };
-            self.json(doc);
+                //console.log(doc);
+                doc = doc.toObject();
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Nouveau prix enregistree"
+                };
+                self.json(doc);
+            });
         });
     },
     delete: function(id) {
@@ -3394,4 +3407,24 @@ ProductFamily.prototype = {
         });
     },
     deleteProductFamily: function(id) {}
+};
+
+function Taxes() {}
+
+Taxes.prototype = {
+    read: function(id) {
+        var self = this;
+        var TaxesModel = MODEL('taxes').Schema;
+        var _id = id;
+        var model;
+
+        _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
+
+        TaxesModel.find({}, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({ data: result });
+        });
+    }
 };

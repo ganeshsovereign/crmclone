@@ -21,7 +21,7 @@ var supplierPriceSchema = new Schema({
     ref: String,
     taxes: [{
         _id: false,
-        taxe: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
         value: { type: Number } //for ecotaxe
     }],
     minQty: Number,
@@ -135,12 +135,12 @@ var productSchema = new Schema({
 
     },
 
-    compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
-    compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
+    compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
 
     inventory: {
         warehouseMsg: { type: String, default: '' },
@@ -188,7 +188,7 @@ var productSchema = new Schema({
     //negociate: { type: Number, default: 0 }, // 0 is no negociate
     taxes: [{
         _id: false,
-        taxe: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
         value: { type: Number }
     }],
     //tva_tx: { type: Number, default: 20 },

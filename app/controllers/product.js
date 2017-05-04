@@ -42,11 +42,11 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         //minPrice: 0,
         //billingMode: "QTY",
         isSell: true,
-        tva_tx: 20,
         units: "unit",
         info: {
             autoBarCode: true,
-            isActive: true
+            isActive: true,
+            langs: [{}]
         }
     };
     $scope.products = [];
@@ -139,6 +139,22 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             params: { isCost: false }
         }).success(function(data, status) {
             $scope.sellFamilies = data.data;
+        });
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/product/family',
+            params: { isCost: true }
+        }).success(function(data, status) {
+            $scope.costFamilies = data.data;
+        });
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/product/taxes'
+        }).success(function(data, status) {
+            console.log(data);
+            $scope.taxes = data.data;
         });
 
         $http({
@@ -1095,11 +1111,11 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
 
     $scope.updatePrice = function(line, price, key) {
         if (key == 'priceTTC')
-            price.price = price[key] / (1 + line.product.tva_tx / 100);
+            price.price = price[key] / (1 + line.product.taxes[0].taxeId.rate / 100);
 
         /*if price update with coef -> update coef*/
         if ($scope.product)
-            if ($scope.product.info.sellFamily.coef && $scope.product.directCost)
+            if ($scope.product.sellFamily.coef && $scope.product.directCost)
                 price.coef = price.price / $scope.product.directCost;
 
         $http({

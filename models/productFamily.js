@@ -24,8 +24,7 @@ var productFamiliesSchema = new Schema({
     accounts: [{
         _id: false,
         code: String,
-        sell: { type: String, set: MODULE('utils').setAccount, trim: true },
-        cost: { type: String, set: MODULE('utils').setAccount, trim: true }
+        account: { type: String, set: MODULE('utils').setAccount, trim: true } //sell ou buy
     }]
 }, {
     collection: 'productFamily',

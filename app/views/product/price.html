@@ -75,15 +75,15 @@
 
 
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_sell" placeholder="Normal" type="text" readonly>
+                                                        <input class="form-control" ng-model="product.sellFamily.accounts[0].account" placeholder="Normal" type="text" readonly>
                                                         <label for="ProductAccountancySellCode">@(products:ProductAccountancySellCode)</label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_sell_eu" placeholder="Export EU" type="text" readonly>
+                                                        <input class="form-control" ng-model="product.sellFamily.accounts[1].account" placeholder="Export EU" type="text" readonly>
                                                         <label for="ProductAccountancySellCodeEU">@(products:ProductAccountancySellCode) EU</label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_sell_exp" placeholder="Export" type="text" readonly>
+                                                        <input class="form-control" ng-model="product.sellFamily.accounts[2].account" placeholder="Export" type="text" readonly>
                                                         <label for="ProductAccountancySellCodeEX">@(products:ProductAccountancySellCode) Export</label>
                                                     </div>
                                                 </div>
@@ -93,18 +93,18 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group form-md-line-input ">
-                                                        <select class="table-group-action-input form-control" ng-model="product.tva_tx" ng-options="c.value as c.value for c in dict.fk_tva.values"></select>
+                                                        <select class="table-group-action-input form-control" required ng-model="product.taxes[0].taxeId._id" ng-options="s._id as s.name for s in taxes"></select>
                                                         <label for="VATRate">@(products:VATRate) </label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.caFamily" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'caFamily')" />
+                                                        <select class="table-group-action-input form-control" required ng-model="product.sellFamily._id" ng-options="s._id as s.name for s in sellFamilies" readonly></select>
                                                         <label for="FamilyProducts">@(products:Family) </label>
                                                     </div>
-                                                    <div class="form-group form-md-line-input ">
+                                                    <!--<div class="form-group form-md-line-input ">
                                                         <input class="form-control" ng-disabled="!product.caFamily" ng-model="product.subFamily" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subFamily',{caFamily:product.caFamily})" />
                                                         <label for="SubFamilyProducts">@(products:SubFamily) </label>
 
-                                                    </div>
+                                                    </div>-->
                                                 </div>
                                             </div>
                                         </div>
@@ -123,7 +123,7 @@
 
                                                 <p class="button-height inline-medium-label">
                                                     <label for="price_list">Grille de tarifs</label>
-                                                    <select class="table-group-action-input form-control" ng-model="price.priceLists" ng-options="p._id as p.priceListCode for p in pricesLists"></select>
+                                                    <select class="table-group-action-input form-control" ng-model="price.priceLists" ng-options="p._id as p.name for p in pricesLists"></select>
                                                 </p>
                                                 <p ng-hide="product.sellFamily.coef" class="button-height inline-medium-label">
                                                     <label for="price">Tarif HT</label>
@@ -176,7 +176,7 @@
                                                     <tbody>
                                                         <tr ng-repeat="line in prices">
                                                             <td><input type="checkbox" ng-model="grid[line._id]" /></td>
-                                                            <td>{{line.priceLists.priceListCode}}</td>
+                                                            <td>{{line.priceLists.name}}</td>
                                                             <td ng-if="product.sellFamily.coef">
                                                                 <table class="table-condensed">
                                                                     <tbody>
@@ -322,15 +322,15 @@
                                                         <span class="caption-subject font-grey-cascade bold uppercase">@(products:ProductAccountancyBuyCode)</span>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_buy" readonly placeholder="Normal" type="text">
+                                                        <input class="form-control" ng-model="product.costFamily[0].account" readonly placeholder="Normal" type="text">
                                                         <label for="ProductAccountancyBuyCode">@(products:ProductAccountancyBuyCode)</label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_buy_eu" readonly placeholder="Export EU" type="text">
+                                                        <input class="form-control" ng-model="product.costFamily[1].account" readonly placeholder="Export EU" type="text">
                                                         <label for="ProductAccountancyBuyCodeEU">@(products:ProductAccountancyBuyCode) EU</label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.compta_buy_exp" readonly placeholder="Export" type="text">
+                                                        <input class="form-control" ng-model="product.costFamily[2].account" readonly placeholder="Export" type="text">
                                                         <label for="ProductAccountancyBuyCodeEX">@(products:ProductAccountancyBuyCode) Export</label>
                                                     </div>
                                                 </div>
@@ -343,13 +343,13 @@
                                                         <span class="caption-helper"> @(products:UsedForStatistics)</span>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <input class="form-control" ng-model="product.costCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'costCenter')" />
+                                                        <select class="table-group-action-input form-control" required ng-model="product.costFamily._id" ng-options="s._id as s.name for s in costFamilies"></select>
                                                         <label for="CostCenter">@(products:CostCenter) </label>
                                                     </div>
-                                                    <div class="form-group form-md-line-input ">
+                                                    <!--<div class="form-group form-md-line-input ">
                                                         <input class="form-control" ng-disabled="!product.costCenter" ng-model="product.subCostCenter" placeholder="" type="text" typeahead="f as f for f in productFamilyAutoComplete($viewValue, 'subCostCenter',{costCenter:product.costCenter})" />
                                                         <label for="SubCostCenter">@(products:SubCostCenter) </label>
-                                                    </div>
+                                                    </div>-->
                                                 </div>
                                             </div>
                                         </div>
@@ -418,7 +418,7 @@
                                                     <tbody>
                                                         <tr ng-repeat="line in prices">
                                                             <td><input type="checkbox" ng-model="grid[line._id]" /></td>
-                                                            <td>{{line.priceLists.priceListCode}}</td>
+                                                            <td>{{line.priceLists.name}}</td>
                                                             <td>
                                                                 <table class="table-condensed">
                                                                     <tbody>
@@ -533,7 +533,7 @@
                                                             <input class="form-control" ng-model="newSupplierPrice.packing" type="text">
                                                         </td>
                                                         <td>
-                                                            <select class="table-group-action-input form-control" ng-model="newSupplierPrice.tva_tx" ng-options="c.value as c.value for c in dict.fk_tva.values"></select>
+                                                            <select class="table-group-action-input form-control" required ng-model="product.taxes[0]" ng-options="s._id as s.name for s in taxes"></select>
                                                         </td>
                                                         <td>
                                                             <input class="form-control" type="number" step="0.001" min="0" ng-model="newSupplierPrice.prices.pu_ht" />

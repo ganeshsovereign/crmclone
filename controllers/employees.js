@@ -293,6 +293,7 @@ exports.install = function() {
     //F.route('/erp/api/employees/getForDD', object.getForDD, ['authorize']);
 
     F.route('/erp/api/employees/bySales', object.getBySales, ['authorize']);
+    F.route('/erp/api/employees/bySalesAccount', object.getBySalesAccount, ['authorize']);
     F.route('/erp/api/employees/byDepartment', object.byDepartment, ['authorize']);
     F.route('/erp/api/employees/exportToXlsx', object.exportToXlsx, ['authorize']);
     F.route('/erp/api/employees/exportToCsv', object.exportToCsv, ['authorize']);
@@ -1683,7 +1684,7 @@ Object.prototype = {
     },
     getBySales: function() {
         var Model = MODEL('Employees').Schema;
-        var Model = MODEL('Project').Schema;
+        var Project = MODEL('Project').Schema;
 
         function assigneFinder(cb) {
             var match = {
@@ -1714,6 +1715,61 @@ Object.prototype = {
             }
 
             self.json(employees);
+        });
+
+    },
+    getBySalesAccount: function() {
+        var self = this;
+        var Model = MODEL('Employees').Schema;
+        var CustomerModel = MODEL('Customers').Schema;
+
+        CustomerModel.aggregate([{
+                $match: {
+                    "salesPurchases.isActive": true,
+                    'salesPurchases.salesPerson': { $ne: null }
+                }
+            }, {
+                $project: {
+                    salesPerson: "$salesPurchases.salesPerson"
+                }
+            },
+            {
+                $group: {
+                    _id: '$salesPerson',
+                    count: { "$sum": 1 }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Employees',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'employees'
+                }
+            }, {
+                $unwind: {
+                    path: '$employees',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $match: {
+                    employees: { $ne: null }
+                }
+            }, {
+                $project: {
+                    _id: 1,
+                    count: 1,
+                    name: "$employees.name",
+                    fullName: { $concat: ['$employees.name.first', ' ', '$employees.name.last'] }
+                }
+            }, {
+                $sort: { 'fullName': 1 }
+            }
+        ], function(err, employees) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({ data: employees });
         });
 
     },
