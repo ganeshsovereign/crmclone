@@ -52,7 +52,23 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
 
 }]);
 
-angular.module("MetronicApp").controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
+angular.module("MetronicApp").controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
+    var current = $rootScope.$state.current.name.split('.');
+    $scope.backTo = 'settings.product.types';
+    //console.log(current);
+
+    $scope.object = {};
+    $scope.listObject = [];
+
+    switch (current[2]) {
+        case 'types':
+            var Resource = Settings.productTypes;
+            break;
+        case 'family':
+            var Resource = Settings.family;
+            break;
+    }
+
 
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
@@ -60,7 +76,50 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
         $rootScope.settings.layout.pageBodySolid = true;
         $rootScope.settings.layout.pageSidebarClosed = false;
+
+        if (current[current.length - 1] == 'show')
+            $scope.findOne();
+
+        $scope.find();
     });
+
+    $scope.findOne = function() {
+        Resource.get({
+            Id: $rootScope.$stateParams.id
+        }, function(object) {
+            $scope.object = object;
+            //console.log(object);
+        });
+    };
+
+    $scope.find = function() {
+        Resource.query({}, function(data) {
+            //console.log(data);
+            $scope.listObject = data.data;
+        });
+    };
+
+    $scope.create = function() {
+        var object = new Resource(this.object);
+        object.$save(function(response) {
+            $rootScope.$state.go(current.join('.'), { id: response._id });
+        });
+    };
+
+    $scope.update = function() {
+        $scope.object.$update(function(response) {
+            $scope.object = response;
+            current.pop();
+            $rootScope.$state.go(current.join('.'));
+        });
+    };
+
+    $scope.remove = function(line) {
+        var object = new Resource(line);
+        object.$remove(function() {
+            $scope.find();
+        });
+    };
 
 
 

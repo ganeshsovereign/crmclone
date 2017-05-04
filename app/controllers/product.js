@@ -42,11 +42,11 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         //minPrice: 0,
         //billingMode: "QTY",
         isSell: true,
-        tva_tx: 20,
         units: "unit",
         info: {
             autoBarCode: true,
-            isActive: true
+            isActive: true,
+            langs: [{}]
         }
     };
     $scope.products = [];

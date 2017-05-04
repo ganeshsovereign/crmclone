@@ -1741,7 +1741,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('settings.product.types.create', {
             url: "/create.html",
-            templateUrl: "/views/settings/productTypes/create.html",
+            templateUrl: "/views/settings/productTypes/fiche.html",
             data: {
                 pageTitle: 'Ajouter un type de produit'
             },

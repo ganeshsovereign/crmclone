@@ -1,6 +1,6 @@
 {
   "name": "TM-CRM",
-    "version": "0.5.5",
+  "version": "0.5.5",
   "private": true,
   "author": {
     "name": "TM - ToManage"
@@ -10,7 +10,7 @@
     "url": "https://github.com/ToManage/TM-CRM_ERP.git"
   },
   "engines": {
-        "node": "4.5.x"
+    "node": "4.5.x"
   },
   "contributors": [
     "Herve Prot <herve.prot@tomanage.fr>"
@@ -24,6 +24,7 @@
     "csv": "0.3.6",
     "dateformat": "latest",
     "fixed-width-string": "^1.0.0",
+    "google-libphonenumber": "^2.0.15",
     "googleapis": "latest",
     "i18next": "latest",
     "i18next-node-fs-backend": "latest",
@@ -51,7 +52,7 @@
     "passport-oauth2": "latest",
     "paypal-express-checkout": "^1.4.0",
     "q": "^1.4.1",
-        "redis-eventemitter": "^2.0.1",
+    "redis-eventemitter": "^2.0.1",
     "shortid": "latest",
     "symeos-mqtt": "latest",
     "total.js": "2.1.x",
