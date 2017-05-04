@@ -41,6 +41,7 @@
     "selectoneormorecategories": "Selectionner une ou plusieurs catégories",
     "SubstituteProduct": "Produits de substitution",
     "NewProduct": "Nouveau produit/service",
+    "NewProductType": "Nouveau Type de produit",
     "ProductCode": "Code produit",
     "ProductAccountancyBuyCode": "Code comptable en achat",
     "ProductAccountancySellCode": "Code comptable en vente",
@@ -321,5 +322,6 @@
     "Costs": "Coûts",
     "DirectCost": "Coût Direct",
     "IndirectCost": "Coût Indirect",
-    "TotalCost": "Coût Total"
+    "TotalCost": "Coût Total",
+    "NewEmployee": "Nouveau Collaborateur"
 }

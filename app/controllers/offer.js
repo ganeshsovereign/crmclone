@@ -28,7 +28,9 @@ International Registered Trademark & Property of ToManage SAS
 
 /* global angular: true */
 MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout', 'Offers',
-    function ($scope, $rootScope, $location, $http, $modal, $filter, $timeout, Offers) {
+    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout, Offers) {
+
+        $scope.backTo = 'offer.list';
 
         var grid = new Datatable();
         var user = $rootScope.login;
@@ -42,12 +44,12 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
         $scope.dict = {};
         var iconsFilesList = {};
         $scope.types = [{
-                name: "En cours",
-                id: "NOW"
-            }, {
-                name: "Clos",
-                id: "CLOSED"
-            }];
+            name: "En cours",
+            id: "NOW"
+        }, {
+            name: "Clos",
+            id: "CLOSED"
+        }];
         $scope.type = {
             name: "En cours",
             id: "NOW"
@@ -55,7 +57,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
 
         $scope.delivery_mode = ["Comptoir", "Livraison"];
 
-        $scope.open = function ($event) {
+        $scope.open = function($event) {
             $event.preventDefault();
             $event.stopPropagation();
 
@@ -63,7 +65,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
         };
 
         // Init
-        $scope.$on('$viewContentLoaded', function () {
+        $scope.$on('$viewContentLoaded', function() {
             // initialize core components
             Metronic.initAjax();
 
@@ -78,7 +80,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 params: {
                     dictName: dict
                 }
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 $scope.dict = data;
                 //console.log(data);
             });
@@ -86,7 +88,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             initDatatable();
         });
 
-        $scope.showStatus = function (idx, dict) {
+        $scope.showStatus = function(idx, dict) {
             if (!($scope.dict[dict] && $scope.offer[idx]))
                 return;
             var selected = $filter('filter')($scope.dict[dict].values, {
@@ -95,26 +97,26 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             return ($scope.offer[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
-        $scope.create = function () {
+        $scope.create = function() {
             var offer = new Offers(this.offer);
-            offer.$save(function (response) {
-                $rootScope.$state.go("offer.show", {id: response._id});
+            offer.$save(function(response) {
+                $rootScope.$state.go("offer.show", { id: response._id });
             });
         };
-        $scope.remove = function (offer) {
+        $scope.remove = function(offer) {
             offer.$remove();
             $rootScope.$state.go("offer.list");
         };
-        $scope.update = function (callback) {
+        $scope.update = function(callback) {
             var offer = $scope.offer;
 
-            for (var i = offer.lines.length; i--; ) {
+            for (var i = offer.lines.length; i--;) {
                 // actually delete lines
                 if (offer.lines[i].isDeleted) {
                     offer.lines.splice(i, 1);
                 }
             }
-            offer.$update(function (response) {
+            offer.$update(function(response) {
                 //$location.path('societe/' + societe._id);
                 //pageTitle.setTitle('Commande client ' + offer.ref);
 
@@ -132,8 +134,8 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                     callback(null, response);
             });
         };
-        $scope.clone = function () {
-            $scope.offer.$clone(function (response) {
+        $scope.clone = function() {
+            $scope.offer.$clone(function(response) {
                 $rootScope.$state.go('offer.show', {
                     id: response._id
                 });
@@ -141,10 +143,10 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             });
         };
 
-        $scope.findOne = function () {
+        $scope.findOne = function() {
             Offers.get({
                 Id: $rootScope.$stateParams.id
-            }, function (offer) {
+            }, function(offer) {
                 $scope.offer = offer;
                 //console.log(offer);
                 //on utilise idLine pour definir la ligne produit que nous voulons supprimer
@@ -164,19 +166,19 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                         },
                         fields: "name ref updatedAt percentage Status task"
                     }
-                }).success(function (data, status) {
+                }).success(function(data, status) {
                     if (status === 200)
                         $scope.tickets = data;
                     $scope.countTicket = $scope.tickets.length;
                 });
                 //pageTitle.setTitle('Commande client ' + $scope.offer.ref);
-            }, function (err) {
+            }, function(err) {
                 if (err.status === 401)
                     $location.path("401.html");
             });
         };
 
-        $scope.sendEmail = function () {
+        $scope.sendEmail = function() {
             $http.post('/erp/api/sendEmail', {
                 to: this.offer.contacts,
                 data: {
@@ -187,7 +189,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                     entity: this.offer.entity
                 },
                 ModelEmail: 'email_PDF'
-            }).then(function (res) {
+            }).then(function(res) {
                 //console.log(res);
                 if (res.status == 200) {
 
@@ -225,7 +227,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             });
         };*/
 
-        $scope.updateAddress = function (data) {
+        $scope.updateAddress = function(data) {
             if (this.editableOffer)
                 this.editableOffer.$save();
             // Only company name change
@@ -260,17 +262,17 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
 
                 // Delivery address
                 $scope.offer.bl = [{
-                        societe: {}
-                    }];
-                
+                    societe: {}
+                }];
+
                 $scope.offer.bl[0].name = data.addresses[0].name;
                 $scope.offer.bl[0].address = data.addresses[0].address;
                 $scope.offer.bl[0].zip = data.addresses[0].zip;
                 $scope.offer.bl[0].town = data.addresses[0].town;
-                
-                if(data.deliveryAddressId)
-                    for(var i=0; i<data.addresses.length;i++)
-                        if(data.deliveryAddressId == data.addresses[i]._id) {
+
+                if (data.deliveryAddressId)
+                    for (var i = 0; i < data.addresses.length; i++)
+                        if (data.deliveryAddressId == data.addresses[i]._id) {
                             $scope.offer.bl[0].name = data.addresses[i].name;
                             $scope.offer.bl[0].address = data.addresses[i].address;
                             $scope.offer.bl[0].zip = data.addresses[i].zip;
@@ -280,7 +282,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             return true;
         };
 
-        $scope.updateBillingAddress = function () {
+        $scope.updateBillingAddress = function() {
             if ($scope.offer.billing.sameBL0) {
                 $scope.offer.billing.name = $scope.offer.bl[0].name;
                 $scope.offer.billing.address = $scope.offer.bl[0].address;
@@ -289,12 +291,12 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             }
             return true;
         };
-        $scope.createOrder = function () {
+        $scope.createOrder = function() {
             // CLOSE ORDER
             $scope.offer.Status = "SIGNED";
             $scope.update();
-            $scope.offer.$order(function (response) {
-                $rootScope.$state.go("order.show", {id: response._id});
+            $scope.offer.$order(function(response) {
+                $rootScope.$state.go("order.show", { id: response._id });
             });
         };
 
@@ -302,10 +304,10 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
 
             grid.init({
                 src: $("#offerList"),
-                onSuccess: function (grid) {
+                onSuccess: function(grid) {
                     // execute some code after table records loaded
                 },
-                onError: function (grid) {
+                onError: function(grid) {
                     // execute some code on network or other general error 
                 },
                 loadingMessage: 'Loading...',
@@ -325,37 +327,37 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                         [1, "desc"]
                     ], // set first column as a default sort by asc
                     "columns": [{
-                            data: 'bool'
-                        }, {
-                            "data": "ref"
-                        }, {
-                            "data": "client.name",
-                            defaultContent: ""
-                        }, {
-                            "data": "ref_client",
-                            defaultContent: ""
-                        }, {
-                            "data": "date_livraison",
-                            defaultContent: ""
-                        }, {
-                            "data": "total_ht",
-                            defaultContent: ""
-                        }, {
-                            "data": "Status"
-                        }, {
-                            "data": "entity",
-                            defaultContent: ""
-                        }, {
-                            "data": "datec",
-                            defaultContent: ""
-                        }, {
-                            data: 'action'
-                        }]
+                        data: 'bool'
+                    }, {
+                        "data": "ref"
+                    }, {
+                        "data": "client.name",
+                        defaultContent: ""
+                    }, {
+                        "data": "ref_client",
+                        defaultContent: ""
+                    }, {
+                        "data": "date_livraison",
+                        defaultContent: ""
+                    }, {
+                        "data": "total_ht",
+                        defaultContent: ""
+                    }, {
+                        "data": "Status"
+                    }, {
+                        "data": "entity",
+                        defaultContent: ""
+                    }, {
+                        "data": "datec",
+                        defaultContent: ""
+                    }, {
+                        data: 'action'
+                    }]
                 }
             });
 
             // handle group actionsubmit button click
-            grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
                 e.preventDefault();
                 var action = $(".table-group-action-input", grid.getTableWrapper());
                 if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
@@ -384,11 +386,11 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             });
         }
 
-        $scope.find = function () {
+        $scope.find = function() {
             grid.resetFilter();
         };
 
-        $scope.updateInPlace = function (api, field, row, newdata) {
+        $scope.updateInPlace = function(api, field, row, newdata) {
             if (!$scope.save) {
                 $scope.save = {
                     promise: null,
@@ -399,7 +401,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             $scope.save.row = row.rowIndex;
             if (!$scope.save.pending) {
                 $scope.save.pending = true;
-                $scope.save.promise = $timeout(function () {
+                $scope.save.promise = $timeout(function() {
                     $http({
                         method: 'PUT',
                         url: api + '/' + row.entity._id + '/' + field,
@@ -408,31 +410,31 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                             value: newdata
                         }
                     }).
-                            success(function (data, status) {
-                                if (status == 200) {
-                                    if (data) {
-                                        row.entity = data;
-                                    }
-                                }
-                            });
+                    success(function(data, status) {
+                        if (status == 200) {
+                            if (data) {
+                                row.entity = data;
+                            }
+                        }
+                    });
                     $scope.save.pending = false;
                 }, 200);
             }
             return false;
         };
-        $scope.changeStatus = function (Status) {
+        $scope.changeStatus = function(Status) {
             $scope.offer.Status = Status;
             $scope.update();
         };
 
-        $scope.checkLine = function (data) {
+        $scope.checkLine = function(data) {
             //console.log(data);
             if (!data)
                 return "La ligne produit ne peut pas être vide";
             if (!data.id)
                 return "Le produit n'existe pas";
         };
-        $scope.addProduct = function (data, index, lines) {
+        $scope.addProduct = function(data, index, lines) {
             //console.log(data);
             for (var i = 0; i < lines.length; i++) {
                 if (lines[i].idLine === index) {
@@ -462,12 +464,12 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 }
             }
         };
-        var round = function (value, decimals) {
+        var round = function(value, decimals) {
             if (value > Math.pow(10, (decimals + 2) * -1) * -1 && value < Math.pow(10, (decimals + 2) * -1)) // Fix error little number
                 return 0;
             return Number(Math.round(value + 'e' + (decimals)) + 'e-' + (decimals));
         };
-        $scope.calculMontantHT = function (line, data, varname) {
+        $scope.calculMontantHT = function(line, data, varname) {
             if (varname)
                 line[varname] = data;
 
@@ -486,7 +488,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                     price_level: $scope.offer.price_level,
                     qty: line.qty,
                     _id: line.product.id
-                }).then(function (res) {
+                }).then(function(res) {
                     //console.log(res.data);
                     line.pu_ht = res.data.pu_ht;
                     if (res.data.discount)
@@ -498,7 +500,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
 
             calculHT(line);
         };
-        $scope.productAutoComplete = function (val) {
+        $scope.productAutoComplete = function(val) {
             return $http.post('/erp/api/product/autocomplete', {
                 take: 50,
                 skip: 0,
@@ -509,19 +511,19 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 filter: {
                     logic: 'and',
                     filters: [{
-                            value: val
-                        }]
+                        value: val
+                    }]
                 }
-            }).then(function (res) {
+            }).then(function(res) {
                 //console.log(res.data);
                 return res.data;
             });
         };
         // filter lines to show
-        $scope.filterLine = function (line) {
+        $scope.filterLine = function(line) {
             return line.isDeleted !== true;
         };
-        $scope.editLine = function (row, index, lines) {
+        $scope.editLine = function(row, index, lines) {
             this.tableform.$save();
             var self = this;
             var modalInstance = $modal.open({
@@ -529,49 +531,48 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 controller: "DynFormController",
                 size: "lg",
                 resolve: {
-                    object: function () {
+                    object: function() {
                         return row;
                     },
-                    options: function () {
+                    options: function() {
                         return {
                             price_level: $scope.offer.price_level
                         };
                     }
                 }
             });
-            modalInstance.result.then(function (line) {
+            modalInstance.result.then(function(line) {
                 //angular.extend($scope.offer.lines[index], line);
                 $scope.offer.lines[index] = line;
                 $scope.calculMontantHT($scope.offer.lines[index]);
                 self.tableform.$show();
-            }, function () {
-            });
+            }, function() {});
         };
         // add line
-        $scope.addLine = function (lines) {
+        $scope.addLine = function(lines) {
             lines.push({
                 isNew: true,
                 idLine: lines.length
             });
         };
         // mark line as deleted
-        $scope.deleteLine = function (line) {
+        $scope.deleteLine = function(line) {
             line.isDeleted = true;
         };
         // Duplicate a line
-        $scope.copyLine = function (line, lines) {
-            
+        $scope.copyLine = function(line, lines) {
+
             var new_line = _.clone(line);
             delete new_line._id;
             delete new_line.id;
             delete new_line['$$hashKey'];
             new_line.isNew = true;
             new_line.idLine = lines.length;
-            
+
             lines.push(new_line);
         };
 
-        $scope.AddSubTotal = function (index) {
+        $scope.AddSubTotal = function(index) {
             $scope.offer.lines.splice(index + 1, 0, {
                 pu_ht: null,
                 tva_tx: null,
@@ -593,7 +594,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
 
 
         // up or down a line
-        $scope.upDownLine = function (id, mode, lines) {
+        $scope.upDownLine = function(id, mode, lines) {
             //id = parseInt(id);
             var elem = lines[id];
             if (mode == 'UP') {
@@ -608,18 +609,18 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
         /**
          * Get fileType for icon
          */
-        $scope.getFileTypes = function () {
+        $scope.getFileTypes = function() {
             $http({
                 method: 'GET',
                 url: 'dict/filesIcons'
             }).
-                    success(function (data, status) {
-                        if (status == 200) {
-                            iconsFilesList = data;
-                        }
-                    });
+            success(function(data, status) {
+                if (status == 200) {
+                    iconsFilesList = data;
+                }
+            });
         };
-        $scope.onFileSelect = function ($files) {
+        $scope.onFileSelect = function($files) {
             //$files: an array of files selected, each file has name, size, and type.
             for (var i = 0; i < $files.length; i++) {
                 var file = $files[i];
@@ -633,14 +634,14 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                             myObj: $scope.myModelObj
                         },
                         file: file
-                                // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
-                                /* set file formData name for 'Content-Desposition' header. Default: 'file' */
-                                //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
-                                /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
-                                //formDataAppender: function(formData, key, val){} 
-                    }).progress(function (evt) { // FIXME function in a loop !
+                            // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
+                            /* set file formData name for 'Content-Desposition' header. Default: 'file' */
+                            //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
+                            /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
+                            //formDataAppender: function(formData, key, val){} 
+                    }).progress(function(evt) { // FIXME function in a loop !
                         console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total, 10));
-                    }).success(function (data, status, headers, config) { // FIXME function in a loop !
+                    }).success(function(data, status, headers, config) { // FIXME function in a loop !
                         // file is uploaded successfully
                         //$scope.myFiles = "";
                         //console.log(data);
@@ -652,18 +653,18 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 //.then(success, error, progress); 
             }
         };
-        $scope.suppressFile = function (id, fileName, idx) {
+        $scope.suppressFile = function(id, fileName, idx) {
             $http({
                 method: 'DELETE',
                 url: 'api/commande/file/' + id + '/' + fileName
             }).
-                    success(function (data, status) {
-                        if (status == 200) {
-                            $scope.offer.files.splice(idx, 1);
-                        }
-                    });
+            success(function(data, status) {
+                if (status == 200) {
+                    $scope.offer.files.splice(idx, 1);
+                }
+            });
         };
-        $scope.fileType = function (name) {
+        $scope.fileType = function(name) {
             if (typeof iconsFilesList[name.substr(name.lastIndexOf(".") + 1)] == 'undefined')
                 return iconsFilesList["default"];
             return iconsFilesList[name.substr(name.lastIndexOf(".") + 1)];
@@ -671,10 +672,10 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
     }
 ]);
 MetronicApp.controller('OfferCreateController', ['$scope', '$http', '$modalInstance', 'Upload', '$route', 'Offer',
-    function ($scope, $http, $modalInstance, Upload, $route, Offer) {
+    function($scope, $http, $modalInstance, Upload, $route, Offer) {
 
         $scope.opened = [];
-        $scope.init = function () {
+        $scope.init = function() {
             $scope.active = 1;
             $scope.offer = {};
             $scope.offer.bl = [];
@@ -688,79 +689,79 @@ MetronicApp.controller('OfferCreateController', ['$scope', '$http', '$modalInsta
         $scope.shipping = {
             default: "NONE",
             values: [{
-                    id: "NONE",
-                    label: "A diposition",
-                    address: false
-                }, {
-                    id: "TNT",
-                    label: "TNT",
-                    address: true
-                }, {
-                    id: "MAIL",
-                    label: "Courrier",
-                    address: true
-                }, {
-                    id: "COURSIER",
-                    label: "Coursier",
-                    address: true
-                }, {
-                    id: "TRANSPORTEUR",
-                    label: "Transporteur",
-                    address: true
-                }]
+                id: "NONE",
+                label: "A diposition",
+                address: false
+            }, {
+                id: "TNT",
+                label: "TNT",
+                address: true
+            }, {
+                id: "MAIL",
+                label: "Courrier",
+                address: true
+            }, {
+                id: "COURSIER",
+                label: "Coursier",
+                address: true
+            }, {
+                id: "TRANSPORTEUR",
+                label: "Transporteur",
+                address: true
+            }]
         };
         $scope.billing = {
             default: "CHQ",
             values: [{
-                    id: "CPT",
-                    label: "En compte"
-                }, {
-                    id: "MONEY",
-                    label: "Espèce"
-                }, {
-                    id: "CHQ",
-                    label: "Chèque"
-                }, {
-                    id: "CB",
-                    label: "Carte bancaire"
-                }]
+                id: "CPT",
+                label: "En compte"
+            }, {
+                id: "MONEY",
+                label: "Espèce"
+            }, {
+                id: "CHQ",
+                label: "Chèque"
+            }, {
+                id: "CB",
+                label: "Carte bancaire"
+            }]
         };
-        $scope.open = function ($event, idx) {
+        $scope.open = function($event, idx) {
             $event.preventDefault();
             $event.stopPropagation();
             $scope.opened[idx] = true;
         };
-        $scope.create = function () {
+        $scope.create = function() {
             if (this.offer._id)
                 return;
             var offer = new Offer(this.offer);
-            offer.$save(function (response) {
+            offer.$save(function(response) {
                 $scope.offer = response;
             });
         };
-        $scope.update = function () {
+        $scope.update = function() {
             var offer = $scope.offer;
-            offer.$update(function (response) {
+            offer.$update(function(response) {
                 $scope.offer = response;
             });
         };
-        $scope.isActive = function (idx) {
+        $scope.isActive = function(idx) {
             if (idx == $scope.active)
                 return "active";
         };
-        $scope.next = function () {
+        $scope.next = function() {
             $scope.active++;
         };
-        $scope.previous = function () {
+        $scope.previous = function() {
             $scope.active--;
         };
-        $scope.goto = function (idx) {
+        $scope.goto = function(idx) {
             if ($scope.active == 5)
                 return;
             if (idx < $scope.active)
                 $scope.active = idx;
         };
-        $scope.societeAutoComplete = function (val) {
+        $scope.societeAutoComplete = function(val) {
             return $http.post('api/societe/autocomplete', {
                 take: '5',
                 skip: '0',
@@ -769,39 +770,39 @@ MetronicApp.controller('OfferCreateController', ['$scope', '$http', '$modalInsta
                 filter: {
                     logic: 'and',
                     filters: [{
-                            value: val
-                        }]
+                        value: val
+                    }]
                 }
-            }).then(function (res) {
+            }).then(function(res) {
                 return res.data;
             });
         };
-        $scope.initSelectFiles = function () {
+        $scope.initSelectFiles = function() {
             $http({
                 method: 'GET',
                 url: 'api/chaumeil/otis/selectFiles'
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 $scope.selectFiles = data;
-                $timeout(function () {
+                $timeout(function() {
                     angular.element('select').change();
                 }, 300);
             });
         };
-        $scope.addDossier = function () {
+        $scope.addDossier = function() {
             $scope.offer.optional.dossiers.push({});
         };
-        $scope.addDest = function () {
+        $scope.addDest = function() {
             $scope.offer.bl.push({
                 products: [{
-                        name: 'paper',
-                        qty: 0
-                    }, {
-                        name: 'cd',
-                        qty: 0
-                    }]
+                    name: 'paper',
+                    qty: 0
+                }, {
+                    name: 'cd',
+                    qty: 0
+                }]
             });
         };
-        $scope.sendOffer = function () {
+        $scope.sendOffer = function() {
             $scope.offer.datec = new Date();
             $scope.offer.date_livraison = new Date();
             $scope.offer.date_livraison.setDate($scope.offer.date_livraison.getDate() + 5);
@@ -847,7 +848,7 @@ MetronicApp.controller('OfferCreateController', ['$scope', '$http', '$modalInsta
             $scope.update();
             $modalInstance.close($scope.offer);
         };
-        $scope.onFileSelect = function ($files, idx) {
+        $scope.onFileSelect = function($files, idx) {
             $scope.filePercentage[idx] = 0;
             //console.log(idx);
             //$files: an array of files selected, each file has name, size, and type.
@@ -864,14 +865,14 @@ MetronicApp.controller('OfferCreateController', ['$scope', '$http', '$modalInsta
                             idx: idx
                         },
                         file: file
-                                // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
-                                /* set file formData name for 'Content-Desposition' header. Default: 'file' */
-                                //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
-                                /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
-                                //formDataAppender: function(formData, key, val){} 
-                    }).progress(function (evt) {
+                            // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
+                            /* set file formData name for 'Content-Desposition' header. Default: 'file' */
+                            //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
+                            /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
+                            //formDataAppender: function(formData, key, val){} 
+                    }).progress(function(evt) {
                         $scope.filePercentage[idx] = parseInt(100.0 * evt.loaded / evt.total);
-                    }).success(function (data, status, headers, config) {
+                    }).success(function(data, status, headers, config) {
                         // file is uploaded successfully
                         //$scope.myFiles = "";
                         //console.log(data);
@@ -884,7 +885,7 @@ MetronicApp.controller('OfferCreateController', ['$scope', '$http', '$modalInsta
                 //.then(success, error, progress); 
             }
         };
-        $scope.suppressFile = function (id, fileName, idx) {
+        $scope.suppressFile = function(id, fileName, idx) {
             //console.log(id);
             //console.log(fileName);
             //console.log(idx);
@@ -893,7 +894,7 @@ MetronicApp.controller('OfferCreateController', ['$scope', '$http', '$modalInsta
             $http({
                 method: 'DELETE',
                 url: 'api/commande/file/' + id + '/' + fileName
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 if (status == 200) {
                     $scope.offer.files = data.files;
                     $scope.offer.__v = data.__v; // for update

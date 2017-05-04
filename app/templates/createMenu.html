@@ -4,5 +4,5 @@
 <button type="button" ng-show="createMod" ng-click="create()" class="btn sbold uppercase green"><i class="fa fa-plus"></i> @(Create)</button>
 -->
 
-<a class="btn red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Cancel)</a>
+<a class="btn red" ui-sref="{{backTo}}"><i class="fa fa-angle-left"></i> @(Cancel)</a>
 <button type="button" ng-hide="createMod" ng-click="update(true)" class="btn blue"> @(Create) <i class="fa fa-check"></i></button>
