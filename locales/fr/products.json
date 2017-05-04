@@ -18,6 +18,7 @@
     "Product": "Produit",
     "ProductURL": "URL du produit",
     "Attributes": "Attributs",
+    "ListOfAttributes": "Liste des Attributs",
     "Product_plural": "Produits",
     "Images/documents": "Images/documents",
     "ProductSheet": "Fiche produit",
@@ -259,7 +260,7 @@
     "DefaultPriceList": "List de prix par defaut",
     "NewPriceLevel": "Nouvelle liste de prix",
     "Units": "Unité de facturation",
-    "Unit": "unité",
+    "Unit": "Unité",
     "Weight": "Poids (kg)",
     "WeightUnitton": "tonnes",
     "WeightUnitkg": "kg",
@@ -329,5 +330,14 @@
     "DirectCost": "Coût Direct",
     "IndirectCost": "Coût Indirect",
     "TotalCost": "Coût Total",
-    "NewEmployee": "Nouveau Collaborateur"
+    "NewEmployee": "Nouveau Collaborateur",
+    "QtyOfProductOnThisFamily": "Qté de produits dans la famille",
+    "NewAttribute": "Nouvel attribut",
+    "EditAttribute": "Edition attribut",
+    "MaxCharacters": "Nbre de caractères Max",
+    "MinCharacters": "Nbre de caractères Min",
+    "MaxDate": "Date Max",
+    "MinDate": "Date Min",
+    "MaxNumber": "Nombre Max",
+    "MinNumber": "Nombre Min"
 }

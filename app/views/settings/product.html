@@ -50,6 +50,10 @@
                     <!-- SIDEBAR MENU -->
                     <div class="profile-usermenu">
                         <ul class="nav">
+                            <li ng-class="{active: $state.includes('settings.product.attributes')}">
+                                <a ui-sref="settings.product.attributes">
+                                    <i class="icon-settings"></i> @(products:ProductAttributes) </a>
+                            </li>
                             <li ng-class="{active: $state.includes('settings.product.categories')}">
                                 <a ui-sref="settings.product.categories">
                                     <i class="fa fa-share-alt"></i> @(products:ProductCategories) </a>
@@ -69,10 +73,6 @@
                             <li ng-class="{active: $state.includes('settings.product.shipping')}">
                                 <a ui-sref="settings.product.shipping">
                                     <i class="fa fa-truck"></i> @(ShippingMethods) </a>
-                            </li>
-                            <li ng-class="{active: $state.includes('settings.product.options')}">
-                                <a ui-sref="settings.product.options">
-                                    <i class="icon-settings"></i> @(products:ProductAttributes) </a>
                             </li>
                             <li ng-class="{active: $state.includes('settings.product.types')}">
                                 <a ui-sref="settings.product.types">

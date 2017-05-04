@@ -1705,28 +1705,28 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "SettingProductController"
         })
-        // product options configuration
-        .state('settings.product.options', {
-            url: "/options",
-            templateUrl: "/views/settings/productOptions/list.html",
+        // Attributes configuration
+        .state('settings.product.attributes', {
+            url: "/attributes",
+            templateUrl: "/views/settings/attributes/list.html",
             data: {
-                pageTitle: 'Configuration des options des produits'
+                pageTitle: 'Configuration des attributs'
             },
             controller: "SettingProductController"
         })
-        .state('settings.product.options.create', {
+        .state('settings.product.attributes.create', {
             url: "/create.html",
-            templateUrl: "/views/settings/productOptions/create.html",
+            templateUrl: "/views/settings/attributes/fiche.html",
             data: {
-                pageTitle: 'Ajouter une options'
+                pageTitle: 'Ajouter un attribut'
             },
             controller: "SettingProductController"
         })
-        .state('settings.product.options.show', {
+        .state('settings.product.attributes.show', {
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/settings/productOptions/fiche.html",
+            templateUrl: "/views/settings/attributes/fiche.html",
             data: {
-                pageTitle: 'Editer une options'
+                pageTitle: 'Editer un attributs'
             },
             controller: "SettingProductController"
         })
@@ -1805,9 +1805,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "SettingProductController"
         })
-
-    //Integration Configuration
-    .state('settings.integration', {
+        //Integration Configuration
+        .state('settings.integration', {
             parent: "settings",
             url: "/integration",
             templateUrl: "/views/settings/integration.html",
