@@ -1115,7 +1115,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
 
         /*if price update with coef -> update coef*/
         if ($scope.product)
-            if ($scope.product.sellFamily.coef && $scope.product.directCost)
+            if ($scope.product.sellFamily.isCoef && $scope.product.directCost)
                 price.coef = price.price / $scope.product.directCost;
 
         $http({

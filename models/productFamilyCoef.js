@@ -9,33 +9,21 @@ var mongoose = require('mongoose'),
     _ = require('lodash'),
     timestamps = require('mongoose-timestamp');
 
-var priceSchema = new Schema({
-    _id: false,
-    count: { type: Number, default: 0 },
-    price: { type: Number, default: 0 }, // pu_ht
-    coef: { type: Number, default: 1 },
-    coefTotal: { type: Number, default: 1 } //Sum coef * familyCoef
-}, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
-});
-
-var productPricesSchema = new Schema({
+var productFamilyCoefSchema = new Schema({
     priceLists: { type: ObjectId, ref: 'priceList' },
-    product: { type: ObjectId, ref: 'product' },
-    prices: [priceSchema],
-    discount: { type: Number, default: 0 },
+    family: { type: ObjectId, ref: 'productFamily' },
+    coef: { type: Number, min: 0, default: 1 },
     createdBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null },
     editedBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null }
 });
 
-productPricesSchema.plugin(timestamps);
+productFamilyCoefSchema.plugin(timestamps);
 
-productPricesSchema.index({ priceLists: 1, product: 1 }, { unique: true });
+productFamilyCoefSchema.index({ priceLists: 1, family: 1 }, { unique: true });
 
-productPricesSchema.pre('save', function(next) {
+productFamilyCoefSchema.pre('save', function(next) {
     var self = this;
-    var ProductModel = MODEL('product').Schema;
+    /*var ProductModel = MODEL('product').Schema;
 
     ProductModel.findOne({ _id: this.product }, "info directCost prices pack createdAt sellFamily")
         .populate("sellFamily")
@@ -43,8 +31,8 @@ productPricesSchema.pre('save', function(next) {
             if (err)
                 return next(err);
 
-            //console.log(self);
-            var coef = product.sellFamily.isCoef;
+            console.log(self);
+            var coef = product.sellFamily.coef;
 
             if (self.priceLists.cost == true && self.isModified('prices')) {
                 product.directCost = self.prices[0].price;
@@ -54,7 +42,6 @@ productPricesSchema.pre('save', function(next) {
                 });
             }
 
-            /* coef mode */
             if (coef && self.priceLists.cost != true) {
                 //Recalcul product prices
                 self.prices = _.each(self.prices, function(price) {
@@ -89,38 +76,9 @@ productPricesSchema.pre('save', function(next) {
             self.prices.sort(compare);
             //console.log(self.prices);
             next();
-        });
+        });*/
+    next();
 });
 
-exports.Schema = mongoose.model('productPrices', productPricesSchema, 'ProductPrices');
-exports.name = "productPrices";
-
-F.on('load', function() {
-    // On refresh emit product
-    F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
-        //console.log(data);
-        console.log("Update emit productPrice", data);
-        //return;
-        switch (channel) {
-            case 'product:updateDirectCost':
-                if (data.data._id)
-                    exports.Schema.find({ 'product': data.data._id })
-                    .populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
-                    .populate("priceLists")
-                    .exec(function(err, pricesList) {
-                        pricesList.forEach(function(prices) {
-                            if (!prices.product.sellFamily.isCoef)
-                                return;
-
-                            prices.save(function(err, doc) {
-                                if (err)
-                                    return console.log(err);
-                            });
-                        });
-                    });
-                break;
-        }
-
-
-    });
-});
+exports.Schema = mongoose.model('productFamilyCoef', productFamilyCoefSchema, 'ProductFamilyCoef');
+exports.name = "productFamilyCoef";
