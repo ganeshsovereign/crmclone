@@ -2123,7 +2123,7 @@ Object.prototype = {
                     if (row.Tag)
                         res.datatable.data[i].Tag = row.Tag.toString();
                     // Add url on name
-                    res.datatable.data[i].name.last = '<a class="with-tooltip" href="#!/societe/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.last + '"><span class="icon-home"></span> ' + row.name.last + '</a>';
+                    res.datatable.data[i].name.last = '<a class="with-tooltip" href="#!/societe/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.last + '"><span class="' + (row.type == 'Person' ? 'icon-user' : 'icon-home') + '"></span> ' + row.name.last + '</a>';
                     // Convert Date
                     res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
                     // Convert Status
