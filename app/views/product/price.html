@@ -93,11 +93,22 @@
                                                 <div class="col-md-6">
 
                                                     <div class="form-group form-md-line-input ">
-                                                        <select class="table-group-action-input form-control" required ng-model="product.taxes[0].taxeId._id" ng-options="s._id as s.name for s in taxes"></select>
+                                                        <select class="table-group-action-input form-control" required ng-model="product.taxes[0].taxeId._id" ng-options="s._id as s.name for s in taxes | filter :{isFixValue : false}"></select>
                                                         <label for="VATRate">@(products:VATRate) </label>
                                                     </div>
                                                     <div class="form-group form-md-line-input ">
-                                                        <select class="table-group-action-input form-control" required ng-model="product.sellFamily._id" ng-options="s._id as s.name for s in sellFamilies" readonly></select>
+                                                        <div class="row">
+                                                            <div class=col-md-8>
+                                                                <select class="table-group-action-input form-control" ng-model="product.taxes[1].taxeId._id" ng-options="s._id as s.name for s in taxes | filter :{isFixValue : true}"></select>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input class="form-control" ng-model="product.taxes[1].value" placeholder="@(Amount)" type="number" step="0.001" min="0" ng-disabled="!product.taxes[1].taxeId">
+                                                            </div>
+                                                        </div>
+                                                        <label for="VATRate">@(products:EcotaxHT) </label>
+                                                    </div>
+                                                    <div class="form-group form-md-line-input ">
+                                                        <select class="table-group-action-input form-control" required ng-model="product.sellFamily._id" ng-options="s._id as s.name for s in sellFamilies" disabled></select>
                                                         <label for="FamilyProducts">@(products:Family) </label>
                                                     </div>
                                                     <!--<div class="form-group form-md-line-input ">
