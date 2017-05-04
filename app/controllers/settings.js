@@ -88,7 +88,7 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             Id: $rootScope.$stateParams.id
         }, function(object) {
             $scope.object = object;
-            //console.log(object);
+            console.log(object);
         });
     };
 

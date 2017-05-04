@@ -1805,8 +1805,9 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "SettingProductController"
         })
-        //Integration Configuration
-        .state('settings.integration', {
+
+    //Integration Configuration
+    .state('settings.integration', {
             parent: "settings",
             url: "/integration",
             templateUrl: "/views/settings/integration.html",
