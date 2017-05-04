@@ -65,7 +65,7 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             var Resource = Settings.productTypes;
             break;
         case 'family':
-            var Resource = Settings.family;
+            var Resource = Settings.productFamily;
             break;
     }
 
@@ -88,7 +88,7 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             Id: $rootScope.$stateParams.id
         }, function(object) {
             $scope.object = object;
-            //console.log(object);
+            console.log(object);
         });
     };
 

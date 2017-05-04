@@ -1780,8 +1780,34 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "SettingProductController"
         })
-        //Integration Configuration
-        .state('settings.integration', {
+        // Family configuration
+        .state('settings.product.family', {
+            url: "/familyproducts",
+            templateUrl: "/views/settings/family/list.html",
+            data: {
+                pageTitle: 'Configuration des familles de produits'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.family.create', {
+            url: "/create.html",
+            templateUrl: "/views/settings/family/fiche.html",
+            data: {
+                pageTitle: 'Ajouter une famille de produit'
+            },
+            controller: "SettingProductController"
+        })
+        .state('settings.product.family.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/settings/family/fiche.html",
+            data: {
+                pageTitle: 'Editer une famille de produit'
+            },
+            controller: "SettingProductController"
+        })
+
+    //Integration Configuration
+    .state('settings.integration', {
             parent: "settings",
             url: "/integration",
             templateUrl: "/views/settings/integration.html",

@@ -671,15 +671,10 @@
     "MoveBox": "Déplacer la boite %s",
     "Offered": "Offert",
     "ShippingMethods": "Modes d'envois",
-    "ProductCategories": "Catégories de produits",
-    "ProductTypes": "Types de produits",
     "NotEnoughPermissions": "Vous n'avez pas les permissions pour cette action",
     "SessionName": "Nom session",
-    "PriceLists": "Liste de prix",
-    "Warehouse": "Entrepots",
     "OrganisationProfils": "Profils d'entreprise(s)",
     "CompanySettings": "Paramétres de la société",
-    "ProductConfiguration": "Configurations de produits",
     "SettingsOverview": "Aperçu des paramètres",
     "Method": "Méthode",
     "Receive": "Réceptionner",
@@ -825,5 +820,6 @@
     "Filename": "Nom du fichier",
     "Pictures": "Images",
     "Setting": "Propriétés",
-    "SKU": "Ref (SKU)"
+    "SKU": "Ref (SKU)",
+    "CreatedAt": "Créer le"
 }
