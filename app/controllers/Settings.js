@@ -60,7 +60,46 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
         $rootScope.settings.layout.pageBodySolid = true;
         $rootScope.settings.layout.pageSidebarClosed = false;
+
+        $scope.backTo = 'settings.product.types';
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/product/productTypes'
+        }).success(function(data, status) {
+            //console.log(data);
+            $scope.productTypes = data.data;
+        });
     });
+
+    $scope.create = function() {
+        var productType = new productTypes(this.productType);
+        productType.$save(function(response) {
+            $rootScope.$state.go("settings.product.types.show", { id: response._id });
+        });
+    };
+
+
+
+
+    $scope.remove = function(productType) {
+        if (!productType && grid) {
+            return $http({
+                method: 'DELETE',
+                url: '/erp/api/product/productTypes',
+                params: {
+                    id: grid.getSelectedRows()
+                }
+            }).success(function(data, status) {
+                if (status === 200)
+                    $scope.find();
+            });
+        }
+
+        employees.$remove(function() {
+            $rootScope.$state.go("settings.product.types");
+        });
+    };
 
 
 

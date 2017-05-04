@@ -1,45 +1,47 @@
-<div class="_acountingTableWrap">
-    <div class="_acountingTitleBlock">
-        <a href="javascript:;" class="btn blue slim icon-plus btnPositioned" title="Create" id="top-bar-createBtn">New</a>
-    </div>
-    <div class="_acountingTableBlock">
-        <table class="list tableProjects tableFixed _currencyTable">
-            <colgroup>
-                <col width="25%" />
-                <col width="25%" />
-                <col width="25%" />
-                <col width="25%" />
-            </colgroup>
-            <thead>
-                <tr class="forToggle">
-                    <th>Name</th>
-                    <th>Products Count</th>
-                    <th>Product Options</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody class="forToggle" id="currencyTable">
-                <% collection.forEach(function(elem,index){ %>
-                    <tr data-id="<%=elem._id%>">
-                        <td>
-                            <%=elem.name%>
-                        </td>
-                        <td>
-                            <%=elem.countProducts%>
-                        </td>
-                        <td>
-                            <%elem.options && elem.options.length && elem.options.forEach(function (opt){%>
-                                <span><%= opt && opt.name + '| ' || '' %></span>
-                                <%})%>
-                        </td>
-                        <td>
-                            <a href="javascript:;" class="icon-note goToEdit _actionCircleBtn" aria-hidden="true"></a>
-                            <a href="javascript:;" class="icon-trash goToRemove _actionCircleBtn" aria-hidden="true"></a>
-                        </td>
-                    </tr>
+<div ui-view=""></div>
 
-                    <% }) %>
-            </tbody>
-        </table>
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption caption-md">
+            <i class="icon-settings font-grey-gallery"></i>
+            <span class="caption-subject font-grey-gallery bold uppercase">@(ProductTypes)</span>
+        </div>
+        <div class="actions">
+            <a class="btn blue" ui-sref="settings.product.types.create">@(Add) <i class="fa fa-plus"></i></a>
+            <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;">
+                <i class="fa fa-refresh"></i>
+            </a>
+        </div>
     </div>
-</div>
+    <div class="tools">
+    </div>
+    <div class="portlet-body">
+        <div class="form-body">
+            <div class="table-responsive">
+                <div class="dataTables_wrapper no-footer table-responsive">
+                    <div class="col-md-12">
+                        <table class="table dataTable no-footer table-hover" id="productTypesList">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th>@(Code)</th>
+                                    <th>@(Name)</th>
+                                    <th>@(products:Inventory)</th>
+                                    <th>@(products:Quantity)</th>
+                                    <th>@(Action)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="line in productTypes">
+                                    <td>{{line.sequence}}</td>
+                                    <td>{{line.name}}</td>
+                                    <td>{{line.inventory}}</td>
+                                    <td>{{line.countProducts}}</td>
+                                    <td><button class="btn btn-circle blue fa fa-pencil" ui-sref="settings.product.types.show" ng-click="find()" title="Editer"></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
