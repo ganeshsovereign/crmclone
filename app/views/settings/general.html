@@ -53,21 +53,25 @@
                             <a ui-sref="settings.product.warehouse">
                                 <i class="fa fa-industry"></i> @(OrganisationProfils) </a>
                         </li>
+                        <li ng-class="{active: $state.includes('settings.product.warehouse')}">
+                            <a ui-sref="settings.product.warehouse">
+                                <i class="fa fa-industry"></i> @(OrganisationProfils) </a>
+                        </li>
                         <li ng-class="{active: $state.includes('settings.product.pricelists')}">
                             <a ui-sref="settings.product.pricelists">
                                 <i class="fa fa-th-list"></i> @(Currency) </a>
                         </li>
                         <li ng-class="{active: $state.includes('settings.product.types')}">
                             <a ui-sref="settings.product.types">
-                                <i class="icon-settings"></i> @(ProductTypes) </a>
+                                <i class="icon-settings"></i> @(Products:Types) </a>
                         </li>
                         <li ng-class="{active: $state.includes('settings.product.options')}">
                             <a ui-sref="settings.product.options">
-                                <i class="icon-settings"></i> @(ProductOptions) </a>
+                                <i class="icon-settings"></i> @(Products:Options) </a>
                         </li>
                         <li ng-class="{active: $state.includes('settings.product.categories')}">
                             <a ui-sref="settings.product.categories">
-                                <i class="fa fa-share-alt"></i> @(ProductCategories) </a>
+                                <i class="fa fa-share-alt"></i> @(Products:Categories) </a>
                         </li>
                         <li ng-class="{active: $state.includes('settings.product.shipping')}">
                             <a ui-sref="settings.product.shipping">

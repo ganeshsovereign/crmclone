@@ -8,8 +8,9 @@ MetronicApp.factory("Settings", ['$resource', function($resource) {
             update: { method: 'PUT' },
             query: { method: 'GET', isArray: false }
         }),
-        productFamily: $resource('/erp/api/user/absence/:Id', { Id: '@_id' }, {
-            update: { method: 'PUT' }
+        productFamily: $resource('/erp/api/product/family/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false }
         })
     };
 }]);

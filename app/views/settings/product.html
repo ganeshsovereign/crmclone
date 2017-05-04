@@ -11,12 +11,12 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(ProductConfiguration)</span>
+                <span>@(products:ProductConfiguration)</span>
             </li>
         </ul>
     </div>
     <h3 class="page-title">
-        <i class="fa fa-gears font-grey-silver"></i> @(ProductConfiguration)
+        <i class="fa fa-gears font-grey-silver"></i> @(products:ProductConfiguration)
     </h3>
 
     <div ng-if="product.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce produit est supprime. </div>
@@ -50,30 +50,33 @@
                     <!-- SIDEBAR MENU -->
                     <div class="profile-usermenu">
                         <ul class="nav">
+                            <li ng-class="{active: $state.includes('settings.product.categories')}">
+                                <a ui-sref="settings.product.categories">
+                                    <i class="fa fa-share-alt"></i> @(products:ProductCategories) </a>
+                            </li>
                             <li ng-class="{active: $state.includes('settings.product.warehouse')}">
                                 <a ui-sref="settings.product.warehouse">
-                                    <i class="fa fa-industry"></i> @(Warehouse) </a>
+                                    <i class="fa fa-industry"></i> @(products:Warehouse) </a>
+                            </li>
+                            <li ng-class="{active: $state.includes('settings.product.family')}">
+                                <a ui-sref="settings.product.family">
+                                    <i class="fa fa-bars"></i> @(products:FamilyProducts) </a>
                             </li>
                             <li ng-class="{active: $state.includes('settings.product.pricelists')}">
                                 <a ui-sref="settings.product.pricelists">
-                                    <i class="fa fa-th-list"></i> @(PriceLists) </a>
+                                    <i class="fa fa-th-list"></i> @(products:PriceLists) </a>
                             </li>
-                            <li ng-class="{active: $state.includes('settings.product.types')}">
-                                <a ui-sref="settings.product.types">
-                                    <i class="icon-settings"></i> @(ProductTypes) </a>
-                            </li>
-                            <li ng-class="{active: $state.includes('settings.product.categories')}">
-                                <a ui-sref="settings.product.categories">
-                                    <i class="fa fa-share-alt"></i> @(ProductCategories) </a>
+                            <li ng-class="{active: $state.includes('settings.product.shipping')}">
+                                <a ui-sref="settings.product.shipping">
+                                    <i class="fa fa-truck"></i> @(ShippingMethods) </a>
                             </li>
                             <li ng-class="{active: $state.includes('settings.product.options')}">
                                 <a ui-sref="settings.product.options">
                                     <i class="icon-settings"></i> @(products:ProductAttributes) </a>
                             </li>
-
-                            <li ng-class="{active: $state.includes('settings.product.shipping')}">
-                                <a ui-sref="settings.product.shipping">
-                                    <i class="fa fa-truck"></i> @(ShippingMethods) </a>
+                            <li ng-class="{active: $state.includes('settings.product.types')}">
+                                <a ui-sref="settings.product.types">
+                                    <i class="icon-settings"></i> @(products:ProductTypes) </a>
                             </li>
                         </ul>
                     </div>
