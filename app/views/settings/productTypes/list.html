@@ -31,12 +31,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="line in productTypes">
+                                <tr ng-repeat="line in listObject">
                                     <td>{{line.sequence}}</td>
                                     <td>{{line.name}}</td>
                                     <td>{{line.inventory}}</td>
                                     <td>{{line.countProducts}}</td>
-                                    <td><button class="btn green fa fa-pencil" ui-sref="settings.product.types.show" ng-click="find()" title="Editer"></button>
+                                    <td>
+                                        <a class="btn green fa fa-pencil" ui-sref="settings.product.types.show({id:line._id})" title="Editer"></a>
                                         <button ng-if="line.inventory == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
                                     </td>
                                 </tr>
