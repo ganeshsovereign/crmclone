@@ -2827,62 +2827,11 @@ ProductTypes.prototype = {
 
         _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
 
-        ProductTypesModel.aggregate([{
-            $match: { _id: MODULE('utils').ObjectId(_id) }
-        }, {
-            $unwind: {
-                path: '$options',
-                preserveNullAndEmptyArrays: true
-            }
-        }, {
-            $lookup: {
-                from: 'ProductAttributes',
-                localField: 'options',
-                foreignField: '_id',
-                as: 'options'
-            }
-        }, {
-            $unwind: {
-                path: '$options',
-                preserveNullAndEmptyArrays: true
-            }
-        }, {
-            $lookup: {
-                from: 'ProductAttributesValues',
-                localField: 'options._id',
-                foreignField: 'optionId',
-                as: 'optionsValue'
-            }
-        }, {
-            $project: {
-                name: '$name',
-                inventory: "$inventory",
-                opts: {
-                    name: '$options.name',
-                    _id: '$options._id',
-                    values: '$optionsValue'
-                }
-            }
-        }, {
-            $group: {
-                _id: '$_id',
-                opts: { $push: '$opts' },
-                name: { $first: '$name' },
-                inventory: { $first: "$inventory" }
-            }
-        }], function(err, result) {
+        ProductTypesModel.findOne({ _id: _id }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
-            if (result.length) {
-                model = result[0];
-                model.opts = _.filter(model.opts, function(elem) {
-                    return elem._id != null;
-                });
-            } else
-                model = {};
-
-            self.json(model);
+            self.json(result);
         });
     },
     getAllProductTypes: function() {
@@ -3015,9 +2964,8 @@ ProductTypes.prototype = {
         var model;
         var err;
 
-        if (!body.name) {
+        if (!body.lang[0].name) {
             err = new Error('Please provide Product Type name');
-            err.status = 404;
             self.throw404(err);
         }
 
@@ -3026,89 +2974,33 @@ ProductTypes.prototype = {
             if (err)
                 return self.throw500(err);
 
-            self.getProductTypeById(result._id.toString());
+            self.json(result);
         });
     },
     updateProductType: function(id) {
         var self = this;
         var ProductTypesModel = MODEL('productTypes').Schema;
         var body = self.body;
-        var _id = id;
         var currentOptions;
 
-        if (!body.options)
-            return ProductTypesModel.findByIdAndUpdate(_id, body, { new: true }, function(err) {
-                if (err)
-                    return self.throw500(err);
-
-                self.getProductTypeById(_id.toString());
-            });
-
-        function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductTypesModel, callback) {
-            var deletedOptions;
-            var addedOptions;
-            var addingOption;
-            var deletingOptions;
-
-            currentOpts = currentOpts.toStringObjectIds();
-
-            deletedOptions = _.difference(currentOpts, newOpts);
-            addedOptions = _.difference(newOpts, currentOpts);
-
-            addingOption = function(pCb) {
-                if (!addedOptions.length)
-                    return pCb();
-
-                addedOptions = addedOptions.objectID();
-
-                ProductTypesModel.findByIdAndUpdate(modelId, { $pushAll: { options: addedOptions } }, { new: true }, function(err, result) {
-                    if (err)
-                        return pCb(err);
-
-                    pCb();
-                });
-            };
-
-            deletingOptions = function(pCb) {
-                if (!deletedOptions.length)
-                    return pCb();
-
-                deletedOptions = deletedOptions.objectID();
-
-                ProductTypesModel.findByIdAndUpdate(modelId, { $pullAll: { options: deletedOptions } }, { new: true }, function(err, result) {
-                    if (err)
-                        return pCb(err);
-
-                    pCb();
-                });
-            };
-
-            async.parallel([
-                addingOption,
-                deletingOptions
-            ], function(err) {
-                if (err)
-                    return callback(err);
-
-                callback();
-            });
-        }
-
-        ProductTypesModel.findOne({ _id: _id }, function(err, result) {
+        ProductTypesModel.findByIdAndUpdate(id, body, { new: true }, function(err, doc) {
             if (err)
                 return self.throw500(err);
 
-            currentOptions = result.options;
-
-            updateOptionsForProdTypes(_id, currentOptions, body.options, ProductTypesModel, function(err) {
-                if (err)
-                    return self.throw500(err);
-
-                self.getProductTypeById(_id.toString());
-            });
+            self.json(doc);
         });
     },
-    deleteProductType: function(id) {}
+    deleteProductType: function(id) {
+        var self = this;
+
+        var ProductTypesModel = MODEL('productTypes').Schema;
+        ProductTypesModel.findByIdAndUpdate(id, { isActive: false }, { new: true }, function(err, doc) {
+            if (err)
+                return self.throw500(err);
+
+            self.json(doc);
+        });
+    }
 };
 
 function ProductFamily() {}

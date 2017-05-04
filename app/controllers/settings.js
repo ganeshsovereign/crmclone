@@ -52,7 +52,23 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
 
 }]);
 
-angular.module("MetronicApp").controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
+angular.module("MetronicApp").controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
+    var current = $rootScope.$state.current.name.split('.');
+    $scope.backTo = 'settings.product.types';
+    //console.log(current);
+
+    $scope.object = {};
+    $scope.listObject = [];
+
+    switch (current[2]) {
+        case 'types':
+            var Resource = Settings.productTypes;
+            break;
+        case 'family':
+            var Resource = Settings.family;
+            break;
+    }
+
 
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
@@ -61,41 +77,47 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         $rootScope.settings.layout.pageBodySolid = true;
         $rootScope.settings.layout.pageSidebarClosed = false;
 
-        $scope.backTo = 'settings.product.types';
+        if (current[current.length - 1] == 'show')
+            $scope.findOne();
 
-        $http({
-            method: 'GET',
-            url: '/erp/api/product/productTypes'
-        }).success(function(data, status) {
-            //console.log(data);
-            $scope.productTypes = data.data;
-        });
+        $scope.find();
     });
 
-    $scope.create = function() {
-        var productType = new productTypes(this.productType);
-        productType.$save(function(response) {
-            $rootScope.$state.go("settings.product.types.show", { id: response._id });
+    $scope.findOne = function() {
+        Resource.get({
+            Id: $rootScope.$stateParams.id
+        }, function(object) {
+            $scope.object = object;
+            //console.log(object);
         });
     };
 
+    $scope.find = function() {
+        Resource.query({}, function(data) {
+            //console.log(data);
+            $scope.listObject = data.data;
+        });
+    };
 
-    $scope.remove = function(productType) {
-        if (!productType && grid) {
-            return $http({
-                method: 'DELETE',
-                url: '/erp/api/product/productTypes',
-                params: {
-                    id: grid.getSelectedRows()
-                }
-            }).success(function(data, status) {
-                if (status === 200)
-                    $scope.find();
-            });
-        }
+    $scope.create = function() {
+        var object = new Resource(this.object);
+        object.$save(function(response) {
+            $rootScope.$state.go(current.join('.'), { id: response._id });
+        });
+    };
 
-        productType.$remove(function() {
-            $rootScope.$state.go("settings.product.types");
+    $scope.update = function() {
+        $scope.object.$update(function(response) {
+            $scope.object = response;
+            current.pop();
+            $rootScope.$state.go(current.join('.'));
+        });
+    };
+
+    $scope.remove = function(line) {
+        var object = new Resource(line);
+        object.$remove(function() {
+            $scope.find();
         });
     };
 
