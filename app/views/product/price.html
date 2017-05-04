@@ -136,11 +136,11 @@
                                                     <label for="price_list">Grille de tarifs</label>
                                                     <select class="table-group-action-input form-control" ng-model="price.priceLists" ng-options="p._id as p.name for p in pricesLists"></select>
                                                 </p>
-                                                <p ng-hide="product.sellFamily.coef" class="button-height inline-medium-label">
+                                                <p ng-hide="product.sellFamily.isCoef" class="button-height inline-medium-label">
                                                     <label for="price">Tarif HT</label>
                                                     <input type="number" min="0" step="any" id="price" data-ng-model="price.prices[0].price" class="input">
                                                 </p>
-                                                <p ng-show="product.sellFamily.coef" class="button-height inline-medium-label">
+                                                <p ng-show="product.sellFamily.isCoef" class="button-height inline-medium-label">
                                                     <label for="coef">Coeff.</label>
                                                     <input type="number" min="0" step="any" id="coef" data-ng-model="price.prices[0].coef" class="input">
                                                 </p>
@@ -176,7 +176,7 @@
                                                                 <input type="checkbox" class="group-checkable" />
                                                             </th>
                                                             <th>@(Liste de prix)</th>
-                                                            <th ng-if="product.sellFamily.coef">@(Coef.)</th>
+                                                            <th ng-if="product.sellFamily.isCoef">@(Coef.)</th>
                                                             <!--<th>@(products:Promo)</th>-->
                                                             <th>@(products:SellingPriceHT)</th>
                                                             <th>@(products:SellingPriceTTC)</th>
@@ -188,7 +188,7 @@
                                                         <tr ng-repeat="line in prices">
                                                             <td><input type="checkbox" ng-model="grid[line._id]" /></td>
                                                             <td>{{line.priceLists.name}}</td>
-                                                            <td ng-if="product.sellFamily.coef">
+                                                            <td ng-if="product.sellFamily.isCoef">
                                                                 <table class="table-condensed">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
@@ -232,7 +232,7 @@
                                                                     </tbody>
                                                                 </table>
 
-                                                                <a ng-if="!product.sellFamily.coef" ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>
+                                                                <a ng-if="!product.sellFamily.isCoef" ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>
 
                                                                 <form ng-show="addNewRange" class="form-horizontal">
                                                                     <div class="form-body">
@@ -441,7 +441,7 @@
                                                                     </tbody>
                                                                 </table>
 
-                                                                <!--<a ng-if="!product.sellFamily.coef" ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>-->
+                                                                <!--<a ng-if="!product.sellFamily.isCoef" ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>-->
 
                                                                 <form ng-show="addNewRange" class="form-horizontal">
                                                                     <div class="form-body">
