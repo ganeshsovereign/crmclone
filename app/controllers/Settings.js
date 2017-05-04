@@ -80,8 +80,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     };
 
 
-
-
     $scope.remove = function(productType) {
         if (!productType && grid) {
             return $http({
@@ -96,7 +94,7 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             });
         }
 
-        employees.$remove(function() {
+        productType.$remove(function() {
             $rootScope.$state.go("settings.product.types");
         });
     };
