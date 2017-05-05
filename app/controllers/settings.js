@@ -57,6 +57,48 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     $scope.backTo = 'settings.product.types';
     //console.log(current);
 
+    if (current.length <= 2)
+        return $rootScope.$state.go('settings.product.attributes');
+
+    $scope.dict = {
+        attributesMode: [{
+            id: 'text',
+            name: 'Champs texte',
+            isActive: true
+        }, {
+            id: 'number',
+            name: 'Nombre',
+            isActive: true
+        }, {
+            id: 'metric',
+            name: 'Valeur metrique',
+            isActive: true
+        }, {
+            id: 'textarea',
+            name: 'Texte long',
+            isActive: true
+        }, {
+            id: 'boolean',
+            name: 'Oui/Non',
+            isActive: false
+        }, {
+            id: 'select',
+            name: 'Valeurs pré-définies',
+            isActive: true
+        }, {
+            id: 'date',
+            name: 'Date',
+            isActive: false
+        }, {
+            id: 'file',
+            name: 'Fichier',
+            isActive: false
+        }, {
+            id: 'image',
+            name: 'Image',
+            isActive: false
+        }]
+    };
     $scope.object = {};
     $scope.listObject = [];
 
@@ -66,6 +108,9 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             break;
         case 'family':
             var Resource = Settings.productFamily;
+            break;
+        case 'attributes':
+            var Resource = Settings.productAttributes;
             break;
     }
 

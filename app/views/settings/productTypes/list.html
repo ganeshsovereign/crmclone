@@ -32,10 +32,10 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="line in listObject">
-                                    <td>{{line.sequence}}</td>
+                                    <td>{{line.code}}</td>
                                     <td>{{line.name}}</td>
                                     <td>{{line.inventory}}</td>
-                                    <td>{{line.countProducts}}</td>
+                                    <td>{{line.group}}</td>
                                     <th>{{line.createdAt | date : "shortDate"}}</th>
                                     <td>
                                         <a class="btn green fa fa-pencil" ui-sref="settings.product.types.show({id:line._id})" title="Editer"></a>

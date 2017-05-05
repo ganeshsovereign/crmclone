@@ -1,0 +1,88 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-magic-wand"></i>
+                        <span class="caption-subject dark bold uppercase"> @(products:NewAttribute)</span>
+                    </div>
+                    <div ng-include="'/templates/createMenu.html'" class="actions btn-set"></div>
+                </div>
+                <div class="portlet-body">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class=col-md-12>
+                                <div class=col-md-6>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="text" class="form-control" id="Name" ng-model="object.langs[0].name">
+                                        <label for="Name">@(Name)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="text" class="form-control" id="Code" ng-model="object.code">
+                                        <label for="Code">@(Code)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <select class="table-group-action-input form-control" id="mode" ng-model="object.mode" ng-options="s.id as s.name for s in dict.attributesMode | filter : {isActive:true}"></select>
+                                        <label for="mode">@(Mode)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="number" class="form-control" id="Sequence" ng-model="object.sequence" min="0" step="1">
+                                        <label for="Sequence">@(Sequence)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input" ng-show="object.mode == 'metric'">
+                                        <select class="table-group-action-input form-control" ng-model="object.metricUnit" ng-options="s.id as s.label for s in dict.fk_units.values"></select>
+                                        <label for="MetricUnit">@(products:Unit)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input" ng-show="object.mode == 'text' || object.mode == 'textarea'">
+                                        <input type="number" class="form-control" id="maxCharacters" ng-model="object.maxCharacters" min="0" step="1">
+                                        <label for="maxCharacters">@(products:MaxCharacters)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input" ng-show="object.mode == 'text' || object.mode == 'textarea'">
+                                        <input type="number" class="form-control" id="minCharacters" ng-model="object.minCharacters" min="0" step="1">
+                                        <label for="minCharacters">@(products:MinCharacters)</label>
+                                    </div>
+
+                                </div>
+                                <div class=col-md-6>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="number" class="form-control" id="maxDate" ng-model="object.maxDate">
+                                        <label for="maxDate">@(products:MaxDate)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="number" class="form-control" id="minDate" ng-model="object.minDate">
+                                        <label for="minDate">@(products:MinDate)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="number" class="form-control" id="maxNumber" ng-model="object.maxNumber">
+                                        <label for="maxNumber">@(products:MaxNumber)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="number" class="form-control" id="minNumber" ng-model="object.minNumber">
+                                        <label for="minNumber">@(products:MinNumber)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="number" class="form-control" id="Step" ng-model="object.step" min="0" step="0.0001">
+                                        <label for="Step">@(Step)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

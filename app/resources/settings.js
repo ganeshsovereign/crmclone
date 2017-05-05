@@ -11,10 +11,11 @@ MetronicApp.factory("Settings", ['$resource', function($resource) {
         productFamily: $resource('/erp/api/product/family/:Id', { Id: '@_id' }, {
             update: { method: 'PUT' },
             query: { method: 'GET', isArray: false }
-        })
+        }),
         productAttributes: $resource('/erp/api/product/attributes/:Id', { Id: '@_id' }, {
             update: { method: 'PUT' },
             query: { method: 'GET', isArray: false }
         })
+
     };
 }]);
