@@ -12,9 +12,8 @@ var productFamiliesSchema = new Schema({
         name: String
     }],
 
-    entity: [String],
+    entity: [String], // NOT Used
     isCoef: { type: Boolean, default: false }, //Price was calculated from a coefficient
-    coef: { type: Number, min: 0, default: 1 },
     createdAt: { type: Date, default: Date.now },
     isActive: { type: Boolean, default: true },
     isCost: { type: Boolean, default: false },

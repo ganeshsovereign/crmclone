@@ -7,7 +7,7 @@
                         <i class="icon-magic-wand"></i>
                         <span class="caption-subject dark bold uppercase"> @(products:NewProductType)</span>
                     </div>
-                    <div ng-include="'/templates/createMenu.html'" class="actions btn-set"></div>
+                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
@@ -15,7 +15,7 @@
                             <div class=" col-md-12">
 
                                 <div class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="object.code">
+                                    <input type="number" min="1" class="form-control" id="form_control_1" ng-model="object.sequence">
                                     <label for="form_control_1">@(Code)</label>
                                 </div>
 

@@ -1643,8 +1643,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/settings/product.html",
             data: {
                 pageTitle: 'Configuration des produits'
-            },
-            controller: "SettingProductController"
+            }
         })
         // warehouse
         .state('settings.product.warehouse', {

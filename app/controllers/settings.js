@@ -60,6 +60,8 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     if (current.length <= 2)
         return $rootScope.$state.go('settings.product.attributes');
 
+    $scope.createMod = true;
+
     $scope.dict = {
         attributesMode: [{
             id: 'text',
@@ -99,7 +101,9 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             isActive: false
         }]
     };
-    $scope.object = {};
+    $scope.object = {
+        langs: []
+    };
     $scope.listObject = [];
 
     switch (current[2]) {
@@ -108,6 +112,9 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             break;
         case 'family':
             var Resource = Settings.productFamily;
+            Settings.productAttributes.query({}, function(res) {
+                $scope.attributes = res.data;
+            });
             break;
         case 'attributes':
             var Resource = Settings.productAttributes;
@@ -129,17 +136,30 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     });
 
     $scope.findOne = function() {
+        if (!$rootScope.$stateParams.id)
+            return;
+
         Resource.get({
             Id: $rootScope.$stateParams.id
         }, function(object) {
             $scope.object = object;
             console.log(object);
+            $scope.createMod = false;
+
+            if (object.opts) {
+                object.options = [];
+                angular.forEach(object.opts, function(element) {
+                    object.options.push(element._id);
+                });
+            }
+
         });
     };
 
     $scope.find = function() {
+        $scope.createMod = true;
         Resource.query({}, function(data) {
-            //console.log(data);
+            console.log(data);
             $scope.listObject = data.data;
         });
     };
@@ -147,13 +167,17 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     $scope.create = function() {
         var object = new Resource(this.object);
         object.$save(function(response) {
-            $rootScope.$state.go(current.join('.'), { id: response._id });
+            current.pop();
+            $rootScope.$state.go(current.join('.'));
         });
     };
 
-    $scope.update = function() {
+    $scope.update = function(stay) {
         $scope.object.$update(function(response) {
             $scope.object = response;
+            if (stay)
+                return $scope.findOne();
+
             current.pop();
             $rootScope.$state.go(current.join('.'));
         });
@@ -165,7 +189,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             $scope.find();
         });
     };
-
 
 
 }]);

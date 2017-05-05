@@ -32,14 +32,14 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="line in listObject">
-                                    <td>{{line.code}}</td>
+                                    <td>{{line.sequence}}</td>
                                     <td>{{line.name}}</td>
                                     <td>{{line.inventory}}</td>
-                                    <td>{{line.group}}</td>
+                                    <td>{{line.countProducts}}</td>
                                     <th>{{line.createdAt | date : "shortDate"}}</th>
                                     <td>
                                         <a class="btn green fa fa-pencil" ui-sref="settings.product.types.show({id:line._id})" title="Editer"></a>
-                                        <button ng-if="line.inventory == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
+                                        <button ng-if="line.countProducts == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
                                     </td>
                                 </tr>
                             </tbody>

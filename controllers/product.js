@@ -655,6 +655,8 @@ exports.install = function() {
     }, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/family', productFamily.getAllProductFamily, ['authorize']);
     F.route('/erp/api/product/family/{id}', productFamily.getProductFamilyById, ['authorize']);
+    F.route('/erp/api/product/family/', productFamily.createProductFamily, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/family/{id}', productFamily.updateProductFamily, ['put', 'json', 'authorize'], 512);
 
     var productAttributes = new ProductAttributes();
     // Autocomplete on attributes
@@ -2967,7 +2969,7 @@ ProductTypes.prototype = {
         var model;
         var err;
 
-        if (!body.lang[0].name) {
+        if (!body.langs[0].name) {
             err = new Error('Please provide Product Type name');
             self.throw404(err);
         }
@@ -3045,10 +3047,15 @@ ProductFamily.prototype = {
             }
         }, {
             $project: {
-                name: '$name',
+                langs: '$langs',
+                sequence: 1,
+                isCoef: 1,
+                isActive: 1,
+                isCost: 1,
                 opts: {
-                    name: '$options.name',
+                    langs: '$options.langs',
                     _id: '$options._id',
+                    mode: '$options.mode',
                     values: '$optionsValue'
                 }
             }
@@ -3056,7 +3063,11 @@ ProductFamily.prototype = {
             $group: {
                 _id: '$_id',
                 opts: { $push: '$opts' },
-                name: { $first: '$name' }
+                langs: { $first: '$langs' },
+                sequence: { $first: '$sequence' },
+                isCoef: { $first: '$isCoef' },
+                isCost: { $first: '$isCost' },
+                isActive: { $first: '$isActive' }
             }
         }], function(err, result) {
             if (err)
@@ -3225,16 +3236,30 @@ ProductFamily.prototype = {
     updateProductFamily: function(id) {
         var self = this;
         var ProductFamilyModel = MODEL('productFamily').Schema;
+        var ProductModel = MODEL('product').Schema;
         var body = self.body;
         var _id = id;
         var currentOptions;
 
         if (!body.options)
-            return ProductFamilyModel.findByIdAndUpdate(_id, body, { new: true }, function(err) {
-                if (err)
-                    return self.throw500(err);
+            return ProductFamilyModel.findByIdAndUpdate(_id, body, { new: true }, function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+                }
 
-                self.getProductFamilyById(_id.toString());
+                //console.log(doc);
+                doc = doc.toObject();
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Configuration enregistree"
+                };
+                self.json(doc);
             });
 
         function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, callback) {
@@ -3254,7 +3279,7 @@ ProductFamily.prototype = {
 
                 addedOptions = addedOptions.objectID();
 
-                ProductFamilyModel.findByIdAndUpdate(modelId, { $pushAll: { options: addedOptions } }, { new: true }, function(err, result) {
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { options: { $each: addedOptions } } }, { new: true }, function(err, result) {
                     if (err)
                         return pCb(err);
 
@@ -3266,7 +3291,26 @@ ProductFamily.prototype = {
                 if (!deletedOptions.length)
                     return pCb();
 
+                let deleteOptions = deletedOptions;
                 deletedOptions = deletedOptions.objectID();
+                ProductModel.find({ sellFamily: modelId, 'attributes.attribute': { $in: deletedOptions } }, function(err, docs) {
+                    if (!docs.length)
+                        return;
+
+                    docs.forEach(function(elem) {
+                        elem.attributes = _.filter(elem.attributes, function(elem) {
+                            if (deleteOptions.indexOf(elem.attribute.toString()) >= 0)
+                                return false;
+
+                            return true;
+                        });
+
+                        elem.save(function(err, result) {
+                            if (err)
+                                console.log(err);
+                        });
+                    });
+                });
 
                 ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { options: deletedOptions } }, { new: true }, function(err, result) {
                     if (err)
@@ -3294,10 +3338,24 @@ ProductFamily.prototype = {
             currentOptions = result.options;
 
             updateOptionsForProdTypes(_id, currentOptions, body.options, ProductFamilyModel, function(err) {
-                if (err)
-                    return self.throw500(err);
+                if (err) {
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+                }
 
-                self.getProductFamilyById(_id.toString());
+                //console.log(doc);
+                //doc = doc.toObject();
+                var doc = {};
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Configuration enregistree"
+                };
+                self.json(doc);
             });
         });
     },
