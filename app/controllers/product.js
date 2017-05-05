@@ -53,7 +53,9 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     $scope.caFamilies = [];
     $scope.family = null;
     $scope.dict = {};
-    $scope.newSupplierPrice = {};
+    $scope.newSupplierPrice = {
+        taxes : []
+    };
     $scope.productTypes = [];
     $scope.attributeMap = {};
 
@@ -480,8 +482,11 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
     $scope.addSupplier = function() {
         if ($scope.newSupplierPrice && $scope.newSupplierPrice.societe.id) {
+            $scope.newSupplierPrice.societe = $scope.newSupplierPrice.societe.id;
             $scope.product.suppliers.push($scope.newSupplierPrice);
-            $scope.newSupplierPrice = {};
+            $scope.newSupplierPrice = {
+                taxes : []
+            };
             $scope.update();
         }
     };

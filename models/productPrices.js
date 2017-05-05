@@ -37,7 +37,7 @@ productPricesSchema.pre('save', function(next) {
     var self = this;
     var ProductModel = MODEL('product').Schema;
 
-    ProductModel.findOne({ _id: this.product }, "info directCost prices pack createdAt sellFamily")
+    ProductModel.findOne({ _id: this.product }, "info directCost indirectCost prices pack createdAt sellFamily")
         .populate("sellFamily")
         .exec(function(err, product) {
             if (err)
@@ -58,7 +58,8 @@ productPricesSchema.pre('save', function(next) {
             if (coef && self.priceLists.cost != true) {
                 //Recalcul product prices
                 self.prices = _.each(self.prices, function(price) {
-                    price.price = product.directCost * price.coef;
+                    price.coefTotal = product.sellFamily.coef * price.coef;
+                    price.price = product.totalCost * price.coefTotal;
                 });
             }
 
@@ -120,7 +121,5 @@ F.on('load', function() {
                     });
                 break;
         }
-
-
     });
 });

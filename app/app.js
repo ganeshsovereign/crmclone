@@ -318,7 +318,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
                     }]
                 }
             }).then(function(res) {
-                //console.log(res.data);
+                console.log(res.data);
                 return res.data;
             });
         };

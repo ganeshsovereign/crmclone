@@ -88,56 +88,68 @@ exports.install = function() {
         }
 
         var query = {
-            "$or": [{
-                name: new RegExp(filter, "gi")
-            }, {
-                ref: new RegExp(self.body.filter.filters[0].value, "i")
-            }, {
-                code_client: new RegExp(self.body.filter.filters[0].value, "i")
-            }],
-            entity: {
-                $in: [self.body.entity || self.user.entity, "ALL"]
-            }
+            'salesPurchases.isActive': true,
+            'isremoved': { $ne: true },
+            $and: [{
+                "$or": [{
+                    'name.last': new RegExp(filter, "gi")
+                }, {
+                    'name.first': new RegExp(filter, "gi")
+                }, {
+                    'salesPurchases.ref': new RegExp(self.body.filter.filters[0].value, "i")
+                }]
+            }]
         };
+
+        if (self.body.entity)
+            query.entity = self.body.entity;
 
         if (!self.query.all)
             if (self.query.fournisseur || self.body.fournisseur) {
                 if (self.query.fournisseur) {
                     if (typeof self.query.fournisseur == 'object')
-                        query.fournisseur = {
-                            $in: self.query.fournisseur
-                        };
+                        query.$and.push({ $or: [{ 'salesPurchases.isSupplier': true }, { 'salesPurchases.isSubcontractor': true }] });
+                    else if (self.query.fournisseur == 'SUPPLIER')
+                        query['salesPurchases.isSupplier'] = true;
                     else
-                        query.fournisseur = self.query.fournisseur;
+                        query['salesPurchases.isSubcontractor'] = true;
                 } else {
                     if (typeof self.body.fournisseur == 'object')
-                        query.fournisseur = {
-                            $in: self.body.fournisseur
-                        };
+                        query.$and.push({ $or: [{ 'salesPurchases.isSupplier': true }, { 'salesPurchases.isSubcontractor': true }] });
+                    else if (self.body.fournisseur == 'SUPPLIER')
+                        query['salesPurchases.isSupplier'] = true;
                     else
-                        query.fournisseur = self.body.fournisseur;
+                        query['salesPurchases.isSubcontractor'] = true;
                 }
             } else // customer Only
-                query.Status = {
-                "$nin": ["ST_NO", "ST_NEVER"]
-            };
+                query.$and.push({ $or: [{ 'salesPurchases.isProspect': true }, { 'salesPurchases.isCustomer': true }] });
 
-            //console.log(query);
-        SocieteModel.find(query, {}, {
+            //"$nin": ["ST_NO", "ST_NEVER"]
+            //};
+
+        console.log(query);
+        SocieteModel.find(query, {
+                name: 1,
+                salesPurchases: 1,
+                address: 1,
+                shippingAddress: 1,
+                deliveryAddressId: 1
+            }, {
                 limit: 50 /*self.body.take*/ ,
                 sort: {
-                    name: 1
+                    'name.last': 1
                 }
             })
-            .populate("cptBilling.id", "name address zip town")
+            .populate("salesPurchases.cptBilling", "name address")
             .exec(function(err, docs) {
                 if (err)
                     return console.log("err : /erp/api/societe/autocomplete", err);
 
+                self.json(docs || []);
 
-                //console.log(docs);
+                console.log(docs);
 
-                var result = [];
+                /*var result = [];
 
                 if (docs !== null)
                     for (var i = 0, len = docs.length; i < len; i++) {
@@ -181,7 +193,7 @@ exports.install = function() {
                         result[i].commercial_id = docs[i].commercial_id;
                     }
 
-                return self.json(result);
+                return self.json(result);*/
             });
     }, ['post', 'json', 'authorize']);
 

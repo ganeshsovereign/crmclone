@@ -815,6 +815,7 @@ function Product(id, cb) {
             path: 'costFamily'
         })
         .populate({ path: 'taxes.taxeId' })
+        .populate("suppliers.taxes.taxeId")
         /*.populate({
             path: 'attributes.attribute',
             populate: { path: "group" }

@@ -330,7 +330,11 @@ var customerSchema = new Schema({
 
     oldId: String // only use for migration
 
-}, { collection: 'Customers' });
+}, { 
+    collection: 'Customers',
+     toObject: { virtuals: true },
+    toJSON: { virtuals: true }
+ });
 
 customerSchema.virtual('fullName').get(function() {
     if (this.name.first)
@@ -338,8 +342,6 @@ customerSchema.virtual('fullName').get(function() {
 
     return this.name.last;
 });
-
-customerSchema.set('toJSON', { virtuals: true });
 
 customerSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;

@@ -177,6 +177,7 @@
                                                             </th>
                                                             <th>@(Liste de prix)</th>
                                                             <th ng-if="product.sellFamily.isCoef">@(Coef.)</th>
+                                                            <th ng-if="product.sellFamily.isCoef">@(Coef. * Family)</th>
                                                             <!--<th>@(products:Promo)</th>-->
                                                             <th>@(products:SellingPriceHT)</th>
                                                             <th>@(products:SellingPriceTTC)</th>
@@ -193,7 +194,7 @@
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
                                                                             <td class="text-info">{{price.count}}</td>
-                                                                            <td><a href="#" editable-number="price.coef" e-step="0.001" e-min="0" onaftersave="update(line)">{{price.coef || 0 | number:2}}</a></td>
+                                                                            <td><a href="#" editable-number="price.coef" e-step="0.001" e-min="0" onaftersave="update(line)">{{price.coef || 0 | number:3}}</a></td>
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>
@@ -220,6 +221,17 @@
                                                                         <button type="button" ng-click="update(line, price)" class="btn blue btn-sm">@(Add)</button>
                                                                     </div>
                                                                 </form>
+                                                            </td>
+                                                            <td ng-if="product.sellFamily.isCoef">
+                                                                <table class="table-condensed">
+                                                                    <tbody>
+                                                                        <tr ng-repeat="price in line.prices">
+                                                                            <td class="text-info">{{price.count}}</td>
+                                                                            <td>{{price.coefTotal || 0 | number:3}}</a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
                                                             </td>
                                                             <td>
                                                                 <table class="table-condensed">
@@ -529,7 +541,7 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>
-                                                            <input class="form-control" ng-model="newSupplierPrice.societe" typeahead="s as s.name for s in AutoComplete($viewValue,'/erp/api/societe/autocomplete?fournisseur=SUPPLIER&fournisseur=SUBCONTRACTOR')" placeholder="@(companies:CompanyName)" />
+                                                            <input class="form-control" ng-model="newSupplierPrice.societe" typeahead="s as s.fullName for s in AutoComplete($viewValue,'/erp/api/societe/autocomplete?fournisseur=SUPPLIER&fournisseur=SUBCONTRACTOR')" placeholder="@(companies:CompanyName)" />
                                                         </td>
                                                         <td>
                                                             <input class="form-control" type="text" ng-model="newSupplierPrice.ref" />
@@ -544,69 +556,49 @@
                                                             <input class="form-control" ng-model="newSupplierPrice.packing" type="text">
                                                         </td>
                                                         <td>
-                                                            <select class="table-group-action-input form-control" required ng-model="product.taxes[0]" ng-options="s._id as s.name for s in taxes"></select>
+                                                            <select class="table-group-action-input form-control" required ng-model="newSupplierPrice.taxes[0].taxeId" ng-options="s._id as s.name for s in taxes | filter : {isFixValue:false}"></select>
                                                         </td>
                                                         <td>
                                                             <input class="form-control" type="number" step="0.001" min="0" ng-model="newSupplierPrice.prices.pu_ht" />
                                                         </td>
                                                         <td>
-                                                            <button class="btn blue" ng-click="addSupplier()">
-                                        <i class="fa fa-plus"></i> @(Add) </button>
+                                                            <button class="btn blue" ng-click="addSupplier()"><i class="fa fa-plus"></i> @(Add) </button>
                                                         </td>
                                                     </tr>
                                                     <tr ng-repeat="supplier in product.suppliers">
                                                         <td>
-                                                            <a class="with-tooltip" ng-href="#!/societe/{{supplier.societe.id}}" data-tooltip-options='{"position":"top"}' title="{{supplier.societe.name}}"><span class="icon-home"></span> {{supplier.societe.name}}</a>
+                                                            <a class="with-tooltip" ng-href="#!/societe/{{supplier.societe.id}}" data-tooltip-options='{"position":"top"}' title="{{supplier.societe.fullName}}"><span class="icon-home"></span> {{supplier.societe.fullName}}</a>
                                                         </td>
                                                         <td>
-                                                            <span editable-text="supplier.ref" onaftersave="update()">
-                                        {{supplier.ref|| 'empty'}}
-                                    </span>
+                                                            <span editable-text="supplier.ref" onaftersave="update()">{{supplier.ref|| 'empty'}}</span>
+                                                        </td>
+                                                        <td><span editable-number="supplier.minQty" e-min="0" onaftersave="update()">{{supplier.minQty|| 0}}</span>
                                                         </td>
                                                         <td>
-                                                            <span editable-number="supplier.minQty" e-min="0" onaftersave="update()">
-                                        {{supplier.minQty|| 0}}
-                                    </span>
+                                                            <span editable-number="supplier.replenishmentTime" e-min="0" onaftersave="update()">{{supplier.replenishmentTime|| 0}}</span>
                                                         </td>
                                                         <td>
-                                                            <span editable-number="supplier.replenishmentTime" e-min="0" onaftersave="update()">
-                                        {{supplier.replenishmentTime|| 0}}
-                                    </span>
+                                                            <span editable-text="supplier.packing" onaftersave="update()">{{supplier.packing|| 0}}</span>
                                                         </td>
                                                         <td>
-                                                            <span editable-text="supplier.packing" onaftersave="update()">
-                                        {{supplier.packing|| 0}}
-                                    </span>
+                                                            <span editable-select="supplier.taxes[0].taxeId._id" e-ng-options="s._id as s.name for s in taxes | filter : {isFixValue:false}" onaftersave="update()">{{ supplier.taxes[0].taxeId.rate|percent:2}}</span>
                                                         </td>
                                                         <td>
-                                                            <span editable-select="supplier.tva_tx" e-ng-options="c.value as c.value for c in dict.fk_tva.values" onaftersave="update()">
-                                        {{ supplier.tva_tx|percent:2}}
-                                    </span>
+                                                            <span editable-number="supplier.prices.pu_ht" e-min="0" e-step="0.001" onaftersave="update()">{{supplier.prices.pu_ht|| 0}}</span>
                                                         </td>
                                                         <td>
-                                                            <span editable-number="supplier.prices.pu_ht" e-min="0" e-step="0.001" onaftersave="update()">
-                                        {{supplier.prices.pu_ht|| 0}}
-                                    </span>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn red btn-icon-only" ng-click="deleteSupplier($index)">
-                                        <i class="fa fa-trash"></i></button>
+                                                            <button class="btn red btn-icon-only" ng-click="deleteSupplier($index)"><i class="fa fa-trash"></i></button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </tab>
-
-
                     </tabset>
                 </div>
-
-
             </div>
         </div>
     </div>
