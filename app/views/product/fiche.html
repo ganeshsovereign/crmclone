@@ -66,132 +66,132 @@
 <div ng-if="product.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce produit est supprime. </div>
 
 <div class="row">
-    <div class="col-md-12">
-        <!-- BEGIN PROFILE SIDEBAR -->
-        <div class="profile-sidebar">
-            <!-- PORTLET MAIN -->
-            <div class="portlet light profile-sidebar-portlet">
-                <!-- SIDEBAR USERPIC -->
-                <div class="profile">
-                    <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
+
+    <!-- BEGIN PROFILE SIDEBAR -->
+    <div class="profile-sidebar">
+        <!-- PORTLET MAIN -->
+        <div class="portlet light profile-sidebar-portlet">
+            <!-- SIDEBAR USERPIC -->
+            <div class="profile">
+                <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
+            </div>
+            <!-- END SIDEBAR USERPIC -->
+            <!-- SIDEBAR USER TITLE -->
+            <div class="profile-usertitle">
+                <div class="profile-usertitle-name" ng-class="{'font-red':!product.info.isActive}"> {{product.info.SKU}}
                 </div>
-                <!-- END SIDEBAR USERPIC -->
-                <!-- SIDEBAR USER TITLE -->
-                <div class="profile-usertitle">
-                    <div class="profile-usertitle-name" ng-class="{'font-red':!product.info.isActive}"> {{product.info.SKU}}
-                    </div>
-                    <div class="md-checkbox-inline">
-                        <div class="md-checkbox has-success">
-                            <input type="checkbox" id="isActive" class="md-check" ng-model="product.info.isActive" ng-checked="product.info.isActive">
-                            <label for="isActive">
+                <div class="md-checkbox-inline">
+                    <div class="md-checkbox has-success">
+                        <input type="checkbox" id="isActive" class="md-check" ng-model="product.info.isActive" ng-checked="product.info.isActive">
+                        <label for="isActive">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(Activated)</label>
-                        </div>
                     </div>
-                    <div class="md-checkbox-inline">
-                        <div class="md-checkbox">
-                            <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
-                            <label for="isSell">
+                </div>
+                <div class="md-checkbox-inline">
+                    <div class="md-checkbox">
+                        <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
+                        <label for="isSell">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:Status.OnSell)</label>
-                        </div>
-                        <div class="md-checkbox">
-                            <input type="checkbox" id="isBuy" class="md-check" ng-model="product.isBuy" ng-checked="product.isBuy">
-                            <label for="isBuy">
+                    </div>
+                    <div class="md-checkbox">
+                        <input type="checkbox" id="isBuy" class="md-check" ng-model="product.isBuy" ng-checked="product.isBuy">
+                        <label for="isBuy">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:Status.OnBuy)</label>
-                        </div>
                     </div>
                 </div>
-                <!-- END SIDEBAR USER TITLE -->
-                <div class="progress">
-                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                        <span class="sr-only"> 60% Complete </span>
-                    </div>
+            </div>
+            <!-- END SIDEBAR USER TITLE -->
+            <div class="progress">
+                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                    <span class="sr-only"> 60% Complete </span>
                 </div>
-                <!-- SIDEBAR BUTTONS -->
+            </div>
+            <!-- SIDEBAR BUTTONS -->
 
 
-                <!--<div class="profile-userbuttons">
+            <!--<div class="profile-userbuttons">
                     <button type="button" class="btn btn-circle green-haze btn-sm">Follow</button>
                     <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
                 </div> -->
-                <!-- END SIDEBAR BUTTONS -->
-                <!-- SIDEBAR MENU -->
-                <div class="profile-usermenu">
-                    <ul class="nav">
-                        <li ng-class="{active: $state.includes('product.show.informations')}">
-                            <a ui-sref="product.show.informations({id:product._id})">
-                                <i class="icon-info"></i> @(Marketing) / PIM </a>
-                        </li>
-                        <!--       <li ng-class="{active: $state.includes('product.show.marketing')}">
+            <!-- END SIDEBAR BUTTONS -->
+            <!-- SIDEBAR MENU -->
+            <div class="profile-usermenu">
+                <ul class="nav">
+                    <li ng-class="{active: $state.includes('product.show.informations')}">
+                        <a ui-sref="product.show.informations({id:product._id})">
+                            <i class="icon-info"></i> @(Marketing) / PIM </a>
+                    </li>
+                    <!--       <li ng-class="{active: $state.includes('product.show.marketing')}">
                             <a ui-sref="product.show.marketing({id:product._id})">
                                 <i class="icon-speech"></i> @(Marketing) </a>
                         </li>  -->
-                        <li ng-class="{active: $state.includes('product.show.price')}">
-                            <a ui-sref="product.show.price({id:product._id})">
-                                <i class="icon-basket"></i> @(Price) </a>
-                        </li>
+                    <li ng-class="{active: $state.includes('product.show.price')}">
+                        <a ui-sref="product.show.price({id:product._id})">
+                            <i class="icon-basket"></i> @(Price) </a>
+                    </li>
 
-                        <li ng-if="product.isBundle || product.info.productType.isBunble" ng-class="{active: $state.includes('product.show.bundles')}">
-                            <a ui-sref="product.show.bundles({id:product._id})" class="nav-link">
-                                <i class="icon-settings"></i> @(products:Bundle) <span ng-if='product.pack.length' class='badge badge-success'>{{product.pack.length}}</span> </a>
-                        </li>
-                        <li ng-class="{active: $state.includes('product.show.attributes')}">
-                            <a ui-sref="product.show.attributes({id:product._id})">
-                                <i class="icon-target"></i> @(products:Attributes) </a>
-                        </li>
-                        <!--<li ng-class="{active: $state.includes('product.show.stock')}">
+                    <li ng-if="product.isBundle || product.info.productType.isBunble" ng-class="{active: $state.includes('product.show.bundles')}">
+                        <a ui-sref="product.show.bundles({id:product._id})" class="nav-link">
+                            <i class="icon-settings"></i> @(products:Bundle) <span ng-if='product.pack.length' class='badge badge-success'>{{product.pack.length}}</span> </a>
+                    </li>
+                    <li ng-class="{active: $state.includes('product.show.attributes')}">
+                        <a ui-sref="product.show.attributes({id:product._id})">
+                            <i class="icon-target"></i> @(products:Attributes) </a>
+                    </li>
+                    <!--<li ng-class="{active: $state.includes('product.show.stock')}">
                             <a ui-sref="product.show.stock({id:product._id})">
                                 <i class="icon-social-dropbox"></i> @(stocks:Stocks) </a>
                         </li>-->
-                        <li ng-class="{active: $state.includes('product.show.files')}">
-                            <a ui-sref="product.show.files({id:product._id})">
-                                <i class="icon-picture"></i> @(products:Images/documents) </a>
-                        </li>
-                        <li ng-class="{active: $state.includes('product.show.ecommerce')}">
-                            <a ui-sref="product.show.ecommerce({id:product._id})">
-                                <i class="icon-globe"></i> @(Ecommerce) </a>
-                        </li>
-                        <li ng-class="{active: $state.includes('product.show.categories')}">
-                            <a ui-sref="product.show.categories({id:product._id})">
-                                <i class="icon-share"></i> @(Categories) <span ng-if="product.info.categories.length" class="badge badge-success">{{product.info.categories.length}}</span></a>
-                        </li>
+                    <li ng-class="{active: $state.includes('product.show.files')}">
+                        <a ui-sref="product.show.files({id:product._id})">
+                            <i class="icon-picture"></i> @(products:Images/documents) </a>
+                    </li>
+                    <li ng-class="{active: $state.includes('product.show.ecommerce')}">
+                        <a ui-sref="product.show.ecommerce({id:product._id})">
+                            <i class="icon-globe"></i> @(Ecommerce) </a>
+                    </li>
+                    <li ng-class="{active: $state.includes('product.show.categories')}">
+                        <a ui-sref="product.show.categories({id:product._id})">
+                            <i class="icon-share"></i> @(Categories) <span ng-if="product.info.categories.length" class="badge badge-success">{{product.info.categories.length}}</span></a>
+                    </li>
 
-                        <li ng-if="product.isVariant" ng-class="{active: $state.includes('product.show.declinations')}">
-                            <a ui-sref="product.show.declinations({id:product._id})">
-                                <i class="icon-docs"></i> @(Declinations) </a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- END MENU -->
+                    <li ng-if="product.isVariant" ng-class="{active: $state.includes('product.show.declinations')}">
+                        <a ui-sref="product.show.declinations({id:product._id})">
+                            <i class="icon-docs"></i> @(Declinations) </a>
+                    </li>
+                </ul>
             </div>
-            <!-- END PORTLET MAIN -->
-            <!-- PORTLET MAIN -->
-            <div class="portlet light">
-                <!-- STAT -->
-                <div class="row list-separated profile-stat">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{product.createdAt|date:'dd/MM/yyyy'}} </div>
-                        <div class="uppercase profile-stat-text"> @(DateCreation)</div>
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{product.updatedAt|date:'dd/MM/yyyy'}} </div>
-                        <div class="uppercase profile-stat-text"> @(DateModification) </div>
-                    </div>
-                </div>
-                <!-- END STAT -->
-                <div>
-                    <h4 class="profile-desc-title">{{product.info.SKU}}</h4>
-                    <span class="profile-desc-text"> {{product.info.langs[0].name}}. </span>
-                </div>
-            </div>
-            <!-- END PORTLET MAIN -->
+            <!-- END MENU -->
         </div>
-        <!-- END BEGIN PROFILE SIDEBAR -->
-        <div ui-view class="profile-content fade-in-up"></div>
+        <!-- END PORTLET MAIN -->
+        <!-- PORTLET MAIN -->
+        <div class="portlet light">
+            <!-- STAT -->
+            <div class="row list-separated profile-stat">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="uppercase profile-stat-title"> {{product.createdAt|date:'dd/MM/yyyy'}} </div>
+                    <div class="uppercase profile-stat-text"> @(DateCreation)</div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="uppercase profile-stat-title"> {{product.updatedAt|date:'dd/MM/yyyy'}} </div>
+                    <div class="uppercase profile-stat-text"> @(DateModification) </div>
+                </div>
+            </div>
+            <!-- END STAT -->
+            <div>
+                <h4 class="profile-desc-title">{{product.info.SKU}}</h4>
+                <span class="profile-desc-text"> {{product.info.langs[0].name}}. </span>
+            </div>
+        </div>
+        <!-- END PORTLET MAIN -->
     </div>
+    <!-- END BEGIN PROFILE SIDEBAR -->
+    <div ui-view class="profile-content fade-in-up"></div>
+</div>
 </div>

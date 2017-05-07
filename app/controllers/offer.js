@@ -73,6 +73,9 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             $rootScope.settings.layout.pageSidebarClosed = false;
             $rootScope.settings.layout.pageBodySolid = false;
 
+            if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "offer.show")
+                return $rootScope.$state.go('offer.show.details');
+
             var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
             $http({
                 method: 'GET',
