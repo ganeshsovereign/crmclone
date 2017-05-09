@@ -175,6 +175,7 @@ var orderSupplierSchema = new Schema({
         Status: String,
         msg: String
     }],
+    SN: { type: Schema.Types.ObjectId, default: null }, //Serial Number
     optional: {}
 }, {
     toObject: { virtuals: true },
