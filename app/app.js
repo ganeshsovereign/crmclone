@@ -24,7 +24,8 @@ var MetronicApp = angular.module("MetronicApp", [
     'notification',
     'ngHandsontable',
     'summernote',
-    'ui.tree'
+    'ui.tree',
+    'angular.filter'
 ]);
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
 MetronicApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
@@ -237,6 +238,21 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
                 }
             return total;
         };
+
+        //index(obj,'a.b.etc')
+
+        var index = function(obj, is, value) {
+            if (typeof is == 'string')
+                return index(obj, is.split('.'), value);
+            else if (is.length == 1 && value !== undefined)
+                return obj[is[0]] = value;
+            else if (is.length == 0)
+                return obj;
+            else
+                return index(obj[is[0]], is.slice(1), value);
+        };
+
+        $rootScope.index = index;
 
         function encodeUriQuery(val, pctEncodeSpaces) {
             return encodeURIComponent(val).

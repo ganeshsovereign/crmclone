@@ -1,214 +1,211 @@
-@{ng('angular','resource','touch','sanitize')}
-@{ngController('GeneralPageController')}
-@{ngService('websocketService')}
-@{ngDirective('metronic','tm-js','markdown')}
-@{ngFilter('filters')}
-@{ngLocale('fr-fr')}
+@{ng('angular','resource','touch','sanitize')} @{ngController('GeneralPageController')} @{ngService('websocketService')} @{ngDirective('metronic','tm-js','markdown')} @{ngFilter('filters')} @{ngLocale('fr-fr')}
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
 <!--[if !IE]><!-->
 <html lang="fr" ng-app="MetronicApp">
-    <!--<![endif]-->
-    <!-- BEGIN HEAD -->
-    <head>
-        <title data-ng-bind="'@{CONFIG('name')} | ' + $state.current.data.pageTitle"></title>
-        @{meta}
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-        <meta content="ERP CRM" name="description" />
-        <base href="/erp/">
-        <!-- BEGIN GLOBAL MANDATORY STYLES -->
-        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
-        <link href="/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-        <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
-        <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
-        <link href="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
-        
-        <!-- BEGIN CORE PLUGINS -->
-        <!--[if lt IE 9]>
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+
+<head>
+    <title data-ng-bind="'@{CONFIG('name')} | ' + $state.current.data.pageTitle"></title>
+    @{meta}
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta content="ERP CRM" name="description" />
+    <base href="/erp/">
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+
+    <!-- BEGIN CORE PLUGINS -->
+    <!--[if lt IE 9]>
         <script src="/assets/global/plugins/respond.min.js"></script>
         <script src="/assets/global/plugins/excanvas.min.js"></script>
         <![endif]-->
-        <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-        <!--<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>-->
-        <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-        <!--<script src="/assets/global/plugins/jstree/dist/jstree.min.js" type="text/javascript"></script>-->
-        <!-- END CORE JQUERY PLUGINS -->
-        
-        <!-- BEGIN DYMANICLY LOADED CSS FILES(all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
-        @{head}
-        <link id="ng_load_plugins_before"/>
-        <!-- END DYMANICLY LOADED CSS FILES -->
-        <!-- Includes modules -->
-        <!--<link href="/assets/global/plugins/jstree/dist/themes/default/style.min.css" rel="stylesheet" type="text/css" />-->
-        <link href="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/3.1.1/ng-tags-input.min.css" rel="stylesheet" type="text/css" />
-        <link href="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/3.1.1/ng-tags-input.bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="//cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.2.0/toaster.min.css" rel="stylesheet" type="text/css"/>
-        <!-- End includes modules -->
-        <link href="//cdnjs.cloudflare.com/ajax/libs/angular-xeditable/0.5.0/css/xeditable.min.css" rel="stylesheet" type="text/css"/>
+    <script src="/assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <!--<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>-->
+    <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+    <!--<script src="/assets/global/plugins/jstree/dist/jstree.min.js" type="text/javascript"></script>-->
+    <!-- END CORE JQUERY PLUGINS -->
 
-        <!-- END GLOBAL MANDATORY STYLES -->
-        <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css"/>
-        <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css">
-        <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-summernote/summernote.css">
-        <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css"/>
-        <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
-        <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
-        <link href="/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css" rel="stylesheet" type="text/css"/>
-        <link href="/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css" rel="stylesheet" type="text/css"/>
-        <link href="//cdnjs.cloudflare.com/ajax/libs/handsontable/0.29.0/handsontable.full.min.css" rel="stylesheet" type="text/css"/>
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" type="text/css" />
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/angular-ui-tree/2.22.1/angular-ui-tree.min.css" type="text/css"/>
+    <!-- BEGIN DYMANICLY LOADED CSS FILES(all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
+    @{head}
+    <link id="ng_load_plugins_before" />
+    <!-- END DYMANICLY LOADED CSS FILES -->
+    <!-- Includes modules -->
+    <!--<link href="/assets/global/plugins/jstree/dist/themes/default/style.min.css" rel="stylesheet" type="text/css" />-->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/3.1.1/ng-tags-input.min.css" rel="stylesheet" type="text/css" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/3.1.1/ng-tags-input.bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/1.2.0/toaster.min.css" rel="stylesheet" type="text/css" />
+    <!-- End includes modules -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/angular-xeditable/0.5.0/css/xeditable.min.css" rel="stylesheet" type="text/css" />
 
-        <!-- BEGIN THEME STYLES -->
-        <!-- DOC: To use 'rounded corners' style just load 'components-rounded.css' stylesheet instead of 'components.css' in the below style tag -->
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-markdown/css/bootstrap-markdown.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-summernote/summernote.css">
+    <link href="/assets/global/plugins/select2/select2.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css" rel="stylesheet" type="text/css" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/handsontable/0.29.0/handsontable.full.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.css" type="text/css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/angular-ui-tree/2.22.1/angular-ui-tree.min.css" type="text/css" />
 
-        <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="/assets/global/css/components-md.min.css" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="/assets/global/css/plugins-md.min.css" rel="stylesheet" type="text/css" />
-        <!-- END THEME GLOBAL STYLES -->
-        <!-- BEGIN THEME LAYOUT STYLES -->
-        <link href="/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
-        <link href="/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
-        <link href="/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
+    <!-- BEGIN THEME STYLES -->
+    <!-- DOC: To use 'rounded corners' style just load 'components-rounded.css' stylesheet instead of 'components.css' in the below style tag -->
 
-        <!--<link href="/assets/global/css/components-rounded.css" id="style_components" rel="stylesheet" type="text/css" />
+    <!-- BEGIN THEME GLOBAL STYLES -->
+    <link href="/assets/global/css/components-md.min.css" rel="stylesheet" id="style_components" type="text/css" />
+    <link href="/assets/global/css/plugins-md.min.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME GLOBAL STYLES -->
+    <!-- BEGIN THEME LAYOUT STYLES -->
+    <link href="/assets/layouts/layout/css/layout.min.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/layouts/layout/css/themes/darkblue.min.css" rel="stylesheet" type="text/css" id="style_color" />
+    <link href="/assets/layouts/layout/css/custom.min.css" rel="stylesheet" type="text/css" />
+
+    <!--<link href="/assets/global/css/components-rounded.css" id="style_components" rel="stylesheet" type="text/css" />
         <link href="/assets/global/css/plugins.css" rel="stylesheet" type="text/css" />
         <link href="/assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css" />
         <link id="style_color" href="/assets/admin/layout/css/themes/darkblue2.min.css" rel="stylesheet" type="text/css"/>
         <link href="/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css" />-->
-        <link href="/assets/admin/pages/css/profile-old.css" rel="stylesheet" type="text/css" />
-        <!-- END THEME STYLES -->
+    <link href="/assets/admin/pages/css/profile-old.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME STYLES -->
 
-        @{css('tm-js.css')}
-        @{favicon('favicon.ico')}
-    </head>
-    <!-- END HEAD -->
-    <!-- BEGIN BODY -->
-    <!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
-    <!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
-    <!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
-    <!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
-    <!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
-    <!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
-    <!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
-    <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
-    <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
-    <body ng-controller="AppController" class="page-header-fixed page-sidebar-closed-hide-logo page-on-load" ng-class="{'page-container-bg-solid': settings.layout.pageBodySolid, 'page-sidebar-closed': settings.layout.pageSidebarClosed}">
-        <!-- BEGIN PAGE SPINNER -->
-        <div ng-spinner-bar class="page-spinner-bar">
-            <div class="bounce1"></div>
-            <div class="bounce2"></div>
-            <div class="bounce3"></div>
-        </div>
-        <!-- END PAGE SPINNER -->
-        <!-- BEGIN HEADER -->
-        <div data-ng-include="'/templates/layout/header.html'" data-ng-controller="HeaderController" class="page-header navbar navbar-fixed-top"></div>
-        <!-- END HEADER -->
-        <div class="clearfix"></div>
-        <!-- BEGIN CONTAINER -->
-        <div class="page-container">
-            <!-- BEGIN SIDEBAR -->
-            <div ng-if="login.right_menu" ng-include="'/templates/layout/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper"></div>
+    @{css('tm-js.css')} @{favicon('favicon.ico')}
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<!-- DOC: Apply "page-header-fixed-mobile" and "page-footer-fixed-mobile" class to body element to force fixed header or footer in mobile devices -->
+<!-- DOC: Apply "page-sidebar-closed" class to the body and "page-sidebar-menu-closed" class to the sidebar menu element to hide the sidebar by default -->
+<!-- DOC: Apply "page-sidebar-hide" class to the body to make the sidebar completely hidden on toggle -->
+<!-- DOC: Apply "page-sidebar-closed-hide-logo" class to the body element to make the logo hidden on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-hide" class to body element to completely hide the sidebar on sidebar toggle -->
+<!-- DOC: Apply "page-sidebar-fixed" class to have fixed sidebar -->
+<!-- DOC: Apply "page-footer-fixed" class to the body element to have fixed footer -->
+<!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
+<!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 
-            <!-- END SIDEBAR -->
-            <!-- BEGIN CONTENT -->
-            <div class="page-content-wrapper">
-                <div class="page-content">
-                    <!-- BEGIN ACTUAL CONTENT -->
-                    @{body}
-                    <!-- END ACTUAL CONTENT -->
-                </div>
+<body ng-controller="AppController" class="page-header-fixed page-sidebar-closed-hide-logo page-on-load" ng-class="{'page-container-bg-solid': settings.layout.pageBodySolid, 'page-sidebar-closed': settings.layout.pageSidebarClosed}">
+    <!-- BEGIN PAGE SPINNER -->
+    <div ng-spinner-bar class="page-spinner-bar">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+    </div>
+    <!-- END PAGE SPINNER -->
+    <!-- BEGIN HEADER -->
+    <div data-ng-include="'/templates/layout/header.html'" data-ng-controller="HeaderController" class="page-header navbar navbar-fixed-top"></div>
+    <!-- END HEADER -->
+    <div class="clearfix"></div>
+    <!-- BEGIN CONTAINER -->
+    <div class="page-container">
+        <!-- BEGIN SIDEBAR -->
+        <div ng-if="login.right_menu" ng-include="'/templates/layout/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper"></div>
+
+        <!-- END SIDEBAR -->
+        <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN ACTUAL CONTENT -->
+                @{body}
+                <!-- END ACTUAL CONTENT -->
             </div>
-            <!-- END CONTENT -->
-            <!-- BEGIN QUICK SIDEBAR -->
-            <a href="javascript:;" class="page-quick-sidebar-toggler">
-                <i class="icon-login"></i>
-            </a>
-            <div data-ng-include="'/templates/layout/quick-sidebar.html'" data-ng-controller="QuickSidebarController" class="page-quick-sidebar-wrapper"></div>
-            <!-- END QUICK SIDEBAR -->
         </div>
-        <!-- END CONTAINER -->
-        <!-- BEGIN FOOTER -->
-        <div data-ng-include="'/templates/layout/footer.html'" data-ng-controller="FooterController" class="page-footer">
-        </div>
-        <!-- END FOOTER -->
-        <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+        <!-- END CONTENT -->
+        <!-- BEGIN QUICK SIDEBAR -->
+        <a href="javascript:;" class="page-quick-sidebar-toggler">
+            <i class="icon-login"></i>
+        </a>
+        <div data-ng-include="'/templates/layout/quick-sidebar.html'" data-ng-controller="QuickSidebarController" class="page-quick-sidebar-wrapper"></div>
+        <!-- END QUICK SIDEBAR -->
+    </div>
+    <!-- END CONTAINER -->
+    <!-- BEGIN FOOTER -->
+    <div data-ng-include="'/templates/layout/footer.html'" data-ng-controller="FooterController" class="page-footer">
+    </div>
+    <!-- END FOOTER -->
+    <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 
-        <script src="/assets/global/plugins/amcharts/amcharts/amcharts.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/amcharts/lang/fr.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/amcharts/serial.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/amcharts/pie.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/amcharts/radar.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/amcharts/themes/light.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/amcharts/themes/patterns.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/amcharts/themes/chalk.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/ammap/ammap.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/ammap/maps/js/worldLow.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/amcharts/amstockcharts/amstock.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/amcharts/amcharts.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/amcharts/lang/fr.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/amcharts/serial.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/amcharts/pie.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/amcharts/radar.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/amcharts/themes/light.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/amcharts/themes/patterns.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/amcharts/themes/chalk.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/ammap/ammap.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/ammap/maps/js/worldLow.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/amcharts/amstockcharts/amstock.js" type="text/javascript"></script>
 
-        <script src="/assets/global/plugins/bootstrap-markdown/lib/markdown.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-markdown/js/bootstrap-markdown.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/bootstrap-markdown/locale/bootstrap-markdown.fr.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jsdiff/3.0.1/diff.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/handsontable/0.29.0/handsontable.full.min.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.min.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/lang/summernote-fr-FR.min.js" type="text/javascript"></script>
-        <!--AngularJS-->
-        <!-- Multi-language -->
-        <!--<script src="js/i18n/angular-locale_fr.js"></script>-->
-        <!--<script src="/common/angular/angular.min.js" type="text/javascript"></script>-->
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.14/angular-ui-router.min.js" type="text/javascript"></script>
-        <script src="/assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js" type="text/javascript"></script>
-        <!--<script src="/common/angular-resource/angular-resource.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-markdown/lib/markdown.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-markdown/js/bootstrap-markdown.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/bootstrap-markdown/locale/bootstrap-markdown.fr.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jsdiff/3.0.1/diff.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handsontable/0.29.0/handsontable.full.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/lang/summernote-fr-FR.min.js" type="text/javascript"></script>
+    <!--AngularJS-->
+    <!-- Multi-language -->
+    <!--<script src="js/i18n/angular-locale_fr.js"></script>-->
+    <!--<script src="/common/angular/angular.min.js" type="text/javascript"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.14/angular-ui-router.min.js" type="text/javascript"></script>
+    <script src="/assets/global/plugins/angularjs/plugins/ocLazyLoad.min.js" type="text/javascript"></script>
+    <!--<script src="/common/angular-resource/angular-resource.min.js" type="text/javascript"></script>
         <script src="/common/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>-->
-        <!--<script src="/common/angular-animate/angular-animate.min.js" type="text/javascript"></script>-->
-        <!--<script src="/common/angular-touch/angular-touch.min.js" type="text/javascript"></script>-->
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.4/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
-        <!-- Dyn forms -->
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.js"></script>
-        <script type="text/javascript" src="/js/objectpath/lib/ObjectPath.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-schema-form/0.8.13/schema-form.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-schema-form/0.8.13/bootstrap-decorator.min.js"></script>
-        <script type="text/javascript" src="/assets/global/plugins/angular-schema-form-typeahead/bootstrap-typeahead.js"></script>
-        <!--<script type="text/javascript" src="/common/angular-schema-form-datepicker/bootstrap-datepicker.js"></script>-->
-        <!--<script type="text/javascript" src="/common/amcharts-angular/dist/amChartsDirective.js"></script>-->
-        
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/locale/fr.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/i18next/3.5.1/i18next.min.js"></script>
-        <!--<script type="text/javascript" src="/common/ng-file-upload/ng-file-upload-shim.min.js"></script>
-        <script type="text/javascript" src="/common/ng-file-upload/ng-file-upload.min.js"></script>-->
-        <script type="text/javascript" src="/assets/global/plugins/angularjs/plugins/angular-file-upload/angular-file-upload.min.js"></script>
-        <script type="text/javascript" src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!--<script src="/common/angular-animate/angular-animate.min.js" type="text/javascript"></script>-->
+    <!--<script src="/common/angular-touch/angular-touch.min.js" type="text/javascript"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.4/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
+    <!-- Dyn forms -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/tv4/1.2.7/tv4.js"></script>
+    <script type="text/javascript" src="/js/objectpath/lib/ObjectPath.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-schema-form/0.8.13/schema-form.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-schema-form/0.8.13/bootstrap-decorator.min.js"></script>
+    <script type="text/javascript" src="/assets/global/plugins/angular-schema-form-typeahead/bootstrap-typeahead.js"></script>
+    <!--<script type="text/javascript" src="/common/angular-schema-form-datepicker/bootstrap-datepicker.js"></script>-->
+    <!--<script type="text/javascript" src="/common/amcharts-angular/dist/amChartsDirective.js"></script>-->
 
-        <!--<script type="text/javascript" src="/common/ng-grid/build/ng-grid.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/locale/fr.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/i18next/3.5.1/i18next.min.js"></script>
+    <!--<script type="text/javascript" src="/common/ng-file-upload/ng-file-upload-shim.min.js"></script>
+        <script type="text/javascript" src="/common/ng-file-upload/ng-file-upload.min.js"></script>-->
+    <script type="text/javascript" src="/assets/global/plugins/angularjs/plugins/angular-file-upload/angular-file-upload.min.js"></script>
+    <script type="text/javascript" src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+
+    <!--<script type="text/javascript" src="/common/ng-grid/build/ng-grid.min.js"></script>
         <script type="text/javascript" src="/common/ng-grid/plugins/ng-grid-csv-export.js"></script>-->
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-xeditable/0.1.8/js/xeditable.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/2.3.0/ng-tags-input.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-timer/1.3.4/assets/js/angular-timer-all.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-translate/2.1.0/angular-translate.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-dialog-service/5.2.8/dialogs.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ng-i18next/0.5.2/ng-i18next.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json-formatter/0.6.0/json-formatter.min.js"></script>
-        <!--<script type="text/javascript" src="/common/angular-datatables/dist/angular-datatables.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-xeditable/0.1.8/js/xeditable.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ng-tags-input/2.3.0/ng-tags-input.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.43/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-timer/1.3.4/assets/js/angular-timer-all.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-translate/2.1.0/angular-translate.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-dialog-service/5.2.8/dialogs.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ng-i18next/0.5.2/ng-i18next.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/json-formatter/0.6.0/json-formatter.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.16/angular-filter.min.js"></script>
+    <!--<script type="text/javascript" src="/common/angular-datatables/dist/angular-datatables.js"></script>
         <script src="/common/angular-datatables/dist/plugins/bootstrap/angular-datatables.bootstrap.min.js" type="text/javascript"></script>-->
-        <!--<script type="text/javascript" src="/common/jqplot/jquery.jqplot.min.js"></script>
+    <!--<script type="text/javascript" src="/common/jqplot/jquery.jqplot.min.js"></script>
         <script type="text/javascript" src="/common/jqplot/plugins/jqplot.pieRenderer.js"></script>
         <script type="text/javascript" src="/common/jqplot/plugins/jqplot.barRenderer.min.js"></script>
         <script type="text/javascript" src="/common/jqplot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
@@ -218,32 +215,34 @@
         <script type="text/javascript" src="/common/jqplot/plugins/jqplot.dateAxisRenderer.min.js"></script>
         <script type="text/javascript" src="/common/jqplot/plugins/jqplot.funnelRenderer.min.js"></script>
         <script type="text/javascript" src="/common/angular-ui-chart/src/chart.js"></script>-->
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/checklist-model/0.10.0/checklist-model.min.js"></script>
-        <!--<script type="text/javascript" src="/common/angular-daterangepicker/js/angular-daterangepicker.js"></script>-->
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-toastr/1.2.0/angular-toastr.tpls.min.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-notification/1.1.1/angular-notification.min.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/ngHandsontable/0.13.0/ngHandsontable.min.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-summernote/0.8.1/angular-summernote.min.js" type="text/javascript"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-tree/2.22.1/angular-ui-tree.min.js" type="text/javascript"></script>
-        
-        <!-- END CORE ANGULARJS PLUGINS -->
-        <!-- BEGIN APP LEVEL JQUERY SCRIPTS -->
-        <script src="/assets/global/scripts/metronic.js" type="text/javascript"></script>
-        <script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
-        <script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
-        <script src="/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
-        <!-- END APP LEVEL JQUERY SCRIPTS -->
-        <script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script>
-        <script type="text/javascript" src="/assets/global/plugins/datatables/datatables.all.min.js"></script>
-        <script type="text/javascript" src="/assets/global/scripts/datatable.js"></script>
-        <!-- Include socket.io -->
-        <script type="text/javascript">
-                    /* Init Metronic's core jquery plugins and layout scripts */
-                    $(document).ready(function () {
-                                Metronic.init("@{config.version}"); // Run metronic theme
-                                Metronic.setAssetsPath('/assets/'); // Set the /assets folder path
-                    });</script>
-        <!-- END JAVASCRIPTS -->
-    </body>
-    <!-- END BODY -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/checklist-model/0.10.0/checklist-model.min.js"></script>
+    <!--<script type="text/javascript" src="/common/angular-daterangepicker/js/angular-daterangepicker.js"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-toastr/1.2.0/angular-toastr.tpls.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-notification/1.1.1/angular-notification.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ngHandsontable/0.13.0/ngHandsontable.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-summernote/0.8.1/angular-summernote.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-tree/2.22.1/angular-ui-tree.min.js" type="text/javascript"></script>
+
+    <!-- END CORE ANGULARJS PLUGINS -->
+    <!-- BEGIN APP LEVEL JQUERY SCRIPTS -->
+    <script src="/assets/global/scripts/metronic.js" type="text/javascript"></script>
+    <script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+    <script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
+    <script src="/assets/admin/layout/scripts/demo.js" type="text/javascript"></script>
+    <!-- END APP LEVEL JQUERY SCRIPTS -->
+    <script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script>
+    <script type="text/javascript" src="/assets/global/plugins/datatables/datatables.all.min.js"></script>
+    <script type="text/javascript" src="/assets/global/scripts/datatable.js"></script>
+    <!-- Include socket.io -->
+    <script type="text/javascript">
+        /* Init Metronic's core jquery plugins and layout scripts */
+        $(document).ready(function() {
+            Metronic.init("@{config.version}"); // Run metronic theme
+            Metronic.setAssetsPath('/assets/'); // Set the /assets folder path
+        });
+    </script>
+    <!-- END JAVASCRIPTS -->
+</body>
+<!-- END BODY -->
+
 </html>
