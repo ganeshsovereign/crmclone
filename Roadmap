@@ -1,0 +1,42 @@
+                                 Open source ERP sofware ToManage
+                                        ROADMAP, April 2017
+
+
+
+
+TECHNICAL :
+The open source ERP software ToManage is developed with Angular 1. Angular 2 has arrived… The open source ERP ToManage contributors 
+chose to use React. It is therefore necessary to migrate the software from Angular 1 to React.
+
+
+FEATURES :
+-	Interconnection with the open source CMS Magento
+-	Third-party companies statistics dashboard (Turnover month by month over the year, Distribution of purchases by products 
+and categories)
+-	Best customer over a given period
+-	Best product over a given period
+-	Creating an alert if the stock is low. Alerts are sent by email. The threshold must be defined for each product or product 
+attribute.
+
+
+TRANSLATION : 
+Currently ERP software ToManage is translated into French and English. All translations of other languages are welcome :)
+
+
+
+
+
+-------- FEATURES ALREADY DEPLOYED in ERP software ToManage : --------
+
+TECHNICAL :
+Material Design integreted
+
+
+FEATURES :
+-	Interconnection with the open source CMS Prestashop
+-	inventory management
+- Configurable products
+- Product sheets printing 
+
+TRANSLATION : 
+Currently ERP software ToManage is translated into French and English.
