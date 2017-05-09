@@ -1214,7 +1214,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('europexpress.billing', {
             parent: "europexpress",
-            url: "/facturation.html?month&year",
+            url: "/facturation.html?month&year&tab",
             templateUrl: "/views/_europexpress/facturation.html",
             data: {
                 pageTitle: 'Pré-facturation'
