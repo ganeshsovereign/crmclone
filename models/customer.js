@@ -229,6 +229,7 @@ var customerSchema = new Schema({
     title: { type: String, default: '' },
 
     salesPurchases: {
+        isGeneric: { type: Boolean, default: false }, // Generalist account
         isProspect: { type: Boolean, default: false },
         isCustomer: { type: Boolean, default: true },
         isSupplier: { type: Boolean, default: false },
@@ -330,11 +331,11 @@ var customerSchema = new Schema({
 
     oldId: String // only use for migration
 
-}, { 
+}, {
     collection: 'Customers',
-     toObject: { virtuals: true },
+    toObject: { virtuals: true },
     toJSON: { virtuals: true }
- });
+});
 
 customerSchema.virtual('fullName').get(function() {
     if (this.name.first)
