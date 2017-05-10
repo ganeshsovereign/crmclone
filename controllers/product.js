@@ -340,6 +340,14 @@ exports.install = function() {
     var taxes = new Taxes();
     F.route('/erp/api/product/taxes', taxes.read, ['authorize']);
 
+    var pricesList = new PricesList();
+    F.route('/erp/api/product/prices/priceslist', pricesList.read, ['authorize']);
+    F.route('/erp/api/product/prices/priceslist', pricesList.create, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/prices/priceslist/{id}', pricesList.show, ['authorize']);
+    F.route('/erp/api/product/prices/priceslist/{id}', pricesList.update, ['put', 'json', 'authorize']);
+    F.route('/erp/api/product/prices/priceslist/{id}', pricesList.delete, ['delete', 'authorize']);
+
+
     var prices = new Prices();
 
     /* get prices and prices list */
@@ -348,8 +356,6 @@ exports.install = function() {
     F.route('/erp/api/product/prices/{id}', prices.update, ['put', 'json', 'authorize']);
     F.route('/erp/api/product/prices', prices.add, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/prices/{id}', prices.delete, ['delete', 'authorize']);
-    F.route('/erp/api/product/prices/select', prices.list, ['authorize']);
-    F.route('/erp/api/product/prices/select', prices.list, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/prices/upgrade', prices.upgrade, ['authorize']);
     // update prducts pricing form a coef
     F.route('/erp/api/product/prices/upgrade', function() {
@@ -2300,10 +2306,103 @@ Object.prototype = {
     }
 };
 
+
+function PricesList() {}
+
+PricesList.prototype = {
+    read: function() {
+        var self = this;
+        var PriceListModel = MODEL('priceList').Schema;
+        var query = {
+            cost: false
+        };
+
+        if (self.query.cost)
+            query.cost = true;
+
+        if (self.query.all)
+            delete query.cost;
+
+        var limit = { sort: { priceListCode: 1 } };
+
+        PriceListModel.find(query, '', limit, function(err, docs) {
+            if (err)
+                return console.log("err : /api/product/prices/priceslist ", err);
+
+            return self.json({
+                data: docs || []
+            });
+
+        });
+    },
+    show: function(id) {
+        var self = this;
+        var PriceListModel = MODEL('priceList').Schema;
+
+        PriceListModel.findById(id, function(err, doc) {
+            if (err)
+                return self.throw500("err : /api/product/prices/priceslist " + err);
+
+            return self.json(doc);
+        });
+    },
+    update: function(id) {
+        var self = this;
+        var PriceListModel = MODEL('priceList').Schema;
+
+        PriceListModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
+            if (err)
+                return self.throw500("err : /api/product/prices/priceslist " + err);
+
+            return self.json(doc);
+        });
+    },
+    create: function() {
+        var self = this;
+        var PriceListModel = MODEL('priceList').Schema;
+
+        var priceList = new PriceListModel(self.body);
+
+        priceList.save(function(err, doc) {
+            if (err)
+                return self.throw500("err : /api/product/prices/priceslist " + err);
+
+            return self.json(doc);
+        });
+    },
+    delete: function(id) {
+        var self = this;
+        var PriceListModel = MODEL('priceList').Schema;
+        var PriceModel = MODEL('productPrices').Schema;
+        var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
+
+        async.parallel([
+            function(cb) {
+                PriceModel.remove({ priceLists: id }, cb);
+            },
+            function(cb) {
+                FamilyCoefModel({ priceLists: id }, cb);
+            },
+            function(cb) {
+
+                PriceListModel.remove({
+                    _id: id
+                }, cb)
+            }
+        ], function(err) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({});
+        });
+    }
+};
+
 function Prices() {}
 
 Prices.prototype = {
     read: function() {
+        //console.log("toto");
         var self = this;
         var query = self.query;
         var ProductPricesModel = MODEL('productPrices').Schema;
@@ -2369,33 +2468,8 @@ Prices.prototype = {
 
                 prices = _.sortBy(prices, sort);
 
-                self.json(prices);
+                self.json({ prices });
             });
-    },
-    list: function() {
-        var self = this;
-        var PriceListModel = MODEL('priceList').Schema;
-        var query = {
-            cost: false
-        };
-
-        if (self.body.filter)
-            query.priceListCode = new RegExp(self.body.filter.filters[0].value, "gi");
-
-        if (self.body.cost || self.query.cost)
-            query.cost = true;
-
-        var limit = { sort: { priceListCode: 1 } };
-
-        if (self.body.limit)
-            limit.limit = parseInt(self.body.limit);
-
-        PriceListModel.find(query, '', limit, function(err, docs) {
-            if (err)
-                return console.log("err : /api/product/price_level/select ", err);
-
-            return self.json(docs || []);
-        });
     },
     update: function(id) {
         var self = this;
@@ -3587,4 +3661,6 @@ ProductAttributes.prototype = {
         });
     },
     deleteProductAttributes: function(id) {}
+};
+deleteProductAttributes: function(id) {}
 };

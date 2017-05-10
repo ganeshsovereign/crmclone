@@ -55,7 +55,7 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
 angular.module("MetronicApp").controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
     var current = $rootScope.$state.current.name.split('.');
     $scope.backTo = 'settings.product.types';
-    //console.log(current);
+    console.log(current);
 
     if (current.length <= 2)
         return $rootScope.$state.go('settings.product.attributes');
@@ -119,8 +119,10 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         case 'attributes':
             var Resource = Settings.productAttributes;
             break;
+        case 'pricelists':
+            var Resource = Settings.priceList;
+            break;
     }
-
 
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
@@ -128,6 +130,17 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
         $rootScope.settings.layout.pageBodySolid = true;
         $rootScope.settings.layout.pageSidebarClosed = false;
+
+
+        $scope.$dict = {};
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/currency'
+        }).success(function(data, status) {
+            $scope.$dict.currency = data.data;
+            //console.log(data);
+        });
 
         if (current[current.length - 1] == 'show')
             $scope.findOne();

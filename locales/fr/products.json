@@ -180,6 +180,7 @@
     "ErrorAssociationIsFatherOfThis": "L'un des produits sélectionnés est parent du produit en cours",
     "DeleteProduct": "Supprimer un produit/service",
     "ConfirmDeleteProduct": "Êtes-vous sûr de vouloir supprimer ce produit/service ?",
+    "ConfirmDeletePriceList": "Êtes-vous sûr de vouloir supprimer cette Liste de prix, ainsi que tous les prix associés ?",
     "ProductDeleted": "Le produit/service \"%s\" à été supprimé de la base.",
     "DeletePicture": "Supprimer une photo",
     "ConfirmDeletePicture": "Êtes-vous sûr de vouloir supprimer cette photo ?",
@@ -223,6 +224,7 @@
     "NewRefForClone": "Réf. du nouveau produit/service",
     "CustomerPrices": "Prix clients",
     "SuppliersPrices": "Prix fournisseurs",
+    "SupplierCost": "Coût Fournisseur",
     "CustomCode": "Code douane",
     "CountryOrigin": "Pays d'origine",
     "HiddenIntoCombo": "Caché dans les listes",
@@ -307,7 +309,7 @@
     "SubFamily": "Sous-famille",
     "Finition": "Finition",
     "DynamicForm": "Formulaire dynamique",
-    "Inventory": "Etat des stocks",
+    "Inventory": "Gestion des stocks",
     "Localization": "Emplacement du stock",
     "Zone": "Zone",
     "Driveway": "Allee",
@@ -339,5 +341,6 @@
     "MaxDate": "Date Max",
     "MinDate": "Date Min",
     "MaxNumber": "Nombre Max",
-    "MinNumber": "Nombre Min"
+    "MinNumber": "Nombre Min",
+    "AddAttributesToFamily": "Ajouter l'attribut à la famille"
 }

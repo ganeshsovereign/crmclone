@@ -1690,7 +1690,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('settings.product.pricelists.create', {
             url: "/create.html",
-            templateUrl: "/views/settings/pricelists/create.html",
+            templateUrl: "/views/settings/pricelists/fiche.html",
             data: {
                 pageTitle: 'Ajouter une liste de prix'
             },

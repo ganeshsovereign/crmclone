@@ -96,7 +96,7 @@ exports.install = function() {
 
     F.route('/erp/api/languages', getLanguages, ['authorize']);
     F.route('/erp/api/countries', getCountries, ['authorize']);
-
+    F.route('/erp/api/currencies', getCurrencies, ['authorize']);
     F.route('/erp/api/extrafield', load_extrafield, ['authorize']);
     F.route('/erp/api/sendEmail', sendEmail, ['post', 'json', 'authorize']);
     F.route('/erp/api/task/count', task_count, ['authorize']);
@@ -1157,6 +1157,20 @@ function getCountries() {
     var Countries = MODEL('countries').Schema;
 
     Countries.find({})
+        .sort({ '_id': 1 })
+        .exec(function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({ data: result });
+        });
+}
+
+function getCurrencies() {
+    var self = this;
+    var Currencies = MODEL('currency').Schema;
+
+    Currencies.find({})
         .sort({ '_id': 1 })
         .exec(function(err, result) {
             if (err)

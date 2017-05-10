@@ -1,55 +1,49 @@
-<div class="portlet portlet light bordered">
+<div ui-view=""></div>
+
+<div class="portlet light bordered">
     <div class="portlet-title">
-        <div class="caption font-yellow-crusta">
-            <i class="fa fa-gears font-yellow-crusta sbold"></i>@(Parameters): @(products:PricesLevels)
+        <div class="caption caption-md">
+            <i class="fa fa-money font-grey-gallery"></i>
+            <span class="caption-subject font-grey-gallery bold uppercase">@(products:PriceLists)</span>
         </div>
         <div class="actions">
-            <button class="btn btn-circle default" ui-sref="settings.product.pricelists.create">@(Add) <i class="fa fa-plus"></i></button>
-            <button title="Rafraîchir" class="btn btn-circle btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+            <a class="btn blue" ui-sref="settings.product.pricelists.create">@(Add) <i class="fa fa-plus"></i></a>
+            <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
+            </a>
         </div>
+    </div>
+    <div class="tools">
     </div>
     <div class="portlet-body">
         <div class="form-body">
             <div class="table-responsive">
                 <div class="dataTables_wrapper no-footer table-responsive">
                     <div class="col-md-12">
-                        <table class="table dataTable no-footer table-hover" id="productTypesList">
+                        <table class="table dataTable no-footer table-hover" id="priceList">
                             <thead>
                                 <tr role="row" class="heading">
-                                    <th>@(Name)</th>
                                     <th>@(Code)</th>
+                                    <th>@(Name)</th>
                                     <th>@(Currency)</th>
-                                    <th>@(UpdateMAJ)</th>
-                                    <th>@(Status)</th>
-                                    <th></th>
+                                    <th>@(products:SupplierCost)</th>
+                                    <th>@(Action)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <td>
-                                    <%=elem.name%>
-                                </td>
-                                <td>
-                                    <%=elem.priceListCode%>
-                                </td>
-                                <td>
-                                    <%=elem.currencyName%>
-                                </td>
-                                <td>
-                                    <%=elem.currencyName%>
-                                </td>
-                                <td><input type="checkbox" disabled <%=elem.cost ? checked="checked" : '' %>/></td>
-                                <td>
-                                    <button ng-if="line.priceLists.removable !== false" class="btn btn-circle btn-default ng-scope" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit Affretement ?" confirmed-click="remove(line)">@(View)</button>
-                                    <button ng-if="line.priceLists.removable !== false" class="btn btn-circle dark fa fa-cogs ng-scope" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit Affretement ?" confirmed-click="remove(line)"></button>
-                                    <button ng-if="line.priceLists.removable !== false" class="btn btn-circle red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit Affretement ?" confirmed-click="remove(line)"></button>
-                                </td>
+                                <tr ng-repeat="line in listObject">
+                                    <td>{{line.priceListCode}}</td>
+                                    <td>{{line.name}}</td>
+                                    <td>{{line.currency}}</td>
+                                    <td><input type="checkbox" id="isActive" class="md-check has-success" ng-model="line.cost" disabled ng-checked="line.cost"></td>
+                                    <td>
+                                        <a class="btn green fa fa-pencil" ui-sref="settings.product.pricelists.show({id:line._id})" title="Editer"></a>
+                                        <button ng-if="line.removable == true" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeletePriceList)" confirmed-click="remove(line)"></button>
+                                    </td>
+                                </tr>
                             </tbody>
-
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
-</div>
