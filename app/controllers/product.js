@@ -54,7 +54,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     $scope.family = null;
     $scope.dict = {};
     $scope.newSupplierPrice = {
-        taxes : []
+        taxes: []
     };
     $scope.productTypes = [];
     $scope.attributeMap = {};
@@ -161,10 +161,10 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
         $http({
             method: 'POST',
-            url: '/erp/api/product/prices/select',
+            url: '/erp/api/product/prices/priceslist',
             data: { cost: false }
         }).success(function(data) {
-            $scope.pricesLists = data;
+            $scope.pricesLists = data.data;
         });
     });
 
@@ -485,7 +485,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             $scope.newSupplierPrice.societe = $scope.newSupplierPrice.societe.id;
             $scope.product.suppliers.push($scope.newSupplierPrice);
             $scope.newSupplierPrice = {
-                taxes : []
+                taxes: []
             };
             $scope.update();
         }
@@ -1061,10 +1061,10 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
         if (!cost)
             $http({
                 method: 'GET',
-                url: '/erp/api/product/prices/select',
+                url: '/erp/api/product/prices/priceslist',
                 params: { cost: cost }
             }).success(function(data, status) {
-                $scope.pricesLists = data;
+                $scope.pricesLists = data.data;
                 //console.log("PriceLists", data);
             });
     };
@@ -1221,9 +1221,9 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
         };
 
         $http({
-            method: 'POST',
-            url: '/erp/api/product/prices/select',
-            data: { cost: costFind }
+            method: 'GET',
+            url: '/erp/api/product/prices/priceslist',
+            params: { cost: costFind }
         }).success(function(data) {
             $scope.pricesLists = data;
         });

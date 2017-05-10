@@ -1,76 +1,42 @@
-<div class="portlet portlet light bordered">
-    <div class="portlet-title">
-        <div class="caption font-yellow-crusta">
-            <i class="fa fa-gears font-yellow-crusta sbold"></i>@(Parameters): @(products:PricesLevels)
-        </div>
-        <div class="actions btn-set">
-            <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
+<div class="row">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-magic-wand"></i>
+                        <span class="caption-subject dark bold uppercase"> @(products:PriceLists)</span>
+                    </div>
+                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                </div>
+                <div class="portlet-body">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="col-md-12">
 
-            <button type="button" ng-click="update(true)" class="btn btn-circle btn-outline sbold uppercase green"><i class="fa fa-check"></i> @(Save)</button>
-            <div class="btn-group">
-                <a class="btn btn-circle dark btn-outline sbold uppercase dropdown-toggle" href="javascript:;" data-toggle="dropdown">
-                    <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
-                </a>
-                <ul class="dropdown-menu pull-right">
-                    <li>
-                        <a href="#" ng-click="clone()">
-                            <i class="fa fa-copy"></i> @(ToClone)
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
-                            <i class="fa fa-trash-o font-red"></i> @(Delete)
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="portlet-body">
-        <div class="form-body">
-            <div class="form-group form-md-line-input">
-                <div class="row hidden-print">
-                    <div class="col-md-12">
-                        <div class="form-group form-md-line-input">
-                            <label class="col-md-2 control-label" for="form_control_1">@(Pricelevel) @(Name) :</label>
-                            <div class="col-md-10">
-                                <input class="form-control ng-pristine ng-invalid ng-invalid-required ng-touched" ng-model="product.label" required="" placeholder="" type="text">
-                                <div class="form-control-focus"> </div>
+                                <div class="form-group form-md-line-input">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="object.priceListCode">
+                                    <label for="form_control_1">@(Code)</label>
+                                </div>
+
+                                <div class="form-group form-md-line-input">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="object.name">
+                                    <label for="form_control_1">@(Name)</label>
+                                </div>
+                                <div class="md-checkbox-inline">
+                                    <div class="md-checkbox has-success">
+                                        <input type="checkbox" id="isActive" class="md-check" ng-model="object.isActive" ng-checked="object.isActive">
+                                        <label for="isActive">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(Activated)</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group form-md-line-input">
-
-                            <label class="col-md-2 control-label" for="form_control_1">@(Pricelevel) Code :</label>
-                            <div class="col-md-4">
-                                <input class="form-control ng-pristine ng-invalid ng-invalid-required ng-touched" ng-model="product.label" required="" placeholder="" type="text">
-                                <div class="form-control-focus"> </div>
-                            </div>
-                            <label class="col-md-2 control-label" for="form_control_1">@(Currency)</label>
-                            <div class="col-md-4">
-                                <select class="form-control" name="">
-                                                            <option value="">USD</option>
-                                                            <option value="">EUROS</option>
-                                                            <option value="">...</option>
-                                                        </select>
-                                <div class="form-control-focus"> </div>
-                            </div>
-                        </div>
-                        <div class="form-group form-md-line-input">
-                            <label class="col-md-2 control-label">@(DateCreation): </label>
-                            <div class="col-md-4">
-                                <label class='control-label'> {{product.createdAt|date:'dd/MM/yyyy HH:mm'}}</label>
-                            </div>
-                            <label class="col-md-2 control-label">@(DateLastModification): </label>
-                            <div class="col-md-4">
-                                <label class='control-label'> {{product.updatedAt|date:'dd/MM/yyyy HH:mm'}} </label>
-                            </div>
-                        </div>
-
-
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>

@@ -180,6 +180,7 @@
     "ErrorAssociationIsFatherOfThis": "L'un des produits sélectionnés est parent du produit en cours",
     "DeleteProduct": "Supprimer un produit/service",
     "ConfirmDeleteProduct": "Êtes-vous sûr de vouloir supprimer ce produit/service ?",
+    "ConfirmDeletePriceList": "Êtes-vous sûr de vouloir supprimer cette Liste de prix ?",
     "ProductDeleted": "Le produit/service \"%s\" à été supprimé de la base.",
     "DeletePicture": "Supprimer une photo",
     "ConfirmDeletePicture": "Êtes-vous sûr de vouloir supprimer cette photo ?",
@@ -339,5 +340,6 @@
     "MaxDate": "Date Max",
     "MinDate": "Date Min",
     "MaxNumber": "Nombre Max",
-    "MinNumber": "Nombre Min"
+    "MinNumber": "Nombre Min",
+    "AddAttributesToFamily": "Ajouter l'attribut à la famille"
 }

@@ -55,7 +55,7 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
 angular.module("MetronicApp").controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
     var current = $rootScope.$state.current.name.split('.');
     $scope.backTo = 'settings.product.types';
-    //console.log(current);
+    console.log(current);
 
     if (current.length <= 2)
         return $rootScope.$state.go('settings.product.attributes');
@@ -119,8 +119,10 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         case 'attributes':
             var Resource = Settings.productAttributes;
             break;
+        case 'pricelists':
+            var Resource = Settings.priceList;
+            break;
     }
-
 
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
