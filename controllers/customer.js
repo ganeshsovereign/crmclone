@@ -54,13 +54,6 @@ exports.install = function() {
     F.route('/erp/api/societe/segmentation', object.segmentationDelete, ['delete', 'authorize']);
     F.route('/erp/api/societe/report', report.read, ['authorize']);
 
-    F.route('/erp/api/societe/{societeId}', object.show, ['authorize']);
-    F.route('/erp/api/societe', object.create, ['post', 'json', 'authorize']);
-    F.route('/erp/api/societe/{societeId}', object.update, ['put', 'json', 'authorize']);
-    F.route('/erp/api/societe/', object.destroyList, ['delete', 'authorize']);
-    F.route('/erp/api/societe/{societeId}', object.destroy, ['delete', 'authorize']);
-    F.route('/erp/api/societe/{societeId}/{field}', object.updateField, ['put', 'json', 'authorize']);
-
     // list for autocomplete
     F.route('/erp/api/societe/autocomplete', function() {
         //console.dir(req.body.filter);
@@ -196,6 +189,15 @@ exports.install = function() {
                 return self.json(result);*/
             });
     }, ['post', 'json', 'authorize']);
+
+
+    F.route('/erp/api/societe/{societeId}', object.show, ['authorize']);
+    F.route('/erp/api/societe', object.create, ['post', 'json', 'authorize']);
+    F.route('/erp/api/societe/{societeId}', object.update, ['put', 'json', 'authorize']);
+    F.route('/erp/api/societe/', object.destroyList, ['delete', 'authorize']);
+    F.route('/erp/api/societe/{societeId}', object.destroy, ['delete', 'authorize']);
+    F.route('/erp/api/societe/{societeId}/{field}', object.updateField, ['put', 'json', 'authorize']);
+
 
     F.route('/erp/api/societe/autocomplete/{field}', function(field) {
         //console.dir(req.body);

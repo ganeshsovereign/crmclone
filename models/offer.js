@@ -68,6 +68,7 @@ var offerSchema = new Schema({
             name: String
         }
     },
+    supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
     contacts: [{
         type: Schema.Types.ObjectId,
         ref: 'Customers'
