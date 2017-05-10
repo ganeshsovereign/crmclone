@@ -27,20 +27,20 @@
 "use strict";
 
 var mongoose = require('mongoose'),
-        _ = require('lodash'),
-        async = require('async'),
-        moment = require('moment');
+    _ = require('lodash'),
+    async = require('async'),
+    moment = require('moment');
 
 var Dict = INCLUDE('dict');
 var Latex = INCLUDE('latex');
 
-exports.install = function () {
+exports.install = function() {
 
     var object = new Object();
 
     Dict.extrafield({
         extrafieldName: 'Offer'
-    }, function (err, doc) {
+    }, function(err, doc) {
         if (err) {
             console.log(err);
             return;
@@ -53,7 +53,7 @@ exports.install = function () {
     F.route('/erp/api/offer/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/offer', object.all, ['authorize']);
     F.route('/erp/api/offer', object.create, ['post', 'json', 'authorize']);
-    F.route('/erp/api/offer/{offerId}', function (id) {
+    F.route('/erp/api/offer/{offerId}', function(id) {
         if (this.query.order)
             object.createOrder(this);
         else if (this.query.clone)
@@ -71,8 +71,7 @@ exports.install = function () {
     F.route('/erp/api/offer/download/{:id}', object.download);
 };
 
-function Object() {
-}
+function Object() {}
 
 // Read an offer
 function Offer(id, cb) {
@@ -96,18 +95,19 @@ function Offer(id, cb) {
     //console.log(query);
 
     OfferModel.findOne(query, "-latex")
-            .populate("contacts", "firstname lastname phone email")
-            .exec(cb);
+        .populate("contacts", "name phone email")
+        .populate("supplier", "name")
+        .exec(cb);
 }
 
 Object.prototype = {
-    listLines: function () {
+    listLines: function() {
         var self = this;
         var OfferModel = MODEL('offer').Schema;
 
         OfferModel.findOne({
             _id: self.query.id
-        }, "lines", function (err, doc) {
+        }, "lines", function(err, doc) {
             if (err) {
                 console.log(err);
                 self.throw500();
@@ -120,7 +120,7 @@ Object.prototype = {
     /**
      * Create an offer
      */
-    create: function () {
+    create: function() {
         var self = this;
         var OfferModel = MODEL('offer').Schema;
         var offer;
@@ -138,7 +138,7 @@ Object.prototype = {
         if (self.user.societe && self.user.societe.id) { // It's an external offer
             return ContactModel.findOne({
                 'societe.id': self.user.societe.id
-            }, function (err, contact) {
+            }, function(err, contact) {
                 if (err)
                     console.log(err);
 
@@ -158,7 +158,7 @@ Object.prototype = {
 
 
                 //console.log(contact);
-                contact.save(function (err, doc) {
+                contact.save(function(err, doc) {
                     if (err)
                         console.log(err);
 
@@ -170,7 +170,7 @@ Object.prototype = {
                     offer.client.id = self.user.societe.id;
                     offer.client.name = self.user.societe.name;
 
-                    offer.save(function (err, doc) {
+                    offer.save(function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -182,7 +182,7 @@ Object.prototype = {
 
         //console.log(offer);
 
-        offer.save(function (err, doc) {
+        offer.save(function(err, doc) {
             if (err) {
                 return console.log(err);
             }
@@ -193,10 +193,10 @@ Object.prototype = {
     /**
      * Clone an offer
      */
-    clone: function (id, self) {
+    clone: function(id, self) {
         var OfferModel = MODEL('offer').Schema;
 
-        Offer(id, function (err, doc) {
+        Offer(id, function(err, doc) {
             var offer = doc.toObject();
             delete offer._id;
             delete offer.__v;
@@ -220,7 +220,7 @@ Object.prototype = {
 
             //console.log(offer);
 
-            offer.save(function (err, doc) {
+            offer.save(function(err, doc) {
                 if (err) {
                     return console.log(err);
                 }
@@ -232,10 +232,10 @@ Object.prototype = {
     /**
      * Update an offer
      */
-    update: function (id) {
+    update: function(id) {
         var self = this;
 
-        Offer(id, function (err, offer) {
+        Offer(id, function(err, offer) {
 
             var old_Status = offer.Status;
 
@@ -264,17 +264,18 @@ Object.prototype = {
             }
 
 
-            offer.save(function (err, doc) {
+            offer.save(function(err, doc) {
                 if (err) {
                     console.log(err);
-                    return  self.json({errorNotify: {
+                    return self.json({
+                        errorNotify: {
                             title: 'Erreur',
                             message: err
                         }
                     });
                 }
 
-//console.log(doc);
+                //console.log(doc);
                 doc = doc.toObject();
                 doc.successNotify = {
                     title: "Success",
@@ -284,13 +285,13 @@ Object.prototype = {
             });
         });
     },
-    updateField: function (req, res) {
+    updateField: function(req, res) {
         if (req.body.value) {
             var offer = req.offer;
 
             offer[req.params.field] = req.body.value;
 
-            offer.save(function (err, doc) {
+            offer.save(function(err, doc) {
                 res.json(doc);
             });
         } else
@@ -299,13 +300,13 @@ Object.prototype = {
     /**
      * Delete an offer
      */
-    destroy: function (id) {
+    destroy: function(id) {
         var OfferModel = MODEL('offer').Schema;
         var self = this;
 
         OfferModel.remove({
             _id: id
-        }, function (err) {
+        }, function(err) {
             if (err) {
                 self.throw500(err);
             } else {
@@ -313,7 +314,7 @@ Object.prototype = {
             }
         });
     },
-    readDT: function () {
+    readDT: function() {
         var self = this;
         var OfferModel = MODEL('offer').Schema;
 
@@ -339,16 +340,16 @@ Object.prototype = {
         };
 
         async.parallel({
-            status: function (cb) {
+            status: function(cb) {
                 Dict.dict({
                     dictName: "fk_offer_status",
                     object: true
                 }, cb);
             },
-            datatable: function (cb) {
+            datatable: function(cb) {
                 OfferModel.dataTable(query, options, cb);
             }
-        }, function (err, res) {
+        }, function(err, res) {
             if (err)
                 console.log(err);
 
@@ -390,9 +391,9 @@ Object.prototype = {
     /**
      * Show an offer
      */
-    show: function (id) {
+    show: function(id) {
         var self = this;
-        Offer(id, function (err, offer) {
+        Offer(id, function(err, offer) {
             if (err)
                 console.log(err);
 
@@ -402,7 +403,7 @@ Object.prototype = {
     /**
      * List of offers
      */
-    all: function (req, res) {
+    all: function(req, res) {
         var query = {};
 
         if (req.query) {
@@ -429,7 +430,7 @@ Object.prototype = {
             }
         }
 
-        CommandeModel.find(query, "-files -latex", function (err, offers) {
+        CommandeModel.find(query, "-files -latex", function(err, offers) {
             if (err)
                 return res.render('error', {
                     status: 500
@@ -441,7 +442,7 @@ Object.prototype = {
     /**
      * Add a file in an offer
      */
-    createFile: function (req, res) {
+    createFile: function(req, res) {
         var id = req.params.Id;
         //console.log(id);
         //console.log(req.body);
@@ -453,7 +454,7 @@ Object.prototype = {
             if (req.body.idx)
                 req.files.file.originalFilename = req.body.idx + "_" + req.files.file.originalFilename;
 
-            gridfs.addFile(CommandeModel, id, req.files.file, function (err, result) {
+            gridfs.addFile(CommandeModel, id, req.files.file, function(err, result) {
                 //console.log(result);
                 if (err)
                     res.send(500, err);
@@ -466,11 +467,11 @@ Object.prototype = {
     /**
      * Get a file form an offer
      */
-    getFile: function (req, res) {
+    getFile: function(req, res) {
         var id = req.params.Id;
         if (id && req.params.fileName) {
 
-            gridfs.getFile(CommandeModel, id, req.params.fileName, function (err, store) {
+            gridfs.getFile(CommandeModel, id, req.params.fileName, function(err, store) {
                 if (err)
                     return res.send(500, err);
                 if (req.query.download)
@@ -487,13 +488,13 @@ Object.prototype = {
     /**
      * Delete a file in an offer
      */
-    deleteFile: function (req, res) {
+    deleteFile: function(req, res) {
         //console.log(req.body);
         var id = req.params.Id;
         //console.log(id);
 
         if (req.params.fileName && id) {
-            gridfs.delFile(CommandeModel, id, req.params.fileName, function (err, result) {
+            gridfs.delFile(CommandeModel, id, req.params.fileName, function(err, result) {
                 //console.log(result);
                 if (err)
                     res.send(500, err);
@@ -503,7 +504,7 @@ Object.prototype = {
         } else
             res.send(500, "File not found");
     },
-    pdf: function (ref, self) {
+    pdf: function(ref, self) {
         // Generation de la facture PDF et download
         var SocieteModel = MODEL('societe').Schema;
         var BankModel = MODEL('bank').Schema;
@@ -516,18 +517,18 @@ Object.prototype = {
         Dict.dict({
             dictName: "fk_payment_term",
             object: true
-        }, function (err, docs) {
+        }, function(err, docs) {
             cond_reglement_code = docs;
         });
         var mode_reglement_code = {};
         Dict.dict({
             dictName: "fk_paiement",
             object: true
-        }, function (err, docs) {
+        }, function(err, docs) {
             mode_reglement_code = docs;
         });
 
-        Offer(ref, function (err, doc) {
+        Offer(ref, function(err, doc) {
 
             var model = "_offer.tex";
             // check if discount
@@ -541,10 +542,10 @@ Object.prototype = {
 
             SocieteModel.findOne({
                 _id: doc.client.id
-            }, function (err, societe) {
+            }, function(err, societe) {
                 BankModel.findOne({
                     ref: doc.bank_reglement
-                }, function (err, bank) {
+                }, function(err, bank) {
                     if (bank)
                         var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
@@ -554,53 +555,53 @@ Object.prototype = {
                     if (discount)
                         tabLines.push({
                             keys: [{
-                                    key: "ref",
-                                    type: "string"
-                                }, {
-                                    key: "description",
-                                    type: "area"
-                                }, {
-                                    key: "tva_tx",
-                                    type: "string"
-                                }, {
-                                    key: "pu_ht",
-                                    type: "number",
-                                    precision: 3
-                                }, {
-                                    key: "discount",
-                                    type: "string"
-                                }, {
-                                    key: "qty",
-                                    type: "number",
-                                    precision: 3
-                                }, {
-                                    key: "total_ht",
-                                    type: "euro"
-                                }]
+                                key: "ref",
+                                type: "string"
+                            }, {
+                                key: "description",
+                                type: "area"
+                            }, {
+                                key: "tva_tx",
+                                type: "string"
+                            }, {
+                                key: "pu_ht",
+                                type: "number",
+                                precision: 3
+                            }, {
+                                key: "discount",
+                                type: "string"
+                            }, {
+                                key: "qty",
+                                type: "number",
+                                precision: 3
+                            }, {
+                                key: "total_ht",
+                                type: "euro"
+                            }]
                         });
                     else
                         tabLines.push({
                             keys: [{
-                                    key: "ref",
-                                    type: "string"
-                                }, {
-                                    key: "description",
-                                    type: "area"
-                                }, {
-                                    key: "tva_tx",
-                                    type: "string"
-                                }, {
-                                    key: "pu_ht",
-                                    type: "number",
-                                    precision: 3
-                                }, {
-                                    key: "qty",
-                                    type: "number",
-                                    precision: 3
-                                }, {
-                                    key: "total_ht",
-                                    type: "euro"
-                                }]
+                                key: "ref",
+                                type: "string"
+                            }, {
+                                key: "description",
+                                type: "area"
+                            }, {
+                                key: "tva_tx",
+                                type: "string"
+                            }, {
+                                key: "pu_ht",
+                                type: "number",
+                                precision: 3
+                            }, {
+                                key: "qty",
+                                type: "number",
+                                precision: 3
+                            }, {
+                                key: "total_ht",
+                                type: "euro"
+                            }]
                         });
 
                     for (var i = 0; i < doc.lines.length; i++) {
@@ -616,21 +617,21 @@ Object.prototype = {
 
                         if (doc.lines[i].product.name == 'SUBTOTAL') {
                             tabLines[tabLines.length - 1].italic = true;
-                            tabLines.push({hline: 1});
+                            tabLines.push({ hline: 1 });
                         }
                         //tab_latex += " & \\specialcell[t]{\\\\" + "\\\\} & " +   + " & " + " & " +  "\\tabularnewline\n";
                     }
 
                     // Array of totals
                     var tabTotal = [{
-                            keys: [{
-                                    key: "label",
-                                    type: "string"
-                                }, {
-                                    key: "total",
-                                    type: "euro"
-                                }]
-                        }];
+                        keys: [{
+                            key: "label",
+                            type: "string"
+                        }, {
+                            key: "total",
+                            type: "euro"
+                        }]
+                    }];
 
                     // Frais de port 
                     if (doc.shipping && doc.shipping.total_ht)
@@ -680,98 +681,98 @@ Object.prototype = {
 
                     self.res.setHeader('Content-type', 'application/pdf');
                     Latex.Template(model, doc.entity)
-                            .apply({
-                                "NUM": {
-                                    "type": "string",
-                                    "value": doc.ref
-                                },
-                                "DESTINATAIRE.NAME": {
-                                    "type": "string",
-                                    "value": doc.bl[0].name
-                                },
-                                "DESTINATAIRE.ADDRESS": {
-                                    "type": "area",
-                                    "value": doc.bl[0].address
-                                },
-                                "DESTINATAIRE.ZIP": {
-                                    "type": "string",
-                                    "value": doc.bl[0].zip
-                                },
-                                "DESTINATAIRE.TOWN": {
-                                    "type": "string",
-                                    "value": doc.bl[0].town
-                                },
-                                "DESTINATAIRE.TVA": {
-                                    "type": "string",
-                                    "value": societe.idprof6
-                                },
-                                "CODECLIENT": {
-                                    "type": "string",
-                                    "value": societe.code_client
-                                },
-                                //"TITLE": {"type": "string", "value": doc.title},
-                                "REFCLIENT": {
-                                    "type": "string",
-                                    "value": doc.ref_client
-                                },
-                                "DELIVERYMODE": {
-                                    "type": "string",
-                                    "value": doc.delivery_mode
-                                },
-                                "PERIOD": {
-                                    "type": "string",
-                                    "value": period
-                                },
-                                "DATEC": {
-                                    "type": "date",
-                                    "value": doc.datec,
-                                    "format": CONFIG('dateformatShort')
-                                },
-                                "DATEEXP": {
-                                    "type": "date",
-                                    "value": doc.date_livraison,
-                                    "format": CONFIG('dateformatShort')
-                                },
-                                "REGLEMENT": {
-                                    "type": "string",
-                                    "value": cond_reglement_code.values[doc.cond_reglement_code].label
-                                },
-                                "PAID": {
-                                    "type": "string",
-                                    "value": mode_reglement_code.values[doc.mode_reglement_code].label
-                                },
-                                "NOTES": {
-                                    "type": "area",
-                                    "value": (doc.notes.length ? doc.notes[0].note : ""),
-                                },
-                                "BK": {
-                                    "type": "area",
-                                    "value": reglement
-                                },
-                                "TABULAR": tabLines,
-                                "TOTAL": tabTotal,
-                                "APAYER": {
-                                    "type": "euro",
-                                    "value": doc.total_ttc || 0
-                                }
-                            })
-                            .on('error', function (err) {
-                                console.log(err);
-                                self.throw500(err);
-                            })
-                            .finalize(function (tex) {
-                                //console.log('The document was converted.');
-                            })
-                            .compile()
-                            .pipe(self.res)
-                            .on('close', function () {
-                                console.log('document written');
-                            });
+                        .apply({
+                            "NUM": {
+                                "type": "string",
+                                "value": doc.ref
+                            },
+                            "DESTINATAIRE.NAME": {
+                                "type": "string",
+                                "value": doc.bl[0].name
+                            },
+                            "DESTINATAIRE.ADDRESS": {
+                                "type": "area",
+                                "value": doc.bl[0].address
+                            },
+                            "DESTINATAIRE.ZIP": {
+                                "type": "string",
+                                "value": doc.bl[0].zip
+                            },
+                            "DESTINATAIRE.TOWN": {
+                                "type": "string",
+                                "value": doc.bl[0].town
+                            },
+                            "DESTINATAIRE.TVA": {
+                                "type": "string",
+                                "value": societe.idprof6
+                            },
+                            "CODECLIENT": {
+                                "type": "string",
+                                "value": societe.code_client
+                            },
+                            //"TITLE": {"type": "string", "value": doc.title},
+                            "REFCLIENT": {
+                                "type": "string",
+                                "value": doc.ref_client
+                            },
+                            "DELIVERYMODE": {
+                                "type": "string",
+                                "value": doc.delivery_mode
+                            },
+                            "PERIOD": {
+                                "type": "string",
+                                "value": period
+                            },
+                            "DATEC": {
+                                "type": "date",
+                                "value": doc.datec,
+                                "format": CONFIG('dateformatShort')
+                            },
+                            "DATEEXP": {
+                                "type": "date",
+                                "value": doc.date_livraison,
+                                "format": CONFIG('dateformatShort')
+                            },
+                            "REGLEMENT": {
+                                "type": "string",
+                                "value": cond_reglement_code.values[doc.cond_reglement_code].label
+                            },
+                            "PAID": {
+                                "type": "string",
+                                "value": mode_reglement_code.values[doc.mode_reglement_code].label
+                            },
+                            "NOTES": {
+                                "type": "area",
+                                "value": (doc.notes.length ? doc.notes[0].note : ""),
+                            },
+                            "BK": {
+                                "type": "area",
+                                "value": reglement
+                            },
+                            "TABULAR": tabLines,
+                            "TOTAL": tabTotal,
+                            "APAYER": {
+                                "type": "euro",
+                                "value": doc.total_ttc || 0
+                            }
+                        })
+                        .on('error', function(err) {
+                            console.log(err);
+                            self.throw500(err);
+                        })
+                        .finalize(function(tex) {
+                            //console.log('The document was converted.');
+                        })
+                        .compile()
+                        .pipe(self.res)
+                        .on('close', function() {
+                            console.log('document written');
+                        });
                 });
             });
         });
     },
-    createOrder: function (self) {
+    createOrder: function(self) {
         var OrderModel = MODEL('order').Schema;
         var OfferModel = MODEL('offer').Schema;
 
@@ -795,7 +796,7 @@ Object.prototype = {
 
         var order = new OrderModel(self.body);
 
-        order.save(function (err, doc) {
+        order.save(function(err, doc) {
             if (err)
                 return console.log(err);
 
@@ -805,7 +806,7 @@ Object.prototype = {
                 $addToSet: {
                     orders: doc._id
                 }
-            }, function (err) {
+            }, function(err) {
                 if (err)
                     console.log(err);
             });
@@ -814,13 +815,13 @@ Object.prototype = {
             self.json(doc);
         });
     },
-    download: function (id) {
+    download: function(id) {
         var self = this;
         var OfferModel = MODEL('offer').Schema;
 
         var object = new Object();
 
-        OfferModel.findOne({_id: id}, function (err, offer) {
+        OfferModel.findOne({ _id: id }, function(err, offer) {
             if (err)
                 return self.throw500(err);
 

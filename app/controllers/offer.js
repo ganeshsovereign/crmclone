@@ -64,6 +64,8 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             $scope.opened = true;
         };
 
+        $scope.$dict = {};
+
         // Init
         $scope.$on('$viewContentLoaded', function() {
             // initialize core components
@@ -84,6 +86,15 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 $scope.dict = data;
                 //console.log(data);
             });
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/employees/bySalesAccount'
+            }).success(function(data, status) {
+                $scope.$dict.salesPerson = data.data;
+                //console.log(data);
+            });
+
 
             initDatatable();
         });
@@ -237,49 +248,33 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 return true;
             }
 
-            $scope.offer.addresses = data.addresses;
+            console.log(data);
 
-            //if(mode == 'bill')  {
-            $scope.offer.cond_reglement_code = data.cond_reglement_code;
-            $scope.offer.mode_reglement_code = data.mode_reglement_code;
-            $scope.offer.price_level = data.price_level;
-            $scope.offer.commercial_id = data.commercial_id;
-            //}
-            //console.log(data);
-            if (data.address) {
-                //if (data.id == '5333032036f43f0e1882efce') // Accueil
-                //    $scope.offer.client.isNameModified = true;
+            $scope.offer.address = data.address;
 
-                // Billing address
-                $scope.offer.billing = {
-                    societe: {}
-                };
-                $scope.offer.billing.societe.name = data.cptBilling.name;
-                $scope.offer.billing.societe.id = data.cptBilling.id;
-                $scope.offer.billing.address = data.cptBilling.address;
-                $scope.offer.billing.zip = data.cptBilling.zip;
-                $scope.offer.billing.town = data.cptBilling.town;
+            if (data.salesPurchases.isGeneric)
+                $scope.offer.address.name = data.fullName;
 
-                // Delivery address
-                $scope.offer.bl = [{
-                    societe: {}
-                }];
+            $scope.offer.cond_reglement_code = data.salesPurchases.cond_reglement;
+            $scope.offer.mode_reglement_code = data.salesPurchases.mode_reglement;
+            $scope.offer.priceList = data.salesPurchases.priceList;
+            $scope.offer.salesPerson = data.salesPurchases.salesPerson;
+            $scope.offer.salesTeam = data.salesPurchases.salesTeam;
 
-                $scope.offer.bl[0].name = data.addresses[0].name;
-                $scope.offer.bl[0].address = data.addresses[0].address;
-                $scope.offer.bl[0].zip = data.addresses[0].zip;
-                $scope.offer.bl[0].town = data.addresses[0].town;
 
-                if (data.deliveryAddressId)
-                    for (var i = 0; i < data.addresses.length; i++)
-                        if (data.deliveryAddressId == data.addresses[i]._id) {
-                            $scope.offer.bl[0].name = data.addresses[i].name;
-                            $scope.offer.bl[0].address = data.addresses[i].address;
-                            $scope.offer.bl[0].zip = data.addresses[i].zip;
-                            $scope.offer.bl[0].town = data.addresses[i].town;
-                        }
-            }
-            return true;
+            // Billing address
+            $scope.offer.billing = data.salesPurchases.cptBilling;
+
+            $scope.offer.shippingAddress = data.shippingAddress[0];
+
+            $scope.offer.addresses = data.shippingAddress;
+
+            if (data.deliveryAddressId)
+                for (var i = 0; i < data.shippingAddress.length; i++)
+                    if (data.deliveryAddressId == data.shippingAddress[i]._id) {
+                        $scope.offer.shippingAddress = data.shippingAddress[i];
+                        break;
+                    }
         };
 
         $scope.updateBillingAddress = function() {

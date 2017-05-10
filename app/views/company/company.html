@@ -77,6 +77,14 @@
                                         <label for="brand">@(companies:SocGroupShort) </label>
                                     </div>
 
+                                    <div class="md-checkbox-inline">
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" id="isGeneric" class="md-check" ng-model="societe.salesPurchases.isGeneric" ng-checked="societe.salesPurchases.isGeneric">
+                                            <label for="isGeneric"><span></span><span class="check"></span><span class="box"></span> @(GenericCustomer)</label>
+                                            <span class="help">@(Si actif, ce compte est devient un compte divers)</span>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group form-md-line-input">
                                         <label for="">@(Entities)</label>
                                         <div class="md-checkbox-inline">
