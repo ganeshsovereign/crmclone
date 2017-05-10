@@ -34,13 +34,14 @@
                                 <tr ng-repeat="line in listObject">
                                     <td>{{line.sequence}}</td>
                                     <td>{{line.name}}</td>
-                                    <td>{{line.inventory}}</td>
+                                    <td><input type="checkbox" id="isActive" class="md-check" ng-model="line.inventory" disabled ng-checked="line.inventory"></td>
+
                                     <td>{{line.countProducts}}</td>
-                                    <th>{{line.createdAt | date : "shortDate"}}</th>
-                                    <td>
-                                        <a class="btn green fa fa-pencil" ui-sref="settings.product.types.show({id:line._id})" title="Editer"></a>
-                                        <button ng-if="line.countProducts == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
-                                    </td>
+                                    <td>{{line.createdAt | date : "shortDate"}}</th>
+                                        <td>
+                                            <a class="btn green fa fa-pencil" ui-sref="settings.product.types.show({id:line._id})" title="Editer"></a>
+                                            <button ng-if="line.countProducts == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
+                                        </td>
                                 </tr>
                             </tbody>
                         </table>

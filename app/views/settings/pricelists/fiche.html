@@ -15,23 +15,30 @@
                             <div class="col-md-12">
 
                                 <div class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="object.priceListCode">
-                                    <label for="form_control_1">@(Code)</label>
+                                    <input type="text" class="form-control" id="Code" ng-model="object.priceListCode">
+                                    <label for="Code">@(Code)</label>
                                 </div>
 
                                 <div class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="form_control_1" ng-model="object.name">
-                                    <label for="form_control_1">@(Name)</label>
+                                    <input type="text" class="form-control" id="Name" ng-model="object.name">
+                                    <label for="Name">@(Name)</label>
                                 </div>
+
+                                <div class="form-group form-md-line-input">
+                                    <select class="table-group-action-input form-control" id="Currency" ng-model="object.currency" ng-options="s._id as s.name for s in $dict.currency"></select>
+                                    <label for="Currency">@(Currency)</label>
+                                </div>
+
                                 <div class="md-checkbox-inline">
                                     <div class="md-checkbox has-success">
-                                        <input type="checkbox" id="isActive" class="md-check" ng-model="object.isActive" ng-checked="object.isActive">
+                                        <input type="checkbox" id="isActive" class="md-check" ng-model="object.cost" disabled ng-checked="object.isActive">
                                         <label for="isActive">
                                 <span></span>
                                 <span class="check"></span>
-                                <span class="box"></span> @(Activated)</label>
+                                <span class="box"></span> @(products:SupplierCost)</label>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>

@@ -131,6 +131,17 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         $rootScope.settings.layout.pageBodySolid = true;
         $rootScope.settings.layout.pageSidebarClosed = false;
 
+
+        $scope.$dict = {};
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/currency'
+        }).success(function(data, status) {
+            $scope.$dict.currency = data.data;
+            //console.log(data);
+        });
+
         if (current[current.length - 1] == 'show')
             $scope.findOne();
 
