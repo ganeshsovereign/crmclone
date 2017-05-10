@@ -737,19 +737,18 @@ exports.Book.prototype.setExported = function(journal_id, date) {
 
     deferred = Q.defer();
     this.journalModel.findById(journal_id, function(err, journal) {
-        if (err) {
+        if (err)
             return deferred.reject(err);
-        } else if (!journal) {
+        if (!journal)
             return deferred.reject("JournalId not found");
-        } else if (journal.exported != null)
-            return deferred.reject("JournalId already exported");
-        else {
-            return journal.setExported(_this, date).then(function() {
-                return deferred.resolve();
-            }, function(err) {
-                return deferred.reject(err);
-            });
-        }
+        if (journal.exported != null)
+            return deferred.resolve();
+
+        return journal.setExported(_this, date).then(function() {
+            return deferred.resolve();
+        }, function(err) {
+            return deferred.reject(err);
+        });
     });
     return deferred.promise;
 };
@@ -764,17 +763,16 @@ exports.Book.prototype.setReconcilliation = function(journal_id, date) {
 
     deferred = Q.defer();
     this.journalModel.findById(journal_id, function(err, journal) {
-        if (err) {
+        if (err)
             return deferred.reject(err);
-        } else if (!journal)
+        if (!journal)
             return deferred.reject("JournalId not found");
-        else {
-            return journal.setReconcilliation(_this, date).then(function() {
-                return deferred.resolve();
-            }, function(err) {
-                return deferred.reject(err);
-            });
-        }
+
+        return journal.setReconcilliation(_this, date).then(function() {
+            return deferred.resolve();
+        }, function(err) {
+            return deferred.reject(err);
+        });
     });
     return deferred.promise;
 };
