@@ -9,10 +9,12 @@ var mongoose = require('mongoose'),
     _ = require('lodash'),
     timestamps = require('mongoose-timestamp');
 
+var setRound3 = MODULE('utils').setRound3;
+
 var productFamilyCoefSchema = new Schema({
     priceLists: { type: ObjectId, ref: 'priceList' },
     family: { type: ObjectId, ref: 'productFamily' },
-    coef: { type: Number, min: 0, default: 1 },
+    coef: { type: Number, min: 0, default: 1, set: setRound3 },
     createdBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null },
     editedBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null }
 });

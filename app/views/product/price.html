@@ -27,7 +27,7 @@
                                         <div class="portlet-title">
                                             <div class="caption caption-md">
                                                 <i class="fa fa-cart-arrow-down font-yellow-crusta"></i>
-                                                <span class="caption-subject font-yellow-crusta bold uppercase">@(products:Costs)</span>
+                                                <span class="caption-subject font-yellow-crusta bold uppercase">Prix de revient</span>
                                             </div>
                                         </div>
                                         <div class="portlet-body">
@@ -176,11 +176,13 @@
                                                                 <input type="checkbox" class="group-checkable" />
                                                             </th>
                                                             <th>@(Liste de prix)</th>
-                                                            <th ng-if="product.sellFamily.isCoef">@(Coef.)</th>
-                                                            <th ng-if="product.sellFamily.isCoef">@(Coef. * Family)</th>
+                                                            <th ng-if="product.sellFamily.isCoef">@(Coef.) @(Qty)</th>
+                                                            <th ng-if="product.sellFamily.isCoef">@(Coef. total)</th>
                                                             <!--<th>@(products:Promo)</th>-->
+                                                            <th>Prix de revient</th>
                                                             <th>@(products:SellingPriceHT)</th>
                                                             <th>@(products:SellingPriceTTC)</th>
+                                                            <th>@(products:Margin) HT</th>
                                                             <th>Date MAJ</th>
                                                             <th>@(Action)</th>
                                                         </tr>
@@ -234,6 +236,9 @@
                                                                 </table>
                                                             </td>
                                                             <td>
+                                                                {{line.product.directCost + line.product.indirectCost | currency}}
+                                                            </td>
+                                                            <td>
                                                                 <table class="table-condensed">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
@@ -277,6 +282,17 @@
                                                                     </tbody>
                                                                 </table>
                                                             </td>
+                                                            <td>
+                                                                <table class="table-condensed">
+                                                                    <tbody>
+                                                                        <tr ng-repeat="price in line.prices">
+                                                                            <td class="text-info">{{price.count}}</td>
+                                                                            <td>{{price.margin.value | currency}} ({{price.margin.rate | percent:2}})</a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
                                                             <td>{{line.updatedAt| date:'dd/MM/yyyy HH:mm'}}</td>
                                                             <td><button ng-if="line.priceLists.removable !== false" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button></td>
                                                         </tr>
@@ -298,7 +314,7 @@
                                         <div class="portlet-title">
                                             <div class="caption caption-md">
                                                 <i class="fa fa-cart-arrow-down font-yellow-crusta"></i>
-                                                <span class="caption-subject font-yellow-crusta bold uppercase">@(buy:BuyingPrice)</span>
+                                                <span class="caption-subject font-yellow-crusta bold uppercase">Prix de revient</span>
                                             </div>
                                         </div>
                                         <div class="portlet-body">
@@ -408,7 +424,7 @@
                                         <div class="portlet-title">
                                             <div class="caption caption-md">
                                                 <i class="fa fa-list font-grey-gallery"></i>
-                                                <span class="caption-subject font-grey-gallery bold uppercase">Prix d'achat</span>
+                                                <span class="caption-subject font-grey-gallery bold uppercase">Prix de revient</span>
                                             </div>
                                             <div class="actions">
                                                 <a class="btn blue" ng-if="prices.length==0" ng-click="addNewPrice()" href="javascript:;">

@@ -45,6 +45,10 @@ exports.setPrice = function(value) {
     return round(value, 2);
 };
 
+exports.setRound3 = function(value) {
+    return round(value, 3);
+};
+
 exports.setTags = function(tags) {
     var result = [];
     for (var i = 0; i < tags.length; i++)

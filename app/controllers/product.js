@@ -54,7 +54,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     $scope.family = null;
     $scope.dict = {};
     $scope.newSupplierPrice = {
-        taxes : []
+        taxes: []
     };
     $scope.productTypes = [];
     $scope.attributeMap = {};
@@ -485,7 +485,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             $scope.newSupplierPrice.societe = $scope.newSupplierPrice.societe.id;
             $scope.product.suppliers.push($scope.newSupplierPrice);
             $scope.newSupplierPrice = {
-                taxes : []
+                taxes: []
             };
             $scope.update();
         }
@@ -1120,8 +1120,12 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
 
         /*if price update with coef -> update coef*/
         if ($scope.product)
-            if ($scope.product.sellFamily.isCoef && $scope.product.directCost)
-                price.coef = price.price / $scope.product.directCost;
+            if ($scope.product.sellFamily.isCoef && ($scope.product.directCost + $scope.product.indirectCost)) {
+                var coefFamily = price.coefTotal / price.coef;
+                //console.log(coefFamily);
+
+                price.coef = price.price / coefFamily / ($scope.product.directCost + $scope.product.indirectCost);
+            }
 
         $http({
             method: 'PUT',

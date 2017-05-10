@@ -2331,7 +2331,7 @@ Prices.prototype = {
         ProductPricesModel.find(query)
             .populate({
                 path: "product",
-                select: "weight name taxes info",
+                select: "weight name taxes info directCost indirectCost",
                 populate: { path: 'taxes.taxeId' }
             })
             .populate("priceLists")
@@ -2352,11 +2352,17 @@ Prices.prototype = {
 
                     //console.log(price);
                     //build TTC price
-                    for (var i = 0; i < price.prices.length; i++)
+                    for (var i = 0; i < price.prices.length; i++) {
+                        price.prices[i].margin = {
+                            value: MODULE('utils').round(price.prices[i].price - price.product.directCost - price.product.indirectCost, 3),
+                            rate: MODULE('utils').round((price.prices[i].price - price.product.directCost - price.product.indirectCost) / (price.product.directCost + price.product.indirectCost) * 100, 2)
+                        };
                         if (price.prices[i].specialPrice)
                             price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].specialPrice * (1 + price.product.taxes[0].taxeId.rate / 100));
                         else
                             price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].price * (1 + price.product.taxes[0].taxeId.rate / 100), 3);
+
+                    }
                 }
 
                 //console.log(prices);
