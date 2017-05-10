@@ -90,7 +90,7 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="icon-info"></i>
-                            <span class="caption-subject dark bold uppercase">@(propal:CommercialProposals) - {{offer.ref}} - {{offer.client.name}} </span>
+                            <span class="caption-subject dark bold uppercase">@(propal:CommercialProposals) - {{offer.ref}} - {{offer.supplier.fullName}} </span>
                         </div>
                         <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
                     </div>
@@ -113,27 +113,8 @@
                 <div class="row">
                     <div class="col-md-6 col-sm-12">
                         <div class="portlet light">
-                            <div class="form-group form-md-line-input">
-                                <div class="input-group">
-                                    <div class="input-group-control">
-                                        <input type="text" class="form-control">
-                                        <label for="form_control_1">Input Group</label>
-                                    </div>
-                                    <span class="input-group-btn btn-right">
-                                                <button class="btn yellow" type="button" ui-sref="societe.show({id:offer.client.id})">Go!</button>
-                                           </span>
-                                </div>
-                            </div>
 
-                            <div class="form-group form-md-line-input " ng-if="offer.client.id !== '5333032036f43f0e1882efce'">
-                                <input type="text" class="form-control" id="ref" ng-model="offer.client">
-                                <label for="ref">@(companies:Company) :</label>
-                            </div>
-
-                            <div class="form-group form-md-line-input " ng-if="offer.client.id === '5333032036f43f0e1882efce'">
-                                <input type="text" class="form-control" id="ref" disabled ng-model="offer.ref">
-                                <label for="ref">@(companies:Company) :</label>
-                            </div>
+                            <crm-id label="@(companies:Customer)" name="societeId" ng-model="offer.supplier" entity="offer.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
 
                             <div class="form-group form-md-line-input ">
                                 <input type="text" class="form-control" id="ref_client" ng-model="offer.ref_client">

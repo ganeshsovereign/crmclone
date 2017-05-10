@@ -38,7 +38,8 @@
                                     <div class="form-control-focus"> </div>
                                 </div>
                             </div>
-                            <div crm-id label="@(companies:Company)" name="societeId" ng-model="offer.supplier" entity="offer.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></div>
+
+                            <crm-id label="@(companies:Company)" name="societeId" ng-model="offer.supplier" entity="offer.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
                             <!--<div class="form-group">
                                 <label class="col-md-4 control-label">@(Title)</label>
                                 <div class="col-md-8">

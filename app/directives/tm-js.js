@@ -618,7 +618,7 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
 MetronicApp.directive('crmId', ['$http',
     function($http) {
         return {
-            restrict: 'A',
+            restrict: 'E',
             require: 'ngModel',
             scope: {
                 model: "=ngModel",
@@ -632,7 +632,7 @@ MetronicApp.directive('crmId', ['$http',
                 onSelect: "="
             },
             templateUrl: function(el, attr) {
-                return '/templates/core/typeahead-form.html';
+                return '/templates/core/crm_id-form.html';
             },
             link: function(scope, elm, attrs, ctrl) {
                 //console.log(scope);
