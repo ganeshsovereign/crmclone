@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="searchcompany.html">
     <a>
-    <span ng-bind-html="match.model.code_client | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.name"></span>
+        <span ng-bind-html="match.model.salesPurchases.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.fullName"></span>
     </a>
 </script>
 
@@ -10,8 +10,8 @@
         <div class="input-icon right">
             <i class="fa" ng-class="{'fa-warning': $error, 'fa-check': !$error}"></i>
             <!--<span ng-show="model.id='5333032036f43f0e1882efce'"><i>{{model.name}}</i></span>-->
-            <input class="form-control" ng-disabled="model.id == '5333032036f43f0e1882efce'" ng-model="model" name="{{name}}" ng-required="required" typeahead="data as data.name for data in AutoComplete($viewValue, url, entity ) | filter:{name:$viewValue}"
-                   typeahead-on-select="onSelect($item)" typeahead-template-url="searchcompany.html" placeholder="{{placeholder}}" type="text" autocomplete="off" />
+            <input class="form-control" ng-disabled="model.id == '5333032036f43f0e1882efce'" ng-model="model" name="{{name}}" ng-required="required" typeahead="data as data.name for data in AutoComplete($viewValue, url, entity ) | filter:{name:$viewValue}" typeahead-on-select="onSelect($item)"
+                typeahead-template-url="searchcompany.html" placeholder="{{placeholder}}" type="text" autocomplete="off" />
         </div>
     </div>
 </div>
