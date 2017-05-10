@@ -160,9 +160,9 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         });
 
         $http({
-            method: 'POST',
+            method: 'GET',
             url: '/erp/api/product/prices/priceslist',
-            data: { cost: false }
+            params: { cost: false }
         }).success(function(data) {
             $scope.pricesLists = data.data;
         });
@@ -1229,7 +1229,8 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
             url: '/erp/api/product/prices/priceslist',
             params: { cost: costFind }
         }).success(function(data) {
-            $scope.pricesLists = data;
+            console.log(data);
+            $scope.pricesLists = data.data;
         });
 
         $scope.ok = function() {

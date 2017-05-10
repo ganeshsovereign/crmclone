@@ -1167,10 +1167,11 @@ Object.prototype = {
                         // Add id
                         res.datatable.data[i].DT_RowId = row._id.toString();
                         //Prices 
+
                         if (row.prices && row.prices.pu_ht)
-                            res.datatable.data[i].pu_ht = MODULE('utils').printPrice(row.prices.pu_ht, 3);
-                        else if (row.Status == 'SELL' || row.Status == 'SELLBUY')
-                            res.datatable.data[i].pu_ht = '<span class="text-danger">Inconnu</span>';
+                            res.datatable.data[i].prices.pu_ht = MODULE('utils').printPrice(row.prices.pu_ht, 3);
+                        //else if (row.Status == 'SELL' || row.Status == 'SELLBUY')
+                        //    res.datatable.data[i].pu_ht = '<span class="text-danger">Inconnu</span>';
                         else if (row.prices && row.prices.pu_ht == 0)
                             res.datatable.data[i].pu_ht = '';
 
@@ -2317,7 +2318,7 @@ PricesList.prototype = {
             cost: false
         };
 
-        if (self.query.cost)
+        if (self.query.cost && self.query.cost == 'true')
             query.cost = true;
 
         if (self.query.all)
@@ -2468,7 +2469,7 @@ Prices.prototype = {
 
                 prices = _.sortBy(prices, sort);
 
-                self.json({ prices });
+                self.json(prices);
             });
     },
     update: function(id) {
@@ -3661,6 +3662,4 @@ ProductAttributes.prototype = {
         });
     },
     deleteProductAttributes: function(id) {}
-};
-deleteProductAttributes: function(id) {}
 };

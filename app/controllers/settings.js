@@ -136,7 +136,7 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
         $http({
             method: 'GET',
-            url: '/erp/api/currency'
+            url: '/erp/api/currencies'
         }).success(function(data, status) {
             $scope.$dict.currency = data.data;
             //console.log(data);
