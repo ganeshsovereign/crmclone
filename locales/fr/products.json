@@ -39,6 +39,8 @@
     "Reference": "Référence",
     "Multiplier": "Coef. multiplicateur",
     "MultiplierLong": "Coefficient multiplicateur",
+    "SellByCoef": "Vente par Coef.",
+    "FamilyCost": "Coût Famille",
     "Packing": "Condionnement",
     "selectoneormorecategories": "Selectionner une ou plusieurs catégories",
     "SubstituteProduct": "Produits de substitution",
