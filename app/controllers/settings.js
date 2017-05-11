@@ -65,7 +65,7 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     $scope.createMod = true;
     $scope.edit = [];
 
-    $scope.dict = {
+    $scope.$dict = {
         attributesMode: [{
             id: 'text',
             name: 'Champs texte',
@@ -130,11 +130,20 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
         Metronic.initAjax();
+        var dict = ["fk_units", "fk_tva"];
 
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
-        $scope.$dict = {};
+        $http({
+            method: 'GET',
+            url: '/erp/api/dict',
+            params: {
+                dictName: dict
+            }
+        }).success(function(data, status) {
+            $scope.dict = data;
+        });
 
         $http({
             method: 'GET',
