@@ -369,7 +369,7 @@
                                                     </span>-->
                                 </td>
                                 <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
-                                    <span editable-select="line.tva_tx" e-ng-change="calculMontantHT(line, $data, 'tva_tx')" e-form="tableform" e-ng-options="c.value as c.value for c in dict.fk_tva.values">
+                                    <span editable-select="line.tva_tx" e-ng-change="calculMontantHT(line, $data, 'tva_tx')" e-form="tableform" e-ng-options="s._id as s.name for s in taxes | filter : {isFixValue:false}">
                                                         {{ line.tva_tx|percent:2}}
                                                     </span>
                                 </td>
