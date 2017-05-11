@@ -55,12 +55,13 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
 angular.module("MetronicApp").controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
     var current = $rootScope.$state.current.name.split('.');
     $scope.backTo = 'settings.product.types';
-    console.log(current);
+    //console.log(current);
 
     if (current.length <= 2)
         return $rootScope.$state.go('settings.product.attributes');
 
     $scope.createMod = true;
+    $scope.edit = [];
 
     $scope.dict = {
         attributesMode: [{
@@ -151,6 +152,8 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     $scope.findOne = function() {
         if (!$rootScope.$stateParams.id)
             return;
+
+        $scope.edit = [];
 
         Resource.get({
             Id: $rootScope.$stateParams.id

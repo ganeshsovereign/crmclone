@@ -665,58 +665,12 @@ exports.install = function() {
     F.route('/erp/api/product/family/{id}', productFamily.updateProductFamily, ['put', 'json', 'authorize'], 512);
 
     var productAttributes = new ProductAttributes();
-    // Autocomplete on attributes
-    F.route('/erp/api/product/attributes', function() {
-        //console.log(req.body);
-        var self = this;
-        var ProductModel = MODEL('product').Schema;
-        //console.log(self.body);
-
-        var query = {
-            isremoved: { $ne: true },
-            "$and": []
-        };
-
-        var obj = {};
-
-        query.$and.push(obj);
-
-        if (self.body.query)
-            query.$and.push(self.body.query);
-
-        if (self.body.filter) {
-            obj = {};
-            obj[self.body.field] = new RegExp(self.body.filter, "i");
-
-            query.$and.push(obj);
-        }
-
-        ProductModel.aggregate([
-            { "$match": { attributes: { $nin: [null, ""] } } },
-            { "$project": { attributes: 1 } },
-            { "$unwind": "$attributes" },
-            { "$match": query },
-            {
-                "$group": {
-                    "_id": "$attributes.key"
-                }
-            },
-            { "$sort": { _id: 1 } }
-        ], function(err, data) {
-
-            if (err)
-                return console.log('Erreur : ' + err);
-
-            var res = _.map(data, function(elem) {
-                return elem._id;
-            });
-            self.json(res);
-            //console.log(res);
-
-        });
-        return;
-    }, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/attributes', productAttributes.getAllProductAttributes, ['authorize']);
+    F.route('/erp/api/product/attributes/{id}', productAttributes.getProductAttributesById, ['authorize']);
+    F.route('/erp/api/product/attributes/', productAttributes.createProductAttributes, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/attributes/{id}', productAttributes.updateProductAttributes, ['put', 'json', 'authorize'], 512);
+    F.route('/erp/api/product/attributes/{id}', productAttributes.updateProductAttributes, ['delete', 'authorize']);
+
     // list for autocomplete
     F.route('/erp/api/product/ref/autocomplete', function() {
         //console.dir(req.body);
@@ -3566,54 +3520,23 @@ function ProductAttributes() {}
 ProductAttributes.prototype = {
     getProductAttributesById: function(id) {
         var self = this;
-        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var ProductAttributesModel = MODEL('productAttributes').Schema;
         var _id = id;
         var model;
 
         _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
 
-        ProductFamilyModel.aggregate([{
+        ProductAttributesModel.aggregate([{
             $match: { _id: MODULE('utils').ObjectId(_id) }
-        }, {
-            $unwind: {
-                path: '$options',
-                preserveNullAndEmptyArrays: true
-            }
-        }, {
-            $lookup: {
-                from: 'ProductAttributes',
-                localField: 'options',
-                foreignField: '_id',
-                as: 'options'
-            }
-        }, {
-            $unwind: {
-                path: '$options',
-                preserveNullAndEmptyArrays: true
-            }
         }, {
             $lookup: {
                 from: 'ProductAttributesValues',
-                localField: 'options._id',
+                localField: '_id',
                 foreignField: 'optionId',
-                as: 'optionsValue'
-            }
-        }, {
-            $project: {
-                name: '$name',
-                opts: {
-                    name: '$options.name',
-                    _id: '$options._id',
-                    values: '$optionsValue'
-                }
-            }
-        }, {
-            $group: {
-                _id: '$_id',
-                opts: { $push: '$opts' },
-                name: { $first: '$name' }
+                as: 'opts'
             }
         }], function(err, result) {
+
             if (err)
                 return self.throw500(err);
 
@@ -3624,7 +3547,7 @@ ProductAttributes.prototype = {
                 });
             } else
                 model = {};
-
+            //console.log(model);
             self.json(model);
         });
     },
@@ -3662,7 +3585,7 @@ ProductAttributes.prototype = {
     createProductAttributes: function() {
         var self = this;
         var body = self.body;
-        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var ProductAttributesModel = MODEL('productAttributes').Schema;
         var model;
         var err;
 
@@ -3672,7 +3595,7 @@ ProductAttributes.prototype = {
             self.throw404(err);
         }
 
-        model = new ProductFamilyModel(body);
+        model = new ProductAttributesModel(body);
         model.save(function(err, result) {
             if (err)
                 return self.throw500(err);
@@ -3682,81 +3605,56 @@ ProductAttributes.prototype = {
     },
     updateProductAttributes: function(id) {
         var self = this;
-        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var ProductAttributesModel = MODEL('productAttributes').Schema;
+        var ProductAttributesValuesModel = MODEL('productAttibutesValues').Schema;
+        var ProductModel = MODEL('product').Schema;
         var body = self.body;
         var _id = id;
         var currentOptions;
 
-        if (!body.options)
-            return ProductFamilyModel.findByIdAndUpdate(_id, body, { new: true }, function(err) {
-                if (err)
-                    return self.throw500(err);
-
-                self.getProductFamilyById(_id.toString());
-            });
-
-        function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, callback) {
-            var deletedOptions;
-            var addedOptions;
-            var addingOption;
-            var deletingOptions;
-
-            currentOpts = currentOpts.toStringObjectIds();
-
-            deletedOptions = _.difference(currentOpts, newOpts);
-            addedOptions = _.difference(newOpts, currentOpts);
-
-            addingOption = function(pCb) {
-                if (!addedOptions.length)
-                    return pCb();
-
-                addedOptions = addedOptions.objectID();
-
-                ProductFamilyModel.findByIdAndUpdate(modelId, { $pushAll: { options: addedOptions } }, { new: true }, function(err, result) {
-                    if (err)
-                        return pCb(err);
-
-                    pCb();
-                });
-            };
-
-            deletingOptions = function(pCb) {
-                if (!deletedOptions.length)
-                    return pCb();
-
-                deletedOptions = deletedOptions.objectID();
-
-                ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { options: deletedOptions } }, { new: true }, function(err, result) {
-                    if (err)
-                        return pCb(err);
-
-                    pCb();
-                });
-            };
-
-            async.parallel([
-                addingOption,
-                deletingOptions
-            ], function(err) {
-                if (err)
-                    return callback(err);
-
-                callback();
-            });
-        }
-
-        ProductFamilyModel.findOne({ _id: _id }, function(err, result) {
+        ProductAttributesModel.findByIdAndUpdate(_id, body, { new: true }, function(err, doc) {
             if (err)
                 return self.throw500(err);
 
-            currentOptions = result.options;
+            if (!body.options)
+                return self.json(doc);
 
-            updateOptionsForProdTypes(_id, currentOptions, body.options, ProductFamilyModel, function(err) {
-                if (err)
-                    return self.throw500(err);
+            if (self.body.value && self.body.value._id)
+                if (self.body.value.remove)
+                    return ProductModel.update({ variants: self.body.value._id }, { $pull: { variants: self.body.value._id } }, { multi: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
 
-                self.getProductFamilyById(_id.toString());
-            });
+
+                        ProductModel.update({ 'attributes.options': self.body.value._id }, { $pull: { 'attributes.$.options': self.body.value._id } }, { multi: true }, function(err, doc) {
+                            if (err)
+                                return console.log(err);
+
+                            ProductAttributesValuesModel.remove({ _id: self.body.value._id }, function(err, doc) {
+                                if (err)
+                                    return console.log(err);
+
+                                return self.json(doc);
+                            });
+                        });
+                    });
+                else
+                    return ProductAttributesValuesModel.findByIdAndUpdate(self.body.value._id, self.body.value, { new: true }, function(err, doc) {
+                        if (err)
+                            console.log(err);
+
+                        return self.json(doc);
+                    });
+
+            if (self.body.value && !self.body.value._id) {
+                var attr = new ProductAttributesValuesModel(self.body.value);
+                attr.save(function(err, doc) {
+                    if (err)
+                        console.log(err);
+
+                    return self.json(doc);
+                });
+            }
         });
     },
     deleteProductAttributes: function(id) {}

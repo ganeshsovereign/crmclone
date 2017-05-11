@@ -13,7 +13,7 @@ var AttributesValuesSchema = new Schema({
         value: String
     }],
     sequence: Number,
-    optionId: { type: Schema.Types.ObjectId, ref: 'productAttributes', default: null }
+    optionId: { type: Schema.Types.ObjectId, ref: 'productAttributes', require: true }
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true },
@@ -22,7 +22,8 @@ var AttributesValuesSchema = new Schema({
 
 AttributesValuesSchema.virtual('value')
     .get(function() {
-        return this.langs[0].value;
+        if (this.langs)
+            return this.langs[0].value;
     });
 
 

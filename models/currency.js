@@ -6,9 +6,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-/**
- * Emailing Schema
- */
 var currencySchema = new Schema({
     _id: { type: 'String' },
     name: { type: String, default: '' },

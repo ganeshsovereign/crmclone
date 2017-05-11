@@ -7,13 +7,13 @@
                         <i class="icon-magic-wand"></i>
                         <span class="caption-subject dark bold uppercase"> @(products:NewAttribute)</span>
                     </div>
-                    <div ng-include="'/templates/createMenu.html'" class="actions btn-set"></div>
+                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
                         <div class="row">
-                            <div class=col-md-12>
-                                <div class=col-md-6>
+                            <div class="col-md-12">
+                                <div class="col-md-6">
 
                                     <div class="form-group form-md-line-input">
                                         <input type="text" class="form-control" id="Name" ng-model="object.langs[0].name">
@@ -26,11 +26,11 @@
                                     </div>
 
                                     <div class="form-group form-md-line-input">
-                                        <select class="table-group-action-input form-control" id="mode" ng-model="object.mode" ng-options="s.id as s.name for s in dict.attributesMode | filter : {isActive:true}"></select>
+                                        <select class="table-group-action-input form-control" ng-disabled="object._id" id="mode" ng-model="object.mode" ng-options="s.id as s.name for s in dict.attributesMode | filter : {isActive:true}"></select>
                                         <label for="mode">@(Mode)</label>
                                     </div>
 
-                                    <div class="form-group form-md-line-input">
+                                    <div class="form-group form-md-line-input" ng-if="object.mode=='number' || object.mode=='metric'">
                                         <input type="number" class="form-control" id="Sequence" ng-model="object.sequence" min="0" step="1">
                                         <label for="Sequence">@(Sequence)</label>
                                     </div>
@@ -51,31 +51,65 @@
                                     </div>
 
                                 </div>
-                                <div class=col-md-6>
+                                <div class="col-md-6">
 
-                                    <div class="form-group form-md-line-input">
+                                    <div class="form-group form-md-line-input" ng-show="object.mode == 'date'">
                                         <input type="number" class="form-control" id="maxDate" ng-model="object.maxDate">
                                         <label for="maxDate">@(products:MaxDate)</label>
                                     </div>
 
-                                    <div class="form-group form-md-line-input">
+                                    <div class="form-group form-md-line-input" ng-show="object.mode == 'date'">
                                         <input type="number" class="form-control" id="minDate" ng-model="object.minDate">
                                         <label for="minDate">@(products:MinDate)</label>
                                     </div>
 
-                                    <div class="form-group form-md-line-input">
+                                    <div class="form-group form-md-line-input" ng-if="object.mode=='number' || object.mode=='metric'">
                                         <input type="number" class="form-control" id="maxNumber" ng-model="object.maxNumber">
                                         <label for="maxNumber">@(products:MaxNumber)</label>
                                     </div>
 
-                                    <div class="form-group form-md-line-input">
+                                    <div class="form-group form-md-line-input" ng-if="object.mode=='number' || object.mode=='metric'">
                                         <input type="number" class="form-control" id="minNumber" ng-model="object.minNumber">
                                         <label for="minNumber">@(products:MinNumber)</label>
                                     </div>
 
-                                    <div class="form-group form-md-line-input">
+                                    <div class="form-group form-md-line-input" ng-if="object.mode=='number' || object.mode=='metric'">
                                         <input type="number" class="form-control" id="Step" ng-model="object.step" min="0" step="0.0001">
                                         <label for="Step">@(Step)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12" ng-if="object.options.length">
+                                <button class="btn green" ng-click="object.opts.unshift({optionId : object._id,code: 'New',langs : [{value:'New'}]});edit[0]=true;" title="@(Create)">@(Create)</button>
+
+                                <div class="table-responsive">
+                                    <div class="dataTables_wrapper no-footer table-responsive">
+                                        <div class="col-md-12">
+                                            <table class="table dataTable no-footer table-hover">
+                                                <thead>
+                                                    <tr role="row" class="heading">
+                                                        <th>@(Name)</th>
+                                                        <th>@(Value)</th>
+                                                        <th>@(Action)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="line in object.opts">
+                                                        <td><span ng-if="!edit[$index]">{{line.code}}</span>
+                                                            <input ng-if="edit[$index]" type="text" class="form-control" ng-model="line.code">
+                                                        </td>
+                                                        <td><span ng-if="!edit[$index]">{{line.langs[0].value}}</span>
+                                                            <input ng-if="edit[$index]" type="text" class="form-control" ng-model="line.langs[0].value">
+                                                        </td>
+                                                        <td>
+                                                            <button ng-if="edit[$index]" class="btn green" ng-click="object.value = line; update(true);" title="@(Save)">@(Save)</button>
+                                                            <button ng-if="!edit[$index]" class="btn green fa fa-pencil" ng-click="edit[$index]=true;" title="@(Edit)"></button>
+                                                            <button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmUnSelecAttribute)" confirmed-click="object.value = line; object.value.remove=true;update(true);"></button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
