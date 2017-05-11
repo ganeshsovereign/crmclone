@@ -203,9 +203,9 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             });
 
             $http({
-                method: 'POST',
+                method: 'GET',
                 url: '/erp/api/product/prices/priceslist',
-                data: { cost: false }
+                params: { cost: false }
             }).success(function(data) {
                 $scope.$dict.pricesLists = data.data;
             });

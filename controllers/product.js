@@ -341,7 +341,7 @@ exports.install = function() {
     F.route('/erp/api/product/taxes', taxes.read, ['authorize']);
 
     var pricesList = new PricesList();
-    F.route('/erp/api/product/prices/priceslist', pricesList.read, ['authorize']);
+    F.route('/erp/api/product/prices/priceslist', pricesList.getAllPricesLists, ['authorize']);
     F.route('/erp/api/product/prices/priceslist', pricesList.create, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/prices/priceslist/{id}', pricesList.show, ['authorize']);
     F.route('/erp/api/product/prices/priceslist/{id}', pricesList.update, ['put', 'json', 'authorize']);
@@ -2311,6 +2311,106 @@ Object.prototype = {
 function PricesList() {}
 
 PricesList.prototype = {
+    getAllPricesLists: function() {
+        var self = this;
+        var query = self.query;
+        var paginationObject = MODULE('helper').page(query);
+        var skip = paginationObject.skip;
+        var limit = paginationObject.limit;
+        var PriceListModel = MODEL('priceList').Schema;
+        var sortObj;
+        var key;
+
+        var lang = 0;
+
+        if (query.cost)
+            query.cost = (query.cost == 'true' ? true : false);
+
+        if (query.sort) {
+            key = Object.keys(query.sort)[0];
+            req.query.sort[key] = parseInt(query.sort[key], 10);
+
+            sortObj = query.sort;
+        } else {
+            sortObj = {
+                'data.priceListCode': 1
+            };
+        }
+
+        console.log(query);
+
+        PriceListModel.aggregate([{
+                $match: query
+            }, {
+                $lookup: {
+                    from: 'Customers',
+                    localField: '_id',
+                    foreignField: 'salesPurchases.priceList',
+                    as: 'Customers'
+                }
+            }, {
+                $project: {
+                    countCustomers: { $size: '$Customers' },
+                    priceListCode: 1,
+                    name: 1,
+                    currency: 1,
+                    cost: 1,
+                    defaultPriceList: 1,
+                    removable: 1
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: 1 },
+                    root: { $push: '$$ROOT' }
+                }
+            }, {
+                $unwind: '$root'
+            }, {
+                $project: {
+                    _id: 1,
+                    total: 1,
+                    data: {
+                        _id: '$root._id',
+                        priceListCode: '$root.priceListCode',
+                        name: { $concat: ['$root.name', ' - ', '$root.currency'] },
+                        currency: '$root.currency',
+                        cost: '$root.cost',
+                        defaultPriceList: '$root.defaultPriceList',
+                        removable: '$root.removable',
+                        countCustomers: '$root.countCustomers'
+                    }
+                }
+            }, {
+                $sort: sortObj
+            }, {
+                $skip: skip
+            }, {
+                $limit: limit
+            }, {
+                $group: {
+                    _id: null,
+                    total: { $first: '$total' },
+                    data: { $push: '$data' }
+                }
+            }, {
+                $project: {
+                    _id: 1,
+                    total: '$total',
+                    data: '$data'
+                }
+            }
+        ]).exec(function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            if (result && result.length)
+                return self.json(result[0]);
+
+            self.json({ data: [] });
+        });
+    },
     read: function() {
         var self = this;
         var PriceListModel = MODEL('priceList').Schema;
@@ -2385,7 +2485,6 @@ PricesList.prototype = {
                 FamilyCoefModel({ priceLists: id }, cb);
             },
             function(cb) {
-
                 PriceListModel.remove({
                     _id: id
                 }, cb)
