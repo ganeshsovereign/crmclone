@@ -31,8 +31,9 @@ angular.module("MetronicApp").controller('SettingGeneralController', ['$rootScop
         // initialize core components
         Metronic.initAjax();
 
-        $rootScope.settings.layout.pageBodySolid = true;
-        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
+
     });
 
 
@@ -45,8 +46,9 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
         // initialize core components
         Metronic.initAjax();
 
-        $rootScope.settings.layout.pageBodySolid = true;
-        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
+
     });
 
 
@@ -129,9 +131,8 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         // initialize core components
         Metronic.initAjax();
 
-        $rootScope.settings.layout.pageBodySolid = true;
-        $rootScope.settings.layout.pageSidebarClosed = false;
-
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
 
         $scope.$dict = {};
 
@@ -215,8 +216,9 @@ angular.module("MetronicApp").controller('SettingIntegrationController', ['$root
         // initialize core components
         Metronic.initAjax();
 
-        $rootScope.settings.layout.pageBodySolid = true;
-        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
+
     });
 
 

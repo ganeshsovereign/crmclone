@@ -317,6 +317,7 @@ Object.prototype = {
     readDT: function() {
         var self = this;
         var OfferModel = MODEL('offer').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         var query = JSON.parse(self.body.query);
         //console.log(JSON.parse(self.body.filters));
@@ -335,8 +336,8 @@ Object.prototype = {
          */
 
         var options = {
-            conditions: conditions,
-            select: "client.id"
+            conditions: conditions
+                //select: ""
         };
 
         async.parallel({
@@ -354,38 +355,41 @@ Object.prototype = {
                 console.log(err);
 
             //console.log(res);
+            SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
 
-            for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                var row = res.datatable.data[i];
+                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                    var row = res.datatable.data[i];
 
-                // Add checkbox
-                res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                // Add id
-                res.datatable.data[i].DT_RowId = row._id.toString();
-                // Add link company
-                // Add link company
-                if (row.client && row.client.id)
-                    res.datatable.data[i].client.name = '<a class="with-tooltip" href="#!/societe/' + row.client.id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.client.name + '"><span class="fa fa-institution"></span> ' + row.client.name + '</a>';
-                else {
-                    if (!row.client)
-                        res.datatable.data[i].client = {};
-                    res.datatable.data[i].client.name = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                    // Add checkbox
+                    res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                    // Add id
+                    res.datatable.data[i].DT_RowId = row._id.toString();
+                    // Add link company
+                    // Add link company
+                    if (row.supplier && row.supplier._id)
+                        res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
+                    else {
+                        if (!row.supplier)
+                            res.datatable.data[i].supplier = {};
+                        res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                    }
+
+                    // Action
+                    res.datatable.data[i].action = '<a href="#!/offer/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                    // Add url on name
+                    res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/offer/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-calculator"></span> ' + row.ref + '</a>';
+                    // Convert Date
+                    res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
+                    res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+                    // Convert Status
+                    if (res.status)
+                        res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
                 }
-                // Action
-                res.datatable.data[i].action = '<a href="#!/offer/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                // Add url on name
-                res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/offer/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-calculator"></span> ' + row.ref + '</a>';
-                // Convert Date
-                res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
-                // Convert Status
-                if (res.status)
-                    res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-            }
 
-            //console.log(res.datatable);
+                //console.log(res.datatable);
 
-            self.json(res.datatable);
+                self.json(res.datatable);
+            });
         });
     },
     /**

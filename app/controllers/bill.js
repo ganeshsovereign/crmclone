@@ -55,7 +55,7 @@ MetronicApp.controller('BillController', ['$scope', '$rootScope', '$http', '$win
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         var dict = ["fk_bill_status", "fk_input_reason", "fk_paiement", "fk_bill_type", "fk_transport", "fk_payment_term", "fk_tva"];

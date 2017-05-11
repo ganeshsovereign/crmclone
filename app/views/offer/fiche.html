@@ -139,7 +139,7 @@
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="price_level" disabled ng-model="offer.price_level">
+                                        <input type="text" class="form-control" id="price_level" disabled ng-model="offer.priceList">
                                         <label for="price_level">@(products:PriceLevel)</label>
                                     </div>
                                 </div>
@@ -150,21 +150,26 @@
                                     </div>
                                 </div>
                             </div>
+                            <hr>
+                            <div class="form-group form-md-line-input">
+                                <div class="form-control form-control-static"> {{history.date| date:'dd/MM/yyyy HH:mm'}} {{history.msg}}</div>
+                                <label for="form_control_1">@(Logs)</label>
+                            </div>
 
                             <div class="row">
-                                <div class="col-md-6 col-sm-12">
+                                <!-- <div class="col-md-6 col-sm-12">
                                     <div class="form-group form-md-line-input">
                                         <select class="form-control" id="Status" ng-model="offer.Status" ng-options="s.id as s.label for s in dict.fk_offer_status.values">
                                                 </select>
                                         <label for="Status">@(Status)</label>
                                     </div>
                                 </div>
-                                <!--<div class="col-md-6 col-sm-12">
-                                                    <div class="form-group form-md-line-input">
-                                                        <div class="form-control form-control-static"> {{offer.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
-                                                        <label for="form_control_1">@(DateLastModification)</label>
-                                                    </div>
-                                                </div>-->
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group form-md-line-input">
+                                        <div class="form-control form-control-static"> {{offer.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                                        <label for="form_control_1">@(DateLastModification)</label>
+                                    </div>
+                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -183,6 +188,10 @@
                                 <label for="delivery_mode">@(orders:RemovingOrder)</label>
                             </div>
                             <div class="form-group form-md-line-input">
+                                <input type="text" class="form-control" id="dateLivraison" date-input ng-model="offer.date_livraison">
+                                <label for="dateLivraison">@(DeliveryDate)</label>
+                            </div>
+                            <div class="form-group form-md-line-input">
                                 <select class="form-control" id="cond_reglement_code" ng-model="offer.cond_reglement_code" ng-options="s.id as s.label for s in dict.fk_payment_term.values">
                                         </select>
                                 <label for="cond_reglement_code">@(deliveries:PaymentConditions)</label>
@@ -192,14 +201,11 @@
                                         </select>
                                 <label for="mode_reglement_code">@(bills:PaymentMode)</label>
                             </div>
-                            <div class="form-group form-md-line-input ">
-                                <input type="text" class="form-control" id="commercial_id" ng-model="offer.commercial_id" typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}">
-                                <label for="commercial_id">@(commercial:Commercial)</label>
-                            </div>
-                            <hr>
+
                             <div class="form-group form-md-line-input">
-                                <div class="form-control form-control-static"> {{history.date| date:'dd/MM/yyyy HH:mm'}} {{history.msg}}</div>
-                                <label for="form_control_1">@(Logs)</label>
+                                <select class="form-control" id="commercial_id" ng-model="offer.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees">
+                                </select>
+                                <label for="commercial_id">@(commercial:Commercial)</label>
                             </div>
 
                         </div>
@@ -222,7 +228,7 @@
                     </div>
                     <div class="portlet-body" style="display: block;">
                         <div class="form-group form-md-line-input ">
-                            <address ng-model=societe.address></address>
+                            <address ng-model=offer.address></address>
                         </div>
                     </div>
                 </div>
@@ -241,13 +247,13 @@
                     </div>
                     <div class="portlet-body" style="display: none;">
                         <div class="form-group form-md-line-input ">
-                            <address ng-model=customer.address></address>
+                            <address ng-model=offer.shippingAddress></address>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-5 col-sm-12">
+            <!--<div class="col-md-5 col-sm-12">
                 <div class="portlet light">
                     <div class="portlet-title">
                         <div class="caption">
@@ -271,7 +277,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 
@@ -290,7 +296,7 @@
                     </div>
                     <div class="actions">
                         <a href="javascript:;" ng-click="tableform.$show();
-                                            settings.layout.pageSidebarClosed = true;" ng-show="!tableform.$visible && editable" class="btn default">
+                                            settings.layout.pageSidebarClosed = true;" ng-show="!tableform.$visible && editable" class="btn yellow-crusta">
                             <i class="fa fa-pencil"></i> @(Edit) </a>
                     </div>
                     <div class="actions">
@@ -306,14 +312,14 @@
                         <table class="table table-fixed table-striped table-bordered table-hover no-footer">
                             <thead>
                                 <tr role="row" class="heading">
-                                    <th style="width: 140px;">Code produit</th>
-                                    <th style="width: 15%;">Nom</th>
-                                    <th style="width: 25%;">Description</th>
-                                    <th>Qté</th>
-                                    <th style="width: 160px;">Prix HT</th>
-                                    <th>Remise %</th>
-                                    <th>TVA %</th>
-                                    <th>Total HT</th>
+                                    <th style="width: 140px;">@(products:ProductCode)</th>
+                                    <th style="width: 15%;">@(Name)</th>
+                                    <th style="width: 25%;">@(Description)</th>
+                                    <th>@(Qty)</th>
+                                    <th style="width: 160px;">@(AmountHT)</th>
+                                    <th>@(Discount)%</th>
+                                    <th>@(VAT) %</th>
+                                    <th>@(TotalHT)</th>
                                     <th style="width: 140px;"><span ng-show="tableform.$visible">Action</span></th>
                                 </tr>
                             </thead>

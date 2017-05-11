@@ -96,7 +96,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         var dict = ["fk_employees_status"];
