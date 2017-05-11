@@ -2337,71 +2337,70 @@ PricesList.prototype = {
             };
         }
 
-        console.log(query);
+        //console.log(query);
 
         PriceListModel.aggregate([{
-                $match: query
-            }, {
-                $lookup: {
-                    from: 'Customers',
-                    localField: '_id',
-                    foreignField: 'salesPurchases.priceList',
-                    as: 'Customers'
-                }
-            }, {
-                $project: {
-                    countCustomers: { $size: '$Customers' },
-                    priceListCode: 1,
-                    name: 1,
-                    currency: 1,
-                    cost: 1,
-                    defaultPriceList: 1,
-                    removable: 1
-                }
-            },
-            {
-                $group: {
-                    _id: null,
-                    total: { $sum: 1 },
-                    root: { $push: '$$ROOT' }
-                }
-            }, {
-                $unwind: '$root'
-            }, {
-                $project: {
-                    _id: 1,
-                    total: 1,
-                    data: {
-                        _id: '$root._id',
-                        priceListCode: '$root.priceListCode',
-                        name: { $concat: ['$root.name', ' - ', '$root.currency'] },
-                        currency: '$root.currency',
-                        cost: '$root.cost',
-                        defaultPriceList: '$root.defaultPriceList',
-                        removable: '$root.removable',
-                        countCustomers: '$root.countCustomers'
-                    }
-                }
-            }, {
-                $sort: sortObj
-            }, {
-                $skip: skip
-            }, {
-                $limit: limit
-            }, {
-                $group: {
-                    _id: null,
-                    total: { $first: '$total' },
-                    data: { $push: '$data' }
-                }
-            }, {
-                $project: {
-                    _id: 1,
-                    total: '$total',
-                    data: '$data'
+            $match: query
+        }, {
+            $lookup: {
+                from: 'Customers',
+                localField: '_id',
+                foreignField: 'salesPurchases.priceList',
+                as: 'Customers'
+            }
+        }, {
+            $project: {
+                countCustomers: { $size: '$Customers' },
+                priceListCode: 1,
+                name: 1,
+                currency: 1,
+                cost: 1,
+                defaultPriceList: 1,
+                removable: 1
+            }
+        }, {
+            $group: {
+                _id: null,
+                total: { $sum: 1 },
+                root: { $push: '$$ROOT' }
+            }
+        }, {
+            $unwind: '$root'
+        }, {
+            $project: {
+                _id: 1,
+                total: 1,
+                data: {
+                    _id: '$root._id',
+                    priceListCode: '$root.priceListCode',
+                    name: { $concat: ['$root.name', ' - ', '$root.currency'] },
+                    currency: '$root.currency',
+                    cost: '$root.cost',
+                    defaultPriceList: '$root.defaultPriceList',
+                    removable: '$root.removable',
+                    countCustomers: '$root.countCustomers'
                 }
             }
-        ]).exec(function(err, result) {
+        }, {
+            $sort: sortObj
+        }, {
+            $skip: skip
+        }, {
+            $limit: limit
+        }, {
+            $group: {
+                _id: null,
+                total: { $first: '$total' },
+                data: { $push: '$data' }
+            }
+        }, {
+            $project: {
+                _id: 1,
+                total: '$total',
+                data: '$data'
+            }
+        }]).exec(function(err, result) {
+            //console.log(result);
             if (err)
                 return self.throw500(err);
 
