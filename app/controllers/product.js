@@ -1047,7 +1047,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
     var costFind = false;
 
     $scope.$on('$viewContentLoaded', function() {
-        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
     });
 
@@ -1361,8 +1361,8 @@ MetronicApp.controller('ProductStatsController', ['$scope', '$rootScope', '$http
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = false;
-        $rootScope.settings.layout.pageBodySolid = true;
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
 
         $scope.find();
 
