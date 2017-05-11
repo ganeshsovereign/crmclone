@@ -276,7 +276,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
 
             $scope.offer.cond_reglement_code = data.salesPurchases.cond_reglement;
             $scope.offer.mode_reglement_code = data.salesPurchases.mode_reglement;
-            $scope.offer.priceList = data.salesPurchases.priceList;
+            //$scope.offer.priceList = data.salesPurchases.priceList;
             $scope.offer.salesPerson = data.salesPurchases.salesPerson;
             $scope.offer.salesTeam = data.salesPurchases.salesTeam;
 
@@ -448,29 +448,30 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             if (!data.id)
                 return "Le produit n'existe pas";
         };
+
         $scope.addProduct = function(data, index, lines) {
             //console.log(data);
             for (var i = 0; i < lines.length; i++) {
                 if (lines[i].idLine === index) {
                     lines[i] = {
-                        pu_ht: data.pu_ht,
-                        tva_tx: data.product.id.tva_tx,
-                        discount: data.discount,
-                        priceSpecific: (data.product.dynForm ? true : false),
+                        pu_ht: data.prices.price,
+                        tva_tx: data.taxes,
+                        discount: data.prices.discount,
+                        priceSpecific: (data.dynForm ? true : false),
                         product: {
-                            id: data.product.id._id,
-                            name: data.product.id.ref,
-                            label: data.product.id.label,
-                            unit: data.product.unit,
-                            dynForm: data.product.dynForm,
-                            family: data.product.id.caFamily
+                            _id: data._id,
+                            ref: data.info.SKU,
+                            name: data.info.langs[0].name,
+                            //label: data.product.id.label,
+                            unit: data.units,
+                            dynForm: data.dynForm
+                                //family: data.product.id.caFamily
                         },
-                        description: (lines[i].description ? lines[i].description : data.product.id.description),
+                        description: (lines[i].description ? lines[i].description : data.info.langs[0].description),
                         isNew: true,
                         qty: lines[i].qty,
-                        no_package: lines[i].no_package, // nombre de pieces TODO Delete
-                        qty_order: lines[i].qty_order, // qty from order
-                        weight: data.weight,
+                        //qty_order: lines[i].qty_order, // qty from order
+                        //weight: data.info.weight,
                         idLine: index
                     };
                     //console.log(lines[i]);
@@ -521,7 +522,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 skip: 0,
                 page: 1,
                 pageSize: 5,
-                price_level: $scope.offer.price_level,
+                priceList: $scope.offer.supplier.salesPurchases.priceList._id,
                 //                supplier: options.supplier,
                 filter: {
                     logic: 'and',
@@ -530,7 +531,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                     }]
                 }
             }).then(function(res) {
-                //console.log(res.data);
+                console.log(res.data);
                 return res.data;
             });
         };

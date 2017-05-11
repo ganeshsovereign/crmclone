@@ -1,14 +1,14 @@
 <div ng-init="findOne()">
     <script type="text/ng-template" id="searchproduct.html">
-        <a ng-class="{'list-group-item bg-green bg-font-green': match.model.price_level != 'BASE'}">
-            <span bind-html-unsafe="match.model.product.id.ref | typeaheadHighlight:query"></span> - <span bind-html-unsafe="match.model.product.id.label"></span> ({{match.model.price_level}} : {{match.model.pu_ht|currency}})
+        <a ng-class="{'list-group-item bg-green bg-font-green': match.model.priceLists.defaultPriceList == true}">
+            <span bind-html-unsafe="match.model.ref | typeaheadHighlight:query"></span> - <span bind-html-unsafe="match.model.info.langs[0].name"></span> ({{match.model.priceLists.priceListCode}} : {{match.model.prices.price|currency}})
         </a>
     </script>
-    <script type="text/ng-template" id="searchcompany.html">
+    <!--<script type="text/ng-template" id="searchcompany.html">
         <a>
             <span ng-bind-html="match.model.code_client | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.name"></span>
         </a>
-    </script>
+    </script>-->
 
 
     <div class="page-bar">
@@ -139,7 +139,7 @@
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group form-md-line-input">
-                                        <div class="form-control form-control-static"> {{offer.priceList.priceListCode}} </div>
+                                        <div class="form-control form-control-static"> {{offer.supplier.salesPurchases.priceList.priceListCode}} </div>
                                         <label for="price_level">@(products:PriceLevel)</label>
                                     </div>
                                 </div>
@@ -323,33 +323,33 @@
                                     <th style="width: 140px;"><span ng-show="tableform.$visible">Action</span></th>
                                 </tr>
                             </thead>
-                            <tr ng-repeat="line in offer.lines| filter:filterLine" ng-class="{success:line.product.name == 'SUBTOTAL',bold:line.product.name == 'SUBTOTAL'}">
-                                <td ng-if="line.product.name != 'SUBTOTAL'">
+                            <tr ng-repeat="line in offer.lines| filter:filterLine" ng-class="{success:line.product.ref == 'SUBTOTAL',bold:line.product.ref == 'SUBTOTAL'}">
+                                <td ng-if="line.product.ref != 'SUBTOTAL'">
                                     <div class="input-icon right">
                                         <i class="fa fa-warning font-red pull-right" ng-show="!line.product.id" title="@(products:ErrorProductBadRefOrLabel)"></i>
-                                        <span ng-class="{'has-error':$error, 'has-success': !$error}" editable-text="line.product.name" e-typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" e-typeahead-template-url="searchproduct.html" e-typeahead-on-select="addProduct($item, line.idLine, offer.lines)"
+                                        <span ng-class="{'has-error':$error, 'has-success': !$error}" editable-text="line.product.ref" e-typeahead="product as product.ref for product in productAutoComplete($viewValue, 'ref')" e-typeahead-template-url="searchproduct.html" e-typeahead-on-select="addProduct($item, line.idLine, offer.lines)"
                                             onbeforesave="checkLine(line.product)">
-                                                            {{ line.product.name || 'empty' }}
+                                                            {{ line.product.ref || 'empty' }}
                                                         </span>
                                     </div>
                                 </td>
-                                <td ng-if="line.product.name != 'SUBTOTAL'">
-                                    <span editable-text="line.product.label" e-form="tableform">
-                                                        {{ line.product.label || 'empty' }}
+                                <td ng-if="line.product.ref != 'SUBTOTAL'">
+                                    <span editable-text="line.product.name" e-form="tableform">
+                                                        {{ line.product.name || 'empty' }}
                                                     </span>
                                 </td>
-                                <td ng-if="line.product.name != 'SUBTOTAL'">
+                                <td ng-if="line.product.ref != 'SUBTOTAL'">
                                     <!-- editable username (text with validation) -->
                                     <span editable-textarea="line.description" e-rows="4" e-cols="50" e-form="tableform">
                                                         <pre class="no-padding small">{{ line.description || 'empty' }}</pre>
                                                     </span>
                                 </td>
-                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                <td ng-if="line.product.ref != 'SUBTOTAL'" class="align-right">
                                     <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-step="0.001" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
                                 </td>
-                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                <td ng-if="line.product.ref != 'SUBTOTAL'" class="align-right">
                                     <div class="checkbox-list" ng-show="tableform.$visible">
                                         <label>
                                                             <input type="checkbox" ng-change="calculMontantHT(line, $data)" ng-model="line.priceSpecific" ng-checked="line.priceSpecific"> Mod. </label>
@@ -361,33 +361,33 @@
                                                         {{ line.pu_ht || 0 | number:3}}
                                                     </span>-->
                                 </td>
-                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                <td ng-if="line.product.ref != 'SUBTOTAL'" class="align-right">
                                     <input type="number" ng-show="tableform.$visible" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.discount" min="0" step="0.01" ng-change="calculMontantHT(line, $data)">
                                     <span ng-show="!tableform.$visible">{{ line.discount || 0 | percent:3}}</span>
                                     <!--<span editable-number="line.discount" e-ng-change="calculMontantHT(line, $data, 'discount')" e-min="0" e-step="0.001" e-form="tableform">
                                                         {{ line.discount || 0 | percent:3}}
                                                     </span>-->
                                 </td>
-                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                <td ng-if="line.product.ref != 'SUBTOTAL'" class="align-right">
                                     <span editable-select="line.tva_tx" e-ng-change="calculMontantHT(line, $data, 'tva_tx')" e-form="tableform" e-ng-options="s._id as s.name for s in taxes | filter : {isFixValue:false}">
                                                         {{ line.tva_tx|percent:2}}
                                                     </span>
                                 </td>
-                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                <td ng-if="line.product.ref != 'SUBTOTAL'" class="align-right">
                                     <span ng-model="montantHT[$index]" form="tableform">
                                                         {{ line.total_ht | number:2 }}
                                                     </span>
                                 </td>
 
-                                <td ng-if="line.product.name == 'SUBTOTAL'" colspan="7">
+                                <td ng-if="line.product.ref == 'SUBTOTAL'" colspan="7">
                                     {{ line.product.label}}
                                 </td>
-                                <td ng-if="line.product.name == 'SUBTOTAL'">
+                                <td ng-if="line.product.ref == 'SUBTOTAL'">
                                     {{ line.total_ht | number:2 }}
                                 </td>
                                 <td>
                                     <div class="btn-toolbar" role="toolbar">
-                                        <div class="btn-group btn-group" ng-if="line.product.name != 'SUBTOTAL'">
+                                        <div class="btn-group btn-group" ng-if="line.product.ref != 'SUBTOTAL'">
                                             <button type="button" ng-show="!tableform.$visible && editable" ng-disabled="$index == 0" ng-click="upDownLine($index, 'UP', offer.lines)" class="btn btn-default btn-icon-only btn-sm fa fa-angle-up" title="@(Up)"></button>
                                             <button type="button" ng-show="!tableform.$visible && editable" ng-disabled="$index == (offer.lines.length - 1)" ng-click="upDownLine($index, 'DOWN', offer.lines)" class="btn btn-default btn-icon-only btn-sm fa fa-angle-down" title="@(Down)"></button>
                                         </div>
@@ -395,7 +395,7 @@
 
                                             <button type="button" ng-show="tableform.$visible && line.product.dynForm" ng-click="editLine(line, line.idLine, offer.lines)" class="btn btn-default btn-icon-only btn-sm fa fa-pencil" title="@(Edit)"></button>
                                             <button type="button" ng-show="tableform.$visible" ng-click="copyLine(line, offer.lines)" class="btn btn-default btn-icon-only btn-sm fa fa-copy" title="@(TocLone)"></button>
-                                            <button type="button" ng-show="tableform.$visible && line.product.name != 'SUBTOTAL'" ng-click="AddSubTotal($index)" class="btn btn-default btn-icon-only btn-sm fa fa-bars" title="@(AddSubtotal)"></button>
+                                            <button type="button" ng-show="tableform.$visible && line.product.ref != 'SUBTOTAL'" ng-click="AddSubTotal($index)" class="btn btn-default btn-icon-only btn-sm fa fa-bars" title="@(AddSubtotal)"></button>
                                             <button type="button" ng-show="tableform.$visible" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
                                         </div>
                                     </div>

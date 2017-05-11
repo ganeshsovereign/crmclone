@@ -840,6 +840,7 @@ Object.prototype = {
     autocomplete: function() {
         var self = this;
         var ProductModel = MODEL('product').Schema;
+        var ObjectId = MODULE('utils').ObjectId;
 
         //console.dir(self.body);
 
@@ -860,75 +861,87 @@ Object.prototype = {
             query.caFamily = self.body.family;
 
         var base = true;
-        if (self.body.price_level && self.body.price_level !== null)
+        if (self.body.priceList && self.body.priceList !== null) {
             base = false;
+        }
+
+        console.log(self.body);
 
         var cost = false;
         if (self.body.supplier || self.query.supplier) {
-            query.Status = {
-                '$in': ["SELLBUY", "BUY"]
-            };
+            query.isBuy = true;
             cost = true;
             base = false;
         } else
-            query.Status = {
-                '$in': ["SELL", "SELLBUY"]
-            };
+            query.isBuy = true;
 
-        //console.log(query);
+        console.log(query);
 
         ProductModel.aggregate([{
-            $match: query
-        }, {
-            $project: {
-                _id: 1,
-                ref: '$info.SKU',
-                dynForm: 1,
-                tva_tx: 1,
-                units: 1,
-                directCost: 1,
-                info: 1,
-                size: 1
+                $match: query
+            }, {
+                $project: {
+                    _id: 1,
+                    ref: '$info.SKU',
+                    dynForm: 1,
+                    taxes: 1,
+                    units: 1,
+                    directCost: 1,
+                    indirectCost: 1,
+                    info: 1,
+                    size: 1
+                }
+            }, {
+                $lookup: {
+                    from: 'ProductPrices',
+                    localField: '_id',
+                    foreignField: 'product',
+                    as: 'prices'
+                }
+            }, {
+                $unwind: '$prices'
+            }, {
+                $lookup: {
+                    from: 'PriceList',
+                    localField: 'prices.priceLists',
+                    foreignField: '_id',
+                    as: 'priceLists'
+                }
+            }, {
+                $project: {
+                    _id: 1,
+                    ref: 1,
+                    dynForm: 1,
+                    taxes: { $arrayElemAt: ['$taxes.taxeId', 0] },
+                    units: 1,
+                    directCost: 1,
+                    indirectCost: 1,
+                    info: 1,
+                    size: 1,
+                    prices: { $arrayElemAt: ['$prices.prices', 0] },
+                    priceLists: { $arrayElemAt: ['$priceLists', 0] }
+                }
+            }, {
+                $match: {
+                    //   $or: [{
+                    // 'priceLists.cost': (cost ? cost : { $ne: true }),
+                    //       'priceLists.defaultPriceList': true //(base ? base : { $ne: true })
+                    //   }, {
+                    'priceLists._id': ObjectId(self.body.priceList)
+                        //   }]
+                }
+            },
+            /*,{
+                        $group : {
+                            _id:
+                        }
+                    }, */
+            {
+                $limit: self.body.take || self.query.take || 50
+            }, {
+                $sort: { 'info.SKU': 1 }
             }
-        }, {
-            $lookup: {
-                from: 'ProductPrices',
-                localField: '_id',
-                foreignField: 'product',
-                as: 'prices'
-            }
-        }, {
-            $unwind: '$prices'
-        }, {
-            $lookup: {
-                from: 'PriceList',
-                localField: 'prices.priceLists',
-                foreignField: '_id',
-                as: 'priceLists'
-            }
-        }, {
-            $project: {
-                _id: 1,
-                ref: 1,
-                dynForm: 1,
-                tva_tx: 1,
-                units: 1,
-                directCost: 1,
-                info: 1,
-                size: 1,
-                prices: { $arrayElemAt: ['$prices.prices', 0] },
-                priceLists: { $arrayElemAt: ['$priceLists', 0] }
-            }
-        }, {
-            $match: {
-                'priceLists.cost': (cost ? cost : { $ne: true }),
-                'priceLists.defaultPriceList': (base ? base : { $ne: true })
-            }
-        }, {
-            $limit: self.body.take || self.query.take || 50
-        }, {
-            $sort: { 'product.info.SKU': 1 }
-        }], function(err, docs) {
+        ], function(err, docs) {
             if (err)
                 return self.throw500("err : /api/product/autocomplete" + err);
 
