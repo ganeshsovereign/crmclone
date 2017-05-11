@@ -2382,10 +2382,9 @@ PricesList.prototype = {
                 PriceModel.remove({ priceLists: id }, cb);
             },
             function(cb) {
-                FamilyCoefModel({ priceLists: id }, cb);
+                FamilyCoefModel.remove({ priceLists: id }, cb);
             },
             function(cb) {
-
                 PriceListModel.remove({
                     _id: id
                 }, cb)
