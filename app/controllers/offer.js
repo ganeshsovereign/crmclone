@@ -106,6 +106,14 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 //console.log(data);
             });
 
+            $http({
+                method: 'GET',
+                url: '/erp/api/product/taxes'
+            }).success(function(data, status) {
+                console.log(data);
+                $scope.taxes = data.data;
+            });
+
 
             initDatatable();
         });
@@ -475,6 +483,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 return 0;
             return Number(Math.round(value + 'e' + (decimals)) + 'e-' + (decimals));
         };
+
         $scope.calculMontantHT = function(line, data, varname) {
             if (varname)
                 line[varname] = data;
@@ -489,7 +498,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 }
             }
 
-            if (!line.priceSpecific)
+            if (line.product && line.product.id && !line.priceSpecific)
                 return $http.post('/erp/api/product/price', {
                     price_level: $scope.offer.price_level,
                     qty: line.qty,
