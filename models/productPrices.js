@@ -14,7 +14,7 @@ var setRound3 = MODULE('utils').setRound3;
 
 var priceSchema = new Schema({
     _id: false,
-    count: { type: Number, default: 0 },
+    count: { type: Number, default: 1 },
     price: { type: Number, default: 0, set: setRound3 }, // pu_ht
     coef: { type: Number, default: 1, set: setRound3 },
     coefTotal: { type: Number, default: 1 } //Sum coef * familyCoef
