@@ -72,7 +72,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = false;
+            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];

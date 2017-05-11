@@ -62,7 +62,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         var dict = ["fk_user_status"];

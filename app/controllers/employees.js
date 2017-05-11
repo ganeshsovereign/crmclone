@@ -6,9 +6,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     var grid = new Datatable();
     var employees = $rootScope.login;
     $scope.createMod = true;
-
     $scope.editable = false;
-
     $scope.employee = {
         entity: $rootScope.login.entity,
         datec: new Date()
