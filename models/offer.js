@@ -144,8 +144,8 @@ var offerSchema = new Schema({
     optional: Schema.Types.Mixed,
     delivery_mode: { type: String, default: "Comptoir" },
     billing: { type: Schema.Types.ObjectId, ref: 'Customers' },
-    costList: { type: ObjectId, ref: 'priceList', default: null }, //Not used
-    priceList: { type: ObjectId, ref: 'priceList', default: null },
+    //costList: { type: ObjectId, ref: 'priceList', default: null }, //Not used
+    //priceList: { type: ObjectId, ref: 'priceList', default: null },
     address: {
         name: { type: String, default: '' },
         street: { type: String, default: '' },

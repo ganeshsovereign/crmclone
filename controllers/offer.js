@@ -96,8 +96,11 @@ function Offer(id, cb) {
 
     OfferModel.findOne(query, "-latex")
         .populate("contacts", "name phone email")
-        .populate("supplier", "name")
-        .populate("priceList")
+        .populate({
+            path: "supplier",
+            select: "name salesPurchases",
+            populate: { path: "salesPurchases.priceList" }
+        })
         .exec(cb);
 }
 
