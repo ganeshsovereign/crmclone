@@ -24,6 +24,7 @@
                                 <tr role="row" class="heading">
                                     <th>@(Name)</th>
                                     <th>@(Code)</th>
+                                    <th>@(products:Value)</th>
                                     <th>@(CreatedAt)</th>
                                     <th>@(Action)</th>
                                 </tr>
@@ -32,6 +33,7 @@
                                 <tr ng-repeat="line in listObject">
                                     <td>{{line.langs[0].name}}</td>
                                     <td>{{line.code}}</td>
+                                    <td>{{line.mode}}</td>
                                     <td>{{line.createdAt | date : "shortDate"}}</td>
                                     <td>
                                         <a class="btn green fa fa-pencil" ui-sref="settings.product.attributes.show({id:line._id})" title="Editer"></a>

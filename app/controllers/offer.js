@@ -95,6 +95,17 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 //console.log(data);
             });
 
+            $http({
+                method: 'GET',
+                url: '/erp/api/employees/getForDd',
+                params: {
+                    isEmployee: true
+                }
+            }).success(function(data, status) {
+                $scope.$dict.employees = data.data;
+                //console.log(data);
+            });
+
 
             initDatatable();
         });
@@ -326,7 +337,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                     }, {
                         "data": "ref"
                     }, {
-                        "data": "client.name",
+                        "data": "supplier",
                         defaultContent: ""
                     }, {
                         "data": "ref_client",
