@@ -26,6 +26,7 @@
                                     <th>@(Name)</th>
                                     <th>@(Currency)</th>
                                     <th>@(products:SupplierCost)</th>
+                                    <th>@(NbOfCustomers)</th>
                                     <th>@(Action)</th>
                                 </tr>
                             </thead>
@@ -35,9 +36,10 @@
                                     <td>{{line.name}}</td>
                                     <td>{{line.currency}}</td>
                                     <td><input type="checkbox" id="isActive" class="md-check has-success" ng-model="line.cost" disabled ng-checked="line.cost"></td>
+                                    <td>{{line.countCustomers}}</td>
                                     <td>
                                         <a class="btn green fa fa-pencil" ui-sref="settings.product.pricelists.show({id:line._id})" title="Editer"></a>
-                                        <button ng-if="line.removable == true" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeletePriceList)" confirmed-click="remove(line)"></button>
+                                        <button ng-if="line.countCustomers == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeletePriceList)" confirmed-click="remove(line)"></button>
                                     </td>
                                 </tr>
                             </tbody>

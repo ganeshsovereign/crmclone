@@ -86,151 +86,151 @@
     <div ng-if="bill.isremoved" class="alert alert-danger"><strong>Attention !</strong> Cette facture est supprimee. </div>
     <div class="row">
         <div class="col-md-12">
-                        <div class="col-md-6 col-sm-12">
-                            <form editable-form name="editableBill" onaftersave="update()">
+            <div class="col-md-6 col-sm-12">
+                <form editable-form name="editableBill" onaftersave="update()">
                     <div class="portlet portlet light bordered">
-                                    <div class="portlet-title">
+                        <div class="portlet-title">
                             <div class="caption font-yellow-crusta">
                                 <i class="fa fa-cog font-yellow-crusta"></i>@(bills:DetailsCustomer)
-                                        </div>
-                                        <div class="actions">
+                            </div>
+                            <div class="actions">
                                 <a href="javascript:;" ng-click="editableBill.$show()" ng-show="!editableBill.$visible && editable" class="btn btn-circle btn-default">
-                                                <i class="fa fa-pencil"></i> @(Edit) </a>
-                                        </div>
-                                        <div class="actions" ng-show="editableBill.$visible">
+                                    <i class="fa fa-pencil"></i> @(Edit) </a>
+                            </div>
+                            <div class="actions" ng-show="editableBill.$visible">
                                 <button type="submit" ng-disabled="editableBill.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save)</button>
-                                            <button type="button" ng-disabled="editableBill.$waiting" ng-click="editableBill.$cancel();
+                                <button type="button" ng-disabled="editableBill.$waiting" ng-click="editableBill.$cancel();
                                                 findOne();" class="btn btn-circle btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i> </button>
-                                        </div>
-                                    </div>
-                                    <div class="portlet-body">
+                            </div>
+                        </div>
+                        <div class="portlet-body">
 
                             <div class="form-group form-md-line-input">
-                                        <div class="row static-info" ng-if="bill.client.id !== '5333032036f43f0e1882efce'">
-                                            <div class="col-md-4 name">@(companies:Company) :</div>
+                                <div class="row static-info" ng-if="bill.client.id !== '5333032036f43f0e1882efce'">
+                                    <div class="col-md-4 name">@(companies:Company) :</div>
                                     <div class="col-md-7 value">
-                                                <a href="#" ui-sref="societe.show({id:bill.client.id})" class="fa fa-institution" editable-text="bill.client" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', bill.entity) | filter:{name:$viewValue}"
-                                                    e-typeahead-template-url="searchcompany.html" e-typeahead-on-select="updateAddress($item)"> {{bill.client.name|| "@(Undefined)"}} </a>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info" ng-if="bill.client.id === '5333032036f43f0e1882efce'">
-                                            <div class="col-md-4 name">@(companies:Company) :</div>
+                                        <a href="#" ui-sref="societe.show({id:bill.client.id})" class="fa fa-institution" editable-text="bill.client" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', bill.entity) | filter:{name:$viewValue}"
+                                            e-typeahead-template-url="searchcompany.html" e-typeahead-on-select="updateAddress($item)"> {{bill.client.name|| "@(Undefined)"}} </a>
+                                    </div>
+                                </div>
+                                <div class="row static-info" ng-if="bill.client.id === '5333032036f43f0e1882efce'">
+                                    <div class="col-md-4 name">@(companies:Company) :</div>
                                     <div class="col-md-7 value">
-                                                <a href="#" ui-sref="societe.show({id:bill.client.id})" class="fa fa-institution" editable-text="bill.client.name" onbeforesave="updateAddress($data)"> {{bill.client.name|| "@(Undefined)"}} (Accueil)</a>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(Ref) :</div>
+                                        <a href="#" ui-sref="societe.show({id:bill.client.id})" class="fa fa-institution" editable-text="bill.client.name" onbeforesave="updateAddress($data)"> {{bill.client.name|| "@(Undefined)"}} (Accueil)</a>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">@(Ref) :</div>
                                     <div class="col-md-7 value">{{bill.ref}}</div>
-                                        </div>
-                                        <!--<div class="row static-info">
+                                </div>
+                                <!--<div class="row static-info">
                                             <div class="col-md-4 name">@(Title) :</div>
                                             <div class="col-md-8 value">
                                                 <span ng-hide="bill.title.autoGenerated" editable-text="bill.title.ref">{{bill.title.ref}}</span>
                                                 <span ng-show="bill.title.autoGenerated">{{bill.title.ref}}</span>
                                             </div>
                                         </div>-->
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(bills:Period) :</div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">@(bills:Period) :</div>
                                     <div class="col-md-7 value">
-                                                @(Of)
-                                                <span class="margin-left" ng-show="editable" editable-bsdate="bill.dateOf" e-datepicker-popup="dd/MM/yyyy" buttons="no">
+                                        @(Of)
+                                        <span class="margin-left" ng-show="editable" editable-bsdate="bill.dateOf" e-datepicker-popup="dd/MM/yyyy" buttons="no">
                                                     {{ (bill.dateOf | date:"dd/MM/yyyy") || "@(Undefined)"}}
                                                 </span>
-                                                <span ng-hide="editable">{{ (bill.dateOf | date:"dd/MM/yyyy") || '-'}}</span><br/> @(to)
-                                                <span class="margin-left" ng-show="editable" editable-bsdate="bill.dateTo" e-datepicker-popup="dd/MM/yyyy" buttons="no">
+                                        <span ng-hide="editable">{{ (bill.dateOf | date:"dd/MM/yyyy") || '-'}}</span><br/> @(to)
+                                        <span class="margin-left" ng-show="editable" editable-bsdate="bill.dateTo" e-datepicker-popup="dd/MM/yyyy" buttons="no">
                                                     {{ (bill.dateTo | date:"dd/MM/yyyy") || "@(Undefined)"}}
                                                 </span>
-                                                <span ng-hide="editable">{{ (bill.dateTo | date:"dd/MM/yyyy") || '-'}}</span>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(orders:RefCustomerOrder):</div>
+                                        <span ng-hide="editable">{{ (bill.dateTo | date:"dd/MM/yyyy") || '-'}}</span>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">@(orders:RefCustomerOrder):</div>
                                     <div class="col-md-7 value">
-                                                <span editable-text="bill.ref_client">
+                                        <span editable-text="bill.ref_client">
                                                     {{bill.ref_client|| "@(Undefined)"}}
                                                 </span>
                                         <div class="form-control-focus"> </div>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(Status) : </div>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">@(Status) : </div>
                                     <div class="col-md-7 value">
-                                                <span class="label label-sm" data-ng-class="bill.status.css"> {{bill.status.name}}</span>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(Entity) :</div>
+                                        <span class="label label-sm" data-ng-class="bill.status.css"> {{bill.status.name}}</span>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">@(Entity) :</div>
                                     <div class="col-md-7 value">
-                                                <small class="label label-sm label-default">{{bill.entity}}</small>
-                                            </div>
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(products:PriceLevel) :</div>
+                                        <small class="label label-sm label-default">{{bill.entity}}</small>
+                                    </div>
+                                </div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">@(products:PriceLevel) :</div>
                                     <div class="col-md-7 value">{{bill.price_level}}</div>
-                                        </div>
+                                </div>
 
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(bills:DateInvoice) : </div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">@(bills:DateInvoice) : </div>
                                     <div class="col-md-7 value">
-                                                <span ng-show="editable" editable-bsdate="bill.datec" e-datepicker-popup="dd/MM/yyyy">
+                                        <span ng-show="editable" editable-bsdate="bill.datec" e-datepicker-popup="dd/MM/yyyy">
                                                     {{ (bill.datec | date:"dd/MM/yyyy") || "@(Empty)"}}
                                                 </span>
-                                                <span ng-hide="editable">{{ (bill.datec | date:"dd/MM/yyyy") || "@(Empty)"}}</span>
-                                            </div>
-                                        </div>
+                                        <span ng-hide="editable">{{ (bill.datec | date:"dd/MM/yyyy") || "@(Empty)"}}</span>
+                                    </div>
+                                </div>
 
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(bills:DateMaxPayment) : </div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">@(bills:DateMaxPayment) : </div>
                                     <div class="col-md-7 value">
-                                                <span class="label label-warning">{{ (bill.dater | date:"dd/MM/yyyy") || "@(Empty)"}}</span>
-                                            </div>
-                                        </div>
+                                        <span class="label label-warning">{{ (bill.dater | date:"dd/MM/yyyy") || "@(Empty)"}}</span>
+                                    </div>
+                                </div>
 
 
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">
-                                                @(bills:PaymentConditions) :
-                                            </div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">
+                                        @(bills:PaymentConditions) :
+                                    </div>
                                     <div class="col-md-7 value">
-                                                <span editable-select="bill.cond_reglement_code" e-ng-options="s.id as s.label for s in dict.fk_payment_term.values">
+                                        <span editable-select="bill.cond_reglement_code" e-ng-options="s.id as s.label for s in dict.fk_payment_term.values">
                                                     {{ showStatus('cond_reglement_code', 'fk_payment_term')}}
                                                 </span>
-                                            </div>
-                                        </div>
+                                    </div>
+                                </div>
 
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">
-                                                @(bills:PaymentMode) :
-                                            </div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">
+                                        @(bills:PaymentMode) :
+                                    </div>
                                     <div class="col-md-7 value">
-                                                <span editable-select="bill.mode_reglement_code" e-ng-options="s.id as s.label for s in dict.fk_paiement.values">
+                                        <span editable-select="bill.mode_reglement_code" e-ng-options="s.id as s.label for s in dict.fk_paiement.values">
                                                     {{ showStatus('mode_reglement_code', 'fk_paiement')}}
                                                 </span>
-                                            </div>
-                                        </div>
+                                    </div>
+                                </div>
 
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(commercial:Commercial):</div>
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">@(commercial:Commercial):</div>
                                     <div class="col-md-7 value">
-                                                <span editable-text="bill.commercial_id" e-typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}">
+                                        <span editable-text="bill.commercial_id" e-typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}">
                                                     {{bill.commercial_id.name|| "Non defini"}}
                                                 </span>
-                                            </div>
-                                        </div>
+                                    </div>
+                                </div>
 
-                                        <hr>
+                                <hr>
 
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">
+                                <div class="row static-info">
+                                    <div class="col-md-4 name">
                                         @(Amounts) @(bills:Bill) :
-                                            </div>
-                                            <div class="col-md-8 value">
+                                    </div>
+                                    <div class="col-md-8 value">
                                         {{bill.total_ht| currency}} @(HT)
                                     </div>
                                 </div>
 
-                                                <div ng-show='bill.orders.length' class="row static-info">
+                                <div ng-show='bill.orders.length' class="row static-info">
                                     <div class="col-md-4 name">
                                         @(orders:Order) :
                                     </div>
@@ -274,226 +274,226 @@
 
                                 <div ng-show='bill.orders.length' class="row static-info">
                                     <div class="row">
-                                                        @(orders:Order) :
-                                                        <div class="row static-info" ng-repeat="order in bill.orders| orderBy:'ref'">
+                                        @(orders:Order) :
+                                        <div class="row static-info" ng-repeat="order in bill.orders| orderBy:'ref'">
                                             <div class="col-md-5 name">
-                                                                <a ui-sref="order.show({id:order._id})" class="icon-bag" title="Click to show">
+                                                <a ui-sref="order.show({id:order._id})" class="icon-bag" title="Click to show">
                                                                     {{order.ref}} </a>
-                                                            </div>
+                                            </div>
                                             <div class="col-md-7 value">
-                                                                {{order.total_ht| currency}} @(HT)
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4 value">
-                                                        {{getTotal(bill.orders, 'total_ht') | currency}} @(HT)
-                                                    </div>
-                                                </div>
+                                                {{order.total_ht| currency}} @(HT)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 value">
+                                        {{getTotal(bill.orders, 'total_ht') | currency}} @(HT)
+                                    </div>
+                                </div>
 
-                                                <div ng-show='bill.deliveries.length' class="row static-info">
-                                                    <div class="col-md-8 name">
-                                                        @(deliveries:Deliveries) :
-                                                        <div class="row static-info" ng-repeat="delivery in bill.deliveries| orderBy:'ref'">
-                                                            <div class="col-md-6 name">
-                                                                <a ui-sref="delivery.show({id:delivery._id})" class="icon-bag" title="Click to show">
+                                <div ng-show='bill.deliveries.length' class="row static-info">
+                                    <div class="col-md-8 name">
+                                        @(deliveries:Deliveries) :
+                                        <div class="row static-info" ng-repeat="delivery in bill.deliveries| orderBy:'ref'">
+                                            <div class="col-md-6 name">
+                                                <a ui-sref="delivery.show({id:delivery._id})" class="icon-bag" title="Click to show">
                                                                     {{delivery.ref}} </a>
-                                                            </div>
-                                                            <div class="col-md-6 value">
-                                                                {{delivery.total_ht| currency}} @(HT)
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4 value">
-                                                        {{getTotal(bill.deliveries, 'total_ht') | currency}} @(HT)
-                                                    </div>
-                                                </div>
-                                                <div class="row static-info">
-                                                    <div class="col-md-8 name">
-                                                        @(bills:Bill) :
-                                                    </div>
-                                                    <div class="col-md-4 value">
-                                                        {{bill.total_ht| currency}} @(HT)
-                                                    </div>
-                                                </div>
-
                                             </div>
-
-                                        </div>
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(DateLastModification) :</div>
-                                            <div class="col-md-8 value">{{bill.updatedAt|date:'dd/MM/yyyy HH:mm'}}</div>
-                                        </div>
-
-                                        <div class="row static-info">
-                                            <div class="col-md-4 name">@(Logs):</div>
-                                            <div class="col-md-8 value">
-                                                <div ng-repeat="history in bill.history">
-                                                    {{history.date| date:'dd/MM/yyyy HH:mm'}} {{history.msg}}
+                                            <div class="col-md-6 value">
+                                                {{delivery.total_ht| currency}} @(HT)
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-4 value">
+                                        {{getTotal(bill.deliveries, 'total_ht') | currency}} @(HT)
+                                    </div>
                                 </div>
-                            </form>
+                                <div class="row static-info">
+                                    <div class="col-md-8 name">
+                                        @(bills:Bill) :
+                                    </div>
+                                    <div class="col-md-4 value">
+                                        {{bill.total_ht| currency}} @(HT)
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row static-info">
+                            <div class="col-md-4 name">@(DateLastModification) :</div>
+                            <div class="col-md-8 value">{{bill.updatedAt|date:'dd/MM/yyyy HH:mm'}}</div>
                         </div>
 
-                        <div class="col-md-6 col-sm-12">
-                            <form editable-form name="billingAddress" onaftersave="update()">
-                    <div class="portlet portlet light bordered">
-                                    <div class="portlet-title">
-                            <div class="caption font-grey-gallery">
-                                <i class="fa fa-envelope font-grey-gallery"></i> @(bills:BillAddress)
-                                        </div>
-                                        <div class="actions">
-                                <a href="javascript:;" ng-click="billingAddress.$show()" ng-show="!billingAddress.$visible && editable" class="btn btn-circle btn-default">
-                                                <i class="fa fa-pencil"></i> @(Edit) </a>
-                                        </div>
-                                        <div class="actions" ng-show="billingAddress.$visible">
-                                <button type="submit" ng-disabled="billingAddress.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save)</button>
-                                <button type="button" ng-disabled="billingAddress.$waiting" ng-click="billingAddress.$cancel()" class="btn btn-circle btn-outline uppercase red"> @(Cancel) <i class="fa fa-angle-right"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="portlet-body" crm-address model="bill"></div>
+                        <div class="row static-info">
+                            <div class="col-md-4 name">@(Logs):</div>
+                            <div class="col-md-8 value">
+                                <div ng-repeat="history in bill.history">
+                                    {{history.date| date:'dd/MM/yyyy HH:mm'}} {{history.msg}}
                                 </div>
-                            </form>
-                        </div>
-
-                        <div class="col-md-6 col-sm-12">
-                            <form editable-form name="contactForm" onaftersave="update()">
-                    <div class="portlet portlet light bordered">
-                                    <div class="portlet-title">
-                            <div class="caption font-yellow-crusta">
-                                <i class="fa fa-group font-yellow-crusta"></i> @(Contacts)
-                                        </div>
-                                    </div>
-                                    <div class="portlet-body" crm-contact model="bill.contacts" societe="bill.client"></div>
-                                </div>
-                            </form>
-            </div>
+                            </div>
                         </div>
                     </div>
+                </form>
+            </div>
 
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12">
+            <div class="col-md-6 col-sm-12">
+                <form editable-form name="billingAddress" onaftersave="update()">
+                    <div class="portlet portlet light bordered">
+                        <div class="portlet-title">
+                            <div class="caption font-grey-gallery">
+                                <i class="fa fa-envelope font-grey-gallery"></i> @(bills:BillAddress)
+                            </div>
+                            <div class="actions">
+                                <a href="javascript:;" ng-click="billingAddress.$show()" ng-show="!billingAddress.$visible && editable" class="btn btn-circle btn-default">
+                                    <i class="fa fa-pencil"></i> @(Edit) </a>
+                            </div>
+                            <div class="actions" ng-show="billingAddress.$visible">
+                                <button type="submit" ng-disabled="billingAddress.$waiting" class="btn btn-circle btn-outline uppercase green"><i class="fa fa-check"></i> @(Save)</button>
+                                <button type="button" ng-disabled="billingAddress.$waiting" ng-click="billingAddress.$cancel()" class="btn btn-circle btn-outline uppercase red"> @(Cancel) <i class="fa fa-angle-right"></i></button>
+                            </div>
+                        </div>
+                        <div class="portlet-body" crm-address model="bill"></div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6 col-sm-12">
+                <form editable-form name="contactForm" onaftersave="update()">
+                    <div class="portlet portlet light bordered">
+                        <div class="portlet-title">
+                            <div class="caption font-yellow-crusta">
+                                <i class="fa fa-group font-yellow-crusta"></i> @(Contacts)
+                            </div>
+                        </div>
+                        <div class="portlet-body" crm-contact model="bill.contacts" societe="bill.client"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
             <div class="portlet portlet light bordered">
-                                        <div class="portlet-title">
+                <div class="portlet-title">
                     <div class="caption font-dark sbold">
                         <i class="fa fa-opencart"></i> @(ShoppingCard) / {{bill.lines.length}} @(Lines)
-                                            </div>
-                                            <div class="actions">
-                                                <a href="javascript:;" ng-click="tableform.$show();
+                    </div>
+                    <div class="actions">
+                        <a href="javascript:;" ng-click="tableform.$show();
                                                     settings.layout.pageSidebarClosed = true;" ng-show="!tableform.$visible && editable" class="btn btn-circle btn-default">
-                                                    <i class="fa fa-pencil"></i> @(Edit) </a>
+                            <i class="fa fa-pencil"></i> @(Edit) </a>
                     </div>
                     <div class="actions">
                         <div class="btn-form" ng-show="tableform.$visible">
 
                             <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(bill.lines)" class="btn btn-circle btn-outline sbold uppercase dark"> @(AddNewLine) <i class="fa fa-plus"></i></button>
                         </div>
-                                            </div>
-                                        </div>
-                                        <div class="portlet-body">
-                                            <form editable-form name="tableform" onaftersave="update();settings.layout.pageSidebarClosed = false;" oncancel="findOne();settings.layout.pageSidebarClosed = false;">
-                                                <!-- table -->
-                                                <table class="table table-fixed table-striped table-bordered table-hover no-footer">
-                                                    <thead>
-                                                        <tr role="row" class="heading">
-                                                            <th style="width: 140px;">@(Ref)</th>
-                                                            <th style="width: 15%;">@(Name)</th>
-                                                            <th style="width: 25%;">@(Description)</th>
-                                                            <!--<th >Qté cmdée</th>-->
-                                                            <th>@(Qty)</th>
-                                                            <th style="width: 130px;">@(AmountHT)</th>
-                                                            <th>@(Discount) %</th>
-                                                            <th>@(VAT) %</th>
-                                                            <th>@(TotalHT)</th>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <form editable-form name="tableform" onaftersave="update();settings.layout.pageSidebarClosed = false;" oncancel="findOne();settings.layout.pageSidebarClosed = false;">
+                        <!-- table -->
+                        <table class="table table-fixed table-striped table-bordered table-hover no-footer">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th style="width: 140px;">@(Ref)</th>
+                                    <th style="width: 15%;">@(Name)</th>
+                                    <th style="width: 25%;">@(Description)</th>
+                                    <!--<th >Qté cmdée</th>-->
+                                    <th>@(Qty)</th>
+                                    <th style="width: 130px;">@(AmountHT)</th>
+                                    <th>@(Discount) %</th>
+                                    <th>@(VAT) %</th>
+                                    <th>@(TotalHT)</th>
                                     <th style="width: 140px;"><span ng-show="tableform.$visible">@(Action)</span></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tr ng-repeat="line in bill.lines| filter:filterLine" ng-class="{success:line.product.name == 'SUBTOTAL',bold:line.product.name == 'SUBTOTAL'}">
-                                                        <td ng-if="line.product.name != 'SUBTOTAL'">
-                                                            <div class="input-icon right">
-                                                                <i class="fa fa-warning font-red pull-right" ng-show="!line.product.id" title="@(products:ErrorProductBadRefOrLabel)"></i>
-                                                                <span ng-class="{'has-error':$error, 'has-success': !$error}" editable-text="line.product.name" e-typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" e-typeahead-template-url="searchproduct.html" e-typeahead-on-select="addProduct($item, line.idLine, bill.lines)"
-                                                                    onbeforesave="checkLine(line.product)">
+                                </tr>
+                            </thead>
+                            <tr ng-repeat="line in bill.lines| filter:filterLine" ng-class="{success:line.product.name == 'SUBTOTAL',bold:line.product.name == 'SUBTOTAL'}">
+                                <td ng-if="line.product.name != 'SUBTOTAL'">
+                                    <div class="input-icon right">
+                                        <i class="fa fa-warning font-red pull-right" ng-show="!line.product.id" title="@(products:ErrorProductBadRefOrLabel)"></i>
+                                        <span ng-class="{'has-error':$error, 'has-success': !$error}" editable-text="line.product.name" e-typeahead="product as product.name for product in productAutoComplete($viewValue, 'name')" e-typeahead-template-url="searchproduct.html" e-typeahead-on-select="addProduct($item, line.idLine, bill.lines)"
+                                            onbeforesave="checkLine(line.product)">
                                                                     {{ line.product.name || 'empty' }}
                                                                 </span>
-                                                            </div>
-                                                        </td>
-                                                        <td ng-if="line.product.name != 'SUBTOTAL'">
-                                                            <span editable-text="line.product.label" e-form="tableform">
+                                    </div>
+                                </td>
+                                <td ng-if="line.product.name != 'SUBTOTAL'">
+                                    <span editable-text="line.product.label" e-form="tableform">
                                                                 {{ line.product.label || 'empty' }}
                                                             </span>
-                                                        </td>
-                                                        <td ng-if="line.product.name != 'SUBTOTAL'">
-                                                            <!-- editable username (text with validation) -->
-                                                            <span editable-textarea="line.description" e-rows="4" e-cols="50" e-form="tableform">
+                                </td>
+                                <td ng-if="line.product.name != 'SUBTOTAL'">
+                                    <!-- editable username (text with validation) -->
+                                    <span editable-textarea="line.description" e-rows="4" e-cols="50" e-form="tableform">
                                                                 <pre class="no-padding small">{{ line.description || 'empty' }}</pre>
                                                             </span>
-                                                        </td>
-                                                        <!--<td class="align-right">
+                                </td>
+                                <!--<td class="align-right">
                                                             <span editable-number="line.qty_order" e-step="0.1">
                                                                 {{ line.qty_order || 0 }}
                                                             </span>
                                                         </td>-->
-                                                        <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
-                                                            <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-step="0.001" e-form="tableform">
+                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                    <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-step="0.001" e-form="tableform">
                                                                 {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                             </span>
-                                                        </td>
-                                                        <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
-                                                            <div class="checkbox-list" ng-show="tableform.$visible">
-                                                                <label>
+                                </td>
+                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                    <div class="checkbox-list" ng-show="tableform.$visible">
+                                        <label>
                                                                     <input type="checkbox" ng-change="calculMontantHT(line, $data)" ng-model="line.priceSpecific" ng-checked="line.priceSpecific"> Mod. </label>
-                                                            </div>
-                                                            <a href="#" tooltip="Tarif specific" ng-show="line.priceSpecific && !tableform.$visible"><i class="fa fa-warning font-yellow-gold"></i></a>
-                                                            <input type="number" ng-show="tableform.$visible" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.pu_ht" min="0" step="0.001" ng-change="calculMontantHT(line, $data)">
-                                                            <span ng-show="!tableform.$visible">{{ line.pu_ht || 0 | number:3}}</span>
-                                                            <!--<span editable-number="line.pu_ht" e-ng-disabled="!line.priceSpecific" e-ng-change="calculMontantHT(line, $data, 'pu_ht')" e-min="0" e-step="0.001" e-form="tableform">
+                                    </div>
+                                    <a href="#" tooltip="Tarif specific" ng-show="line.priceSpecific && !tableform.$visible"><i class="fa fa-warning font-yellow-gold"></i></a>
+                                    <input type="number" ng-show="tableform.$visible" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.pu_ht" min="0" step="0.001" ng-change="calculMontantHT(line, $data)">
+                                    <span ng-show="!tableform.$visible">{{ line.pu_ht || 0 | number:3}}</span>
+                                    <!--<span editable-number="line.pu_ht" e-ng-disabled="!line.priceSpecific" e-ng-change="calculMontantHT(line, $data, 'pu_ht')" e-min="0" e-step="0.001" e-form="tableform">
                                                                 {{ line.pu_ht || 0 | number:3}}
                                                             </span>-->
-                                                        </td>
-                                                        <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
-                                                            <input type="number" ng-show="tableform.$visible" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.discount" min="0" step="0.01" ng-change="calculMontantHT(line, $data)">
-                                                            <span ng-show="!tableform.$visible">{{ line.discount || 0 | percent:3}}</span>
-                                                            <!--<span editable-number="line.discount" e-ng-change="calculMontantHT(line, $data, 'discount')" e-min="0" e-step="0.001" e-form="tableform">
+                                </td>
+                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                    <input type="number" ng-show="tableform.$visible" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.discount" min="0" step="0.01" ng-change="calculMontantHT(line, $data)">
+                                    <span ng-show="!tableform.$visible">{{ line.discount || 0 | percent:3}}</span>
+                                    <!--<span editable-number="line.discount" e-ng-change="calculMontantHT(line, $data, 'discount')" e-min="0" e-step="0.001" e-form="tableform">
                                                                 {{ line.discount || 0 | percent:3}}
                                                             </span>-->
-                                                        </td>
-                                                        <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
-                                                            <span editable-select="line.tva_tx" e-ng-change="calculMontantHT(line, $data, 'tva_tx')" e-form="tableform" e-ng-options="c.value as c.value for c in dict.fk_tva.values">
+                                </td>
+                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                    <span editable-select="line.tva_tx" e-ng-change="calculMontantHT(line, $data, 'tva_tx')" e-form="tableform" e-ng-options="c.value as c.value for c in dict.fk_tva.values">
                                                                 {{ line.tva_tx|percent:2}}
                                                             </span>
-                                                        </td>
-                                                        <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
-                                                            <span ng-model="montantHT[$index]" form="tableform" style="width: 60px">
+                                </td>
+                                <td ng-if="line.product.name != 'SUBTOTAL'" class="align-right">
+                                    <span ng-model="montantHT[$index]" form="tableform" style="width: 60px">
                                                                 {{ line.total_ht | number:2 }}
                                                             </span>
-                                                        </td>
+                                </td>
 
-                                                        <td ng-if="line.product.name == 'SUBTOTAL'" colspan="7">
-                                                            {{ line.product.label}}
-                                                        </td>
-                                                        <td ng-if="line.product.name == 'SUBTOTAL'">
-                                                            {{ line.total_ht | number:2 }}
-                                                        </td>
-                                                        <td>
-                                                            <div class="btn-toolbar" role="toolbar">
+                                <td ng-if="line.product.name == 'SUBTOTAL'" colspan="7">
+                                    {{ line.product.label}}
+                                </td>
+                                <td ng-if="line.product.name == 'SUBTOTAL'">
+                                    {{ line.total_ht | number:2 }}
+                                </td>
+                                <td>
+                                    <div class="btn-toolbar" role="toolbar">
                                         <div class="btn-group btn-group-circle" ng-if="line.product.name != 'SUBTOTAL'">
                                             <button type="button" ng-show="!tableform.$visible && editable" ng-disabled="$index == 0" ng-click="upDownLine($index, 'UP', bill.lines)" class="btn btn-default btn-icon-only btn-sm fa fa-angle-up" title="@(Up)"></button>
                                             <button type="button" ng-show="!tableform.$visible && editable" ng-disabled="$index == (bill.lines.length - 1)" ng-click="upDownLine($index, 'DOWN', bill.lines)" class="btn btn-default btn-icon-only btn-sm fa fa-angle-down" title="@(Down)"></button>
-                                                                </div>
+                                        </div>
                                         <div class="btn-group btn-group-circle">
 
                                             <button type="button" ng-show="tableform.$visible && line.product.dynForm" ng-click="editLine(line, line.idLine, bill.lines)" class="btn btn-default btn-icon-only btn-sm fa fa-pencil" title="@(Edit)"></button>
                                             <button type="button" ng-show="tableform.$visible" ng-click="copyLine(line, bill.lines)" class="btn btn-default btn-icon-only btn-sm fa fa-copy" title="@(TocLone)"></button>
                                             <button type="button" ng-show="tableform.$visible && line.product.name != 'SUBTOTAL'" ng-click="AddSubTotal($index)" class="btn btn-default btn-icon-only btn-sm fa fa-bars" title="@(AddSubtotal)"></button>
                                             <button type="button" ng-show="tableform.$visible" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <!-- buttons -->
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- buttons -->
                         <div class="actions">
                             <div class="btn-form" ng-show="tableform.$visible">
                                 <button type="submit" ng-disabled="tableform.$waiting" class="btn btn-circle btn-outline uppercase green pull-right "> @(Save) <i class="fa fa-check"></i></button>
@@ -501,77 +501,77 @@
 
                                 <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(bill.lines)" class="btn btn-circle btn-outline uppercase dark "><i class="fa fa-plus"></i> @(AddNewLine)</button>
                             </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
                         </div>
-                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-                        <div class="col-md-6">
-                            <crm-notes ng-model="bill.notes[0]" ng-change="update()"></crm-notes>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="col-md-12 col-sm-12">
-                                <div class="well">
-                                    <h4 class="bold">@(Options)</h4>
-                                    <div class="row static-info align-reverse">
-                                        <div class="col-md-7 name">@(ShippingCosts) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
-                                        <div class="col-md-5 value"><span editable-text="bill.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
+    <div class="col-md-6">
+        <crm-notes ng-model="bill.notes[0]" ng-change="update()"></crm-notes>
+    </div>
+    <div class="col-md-6">
+        <div class="col-md-12 col-sm-12">
+            <div class="well">
+                <h4 class="bold">@(Options)</h4>
+                <div class="row static-info align-reverse">
+                    <div class="col-md-7 name">@(ShippingCosts) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
+                    <div class="col-md-5 value"><span editable-text="bill.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
                                                 {{bill.shipping.total_ht| currency}}
                                             </span></div>
-                                    </div>
-                                    <div class="row static-info align-reverse">
-                                        <div class="col-md-7 name">@(bills:DiscountGlobal) : <span class="icon-pencil grey" ng-click="discount.$show()" ng-hide="discount.$visible || !editable"></span></div>
-                                        <div class="col-md-5 value"><span editable-number="bill.discount.discount.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="discount">
+                </div>
+                <div class="row static-info align-reverse">
+                    <div class="col-md-7 name">@(bills:DiscountGlobal) : <span class="icon-pencil grey" ng-click="discount.$show()" ng-hide="discount.$visible || !editable"></span></div>
+                    <div class="col-md-5 value"><span editable-number="bill.discount.discount.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="discount">
                                                 {{bill.discount.discount.percent | percent:2}}  (-{{bill.discount.discount.value | currency}})
                                             </span></div>
-                                    </div>
-                                    <div class="row static-info align-reverse">
-                                        <div class="col-md-7 name">@(bills:EscompteOffered) : <span class="icon-pencil grey" ng-click="escompte.$show()" ng-hide="escompte.$visible || !editable"></span></div>
-                                        <div class="col-md-5 value"><span editable-number="bill.discount.escompte.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="escompte">
+                </div>
+                <div class="row static-info align-reverse">
+                    <div class="col-md-7 name">@(bills:EscompteOffered) : <span class="icon-pencil grey" ng-click="escompte.$show()" ng-hide="escompte.$visible || !editable"></span></div>
+                    <div class="col-md-5 value"><span editable-number="bill.discount.escompte.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="escompte">
                                                 {{bill.discount.escompte.percent | percent:2}} (-{{bill.discount.escompte.value | currency}})
                                             </span></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-sm-12">
-                                <div class="well">
-                                    <h4 class="bold">@(AmountTotal)</h4>
-                                    <div class="row static-info align-reverse">
-                                        <div class="col-md-5 name">@(AmountHT) :</div>
-                                        <div class="col-md-7 value">{{bill.total_ht| currency}}</div>
-                                    </div>
-                                    <div class="row static-info align-reverse">
-                                        <div class="col-md-5 name">@(AmountVAT) :</div>
-                                        <div class="col-md-7 value">
-                                            <div class="row static-info align-reverse" ng-repeat="vat in bill.total_tva| orderBy:'tva_tx'">
-                                                <div class="col-md-5 name">{{vat.tva_tx| number:2}} %</div>
-                                                <div class="col-md-7 value">{{vat.total| currency}}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row static-info align-reverse">
-                                        <div class="col-md-5 name">@(AmountTTC) :</div>
-                                        <div class="col-md-7 value">{{bill.total_ttc| currency}}</div>
-                                    </div>
-                                </div>
-                            </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-12">
+            <div class="well">
+                <h4 class="bold">@(AmountTotal)</h4>
+                <div class="row static-info align-reverse">
+                    <div class="col-md-5 name">@(AmountHT) :</div>
+                    <div class="col-md-7 value">{{bill.total_ht| currency}}</div>
+                </div>
+                <div class="row static-info align-reverse">
+                    <div class="col-md-5 name">@(AmountVAT) :</div>
+                    <div class="col-md-7 value">
+                        <div class="row static-info align-reverse" ng-repeat="vat in bill.total_tva| orderBy:'tva_tx'">
+                            <div class="col-md-5 name">{{vat.tva_tx| number:2}} %</div>
+                            <div class="col-md-7 value">{{vat.total| currency}}</div>
                         </div>
                     </div>
+                </div>
+                <div class="row static-info align-reverse">
+                    <div class="col-md-5 name">@(AmountTTC) :</div>
+                    <div class="col-md-7 value">{{bill.total_ttc| currency}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
-                <!--<tab heading="@(commercial:RelatedCommercialsPropals)"></tab>
+<!--<tab heading="@(commercial:RelatedCommercialsPropals)"></tab>
                     <tab heading="@(deliveries:RelatedDeliveryNotes)"></tab>
                     <tab heading="@(bills:RelatedBills)"></tab>
                     <tab heading="@(History)"></tab>-->
-                <tab heading="@(compta:ListOfPayments)" ng-show="bill.journalId.length > 0" ng-click="loadPayment = 1">
-                    <div class="portlet-body" ng-if="loadPayment" ng-include="'/templates/_bank/payment.html'" ng-controller="PaymentController">
-                    </div>
-                </tab>
-        </div>
+<tab heading="@(compta:ListOfPayments)" ng-show="bill.journalId.length > 0" ng-click="loadPayment = 1">
+    <div class="portlet-body" ng-if="loadPayment" ng-include="'/templates/_bank/payment.html'" ng-controller="PaymentController">
     </div>
+</tab>
+</div>
+</div>
 </div>
 <!-- END MAIN CONTENT -->

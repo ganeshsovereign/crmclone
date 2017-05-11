@@ -100,7 +100,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12 col-sm-12">
+        <div class="col-md-7 col-sm-12">
             <div class="portlet light">
 
                 <div class="portlet-title">
@@ -207,42 +207,78 @@
                 </div>
             </div>
         </div>
-    </div>
 
-
-    <div class="row">
-        <div class="col-md-6 col-sm-12">
-            <div class="portlet light">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-money"></i>
-                        <span class="caption-subject uppercase"> @(bills:BillAddress)</span>
+        <div class="row">
+            <div class="col-md-5 col-sm-12">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-money"></i>
+                            <span class="caption-subject uppercase"> @(bills:BillAddress)</span>
+                        </div>
+                        <div class="tools">
+                            <a href="" class="collapse" data-original-title="" title=""> </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body" style="display: block;">
+                        <div class="form-group form-md-line-input ">
+                            <address ng-model=societe.address></address>
+                        </div>
                     </div>
                 </div>
-                <div class="portlet light portlet bordered">
-                    <div class="form-group form-md-line-input ">
-                        <address ng-model=societe.address></address>
+            </div>
+
+            <div class="col-md-5 col-sm-12">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-truck"></i>
+                            <span class="caption-subject uppercase"> @(deliveries:DeliveryAddress)</span>
+                        </div>
+                        <div class="tools">
+                            <a href="" class="expand" data-original-title="" title=""> </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body" style="display: none;">
+                        <div class="form-group form-md-line-input ">
+                            <address ng-model=customer.address></address>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 col-sm-12">
+                <div class="portlet light">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="fa fa-user"></i>
+                            <span class="caption-subject uppercase"> @(Contacts)</span>
+                        </div>
+                        <div class="tools">
+                            <a href="" class="expand" data-original-title="" title=""> </a>
+                        </div>
+                    </div>
+                    <div class="portlet-body" style="display: none;">
+                        <form editable-form name="contactForm" onaftersave="update()">
+                            <div class="portlet light">
+                                <div class="portlet-title">
+                                    <div class="caption font-yellow-crusta">
+                                        <i class="fa fa-group font-yellow-crusta"></i> @(Contacts)
+                                    </div>
+                                </div>
+                                <div class="portlet-body" crm-contact model="bill.contacts" societe="bill.client"></div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6 col-sm-12">
-            <div class="portlet light">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-truck"></i>
-                        <span class="caption-subject uppercase"> @(deliveries:DeliveryAddress)</span>
-                    </div>
-                </div>
-                <div class="portlet light portlet bordered">
-                    <div class="form-group form-md-line-input ">
-                        <address ng-model=customer.address></address>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
+
+
+
+
+
 
     <div class="row">
         <div class="col-md-12 col-sm-12">
@@ -263,9 +299,6 @@
                             <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(offer.lines)" class="btn blue"> @(Add) <i class="fa fa-plus"></i></button>
                         </div>
                     </div>
-
-
-
                 </div>
                 <div class="portlet-body">
                     <form editable-form name="tableform" onaftersave="update();settings.layout.pageSidebarClosed = false;" oncancel="findOne();settings.layout.pageSidebarClosed = false;">
@@ -379,13 +412,14 @@
         </div>
     </div>
 
-    <div class="portlet light">
-        <div class="row">
-            <div class="col-md-7">
-                <crm-notes ng-model="offer.notes[0]" ng-change="update()"></crm-notes>
-            </div>
 
-            <div class="col-md-5">
+    <div class="row">
+        <div class="col-md-7 col-sm-12">
+            <crm-notes ng-model="offer.notes[0]" ng-change="update()"></crm-notes>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5 col-sm-12">
                 <div class="portlet light portlet bordered">
                     <div class="portlet-title">
                         <div class="caption">
@@ -407,38 +441,8 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-7">
-                <div class="portlet light portlet bordered">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-user"></i>
-                            <span class="caption-subject uppercase"> @(Contacts)</span>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="form-group form-md-line-input">
-                            <div class="input-group">
-                                <div class="input-group-control">
-                                    <select class="form-control" id="mode_reglement_code" ng-model="offer.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
-                                </select>
-                                    <label for="form_control_1">@(commercial:ChoiseContact)</label>
-                                </div>
-                                <span class="input-group-btn btn-right">
-                                                                <button class="btn default" type="button"><i class="fa fa-check"></i></button>
-                                                            </span>
-                                <span class="input-group-btn btn-right">
-                                                                <button class="btn blue" type="button">@(Create)</button>
-                                                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-5">
+            <div class="col-md-offset-7 col-md-5 col-sm-12">
                 <div class="portlet mt-element-ribbon light portlet-fit bordered">
                     <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase">
                         <div class="ribbon-sub ribbon-bookmark"></div>
@@ -473,4 +477,5 @@
             </div>
         </div>
     </div>
+
 </div>
