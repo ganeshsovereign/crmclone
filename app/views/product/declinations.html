@@ -17,10 +17,13 @@
                         <div class="row hidden-print">
                             <div class="col-md-12">
                                 <a class="btn blue" ng-click="addNewPrice()" disabled href="javascript:;">
-                                    <i class="fa fa-plus"></i> Ajouter
+                                    <i class="fa fa-plus"></i> Ajouter un produit existant
                                 </a>
-                                <a class="btn btn-default btn-icon-only" ng-click="find()" href="javascript:;">
+                                <a class="btn btn-default btn-icon-only" ng-click="findOne()" href="javascript:;">
                                     <i class="fa fa-refresh"></i>
+                                </a>
+                                <a class="btn btn-warning" ng-hide="product.groupId == product._id" ng-click="product.isNewMaster = true;update();" href="javascript:;">
+                                    <i class="fa fa-plus"></i> Devenir maitre
                                 </a>
                                 <!--       <div class="col-md-4">
                                     <div class="form-group">
@@ -60,12 +63,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="variant in productVariants.variantsArray" ng-class="{'font-red':product._id == variant._id, 'font-green':product._id !== variant._id && product.groupId === variant._id}">
+                                    <tr ng-repeat="variant in productVariants.variantsArray" ng-class="{'font-green':product._id !== variant._id && product.groupId === variant._id}">
                                         <td></td>
                                         <td>{{variant.info.langs[0].name}}</td>
                                         <td><a ui-sref="product.show({id:variant._id})">{{variant.info.SKU}}</a></td>
-                                        <td><span ng-if="variant._id == product.groupId">X</span></td>
-                                        <td><span ng-repeat="v in variant.variants[0]">{{v.langs[0].value}} / </span></td>
+                                        <td><span ng-if="variant._id == product.groupId"><i class="fa fa-check"></i></span></td>
+                                        <td><span ng-repeat="v in variant.variants[0]">
+                                            {{v.langs[0].value}} / 
+                                            </span></td>
                                         <td></td>
                                         <td>{{variant.prices.pu_ht | currency}}</td>
                                         <td>
@@ -76,72 +81,62 @@
                             </table>
                         </div>
                     </div>
-                    <!--          <tabset class="tabbable-line tabbable-full-width">
-                        <tab heading="@(products:CreateVariants)">
-                            <div class="form-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr class="forToggle" ng-repeat="line in thead">
-                                                    <th ng-repeat="col in line" colspan="{{col.colspan}}" class="text-center">
-                                                        {{col.value}}
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="forToggle" id="currencyTable">
-                                                <tr ng-repeat="line in variantesLines">
-                                                    <th ng-if="line.index2 === 0" rowspan="{{line.rowspan}}">{{line.elem3}}</th>
-                                                    <th>{{line.elem0}}</th>
 
-                                                    <td ng-repeat="col in line.col" class="text-center" id="{{col.id}}">{{col.value}}
-                                                        <div ng-if="col.html">
-                                                            <label ng-if="product.isVariant" ng-show="productVariants.valuesKeys.indexOf(col.id) < 0" class="_customCHeckbox"><input type="checkbox" class="newVariantCheck" ng-click="toggleSelection(variantsArray, col, 'id')" /><span></span></label>
-                                                            <span ng-hide="productVariants.valuesKeys.indexOf(col.id) < 0 && product.isVariant" class="fa fa-check font-blue"></span>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <button ng-if="variantesLines.length" id="saveVariants" class="btn blue" ng-click="saveVariants()">Save Variants</button>
-                                        <button ng-if="variantesLines.length" id="cancelVariants" class="btn info">Cancel</button>
-                                    </div>
-                                </div>
-                                <div class="row" ng-hide="product.isVariant">
-                                    <div ng-if="(changedProductType && changedProductType.opts && changedProductType.opts.length)" class="col-md-12">
-                                        <div ng-repeat="option in changedProductType.opts" class="form-group form-md-line-input">
-                                            <div ng-if="option._id && (checkedObj[option._id] != null || !checkedObj.length)">
-                                                <label class="col-md-2 control-label">{{option.name}} : </label>
-                                                <input type="checkbox" class="md-check" name="checkedObj[]" ng-model="checkedObj[option._id]" id="{{option._id}}" ng-true-value="{values : [], optionId: '{{option._id}}', optionName:'{{option.name}}'}" ng-false-value="null" ng-checked="checkedObj[option._id] != null" ng-disabled="checkedObj[option._id].length" />
-                                                <div class="col-md-10">
-                                                    <div class="md-checkbox-inline">
-                                                        <div class="md-checkbox" ng-repeat="value in option.values">
-                                                            <input type="checkbox" class="md-check" name="checkedObj[]" id="{{value._id}}" ng-click="toggleSelection(checkedObj[option._id].values, value, '_id')" ng-checked="isCheckedObj(checkedObj[option._id], value._id)" ng-disabled="!checkedObj[option._id]" />
-                                                            <label for="{{value._id}}">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="forToggle" ng-repeat="line in thead">
+                                        <th ng-repeat="col in line" colspan="{{col.colspan}}" class="text-center">
+                                            {{col.value}}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="forToggle" id="currencyTable">
+                                    <tr ng-repeat="line in variantesLines">
+                                        <th ng-if="line.index2 === 0" rowspan="{{line.rowspan}}">{{line.elem3}}</th>
+                                        <th>{{line.elem0}}</th>
+
+                                        <td ng-repeat="col in line.col" class="text-center" id="{{col.id}}">{{col.value}}
+                                            <div ng-if="col.html">
+                                                <label ng-if="product.isVariant" ng-show="productVariants.valuesKeys.indexOf(col.id) < 0" class="_customCHeckbox"><input type="checkbox" class="newVariantCheck" ng-click="toggleSelection(variantsArray, col, 'id')" /><span></span></label>
+                                                <span ng-hide="productVariants.valuesKeys.indexOf(col.id) < 0 && product.isVariant" class="fa fa-check font-blue"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- <button ng-if="variantesLines.length" id="saveVariants" class="btn blue" ng-click="saveVariants()">Save Variants</button>
+                            <button ng-if="variantesLines.length" id="cancelVariants" class="btn info">Cancel</button>-->
+                        </div>
+                    </div>
+                    <!--<div class="row" ng-hide="product.isVariant">
+                        <div ng-if="(changedProductType && changedProductType.opts && changedProductType.opts.length)" class="col-md-12">
+                            <div ng-repeat="option in changedProductType.opts" class="form-group form-md-line-input">
+                                <div ng-if="option._id && (checkedObj[option._id] != null || !checkedObj.length)">
+                                    <label class="col-md-2 control-label">{{option.name}} : </label>
+                                    <input type="checkbox" class="md-check" name="checkedObj[]" ng-model="checkedObj[option._id]" id="{{option._id}}" ng-true-value="{values : [], optionId: '{{option._id}}', optionName:'{{option.name}}'}" ng-false-value="null" ng-checked="checkedObj[option._id] != null"
+                                        ng-disabled="checkedObj[option._id].length" />
+                                    <div class="col-md-10">
+                                        <div class="md-checkbox-inline">
+                                            <div class="md-checkbox" ng-repeat="value in option.values">
+                                                <input type="checkbox" class="md-check" name="checkedObj[]" id="{{value._id}}" ng-click="toggleSelection(checkedObj[option._id].values, value, '_id')" ng-checked="isCheckedObj(checkedObj[option._id], value._id)" ng-disabled="!checkedObj[option._id]" />
+                                                <label for="{{value._id}}">
                                                             <span></span>
                                                             <span class="check"></span>
                                                             <span class="box"></span> {{value.value}} </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
-                                        </div>
-
-                                        <div>
-                                            <button class="btn blue" ng-click="createVariants(checkedObj)">@(Create)</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </tab>
-                        <tab heading="@(products:CreateSKUs)">
-                            <div class="form-body">
-                                <div class="row">
-                                    <div class="col-md-6"></div>
-                                </div>
+
+                            <div>
+                                <button class="btn blue" ng-click="createVariants(checkedObj)">@(Create)</button>
                             </div>
-                        </tab>
-                    </tabset> -->
+                        </div>
+                    </div>-->
                 </div>
             </div>
         </div>

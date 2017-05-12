@@ -83,6 +83,7 @@
                                                         <tr role="row" class="heading">
                                                             <th>@(Name)</th>
                                                             <th>@(Type)</th>
+                                                            <th>@(IsVariant)</th>
                                                             <th>@(Action)</th>
                                                         </tr>
                                                     </thead>
@@ -90,6 +91,14 @@
                                                         <tr ng-repeat="line in object.opts">
                                                             <td>{{line.langs[0].name}}</td>
                                                             <td>{{line.mode}} <span ng-if="line.values.length">({{line.values.length}})</span></td>
+                                                            <td>
+                                                                <div class="md-checkbox-inline">
+                                                                    <div class="md-checkbox">
+                                                                        <input type="checkbox" ng-disabled="!line.values.length" class="md-check" name="checkedObj[]" id="{{line._id}}" ng-click="toggleSelection(object.variants, line._id)" ng-checked="object.variants.indexOf(line._id)>=0">
+                                                                        <label for="{{line._id}}"><span></span><span class="check"></span><span class="box"></span></label>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
                                                             <td>
                                                                 <a class="btn green fa fa-pencil" ui-sref="settings.product.attributes.show({id:line._id})" title="Editer"></a>
                                                                 <button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmUnSelecAttribute)" confirmed-click="object.options.splice(object.options.indexOf(line._id),1);update(true);"></button>

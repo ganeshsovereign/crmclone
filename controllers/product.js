@@ -1718,6 +1718,8 @@ Object.prototype = {
     update: function(id) {
         var self = this;
         //console.log(self.body);
+        var ProductModel = MODEL('product').Schema;
+
         Product(id, function(err, product) {
 
             if (err) {
@@ -1727,6 +1729,14 @@ Object.prototype = {
                         title: 'Erreur Loading',
                         message: err
                     }
+                });
+            }
+
+            if (self.body.isNewMaster) { //New master groupId for variants
+                self.body.groupId = product._id;
+                ProductModel.update({ groupId: product.groupId }, { $set: { groupId: product._id } }, { multi: true }, function(err, docs) {
+                    if (err)
+                        console.log(err);
                 });
             }
 
@@ -3136,6 +3146,7 @@ ProductFamily.prototype = {
                 isCoef: 1,
                 isActive: 1,
                 isCost: 1,
+                variants: 1,
                 opts: {
                     langs: '$options.langs',
                     _id: '$options._id',
@@ -3151,6 +3162,7 @@ ProductFamily.prototype = {
                 sequence: { $first: '$sequence' },
                 isCoef: { $first: '$isCoef' },
                 isCost: { $first: '$isCost' },
+                variants: { $first: '$variants' },
                 isActive: { $first: '$isActive' }
             }
         }], function(err, result) {
@@ -3352,10 +3364,19 @@ ProductFamily.prototype = {
             var addingOption;
             var deletingOptions;
 
-            currentOpts = currentOpts.toStringObjectIds();
+            var deletedVariants;
+            var addedVariants;
+            var addingVariant;
+            var deletingVariants;
 
-            deletedOptions = _.difference(currentOpts, newOpts);
-            addedOptions = _.difference(newOpts, currentOpts);
+
+            currentOpts.options = currentOpts.options.toStringObjectIds();
+            deletedOptions = _.difference(currentOpts.options, newOpts.options);
+            addedOptions = _.difference(newOpts.options, currentOpts.options);
+
+            currentOpts.variants = currentOpts.variants.toStringObjectIds();
+            deletedVariants = _.difference(currentOpts.variants, newOpts.variants);
+            addedVariants = _.difference(newOpts.variants, currentOpts.variants);
 
             addingOption = function(pCb) {
                 if (!addedOptions.length)
@@ -3371,12 +3392,27 @@ ProductFamily.prototype = {
                 });
             };
 
+            addingVariant = function(pCb) {
+                if (!addedVariants.length)
+                    return pCb();
+
+                addedVariants = addedVariants.objectID();
+
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { variants: { $each: addedVariants } } }, { new: true }, function(err, result) {
+                    if (err)
+                        return pCb(err);
+
+                    pCb();
+                });
+            };
+
             deletingOptions = function(pCb) {
                 if (!deletedOptions.length)
                     return pCb();
 
                 let deleteOptions = deletedOptions;
                 deletedOptions = deletedOptions.objectID();
+
                 ProductModel.find({ sellFamily: modelId, 'attributes.attribute': { $in: deletedOptions } }, function(err, docs) {
                     if (!docs.length)
                         return;
@@ -3404,9 +3440,57 @@ ProductFamily.prototype = {
                 });
             };
 
+            deletingVariants = function(pCb) {
+                if (!deletedVariants.length)
+                    return pCb();
+
+                let deleteVariants = deletedVariants;
+                deletedVariants = deletedVariants.objectID();
+
+                //Todo remove all attributesValues form Attributes in variants !
+
+                ProductModel.find({ sellFamily: modelId })
+                    .populate("variants")
+                    .exec(function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        if (!docs.length)
+                            return;
+
+                        docs.forEach(function(elem) {
+                            //console.log(elem);
+                            elem.variants = _.filter(elem.variants, function(elem) {
+                                if (deleteVariants.indexOf(elem.optionId.toString()) >= 0)
+                                    return false;
+
+                                return true;
+                            });
+
+                            //console.log(elem.variants);
+
+                            elem.save(function(err, result) {
+                                if (err)
+                                    console.log(err);
+
+
+                            });
+                        });
+                    });
+
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { variants: deletedVariants } }, { new: true }, function(err, result) {
+                    if (err)
+                        return pCb(err);
+
+                    pCb();
+                });
+            };
+
             async.parallel([
                 addingOption,
-                deletingOptions
+                addingVariant,
+                deletingOptions,
+                deletingVariants
             ], function(err) {
                 if (err)
                     return callback(err);
@@ -3419,9 +3503,12 @@ ProductFamily.prototype = {
             if (err)
                 return self.throw500(err);
 
-            currentOptions = result.options;
+            currentOptions = {
+                options: result.options,
+                variants: result.variants
+            };
 
-            updateOptionsForProdTypes(_id, currentOptions, body.options, ProductFamilyModel, function(err) {
+            updateOptionsForProdTypes(_id, currentOptions, { options: body.options, variants: body.variants }, ProductFamilyModel, function(err) {
                 if (err) {
                     console.log(err);
                     return self.json({

@@ -249,7 +249,6 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
             // is newly selected
             else
                 tab.push(value);
-
         };
 
         // Calcul la somme d'une liste

@@ -147,7 +147,7 @@ var productSchema = new Schema({
         minStockLevel: { type: Number, default: 0 }
     },
 
-    variants: [{ type: Schema.Types.ObjectId, ref: 'productAttributesValues' }],
+    variants: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }],
     attributes: [{
         _id: false,
         attribute: { type: Schema.Types.ObjectId, ref: 'productAttributes' },

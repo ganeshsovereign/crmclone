@@ -20,6 +20,7 @@ var productFamiliesSchema = new Schema({
     sequence: { type: Number, default: 0 }, // sort list
 
     options: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }], //attributes
+    variants: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }], //isVariant
 
     accounts: [{
         _id: false,
