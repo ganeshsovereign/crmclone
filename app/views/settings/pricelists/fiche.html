@@ -12,7 +12,7 @@
                 <div class="portlet-body">
                     <div class="form-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-8">
 
                                 <div class="form-group form-md-line-input">
                                     <input type="text" class="form-control" id="Code" ng-model="object.priceListCode">
@@ -29,16 +29,19 @@
                                     <label for="Currency">@(Currency)</label>
                                 </div>
 
-                                <div class="md-checkbox-inline">
-                                    <div class="md-checkbox has-success">
-                                        <input type="checkbox" id="isActive" class="md-check" ng-model="object.cost" ng-checked="object.isActive">
-                                        <label for="isActive">
+                            </div>
+                            <div class="col-md-4">
+                                <div class="portlet light">
+                                    <div class="md-checkbox-inline">
+                                        <div class="md-checkbox has-success">
+                                            <input type="checkbox" id="isActive" class="md-check" ng-model="object.cost" ng-checked="object.isActive">
+                                            <label for="isActive">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:SupplierCost)</label>
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
