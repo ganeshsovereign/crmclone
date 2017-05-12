@@ -523,7 +523,7 @@ Object.prototype = {
     },
     pdf: function(ref, self) {
         // Generation de la facture PDF et download
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
         var BankModel = MODEL('bank').Schema;
 
         if (!self)
@@ -547,18 +547,18 @@ Object.prototype = {
 
         Offer(ref, function(err, doc) {
 
-            var model = "_offer.tex";
+            var model = "offer.tex";
             // check if discount
             for (var i = 0; i < doc.lines.length; i++) {
                 if (doc.lines[i].discount > 0) {
-                    model = "_offer_discount.tex";
+                    model = "offer_discount.tex";
                     discount = true;
                     break;
                 }
             }
 
             SocieteModel.findOne({
-                _id: doc.client.id
+                _id: doc.supplier._id
             }, function(err, societe) {
                 BankModel.findOne({
                     ref: doc.bank_reglement
@@ -622,17 +622,29 @@ Object.prototype = {
                         });
 
                     for (var i = 0; i < doc.lines.length; i++) {
-                        tabLines.push({
-                            ref: (doc.lines[i].product.name != 'SUBTOTAL' ? doc.lines[i].product.name.substring(0, 12) : ""),
-                            description: "\\textbf{" + doc.lines[i].product.label + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
-                            tva_tx: doc.lines[i].tva_tx,
-                            pu_ht: doc.lines[i].pu_ht,
-                            discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
-                            qty: doc.lines[i].qty,
-                            total_ht: doc.lines[i].total_ht
-                        });
 
-                        if (doc.lines[i].product.name == 'SUBTOTAL') {
+                        if (doc.lines[i].type == 'SUBTOTAL')
+                            tabLines.push({
+                                ref: "",
+                                description: "\\textbf{Sous-total}",
+                                tva_tx: null,
+                                pu_ht: "",
+                                discount: "",
+                                qty: "",
+                                total_ht: doc.lines[i].total_ht
+                            });
+                        else
+                            tabLines.push({
+                                ref: doc.lines[i].product.info.SKU.substring(0, 12),
+                                description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                                tva_tx: doc.lines[i].product.taxes[0].taxeId.rate,
+                                pu_ht: doc.lines[i].pu_ht,
+                                discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
+                                qty: doc.lines[i].qty,
+                                total_ht: doc.lines[i].total_ht
+                            });
+
+                        if (doc.lines[i].type == 'SUBTOTAL') {
                             tabLines[tabLines.length - 1].italic = true;
                             tabLines.push({ hline: 1 });
                         }
@@ -664,10 +676,10 @@ Object.prototype = {
                         total: doc.total_ht
                     });
 
-                    for (var i = 0; i < doc.total_tva.length; i++) {
+                    for (var i = 0; i < doc.total_taxes.length; i++) {
                         tabTotal.push({
-                            label: "Total TVA " + doc.total_tva[i].tva_tx + " %",
-                            total: doc.total_tva[i].total
+                            label: "Total " + doc.total_taxes[i].taxeId.langs[0].label,
+                            total: doc.total_taxes[i].value
                         });
                     }
 
@@ -705,27 +717,27 @@ Object.prototype = {
                             },
                             "DESTINATAIRE.NAME": {
                                 "type": "string",
-                                "value": doc.bl[0].name
+                                "value": doc.address.name
                             },
                             "DESTINATAIRE.ADDRESS": {
                                 "type": "area",
-                                "value": doc.bl[0].address
+                                "value": doc.address.street
                             },
                             "DESTINATAIRE.ZIP": {
                                 "type": "string",
-                                "value": doc.bl[0].zip
+                                "value": doc.address.zip
                             },
                             "DESTINATAIRE.TOWN": {
                                 "type": "string",
-                                "value": doc.bl[0].town
+                                "value": doc.address.city
                             },
                             "DESTINATAIRE.TVA": {
                                 "type": "string",
-                                "value": societe.idprof6
+                                "value": societe.companyInfo.idprof6
                             },
                             "CODECLIENT": {
                                 "type": "string",
-                                "value": societe.code_client
+                                "value": societe.salesPurchases.code_client
                             },
                             //"TITLE": {"type": "string", "value": doc.title},
                             "REFCLIENT": {
