@@ -56,6 +56,149 @@ exports.install = function() {
     // list for autocomplete
     F.route('/erp/api/product/autocomplete', object.autocomplete, ['post', 'json', 'authorize']);
 
+    //return price product from qty
+    F.route('/erp/api/product/price', function() {
+        var self = this;
+        var ProductPricesModel = MODEL('productPrices').Schema;
+
+        ProductPricesModel.findPrice(self.body, function(err, result) {
+            if (err)
+                return console.log(err);
+
+            self.json(result);
+        });
+    }, ['post', 'json', 'authorize']);
+
+    // update product price
+    F.route('/erp/api/product/price', function() {
+        var self = this;
+        var ProductModel = MODEL('product').Schema;
+        var Pricebreak = INCLUDE('pricebreak');
+
+
+        // Fix ENTIER range
+        self.body.range = Math.trunc(self.body.range);
+
+        if (self.body.price_level !== 'BASE')
+            return pricelevel.update({ 'product': self.body._id, price_level: self.body.price_level }, { range: self.body.range, price: self.body.price }, self.user, function(err, prices) {
+                //console.log(prices);
+                if (err)
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+
+                return self.json({
+                    successNotify: {
+                        title: "Success",
+                        message: "Prix enregistre"
+                    }
+                });
+            });
+
+        var update = {};
+
+        if (self.body.range == 1)
+            update = { "prices.pu_ht": self.body.price };
+        else {
+            var idx = "prices.pricesQty." + self.body.range.toString();
+            update[idx] = self.body.price;
+
+            //delete range
+            if (self.body.price == 0)
+                update = { $unset: update };
+        }
+
+        update.updatedAt = new Date();
+        update.user_mod = {
+            id: self.user._id,
+            name: self.user.name
+        };
+
+        ProductModel.update({ '_id': self.body._id }, update, { upsert: false },
+            function(err, numberAffected, price) {
+                if (err)
+                    return console.log(err);
+
+                console.log(numberAffected);
+                if (err)
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+
+                return self.json({
+                    successNotify: {
+                        title: "Success",
+                        message: "Prix enregistre"
+                    }
+                });
+            });
+
+    }, ['put', 'json', 'authorize']);
+
+    //update Discount
+    F.route('/erp/api/product/discount', function() {
+        var self = this;
+        var ProductModel = MODEL('product').Schema;
+
+        if (self.body.price_level !== 'BASE')
+            return pricelevel.update({ 'product': self.body._id, price_level: self.body.price_level }, { discount: self.body.discount }, self.user, function(err, prices) {
+                console.log(prices);
+                if (err)
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+
+                return self.json({
+                    successNotify: {
+                        title: "Success",
+                        message: "Remise enregistree"
+                    }
+                });
+            });
+
+        var update = {
+            discount: self.body.discount
+        };
+
+        update.updatedAt = new Date();
+        update.user_mod = {
+            id: self.user._id,
+            name: self.user.name
+        };
+
+        ProductModel.update({ '_id': self.body._id }, update, { upsert: false },
+            function(err, numberAffected, price) {
+                if (err)
+                    return console.log(err);
+
+                console.log(numberAffected);
+                if (err)
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+
+                return self.json({
+                    successNotify: {
+                        title: "Success",
+                        message: "Remise enregistree"
+                    }
+                });
+            });
+
+    }, ['put', 'json', 'authorize']);
+
     F.route('/erp/api/product/scan', function() {
         var self = this;
         var ProductModel = MODEL('product').Schema;
@@ -431,150 +574,6 @@ exports.install = function() {
         });
 
     }, ['put', 'json', 'authorize']);
-    //return price product from qty
-    F.route('/erp/api/product/price', function() {
-        var self = this;
-        var ProductModel = MODEL('product').Schema;
-        var Pricebreak = INCLUDE('pricebreak');
-
-        ProductModel.findPrice(self.body, function(err, result) {
-            if (err)
-                return console.log(err);
-
-            self.json(result);
-        });
-    }, ['post', 'json', 'authorize']);
-
-    // update product price
-    F.route('/erp/api/product/price', function() {
-        var self = this;
-        var ProductModel = MODEL('product').Schema;
-        var Pricebreak = INCLUDE('pricebreak');
-
-
-        // Fix ENTIER range
-        self.body.range = Math.trunc(self.body.range);
-
-        if (self.body.price_level !== 'BASE')
-            return pricelevel.update({ 'product': self.body._id, price_level: self.body.price_level }, { range: self.body.range, price: self.body.price }, self.user, function(err, prices) {
-                //console.log(prices);
-                if (err)
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
-                        }
-                    });
-
-                return self.json({
-                    successNotify: {
-                        title: "Success",
-                        message: "Prix enregistre"
-                    }
-                });
-            });
-
-        var update = {};
-
-        if (self.body.range == 1)
-            update = { "prices.pu_ht": self.body.price };
-        else {
-            var idx = "prices.pricesQty." + self.body.range.toString();
-            update[idx] = self.body.price;
-
-            //delete range
-            if (self.body.price == 0)
-                update = { $unset: update };
-        }
-
-        update.updatedAt = new Date();
-        update.user_mod = {
-            id: self.user._id,
-            name: self.user.name
-        };
-
-        ProductModel.update({ '_id': self.body._id }, update, { upsert: false },
-            function(err, numberAffected, price) {
-                if (err)
-                    return console.log(err);
-
-                console.log(numberAffected);
-                if (err)
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
-                        }
-                    });
-
-                return self.json({
-                    successNotify: {
-                        title: "Success",
-                        message: "Prix enregistre"
-                    }
-                });
-            });
-
-    }, ['put', 'json', 'authorize']);
-
-    //update Discount
-    F.route('/erp/api/product/discount', function() {
-        var self = this;
-        var ProductModel = MODEL('product').Schema;
-
-        if (self.body.price_level !== 'BASE')
-            return pricelevel.update({ 'product': self.body._id, price_level: self.body.price_level }, { discount: self.body.discount }, self.user, function(err, prices) {
-                console.log(prices);
-                if (err)
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
-                        }
-                    });
-
-                return self.json({
-                    successNotify: {
-                        title: "Success",
-                        message: "Remise enregistree"
-                    }
-                });
-            });
-
-        var update = {
-            discount: self.body.discount
-        };
-
-        update.updatedAt = new Date();
-        update.user_mod = {
-            id: self.user._id,
-            name: self.user.name
-        };
-
-        ProductModel.update({ '_id': self.body._id }, update, { upsert: false },
-            function(err, numberAffected, price) {
-                if (err)
-                    return console.log(err);
-
-                console.log(numberAffected);
-                if (err)
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
-                        }
-                    });
-
-                return self.json({
-                    successNotify: {
-                        title: "Success",
-                        message: "Remise enregistree"
-                    }
-                });
-            });
-
-    }, ['put', 'json', 'authorize']);
-
 
     var productFamily = new ProductFamily();
     F.route('/erp/api/product/family/autocomplete', function() {
@@ -865,7 +864,7 @@ Object.prototype = {
             base = false;
         }
 
-        console.log(self.body);
+        //console.log(self.body);
 
         var cost = false;
         if (self.body.supplier || self.query.supplier) {
@@ -875,7 +874,7 @@ Object.prototype = {
         } else
             query.isBuy = true;
 
-        console.log(query);
+
 
         ProductModel.aggregate([{
                 $match: query
@@ -912,13 +911,14 @@ Object.prototype = {
                     _id: 1,
                     ref: 1,
                     dynForm: 1,
-                    taxes: { $arrayElemAt: ['$taxes.taxeId', 0] },
+                    taxes: 1,
                     units: 1,
                     directCost: 1,
                     indirectCost: 1,
                     info: 1,
                     size: 1,
                     prices: { $arrayElemAt: ['$prices.prices', 0] },
+                    discount: '$prices.discount',
                     priceLists: { $arrayElemAt: ['$priceLists', 0] }
                 }
             }, {
@@ -937,7 +937,7 @@ Object.prototype = {
                         }
                     }, */
             {
-                $limit: self.body.take || self.query.take || 50
+                $limit: self.body.take || self.query.take || 20
             }, {
                 $sort: { 'info.SKU': 1 }
             }
@@ -947,68 +947,6 @@ Object.prototype = {
 
             //console.log(docs);
             self.json(docs);
-        });
-
-        return;
-        //TODO Remove old solution
-        ProductModel.find(query, "ref _id label dynForm tva_tx minPrice units description caFamily prices totalCost weight", {
-            limit: /*self.body.take*/ 50,
-            sort: { ref: 1 }
-        }, function(err, docs) {
-            if (err) {
-                console.log("err : /api/product/autocomplete");
-                console.log(err);
-                return;
-            }
-
-            //console.log(docs);
-
-            var refs = _.map(docs, '_id');
-
-            var result = [];
-            for (var i = 0, len = docs.length; i < len; i++) {
-                var obj = {
-                    _id: docs[i]._id,
-                    id: docs[i]._id,
-                    pu_ht: docs[i].prices.pu_ht,
-                    price_level: 'BASE',
-                    prices: docs[i].prices,
-                    discount: 0,
-                    qtyMin: 0,
-                    ref: docs[i].ref,
-                    name: docs[i].ref,
-                    weight: docs[i].weight,
-                    totalCost: docs[i].totalCost,
-                    product: {
-                        id: docs[i],
-                        name: docs[i].ref,
-                        ref: docs[i].ref,
-                        unit: docs[i]._units.name,
-                        dynForm: docs[i].dynForm,
-                        caFamily: docs[i].caFamily
-                    }
-                };
-                result.push(obj);
-            }
-
-            //console.log(result);
-
-            if (self.body.price_level && self.body.price_level !== 'BASE')
-                return pricelevel.find(refs, self.body.price_level, function(prices) {
-                    //self.json(prices);
-                    //console.log(prices);
-
-                    var mergedList = _.map(result, function(item) {
-                        //console.log(item._id);
-                        return _.extend(item, _.findWhere(prices, { _id: item._id }));
-                    });
-
-                    //console.log(mergedList);
-
-                    return self.json(mergedList);
-                });
-
-            return self.json(result);
         });
     },
     read: function(req, res) {

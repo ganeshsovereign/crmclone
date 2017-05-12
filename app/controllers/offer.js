@@ -110,7 +110,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 method: 'GET',
                 url: '/erp/api/product/taxes'
             }).success(function(data, status) {
-                console.log(data);
+                //console.log(data);
                 $scope.taxes = data.data;
             });
 
@@ -150,7 +150,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 //$location.path('societe/' + societe._id);
                 //pageTitle.setTitle('Commande client ' + offer.ref);
 
-                if (response.lines) {
+                /*if (response.lines) {
                     for (var i = 0; i < response.lines.length; i++) {
                         $scope.offer.lines[i].idLine = i;
                     }
@@ -161,7 +161,9 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                     $scope.editable = false;
 
                 if (callback)
-                    callback(null, response);
+                    callback(null, response);*/
+
+                $scope.findOne();
             });
         };
         $scope.clone = function() {
@@ -178,7 +180,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 Id: $rootScope.$stateParams.id
             }, function(offer) {
                 $scope.offer = offer;
-                //console.log(offer);
+                console.log(offer);
                 //on utilise idLine pour definir la ligne produit que nous voulons supprimer
                 for (var i = 0; i < $scope.offer.lines.length; i++) {
                     $scope.offer.lines[i].idLine = i;
@@ -404,38 +406,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             grid.resetFilter();
         };
 
-        $scope.updateInPlace = function(api, field, row, newdata) {
-            if (!$scope.save) {
-                $scope.save = {
-                    promise: null,
-                    pending: false,
-                    row: null
-                };
-            }
-            $scope.save.row = row.rowIndex;
-            if (!$scope.save.pending) {
-                $scope.save.pending = true;
-                $scope.save.promise = $timeout(function() {
-                    $http({
-                        method: 'PUT',
-                        url: api + '/' + row.entity._id + '/' + field,
-                        data: {
-                            oldvalue: row.entity[field],
-                            value: newdata
-                        }
-                    }).
-                    success(function(data, status) {
-                        if (status == 200) {
-                            if (data) {
-                                row.entity = data;
-                            }
-                        }
-                    });
-                    $scope.save.pending = false;
-                }, 200);
-            }
-            return false;
-        };
+
         $scope.changeStatus = function(Status) {
             $scope.offer.Status = Status;
             $scope.update();
@@ -445,24 +416,24 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             //console.log(data);
             if (!data)
                 return "La ligne produit ne peut pas être vide";
-            if (!data.id)
+            if (!data._id)
                 return "Le produit n'existe pas";
         };
 
         $scope.addProduct = function(data, index, lines) {
-            //console.log(data);
+            console.log(data);
             for (var i = 0; i < lines.length; i++) {
                 if (lines[i].idLine === index) {
                     lines[i] = {
+                        type: 'product',
                         pu_ht: data.prices.price,
-                        tva_tx: data.taxes,
-                        discount: data.prices.discount,
+                        total_taxes: data.taxes,
+                        discount: data.discount,
                         priceSpecific: (data.dynForm ? true : false),
                         product: {
                             _id: data._id,
-                            ref: data.info.SKU,
-                            name: data.info.langs[0].name,
-                            //label: data.product.id.label,
+                            info: data.info,
+                            taxes: data.taxes,
                             unit: data.units,
                             dynForm: data.dynForm
                                 //family: data.product.id.caFamily
@@ -492,18 +463,18 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             function calculHT(line) {
                 if (line.qty) {
                     line.total_ht = round(line.qty * (line.pu_ht * (1 - (line.discount / 100))), 2);
-                    line.total_tva = line.total_ht * line.tva_tx / 100;
+                    //line.total_tva = line.total_ht * line.tva_tx / 100;
                 } else {
                     line.total_ht = 0;
-                    line.total_tva = 0;
+                    //line.total_tva = 0;
                 }
             }
 
-            if (line.product && line.product.id && !line.priceSpecific)
+            if (line.qty && line.product && line.product._id && !line.priceSpecific)
                 return $http.post('/erp/api/product/price', {
-                    price_level: $scope.offer.price_level,
+                    priceList: $scope.offer.supplier.salesPurchases.priceList._id,
                     qty: line.qty,
-                    _id: line.product.id
+                    _id: line.product._id
                 }).then(function(res) {
                     //console.log(res.data);
                     line.pu_ht = res.data.pu_ht;
@@ -593,11 +564,8 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 pu_ht: null,
                 tva_tx: null,
                 discount: null,
-                product: {
-                    id: null,
-                    name: "SUBTOTAL",
-                    label: "Sous-total"
-                },
+                type: 'SUBTOTAL',
+                product: null,
                 description: "",
                 isNew: true,
                 qty: null
@@ -636,287 +604,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                 }
             });
         };
-        $scope.onFileSelect = function($files) {
-            //$files: an array of files selected, each file has name, size, and type.
-            for (var i = 0; i < $files.length; i++) {
-                var file = $files[i];
-                if ($scope.offer._id)
-                    $scope.upload = Upload.upload({
-                        url: 'api/offer/file/' + $scope.offer._id,
-                        method: 'POST',
-                        // headers: {'headerKey': 'headerValue'},
-                        // withCredential: true,
-                        data: {
-                            myObj: $scope.myModelObj
-                        },
-                        file: file
-                            // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
-                            /* set file formData name for 'Content-Desposition' header. Default: 'file' */
-                            //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
-                            /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
-                            //formDataAppender: function(formData, key, val){} 
-                    }).progress(function(evt) { // FIXME function in a loop !
-                        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total, 10));
-                    }).success(function(data, status, headers, config) { // FIXME function in a loop !
-                        // file is uploaded successfully
-                        //$scope.myFiles = "";
-                        //console.log(data);
-                        //if (!data.update) // if not file update, add file to files[]
-                        //  $scope.offer.files.push(data.file);
-                        $scope.offer = data;
-                    });
-                //.error(...)
-                //.then(success, error, progress); 
-            }
-        };
-        $scope.suppressFile = function(id, fileName, idx) {
-            $http({
-                method: 'DELETE',
-                url: 'api/commande/file/' + id + '/' + fileName
-            }).
-            success(function(data, status) {
-                if (status == 200) {
-                    $scope.offer.files.splice(idx, 1);
-                }
-            });
-        };
-        $scope.fileType = function(name) {
-            if (typeof iconsFilesList[name.substr(name.lastIndexOf(".") + 1)] == 'undefined')
-                return iconsFilesList["default"];
-            return iconsFilesList[name.substr(name.lastIndexOf(".") + 1)];
-        };
-    }
-]);
-MetronicApp.controller('OfferCreateController', ['$scope', '$http', '$modalInstance', 'Upload', '$route', 'Offer',
-    function($scope, $http, $modalInstance, Upload, $route, Offer) {
 
-        $scope.opened = [];
-        $scope.init = function() {
-            $scope.active = 1;
-            $scope.offer = {};
-            $scope.offer.bl = [];
-            $scope.offer.bl.push({});
-            $scope.filePercentage = {};
-            $scope.fileName = {};
-            $scope.offer.notes = [];
-            $scope.offer.notes.push({});
-            $scope.offer.optional = {};
-        };
-        $scope.shipping = {
-            default: "NONE",
-            values: [{
-                id: "NONE",
-                label: "A diposition",
-                address: false
-            }, {
-                id: "TNT",
-                label: "TNT",
-                address: true
-            }, {
-                id: "MAIL",
-                label: "Courrier",
-                address: true
-            }, {
-                id: "COURSIER",
-                label: "Coursier",
-                address: true
-            }, {
-                id: "TRANSPORTEUR",
-                label: "Transporteur",
-                address: true
-            }]
-        };
-        $scope.billing = {
-            default: "CHQ",
-            values: [{
-                id: "CPT",
-                label: "En compte"
-            }, {
-                id: "MONEY",
-                label: "Espèce"
-            }, {
-                id: "CHQ",
-                label: "Chèque"
-            }, {
-                id: "CB",
-                label: "Carte bancaire"
-            }]
-        };
-        $scope.open = function($event, idx) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.opened[idx] = true;
-        };
-        $scope.create = function() {
-            if (this.offer._id)
-                return;
-            var offer = new Offer(this.offer);
-            offer.$save(function(response) {
-                $scope.offer = response;
-            });
-        };
-        $scope.update = function() {
-            var offer = $scope.offer;
-            offer.$update(function(response) {
-                $scope.offer = response;
-            });
-        };
-        $scope.isActive = function(idx) {
-            if (idx == $scope.active)
-                return "active";
-        };
-        $scope.next = function() {
-            $scope.active++;
-        };
-        $scope.previous = function() {
-            $scope.active--;
-        };
-        $scope.goto = function(idx) {
-            if ($scope.active == 5)
-                return;
-            if (idx < $scope.active)
-                $scope.active = idx;
-        };
-        $scope.societeAutoComplete = function(val) {
-            return $http.post('api/societe/autocomplete', {
-                take: '5',
-                skip: '0',
-                page: '1',
-                pageSize: '5',
-                filter: {
-                    logic: 'and',
-                    filters: [{
-                        value: val
-                    }]
-                }
-            }).then(function(res) {
-                return res.data;
-            });
-        };
-        $scope.initSelectFiles = function() {
-            $http({
-                method: 'GET',
-                url: 'api/chaumeil/otis/selectFiles'
-            }).success(function(data, status) {
-                $scope.selectFiles = data;
-                $timeout(function() {
-                    angular.element('select').change();
-                }, 300);
-            });
-        };
-        $scope.addDossier = function() {
-            $scope.offer.optional.dossiers.push({});
-        };
-        $scope.addDest = function() {
-            $scope.offer.bl.push({
-                products: [{
-                    name: 'paper',
-                    qty: 0
-                }, {
-                    name: 'cd',
-                    qty: 0
-                }]
-            });
-        };
-        $scope.sendOffer = function() {
-            $scope.offer.datec = new Date();
-            $scope.offer.date_livraison = new Date();
-            $scope.offer.date_livraison.setDate($scope.offer.date_livraison.getDate() + 5);
-            $scope.offer.Status = "NEW"; // commande validee
-            $scope.offer.notes[0].note = $scope.offer.notes[0].note.replace(/\n/g, '<br/>');
-            for (var i in this.offer.bl) {
-                var note = "";
-                note += "Adresse de livraison : <br/><p>" + this.offer.bl[i].name + "<br/>";
-                note += this.offer.bl[i].contact + "<br/>";
-                note += this.offer.bl[i].address + "<br/>";
-                note += this.offer.bl[i].zip + " " + this.offer.bl[i].town + "</p>";
-                $scope.offer.notes.push({
-                    note: note,
-                    title: "Destinataire " + (parseInt(i) + 1),
-                    edit: false
-                });
-            }
-            /*for (var j in $scope.offer.optional.dossiers) {
-             // Add specific files
-             
-             var note = "";
-             note += '<h4 class="green underline">' + "Liste des fichiers natifs</h4>";
-             note += '<ul>';
-             for (var i in $scope.offer.optional.dossiers[j].selectedFiles) {
-             if ($scope.offer.optional.dossiers[j].selectedFiles[i] !== null) {
-             note += '<li><a href="' + $scope.offer.optional.dossiers[j].selectedFiles[i].url + '" target="_blank" title="Telecharger - ' + $scope.offer.optional.dossiers[j].selectedFiles[i].filename + '">';
-             note += '<span class="icon-extract">' + i +"_" +$scope.offer.optional.dossiers[j].selectedFiles[i].filename + '</span>';
-             note += '</a></li>';
-             }
-             }
-             note += '</ul>';
-             
-             
-             $scope.offer.notes.push({
-             note: note,
-             title: "Fichiers webdoc dossier " + (parseInt(j) + 1),
-             edit: false
-             });
-             //console.log(note);
-             
-             
-             }*/
-            $scope.update();
-            $modalInstance.close($scope.offer);
-        };
-        $scope.onFileSelect = function($files, idx) {
-            $scope.filePercentage[idx] = 0;
-            //console.log(idx);
-            //$files: an array of files selected, each file has name, size, and type.
-            for (var i = 0; i < $files.length; i++) {
-                var file = $files[i];
-                //console.log(file);
-                if ($scope.offer)
-                    $scope.upload = Upload.upload({
-                        url: 'api/commande/file/' + $scope.offer._id,
-                        method: 'POST',
-                        // headers: {'headerKey': 'headerValue'},
-                        // withCredential: true,
-                        data: {
-                            idx: idx
-                        },
-                        file: file
-                            // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
-                            /* set file formData name for 'Content-Desposition' header. Default: 'file' */
-                            //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
-                            /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
-                            //formDataAppender: function(formData, key, val){} 
-                    }).progress(function(evt) {
-                        $scope.filePercentage[idx] = parseInt(100.0 * evt.loaded / evt.total);
-                    }).success(function(data, status, headers, config) {
-                        // file is uploaded successfully
-                        //$scope.myFiles = "";
-                        //console.log(data);
-                        $scope.offer.files = data.files;
-                        $scope.offer.__v = data.__v; // for update
-                        $scope.filePercentage[idx] = 100;
-                        $scope.fileName[idx] = file.name;
-                    });
-                //.error(...)
-                //.then(success, error, progress); 
-            }
-        };
-        $scope.suppressFile = function(id, fileName, idx) {
-            //console.log(id);
-            //console.log(fileName);
-            //console.log(idx);
-            //CO0214-00060_pvFeuPorte_Dossier1_UGAP_422014.csv
-            fileName = $scope.offer.ref + "_" + idx + "_" + fileName;
-            $http({
-                method: 'DELETE',
-                url: 'api/commande/file/' + id + '/' + fileName
-            }).success(function(data, status) {
-                if (status == 200) {
-                    $scope.offer.files = data.files;
-                    $scope.offer.__v = data.__v; // for update
-                    $scope.filePercentage[idx] = 0;
-                }
-            });
-        };
+
     }
 ]);

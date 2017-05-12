@@ -101,6 +101,14 @@ function Offer(id, cb) {
             select: "name salesPurchases",
             populate: { path: "salesPurchases.priceList" }
         })
+        .populate({
+            path: "lines.product",
+            select: "taxes info weight units",
+            populate: { path: "taxes.taxeId" }
+        })
+        .populate({
+            path: "total_taxes.taxeId"
+        })
         .exec(cb);
 }
 
@@ -346,10 +354,11 @@ Object.prototype = {
 
         async.parallel({
             status: function(cb) {
-                Dict.dict({
+                /*Dict.dict({
                     dictName: "fk_offer_status",
                     object: true
-                }, cb);
+                }, cb);*/
+                cb(null, MODEL('offer').Status);
             },
             datatable: function(cb) {
                 OfferModel.dataTable(query, options, cb);

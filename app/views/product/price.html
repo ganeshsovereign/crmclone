@@ -195,7 +195,7 @@
                                                                 <table class="table-condensed">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
-                                                                            <td class="text-info">{{price.count}}</td>
+                                                                            <td class="text-info">{{price.count||1}}+</td>
                                                                             <td><a href="#" editable-number="price.coef" e-step="0.001" e-min="0" onaftersave="update(line)">{{price.coef || 0 | number:3}}</a></td>
                                                                         </tr>
                                                                     </tbody>
@@ -228,7 +228,7 @@
                                                                 <table class="table-condensed">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
-                                                                            <td class="text-info">{{price.count}}</td>
+                                                                            <td class="text-info">{{price.count ||1}}+</td>
                                                                             <td>{{price.coefTotal || 0 | number:3}}</a>
                                                                             </td>
                                                                         </tr>
@@ -242,7 +242,7 @@
                                                                 <table class="table-condensed">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
-                                                                            <td class="text-info">{{price.count}}</td>
+                                                                            <td class="text-info">{{price.count || 1}}+</td>
                                                                             <td><a href="#" editable-number="price.price" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'price')">{{price.price | currency}}</a></td>
                                                                             <td ng-if="$index != 0">{{(price.price / line.prices[0].price -1) * 100 | percent }}</td>
                                                                         </tr>
@@ -276,7 +276,7 @@
                                                                 <table class="table-condensed">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
-                                                                            <td class="text-info">{{price.count}}</td>
+                                                                            <td class="text-info">{{price.count || 1}}+</td>
                                                                             <td><a href="#" editable-number="price.priceTTC" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'priceTTC')">{{price.priceTTC | currency}}</a></td>
                                                                         </tr>
                                                                     </tbody>
@@ -286,7 +286,7 @@
                                                                 <table class="table-condensed">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
-                                                                            <td class="text-info">{{price.count}}</td>
+                                                                            <td class="text-info">{{price.count || 1}}+</td>
                                                                             <td>{{price.margin.value | currency}} ({{price.margin.rate | percent:2}})</a>
                                                                             </td>
                                                                         </tr>
@@ -462,7 +462,7 @@
                                                                 <table class="table-condensed">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
-                                                                            <td class="text-info">{{price.count}}</td>
+                                                                            <td class="text-info">{{price.count|| 1}}+</td>
                                                                             <td><a href="#" editable-number="price.price" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'price')">{{price.price | currency}}</a></td>
                                                                             <td ng-if="$index != 0">{{(price.price / line.prices[0].price -1) * 100 | percent }}</td>
                                                                         </tr>
@@ -496,7 +496,7 @@
                                                                 <table class="table-condensed">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
-                                                                            <td class="text-info">{{price.count}}</td>
+                                                                            <td class="text-info">{{price.count || 1}}+</td>
                                                                             <td><a href="#" editable-number="price.priceTTC" e-step="0.001" e-min="0" onaftersave="updatePrice(line, price, 'priceTTC')">{{price.priceTTC | currency}}</a></td>
                                                                         </tr>
                                                                     </tbody>

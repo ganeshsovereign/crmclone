@@ -19,7 +19,7 @@
   "main": "./index.js",
   "dependencies": {
     "accounting": ">=0.3.2",
-    "async": ">= 0.2.9",
+    "async": "latest",
     "crypto": "latest",
     "csv": "0.3.6",
     "dateformat": "latest",

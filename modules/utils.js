@@ -262,130 +262,220 @@ exports.calculate_date_lim_reglement = function(datec, cond_reglement_code) {
 
 exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
-    var SocieteModel = MODEL('societe').Schema;
+    var SocieteModel = MODEL('Customers').Schema;
+    var TaxesModel = MODEL('taxes').Schema;
+
+    var count = 0,
+        total_ht = 0,
+        total_taxes = [],
+        total_ttc = 0,
+        weight = 0;
 
     async.waterfall([
-        function(cb) {
-            if (!societeId)
-                return cb(null, true);
+            function(cb) {
+                if (!societeId)
+                    return cb(null, true);
 
-            SocieteModel.findOne({ _id: societeId }, "VATIsUsed", function(err, societe) {
-                if (err || !societe)
-                    return callback("Societe not found !");
+                SocieteModel.findOne({ _id: societeId }, "salesPurchases.VATIsUsed", function(err, societe) {
+                    if (err || !societe)
+                        return callback("Societe not found !");
 
-                cb(null, societe.VATIsUsed);
+                    cb(null, societe.salesPurchases.VATIsUsed);
+                });
+            },
+            function(VATIsUsed, cb) {
+                if (!VATIsUsed)
+                    return cb(null, VATIsUsed);
+
+                var rates = {};
+
+                _.each(lines, function(line) {
+                    if (!line.product)
+                        return;
+                    _.each(line.product.taxes, function(taxe) {
+                        rates[taxe.taxeId.toString()] = null;
+                    });
+                });
+
+                async.forEachOf(rates, function(item, key, aCb) {
+                    TaxesModel.findOne({ _id: key }, function(err, taxe) {
+                        if (err)
+                            return aCb(err);
+
+                        rates[key] = taxe;
+                        aCb(err);
+                    });
+                }, function(err) {
+                    if (err)
+                        return cb(err);
+
+                    //Add VAT
+                    for (var i = 0, length = lines.length; i < length; i++) {
+
+                        //Update TAXES
+                        if (lines[i].product) {
+                            //console.log(lines[i].product.taxes);
+                            lines[i].total_taxes = _.map(lines[i].product.taxes, function(elem) {
+                                //console.log(elem);
+                                return {
+                                    taxeId: elem.taxeId,
+                                    value: 0
+                                }
+                            });
+                            for (j = 0; j < lines[i].product.taxes.length; j++) {
+                                //}
+                                //console.log(lines[i]);
+
+                                if (rates[lines[i].product.taxes[j].taxeId.toString()].isFixValue) //ecotax
+                                    lines[i].total_taxes[j].value = lines[i].qty * lines[i].product.taxes[j].value;
+                                else
+                                    lines[i].total_taxes[j].value = lines[i].total_ht * rates[lines[i].product.taxes[j].taxeId.toString()].rate / 100;
+                                //console.log(lines[i].total_taxes[0]);
+                            }
+                        }
+
+                        for (var k = 0; k < lines[i].total_taxes.length; k++) {
+                            var found = false;
+                            for (var j = 0; j < total_taxes.length; j++) {
+                                if (total_taxes[j].taxeId.toString() === lines[i].total_taxes[k].taxeId.toString()) {
+                                    total_taxes[j].total += lines[i].total_taxes[k].value;
+                                    found = true;
+                                    break;
+                                }
+                            }
+
+                            if (!found) {
+                                total_taxes.push({
+                                    taxeId: lines[i].total_taxes[k].taxeId,
+                                    isFixValue: rates[lines[i].total_taxes[k].taxeId.toString()].isFixValue,
+                                    total: lines[i].total_taxes[k].value
+                                });
+                            }
+                        }
+                    }
+
+                    cb(null, VATIsUsed);
+
+                });
+            },
+            function(VATIsUsed, cb) {
+                // shipping cost
+                if (!shipping.total_ht)
+                    return cb(null, VATIsUsed);
+
+                total_ht += shipping.total_ht;
+
+                if (!VATIsUsed)
+                    return cb(null, VATIsUsed);
+
+                TaxesModel.findOne({ isDefault: true }, function(err, taxe) {
+                    if (err)
+                        return cb(err);
+
+                    if (taxe == null)
+                        return cb("No default taxe");
+
+                    shipping.total_taxes = [];
+                    shipping.total_taxes.push({
+                        taxeId: taxe._id,
+                        value: shipping.total_ht * taxe.rate / 100
+                    });
+
+                    //Add VAT
+                    var found = false;
+                    for (var j = 0; j < total_taxes.length; j++)
+                        if (total_taxes[j].taxeId.toString() === taxe._id.toString()) {
+                            total_taxes[j].total += shipping.total_ht * taxe.rate / 100;
+                            found = true;
+                            break;
+                        }
+
+                    if (!found) {
+                        total_taxes.push({
+                            taxeId: taxe._id,
+                            isFixValue: taxe.isFixValue,
+                            value: shipping.total_ht * taxe.rate / 100
+                        });
+                    }
+
+                    cb(null, VATIsUsed);
+
+                });
+            }
+        ],
+        function(err, VATIsUsed) {
+
+            if (err)
+                return callback(err);
+
+
+            var i, j, k, length, found;
+            var subtotal = 0;
+
+            for (i = 0, length = lines.length; i < length; i++) {
+                // SUBTOTAL
+                if (lines[i].type == 'SUBTOTAL') {
+                    lines[i].total_ht = subtotal;
+                    subtotal = 0;
+                    continue;
+                }
+
+                //console.log(object.lines[i].total_ht);
+                total_ht += lines[i].total_ht;
+                subtotal += lines[i].total_ht;
+                //this.total_ttc += this.lines[i].total_ttc;
+
+                if (lines[i].product && lines[i].product._id)
+                //Poids total
+                    weight += (lines[i].product.weight || 0) * lines[i].qty;
+
+                count += lines[i].qty;
+            }
+
+            if (discount && discount.discount && discount.discount.percent) {
+                discount.discount.value = exports.round(total_ht * discount.discount.percent / 100, 2);
+                total_ht -= discount.discount.value;
+
+                if (VATIsUsed)
+                // Remise sur les TVA
+                    for (j = 0; j < total_taxes.length; j++) {
+                    if (total_taxes[j].isFixValue)
+                        continue;
+                    total_taxes[j].value -= total_taxes[j].total * discount.discount.percent / 100;
+                }
+            }
+
+            if (discount && discount.escompte && discount.escompte.percent) {
+                discount.escompte.value = exports.round(total_ht * discount.escompte.percent / 100, 2);
+                total_ht -= discount.escompte.value;
+
+                if (VATIsUsed)
+                // Remise sur les TVA
+                    for (j = 0; j < total_taxes.length; j++) {
+                    if (total_taxes[j].isFixValue)
+                        continue;
+                    total_taxes[j].value -= total_taxes[j].total * discount.escompte.percent / 100;
+                }
+            }
+
+            total_ht = exports.round(total_ht, 2);
+            total_ttc = total_ht;
+
+            if (VATIsUsed)
+                for (j = 0; j < total_taxes.length; j++) {
+                    total_taxes[j].value = exports.round(total_taxes[j].total, 2);
+                    if (total_taxes[j].isFixValue)
+                        continue;
+
+                    total_ttc += total_taxes[j].total;
+                }
+
+            callback(null, {
+                total_ht: total_ht,
+                total_taxes: total_taxes,
+                total_ttc: total_ttc,
+                weight: weight,
+                count: count
             });
-        }
-    ], function(err, VATIsUsed) {
-
-        var count = 0,
-            total_ht = 0,
-            total_tva = [],
-            total_ttc = 0,
-            weight = 0;
-
-        var i, j, length, found;
-        var subtotal = 0;
-
-        for (i = 0, length = lines.length; i < length; i++) {
-            // SUBTOTAL
-            if (lines[i].product.name == 'SUBTOTAL') {
-                lines[i].total_ht = subtotal;
-                subtotal = 0;
-                continue;
-            }
-
-            //console.log(object.lines[i].total_ht);
-            total_ht += lines[i].total_ht;
-            subtotal += lines[i].total_ht;
-            //this.total_ttc += this.lines[i].total_ttc;
-
-            if (VATIsUsed) {
-                //Add VAT
-                found = false;
-                for (j = 0; j < total_tva.length; j++)
-                    if (total_tva[j].tva_tx === lines[i].tva_tx) {
-                        total_tva[j].total += lines[i].total_tva;
-                        found = true;
-                        break;
-                    }
-
-                if (!found) {
-                    total_tva.push({
-                        tva_tx: lines[i].tva_tx,
-                        total: lines[i].total_tva
-                    });
-                }
-            }
-
-            //Poids total
-            weight += lines[i].weight * lines[i].qty;
-            count += lines[i].qty;
-        }
-
-        // shipping cost
-        if (shipping.total_ht) {
-            total_ht += shipping.total_ht;
-
-            if (VATIsUsed) {
-                shipping.total_tva = shipping.total_ht * shipping.tva_tx / 100;
-
-                //Add VAT
-                found = false;
-                for (j = 0; j < total_tva.length; j++)
-                    if (total_tva[j].tva_tx === shipping.tva_tx) {
-                        total_tva[j].total += shipping.total_tva;
-                        found = true;
-                        break;
-                    }
-
-                if (!found) {
-                    total_tva.push({
-                        tva_tx: shipping.tva_tx,
-                        total: shipping.total_tva
-                    });
-                }
-            } else
-                shipping.total_tva = 0;
-        }
-
-        if (discount && discount.discount && discount.discount.percent) {
-            discount.discount.value = exports.round(total_ht * discount.discount.percent / 100, 2);
-            total_ht -= discount.discount.value;
-
-            if (VATIsUsed)
-            // Remise sur les TVA
-                for (j = 0; j < total_tva.length; j++) {
-                total_tva[j].total -= total_tva[j].total * discount.discount.percent / 100;
-            }
-        }
-
-        if (discount && discount.escompte && discount.escompte.percent) {
-            discount.escompte.value = exports.round(total_ht * discount.escompte.percent / 100, 2);
-            total_ht -= discount.escompte.value;
-
-            if (VATIsUsed)
-            // Remise sur les TVA
-                for (j = 0; j < total_tva.length; j++) {
-                total_tva[j].total -= total_tva[j].total * discount.escompte.percent / 100;
-            }
-        }
-
-        total_ht = exports.round(total_ht, 2);
-        total_ttc = total_ht;
-
-        if (VATIsUsed)
-            for (j = 0; j < total_tva.length; j++) {
-                total_tva[j].total = exports.round(total_tva[j].total, 2);
-                total_ttc += total_tva[j].total;
-            }
-
-        callback(null, {
-            total_ht: total_ht,
-            total_tva: total_tva,
-            total_ttc: total_ttc,
-            weight: weight,
-            count: count
         });
-    });
 };

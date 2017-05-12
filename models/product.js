@@ -390,54 +390,6 @@ productSchema.statics.query = function(options, callback) {
     });
 };
 
-productSchema.statics.findPrice = function(options, fields, callback) {
-    var self = this;
-
-    var Pricebreak = INCLUDE('pricebreak');
-    var query = {};
-
-    if (options._id)
-        query._id = options._id;
-
-    if (typeof fields === 'function') {
-        callback = fields;
-        fields = "prices discount";
-    } else if (options.ref)
-        query.ref = options.ref;
-
-    this.findOne(query, fields, function(err, doc) {
-        if (err)
-            return callback("err : model product/price");
-
-        if (!doc)
-            return callback(null, {});
-
-        if (options.price_level && options.price_level !== 'BASE') {
-            var modelClass = MODEL('pricelevel').Schema;
-            return modelClass.findOne({ "product": doc._id, price_level: options.price_level }, function(err, res) {
-                if (err)
-                    return console.log(err);
-
-                //console.log(res, self._id, price_level);
-                if (!res) { // No specific price using BASE Prices
-                    Pricebreak.set(doc.prices.pu_ht, doc.prices.pricesQty);
-                    return callback(null, { pu_ht: Pricebreak.price(options.qty).price, discount: doc.discount || 0 });
-                }
-
-                Pricebreak.set(res.prices.pu_ht, res.prices.pricesQty);
-
-                callback(null, { pu_ht: Pricebreak.price(options.qty).price, discount: res.discount || 0 });
-            });
-        }
-
-        Pricebreak.set(doc.prices.pu_ht, doc.prices.pricesQty);
-
-        //console.log(doc);
-        callback(null, { pu_ht: Pricebreak.price(options.qty).price, discount: doc.discount || 0 });
-    });
-};
-
-
 productSchema.methods.getPrice = function(qty, price_level) {
     var Pricebreak = INCLUDE('pricebreak');
     var self = this;

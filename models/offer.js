@@ -39,10 +39,7 @@ var offerSchema = new Schema({
         rate: { type: Number, default: 1 } // changed default to '0' for catching errors
     },
 
-    Status: {
-        type: Schema.Types.Mixed,
-        default: 'DRAFT'
-    },
+    Status: { type: String, default: 'DRAFT' },
     cond_reglement_code: {
         type: String,
         default: 'RECEP'
@@ -105,12 +102,10 @@ var offerSchema = new Schema({
         default: 0,
         set: setPrice
     },
-    total_tva: [{
-        tva_tx: Number,
-        total: {
-            type: Number,
-            default: 0
-        }
+    total_taxes: [{
+        _id: false,
+        taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        value: { type: Number, default: 0 }
     }],
     total_ttc: {
         type: Number,
@@ -122,18 +117,15 @@ var offerSchema = new Schema({
             default: 0,
             set: setPrice
         },
-        tva_tx: {
-            type: Number,
-            default: 20
-        },
-        total_tva: {
-            type: Number,
-            default: 0
-        },
-        total_ttc: {
+        total_taxes: [{
+            _id: false,
+            taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+            value: { type: Number, default: 0 }
+        }],
+        /*total_ttc: {
             type: Number,
             default: 0
-        }
+        }*/
     },
     createdBy: { type: ObjectId, ref: 'Users', default: null },
     editedBy: { type: ObjectId, ref: 'Users', default: null },
@@ -190,15 +182,15 @@ var offerSchema = new Schema({
     }],*/
     weight: { type: Number, default: 0 }, // Poids total
     lines: [{
+        _id: false,
         //pu: {type: Number, default: 0},
-        qty: {
-            type: Number,
-            default: 0
-        },
-        tva_tx: {
-            type: Number,
-            default: 0
-        },
+        type: { type: String, default: 'product' }, //Used for subtotal
+        qty: { type: Number, default: 0 },
+        /*taxes: [{
+            _id: false,
+            taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+            value: { type: Number }
+        }],*/
         //price_base_type: String,
         //title: String,
         priceSpecific: { type: Boolean, default: false },
@@ -209,39 +201,19 @@ var offerSchema = new Schema({
         description: String,
         private: String, // Private note
         product_type: String,
-        product: {
-            id: {
-                type: Schema.Types.ObjectId,
-                ref: "Product"
-            },
-            name: {
-                type: String
-            },
-            label: String,
-            dynForm: String
-                //family: {type: String, uppercase: true, default: "OTHER"}
-        },
-        total_tva: {
+        product: { type: Schema.Types.ObjectId, ref: "product" },
+        total_taxes: [{
+            _id: false,
+            taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+            value: { type: Number }
+        }],
+        /*total_ttc: {
             type: Number,
             default: 0
-        },
-        total_ttc: {
-            type: Number,
-            default: 0
-        },
-        discount: {
-            type: Number,
-            default: 0
-        },
-        //total_ht_without_discount: {type: Number, default: 0},
-        //total_ttc_without_discount: {type: Number, default: 0},
-        //total_vat_without_discount: {type: Number, default: 0},
-        total_ht: {
-            type: Number,
-            default: 0,
-            set: setPrice
-        },
-        weight: { type: Number, default: 0 },
+        },*/
+        discount: { type: Number, default: 0 },
+        total_ht: { type: Number, default: 0, set: setPrice },
+        //weight: { type: Number, default: 0 },
         optional: { type: Schema.Types.Mixed }
     }],
     history: [{
@@ -279,12 +251,12 @@ offerSchema.pre('save', function(next) {
     if (this.isNew)
         this.history = [];
 
-    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.client.id, function(err, result) {
+    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier, function(err, result) {
         if (err)
             return next(err);
 
         self.total_ht = result.total_ht;
-        self.total_tva = result.total_tva;
+        self.total_taxes = result.total_taxes;
         self.total_ttc = result.total_ttc;
         self.weight = result.weight;
 
@@ -311,13 +283,48 @@ offerSchema.pre('save', function(next) {
     });
 });
 
-var statusList = {};
-Dict.dict({
-    dictName: "fk_offer_status",
-    object: true
-}, function(err, docs) {
-    statusList = docs;
-});
+
+
+
+//"PropalStatusOpened": "Envoyé (devis ouvert)",
+//"PropalStatusSigned": "Signé (à commander)",
+//"PropalStatusNotSigned": "Non signé (fermé)",
+
+
+exports.Status = {
+    "_id": "fk_offer_status",
+    "lang": "propal",
+    "values": {
+        "DRAFT": {
+            "enable": true,
+            "label": "PropalStatusDraft",
+            "cssClass": "ribbon-color-default label-default",
+            "system": true
+        },
+        "NEW": {
+            "enable": true,
+            "label": "PropalStatusNew",
+            "cssClass": "ribbon-color-warning label-warning"
+        },
+        "VALIDATED": {
+            "enable": true,
+            "label": "PropalStatusValidated",
+            "cssClass": "ribbon-color-danger label-danger"
+        },
+        "CLOSED": {
+            "enable": true,
+            "label": "PropalStatusClosed",
+            "cssClass": "ribbon-color-success label-success",
+            "system": true
+        },
+        "CANCELED": {
+            "enable": true,
+            "label": "StatusOrderCanceled",
+            "cssClass": "ribbon-color-default label-default",
+            "system": true
+        }
+    }
+};
 
 /**
  * Methods
@@ -327,6 +334,7 @@ offerSchema.virtual('status')
         var res_status = {};
 
         var status = this.Status;
+        var statusList = exports.Status;
 
         if (status && statusList && statusList.values[status].label) {
             res_status.id = status;

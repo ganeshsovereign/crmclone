@@ -14,7 +14,7 @@ var setRound3 = MODULE('utils').setRound3;
 
 var priceSchema = new Schema({
     _id: false,
-    count: { type: Number, default: 1 },
+    count: { type: Number, default: 0 },
     price: { type: Number, default: 0, set: setRound3 }, // pu_ht
     coef: { type: Number, default: 1, set: setRound3 },
     coefTotal: { type: Number, default: 1 } //Sum coef * familyCoef
@@ -114,6 +114,106 @@ productPricesSchema.pre('save', function(next) {
         next();
     });
 });
+
+productPricesSchema.statics.findPrice = function(options, fields, callback) {
+    var self = this;
+    var ObjectId = MODULE('utils').ObjectId;
+
+    var Pricebreak = INCLUDE('pricebreak');
+    var query = {};
+
+    if (options._id)
+        query.product = ObjectId(options._id);
+
+    //if (options.priceList)
+    //    query.priceLists = ObjectId(options.priceList);
+
+    if (typeof fields === 'function') {
+        callback = fields;
+        fields = "prices discount";
+    } else if (options.ref)
+        query.ref = options.ref;
+
+    console.log(options, query);
+
+    this.aggregate([{
+            $match: query
+        },
+        /*{
+                   $project: {
+                       _id: 1,
+                       ref: '$info.SKU',
+                       dynForm: 1,
+                       taxes: 1,
+                       units: 1,
+                       directCost: 1,
+                       indirectCost: 1,
+                       info: 1,
+                       size: 1
+                   }
+               }, {
+                   $lookup: {
+                       from: 'ProductPrices',
+                       localField: '_id',
+                       foreignField: 'product',
+                       as: 'prices'
+                   }
+               }, {
+                   $unwind: '$prices'
+               }, */
+        {
+            $lookup: {
+                from: 'PriceList',
+                localField: 'priceLists',
+                foreignField: '_id',
+                as: 'priceLists'
+            }
+        },
+        /*, {
+                           $project: {
+                               _id: 1,
+                               ref: 1,
+                               dynForm: 1,
+                               taxes: { $arrayElemAt: ['$taxes.taxeId', 0] },
+                               units: 1,
+                               directCost: 1,
+                               indirectCost: 1,
+                               info: 1,
+                               size: 1,
+                               prices: { $arrayElemAt: ['$prices.prices', 0] },
+                               discount: '$prices.discount',
+                               priceLists: { $arrayElemAt: ['$priceLists', 0] }
+                           }
+                       }, */
+        {
+            $match: {
+                //   $or: [{
+                // 'priceLists.cost': (cost ? cost : { $ne: true }),
+                //       'priceLists.defaultPriceList': true //(base ? base : { $ne: true })
+                //   }, {
+                'priceLists._id': ObjectId(options.priceList)
+                    //   }]
+            }
+        },
+        /*,{
+                    $group : {
+                        _id:
+                    }
+                }, */
+    ], function(err, docs) {
+        if (err)
+            return self.throw500("err : /api/product/autocomplete" + err);
+
+        //console.log(docs[0].prices);
+
+        Pricebreak.set(docs[0].prices);
+
+        //console.log(Pricebreak.humanize(true, 3));
+
+        callback(null, { pu_ht: Pricebreak.price(options.qty).price, discount: docs[0].discount || 0 });
+    });
+
+};
 
 exports.Schema = mongoose.model('productPrices', productPricesSchema, 'ProductPrices');
 exports.name = "productPrices";
