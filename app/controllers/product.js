@@ -43,6 +43,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         //billingMode: "QTY",
         isSell: true,
         units: "unit",
+        entity: [],
         info: {
             autoBarCode: true,
             isActive: true,
@@ -90,7 +91,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 url: '/erp/api/product/' + ref
             }).success(function(data, status) {
                 console.log(data);
-                if (data && data._id && this.product._id !== data._id) // REF found
+                if (data && data._id && $scope.product && $scope.product._id !== data._id) // REF found
                     $scope.refFound = true;
             });
 
@@ -168,7 +169,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         });
     });
 
-    $scope.update = function() {
+    $scope.create = function() {
         var product = $scope.product;
         var self = this;
 
@@ -179,6 +180,15 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             });
             return;
         }
+
+        product.$update(function(response) {
+            $scope.findOne(); // refresh product with populate
+        });
+    };
+
+    $scope.update = function() {
+        var product = $scope.product;
+        var self = this;
 
         product.$update(function(response) {
             $scope.findOne(); // refresh product with populate
