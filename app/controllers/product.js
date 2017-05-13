@@ -266,7 +266,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             url: '/erp/api/product/variants/' + $rootScope.$stateParams.id
         }).success(function(data, status) {
             $scope.productVariants = data;
-            console.log(data);
+            console.log("variants ", data);
 
             /* check if isVariants -> return to the master product variant*/
             //if (data.variantsArray[0].isVariant && data.groupId !== $rootScope.$stateParams.id)
@@ -727,17 +727,22 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         });
     };
 
-    $scope.productAutoComplete = function(val) {
+    $scope.productAutoComplete = function(val, options) {
         return $http.post('/erp/api/product/autocomplete', {
             take: 50,
-            price_level: 'BASE',
-            supplier: true,
+            skip: 0,
+            page: 1,
+            pageSize: 5,
+            //                supplier: options.supplier,
+            options: options,
             filter: {
                 logic: 'and',
-                filters: [{ value: val }]
+                filters: [{
+                    value: val
+                }]
             }
         }).then(function(res) {
-            //console.log(res.data);
+            console.log(res.data);
             return res.data;
         });
     };
@@ -783,6 +788,47 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     $scope.deletePack = function(idx) {
         $scope.product.pack.splice(idx, 1);
         $scope.update();
+    };
+
+    $scope.addProductToVariant = function(newProductId) {
+        // Specify newProductId be a variant form this product
+
+        if (!newProductId)
+            return;
+
+        //LoadProduct
+        Products.get({
+            Id: newProductId
+        }, function(product) {
+            product.isVariant = true;
+            product.groupId = $scope.product.groupId;
+
+            product.$update(function(response) {
+                $scope.findOne(); // refresh product with populate
+            });
+
+        });
+    };
+
+    $scope.delProductToVariant = function(productId) {
+        // Specify newProductId be a variant form this product
+
+        if (!productId)
+            return;
+
+        //LoadProduct
+        Products.get({
+            Id: productId
+        }, function(product) {
+            product.isVariant = false;
+            product.groupId = product._id;
+            product.variants = [];
+
+            product.$update(function(response) {
+                $scope.findOne(); // refresh product with populate
+            });
+
+        });
     };
 
 

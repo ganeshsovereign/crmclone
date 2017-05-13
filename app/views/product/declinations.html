@@ -1,3 +1,9 @@
+<script type="text/ng-template" id="searchsupplierproduct.html">
+    <a>
+        <span ng-bind-html="match.model.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.info.langs[0].name"></span>
+    </a>
+</script>
+
 <div class="row">
     <div class="col-md-12">
         <div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>
@@ -13,17 +19,29 @@
 
                 </div>
                 <div class="portlet-body">
-                    <div class="form-group form-md-line-input" ng-if="product.isVariant">
+                    <div class="form-group form-md-line-input">
                         <div class="row hidden-print">
-                            <div class="col-md-12">
-                                <a class="btn blue" ng-click="addNewPrice()" disabled href="javascript:;">
-                                    <i class="fa fa-plus"></i> Ajouter un produit existant
+                            <div class="col-md-6">
+                                <div class="form-group form-md-line-input has-info">
+                                    <div class="input-group input-group">
+                                        <div class="input-group-control">
+                                            <input type="text" class="form-control" id="addProduct" ng-model="newRefProduct" typeahead="product as product.ref for product in productAutoComplete($viewValue, {sellFamily:product.sellFamily._id})" typeahead-template-url="searchsupplierproduct.html" placeholder="@(products:ProductRef)"
+                                            />
+                                            <label for="addProduct">Ref produit (meme famille)</label>
+                                        </div>
+                                        <span class="input-group-btn btn-right">
+                                                            <button class="btn blue" type="button" ng-click="addProductToVariant(newRefProduct._id)" ng-disabled="!newRefProduct._id"><i class="fa fa-plus"></i> @(Add)</button>
+                                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <a class="btn btn-warning" ng-hide="product.groupId == product._id" ng-click="product.isNewMaster = true;update();" href="javascript:;">
+                                    <i class="fa fa-plus"></i> Devenir maitre
                                 </a>
                                 <a class="btn btn-default btn-icon-only" ng-click="findOne()" href="javascript:;">
                                     <i class="fa fa-refresh"></i>
-                                </a>
-                                <a class="btn btn-warning" ng-hide="product.groupId == product._id" ng-click="product.isNewMaster = true;update();" href="javascript:;">
-                                    <i class="fa fa-plus"></i> Devenir maitre
                                 </a>
                                 <!--       <div class="col-md-4">
                                     <div class="form-group">
@@ -37,6 +55,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="no-footer table-responsive" ng-if="product.isVariant">
                         <div class="col-md-12">
                             <table class="table no-footer table-hover">
@@ -74,7 +93,7 @@
                                         <td></td>
                                         <td>{{variant.prices.pu_ht | currency}}</td>
                                         <td>
-                                            <button ng-hide="product._id == variant._id || variant._id == product.groupId" type="button" confirmed-click="remove(variant)" ng-confirm-click="Retirer la variantes ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>
+                                            <button ng-hide="variant._id == product.groupId" type="button" confirmed-click="delProductToVariant(variant._id)" ng-confirm-click="Retirer la variante ? (Ne supprime pas le produit)" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>
                                         </td>
                                     </tr>
                                 </tbody>

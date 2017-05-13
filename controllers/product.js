@@ -849,7 +849,7 @@ Object.prototype = {
         var query = {
             isremoved: { $ne: true },
             "$or": [{
-                'info.SKU': new RegExp(self.body.filter.filters[0].value, "i")
+                'info.SKU': new RegExp("^" + self.body.filter.filters[0].value, "i")
             }, {
                 'info.langs[0].name': new RegExp(self.body.filter.filters[0].value, "gi")
             }]
@@ -859,12 +859,19 @@ Object.prototype = {
         if (self.body.family)
             query.caFamily = self.body.family;
 
+        if (self.body.options) {
+            let options = _.mapValues(self.body.options, function(elem) {
+                return ObjectId(elem);
+            });
+            query = _.extend(query, options);
+        }
+
         var base = true;
         if (self.body.priceList && self.body.priceList !== null) {
             base = false;
         }
 
-        //console.log(self.body);
+        console.log(query);
 
         var cost = false;
         if (self.body.supplier || self.query.supplier) {
@@ -874,54 +881,55 @@ Object.prototype = {
         } else
             query.isBuy = true;
 
+        var request = [{
+            $match: query
+        }, {
+            $project: {
+                _id: 1,
+                ref: '$info.SKU',
+                dynForm: 1,
+                taxes: 1,
+                units: 1,
+                directCost: 1,
+                indirectCost: 1,
+                info: 1,
+                size: 1
+            }
+        }, {
+            $lookup: {
+                from: 'ProductPrices',
+                localField: '_id',
+                foreignField: 'product',
+                as: 'prices'
+            }
+        }, {
+            $unwind: '$prices'
+        }, {
+            $lookup: {
+                from: 'PriceList',
+                localField: 'prices.priceLists',
+                foreignField: '_id',
+                as: 'priceLists'
+            }
+        }, {
+            $project: {
+                _id: 1,
+                ref: 1,
+                dynForm: 1,
+                taxes: 1,
+                units: 1,
+                directCost: 1,
+                indirectCost: 1,
+                info: 1,
+                size: 1,
+                prices: { $arrayElemAt: ['$prices.prices', 0] },
+                discount: '$prices.discount',
+                priceLists: { $arrayElemAt: ['$priceLists', 0] }
+            }
+        }];
 
-
-        ProductModel.aggregate([{
-                $match: query
-            }, {
-                $project: {
-                    _id: 1,
-                    ref: '$info.SKU',
-                    dynForm: 1,
-                    taxes: 1,
-                    units: 1,
-                    directCost: 1,
-                    indirectCost: 1,
-                    info: 1,
-                    size: 1
-                }
-            }, {
-                $lookup: {
-                    from: 'ProductPrices',
-                    localField: '_id',
-                    foreignField: 'product',
-                    as: 'prices'
-                }
-            }, {
-                $unwind: '$prices'
-            }, {
-                $lookup: {
-                    from: 'PriceList',
-                    localField: 'prices.priceLists',
-                    foreignField: '_id',
-                    as: 'priceLists'
-                }
-            }, {
-                $project: {
-                    _id: 1,
-                    ref: 1,
-                    dynForm: 1,
-                    taxes: 1,
-                    units: 1,
-                    directCost: 1,
-                    indirectCost: 1,
-                    info: 1,
-                    size: 1,
-                    prices: { $arrayElemAt: ['$prices.prices', 0] },
-                    discount: '$prices.discount',
-                    priceLists: { $arrayElemAt: ['$priceLists', 0] }
-                }
-            }, {
+        if (self.body.priceList)
+            request.push({
                 $match: {
                     //   $or: [{
                     // 'priceLists.cost': (cost ? cost : { $ne: true }),
@@ -930,7 +938,15 @@ Object.prototype = {
                     'priceLists._id': ObjectId(self.body.priceList)
                         //   }]
                 }
-            },
+            });
+        else request.push({
+            $match: {
+                'priceLists.cost': (cost ? cost : { $ne: true }),
+                'priceLists.defaultPriceList': (base ? base : { $ne: true })
+            }
+        });
+
+        request.push(
             /*,{
                         $group : {
                             _id:
@@ -938,10 +954,12 @@ Object.prototype = {
                     }, */
             {
                 $limit: self.body.take || self.query.take || 20
-            }, {
-                $sort: { 'info.SKU': 1 }
-            }
-        ], function(err, docs) {
+            })
+        request.push({
+            $sort: { 'info.SKU': 1 }
+        });
+
+        ProductModel.aggregate(request, function(err, docs) {
             if (err)
                 return self.throw500("err : /api/product/autocomplete" + err);
 
@@ -1268,6 +1286,7 @@ Object.prototype = {
                         eventSubscription: '$products.eventSubscription',
                         canBePurchased: '$products.canBePurchased',
                         groupId: '$products.groupId',
+                        sellFamily: '$products.sellFamily',
                         Status: '$products.Status'
                     }
                 }, {
@@ -1295,6 +1314,7 @@ Object.prototype = {
                         canBePurchased: { $first: '$canBePurchased' },
                         variants: { $first: '$variants' },
                         groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
                         Status: { $first: '$Status' }
                     }
                 }, {
@@ -1375,6 +1395,7 @@ Object.prototype = {
                         canBePurchased: '$canBePurchased',
                         priceLists: '$priceLists',
                         groupId: '$groupId',
+                        sellFamily: '$sellFamily',
                         categories: '$categories',
                         variants: '$variants',
                         Status: '$Status'
@@ -1404,6 +1425,7 @@ Object.prototype = {
                         eventSubscription: { $first: '$eventSubscription' },
                         canBePurchased: { $first: '$canBePurchased' },
                         groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
                         variants: { $first: '$variants' },
                         categories: {
                             $addToSet: {
@@ -1452,6 +1474,7 @@ Object.prototype = {
                         eventSubscription: 1,
                         canBePurchased: 1,
                         groupId: 1,
+                        sellFamily: 1,
                         categories: 1,
                         Status: 1
                     }
@@ -1481,6 +1504,7 @@ Object.prototype = {
                         eventSubscription: { $first: '$eventSubscription' },
                         canBePurchased: { $first: '$canBePurchased' },
                         groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
                         categories: { $first: '$categories' },
                         Status: { $first: '$Status' }
                     }
@@ -1539,6 +1563,7 @@ Object.prototype = {
                         eventSubscription: { $first: '$eventSubscription' },
                         canBePurchased: { $first: '$canBePurchased' },
                         groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
                         categories: { $first: '$categories' },
                         channels: {
                             $addToSet: {
@@ -1555,6 +1580,7 @@ Object.prototype = {
                         _id: '$groupId',
                         id: { $first: '$_id' },
                         groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
                         variantsArray: { $push: '$$ROOT' }
                     }
                 },
@@ -1570,6 +1596,7 @@ Object.prototype = {
                     $project: {
                         _id: '$id',
                         groupId: '$groupId',
+                        sellFamily: '$sellFamily',
                         variantsArray: '$variantsArray',
                         images: '$images'
                     }
@@ -1587,48 +1614,142 @@ Object.prototype = {
         };
 
         optionsValueSearcher = function(product, waterfallCallback) {
-            var groupId = product.groupId;
+            var ProductFamilyModel = MODEL('productFamily').Schema;
 
-            ProductModel.aggregate([{
-                    $match: {
-                        groupId: groupId
+            var groupId = product.groupId;
+            //return console.log(familyId);
+
+
+
+            ProductFamilyModel.aggregate([{
+                        $match: {
+                            _id: product.sellFamily
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            variants: 1
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$variants',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: 'ProductAttributes',
+                            localField: 'variants',
+                            foreignField: '_id',
+                            as: 'variants'
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$variants',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: "$variants._id",
+                            variants: 1
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: 'Product',
+                            localField: '_id',
+                            foreignField: 'attributes.attribute',
+                            as: 'product'
+                        }
+                    },
+                    {
+                        $unwind: {
+                            path: '$product',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    }, {
+                        $match: { 'product.groupId': groupId }
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            variants: 1,
+                            attributes: {
+                                $filter: {
+                                    input: "$product.attributes",
+                                    as: "item",
+                                    cond: { $eq: ["$$item.attribute", "$_id"] }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $unwind: {
+                            path: '$attributes',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            variants: 1,
+                            attributes: 1,
+                            sizeOptions: { $size: "$attributes.options" }
+                        }
+                    },
+                    {
+                        $match: { sizeOptions: { $gte: 1 } }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            variants: 1,
+                            attributes: 1,
+                            options: "$attributes.options"
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$options',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'ProductAttributesValues',
+                            localField: 'options',
+                            foreignField: '_id',
+                            as: 'options'
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$options',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    }, {
+                        $group: {
+                            _id: "$options._id",
+                            variants: { $first: "$variants" },
+                            options: { $first: "$options" }
+                        }
+                    }, {
+                        $project: {
+                            _id: "$variants._id",
+                            variants: 1,
+                            options: 1
+                        }
+                    }, {
+                        $group: {
+                            _id: "$_id",
+                            variant: { $first: "$variants" },
+                            values: { $addToSet: "$options" }
+                        }
                     }
-                }, {
-                    $unwind: {
-                        path: '$variants',
-                        preserveNullAndEmptyArrays: true
-                    }
-                }, {
-                    $lookup: {
-                        from: 'ProductAttributesValues',
-                        localField: 'variants',
-                        foreignField: '_id',
-                        as: 'variants'
-                    }
-                }, {
-                    $unwind: {
-                        path: '$variants',
-                        preserveNullAndEmptyArrays: true
-                    }
-                }, {
-                    $lookup: {
-                        from: 'ProductAttributes',
-                        localField: 'variants.optionId',
-                        foreignField: '_id',
-                        as: 'variants.optionId'
-                    }
-                }, {
-                    $group: {
-                        _id: '$variants.optionId._id',
-                        name: { $first: '$variants.optionId.code' }, // TODO replace with langs
-                        values: { $addToSet: { _id: '$variants._id', value: '$variants.code' } } //TODO replace with langs
-                    }
-                }],
+                ],
                 function(err, productOptions) {
                     if (err)
                         return waterfallCallback(err);
 
                     product.currentValues = productOptions;
+                    console.log(productOptions);
 
                     waterfallCallback(null, product);
                 });
