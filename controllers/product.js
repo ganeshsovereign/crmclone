@@ -740,7 +740,7 @@ exports.install = function() {
     F.route('/erp/api/product/{productId}', object.show, ['authorize']);
     F.route('/erp/api/product/{productId}/{field}', object.updateField, ['put', 'json', 'authorize']);
     F.route('/erp/api/product/{productId}', object.update, ['put', 'json', 'authorize'], 512);
-    F.route('/erp/api/product/{productId}', object.clone, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/{productId}', object.clone, ['post', 'json', 'authorize'], 512);
     //other routes..
 };
 
@@ -1687,6 +1687,8 @@ Object.prototype = {
     clone: function(id) {
         var self = this;
         var ProductModel = MODEL('product').Schema;
+        var PriceModel = MODEL('productPrices').Schema;
+
 
         Product(id, function(err, doc) {
             var product = doc.toObject();
@@ -1705,13 +1707,39 @@ Object.prototype = {
             product.variants = [];
             product.imageSrc = null;
 
+            product.createdBy = self.user._id;
+            product.editedBy = self.user._id;
+
             product = new ProductModel(product);
 
-            product.save(function(err, doc) {
+            product.save(function(err, newProduct) {
                 if (err)
                     return self.throw500(err);
 
-                self.json(doc);
+                //clone prices
+                PriceModel.find({ product: doc._id }, function(err, prices) {
+
+                    async.each(prices, function(price, aCb) {
+                            var newPrice = price.toObject();
+
+                            newPrice.product = newProduct._id;
+                            delete newPrice._id;
+                            delete newPrice.__v;
+                            delete newPrice.createdAt;
+                            delete newPrice.updatedAt;
+                            newPrice.createdBy = self.user._id;
+                            newPrice.editedBy = self.user._id;
+
+                            newPrice = new PriceModel(newPrice);
+                            newPrice.save(aCb);
+                        },
+                        function(err) {
+                            if (err)
+                                return self.throw500(err);
+
+                            self.json(newProduct);
+                        });
+                });
             });
         });
     },
@@ -1772,7 +1800,7 @@ Object.prototype = {
         });
 
     },
-    destroy: function(id) {
+    /*destroy: function(id) {
         var ProductModel = MODEL('product').Schema;
         var PriceLevelModel = MODEL('pricelevel').Schema;
         var self = this;
@@ -1791,7 +1819,7 @@ Object.prototype = {
             self.json({});
 
         });
-    },
+    },*/
     consumption: function() {
         var self = this;
         var DeliveryModel = MODEL('delivery').Schema;

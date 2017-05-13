@@ -43,6 +43,20 @@ productPricesSchema.pre('save', function(next) {
 
     async.waterfall([
         function(cb) {
+            var PriceListModel = MODEL('priceList').Schema;
+
+            if (self.priceLists._id) //load priceList
+                return cb();
+
+            PriceListModel.populate(self, { path: "priceLists" }, function(err, doc) {
+                if (err)
+                    return cb(err);
+
+                self = doc;
+                cb();
+            });
+        },
+        function(cb) {
             ProductModel.findOne({ _id: self.product }, "info directCost indirectCost prices pack createdAt sellFamily")
                 .populate("sellFamily")
                 .exec(function(err, product) {

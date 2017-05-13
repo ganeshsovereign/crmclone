@@ -140,9 +140,8 @@ Object.prototype = {
         offer = new OfferModel(self.body);
 
 
-        offer.author = {};
-        offer.author.id = self.user._id;
-        offer.author.name = self.user.name;
+        offer.editedBy = self.user._id;
+        offer.createdBy = self.user._id;
 
         if (!offer.entity)
             offer.entity = self.user.entity;
@@ -223,9 +222,8 @@ Object.prototype = {
 
             offer = new OfferModel(offer);
 
-            offer.author = {};
-            offer.author.id = self.user._id;
-            offer.author.name = self.user.name;
+            offer.editedBy = self.user._id;
+            offer.createdBy = self.user._id;
 
             if (!offer.entity)
                 offer.entity = self.user.entity;
@@ -252,6 +250,11 @@ Object.prototype = {
             var old_Status = offer.Status;
 
             offer = _.extend(offer, self.body);
+
+            offer.editedBy = self.user._id;
+
+            if (!offer.createdBy)
+                offer.createdBy = self.user._id;
 
             if (old_Status == 'DRAFT' && offer.Status == "VALIDATED" && CONFIG('offer.emailNotify')) { // It's a new validated offer
                 console.log("Mail offer");
