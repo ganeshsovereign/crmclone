@@ -25,8 +25,8 @@
                                 <div class="form-group form-md-line-input has-info">
                                     <div class="input-group input-group">
                                         <div class="input-group-control">
-                                            <input type="text" class="form-control" id="addProduct" ng-model="newRefProduct" typeahead="product as product.ref for product in productAutoComplete($viewValue, {sellFamily:product.sellFamily._id})" typeahead-template-url="searchsupplierproduct.html" placeholder="@(products:ProductRef)"
-                                            />
+                                            <input type="text" class="form-control" id="addProduct" ng-model="newRefProduct" typeahead="product as product.ref for product in productAutoComplete($viewValue, {sellFamily:product.sellFamily._id})" typeahead-template-url="searchsupplierproduct.html"
+                                                placeholder="@(products:ProductRef)" />
                                             <label for="addProduct">Ref produit (meme famille)</label>
                                         </div>
                                         <span class="input-group-btn btn-right">
@@ -76,6 +76,7 @@
                                         <th>@(SKU)</th>
                                         <th>@(Top)</th>
                                         <th>@(Variant)</th>
+                                        <th>@(products:Packing)</th>
                                         <th>@(Channel)</th>
                                         <th>@(TotalHTsell)</th>
                                         <th></th>
@@ -90,6 +91,7 @@
                                         <td><span ng-repeat="v in variant.variants[0]">
                                             {{v.langs[0].value}} / 
                                             </span></td>
+                                        <td>{{variant.packing}}</td>
                                         <td></td>
                                         <td>{{variant.prices.pu_ht | currency}}</td>
                                         <td>

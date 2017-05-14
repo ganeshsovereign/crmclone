@@ -1228,13 +1228,13 @@ Object.prototype = {
                     $match: { 'products.isremoved': { $ne: true } }
                 }, {
                     $unwind: {
-                        path: '$products.pack',
+                        path: '$products.bundles',
                         preserveNullAndEmptyArrays: true
                     }
                 }, {
                     $lookup: {
                         from: 'Product',
-                        localField: 'products.pack.id',
+                        localField: 'products.bundles.id',
                         foreignField: '_id',
                         as: 'BundlessProduct'
                     }
@@ -1266,10 +1266,10 @@ Object.prototype = {
                         imageSrc: '$products.image.imageSrc',
                         variants: '$products.variants',
 
-                        pack: {
+                        bundles: {
                             _id: '$BundlessProduct._id',
                             name: '$BundlessProduct.name',
-                            qty: '$products.pack.qty'
+                            qty: '$products.bundles.qty'
                         },
 
                         prices: '$products.prices',
@@ -1287,6 +1287,7 @@ Object.prototype = {
                         canBePurchased: '$products.canBePurchased',
                         groupId: '$products.groupId',
                         sellFamily: '$products.sellFamily',
+                        packing: '$products.packing',
                         Status: '$products.Status'
                     }
                 }, {
@@ -1298,7 +1299,7 @@ Object.prototype = {
                         isBundle: { $first: '$isBundle' },
                         isVariant: { $first: '$isVariant' },
                         inventory: { $first: '$inventory' },
-                        pack: { $push: '$pack' },
+                        bundles: { $push: '$bundles' },
                         prices: { $first: '$prices' },
                         workflow: { $first: '$workflow' },
                         whoCanRW: { $first: '$whoCanRW' },
@@ -1315,6 +1316,7 @@ Object.prototype = {
                         variants: { $first: '$variants' },
                         groupId: { $first: '$groupId' },
                         sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
                         Status: { $first: '$Status' }
                     }
                 }, {
@@ -1379,7 +1381,7 @@ Object.prototype = {
                         isVariant: '$isVariant',
                         inventory: '$inventory',
                         imageSrc: '$imageSrc',
-                        pack: '$pack',
+                        bundles: '$bundles',
                         prices: '$prices',
                         workflow: '$workflow',
                         whoCanRW: '$whoCanRW',
@@ -1396,6 +1398,7 @@ Object.prototype = {
                         priceLists: '$priceLists',
                         groupId: '$groupId',
                         sellFamily: '$sellFamily',
+                        packing: '$packing',
                         categories: '$categories',
                         variants: '$variants',
                         Status: '$Status'
@@ -1410,7 +1413,7 @@ Object.prototype = {
                         isBundle: { $first: '$isBundle' },
                         isVariant: { $first: '$isVariant' },
                         inventory: { $first: '$inventory' },
-                        pack: { $first: '$pack' },
+                        bundles: { $first: '$bundles' },
                         prices: { $first: '$prices' },
                         workflow: { $first: '$workflow' },
                         whoCanRW: { $first: '$whoCanRW' },
@@ -1426,6 +1429,7 @@ Object.prototype = {
                         canBePurchased: { $first: '$canBePurchased' },
                         groupId: { $first: '$groupId' },
                         sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
                         variants: { $first: '$variants' },
                         categories: {
                             $addToSet: {
@@ -1459,7 +1463,7 @@ Object.prototype = {
                         isBundle: 1,
                         isVariant: 1,
                         inventory: 1,
-                        pack: 1,
+                        bundles: 1,
                         workflow: 1,
                         prices: 1,
                         whoCanRW: 1,
@@ -1475,6 +1479,7 @@ Object.prototype = {
                         canBePurchased: 1,
                         groupId: 1,
                         sellFamily: 1,
+                        packing: 1,
                         categories: 1,
                         Status: 1
                     }
@@ -1489,7 +1494,7 @@ Object.prototype = {
                         isBundle: { $first: '$isBundle' },
                         isVariant: { $first: '$isVariant' },
                         inventory: { $first: '$inventory' },
-                        pack: { $first: '$pack' },
+                        bundles: { $first: '$bundles' },
                         prices: { $first: '$prices' },
                         workflow: { $first: '$workflow' },
                         whoCanRW: { $first: '$whoCanRW' },
@@ -1505,6 +1510,7 @@ Object.prototype = {
                         canBePurchased: { $first: '$canBePurchased' },
                         groupId: { $first: '$groupId' },
                         sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
                         categories: { $first: '$categories' },
                         Status: { $first: '$Status' }
                     }
@@ -1548,7 +1554,7 @@ Object.prototype = {
                         isBundle: { $first: '$isBundle' },
                         isVariant: { $first: '$isVariant' },
                         inventory: { $first: '$inventory' },
-                        pack: { $first: '$pack' },
+                        bundles: { $first: '$bundles' },
                         prices: { $first: '$prices' },
                         workflow: { $first: '$workflow' },
                         whoCanRW: { $first: '$whoCanRW' },
@@ -1564,6 +1570,7 @@ Object.prototype = {
                         canBePurchased: { $first: '$canBePurchased' },
                         groupId: { $first: '$groupId' },
                         sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
                         categories: { $first: '$categories' },
                         channels: {
                             $addToSet: {
@@ -1581,6 +1588,7 @@ Object.prototype = {
                         id: { $first: '$_id' },
                         groupId: { $first: '$groupId' },
                         sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
                         variantsArray: { $push: '$$ROOT' }
                     }
                 },
@@ -1597,6 +1605,7 @@ Object.prototype = {
                         _id: '$id',
                         groupId: '$groupId',
                         sellFamily: '$sellFamily',
+                        packing: '$packing',
                         variantsArray: '$variantsArray',
                         images: '$images'
                     }

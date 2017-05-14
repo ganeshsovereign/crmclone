@@ -111,7 +111,6 @@ var productSchema = new Schema({
     ID: { type: Number },
     isremoved: { type: Boolean, default: false },
 
-    // TODO Migrate to this model with PIM module 
     info: {
         productType: { type: Schema.Types.ObjectId, ref: 'productTypes', default: null },
         isActive: { type: Boolean, default: true },
@@ -154,6 +153,8 @@ var productSchema = new Schema({
         value: { type: Schema.Types.Mixed }, // Not for select
         options: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }]
     }],
+
+    packing: { type: Number, defaut: 1 }, //conditonnement
 
     pack: [product], // conditionned pack from MP + production form supplier -> be in stock need prepare
     bundles: [product], // bundles or promotion pack of sell products -> Not prepare before order
