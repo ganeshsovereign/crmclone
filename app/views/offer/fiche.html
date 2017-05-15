@@ -436,6 +436,21 @@
                     <div class="col-md-5 name">@(TotalWeight) : </div>
                     <div class="col-md-7 value">{{offer.weight| number : 2}} kg</div>
                 </div>
+
+                <div class="row static-info align-reverse">
+                    <div class="col-md-7 name">@(ShippingCosts) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
+                    <div class="col-md-5 value"><span editable-text="bill.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
+                                                {{bill.shipping.total_ht| currency}}
+                                            </span></div>
+                </div>
+                <div class="row static-info align-reverse">
+                    <div class="col-md-7 name">@(bills:DiscountGlobal) : <span class="icon-pencil grey" ng-click="discount.$show()" ng-hide="discount.$visible || !editable"></span></div>
+                    <div class="col-md-5 value"><span editable-number="bill.discount.discount.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="discount">
+                                                {{bill.discount.discount.percent | percent:2}}  (-{{bill.discount.discount.value | currency}})
+                                            </span></div>
+                </div>
+
+
                 <div class="row static-info align-reverse">
                     <div class="col-md-5 name">@(AmountHT) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
                     <div class="col-md-7 value"><span editable-text="offer.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">

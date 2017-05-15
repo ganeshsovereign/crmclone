@@ -2636,7 +2636,7 @@ Prices.prototype = {
                     for (var i = 0; i < price.prices.length; i++) {
                         price.prices[i].margin = {
                             value: MODULE('utils').round(price.prices[i].price - price.product.directCost - price.product.indirectCost, 3),
-                            rate: MODULE('utils').round((price.prices[i].price - price.product.directCost - price.product.indirectCost) / (price.product.directCost + price.product.indirectCost) * 100, 2)
+                            rate: MODULE('utils').round((price.prices[i].price - price.product.directCost - price.product.indirectCost) / price.prices[i].price * 100, 2)
                         };
                         if (price.prices[i].specialPrice)
                             price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].specialPrice * (1 + price.product.taxes[0].taxeId.rate / 100));
