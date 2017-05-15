@@ -658,6 +658,7 @@ exports.install = function() {
         });
         return;
     }, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/familyCoef/export/', productFamily.exportCoefFamily, ['authorize']);
     F.route('/erp/api/product/family', productFamily.getAllProductFamily, ['authorize']);
     F.route('/erp/api/product/family/{id}', productFamily.getProductFamilyById, ['authorize']);
     F.route('/erp/api/product/family/', productFamily.createProductFamily, ['post', 'json', 'authorize']);
@@ -3698,7 +3699,137 @@ ProductFamily.prototype = {
             });
         });
     },
-    deleteProductFamily: function(id) {}
+    deleteProductFamily: function(id) {},
+    exportCoefFamily: function() {
+        var self = this;
+        var query = {};
+        var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
+        var FamilyModel = MODEL('productFamily').Schema;
+
+        var Stream = require('stream');
+        var stream = new Stream();
+
+        var self = this;
+
+        //query.price_level = priceLevel;
+
+        //console.log(query);
+
+        var date = new Date();
+        async.parallel({
+            ceof: function(pCb) {
+                FamilyCoefModel.aggregate([{
+                    $project: {
+                        _id: 1,
+                        priceLists: 1,
+                        family: 1,
+                        coef: 1
+                    }
+                }, {
+                    $lookup: {
+                        from: 'PriceList',
+                        localField: 'priceLists',
+                        foreignField: '_id',
+                        as: 'priceLists'
+                    }
+                }, {
+                    $unwind: '$priceLists'
+                }, {
+                    $lookup: {
+                        from: 'productFamily',
+                        localField: 'family',
+                        foreignField: '_id',
+                        as: 'family'
+                    }
+                }, {
+                    $unwind: '$family'
+                }, {
+                    $project: {
+                        _id: 1,
+                        priceListId: "$priceLists._id",
+                        priceListName: "$priceLists.name",
+                        familyId: "$family._id",
+                        familyName: { $arrayElemAt: ['$family.langs', 0] },
+                        coef: 1
+                    }
+                }, {
+                    $group: {
+                        _id: "$priceListId",
+                        name: { $first: "$priceListName" },
+                        family: { $addToSet: { _id: '$familyId', name: '$familyName.name', coef: "$coef" } }
+                    }
+                }], pCb);
+
+            },
+            column: function(pCb) {
+                FamilyModel.find({}, "_id langs", function(err, docs) {
+                    if (err)
+                        return pCb(err);
+
+                    pCb(null, _.map(docs, function(elem) {
+                        return { _id: elem._id, name: elem.name }
+                    }));
+                });
+            }
+        }, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            var fields = {};
+
+            var i = 2; //0 is _id priceList 1 is name priceList
+
+            _.each(result.column, function(elem) {
+                fields[elem._id.toString()] = i++;
+            });
+
+            var line = ['_id', 'name'];
+            _.each(result.column, function(elem) {
+                line[fields[elem._id.toString()]] = elem._id.toString();
+            });
+            line.push('\n');
+            stream.emit('data', line.join(";"));
+
+            line = ['_id', 'name'];
+            _.each(result.column, function(elem) {
+                line[fields[elem._id.toString()]] = elem.name;
+            });
+            line.push('\n');
+            stream.emit('data', line.join(";"));
+
+            return console.log(line);
+
+            //console.log(prices);
+            if (prices == null)
+                prices = [];
+
+            //entete
+            var out = "REF;DESCRIPTION;PU HT;DATEMAJ\n";
+            stream.emit('data', out);
+
+
+            for (var i = 0, len = prices.length; i < len; i++) {
+                out = "";
+
+                out += prices[i].product.name;
+                out += ";";
+                out += prices[i].product.label;
+                out += ";";
+                out += prices[i].prices.pu_ht;
+                out += ";";
+                out += moment(prices[i].updatedAt).format(CONFIG('dateformatLong'));
+                out += "\n";
+
+                //console.log(prices[i]);
+
+                stream.emit('data', out);
+            }
+
+            stream.emit('end');
+        });
+
+        self.stream('application/text', stream, 'Coef_' + date.getFullYear().toString() + "_" + (date.getMonth() + 1).toString() + ".csv");
+    }
 };
 
 function Taxes() {}

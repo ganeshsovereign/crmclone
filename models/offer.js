@@ -97,6 +97,16 @@ var offerSchema = new Schema({
             default: false
         }
     }],
+    discount: {
+        escompte: {
+            percent: { type: Number, default: 0 },
+            value: { type: Number, default: 0, set: setPrice } // total remise globale
+        },
+        discount: {
+            percent: { type: Number, default: 0 }, //discount
+            value: { type: Number, default: 0, set: setPrice } // total remise globale
+        }
+    },
     total_ht: {
         type: Number,
         default: 0,
