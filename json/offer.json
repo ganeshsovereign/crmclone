@@ -18,8 +18,7 @@
     ],
     "license": "OSL v3",
     "rights": {
-        "offer": [
-            {
+        "offer": [{
                 "desc": "Lire les propositons commerciales clients",
                 "perm": {
                     "read": true
@@ -78,7 +77,7 @@
             "icon": "fa-calculator",
             "title": "propal:Prop",
             "submenus": {
-                "menu:orderslist": {
+                "menu:offerlist": {
                     "position": 1,
                     "url": "/erp/#!/offer",
                     "perms": "offer.read",
