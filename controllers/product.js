@@ -1487,6 +1487,7 @@ Object.prototype = {
                     $group: {
                         _id: '$_id',
                         variants: { $addToSet: '$variants' },
+                        variantsIds: { $addToSet: '$variants._id' },
                         pL: { $first: '$pL' },
                         info: { $first: '$info' },
                         name: { $first: '$name' },
@@ -1547,6 +1548,7 @@ Object.prototype = {
                     $group: {
                         _id: '$_id',
                         variants: { $addToSet: '$variants' },
+                        variantsIds: { $first: '$variantsIds' },
                         pL: { $first: '$pL' },
                         info: { $first: '$info' },
                         name: { $first: '$name' },
@@ -1614,9 +1616,18 @@ Object.prototype = {
                 if (err)
                     return waterfallCallback(err);
 
-                if (result.length)
+                if (result.length) {
+                    result[0].variantsArray = _.map(result[0].variantsArray, function(elem) {
+                        if (elem.variantsIds.length)
+                            elem.variantsIds = elem.variantsIds.sort().join('/');
+                        else
+                            elem.variantsIds = "";
+
+                        return elem;
+                    });
+
                     waterfallCallback(null, result[0]);
-                else
+                } else
                     waterfallCallback(null, {});
 
             });
@@ -1758,7 +1769,7 @@ Object.prototype = {
                         return waterfallCallback(err);
 
                     product.currentValues = productOptions;
-                    console.log(productOptions);
+                    //console.log(productOptions);
 
                     waterfallCallback(null, product);
                 });
@@ -1796,7 +1807,6 @@ Object.prototype = {
                 });
 
                 product.valuesIds = valIdsArray;
-
                 product.valuesKeys = _.keys(valIdsArray);
 
                 waterfallCallback(null, product);

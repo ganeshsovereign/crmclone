@@ -88,9 +88,14 @@
                                         <td>{{variant.info.langs[0].name}}</td>
                                         <td><a ui-sref="product.show({id:variant._id})">{{variant.info.SKU}}</a></td>
                                         <td><span ng-if="variant._id == product.groupId"><i class="fa fa-check"></i></span></td>
-                                        <td><span ng-repeat="v in variant.variants[0]">
-                                            {{v.langs[0].value}} / 
-                                            </span></td>
+                                        <td>
+                                            <div class="form-group form-md-line-input">
+                                                <select class="table-group-action-input form-control" id="{{variant._id}}" ng-model="variant.variantsIds" ng-options="v._id as v.name for v in tabVariants" ng-change="changeProductVariant(variant._id, variant.variantsIds)"></select>
+                                                <label for="{{variant._id}}">@(Variant) <i ng-if="countVariant(variant.variantsIds, variant.packing) !== 1" class="fa fa-warning font-red"></i></label>
+                                            </div>
+
+
+                                        </td>
                                         <td>{{variant.packing}}</td>
                                         <td></td>
                                         <td>{{variant.prices.pu_ht | currency}}</td>

@@ -156,7 +156,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             method: 'GET',
             url: '/erp/api/product/taxes'
         }).success(function(data, status) {
-            console.log(data);
+            //console.log(data);
             $scope.taxes = data.data;
         });
 
@@ -266,7 +266,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             url: '/erp/api/product/variants/' + $rootScope.$stateParams.id
         }).success(function(data, status) {
             $scope.productVariants = data;
-            console.log("variants ", data);
+            //console.log("variants ", data);
 
             /* check if isVariants -> return to the master product variant*/
             //if (data.variantsArray[0].isVariant && data.groupId !== $rootScope.$stateParams.id)
@@ -291,7 +291,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                             method: 'GET',
                             url: '/erp/api/product/family/' + $scope.product.sellFamily._id
                         }).success(function(data, status) {
-                            console.log(data);
+                            //console.log(data);
                             $scope.changedProductFamily = data;
 
                             for (var i = 0, len = data.opts.length; i < len; i++) {
@@ -544,7 +544,59 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     $scope.createVariants = function(variants) {
         collection = $filter('object2Array')(variants);
 
-        console.log("collection :", collection);
+        //console.log("collection :", collection);
+
+        function allPossibleCases(arr) {
+            if (arr.length == 1) {
+                return [arr[0]];
+            } else {
+                var result = [];
+                var allCasesOfRest = allPossibleCases(arr.slice(1)); // recur with the rest of array
+                for (var i = 0; i < allCasesOfRest.length; i++) {
+                    for (var j = 0; j < arr[0].length; j++) {
+                        //console.log(allCasesOfRest[i]);
+                        var res = []
+
+                        res.push(arr[0][j]); // + allCasesOfRest[i]);
+                        for (var k = 0; k < allCasesOfRest[i].length; k++)
+                            res.push(allCasesOfRest[i][k]);
+
+                        result.push(res);
+                    }
+                }
+                return result;
+            }
+        }
+
+        //console.log(collection);
+
+        var tabVariants = [];
+        for (var i = 0; i < collection.length; i++) {
+            for (var j = 0; j < collection[i].values.length; j++) {
+                if (!tabVariants[i])
+                    tabVariants[i] = [];
+                tabVariants[i][j] = collection[i].values[j];
+            }
+        }
+
+        $scope.tabVariants = _.map(allPossibleCases(tabVariants), function(elem) {
+            var varId = [],
+                varName = [];
+
+            _.each(elem, function(elem) {
+                varId.push(elem._id);
+                varName.push(elem.code);
+            });
+
+            return {
+                _id: varId.sort().join('/'),
+                ids: varId.sort(),
+                name: varName.join('/')
+            };
+        });
+
+        //console.log($scope.tabVariants);
+
 
         collection = _.filter(collection, function(option) {
             return (option && option.values && option.values.length);
@@ -599,7 +651,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
         if (collection[1])
             for (var elem1 in collection[1].values) {
-                thead[0].push({ colspan: (collection[2] ? collection[2].values.length : ''), value: collection[1].values[elem1].value });
+                thead[0].push({ colspan: (collection[2] ? collection[2].values.length : ''), value: collection[1].values[elem1].code });
             }
 
         if (collection[2]) {
@@ -609,7 +661,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
             for (var elem1 in collection[1].values) {
                 for (var elem2 in collection[2].values) {
-                    thead[1].push({ colspan: '', value: collection[2].values[elem2].value });
+                    thead[1].push({ colspan: '', value: collection[2].values[elem2].code });
                 }
             }
         }
@@ -625,8 +677,8 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                         var aline = { col: [] };
                         aline.index2 = index2;
                         aline.rowspan = (collection[3] ? collection[3].values.length : '');
-                        aline.elem3 = elem3.value;
-                        aline.elem0 = elem0.value;
+                        aline.elem3 = elem3.code;
+                        aline.elem0 = elem0.code;
 
                         if (collection[1]) {
                             collection[1].values.forEach(function(elem1) {
@@ -645,7 +697,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 } else {
                     //<tr>
                     var aline = { col: [] };
-                    aline.elem0 = elem3.value;
+                    aline.elem0 = elem3.code;
 
                     if (collection[1]) {
                         if (collection[2]) {
@@ -675,7 +727,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         }
 
 
-        console.log(lines);
+        //console.log(lines);
         $scope.thead = thead;
         $scope.variantesLines = lines;
     };
@@ -829,6 +881,41 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             });
 
         });
+    };
+
+    $scope.changeProductVariant = function(productId, variants) {
+        if (!productId)
+            return;
+
+        console.log(variants);
+
+        //LoadProduct
+        Products.get({
+            Id: productId
+        }, function(product) {
+            product.variants = variants.split('/');
+
+            product.$update(function(response) {
+                $scope.findOne(); // refresh product with populate
+            });
+
+        });
+
+    };
+
+    $scope.countVariant = function(variant, packing) {
+        if (!variant)
+            return 0;
+
+        var cpt = 0;
+
+        _.each($scope.productVariants.variantsArray, function(n) {
+            if (variant == n.variantsIds && packing == n.packing)
+                cpt++;
+
+            return;
+        });
+        return cpt;
     };
 
 
