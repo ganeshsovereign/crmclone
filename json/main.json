@@ -163,7 +163,6 @@
         "menu:parameters": {
             "position": 1000,
             "url": "",
-            "perms": "admin",
             "enabled": "settings.read",
             "usertype": 2,
             "title": "Parameters",
@@ -180,12 +179,19 @@
                 },
                 "settings.general": {
                     "position": 1,
-                    "enabled": "settings.read",
                     "url": "/erp/#!/settings/general",
                     "perms": "admin",
                     "icon": "fa-cog",
                     "usertype": 2,
                     "title": "admin:General"
+                },
+                "settings.product": {
+                    "position": 4,
+                    "url": "/erp/#!/settings/product",
+                    "perms": "settings.read",
+                    "usertype": 2,
+                    "title": "admin:ModuleFamilyProducts",
+                    "icon": "fa-globe"
                 },
                 "menu:systemtools": {
                     "position": 10,

@@ -44,18 +44,6 @@
                     "usertype": 2,
                     "title": "admin:MenuCompanySetup",
                     "icon": "fa-globe"
-                },
-                "settings.product": {
-                    "position": 4,
-                    "url": "/erp/#!/settings/product",
-                    "perms": [
-                        ["superadmin"],
-                        ["admin", "entity.read"]
-                    ],
-                    "enabled": "$conf->entity->enabled",
-                    "usertype": 2,
-                    "title": "admin:ModuleFamilyProducts",
-                    "icon": "fa-globe"
                 }
             }
         }
