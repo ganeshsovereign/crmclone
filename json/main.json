@@ -113,6 +113,25 @@
                 }
             }
         ],
+        "settings": [{
+                "desc": "Lire les configurations",
+                "perm": {
+                    "read": false
+                }
+            },
+            {
+                "desc": "Creer/modifier les configurations",
+                "perm": {
+                    "write": false
+                }
+            },
+            {
+                "desc": "Supprimer les configurations",
+                "perm": {
+                    "delete": false
+                }
+            }
+        ],
         "box": [{
                 "desc": "Connexion des utilisateurs",
                 "perm": {
@@ -145,7 +164,7 @@
             "position": 1000,
             "url": "",
             "perms": "admin",
-            "enabled": "$user->admin",
+            "enabled": "settings.read",
             "usertype": 2,
             "title": "Parameters",
             "icon": "fa-cogs",
@@ -161,7 +180,7 @@
                 },
                 "settings.general": {
                     "position": 1,
-                    "enabled": "$user->admin",
+                    "enabled": "settings.read",
                     "url": "/erp/#!/settings/general",
                     "perms": "admin",
                     "icon": "fa-cog",
