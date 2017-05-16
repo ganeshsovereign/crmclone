@@ -3712,7 +3712,7 @@ ProductFamily.prototype = {
         var self = this;
         var query = {};
         var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
-        var FamilyModel = MODEL('productFamily').Schema;
+        var PriceListModel = MODEL('priceList').Schema;
 
         var Stream = require('stream');
         var stream = new Stream();
@@ -3762,15 +3762,15 @@ ProductFamily.prototype = {
                     }
                 }, {
                     $group: {
-                        _id: "$priceListId",
-                        name: { $first: "$priceListName" },
-                        family: { $addToSet: { _id: '$familyId', name: '$familyName.name', coef: "$coef" } }
+                        _id: "$familyId",
+                        name: { $first: "$familyName.name" },
+                        priceLists: { $addToSet: { _id: '$priceListId', name: '$priceListName', coef: "$coef" } }
                     }
                 }], pCb);
 
             },
             column: function(pCb) {
-                FamilyModel.find({}, "_id langs", function(err, docs) {
+                PriceListModel.find({ cost: false }, "_id name", function(err, docs) {
                     if (err)
                         return pCb(err);
 
@@ -3809,8 +3809,8 @@ ProductFamily.prototype = {
 
                     var line = [coef._id, coef.name];
 
-                    async.forEach(coef.family, function(family, bCb) {
-                        line[fields[family._id.toString()]] = family.coef
+                    async.forEach(coef.priceLists, function(priceList, bCb) {
+                        line[fields[priceList._id.toString()]] = priceList.coef
                         bCb();
                     }, function(err) {
                         line.push('\n');
