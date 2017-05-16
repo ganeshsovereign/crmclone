@@ -486,6 +486,7 @@ exports.install = function() {
     var pricesList = new PricesList();
     F.route('/erp/api/product/prices/priceslist', pricesList.getAllPricesLists, ['authorize']);
     F.route('/erp/api/product/prices/priceslist', pricesList.create, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/prices/priceslist/export/{id}', pricesList.export, ['authorize']);
     F.route('/erp/api/product/prices/priceslist/{id}', pricesList.show, ['authorize']);
     F.route('/erp/api/product/prices/priceslist/{id}', pricesList.update, ['put', 'json', 'authorize']);
     F.route('/erp/api/product/prices/priceslist/{id}', pricesList.delete, ['delete', 'authorize']);
@@ -495,7 +496,7 @@ exports.install = function() {
 
     /* get prices and prices list */
     F.route('/erp/api/product/prices', prices.read, ['authorize']);
-    F.route('/erp/api/product/prices/export/{price_list}', prices.export, ['authorize']);
+    F.route('/erp/api/product/prices/export/{priceList}', prices.export, ['authorize']);
     F.route('/erp/api/product/prices/{id}', prices.update, ['put', 'json', 'authorize']);
     F.route('/erp/api/product/prices', prices.add, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/prices/{id}', prices.delete, ['delete', 'authorize']);
@@ -2578,6 +2579,70 @@ PricesList.prototype = {
 
             self.json({});
         });
+    },
+    export: function(priceList) {
+        var self = this;
+        var query = {};
+        //var PriceListModel = MODEL('priceList').Schema;
+        var PriceModel = MODEL('productPrices').Schema;
+
+        var Stream = require('stream');
+        var stream = new Stream();
+
+        var self = this;
+
+        query.priceLists = priceList;
+
+        //console.log(query);
+
+        var date = new Date();
+
+        PriceModel.find(query)
+            .populate("product", "info")
+            //.sort({ 'product.ref': 1 })
+            .exec(function(err, prices) {
+                if (err)
+                    console.log(err);
+
+                //remove deleted product
+                _.each(prices, function(elem) {
+                    if (elem.product == null)
+                        elem.remove(function(err, doc) {});
+                });
+
+                //console.log(prices);
+                if (prices == null)
+                    prices = [];
+
+                //entete
+                var out = "_id;REF;DESCRIPTION;COEF;PU HT;DATEMAJ\n";
+                stream.emit('data', out);
+
+                for (var i = 0, len = prices.length; i < len; i++) {
+                    out = "";
+
+                    out += prices[i].product._id;
+                    out += ";";
+                    out += prices[i].product.info.SKU;
+                    out += ";";
+                    out += prices[i].product.info.langs[0].name;
+                    out += ";";
+                    out += prices[i].prices[0].coef;
+                    out += ";";
+                    out += prices[i].prices[0].price;
+                    out += ";";
+                    out += moment(prices[i].updatedAt).format(CONFIG('dateformatLong'));
+                    out += "\n";
+
+                    //console.log(prices[i]);
+
+                    stream.emit('data', out);
+                }
+
+                stream.emit('end');
+            });
+
+        self.stream('application/text', stream, "Liste_de_prix" + '_' + date.getFullYear().toString() + "_" + (date.getMonth() + 1).toString() + ".csv");
     }
 };
 
@@ -2973,63 +3038,6 @@ Prices.prototype = {
 
                 callback(result);
             });
-    },
-    export: function(priceLevel) {
-        var self = this;
-        var query = {};
-        var PriceLevelModel = MODEL('pricelevel').Schema;
-
-        var Stream = require('stream');
-        var stream = new Stream();
-
-        var self = this;
-
-        query.price_level = priceLevel;
-
-        //console.log(query);
-
-        var date = new Date();
-
-        PriceLevelModel.find(query, "-history", {
-                sort: {
-                    'product.name': 1
-                }
-            })
-            .populate("product", "label pu_ht weight prices")
-            .exec(function(err, prices) {
-                if (err)
-                    console.log(err);
-
-                //console.log(prices);
-                if (prices == null)
-                    prices = [];
-
-                //entete
-                var out = "REF;DESCRIPTION;PU HT;DATEMAJ\n";
-                stream.emit('data', out);
-
-
-                for (var i = 0, len = prices.length; i < len; i++) {
-                    out = "";
-
-                    out += prices[i].product.name;
-                    out += ";";
-                    out += prices[i].product.label;
-                    out += ";";
-                    out += prices[i].prices.pu_ht;
-                    out += ";";
-                    out += moment(prices[i].updatedAt).format(CONFIG('dateformatLong'));
-                    out += "\n";
-
-                    //console.log(prices[i]);
-
-                    stream.emit('data', out);
-                }
-
-                stream.emit('end');
-            });
-
-        self.stream('application/text', stream, priceLevel + '_' + date.getFullYear().toString() + "_" + (date.getMonth() + 1).toString() + ".csv");
     }
 };
 
@@ -3717,7 +3725,7 @@ ProductFamily.prototype = {
 
         var date = new Date();
         async.parallel({
-            ceof: function(pCb) {
+            coef: function(pCb) {
                 FamilyCoefModel.aggregate([{
                     $project: {
                         _id: 1,
@@ -3797,35 +3805,26 @@ ProductFamily.prototype = {
             line.push('\n');
             stream.emit('data', line.join(";"));
 
-            return console.log(line);
+            async.forEach(result.coef, function(coef, aCb) {
 
-            //console.log(prices);
-            if (prices == null)
-                prices = [];
+                    var line = [coef._id, coef.name];
 
-            //entete
-            var out = "REF;DESCRIPTION;PU HT;DATEMAJ\n";
-            stream.emit('data', out);
+                    async.forEach(coef.family, function(family, bCb) {
+                        line[fields[family._id.toString()]] = family.coef
+                        bCb();
+                    }, function(err) {
+                        line.push('\n');
+                        stream.emit('data', line.join(";"));
 
+                        aCb();
+                    });
+                },
+                function(err) {
+                    if (err)
+                        console.log(err);
 
-            for (var i = 0, len = prices.length; i < len; i++) {
-                out = "";
-
-                out += prices[i].product.name;
-                out += ";";
-                out += prices[i].product.label;
-                out += ";";
-                out += prices[i].prices.pu_ht;
-                out += ";";
-                out += moment(prices[i].updatedAt).format(CONFIG('dateformatLong'));
-                out += "\n";
-
-                //console.log(prices[i]);
-
-                stream.emit('data', out);
-            }
-
-            stream.emit('end');
+                    stream.emit('end');
+                });
         });
 
         self.stream('application/text', stream, 'Coef_' + date.getFullYear().toString() + "_" + (date.getMonth() + 1).toString() + ".csv");

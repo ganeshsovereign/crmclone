@@ -22,7 +22,7 @@
                                                 </a>
                 <ul class="dropdown-menu pull-right">
                     <li>
-                        <a ng-href="/erp/api/product/price_level/export/{{price_level}}">
+                        <a ng-href="/erp/api/product/prices/priceslist/export/{{priceList}}">
                             <i class="fa fa-download"></i> @(Download) XLS </a>
                     </li>
                     <li>
@@ -138,7 +138,7 @@
                         <div class="col-md-3">
                         </div>
                         <div class="col-md-4">
-                            <select ng-model="price_level" ng-options="c._id as c.name for c in pricesLists" ng-change="find()" class="form-control"></select>
+                            <select ng-model="priceList" ng-options="c._id as c.name for c in pricesLists" ng-change="find()" class="form-control"></select>
                         </div>
                     </div>
                 </div>
