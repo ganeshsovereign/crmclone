@@ -84,6 +84,7 @@
     "ValidatePayment": "Valider ce règlement",
     "PaymentHigherThanReminderToPay": "Règlement supérieur au reste à payer",
     "HelpPaymentHigherThanReminderToPay": "Attention, le montant de paiement pour une ou plusieurs factures est supérieur au reste à payer.<br>Corrigez votre saisie, sinon, confirmez et pensez à créer un avoir du trop perçu lors de la fermeture de chacune des factures surpayées.",
+    "ThisBillIsDeleted": "Attention, cette facture à été supprimée",
     "ClassifyPaid": "Classer 'Payée'",
     "ClassifyPaidPartially": "Classer 'Payée partiellement'",
     "ClassifyCanceled": "Classer 'Abandonnée'",
@@ -434,5 +435,6 @@
     "PaymentStatement": "Relevé de factures",
     "DefaultBank": "Banque par défaut",
     "PaymentPeriod": "Délai de paiement",
-    "AccountParameters": "Paramètres Comptables"
+    "AccountParameters": "Paramètres Comptables",
+    "DiscountGlobal": "Remise Globale"
 }

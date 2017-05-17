@@ -10,7 +10,7 @@
         </a>
     </script>
 
-    <div ng-if="bill.isremoved" class="alert alert-danger"><strong>Attention !</strong> Cette facture est supprimee. </div>
+    <div ng-if="bill.isremoved" class="alert alert-danger">@(bills:ThisBillIsDeleted) </div>
 
     <div class="page-bar">
         <ul class="page-breadcrumb">
@@ -29,7 +29,7 @@
         </ul>
         <div class="page-toolbar" ng-hide="bill.isremoved">
             <div class="btn-group pull-right">
-                <button type="button" ng-disabled="!bill.client.id" class="btn btn-circle dark sbold uppercase dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                <button type="button" ng-disabled="!bill.client.id" class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
                     @(Tools) <i class="fa fa-angle-down"></i>
                 </button>
                 <ul class="dropdown-menu pull-right" role="menu">
@@ -79,9 +79,25 @@
         </div>
     </div>
 
-    <h3 class="page-title">
+    <!--<h3 class="page-title">
         <i class="fa fa-plus-circle"></i> @(bills:InvoiceCustomer) {{bill.ref}} {{bill.client.name}}<small> @(From) {{bill.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>
-    </h3>
+    </h3>-->
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-horizontal form-row-seperated">
+                <div class="portlet light portlet-fit bordered">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="icon-info"></i>
+                            <span class="caption-subject dark bold uppercase">@(bills:InvoiceCustomer) - {{bill.ref}} - {{bill.client.name}} <small>@(From) {{bill.createdAt| date:'@(main:date.format.java.dayhour)'}} </small></span>
+                        </div>
+                        <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div ng-if="bill.isremoved" class="alert alert-danger"><strong>Attention !</strong> Cette facture est supprimee. </div>
     <div class="row">

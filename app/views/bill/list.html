@@ -55,12 +55,6 @@
         </div>
     </div>
 
-
-    <h3 class="page-title">
-        <i class="fa fa-plus-circle"></i> @(bills:BillsCustomers)
-    </h3>
-
-
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
             <div class="caption">
@@ -81,49 +75,43 @@
                 <div class="col-md-12">
                     <div class="form-group form-md-line-input">
 
-                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
-
                         <div class="col-md-3">
                             <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_bill_status.values" class="form-control">
-                                <option value="">-- @(All) --</option>
+                                 <option value="">-- @(All) --</option>
                             </select>
                             <div class="form-control-focus"> </div>
                         </div>
-                        <div class="col-md-1"></div>
-                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyEntity)</label>
 
                         <div class="col-md-3">
-                            <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
-                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
-                            </select>
+                            <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control"></select>
                             <div class="form-control-focus"> </div>
                         </div>
-                        <div class="col-md-1"></div>
 
                     </div>
                 </div>
             </div>
-            <div class="dataTables_wrapper no-footer table-responsive">
-                <div class="col-md-12">
-                    <table class="table dataTable no-footer table-hover" id="billList">
-                        <thead>
-                            <tr role="row" class="heading">
-                                <th width="2%">
-                                    <input type="checkbox" class="group-checkable" />
-                                </th>
-                                <th>Ref.</th>
-                                <th>@(companies:Company)</th>
-                                <th>@(RefCustomer)</th>
-                                <th>@(bills:DateInvoice)</th>
-                                <th>@(bills:DateEcheance)</th>
-                                <th>@(commercial:Commercial)</th>
-                                <th>@(TotalTTC)</th>
-                                <th>@(Status)</th>
-                                <th>@(Entity)</th>
-                                <th>@(DateModification)</th>
-                                <th>@(Action)</th>
-                            </tr>
-                            <!--<tr role="row" class="filter">
+            <div class="portlet light">
+                <div class="dataTables_wrapper no-footer table-responsive">
+                    <div class="col-md-12">
+                        <table class="table dataTable no-footer table-hover" id="billList">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th width="2%">
+                                        <input type="checkbox" class="group-checkable" />
+                                    </th>
+                                    <th>Ref.</th>
+                                    <th>@(companies:Company)</th>
+                                    <th>@(RefCustomer)</th>
+                                    <th>@(bills:DateInvoice)</th>
+                                    <th>@(bills:DateEcheance)</th>
+                                    <th>@(commercial:Commercial)</th>
+                                    <th>@(TotalTTC)</th>
+                                    <th>@(Status)</th>
+                                    <th>@(Entity)</th>
+                                    <th>@(DateModification)</th>
+                                    <th>@(Action)</th>
+                                </tr>
+                                <!--<tr role="row" class="filter">
                             <td>
                             </td>
                             <td>
@@ -177,8 +165,9 @@
                                 <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
                             </td>
                         </tr>-->
-                        </thead>
-                    </table>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

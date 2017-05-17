@@ -18,7 +18,9 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>{{offer.ref}}</span>
+                <span ng-hide="!offer._id">{{offer.ref}}</span>
+                <span ng-hide="offer._id">@(propal:NewProp)</span>
+
             </li>
         </ul>
         <div class="page-toolbar">
@@ -85,9 +87,11 @@
                     <div class="portlet-title">
                         <div class="caption">
                             <i class="icon-info"></i>
-                            <span class="caption-subject dark bold uppercase">@(propal:CommercialProposals) - {{offer.ref}} - {{offer.supplier.fullName}} </span>
+                            <span ng-hide="!offer._id" class="caption-subject dark bold uppercase">@(propal:CommercialProposals) - {{offer.ref}} - {{offer.supplier.fullName}} </span>
+                            <span ng-hide="offer._id" class="caption-subject dark bold uppercase">@(propal:NewProp) </span>
                         </div>
-                        <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                        <div ng-hide="!offer._id" ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                        <div ng-hide="offer._id" ng-include="'/templates/createMenu.html'" class="actions btn-set"></div>
                     </div>
                 </div>
             </div>
@@ -97,7 +101,7 @@
     <div class="row">
         <div class="col-md-7 col-sm-12">
             <div class="portlet light mt-element-ribbon portlet-fit bordered ">
-                <div class="ribbon ribbon-right ribbon-clip ribbon-shadow ribbon-border-dash-hor uppercase" ng-class="offer.status.css">
+                <div ng-hide="!offer._id" class="ribbon ribbon-right ribbon-clip ribbon-shadow ribbon-border-dash-hor uppercase" ng-class="offer.status.css">
                     <div class="ribbon-sub ribbon-clip ribbon-right"></div> {{offer.status.name}} </div>
                 <div class="portlet-title">
                     <div class="caption">
@@ -116,7 +120,7 @@
                                 <label for="ref_client">@(orders:RefCustomerOrder)</label>
                             </div>
 
-                            <div class="row">
+                            <div ng-hide="!offer._id" class="row">
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group form-md-line-input">
                                         <input type="text" class="form-control" id="entity" disabled ng-model="offer.entity">
@@ -131,7 +135,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div ng-hide="!offer._id" class="row">
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group form-md-line-input">
                                         <div class="form-control form-control-static"> {{offer.supplier.salesPurchases.priceList.priceListCode}} </div>
@@ -245,30 +249,30 @@
         </div>
 
         <!--<div class="col-md-5 col-sm-12">
-                <div class="portlet light">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="fa fa-user"></i>
-                            <span class="caption-subject uppercase"> @(Contacts)</span>
-                        </div>
-                        <div class="tools">
-                            <a href="" class="expand" data-original-title="" title=""> </a>
-                        </div>
+            <div class="portlet light">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-user"></i>
+                        <span class="caption-subject uppercase"> @(Contacts)</span>
                     </div>
-                    <div class="portlet-body" style="display: none;">
-                        <form editable-form name="contactForm" onaftersave="update()">
-                            <div class="portlet light">
-                                <div class="portlet-title">
-                                    <div class="caption font-yellow-crusta">
-                                        <i class="fa fa-group font-yellow-crusta"></i> @(Contacts)
-                                    </div>
-                                </div>
-                                <div class="portlet-body" crm-contact model="bill.contacts" societe="bill.client"></div>
-                            </div>
-                        </form>
+                    <div class="tools">
+                        <a href="" class="expand" data-original-title="" title=""> </a>
                     </div>
                 </div>
-            </div>-->
+                <div class="portlet-body" style="display: none;">
+                    <form editable-form name="contactForm" onaftersave="update()">
+
+                        <div class="portlet-title">
+                            <div class="caption font-yellow-crusta">
+                                <i class="fa fa-group font-yellow-crusta"></i> @(Contacts)
+                            </div>
+                        </div>
+                        <div class="portlet-body" crm-contact model="bill.contacts" societe="bill.client"></div>
+
+                    </form>
+                </div>
+            </div>
+        </div>-->
     </div>
 </div>
 
@@ -277,14 +281,14 @@
 
 
 
-<div class="row">
+<div ng-hide="!offer._id" class="row">
     <div class="col-md-12 col-sm-12">
         <product-lines ng-model="offer.lines" title="'@(ShoppingCard)'" ng-disabled="editable" price-list="offer.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
     </div>
 </div>
 
 
-<div class="row">
+<div ng-hide="!offer._id" class="row">
     <div class="col-md-7 col-sm-12">
         <crm-notes ng-model="offer.notes[0]" ng-change="update()"></crm-notes>
     </div>
@@ -353,5 +357,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>
