@@ -75,6 +75,12 @@
                                                 <i class="fa fa-list font-grey-gallery"></i>
                                                 <span class="caption-subject font-grey-gallery bold uppercase">@(products:ListOfAttributes)</span>
                                             </div>
+                                            <div class="tools">
+                                                <a href="" class="collapse" data-original-title="" title=""> </a>
+                                            </div>
+                                            <div class="actions btn-set">
+                                                <button class="btn green" ng-click="object.opts.unshift({optionId : object._id,code: 'New',langs : [{value:'New'}]});edit[0]=true;" title="@(Create)">@(Create)</button>
+                                            </div>
                                         </div>
                                         <div class="portlet-body">
                                             <div class="dataTables_wrapper no-footer table-responsive">
@@ -83,7 +89,7 @@
                                                         <tr role="row" class="heading">
                                                             <th>@(Name)</th>
                                                             <th>@(Type)</th>
-                                                            <th>@(IsVariant)</th>
+                                                            <th>@(products:Variants)</th>
                                                             <th>@(Action)</th>
                                                         </tr>
                                                     </thead>
