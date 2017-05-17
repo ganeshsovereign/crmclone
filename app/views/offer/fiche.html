@@ -113,7 +113,10 @@
                     <div class="row">
                         <div class="col-md-6 col-sm-12">
 
-                            <crm-id label="@(companies:Customer)" name="societeId" ng-model="offer.supplier" entity="offer.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
+                            <div class="form-group form-md-line-input">
+                                <select class="form-control" id="entity" ng-model="offer.entity" ng-options="entity.id as entity.name for entity in entityList"></select>
+                                <label for="entity">@(Entity)</label>
+                            </div>
 
                             <div class="form-group form-md-line-input ">
                                 <input type="text" class="form-control" id="ref_client" ng-model="offer.ref_client">
@@ -122,10 +125,7 @@
 
                             <div ng-hide="!offer._id" class="row">
                                 <div class="col-md-6 col-sm-12">
-                                    <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="entity" disabled ng-model="offer.entity">
-                                        <label for="entity">@(Entity)</label>
-                                    </div>
+
                                 </div>
                                 <div class="col-md-6 col-sm-12">
                                     <div class="form-group form-md-line-input">
@@ -173,6 +173,7 @@
                         </div>
 
                         <div class="col-md-6 col-sm-12">
+                            <crm-id label="@(companies:Customer)" name="societeId" ng-model="offer.supplier" entity="offer.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
 
                             <div class="form-group form-md-line-input">
                                 <select class="form-control" id="type" ng-model="offer.type" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
