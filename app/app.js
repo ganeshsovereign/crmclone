@@ -683,7 +683,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('delivery.create', {
             parent: "delivery",
             url: "/create.html",
-            templateUrl: "/views/delivery/create.html",
+            templateUrl: "/views/delivery/fiche.html",
             data: {
                 pageTitle: 'Nouveau bon de livraison'
             },
