@@ -218,7 +218,8 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
         if (err)
             return self.throw500("err : /api/product/autocomplete" + err);
 
-        //console.log(docs[0].prices);
+        if(!docs || !docs.length)
+            return callback(null,  { pu_ht: 0, discount: 0 });
 
         Pricebreak.set(docs[0].prices);
 
