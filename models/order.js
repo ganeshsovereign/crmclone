@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
+    ObjectId = mongoose.Schema.Types.ObjectId,
     timestamps = require('mongoose-timestamp');
 
 var DataTable = require('mongoose-datatable');
@@ -24,6 +25,7 @@ var setDate = MODULE('utils').setDate;
  * Article Schema
  */
 var orderSchema = new Schema({
+    forSales: { type: Boolean, default: true },
     ref: { type: String },
     /*title: {//For internal use only
         ref: String,
@@ -32,88 +34,122 @@ var orderSchema = new Schema({
             default: false
         } //For automatic process generated deliveries
     },*/
-    isremoved: Boolean,
-    Status: { type: Schema.Types.Mixed, default: 'DRAFT' },
-    cond_reglement_code: { type: String, default: 'RECEP' },
-    mode_reglement_code: { type: String, default: 'TIP' },
+    currency: {
+        _id: { type: String, ref: 'currency', default: '' },
+        rate: { type: Number, default: 1 } // changed default to '0' for catching errors
+    },
+
+    Status: { type: String, default: 'DRAFT' },
+    cond_reglement_code: {
+        type: String,
+        default: 'RECEP'
+    },
+    paymentTerm: { type: ObjectId, ref: 'PaymentTerm', default: null }, //NOT used
+    mode_reglement_code: {
+        type: String,
+        default: 'TIP'
+    },
+    paymentMethod: { type: ObjectId, ref: 'PaymentMethod', default: null }, //NOT used
+
     //bank_reglement: {type: String},
     //availability_code: {type: String, default: 'AV_NOW'},
-    type: { type: String, default: 'SRC_COMM' },
-    client: {
-        id: { type: Schema.Types.ObjectId, ref: 'Societe' },
-        name: String,
-        isNameModified: { type: Boolean },
-        cptBilling: {
-            id: { type: Schema.Types.ObjectId },
-            name: String
-        }
+    type: {
+        type: String,
+        default: 'SRC_COMM'
     },
-    /*contact: {
-     id: {
-     type: Schema.Types.ObjectId,
-     ref: 'contact'
-     },
-     name: {type: String, default:""},
-     phone: String,
-     email: String
-     },*/
-    contacts: [{ type: Schema.Types.ObjectId, ref: 'contact' }],
+    supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
+    contacts: [{ type: Schema.Types.ObjectId, ref: 'Customers' }],
     ref_client: { type: String, default: "" },
-    datec: { type: Date, default: Date.now, set: setDate },
-    date_livraison: { type: Date, set: setDate },
+    datec: {
+        type: Date,
+        default: Date.now,
+        set: setDate
+    },
+    date_livraison: {
+        type: Date,
+        set: setDate
+    },
     notes: [{
         title: String,
         note: String,
-        public: { type: Boolean, default: false },
-        edit: { type: Boolean, default: false }
+        public: {
+            type: Boolean,
+            default: false
+        },
+        edit: {
+            type: Boolean,
+            default: false
+        }
     }],
-    total_ht: { type: Number, default: 0, set: setPrice },
-    total_tva: [{
-        tva_tx: Number,
-        total: { type: Number, default: 0 }
+    discount: {
+        escompte: {
+            percent: { type: Number, default: 0 },
+            value: { type: Number, default: 0, set: setPrice } // total remise globale
+        },
+        discount: {
+            percent: { type: Number, default: 0 }, //discount
+            value: { type: Number, default: 0, set: setPrice } // total remise globale
+        }
+    },
+    total_ht: {
+        type: Number,
+        default: 0,
+        set: setPrice
+    },
+    total_taxes: [{
+        _id: false,
+        taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        value: { type: Number, default: 0 }
     }],
-    total_ttc: { type: Number, default: 0 },
+    total_ttc: {
+        type: Number,
+        default: 0
+    },
     shipping: {
-        total_ht: { type: Number, default: 0, set: setPrice },
-        tva_tx: { type: Number, default: 20 },
-        total_tva: { type: Number, default: 0 },
-        total_ttc: { type: Number, default: 0 }
+        total_ht: {
+            type: Number,
+            default: 0,
+            set: setPrice
+        },
+        total_taxes: [{
+            _id: false,
+            taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+            value: { type: Number, default: 0 }
+        }],
+        /*total_ttc: {
+            type: Number,
+            default: 0
+        }*/
     },
-    author: { id: { type: Schema.Types.ObjectId, ref: 'hr' }, name: String },
-    commercial_id: {
-        id: { type: Schema.Types.ObjectId, ref: 'hr' },
-        name: String
-    },
+    createdBy: { type: ObjectId, ref: 'Users', default: null },
+    editedBy: { type: ObjectId, ref: 'Users', default: null },
+    salesPerson: { type: ObjectId, ref: 'Employees', default: null }, //commercial_id
+    salesTeam: { type: ObjectId, ref: 'Department', default: null },
     entity: String,
-    modelpdf: String,
-    //linked_objects: [{
-    //        id: Schema.Types.ObjectId,
-    //        name: String
-    //    }],
-    bills: [Schema.Types.ObjectId],
-    deliveries: [{ type: Schema.Types.ObjectId, ref: 'delivery' }],
     offer: { type: Schema.Types.ObjectId, ref: 'offer' },
-    groups: [Schema.Types.Mixed],
     optional: Schema.Types.Mixed,
     delivery_mode: { type: String, default: "Comptoir" },
-    billing: {
-        societe: {
-            id: { type: Schema.Types.ObjectId, ref: 'societe' },
-            name: String
-        },
-        contact: String,
-        address: String,
-        zip: String,
-        town: String,
-        country: String
+    billing: { type: Schema.Types.ObjectId, ref: 'Customers' },
+    //costList: { type: ObjectId, ref: 'priceList', default: null }, //Not used
+    //priceList: { type: ObjectId, ref: 'priceList', default: null },
+    address: {
+        name: { type: String, default: '' },
+        street: { type: String, default: '' },
+        city: { type: String, default: '' },
+        state: { type: String, default: '' },
+        zip: { type: String, default: '' },
+        country: { type: String, ref: 'countries', default: 'FR' }
     },
-    price_level: { type: String, default: "BASE", uppercase: true, trim: true },
-    bl: [{
-        _id: false,
-        societe: {
-            id: { type: Schema.Types.ObjectId, ref: 'societe' },
-            name: String
-        },
+    shippingAddress: {
+        _id: { type: ObjectId, default: null },
+        name: { type: String, default: '' },
+        street: { type: String, default: '' },
+        city: { type: String, default: '' },
+        state: { type: String, default: '' },
+        zip: { type: String, default: '' },
+        country: { type: String, ref: 'countries', default: 'FR' }
+    },
+    /*bl: [{
         label: String,
         name: String,
         contact: String,
@@ -137,26 +173,19 @@ var orderSchema = new Schema({
                 default: 0
             }
         }
-    }],
+    }],*/
     weight: { type: Number, default: 0 }, // Poids total
     lines: [{
+        _id: false,
         //pu: {type: Number, default: 0},
-        qty: {
-            type: Number,
-            default: 0
-        },
-        qty_deliv: { type: Number, default: 0 }, // Quantity already delivery
-        tva_tx: {
-            type: Number,
-            default: 0
-        },
+        type: { type: String, default: 'product' }, //Used for subtotal
+        qty: { type: Number, default: 0 },
+        /*taxes: [{
+            _id: false,
+            taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+            value: { type: Number }
+        }],*/
         //price_base_type: String,
-        /*group: {
-            type: String,
-            default: "GLOBAL",
-            uppercase: true,
-            trim: true
-        },*/
         //title: String,
         priceSpecific: { type: Boolean, default: false },
         pu_ht: {
@@ -166,39 +195,19 @@ var orderSchema = new Schema({
         description: String,
         private: String, // Private note
         product_type: String,
-        product: {
-            id: {
-                type: Schema.Types.ObjectId,
-                ref: "product"
-            },
-            name: {
-                type: String
-            },
-            label: String,
-            dynForm: String
-                // family: {type: String, uppercase: true, default: "OTHER"}
-        },
-        total_tva: {
+        product: { type: Schema.Types.ObjectId, ref: "product" },
+        total_taxes: [{
+            _id: false,
+            taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+            value: { type: Number }
+        }],
+        /*total_ttc: {
             type: Number,
             default: 0
-        },
-        total_ttc: {
-            type: Number,
-            default: 0
-        },
-        discount: {
-            type: Number,
-            default: 0
-        },
-        //total_ht_without_discount: {type: Number, default: 0},
-        //total_ttc_without_discount: {type: Number, default: 0},
-        //total_vat_without_discount: {type: Number, default: 0},
-        total_ht: {
-            type: Number,
-            default: 0,
-            set: setPrice
-        },
-        weight: { type: Number, default: 0 },
+        },*/
+        discount: { type: Number, default: 0 },
+        total_ht: { type: Number, default: 0, set: setPrice },
+        //weight: { type: Number, default: 0 },
         optional: { type: Schema.Types.Mixed }
     }],
     history: [{
@@ -293,16 +302,15 @@ orderSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
 
-    if (this.isNew) {
+    if (this.isNew)
         this.history = [];
-    }
 
-    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.client.id, function(err, result) {
+    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier, function(err, result) {
         if (err)
             return next(err);
 
         self.total_ht = result.total_ht;
-        self.total_tva = result.total_tva;
+        self.total_taxes = result.total_taxes;
         self.total_ttc = result.total_ttc;
         self.weight = result.weight;
 

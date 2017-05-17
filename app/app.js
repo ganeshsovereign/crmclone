@@ -651,7 +651,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('order.create', {
             parent: "order",
             url: "/create.html",
-            templateUrl: "/views/order/create.html",
+            templateUrl: "/views/order/fiche.html",
             data: {
                 pageTitle: 'Nouvelle commande'
             },
