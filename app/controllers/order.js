@@ -237,11 +237,6 @@ MetronicApp.controller('OrderController', ['$scope', '$rootScope', '$location', 
             if (this.editableOrder)
                 this.editableOrder.$save();
             // Only company name change
-            if (typeof data !== 'object') {
-                $scope.order.billing.societe.name = data;
-                $scope.order.bl[0].name = data;
-                return true;
-            }
 
             console.log(data);
 
@@ -270,16 +265,6 @@ MetronicApp.controller('OrderController', ['$scope', '$rootScope', '$location', 
                         $scope.order.shippingAddress = data.shippingAddress[i];
                         break;
                     }
-        };
-
-        $scope.updateBillingAddress = function() {
-            if ($scope.order.billing.sameBL0) {
-                $scope.order.billing.name = $scope.order.bl[0].name;
-                $scope.order.billing.address = $scope.order.bl[0].address;
-                $scope.order.billing.zip = $scope.order.bl[0].zip;
-                $scope.order.billing.town = $scope.order.bl[0].town;
-            }
-            return true;
         };
         $scope.createOrder = function() {
             // CLOSE ORDER

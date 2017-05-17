@@ -370,5 +370,5 @@ orderSchema.virtual('status')
         return res_status;
     });
 
-exports.Schema = mongoose.model('order', orderSchema, 'Commande');
+exports.Schema = mongoose.model('order', orderSchema, 'Orders');
 exports.name = "order";
