@@ -346,5 +346,7 @@
     "MinDate": "Date Min",
     "MaxNumber": "Nombre Max",
     "MinNumber": "Nombre Min",
-    "AddAttributesToFamily": "Ajouter l'attribut à la famille"
+    "AddAttributesToFamily": "Ajouter l'attribut à la famille",
+    "BecomeMaster": "Devenir maître",
+    "RefProductSameFamily": "Ref. produit (meme famille)"
 }
