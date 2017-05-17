@@ -57,22 +57,6 @@ var offerSchema = new Schema({
         type: String,
         default: 'SRC_COMM'
     },
-    client: {
-        id: {
-            type: Schema.Types.ObjectId,
-            ref: 'Societe'
-        },
-        name: String,
-        isNameModified: {
-            type: Boolean
-        },
-        cptBilling: {
-            id: {
-                type: Schema.Types.ObjectId
-            },
-            name: String
-        }
-    }, //TODO Remove
     supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
     contacts: [{ type: Schema.Types.ObjectId, ref: 'Customers' }],
     ref_client: { type: String, default: "" },
@@ -142,7 +126,6 @@ var offerSchema = new Schema({
     salesPerson: { type: ObjectId, ref: 'Employees', default: null }, //commercial_id
     salesTeam: { type: ObjectId, ref: 'Department', default: null },
     entity: String,
-    //orders: [{ type: Schema.Types.ObjectId, ref: 'order' }],
     optional: Schema.Types.Mixed,
     delivery_mode: { type: String, default: "Comptoir" },
     billing: { type: Schema.Types.ObjectId, ref: 'Customers' },
