@@ -597,12 +597,12 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('offer', {
             url: "/offer",
             abstract: true,
-            templateUrl: "/views/offer/index.html"
+            templateUrl: "/views/orders/index.html"
         })
         .state('offer.list', {
             parent: "offer",
             url: "",
-            templateUrl: "/views/offer/list.html",
+            templateUrl: "/views/orders/list.html",
             data: {
                 pageTitle: 'Liste des devis'
             },
@@ -611,7 +611,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('offer.show', {
             parent: "offer",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/offer/fiche.html",
+            templateUrl: "/views/orders/fiche.html",
             data: {
                 pageTitle: 'Offre'
             },
@@ -619,13 +619,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('offer.show.detail', {
             url: "/detail",
-            templateUrl: "/views/offer/detail.html",
+            templateUrl: "/views/orders/detail.html",
             data: { pageTitle: 'Devis' }
         })
         .state('offer.create', {
             parent: "offer",
             url: "/create.html",
-            templateUrl: "/views/offer/detail.html",
+            templateUrl: "/views/orders/detail.html",
             data: {
                 pageTitle: 'Nouvelle offre'
             },
