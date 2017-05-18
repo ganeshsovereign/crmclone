@@ -38,6 +38,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location',
                 var Object = Orders.offer;
                 $scope.backTo = 'offer.list';
                 break;
+            case 'delivery':
+                var Object = Orders.delivery;
+                $scope.backTo = 'delivery.list';
+                break;
         }
 
 

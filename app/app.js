@@ -635,97 +635,112 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('order', {
             url: "/order",
             abstract: true,
-            templateUrl: "/views/order/index.html"
+            templateUrl: "/views/orders/index.html"
         })
         .state('order.list', {
             url: "",
-            templateUrl: "/views/order/list.html",
+            templateUrl: "/views/orders/listorder.html",
             data: {
                 pageTitle: 'Liste des commandes'
             },
-            controller: "OrderController"
+            controller: "OrderListController"
         })
         .state('order.show', {
             parent: "order",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/order/fiche.html",
+            templateUrl: "/views/orders/fiche.html",
             data: {
-                pageTitle: 'Commande'
+                pageTitle: 'Commarnde'
             },
-            controller: "OrderController"
+            controller: "OrdersController"
+        })
+        .state('order.show.detail', {
+            url: "/detail",
+            templateUrl: "/views/orders/detail.html",
+            data: { pageTitle: 'Commande' }
         })
         .state('order.create', {
             parent: "order",
             url: "/create.html",
-            templateUrl: "/views/order/fiche.html",
+            templateUrl: "/views/orders/detail.html",
             data: {
                 pageTitle: 'Nouvelle commande'
             },
-            controller: "OrderController"
+            controller: "OrdersController"
         })
         // Delivery
         .state('delivery', {
             url: "/delivery",
             abstract: true,
-            templateUrl: "/views/delivery/index.html"
+            templateUrl: "/views/orders/index.html"
         })
         .state('delivery.list', {
             url: "",
-            templateUrl: "/views/delivery/list.html",
+            templateUrl: "/views/orders/listdelivery.html",
             data: {
                 pageTitle: 'Liste des bons de livraison'
             },
-            controller: "DeliveryController"
+            controller: "DeliveryListController"
         })
         .state('delivery.show', {
             parent: "delivery",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/delivery/fiche.html",
+            templateUrl: "/views/orders/fiche.html",
             data: {
                 pageTitle: 'Bon de livraison'
             },
-            controller: "DeliveryController"
+            controller: "OrdersController"
+        })
+        .state('delivery.show.detail', {
+            url: "/detail",
+            templateUrl: "/views/orders/detail.html",
+            data: { pageTitle: 'Bon de livraison' }
         })
         .state('delivery.create', {
             parent: "delivery",
             url: "/create.html",
-            templateUrl: "/views/delivery/fiche.html",
+            templateUrl: "/views/orders/detail.html",
             data: {
-                pageTitle: 'Nouveau bon de livraison'
+                pageTitle: 'Nouveau bon de livraion'
             },
-            controller: "DeliveryController"
+            controller: "OrdersController"
         })
         // Bill
         .state('bill', {
             url: "/bill",
             abstract: true,
-            templateUrl: "/views/bill/index.html"
+            templateUrl: "/views/orders/index.html"
         })
         .state('bill.list', {
             url: "?Status",
-            templateUrl: "/views/bill/list.html",
+            templateUrl: "/views/orders/listbill.html",
             data: {
                 pageTitle: 'Liste des factures clients'
             },
-            controller: "BillController"
+            controller: "BillListController"
         })
         .state('bill.show', {
             parent: "bill",
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/bill/fiche.html",
+            templateUrl: "/views/orders/fiche.html",
             data: {
                 pageTitle: 'Facture client'
             },
-            controller: "BillController"
+            controller: "OrdersController"
+        })
+        .state('bill.show.detail', {
+            url: "/detail",
+            templateUrl: "/views/orders/detail.html",
+            data: { pageTitle: 'Facture client' }
         })
         .state('bill.create', {
             parent: "bill",
             url: "/create.html",
-            templateUrl: "/views/bill/create.html",
+            templateUrl: "/views/orders/detail.html",
             data: {
-                pageTitle: 'Nouvelle facture client'
+                pageTitle: 'Nouvelle facture'
             },
-            controller: "BillController"
+            controller: "OrdersController"
         })
         // Order Supplier
         .state('orderSupplier', {

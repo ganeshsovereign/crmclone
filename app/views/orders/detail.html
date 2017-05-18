@@ -26,6 +26,13 @@
                                     <div class="row">
                                         <div class=" col-md-6 col-sm-12 ">
 
+                                            <crm-id label="@(companies:Customer) " ng-if="!object._id" name="societeId " ng-model="object.supplier " entity="object.entity " url="/erp/api/societe/autocomplete " required="true " on-select="updateAddress " placeholder="@(companies:CompanyName)" class="form-group form-md-line-input "></crm-id>
+
+                                            <div class="form-group form-md-line-input" ng-if="!object._id">
+                                                <select class="form-control " id="entity " ng-model="object.entity " ng-options="entity.id as entity.name for entity in entityList "></select>
+                                                <label for="entity ">@(Entity)</label>
+                                            </div>
+
                                             <div class="form-group form-md-line-input ">
                                                 <input type="text " class="form-control " id="ref_client " ng-model="object.ref_client ">
                                                 <label for="ref_client ">@(orders:RefCustomerOrder)</label>
@@ -179,6 +186,12 @@
                     <div class="col-md-5 name ">@(bills:DiscountGlobal) : <span class="icon-pencil grey " ng-click="discount.$show() " ng-hide="discount.$visible || !editable "></span></div>
                     <div class="col-md-7 value "><span editable-number="object.discount.discount.percent " e-min="0 " e-step="0.01 " e-max="100 " e-style="width: 80px " blur="submit " buttons="no " onaftersave="update() " e-form="discount ">
                                                 {{object.discount.discount.percent | percent:2}}  (-{{object.discount.discount.value | currency}})
+                                            </span></div>
+                </div>
+                <div class="row static-info align-reverse">
+                    <div class="col-md-5 name">@(bills:EscompteOffered) : <span class="icon-pencil grey" ng-click="escompte.$show()" ng-hide="escompte.$visible || !editable"></span></div>
+                    <div class="col-md-7 value"><span editable-number="object.discount.escompte.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="escompte">
+                                                {{object.discount.escompte.percent | percent:2}} (-{{object.discount.escompte.value | currency}})
                                             </span></div>
                 </div>
 
