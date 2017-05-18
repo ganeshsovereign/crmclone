@@ -12,7 +12,6 @@
         <li>
             <span ng-hide="!object._id">@(propal:Prop) : {{object.ref}}</span>
             <span ng-show="!object._id">@(propal:NewProp)</span>
-
         </li>
     </ul>
     <div class="page-toolbar">
@@ -68,8 +67,13 @@
                     <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
                 </div>
                 <div class="profile-usertitle">
-                    <div class="profile-usertitle-name">@(propal:Prop) : {{object.ref}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="profile-usertitle-name font-yellow-crusta"> @(propal:Prop) : </div>
+                            <div class="profile-usertitle-name"> {{object.ref}} </div>
+                        </div>
                     </div>
+                    <hr>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="uppercase profile-stat-text"> @(orders:RefCustomerOrder) </div>
@@ -115,44 +119,42 @@
             <div class="portlet light">
                 <div class="row list-separated profile-stat">
                     <div class="col-md-12">
-                        <div class="form-group form-md-line-input ">
-                            <select class="form-control " id="entity " ng-model="object.entity " ng-options="entity.id as entity.name for entity in entityList "></select>
-                            <label for="entity ">@(Entity)</label>
+                        <div class="form-group form-md-line-input">
+                            <select class="form-control" id="entity" ng-model="object.entity" ng-options="entity.id as entity.name for entity in entityList"></select>
+                            <label for="entity">@(Entity)</label>
                         </div>
-                        <crm-id label="@(companies:Customer) " name="societeId " ng-model="object.supplier " entity="object.entity " url="/erp/api/societe/autocomplete " required="true " on-select="updateAddress " placeholder="@(companies:CompanyName)" class="form-group form-md-line-input "></crm-id>
+                        <crm-id label="@(companies:Customer)" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
                     </div>
                 </div>
 
                 <div class="row list-separated profile-stat">
-                    <div>
-                        <div class=" col-md-6 col-sm-6 col-xs-6 ">
-                            <div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{object.createdAt|date:'dd/MM/yyyy'}} </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-6 ">
-                            <div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{object.updatedAt|date:'dd/MM/yyyy'}} </div>
-                        </div>
+                    <div class=" col-md-6 col-sm-6 col-xs-6">
+                        <div class="uppercase profile-stat-title"> <i class="icon-calendar font-yellow-crusta"></i> {{object.createdAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="uppercase profile-stat-title"> <i class="icon-refresh font-yellow-crusta"></i> {{object.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
                     </div>
 
                     <div>
-                        <div class="col-md-6 col-sm-6 col-xs-6 ">
-                            <div class="uppercase profile-stat-title "> <i class="icon-user font-yellow-crusta "></i> {{object.createdBy.username}} </div>
-                            <!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{object.createdBy.username}}</a> </div>
+                            <!--<div class="uppercase profile-stat-text"> @(CreatedBy)</div>-->
                         </div>
-                        <div class="col-md-6 col-sm-6 col-xs-6 ">
-                            <div class="uppercase profile-stat-title "> <i class="icon-pencil font-yellow-crusta "></i> {{object.editedBy.username}} </div>
-                            <!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{object.editedBy.username}}</a> </div>
+                            <!-- <div class="uppercase profile-stat-text"> @(EditedBy) </div>-->
                         </div>
                     </div>
                 </div>
 
-                <div class="row list-separated profile-stat ">
-                    <div class="col-md-12 ">
-                        <div class="uppercase profile-stat-text ">@(Logs)</div>
-                        <div class="uppercase profile-stat-title "> {{object.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
+                <div class="row list-separated profile-stat">
+                    <div class="col-md-12">
+                        <div class="uppercase profile-stat-text">@(Logs)</div>
+                        <div class="uppercase profile-stat-title"> {{object.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
                     </div>
                 </div>
             </div>
         </div>
-        <div ui-view class="profile-content fade-in-up "></div>
+        <div ui-view class="profile-content fade-in-up"></div>
     </div>
 </div>

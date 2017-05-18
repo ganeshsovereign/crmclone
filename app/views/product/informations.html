@@ -84,11 +84,11 @@
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-3 control-label">@(products:EANCode):</label>
                                         <div class="col-md-9">
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <label class="control-label">
                                             <input uniform type="checkbox" ng-model="product.info.autoBarCode" ng-checked="product.info.autoBarCode"/> @(Automatic) </label>
                                             </div>
-                                            <div class="col-md-9">
+                                            <div class="col-md-8">
                                                 <input class="form-control" maxlength="13" ng-model="product.info.EAN" ng-disabled="product.info.autoBarCode" placeholder="EAN13" type="text">
                                             </div>
 

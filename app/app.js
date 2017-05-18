@@ -593,7 +593,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Erreur'
             }
         })
-        // Devis
+        // Offer
         .state('offer', {
             url: "/offer",
             abstract: true,
@@ -650,7 +650,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/orders/fiche.html",
             data: {
-                pageTitle: 'Commarnde'
+                pageTitle: 'Commande'
             },
             controller: "OrdersController"
         })
