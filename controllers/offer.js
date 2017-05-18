@@ -109,6 +109,8 @@ function Offer(id, cb) {
         .populate({
             path: "total_taxes.taxeId"
         })
+        .populate("createdBy", "username")
+        .populate("editedBy", "username")
         .exec(cb);
 }
 

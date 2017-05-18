@@ -58,7 +58,7 @@
     <i class="fa fa-cubes font-grey-silver"></i> @(products:ProductServiceCard) : {{product.info.langs[0].name}} <small ng-hide="!product.info.isActive" class="font-green">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
 </h3>-->
 
-<div ng-if="object.isremoved" class="alert alert-danger"><strong>Attention !</strong> Cet object est supprime. </div>
+<div ng-if="object.isremoved" class="alert alert-danger"><strong> @(BeCareful) !</strong> Cette fiche à été supprimée</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -122,36 +122,35 @@
                 </div>
 
                 <div class="row list-separated profile-stat">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{object.createdAt|date:'dd/MM/yyyy'}} </div>
-                        <div class="uppercase profile-stat-text"> @(DateCreation)</div>
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{object.updatedAt|date:'dd/MM/yyyy'}} </div>
-                        <div class="uppercase profile-stat-text"> @(DateModification) </div>
+                    <div>
+                        <div class=" col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{object.createdAt|date:'dd/MM/yyyy'}} </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{object.updatedAt|date:'dd/MM/yyyy'}} </div>
+                        </div>
                     </div>
 
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{offer.createdBy}} </div>
-                        <div class="uppercase profile-stat-text"> @(CreatedBy)</div>
-                    </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{offer.editedBy}} </div>
-                        <div class="uppercase profile-stat-text"> @(EditedBy) </div>
+                    <div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <i class="icon-user font-yellow-crusta "></i> {{object.createdBy.username}} </div>
+                            <!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <i class="icon-pencil font-yellow-crusta "></i> {{object.editedBy.username}} </div>
+                            <!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
+                        </div>
                     </div>
                 </div>
 
-                <div class="row list-separated profile-stat">
-                    <div class="col-md-12">
-                        <div class="uppercase profile-stat-text">@(Logs)</div>
-                        <div class="uppercase profile-stat-title"> {{object.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
+                <div class="row list-separated profile-stat ">
+                    <div class="col-md-12 ">
+                        <div class="uppercase profile-stat-text ">@(Logs)</div>
+                        <div class="uppercase profile-stat-title "> {{object.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
-        <div ui-view class="profile-content fade-in-up"></div>
+        <div ui-view class="profile-content fade-in-up "></div>
     </div>
 </div>
