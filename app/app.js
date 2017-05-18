@@ -646,7 +646,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrderListController"
         })
         .state('order.show', {
-            parent: "order",
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/orders/fiche.html",
             data: {
@@ -720,7 +719,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "BillListController"
         })
         .state('bill.show', {
-            parent: "bill",
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/orders/fiche.html",
             data: {
