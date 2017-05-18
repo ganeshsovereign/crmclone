@@ -70,7 +70,12 @@
                 <div class="profile-usertitle">
                     <div class="profile-usertitle-name">@(propal:Prop) : {{object.ref}}
                     </div>
-
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="uppercase profile-stat-text"> @(orders:RefCustomerOrder) </div>
+                            <div class="uppercase profile-stat-title"> {{object.ref_client}} </div>
+                        </div>
+                    </div>
                     <!-- <div class="md-checkbox-inline">
                         <div class="md-checkbox">
                             <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
@@ -94,16 +99,15 @@
                     <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
                 </div> -->
                 </div>
+
                 <div class="profile-usermenu">
                     <ul class="nav">
                         <li ng-class="{active: $state.includes('offer.show.detail')}">
                             <a ui-sref="offer.show.detail({id:object._id})">
                                 <i class="icon-info"></i> @(propal:Details) </a>
                         </li>
-
                     </ul>
                 </div>
-
             </div>
 
             <div class="portlet light">
@@ -125,6 +129,15 @@
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <div class="uppercase profile-stat-title"> {{object.updatedAt|date:'dd/MM/yyyy'}} </div>
                         <div class="uppercase profile-stat-text"> @(DateModification) </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="uppercase profile-stat-title"> {{offer.createdBy}} </div>
+                        <div class="uppercase profile-stat-text"> @(CreatedBy)</div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="uppercase profile-stat-title"> {{offer.editedBy}} </div>
+                        <div class="uppercase profile-stat-text"> @(EditedBy) </div>
                     </div>
                 </div>
 
