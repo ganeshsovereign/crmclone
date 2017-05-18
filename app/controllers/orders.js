@@ -143,6 +143,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location',
                 $scope.$dict.employees = data.data;
                 //console.log(data);
             });
+
+            $scope.findOne();
         });
 
         $scope.showStatus = function(idx, dict) {
