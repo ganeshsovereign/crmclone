@@ -16,15 +16,17 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-5">
         <div class="form-group form-md-line-input">
-            <input type="text" class="form-control" id="zip" ng-model="addressModel.zip" ng-disabled="editable" typeahead="address.code for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" typeahead-on-select="generateZip($item)" autocomplete="off"/>
+            <input type="text" class="form-control" id="zip" ng-model="addressModel.zip" ng-disabled="editable" typeahead="address.code for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" typeahead-on-select="generateZip($item)" autocomplete="off"
+            />
             <label for="zip">@(Zip) </label>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-7">
         <div class="form-group form-md-line-input">
-            <input type="text" class="form-control" id="city" ng-model="addressModel.city" ng-disabled="editable" typeahead="address.city for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" typeahead-on-select="generateZip($item)" autocomplete="off"/>
+            <input type="text" class="form-control" id="city" ng-model="addressModel.city" ng-disabled="editable" typeahead="address.city for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" typeahead-on-select="generateZip($item)"
+                autocomplete="off" />
             <label for="city">@(Town) </label>
         </div>
     </div>

@@ -58,7 +58,7 @@
     <i class="fa fa-cubes font-grey-silver"></i> @(products:ProductServiceCard) : {{product.info.langs[0].name}} <small ng-hide="!product.info.isActive" class="font-green">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
 </h3>-->
 
-<div ng-if="object.isremoved" class="alert alert-danger"><strong>Attention !</strong> Cet object est supprime. </div>
+<div ng-if="object.isremoved" class="alert alert-danger"><strong> @(BeCareful) !</strong> Cette fiche à été supprimée</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -70,7 +70,12 @@
                 <div class="profile-usertitle">
                     <div class="profile-usertitle-name">@(propal:Prop) : {{object.ref}}
                     </div>
-
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="uppercase profile-stat-text"> @(orders:RefCustomerOrder) </div>
+                            <div class="uppercase profile-stat-title"> {{object.ref_client}} </div>
+                        </div>
+                    </div>
                     <!-- <div class="md-checkbox-inline">
                         <div class="md-checkbox">
                             <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
@@ -94,6 +99,7 @@
                     <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
                 </div> -->
                 </div>
+
                 <div class="profile-usermenu">
                     <ul class="nav">
                         <li ng-class="{active: $state.includes(module + '.show.detail')}">
@@ -102,10 +108,8 @@
                             <a ng-if="module == 'order'" ui-sref="order.show.detail({id:object._id})">
                                 <i class="icon-info"></i> @(propal:Details) </a>
                         </li>
-
                     </ul>
                 </div>
-
             </div>
 
             <div class="portlet light">
@@ -120,27 +124,35 @@
                 </div>
 
                 <div class="row list-separated profile-stat">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{object.createdAt|date:'dd/MM/yyyy'}} </div>
-                        <div class="uppercase profile-stat-text"> @(DateCreation)</div>
+                    <div>
+                        <div class=" col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{object.createdAt|date:'dd/MM/yyyy'}} </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{object.updatedAt|date:'dd/MM/yyyy'}} </div>
+                        </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{object.updatedAt|date:'dd/MM/yyyy'}} </div>
-                        <div class="uppercase profile-stat-text"> @(DateModification) </div>
+
+                    <div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <i class="icon-user font-yellow-crusta "></i> {{object.createdBy.username}} </div>
+                            <!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <i class="icon-pencil font-yellow-crusta "></i> {{object.editedBy.username}} </div>
+                            <!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
+                        </div>
                     </div>
                 </div>
 
-                <div class="row list-separated profile-stat">
-                    <div class="col-md-12">
-                        <div class="uppercase profile-stat-text">@(Logs)</div>
-                        <div class="uppercase profile-stat-title"> {{object.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
+                <div class="row list-separated profile-stat ">
+                    <div class="col-md-12 ">
+                        <div class="uppercase profile-stat-text ">@(Logs)</div>
+                        <div class="uppercase profile-stat-title "> {{object.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
-        <div ui-view class="profile-content fade-in-up"></div>
+        <div ui-view class="profile-content fade-in-up "></div>
     </div>
 </div>

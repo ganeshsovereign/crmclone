@@ -823,5 +823,7 @@
     "Pictures": "Images",
     "Setting": "Propriétés",
     "SKU": "Ref (SKU)",
-    "CreatedAt": "Créer le"
+    "CreatedAt": "Créé le",
+    "CreatedBy": "Créé par",
+    "EditedBy": "Edité par"
 }
