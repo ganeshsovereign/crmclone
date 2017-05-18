@@ -27,18 +27,18 @@ International Registered Trademark & Property of ToManage SAS
 "use strict";
 
 /* global angular: true */
-MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout', 'Offers',
-    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout, Offers) {
+MetronicApp.controller('DeliveryController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout', 'Deliveries',
+    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout, Deliveries) {
 
-        $scope.backTo = 'offer.list';
+        $scope.backTo = 'delivery.list';
 
         var grid = new Datatable();
         var user = $rootScope.login;
 
-        $scope.offer = {
+        $scope.delivery = {
             entity: $rootScope.login.entity,
             billing: {},
-            bl: [{}],
+            address: {},
             lines: []
         };
         $scope.dict = {};
@@ -75,7 +75,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
-            var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
+            var dict = ["fk_delivery_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
             $http({
                 method: 'GET',
                 url: '/erp/api/dict',
@@ -110,40 +110,40 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
         });
 
         $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.offer[idx]))
+            if (!($scope.dict[dict] && $scope.delivery[idx]))
                 return;
             var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.offer[idx]
+                id: $scope.delivery[idx]
             });
-            return ($scope.offer[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
+            return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
         $scope.create = function() {
-            var offer = new Offers(this.offer);
-            offer.$save(function(response) {
-                $rootScope.$state.go("offer.show", { id: response._id });
+            var delivery = new Deliveries(this.delivery);
+            delivery.$save(function(response) {
+                $rootScope.$state.go("delivery.show", { id: response._id });
             });
         };
-        $scope.remove = function(offer) {
-            offer.$remove();
-            $rootScope.$state.go("offer.list");
+        $scope.remove = function(delivery) {
+            delivery.$remove();
+            $rootScope.$state.go("delivery.list");
         };
         $scope.update = function(callback) {
-            var offer = $scope.offer;
+            var delivery = $scope.delivery;
 
-            for (var i = offer.lines.length; i--;) {
+            for (var i = delivery.lines.length; i--;) {
                 // actually delete lines
-                if (offer.lines[i].isDeleted) {
-                    offer.lines.splice(i, 1);
+                if (delivery.lines[i].isDeleted) {
+                    delivery.lines.splice(i, 1);
                 }
             }
-            offer.$update(function(response) {
+            delivery.$update(function(response) {
                 //$location.path('societe/' + societe._id);
-                //pageTitle.setTitle('Commande client ' + offer.ref);
+                //pageTitle.setTitle('Commande client ' + delivery.ref);
 
                 /*if (response.lines) {
                     for (var i = 0; i < response.lines.length; i++) {
-                        $scope.offer.lines[i].idLine = i;
+                        $scope.delivery.lines[i].idLine = i;
                     }
                 }
                 if (response.Status == "DRAFT" || response.Status == "NEW" || response.Status == "QUOTES")
@@ -158,25 +158,30 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
             });
         };
         $scope.clone = function() {
-            $scope.offer.$clone(function(response) {
-                $rootScope.$state.go('offer.show', {
+            $scope.delivery.$clone(function(response) {
+                $rootScope.$state.go('delivery.show', {
                     id: response._id
                 });
-                //$location.path("offers/" + response._id);
+                //$location.path("deliverys/" + response._id);
             });
         };
 
         $scope.findOne = function() {
-            Offers.get({
+            if (!$rootScope.$stateParams.id) {
+                $scope.editable = true;
+                return;
+            }
+
+            Deliveries.get({
                 Id: $rootScope.$stateParams.id
-            }, function(offer) {
-                $scope.offer = offer;
-                console.log(offer);
+            }, function(delivery) {
+                $scope.delivery = delivery;
+                console.log(delivery);
                 //on utilise idLine pour definir la ligne produit que nous voulons supprimer
-                for (var i = 0; i < $scope.offer.lines.length; i++) {
-                    $scope.offer.lines[i].idLine = i;
+                for (var i = 0; i < $scope.delivery.lines.length; i++) {
+                    $scope.delivery.lines[i].idLine = i;
                 }
-                if (offer.Status == "DRAFT" || offer.Status == "NEW" || offer.Status == "QUOTES")
+                if (delivery.Status == "DRAFT" || delivery.Status == "NEW" || delivery.Status == "QUOTES")
                     $scope.editable = true;
                 else
                     $scope.editable = false;
@@ -185,7 +190,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                     url: 'api/ticket',
                     params: {
                         find: {
-                            "linked.id": offer._id
+                            "linked.id": delivery._id
                         },
                         fields: "name ref updatedAt percentage Status task"
                     }
@@ -194,7 +199,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                         $scope.tickets = data;
                     $scope.countTicket = $scope.tickets.length;
                 });
-                //pageTitle.setTitle('Commande client ' + $scope.offer.ref);
+                //pageTitle.setTitle('Commande client ' + $scope.delivery.ref);
             }, function(err) {
                 if (err.status === 401)
                     $location.path("401.html");
@@ -203,20 +208,20 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
 
         $scope.sendEmail = function() {
             $http.post('/erp/api/sendEmail', {
-                to: this.offer.contacts,
+                to: this.delivery.contacts,
                 data: {
-                    title: 'Votre devis ' + this.offer.ref_client || "",
-                    subtitle: this.offer.client.name + (this.offer.ref_client ? " - Reference " + this.offer.ref_client : ""),
-                    message: 'Veuillez trouver ci-joint la proposition commerciale. Cliquer sur le bouton ci-apres pour le telecharger.',
-                    url: '/erp/api/offer/download/' + this.offer._id,
-                    entity: this.offer.entity
+                    title: 'Votre commande ' + this.delivery.ref_client || "",
+                    subtitle: this.delivery.client.name + (this.delivery.ref_client ? " - Reference " + this.delivery.ref_client : ""),
+                    message: 'Veuillez trouver ci-joint la commande. Cliquer sur le bouton ci-apres pour le telecharger.',
+                    url: '/erp/api/delivery/download/' + this.delivery._id,
+                    entity: this.delivery.entity
                 },
                 ModelEmail: 'email_PDF'
             }).then(function(res) {
                 //console.log(res);
                 if (res.status == 200) {
 
-                    $scope.offer.history.push({
+                    $scope.delivery.history.push({
                         date: new Date(),
                         mode: 'email',
                         msg: 'email envoye',
@@ -234,58 +239,43 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
         };
 
         $scope.updateAddress = function(data) {
-            if (this.editableOffer)
-                this.editableOffer.$save();
-            // Only company name change
-            if (typeof data !== 'object') {
-                $scope.offer.billing.societe.name = data;
-                $scope.offer.bl[0].name = data;
-                return true;
-            }
+            if (this.editableOrder)
+                this.editableOrder.$save();
 
             console.log(data);
 
-            $scope.offer.address = data.address;
+            $scope.delivery.address = data.address;
 
             if (data.salesPurchases.isGeneric)
-                $scope.offer.address.name = data.fullName;
+                $scope.delivery.address.name = data.fullName;
 
-            $scope.offer.cond_reglement_code = data.salesPurchases.cond_reglement;
-            $scope.offer.mode_reglement_code = data.salesPurchases.mode_reglement;
-            //$scope.offer.priceList = data.salesPurchases.priceList;
-            $scope.offer.salesPerson = data.salesPurchases.salesPerson;
-            $scope.offer.salesTeam = data.salesPurchases.salesTeam;
+            $scope.delivery.cond_reglement_code = data.salesPurchases.cond_reglement;
+            $scope.delivery.mode_reglement_code = data.salesPurchases.mode_reglement;
+            //$scope.delivery.priceList = data.salesPurchases.priceList;
+            $scope.delivery.salesPerson = data.salesPurchases.salesPerson;
+            $scope.delivery.salesTeam = data.salesPurchases.salesTeam;
 
 
             // Billing address
-            $scope.offer.billing = data.salesPurchases.cptBilling;
+            $scope.delivery.billing = data.salesPurchases.cptBilling;
 
-            $scope.offer.shippingAddress = data.shippingAddress[0];
+            $scope.delivery.shippingAddress = data.shippingAddress[0];
 
-            $scope.offer.addresses = data.shippingAddress;
+            $scope.delivery.addresses = data.shippingAddress;
 
             if (data.deliveryAddressId)
                 for (var i = 0; i < data.shippingAddress.length; i++)
                     if (data.deliveryAddressId == data.shippingAddress[i]._id) {
-                        $scope.offer.shippingAddress = data.shippingAddress[i];
+                        $scope.delivery.shippingAddress = data.shippingAddress[i];
                         break;
                     }
         };
 
-        $scope.updateBillingAddress = function() {
-            if ($scope.offer.billing.sameBL0) {
-                $scope.offer.billing.name = $scope.offer.bl[0].name;
-                $scope.offer.billing.address = $scope.offer.bl[0].address;
-                $scope.offer.billing.zip = $scope.offer.bl[0].zip;
-                $scope.offer.billing.town = $scope.offer.bl[0].town;
-            }
-            return true;
-        };
-        $scope.createOrder = function() {
+        $scope.createBill = function() {
             // CLOSE ORDER
-            $scope.offer.Status = "SIGNED";
+            $scope.delivery.Status = "SIGNED";
             $scope.update();
-            $scope.offer.$order(function(response) {
+            $scope.delivery.$order(function(response) {
                 $rootScope.$state.go("order.show", { id: response._id });
             });
         };
@@ -293,7 +283,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
         function initDatatable() {
 
             grid.init({
-                src: $("#offerList"),
+                src: $("#deliveryList"),
                 onSuccess: function(grid) {
                     // execute some code after table records loaded
                 },
@@ -311,7 +301,7 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/offer/dt" // ajax source
+                        "url": "/erp/api/delivery/dt" // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -382,26 +372,8 @@ MetronicApp.controller('OfferController', ['$scope', '$rootScope', '$location', 
 
 
         $scope.changeStatus = function(Status) {
-            $scope.offer.Status = Status;
+            $scope.delivery.Status = Status;
             $scope.update();
         };
-
-
-        /**
-         * Get fileType for icon
-         */
-        $scope.getFileTypes = function() {
-            $http({
-                method: 'GET',
-                url: 'dict/filesIcons'
-            }).
-            success(function(data, status) {
-                if (status == 200) {
-                    iconsFilesList = data;
-                }
-            });
-        };
-
-
     }
 ]);

@@ -1,0 +1,111 @@
+{
+    "name": "delivery",
+    "version": "0.1.000",
+    "author": {
+        "name": "TM - ToManage"
+    },
+    "description": "Gestion des bon de livraisons",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TM-js/bill.git"
+    },
+    "engines": {
+        "node": "4.6.x",
+        "TM": "0.5.x"
+    },
+    "contributors": [
+        "Herve Prot <herve.prot@tomanage.fr>"
+    ],
+    "license": "OSL v3",
+    "rights": {
+        "delivery": [
+            {
+                "desc": "Lire les bons livraisons clients",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Creer/modifier les bons livraisons clients",
+                "perm": {
+                    "create": false
+                }
+            },
+            {
+                "desc": "Valider les bons livraisons clients",
+                "perm": {
+                    "validate": false
+                }
+            },
+            {
+                "desc": "Envoyer les bons livraisons clients",
+                "perm": {
+                    "send": true
+                }
+            },
+            {
+                "desc": "Cloturer les bons livraisons clients",
+                "perm": {
+                    "closed": false
+                }
+            },
+            {
+                "desc": "Re-ouvrir un bon de livraison",
+                "perm": {
+                    "reopen": false
+                }
+            },
+            {
+                "desc": "Annuler les bons livraisons clients",
+                "perm": {
+                    "cancel": false
+                }
+            },
+            {
+                "desc": "Supprimer les bons livraisons clients",
+                "perm": {
+                    "delete": false
+                }
+            },
+            {
+                "desc": "Affichager la pre-facturation des bons de livraisons",
+                "perm": {
+                    "prefac": false
+                }
+            },
+            {
+                "desc": "Générer la facturation des bons de livraisons",
+                "perm": {
+                    "createBills": false
+                }
+            },
+            {
+                "desc": "Exporter les bons livraisons clients et attributs",
+                "perm": {
+                    "export": false
+                }
+            }
+        ]
+    },
+    "menus": {
+        "menu:delivery": {
+            "position": 42,
+            "perms": "delivery.read",
+            "enabled": "$conf->delivery->enabled",
+            "usertype": 2,
+            "icon": "fa-truck",
+            "title": "deliveries:Deliveries",
+            "submenus": {
+                "menu:deliverylist": {
+                    "position": 1,
+                    "url": "/erp/#!/delivery",
+                    "perms": "delivery.read",
+                    "enabled": "$conf->delivery->enabled",
+                    "usertype": 2,
+                    "icon": "fa-truck",
+                    "title": "deliveries:DeliveriesShort"
+                }
+            }
+        }
+    }
+}

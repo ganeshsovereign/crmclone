@@ -139,7 +139,6 @@ Object.prototype = {
 
         offer = new OfferModel(self.body);
 
-
         offer.editedBy = self.user._id;
         offer.createdBy = self.user._id;
 

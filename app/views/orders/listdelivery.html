@@ -7,7 +7,7 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(propal:ListOfProposals)</span>
+                <span>@(deliveries:DeliveriesReceipt)</span>
             </li>
         </ul>
         <div class="page-toolbar">
@@ -40,10 +40,10 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-calculator"></i>
-                <span class="caption-subject dark bold uppercase"> @(propal:ListOfProposals)</span>
+                <span class="caption-subject dark bold uppercase"> @(deliveries:DeliveriesReceipt)</span>
             </div>
             <div class="actions">
-                <button class="btn blue" ui-sref="offer.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button class="btn blue" ui-sref="delivery.create">@(Add) <i class="fa fa-plus"></i></button>
                 <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
@@ -55,7 +55,7 @@
                     <div class="form-group form-md-line-input">
 
                         <div class="col-md-3">
-                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_offer_status.values" class="form-control"></select>
+                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_delivery_status.values" class="form-control"></select>
                             <div class="form-control-focus"> </div>
                         </div>
 
@@ -69,7 +69,7 @@
                         <!--<label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
 
                         <div class="col-md-3">
-                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_offer_status.values" class="form-control">
+                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_delivery_status.values" class="form-control">
                                 <option value="">-- @(All) --</option>
                             </select>
                             <div class="form-control-focus"> </div>
@@ -92,7 +92,7 @@
 
         <div class="dataTables_wrapper no-footer table-responsive">
             <div class="col-md-12">
-                <table class="table dataTable no-footer table-hover" id="offerList">
+                <table class="table dataTable no-footer table-hover" id="deliveryList">
                     <thead>
                         <tr role="row" class="heading">
                             <th width="2%">
@@ -101,7 +101,7 @@
                             <th>@(Ref)</th>
                             <th>@(companies:Company)</th>
                             <th>@(RefCustomer)</th>
-                            <th>@(DateLivraison)</th>
+                            <th>@(DeliveryDate)</th>
                             <th>@(TotalHT)</th>
                             <th>@(Status)</th>
                             <th>@(Entity)</th>
@@ -122,13 +122,13 @@
                             </td>
                             <td>
                                 <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="offer_date_from" placeholder="From">
+                                    <input type="text" class="form-control form-filter input-sm" readonly name="delivery_date_from" placeholder="From">
                                     <span class="input-group-btn">
                                         <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
                                     </span>
                                 </div>
                                 <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="offer_date_to" placeholder="To">
+                                    <input type="text" class="form-control form-filter input-sm" readonly name="delivery_date_to" placeholder="To">
                                     <span class="input-group-btn">
                                         <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
                                     </span>
@@ -136,12 +136,12 @@
                             </td>
                             <td>
                                 <div class="margin-bottom-5">
-                                    <input type="text" class="form-control form-filter input-sm" name="offer_price_from" placeholder="From"/>
+                                    <input type="text" class="form-control form-filter input-sm" name="delivery_price_from" placeholder="From"/>
                                 </div>
-                                <input type="text" class="form-control form-filter input-sm" name="offer_price_to" placeholder="To"/>
+                                <input type="text" class="form-control form-filter input-sm" name="delivery_price_to" placeholder="To"/>
                             </td>
                             <td>
-                                <select name="offer_status" class="form-control form-filter input-sm">
+                                <select name="delivery_status" class="form-control form-filter input-sm">
                                     <option value="">Select...</option>
                                     <option value="pending">Pending</option>
                                     <option value="closed">Closed</option>
@@ -150,7 +150,7 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="offer_ship_to">
+                                <input type="text" class="form-control form-filter input-sm" name="delivery_ship_to">
                             </td>
                             <td>
                             </td>
@@ -167,5 +167,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>

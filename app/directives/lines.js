@@ -103,7 +103,7 @@ MetronicApp.directive('productLines', ['$http',
                 };
                 scope.productAutoComplete = function(val) {
                     return $http.post('/erp/api/product/autocomplete', {
-                        take: 50,
+                        take: 20,
                         skip: 0,
                         page: 1,
                         pageSize: 5,

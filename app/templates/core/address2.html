@@ -5,32 +5,32 @@
 </script>
 
 <div class="form-group form-md-line-input" ng-if="addressModel.name">
-    <input type="text" class="form-control" id="name" ng-model="addressModel.name" autocomplete="off" />
+    <input type="text" class="form-control" id="name" ng-model="addressModel.name" ng-disabled="editable" autocomplete="off" />
     <label for="name">@(Name) </label>
 </div>
 
 
 <div class="form-group form-md-line-input">
-    <textarea class="form-control" rows="3" cols="30" ng-model="addressModel.street" autocomplete="off"></textarea>
+    <textarea class="form-control" rows="3" cols="30" ng-model="addressModel.street" ng-disabled="editable" autocomplete="off"></textarea>
     <label for="zip">@(Address) </label>
 </div>
 
 <div class="row">
     <div class="col-md-4">
         <div class="form-group form-md-line-input">
-            <input type="text" class="form-control" id="zip" ng-model="addressModel.zip" typeahead="address.code for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" typeahead-on-select="generateZip($item)" autocomplete="off"/>
+            <input type="text" class="form-control" id="zip" ng-model="addressModel.zip" ng-disabled="editable" typeahead="address.code for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" typeahead-on-select="generateZip($item)" autocomplete="off"/>
             <label for="zip">@(Zip) </label>
         </div>
     </div>
     <div class="col-md-8">
         <div class="form-group form-md-line-input">
-            <input type="text" class="form-control" id="city" ng-model="addressModel.city" typeahead="address.city for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" typeahead-on-select="generateZip($item)" autocomplete="off"/>
+            <input type="text" class="form-control" id="city" ng-model="addressModel.city" ng-disabled="editable" typeahead="address.city for address in getLocation($viewValue)" typeahead-template-url="customTemplate.html" typeahead-on-select="generateZip($item)" autocomplete="off"/>
             <label for="city">@(Town) </label>
         </div>
     </div>
 </div>
 
 <div class="form-group form-md-line-input">
-    <select class="form-control" id="country" ng-model="addressModel.country" ng-options="c._id as c.name for c in countries"></select>
+    <select class="form-control" id="country" ng-model="addressModel.country" ng-disabled="editable" ng-options="c._id as c.name for c in countries"></select>
     <label for="country">@(Country) </label>
 </div>

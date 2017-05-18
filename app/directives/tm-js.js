@@ -255,6 +255,7 @@ MetronicApp.directive('address', ['$http',
             restrict: 'E',
             scope: {
                 addressModel: '=ngModel',
+                editable: '=ngDisabled',
                 mode: '=?'
             },
             templateUrl: function(el, attr) {
@@ -269,6 +270,10 @@ MetronicApp.directive('address', ['$http',
                     return '/templates/core/address2.html';
             },
             link: function(scope) {
+                //console.log(scope);
+
+                if(!scope.editable)
+                    scope.editable = false;
 
                 $http({
                     method: 'GET',
