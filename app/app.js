@@ -600,6 +600,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/offer/index.html"
         })
         .state('offer.list', {
+            parent: "offer",
             url: "",
             templateUrl: "/views/offer/list.html",
             data: {
@@ -616,10 +617,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "OfferController"
         })
+        .state('offer.show.detail', {
+            url: "/detail",
+            templateUrl: "/views/offer/detail.html",
+            data: { pageTitle: 'Devis' }
+        })
         .state('offer.create', {
             parent: "offer",
             url: "/create.html",
-            templateUrl: "/views/offer/fiche.html",
+            templateUrl: "/views/offer/detail.html",
             data: {
                 pageTitle: 'Nouvelle offre'
             },
