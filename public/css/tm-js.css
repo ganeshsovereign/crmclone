@@ -602,3 +602,7 @@ small {
     float: none;
     margin: 0 auto;
 }
+
+.form-horizontal .form-group.form-md-line-input>label {
+    color: #D6AB00;
+}

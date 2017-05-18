@@ -174,19 +174,28 @@
             <div class="portlet light">
                 <!-- STAT -->
                 <div class="row list-separated profile-stat">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{product.createdAt|date:'dd/MM/yyyy'}} </div>
-                        <div class="uppercase profile-stat-text"> @(DateCreation)</div>
+                    <div class=" col-md-6 col-sm-6 col-xs-6">
+                        <div class="uppercase profile-stat-title"> <i class="icon-calendar font-yellow-crusta"></i> {{product.createdAt|date:'dd/MM/yyyy HH:mm'}} </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-title"> {{product.updatedAt|date:'dd/MM/yyyy'}} </div>
-                        <div class="uppercase profile-stat-text"> @(DateModification) </div>
+                        <div class="uppercase profile-stat-title"> <i class="icon-refresh font-yellow-crusta"></i> {{product.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                    </div>
+
+                    <div>
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{product.createdBy.username}}</a> </div>
+                            <!--<div class="uppercase profile-stat-text"> @(CreatedBy)</div>-->
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{product.editedBy.username}}</a> </div>
+                            <!-- <div class="uppercase profile-stat-text"> @(EditedBy) </div>-->
+                        </div>
                     </div>
                 </div>
                 <!-- END STAT -->
                 <div>
                     <h4 class="profile-desc-title">{{product.info.SKU}}</h4>
-                    <span class="profile-desc-text"> {{product.info.langs[0].name}}. </span>
+                    <span class="profile-desc-text"> {{product.info.langs[0].name}} </span>
                 </div>
             </div>
             <!-- END PORTLET MAIN -->
