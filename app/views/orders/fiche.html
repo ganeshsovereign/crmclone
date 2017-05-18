@@ -96,8 +96,10 @@
                 </div>
                 <div class="profile-usermenu">
                     <ul class="nav">
-                        <li ng-class="{active: $state.includes('offer.show.detail')}">
-                            <a ui-sref="offer.show.detail({id:object._id})">
+                        <li ng-class="{active: $state.includes(module + '.show.detail')}">
+                            <a ng-if="module == 'offer'" ui-sref="offer.show.detail({id:object._id})">
+                                <i class="icon-info"></i> @(propal:Details) </a>
+                            <a ng-if="module == 'order'" ui-sref="order.show.detail({id:object._id})">
                                 <i class="icon-info"></i> @(propal:Details) </a>
                         </li>
 

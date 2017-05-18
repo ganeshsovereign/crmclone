@@ -33,19 +33,31 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location',
         var current = $rootScope.$state.current.name.split('.');
         //console.log(current);
 
+        $scope.module = current[0];
+
+        $scope.backTo = 'dashboard';
+
+        if (current.length == 2 && current[1] !== 'list')
+            return $rootScope.$state.go($scope.module + '.show.detail', { id: $rootScope.$stateParams.id });
+
         switch (current[0]) {
             case 'offer':
                 var Object = Orders.offer;
                 $scope.backTo = 'offer.list';
                 break;
+            case 'order':
+                var Object = Orders.order;
+                $scope.backTo = 'order.list';
+                break;
             case 'delivery':
                 var Object = Orders.delivery;
                 $scope.backTo = 'delivery.list';
                 break;
+            case 'bill':
+                var Object = Orders.bill;
+                $scope.backTo = 'bill.list';
+                break;
         }
-
-
-
 
 
         var grid = new Datatable();
