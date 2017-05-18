@@ -33,7 +33,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location',
         var current = $rootScope.$state.current.name.split('.');
         //console.log(current);
 
-        $scope.module = current[0];
+        $scope.type = current[0];
 
         $scope.backTo = 'dashboard';
 
