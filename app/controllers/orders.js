@@ -31,14 +31,11 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location',
     function($scope, $rootScope, $location, $http, $modal, $filter, $timeout, Orders) {
 
         var current = $rootScope.$state.current.name.split('.');
-        console.log(current);
+        console.log(current, $rootScope.$stateParams.id);
 
         $scope.module = current[0];
 
         $scope.backTo = 'dashboard';
-
-        if (current.length == 2 && current[1] !== 'list')
-            return $rootScope.$state.go($scope.module + '.show.detail', { id: $rootScope.$stateParams.id });
 
         switch (current[0]) {
             case 'offer':
@@ -96,6 +93,12 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location',
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
+            if (current.length == 2 && current[1] !== 'list') {
+                console.log("toto");
+                return $rootScope.$state.go('offer.show.detail', { id: $rootScope.$stateParams.id });
+            }
+
+
             // initialize core components
             Metronic.initAjax();
 
