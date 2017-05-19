@@ -68,6 +68,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         $scope.$dict = {};
 
+        var module;
+
         // Init
         $scope.$on('$viewContentLoaded', function() {
             // initialize core components
@@ -80,7 +82,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             current = $rootScope.$state.current.name.split('.');
             console.log(current, $rootScope.$stateParams.id);
 
-            $scope.module = current[0];
+            module = current[0];
 
             switch (current[0]) {
                 case 'offer':
@@ -149,6 +151,13 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             $scope.findOne();
 
         });
+
+        $scope.module = function(themodule) {
+            if (!themodule)
+                return module;
+
+            return module === themodule;
+        };
 
         $scope.showStatus = function(idx, dict) {
             if (!($scope.dict[dict] && $scope.object[idx]))

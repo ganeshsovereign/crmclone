@@ -59,68 +59,58 @@
     </div>
 </div>
 
-<!--<h3 class="page-title" ng-class="{'font-red':!product.info.isActive}">
-    <i class="fa fa-cubes font-grey-silver"></i> @(products:ProductServiceCard) : {{product.info.langs[0].name}} <small ng-hide="!product.info.isActive" class="font-green">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
-</h3>-->
-
 <div ng-if="product.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce produit est supprime. </div>
 
 <div class="row">
     <div class="col-md-12">
-        <!-- BEGIN PROFILE SIDEBAR -->
         <div class="profile-sidebar">
-            <!-- PORTLET MAIN -->
             <div class="portlet light profile-sidebar-portlet">
-                <!-- SIDEBAR USERPIC -->
-                <div class="profile">
-                    <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
-                </div>
-                <!-- END SIDEBAR USERPIC -->
-                <!-- SIDEBAR USER TITLE -->
-                <div class="profile-usertitle">
-                    <div class="profile-usertitle-name" ng-class="{'font-red':!product.info.isActive}"> {{product.info.SKU}}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="profile">
+                            <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
+                        </div>
                     </div>
-                    <div class="md-checkbox-inline">
-                        <div class="md-checkbox has-success">
-                            <input type="checkbox" id="isActive" class="md-check" ng-model="product.info.isActive" ng-checked="product.info.isActive">
-                            <label for="isActive">
+                    <div class="col-md-6">
+                        <div class="profile-usertitle">
+                            <div class="uppercase profile-stat-text"> @(products:ProductSheet) </div>
+                            <div class="uppercase profile-stat-title" ng-class="{'font-red':!product.info.isActive}"> {{product.info.SKU}}
+                            </div>
+                            <hr>
+                            <div class="md-checkbox-inline" class="align-left">
+                                <div class="md-checkbox has-success">
+                                    <input type="checkbox" id="isActive" class="md-check" ng-model="product.info.isActive" ng-checked="product.info.isActive">
+                                    <label for="isActive">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(Activated)</label>
-                        </div>
-                    </div>
-                    <div class="md-checkbox-inline">
-                        <div class="md-checkbox">
-                            <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
-                            <label for="isSell">
+                                </div>
+
+                                <div class="md-checkbox">
+                                    <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
+                                    <label for="isSell">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:Status.OnSell)</label>
-                        </div>
-                        <div class="md-checkbox">
-                            <input type="checkbox" id="isBuy" class="md-check" ng-model="product.isBuy" ng-checked="product.isBuy">
-                            <label for="isBuy">
+                                </div>
+
+                                <div class="md-checkbox">
+                                    <input type="checkbox" id="isBuy" class="md-check" ng-model="product.isBuy" ng-checked="product.isBuy">
+                                    <label for="isBuy">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:Status.OnBuy)</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- END SIDEBAR USER TITLE -->
                 <div class="progress">
                     <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
                         <span class="sr-only"> 60% Complete </span>
                     </div>
                 </div>
-                <!-- SIDEBAR BUTTONS -->
 
-
-                <!--<div class="profile-userbuttons">
-                    <button type="button" class="btn btn-circle green-haze btn-sm">Follow</button>
-                    <button type="button" class="btn btn-circle btn-danger btn-sm">Message</button>
-                </div> -->
-                <!-- END SIDEBAR BUTTONS -->
-                <!-- SIDEBAR MENU -->
                 <div class="profile-usermenu">
                     <ul class="nav">
                         <li ng-class="{active: $state.includes('product.show.informations')}">
@@ -167,12 +157,8 @@
                         </li>
                     </ul>
                 </div>
-                <!-- END MENU -->
             </div>
-            <!-- END PORTLET MAIN -->
-            <!-- PORTLET MAIN -->
             <div class="portlet light">
-                <!-- STAT -->
                 <div class="row list-separated profile-stat">
                     <div class=" col-md-6 col-sm-6 col-xs-6">
                         <div class="uppercase profile-stat-title"> <i class="icon-calendar font-yellow-crusta"></i> {{product.createdAt|date:'dd/MM/yyyy HH:mm'}} </div>
@@ -192,15 +178,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- END STAT -->
                 <div>
                     <h4 class="profile-desc-title">{{product.info.SKU}}</h4>
                     <span class="profile-desc-text"> {{product.info.langs[0].name}} </span>
                 </div>
             </div>
-            <!-- END PORTLET MAIN -->
         </div>
-        <!-- END BEGIN PROFILE SIDEBAR -->
         <div ui-view class="profile-content fade-in-up"></div>
     </div>
 </div>

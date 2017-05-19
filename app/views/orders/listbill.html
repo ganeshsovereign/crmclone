@@ -7,31 +7,23 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <i class="fa fa-cogs"></i>
-                <a ui-sref="product.list">@(products:ProductsAndServices)</a>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(products:ListProductsAndServices)</span>
+                <span>@(bills:List)</span>
             </li>
         </ul>
-
         <div class="page-toolbar">
             <div class="btn-group pull-right">
-                <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools)
-                                                    <i class="fa fa-angle-down"></i>
-                                                </a>
+                <button class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+                            </button>
                 <ul class="dropdown-menu pull-right">
                     <li>
                         <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
                                         @(PrintList) </a>
                     </li>
-                    <li>
-                        <a href="#" ng-show="login.rights.product.create" data-ng-click="updatePrices()">
-                            <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
-                        </a>
-                    </li>
                     <!--    <li>
+                                        <a href="#">
+                                            @(Update) </a>
+                                    </li>
+                                    <li>
                                         <a href="#">
                                             @(Delete) </a>
                                     </li>
@@ -44,33 +36,14 @@
         </div>
     </div>
 
-    <!--<div>
-        <script type="text/ng-template" id="myModalPrice.html">
-            <div class="modal-header">
-                <h4 class="no-margin-bottom">Modifier les prix</h4>
-            </div>
-            <div class="modal-body">
-
-                <p class="button-height inline-medium-label">
-                    <label for="coef">Coefficient multiplicateur</label>
-                    <input id="coef" required data-ng-model="coef" type="number" min="0.01" step="any" class="form-control">
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
-                <button type="button" ng-click="ok()" class="btn btn-info btn-sm">@(Apply)</button>
-
-            </div>
-        </script>-->
-
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
             <div class="caption">
-                <i class="fa fa-cubes"></i>
-                <span class="caption-subject dark sbold uppercase">@(products:ListProductsAndServices)</span>
+                <i class="fa fa-money"></i>
+                <span class="caption-subject dark bold uppercase"> @(bills:List)</span>
             </div>
             <div class="actions">
-                <button class="btn blue" ui-sref="product.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button class="btn blue" ui-sref="bill.create">@(Add) <i class="fa fa-plus"></i></button>
                 <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
@@ -83,38 +56,61 @@
 
                         <div class="col-md-3">
                             <div class="form-group form-md-line-input ">
-                                <select ng-model="type" ng-change="setCache('type', type); find();" id="Status" ng-options="s.id as s.name for s in types" class="form-control"></select>
+                                <select ng-model="status_id" ng-change="find();" id="Status" ng-options="s.id as s.label for s in dict.fk_delivery_status.values" class="form-control"></select>
                                 <label for="Status">@(Status)</label>
                             </div>
                         </div>
+
                         <div class="col-md-3">
                             <div class="form-group form-md-line-input ">
-                                <input class="form-control" placeholder="@(Family)" ng-model="family" typeahead="f.id as f.name for f in AutoComplete($viewValue,'/erp/api/product/family/autocomplete')" typeahead-on-select="find()" type="text" autocomplete="off" />
-                                <label for="Family">@(Family)</label>
+                                <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control"></select>
+                                <label for="Status">@(Entity)</label>
                             </div>
                         </div>
+
+                        <!--<label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
+
+                        <div class="col-md-3">
+                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_delivery_status.values" class="form-control">
+                                <option value="">-- @(All) --</option>
+                            </select>
+                            <div class="form-control-focus"> </div>
+                        </div>
+
+                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyEntity)</label>
+
+                        <div class="col-md-3">
+                            <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
+                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
+                            </select>
+                            <div class="form-control-focus"> </div>
+                        </div>
+                        <div class="col-md-1"></div>-->
+
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="dataTables_wrapper table-responsive">
+        <div class="dataTables_wrapper no-footer table-responsive">
             <div class="col-md-12">
-                <table class="table dataTable table-hover" id="productList">
+                <table class="table dataTable no-footer table-hover" id="billList">
                     <thead>
                         <tr role="row" class="heading">
                             <th width="2%">
                                 <input type="checkbox" class="group-checkable" />
                             </th>
-                            <th>@(Ref)</th>
-                            <th>@(Type)</th>
-                            <th>@(Name)</th>
-                            <th>@(TotalHTsell)</th>
-                            <th>@(TotalHTbuy)</th>
-                            <th>@(Weight)</th>
-                            <th>@(DateModificationShort)</th>
+                            <th>Ref.</th>
+                            <th>@(companies:Company)</th>
+                            <th>@(RefCustomer)</th>
+                            <th>@(bills:DateInvoice)</th>
+                            <th>@(bills:DateEcheance)</th>
+                            <th>@(commercial:Commercial)</th>
+                            <th>@(TotalTTC)</th>
                             <th>@(Status)</th>
-                            <th>@(Family)</th>
+                            <th>@(Entity)</th>
+                            <th>@(DateModification)</th>
+                            <th>@(Action)</th>
                         </tr>
                         <!--<tr role="row" class="filter">
                             <td>
@@ -130,13 +126,13 @@
                             </td>
                             <td>
                                 <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="order_date_from" placeholder="From">
+                                    <input type="text" class="form-control form-filter input-sm" readonly name="delivery_date_from" placeholder="From">
                                     <span class="input-group-btn">
                                         <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
                                     </span>
                                 </div>
                                 <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="order_date_to" placeholder="To">
+                                    <input type="text" class="form-control form-filter input-sm" readonly name="delivery_date_to" placeholder="To">
                                     <span class="input-group-btn">
                                         <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
                                     </span>
@@ -144,12 +140,12 @@
                             </td>
                             <td>
                                 <div class="margin-bottom-5">
-                                    <input type="text" class="form-control form-filter input-sm" name="order_price_from" placeholder="From"/>
+                                    <input type="text" class="form-control form-filter input-sm" name="delivery_price_from" placeholder="From"/>
                                 </div>
-                                <input type="text" class="form-control form-filter input-sm" name="order_price_to" placeholder="To"/>
+                                <input type="text" class="form-control form-filter input-sm" name="delivery_price_to" placeholder="To"/>
                             </td>
                             <td>
-                                <select name="order_status" class="form-control form-filter input-sm">
+                                <select name="delivery_status" class="form-control form-filter input-sm">
                                     <option value="">Select...</option>
                                     <option value="pending">Pending</option>
                                     <option value="closed">Closed</option>
@@ -158,7 +154,7 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="text" class="form-control form-filter input-sm" name="order_ship_to">
+                                <input type="text" class="form-control form-filter input-sm" name="delivery_ship_to">
                             </td>
                             <td>
                             </td>

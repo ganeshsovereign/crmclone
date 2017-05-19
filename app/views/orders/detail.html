@@ -11,17 +11,20 @@
                 <div ng-show="object._id" class="portlet-title">
                     <div class="caption">
                         <i class="icon-info"></i>
-                        <span ng-show="object._id" class="caption-subject dark bold uppercase">@(propal:CommercialProposals) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-hide="object._id" class="caption-subject dark bold uppercase">@(propal:NewProp) </span>
+                        <span ng-if="module('offer')" ng-show="object._id" class="caption-subject dark bold uppercase">@(propal:CommercialProposals) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('offer')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(propal:NewProp) </span>
+                        <span ng-if="module('order')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('order')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewOrder) </span>
+                        <span ng-if="module('delivery')" ng-show="object._id" class="caption-subject dark bold uppercase">@(deliveries:DeliveryNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('delivery')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(deliveries:NewDelivery) </span>
+                        <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillsCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
-                    <div ng-show="object._id" ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
-                    <div ng-hide="object._id" ng-include="'/templates/createMenu.html'" class="actions btn-set"></div>
+                    <div mode=n g-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
                     <div class="tools">
                         <a href="" class="collapse" data-original-title="" title=""> </a>
                     </div>
                 </div>
-
-
                 <div class="portlet-body">
                     <div class="form-body">
                         <div class="row">
@@ -29,7 +32,6 @@
                                 <div class="portlet light bordered">
                                     <div class="row">
                                         <div class=" col-md-6 col-sm-12">
-
                                             <crm-id label="@(companies:Customer)" ng-if="!object._id" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
 
                                             <div class="form-group form-md-line-input" ng-if="!object._id">
@@ -43,7 +45,7 @@
                                             </div>
 
                                             <div ng-hide="!object._id" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="ref" ng-model="object.ref">
+                                                <div class="form-control form-control-static">{{object.ref}}</div>
                                                 <label for="ref">@(Ref) @(propal:CommercialProposal)</label>
                                             </div>
 
@@ -59,7 +61,6 @@
                                         </div>
 
                                         <div class="col-md-6 col-sm-12">
-
                                             <div class="form-group form-md-line-input">
                                                 <select class="form-control" id="type" ng-model="object.type" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
                                                         </select>
