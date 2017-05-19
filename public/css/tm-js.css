@@ -607,3 +607,7 @@ small {
 .form-horizontal .form-group.form-md-line-input>label {
     color: #D6AB00;
 }
+
+.profile-sidebar-portlet {
+    padding: 60px 0 px 0 !important;
+}

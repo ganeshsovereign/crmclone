@@ -25,7 +25,7 @@
             <span ng-hide="!object._id">@(propal:Prop) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(propal:NewProp)</span>
         </li>
-        <li ng-if="module('order'" )>
+        <li ng-if="module('order')">
             <span ng-hide="!object._id">@(orders:Order) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewOrder)</span>
         </li>
