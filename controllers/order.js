@@ -95,9 +95,22 @@ function Order(id, cb) {
     //console.log(query);
 
     OrderModel.findOne(query, "-latex")
-        .populate("contacts", "firstname lastname phone email")
-        .populate("lines.product.id", "ref name label weight")
-        .populate({ path: "deliveries", select: "_id ref total_ht", match: { isremoved: { $ne: true } } })
+        .populate("contacts", "name phone email")
+        .populate({
+            path: "supplier",
+            select: "name salesPurchases",
+            populate: { path: "salesPurchases.priceList" }
+        })
+        .populate({
+            path: "lines.product",
+            select: "taxes info weight units",
+            populate: { path: "taxes.taxeId" }
+        })
+        .populate({
+            path: "total_taxes.taxeId"
+        })
+        .populate("createdBy", "username")
+        .populate("editedBy", "username")
         .exec(cb);
 }
 

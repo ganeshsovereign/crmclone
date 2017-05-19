@@ -27,38 +27,15 @@ International Registered Trademark & Property of ToManage SAS
 "use strict";
 
 /* global angular: true */
-MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout', 'Orders',
-    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout, Orders) {
-
-        var current = $rootScope.$state.current.name.split('.');
-        console.log(current, $rootScope.$stateParams.id);
-
-        $scope.module = current[0];
-
-        $scope.backTo = 'dashboard';
-
-        switch (current[0]) {
-            case 'offer':
-                var Object = Orders.offer;
-                $scope.backTo = 'offer.list';
-                break;
-            case 'order':
-                var Object = Orders.order;
-                $scope.backTo = 'order.list';
-                break;
-            case 'delivery':
-                var Object = Orders.delivery;
-                $scope.backTo = 'delivery.list';
-                break;
-            case 'bill':
-                var Object = Orders.bill;
-                $scope.backTo = 'bill.list';
-                break;
-        }
-
+MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'Orders',
+    function($scope, $rootScope, $http, $modal, $filter, $timeout, Orders) {
 
         var grid = new Datatable();
         var user = $rootScope.login;
+        var current;
+        var Object;
+
+        $scope.backTo = 'dashboard';
 
         $scope.object = {
             entity: $rootScope.login.entity,
@@ -93,18 +70,40 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location',
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
-            if (current.length == 2 && current[1] !== 'list') {
-                console.log("toto");
-                return $rootScope.$state.go('offer.show.detail', { id: $rootScope.$stateParams.id });
-            }
-
-
             // initialize core components
             Metronic.initAjax();
 
             // set default layout mode
             $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
+
+            current = $rootScope.$state.current.name.split('.');
+            console.log(current, $rootScope.$stateParams.id);
+
+            $scope.module = current[0];
+
+            switch (current[0]) {
+                case 'offer':
+                    Object = Orders.offer;
+                    $scope.backTo = 'offer.list';
+                    break;
+                case 'order':
+                    Object = Orders.order;
+                    $scope.backTo = 'order.list';
+                    break;
+                case 'delivery':
+                    Object = Orders.delivery;
+                    $scope.backTo = 'delivery.list';
+                    break;
+                case 'bill':
+                    Object = Orders.bill;
+                    $scope.backTo = 'bill.list';
+                    break;
+            }
+
+            if ($rootScope.$stateParams.id && current.length <= 2 && current[1] === "show")
+                return $rootScope.$state.go(current[0] + '.show.detail');
+
 
             var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
             $http({
@@ -148,6 +147,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location',
             });
 
             $scope.findOne();
+
         });
 
         $scope.showStatus = function(idx, dict) {

@@ -608,6 +608,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OfferListController"
         })
         .state('offer.show', {
+            parent: 'offer',
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/orders/fiche.html",
             data: {
