@@ -8,7 +8,7 @@
     <div class="col-md-12">
         <div class="form-horizontal form-row-seperated">
             <div class="portlet portlet light bordered">
-                <div ng-show="object._id" class="portlet-title">
+                <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-info"></i>
                         <span ng-if="module('offer')" ng-show="object._id" class="caption-subject dark bold uppercase">@(propal:CommercialProposals) - {{object.ref}} - {{object.supplier.fullName}} </span>
@@ -20,7 +20,7 @@
                         <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillsCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
-                    <div mode=n g-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                    <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
                     <div class="tools">
                         <a href="" class="collapse" data-original-title="" title=""> </a>
                     </div>

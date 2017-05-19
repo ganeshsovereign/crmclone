@@ -167,6 +167,8 @@ MetronicApp.directive('myFocus', function() {
     };
 });
 
+
+
 MetronicApp.factory('superCache', ['$cacheFactory',
     function($cacheFactory) {
         return $cacheFactory('super-cache');
@@ -249,6 +251,19 @@ MetronicApp.directive('crmAddress', ['$http',
     }
 ]);
 
+MetronicApp.directive('save', function() {
+    return {
+        scope: {
+            ngDisabled: '=',
+            mode: '=?',
+            ngCreate: '&',
+            ngUpdate: '&',
+            backTo: "="
+        },
+        templateUrl: "/templates/saveMenu.html"
+    };
+});
+
 MetronicApp.directive('address', ['$http',
     function($http) {
         return {
@@ -272,7 +287,7 @@ MetronicApp.directive('address', ['$http',
             link: function(scope) {
                 //console.log(scope);
 
-                if(!scope.editable)
+                if (!scope.editable)
                     scope.editable = false;
 
                 $http({
