@@ -410,7 +410,8 @@ hr {
 }
 
 .page-content {
-    background-color: #F4F6F7;
+    /*background-color: #F4F6F7;*/
+    background-color: #F0F0F0;
 }
 
 .page-bar {

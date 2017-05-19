@@ -6,12 +6,27 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="{{backTo}}">@(propal:CommercialProposals)</a>
+            <a ng-if="module == 'offer'" ui-sref="{{backTo}}">@(propal:CommercialProposals)</a>
+            <a ng-if="module == 'order'" ui-sref="{{backTo}}">@(orders:CustomersOrders)</a>
+            <a ng-if="module == 'delivery'" ui-sref="{{backTo}}">@(delivery:List)</a>
+            <a ng-if="module == 'bill'" ui-sref="{{backTo}}">@(bill:List)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li>
-            <span ng-hide="!object._id">@(propal:Prop) : {{object.ref}}</span>
+        <li ng-if="module == 'offer'">
+            <span ng-hide="!object._id">@(propal:Prop) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(propal:NewProp)</span>
+        </li>
+        <li ng-if="module == 'order'">
+            <span ng-hide="!object._id">@(orders:Order) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(orders:NewOrder)</span>
+        </li>
+        <li ng-if="module == 'delivery'">
+            <span ng-hide="!object._id">@(deliveries:DeliveryNote) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(deliveries:NewDelivery)</span>
+        </li>
+        <li ng-if="module == 'bill'">
+            <span ng-hide="!object._id">@(bills:BillsCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(bills:NewBill)</span>
         </li>
     </ul>
     <div class="page-toolbar">
@@ -69,7 +84,10 @@
                 <div class="profile-usertitle">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="profile-usertitle-name font-yellow-crusta"> @(propal:Prop) : </div>
+                            <div ng-if="module == 'offer'" class="profile-usertitle-name font-yellow-crusta"> @(propal:Prop) </div>
+                            <div ng-if="module == 'order'" class="profile-usertitle-name font-yellow-crusta"> @(orders:Order) </div>
+                            <div ng-if="module == 'delivery'" class="profile-usertitle-name font-yellow-crusta"> @(delivery:DeliveryNote) </div>
+                            <div ng-if="module == 'bill'" class="profile-usertitle-name font-yellow-crusta"> @(bills:Bill) </div>
                             <div class="profile-usertitle-name"> {{object.ref}} </div>
                         </div>
                     </div>
@@ -110,7 +128,11 @@
                             <a ng-if="module == 'offer'" ui-sref="offer.show.detail({id:object._id})">
                                 <i class="icon-info"></i> @(propal:Details) </a>
                             <a ng-if="module == 'order'" ui-sref="order.show.detail({id:object._id})">
-                                <i class="icon-info"></i> @(propal:Details) </a>
+                                <i class="icon-info"></i> @(orders:Details) </a>
+                            <a ng-if="module == 'delivery'" ui-sref="order.show.detail({id:object._id})">
+                                <i class="icon-info"></i> @(deliveries:Details) </a>
+                            <a ng-if="module == 'bill'" ui-sref="order.show.detail({id:object._id})">
+                                <i class="icon-info"></i> @(bill:Details) </a>
                         </li>
                     </ul>
                 </div>

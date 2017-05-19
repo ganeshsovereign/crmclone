@@ -33,12 +33,12 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$location',
         var current = $rootScope.$state.current.name.split('.');
         console.log(current);
 
-        $scope.type = current[0];
+        $scope.module = current[0];
 
         $scope.backTo = 'dashboard';
 
         if (current.length == 2 && current[1] !== 'list')
-            return $rootScope.$state.go($scope.type + '.show.detail', { id: $rootScope.$stateParams.id });
+            return $rootScope.$state.go($scope.module + '.show.detail', { id: $rootScope.$stateParams.id });
 
         switch (current[0]) {
             case 'offer':
