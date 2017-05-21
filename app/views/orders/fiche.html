@@ -140,46 +140,48 @@
             </div>
             <div class="portlet light profile-sidebar-portlet ">
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="profile">
-                            <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="profile-usertitle">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div ng-if="module('offer')" class="uppercase profile-stat-text"> @(propal:Prop) </div>
-                                    <div ng-if="module('order')" class="uppercase profile-stat-text"> @(orders:Order) </div>
-                                    <div ng-if="module('delivery')" class="uppercase profile-stat-text"> @(deliveries:DeliveryNote) </div>
-                                    <div ng-if="module('bill')" class="uppercase profile-stat-text"> @(bills:Bill) </div>
-                                    <div class="uppercase profile-stat-title"> {{object.ref}} </div>
-                                </div>
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="profile">
+                                <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
                             </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="uppercase profile-stat-text"> @(orders:RefCustomerOrder) </div>
-                                    <div class="uppercase profile-stat-title"> {{object.ref_client}} </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="profile-usertitle">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div ng-if="module('offer')" class="uppercase profile-stat-text"> @(propal:Prop) </div>
+                                        <div ng-if="module('order')" class="uppercase profile-stat-text"> @(orders:Order) </div>
+                                        <div ng-if="module('delivery')" class="uppercase profile-stat-text"> @(deliveries:DeliveryNote) </div>
+                                        <div ng-if="module('bill')" class="uppercase profile-stat-text"> @(bills:Bill) </div>
+                                        <div class="uppercase profile-stat-title"> {{object.ref}} </div>
+                                    </div>
                                 </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="uppercase profile-stat-text"> @(orders:RefCustomerOrder) </div>
+                                        <div class="uppercase profile-stat-title"> {{object.ref_client}} </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="md-checkbox-inline">
+                            <div class="md-checkbox">
+                                <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
+                                <label for="isSell">
+                                    <span></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span> @(products:Status.OnSell)</label>
                             </div>
-                            <!-- <div class="md-checkbox-inline">
-                        <div class="md-checkbox">
-                            <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
-                            <label for="isSell">
-                                <span></span>
-                                <span class="check"></span>
-                                <span class="box"></span> @(products:Status.OnSell)</label>
+                            <div class="md-checkbox">
+                                <input type="checkbox" id="isBuy" class="md-check" ng-model="product.isBuy" ng-checked="product.isBuy">
+                                <label for="isBuy">
+                                    <span></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span> @(products:Status.OnBuy)</label>
+                            </div>
                         </div>
-                        <div class="md-checkbox">
-                            <input type="checkbox" id="isBuy" class="md-check" ng-model="product.isBuy" ng-checked="product.isBuy">
-                            <label for="isBuy">
-                                <span></span>
-                                <span class="check"></span>
-                                <span class="box"></span> @(products:Status.OnBuy)</label>
-                        </div>
-                    </div>
-                </div>-->
+                    </div>-->
+                            </div>
                         </div>
                     </div>
                 </div>
