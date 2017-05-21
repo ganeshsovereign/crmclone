@@ -170,14 +170,23 @@
             </div>
 
             <div class="portlet light">
-                <div class="row list-separated profile-stat">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-text"> @(DateCreation)</div>
-                        <div class="uppercase profile-stat-title"> {{societe.createdAt|date:'dd/MM/yyyy'}} </div>
+                        <div class="row list-separated profile-stat">
+                    <div class=" col-md-6 col-sm-6 col-xs-6">
+                        <div class="uppercase profile-stat-title"> <i class="icon-calendar font-yellow-crusta"></i> {{societe.createdAt|date:'dd/MM/yyyy HH:mm'}} </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-text"> @(DateModification) </div>
-                        <div class="uppercase profile-stat-title"> {{societe.updatedAt|date:'dd/MM/yyyy'}} </div>
+                        <div class="uppercase profile-stat-title"> <i class="icon-refresh font-yellow-crusta"></i> {{societe.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                    </div>
+
+                    <div>
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{societe.createdBy.username}}</a> </div>
+                            <!--<div class="uppercase profile-stat-text"> @(CreatedBy)</div>-->
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{societe.editedBy.username}}</a> </div>
+                            <!-- <div class="uppercase profile-stat-text"> @(EditedBy) </div>-->
+                        </div>
                     </div>
                 </div>
             </div>

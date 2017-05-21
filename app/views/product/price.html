@@ -16,7 +16,7 @@
                         <span class="caption-subject dark bold uppercase"> @(Price)</span>
                         <span class="caption-helper"> - @(products:ProductServiceCard)</span>
                     </div>
-                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                    <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
                 </div>
                 <div class="portlet-body">
                     <tabset class="tabbable-line tabbable-full-width">

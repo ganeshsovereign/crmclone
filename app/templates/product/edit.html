@@ -19,7 +19,7 @@
                 <div class="caption font-yellow-crusta">
                     <i class="fa fa-cubes font-yellow-crusta sbold"></i>@(products:ProductServiceCard)
                 </div>
-                <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
             </div>
             <div class="portlet-body">
                 <tabset class="tabbable-line tabbable-full-width">

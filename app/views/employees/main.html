@@ -8,7 +8,7 @@
                         <span class="caption-subject dark bold uppercase"> @(users:Main)</span>
                         <span class="caption-helper"> - @(users:Employees)</span>
                     </div>
-                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                    <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
                 </div>
 
                 <div ng-hide="employee._id" class="portlet-title">

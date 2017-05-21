@@ -7,7 +7,7 @@
                         <i class="icon-magic-wand"></i>
                         <span class="caption-subject dark bold uppercase"> @(products:PriceLists)</span>
                     </div>
-                    <div ng-include="'/templates/saveMenu.html'" class="actions btn-set"></div>
+                    <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
