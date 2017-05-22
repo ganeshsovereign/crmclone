@@ -141,15 +141,13 @@ Object.prototype = {
 
         order = new OrderModel(self.body);
 
-
-        order.author = {};
-        order.author.id = self.user._id;
-        order.author.name = self.user.name;
+        order.createdBy = self.user._id;
+        order.editedBy = self.user._id;
 
         if (!order.entity)
             order.entity = self.user.entity;
 
-        if (self.user.societe && self.user.societe.id) { // It's an external order
+        /*if (self.user.societe && self.user.societe.id) { // It's an external order
             return ContactModel.findOne({
                 'societe.id': self.user.societe.id
             }, function(err, contact) {
@@ -181,8 +179,7 @@ Object.prototype = {
                     order.contact.id = doc._id;
                     order.contact.name = doc.name;
 
-                    order.client.id = self.user.societe.id;
-                    order.client.name = self.user.societe.name;
+                    order.supplier = self.user.societe.id;
 
                     order.save(function(err, doc) {
                         if (err)
@@ -192,14 +189,13 @@ Object.prototype = {
                     });
                 });
             });
-        }
+        }*/
 
         //console.log(order);
 
         order.save(function(err, doc) {
-            if (err) {
-                return console.log(err);
-            }
+            if (err)
+                return self.throw500(err);
 
             self.json(doc);
         });
@@ -228,9 +224,8 @@ Object.prototype = {
 
             order = new OrderModel(order);
 
-            order.author = {};
-            order.author.id = self.user._id;
-            order.author.name = self.user.name;
+            order.createdBy = self.user._id;
+            order.editedBy = self.user._id;
 
             // reset delivery qty
             for (var i = 0, len = order.lines.length; i < len; i++)
@@ -262,14 +257,14 @@ Object.prototype = {
             //console.log(order.history);
 
             if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
-                console.log("Mail order");
+                return console.log("Mail order NOT");
 
                 // Send an email
                 var mailOptions = {
                     from: "ERP Speedealing<no-reply@speedealing.com>",
                     to: "Plan 92 Chaumeil<plan92@imprimeriechaumeil.fr>",
                     cc: "herve.prot@symeos.com",
-                    subject: "Nouvelle commande " + order.client.name + " - " + order.ref + " dans l'ERP"
+                    subject: "Nouvelle commande " + order.supplier.name + " - " + order.ref + " dans l'ERP"
                 };
 
                 mailOptions.text = "La commande " + order.ref + " vient d'etre cree \n";
@@ -344,6 +339,7 @@ Object.prototype = {
     readDT: function() {
         var self = this;
         var OrderModel = MODEL('order').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         var query = JSON.parse(self.body.query);
 
@@ -365,7 +361,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            select: "client.id"
+            select: "supplier"
         };
 
         //console.log(options);
@@ -382,43 +378,45 @@ Object.prototype = {
             }
         }, function(err, res) {
             if (err)
-                console.log(err);
+                return console.log(err);
 
-            for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                var row = res.datatable.data[i];
+            SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
 
-                // Add checkbox
-                res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                // Add id
-                res.datatable.data[i].DT_RowId = row._id.toString();
+                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                    var row = res.datatable.data[i];
 
-                if (res.datatable.data[i].Status === 'VALIDATED')
-                // Add color line 
-                    res.datatable.data[i].DT_RowClass = "bg-yellow";
+                    // Add checkbox
+                    res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                    // Add id
+                    res.datatable.data[i].DT_RowId = row._id.toString();
 
-                // Add link company
-                if (row.client && row.client.id)
-                    res.datatable.data[i].client.name = '<a class="with-tooltip" href="#!/societe/' + row.client.id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.client.name + '"><span class="fa fa-institution"></span> ' + row.client.name + '</a>';
-                else {
-                    if (!row.client)
-                        res.datatable.data[i].client = {};
-                    res.datatable.data[i].client.name = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                    if (res.datatable.data[i].Status === 'VALIDATED')
+                    // Add color line 
+                        res.datatable.data[i].DT_RowClass = "bg-yellow";
+
+                    if (row.supplier && row.supplier._id)
+                        res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
+                    else {
+                        if (!row.supplier)
+                            res.datatable.data[i].supplier = {};
+                        res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                    }
+
+                    // Action
+                    res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                    // Add url on name
+                    res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                    // Convert Date
+                    res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
+                    res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+                    // Convert Status
+                    res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
                 }
 
-                // Action
-                res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                // Add url on name
-                res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
-                // Convert Date
-                res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
-                // Convert Status
-                res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-            }
+                //console.log(res.datatable);
 
-            //console.log(res.datatable);
-
-            self.json(res.datatable);
+                self.json(res.datatable);
+            });
         });
     },
     /**
@@ -539,7 +537,7 @@ Object.prototype = {
     },
     pdf: function(ref, self) {
         // Generation de la facture PDF et download
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
         var BankModel = MODEL('bank').Schema;
 
         if (!self)
@@ -571,19 +569,20 @@ Object.prototype = {
                 return self.plain("Impossible de générer le PDF, la commande n'est pas validée");
             }
 
-            var model = "_order.tex";
+            var model = "order.tex";
             // check if discount
             for (var i = 0; i < doc.lines.length; i++) {
                 if (doc.lines[i].discount > 0) {
-                    model = "_order_discount.tex";
+                    model = "order_discount.tex";
                     discount = true;
                     break;
                 }
             }
 
             SocieteModel.findOne({
-                _id: doc.client.id
+                _id: doc.supplier._id
             }, function(err, societe) {
+
                 BankModel.findOne({
                     ref: doc.bank_reglement
                 }, function(err, bank) {
@@ -646,20 +645,32 @@ Object.prototype = {
                         });
 
                     for (var i = 0; i < doc.lines.length; i++) {
-                        tabLines.push({
-                            ref: (doc.lines[i].product.name != 'SUBTOTAL' ? doc.lines[i].product.name.substring(0, 12) : ""),
-                            description: "\\textbf{" + doc.lines[i].product.label + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
-                            tva_tx: doc.lines[i].tva_tx,
-                            pu_ht: doc.lines[i].pu_ht,
-                            discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
-                            qty: doc.lines[i].qty,
-                            total_ht: doc.lines[i].total_ht
-                        });
+                        if (doc.lines[i].type == 'SUBTOTAL')
+                            tabLines.push({
+                                ref: "",
+                                description: "\\textbf{Sous-total}",
+                                tva_tx: null,
+                                pu_ht: "",
+                                discount: "",
+                                qty: "",
+                                total_ht: doc.lines[i].total_ht
+                            });
+                        else
+                            tabLines.push({
+                                ref: doc.lines[i].product.info.SKU.substring(0, 12),
+                                description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                                tva_tx: doc.lines[i].product.taxes[0].taxeId.rate,
+                                pu_ht: doc.lines[i].pu_ht,
+                                discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
+                                qty: doc.lines[i].qty,
+                                total_ht: doc.lines[i].total_ht
+                            });
 
-                        if (doc.lines[i].product.name == 'SUBTOTAL') {
+                        if (doc.lines[i].type == 'SUBTOTAL') {
                             tabLines[tabLines.length - 1].italic = true;
                             tabLines.push({ hline: 1 });
                         }
+
                         //tab_latex += " & \\specialcell[t]{\\\\" + "\\\\} & " +   + " & " + " & " +  "\\tabularnewline\n";
                     }
 
@@ -681,16 +692,17 @@ Object.prototype = {
                             total: doc.shipping.total_ht
                         });
 
+
                     //Total HT
                     tabTotal.push({
                         label: "Total HT",
                         total: doc.total_ht
                     });
 
-                    for (var i = 0; i < doc.total_tva.length; i++) {
+                    for (var i = 0; i < doc.total_taxes.length; i++) {
                         tabTotal.push({
-                            label: "Total TVA " + doc.total_tva[i].tva_tx + " %",
-                            total: doc.total_tva[i].total
+                            label: "Total " + doc.total_taxes[i].taxeId.langs[0].label,
+                            total: doc.total_taxes[i].value
                         });
                     }
 
@@ -722,39 +734,35 @@ Object.prototype = {
                     self.res.setHeader('Content-type', 'application/pdf');
                     Latex.Template(model, doc.entity)
                         .apply({
-                            "TITLE": {
-                                "type": "string",
-                                "value": title
-                            },
                             "NUM": {
                                 "type": "string",
                                 "value": doc.ref
                             },
                             "DESTINATAIRE.NAME": {
                                 "type": "string",
-                                "value": doc.bl[0].name
+                                "value": doc.address.name
                             },
                             "DESTINATAIRE.ADDRESS": {
                                 "type": "area",
-                                "value": doc.bl[0].address
+                                "value": doc.address.street
                             },
                             "DESTINATAIRE.ZIP": {
                                 "type": "string",
-                                "value": doc.bl[0].zip
+                                "value": doc.address.zip
                             },
                             "DESTINATAIRE.TOWN": {
                                 "type": "string",
-                                "value": doc.bl[0].town
+                                "value": doc.address.city
                             },
                             "DESTINATAIRE.TVA": {
                                 "type": "string",
-                                "value": societe.idprof6
+                                "value": societe.companyInfo.idprof6
                             },
                             "CODECLIENT": {
                                 "type": "string",
-                                "value": societe.code_client
+                                "value": societe.salesPurchases.code_client
                             },
-                            //"TITLE": {"type": "string", "value": doc.title},
+                            "TITLE": { "type": "string", "value": title },
                             "REFCLIENT": {
                                 "type": "string",
                                 "value": doc.ref_client

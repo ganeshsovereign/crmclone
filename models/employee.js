@@ -262,7 +262,7 @@ if (CONFIG('storing-files')) {
 }
 
 exports.Status = {
-    "_id": "fk_user_status",
+    "_id": "fk_employee_status",
     "default": "DISABLE",
     "values": {
         "NEVER": {

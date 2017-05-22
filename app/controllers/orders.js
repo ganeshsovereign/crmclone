@@ -304,15 +304,13 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         $scope.createOrder = function() {
             // CLOSE ORDER
-            $scope.object.Status = "SIGNED";
-            $scope.update();
             $scope.object.$order(function(response) {
                 $rootScope.$state.go("order.show", { id: response._id });
             });
         };
 
         $scope.changeStatus = function(Status) {
-            $scope.offer.Status = Status;
+            $scope.object.Status = Status;
             $scope.update();
         };
     }

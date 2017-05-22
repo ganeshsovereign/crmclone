@@ -74,12 +74,12 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('delivery')" href="#" ng-show="delivery.Status == 'NEW' || delivery.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
+                    <a ng-if="module('delivery')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
                         <i class="fa fa-plane"></i> @(deliveries:Sended)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('bill')" href="#" ng-show="(bill.Status == 'NOT_PAID' || bill.Status == 'VALIDATED') && bill.journalId.length == 0 && login.rights.bill.validate" data-ng-click="exportAccounting(bill._id)">
+                    <a ng-if="module('bill')" href="#" ng-show="(object.Status == 'NOT_PAID' || object.Status == 'VALIDATED') && object.journalId.length == 0 && login.rights.bill.validate" data-ng-click="exportAccounting(object._id)">
                         <i class="fa fa-mail-forward"></i> @(bills:SendAccounting)
                     </a>
                 </li>
@@ -104,16 +104,16 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('order')" ng-show='order.Status != "DRAFT"' ng-href="/erp/api/order/pdf/{{order.ref}}?proforma=1" target="_blank">
+                    <a ng-if="module('order')" ng-show='object.Status != "DRAFT"' ng-href="/erp/api/order/pdf/{{object.ref}}?proforma=1" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF) Proforma</a>
                 </li>
                 <li>
-                    <a ng-if="module('delivery')" ng-show="delivery.Status == 'SEND'" ng-href="#" ng-click="sendFTP()">
+                    <a ng-if="module('delivery')" ng-show="object.Status == 'SEND'" ng-href="#" ng-click="sendFTP()">
                         <i class="fa fa-file-pdf-o"></i> @(SendToFtp)
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status != "DRAFT" && order.contacts.length' ng-href="#" ng-click="sendEmail()">
+                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail()">
                         <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>

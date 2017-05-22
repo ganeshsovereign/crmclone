@@ -322,16 +322,17 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                                     value: 0
                                 }
                             });
-                            for (j = 0; j < lines[i].product.taxes.length; j++) {
-                                //}
-                                //console.log(lines[i]);
+                            if (lines[i].product.taxes)
+                                for (j = 0; j < lines[i].product.taxes.length; j++) {
+                                    //}
+                                    //console.log(lines[i]);
 
-                                if (rates[lines[i].product.taxes[j].taxeId.toString()].isFixValue) //ecotax
-                                    lines[i].total_taxes[j].value = lines[i].qty * lines[i].product.taxes[j].value;
-                                else
-                                    lines[i].total_taxes[j].value = lines[i].total_ht * rates[lines[i].product.taxes[j].taxeId.toString()].rate / 100;
-                                //console.log(lines[i].total_taxes[0]);
-                            }
+                                    if (rates[lines[i].product.taxes[j].taxeId.toString()].isFixValue) //ecotax
+                                        lines[i].total_taxes[j].value = lines[i].qty * lines[i].product.taxes[j].value;
+                                    else
+                                        lines[i].total_taxes[j].value = lines[i].total_ht * rates[lines[i].product.taxes[j].taxeId.toString()].rate / 100;
+                                    //console.log(lines[i].total_taxes[0]);
+                                }
                         }
 
                         for (var k = 0; k < lines[i].total_taxes.length; k++) {

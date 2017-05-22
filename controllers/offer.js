@@ -229,7 +229,7 @@ Object.prototype = {
             if (!offer.entity)
                 offer.entity = self.user.entity;
 
-            //console.log(offer);
+            console.log(offer);
 
             offer.save(function(err, doc) {
                 if (err) {
@@ -821,11 +821,9 @@ Object.prototype = {
         delete self.body.updatedAt;
         delete self.body.ref;
         delete self.body.history;
-        self.body.author.id = self.user.id;
-        self.body.author.name = self.user.name;
+        self.body.createdBy = self.user.id;
+        self.body.editedBy = self.user.id;
         //delete self.body.notes;
-
-        self.body.contacts = _.pluck(self.body.contacts, '_id');
 
         var order = new OrderModel(self.body);
 
@@ -834,8 +832,11 @@ Object.prototype = {
                 return console.log(err);
 
             OfferModel.update({
-                _id: id
+                _id: id,
             }, {
+                $set: {
+                    Status: 'SIGNED'
+                },
                 $addToSet: {
                     orders: doc._id
                 }

@@ -131,6 +131,7 @@ var offerSchema = new Schema({
     billing: { type: Schema.Types.ObjectId, ref: 'Customers' },
     //costList: { type: ObjectId, ref: 'priceList', default: null }, //Not used
     //priceList: { type: ObjectId, ref: 'priceList', default: null },
+    orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }],
     address: {
         name: { type: String, default: '' },
         street: { type: String, default: '' },
@@ -304,7 +305,7 @@ exports.Status = {
             "label": "PropalStatusValidated",
             "cssClass": "ribbon-color-danger label-danger"
         },
-        "CLOSED": {
+        "SIGNED": {
             "enable": true,
             "label": "PropalStatusClosed",
             "cssClass": "ribbon-color-success label-success",
@@ -329,7 +330,7 @@ offerSchema.virtual('status')
         var status = this.Status;
         var statusList = exports.Status;
 
-        if (status && statusList && statusList.values[status].label) {
+        if (status && statusList.values[status] && statusList.values[status].label) {
             res_status.id = status;
             res_status.name = i18n.t("propal:" + statusList.values[status].label);
             //this.status.name = statusList.values[status].label;
