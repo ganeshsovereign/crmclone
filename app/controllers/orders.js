@@ -179,8 +179,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
 
         $scope.remove = function(object) {
-            var object = $scope.object;
-            object.$remove();
+            $scope.object.$remove();
             $rootScope.$state.go(current[0] + '.list');
         };
 
