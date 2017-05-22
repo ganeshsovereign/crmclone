@@ -448,7 +448,7 @@
     "Tel-Mobile": "Téléphone Mobile",
     "Tel-Fixe": "Téléphone Fixe",
     "Email": "Email",
-    "WithHttp": "entrer l'URL avec l'http ou l'https",
+    "WithHttp": "entrer l'URL avec Http ou Https",
     "AdressEmail": "Adresse email",
     "AdressEmailSetting": "Adresse email générale",
     "General": "général(e)",
@@ -479,5 +479,7 @@
     "PriceLevel": "Niveau de prix",
     "ConversionRate": "Taux de conversion",
     "ThisCompanyIsDeleted": "Attention cette société à été suprimée",
-    "Actif/Inactif": "Actif/Inactif"
+    "Actif/Inactif": "Actif/Inactif",
+    "GenericCustomer": "Client générique",
+    "BecomeGenericCustomer": "Si actif, ce compte devient un compte divers"
 }

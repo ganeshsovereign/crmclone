@@ -1,0 +1,23 @@
+<div class="row list-separated profile-stat ">
+    <div class=" col-md-6 col-sm-6 col-xs-6 ">
+        <div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{cartoucheModel.createdAt|date:'dd/MM/yyyy HH:mm'}} </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-6 ">
+        <div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{cartoucheModel.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+    </div>
+    <div>
+        <div class="col-md-6 col-sm-6 col-xs-6 ">
+            <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{cartoucheModel.createdBy.username}}</a> </div>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6 ">
+            <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{cartoucheModel.editedBy.username}}</a> </div>
+        </div>
+    </div>
+</div>
+
+<div class="row list-separated profile-stat ">
+    <div class="col-md-12 ">
+        <div class="uppercase profile-stat-text ">@(Logs)</div>
+        <div class="uppercase profile-stat-title "> {{cartoucheModel.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
+    </div>
+</div>

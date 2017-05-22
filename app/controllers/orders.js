@@ -209,9 +209,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
         $scope.clone = function() {
             $scope.object.$clone(function(response) {
-                $rootScope.$state.go('offer.show', {
-                    id: response._id
-                });
+                (
+                    $rootScope.$state.go(current[0] + '.show.detail'), {
+                        id: response._id
+                    });
             });
         };
 

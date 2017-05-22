@@ -202,9 +202,11 @@
                         </div>
                     </div>
                 </div>
-                <div>
-                    <h4 class="profile-desc-title">{{product.info.SKU}}</h4>
-                    <span class="profile-desc-text"> {{product.info.langs[0].name}} </span>
+                 <div class="row list-separated profile-stat ">
+                    <div class="col-md-12 ">
+                        <div class="uppercase profile-stat-text ">@(Logs)</div>
+                        <div class="uppercase profile-stat-title "> {{societe.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
+                    </div>
                 </div>
             </div>
         </div>
