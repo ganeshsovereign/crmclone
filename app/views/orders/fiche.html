@@ -99,7 +99,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/order/pdf/{{object.ref}}" target="_blank">
+                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
                     </a>
                 </li>
