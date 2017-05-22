@@ -142,20 +142,30 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             }
         }).success(function(data, status) {
             $scope.dict = data;
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/product/prices/priceslist',
+                params: { cost: false }
+            }).success(function(data) {
+                $scope.pricesLists = data.data;
+
+
+                $http({
+                    method: 'GET',
+                    url: '/erp/api/currencies'
+                }).success(function(data, status) {
+                    $scope.$dict.currency = data.data;
+                    //console.log(data);
+
+                    if (current[current.length - 1] == 'show')
+                        $scope.findOne();
+
+                    $scope.find();
+
+                });
+            });
         });
-
-        $http({
-            method: 'GET',
-            url: '/erp/api/currencies'
-        }).success(function(data, status) {
-            $scope.$dict.currency = data.data;
-            //console.log(data);
-        });
-
-        if (current[current.length - 1] == 'show')
-            $scope.findOne();
-
-        $scope.find();
     });
 
     $scope.findOne = function() {
