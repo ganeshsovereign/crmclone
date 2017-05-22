@@ -62,7 +62,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     if (current.length <= 2)
         return $rootScope.$state.go('settings.product.attributes');
 
-    $scope.createMod = true;
     $scope.edit = [];
 
     $scope.$dict = {
@@ -170,7 +169,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         }, function(object) {
             $scope.object = object;
             console.log(object);
-            $scope.createMod = false;
 
             if (object.opts) {
                 object.options = [];
@@ -183,7 +181,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     };
 
     $scope.find = function() {
-        $scope.createMod = true;
         Resource.query({}, function(data) {
             console.log(data);
             $scope.listObject = data.data;

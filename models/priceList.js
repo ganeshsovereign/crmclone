@@ -11,6 +11,8 @@ var priceListsSchema = new Schema({
     name: { type: 'String', default: null },
     currency: { type: String, ref: 'currency', default: null },
     cost: { type: Boolean, default: false }, //true if supplier price
+    isCoef: { type: Boolean, default: false }, //Price was calculated from a coefficient
+
     defaultPriceList: { type: Boolean }, //truue
     removable: { type: Boolean, default: true }
 });
