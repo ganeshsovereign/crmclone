@@ -26,6 +26,12 @@ International Registered Trademark & Property of ToManage SAS
 
 "use strict";
 
+var round = function(value, decimals) {
+    if (value > Math.pow(10, (decimals + 2) * -1) * -1 && value < Math.pow(10, (decimals + 2) * -1)) // Fix error little number
+        return 0;
+    return Number(Math.round(value + 'e' + (decimals)) + 'e-' + (decimals));
+};
+
 /* global angular: true */
 MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'Orders',
     function($scope, $rootScope, $http, $modal, $filter, $timeout, Orders) {
@@ -353,7 +359,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                         order.Status = "SHIPPING";
 
                     order.$update(function(response) {
-                        $rootScope.$state.go('delivery.show', {
+                        $rootScope.$state.go('delivery.show.detail', {
                             id: delivery._id
                         });
                     });
@@ -1163,7 +1169,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
     }
 ]);
 
-MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$http', '$modalInstance', 'object', function($scope, $rootScope, $http, $modalInstance, object) {
+MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$http', '$modalInstance', 'Orders', 'object', function($scope, $rootScope, $http, $modalInstance, Orders, object) {
 
     $scope.order = object.order;
 
@@ -1190,7 +1196,7 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
     }
 
     $scope.createDelivery = function() {
-        var delivery = new Deliveries(object.order);
+        var delivery = new Orders.delivery(object.order);
 
         delivery.order = delivery._id;
         delete delivery._id;
@@ -1198,13 +1204,12 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
         delete delivery.latex;
         delete delivery.datec;
         delete delivery.history;
-        delivery.datedl = delivery.date_livraison;
         //delete delivery.datel;
         delete delivery.createdAt;
         delete delivery.updatedAt;
         delete delivery.ref;
-        delivery.author.id = $rootScope.login._id;
-        delivery.author.name = $rootScope.login.name;
+        delivery.createdBy = $rootScope.login._id;
+        delivery.editedBy = $rootScope.login._id;
         //delete delivery.notes;
 
         delivery.contacts = _.pluck(delivery.contacts, '_id');
@@ -1212,10 +1217,6 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
         //console.log(delivery.bl);
 
         //Copy first address BL
-        delivery.name = delivery.bl[0].name;
-        delivery.address = delivery.bl[0].address;
-        delivery.zip = delivery.bl[0].zip;
-        delivery.town = delivery.bl[0].town;
 
         for (var i = 0; i < delivery.lines.length; i++) {
             delivery.lines[i].qty_order = delivery.lines[i].qty;

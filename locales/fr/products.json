@@ -242,6 +242,7 @@
     "CurrentProductPrice": "Prix actuel",
     "AlwaysUseNewPrice": "Toujours utiliser le prix du jour",
     "AlwaysUseFixedPrice": "Utiliser le prix fixé",
+    "FixedPrice": "Prix Fixe",
     "ProductList": "Liste des produits",
     "CardProductPRODUCT": "Fiche produit",
     "CardProductSERVICE": "Fiche service",
@@ -350,7 +351,7 @@
     "AddAttributesToFamily": "Ajouter l'attribut à la famille",
     "BecomeMaster": "Devenir maître",
     "RefProductSameFamily": "Ref. produit (meme famille)",
-    "GlobalDiscount": "Remise GLobale",
+    "GlobalDiscount": "Remise Globale",
     "IsCoef": "Par coef.",
     "IsGlobalDiscount": "Par Remise Globale",
     "BasePriceList": "Liste de prix référente"

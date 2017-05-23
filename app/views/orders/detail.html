@@ -20,7 +20,7 @@
                         <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillsCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
-                    <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+                    <save mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
 
                 </div>
                 <div class="portlet-body">
@@ -102,11 +102,20 @@
                                             <i class="fa fa-money"></i>
                                             <span class="caption-subject uppercase"> @(bills:BillAddress)</span>
                                         </div>
-                                        <div class="tools">
+                                        <div ng-if="!module('delivery')" class="tools">
                                             <a href="" class="collapse" data-original-title="" title=""> </a>
                                         </div>
+                                        <div ng-if="module('delivery')" class="tools">
+                                            <a href="" class="expand" data-original-title="" title=""> </a>
+                                        </div>
+
                                     </div>
-                                    <div class="portlet-body" style="display: block;">
+                                    <div ng-if="!module('delivery')" class="portlet-body" style="display: block;">
+                                        <div class="form-group form-md-line-input">
+                                            <address ng-model="object.address" ng-disabled="!editable"></address>
+                                        </div>
+                                    </div>
+                                    <div ng-if="module('delivery')" class="portlet-body" style="display: none;">
                                         <div class="form-group form-md-line-input">
                                             <address ng-model="object.address" ng-disabled="!editable"></address>
                                         </div>
@@ -121,11 +130,19 @@
                                             <i class="fa fa-truck"></i>
                                             <span class="caption-subject uppercase"> @(deliveries:DeliveryAddress)</span>
                                         </div>
-                                        <div class="tools">
+                                        <div ng-if="!module('delivery')" class="tools">
                                             <a href="" class="expand" data-original-title="" title=""> </a>
                                         </div>
+                                        <div ng-if="module('delivery')" class="tools">
+                                            <a href="" class="collapse" data-original-title="" title=""> </a>
+                                        </div>
                                     </div>
-                                    <div class="portlet-body" style="display: none;">
+                                    <div ng-if="!module('delivery')" class="portlet-body" style="display: none;">
+                                        <div class="form-group form-md-line-input">
+                                            <address ng-model="object.shippingAddress" ng-disabled="!editable"></address>
+                                        </div>
+                                    </div>
+                                    <div ng-if="module('delivery')" class="portlet-body" style="display: block;">
                                         <div class="form-group form-md-line-input">
                                             <address ng-model="object.shippingAddress" ng-disabled="!editable"></address>
                                         </div>
