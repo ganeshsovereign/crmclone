@@ -2361,20 +2361,19 @@ Object.prototype = {
         var SocieteModel = MODEL('Customers').Schema;
 
         var societe = new SocieteModel(self.body);
-        societe.author = {};
-        societe.author.id = self.user._id;
-        societe.author.name = self.user.name;
+        societe.createdBy = self.user._id;
+        societe.edtitedBy = self.user._id;
 
-        societe.addresses.push({
+        /*societe.addresses.push({
             name: societe.name,
             address: societe.address,
             zip: societe.zip,
             town: societe.town,
             Status: 'ENABLE'
-        });
+        });*/
 
-        if (!societe.entity)
-            societe.entity = self.user.entity;
+        if (!societe.entity.length)
+            societe.entity.push(self.user.entity);
 
         //console.log(societe);
         var oldData = {

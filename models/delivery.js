@@ -304,6 +304,12 @@ exports.Status = {
             "label": "DeliveryStatusCanceled",
             "cssClass": "ribbon-color-danger label-danger",
             "system": true
+        },
+        "VALIDATED": {
+            "enable": true,
+            "label": "DeliveryStatusValidated",
+            "cssClass": "ribbon-color-info label-info",
+            "system": true
         }
 
 
