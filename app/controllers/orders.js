@@ -171,10 +171,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         $scope.create = function() {
             var object = new Object(this.object);
             object.$save(function(response) {
-                (
-                    $rootScope.$state.go(current[0] + '.show.detail'), {
-                        id: response._id
-                    });
+                $rootScope.$state.go(current[0] + '.show.detail', {
+                    id: response._id
+                });
             });
         };
 
@@ -185,10 +184,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         $scope.clone = function() {
             $scope.object.$clone(function(response) {
-                (
-                    $rootScope.$state.go(current[0] + '.show.detail'), {
-                        id: response._id
-                    });
+                $rootScope.$state.go(current[0] + '.show.detail', {
+                    id: response._id
+                });
             });
         };
 

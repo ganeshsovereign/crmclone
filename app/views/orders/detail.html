@@ -21,9 +21,7 @@
                         <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
                     <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
-                    <div class="tools">
-                        <a href="" class="collapse" data-original-title="" title=""> </a>
-                    </div>
+
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
@@ -75,6 +73,7 @@
                                                 <input type="text" class="form-control" id="dateLivraison" date-input ng-model="object.date_livraison">
                                                 <label for="dateLivraison">@(DeliveryDate)</label>
                                             </div>
+
                                             <div class="form-group form-md-line-input">
                                                 <select class="form-control" id="cond_reglement_code" ng-model="object.cond_reglement_code" ng-options="s.id as s.label for s in dict.fk_payment_term.values">
                                                         </select>

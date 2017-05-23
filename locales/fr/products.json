@@ -348,5 +348,9 @@
     "MinNumber": "Nombre Min",
     "AddAttributesToFamily": "Ajouter l'attribut à la famille",
     "BecomeMaster": "Devenir maître",
-    "RefProductSameFamily": "Ref. produit (meme famille)"
+    "RefProductSameFamily": "Ref. produit (meme famille)",
+    "GlobalDiscount": "Remise GLobale",
+    "IsCoef": "Par coef.",
+    "IsGlobalDiscount": "Par Remise Globale",
+    "BasePriceList": "Liste de prix référente"
 }
