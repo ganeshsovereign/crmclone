@@ -43,6 +43,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             address: {},
             lines: []
         };
+
         $scope.dict = {};
         var iconsFilesList = {};
         $scope.types = [{
@@ -317,6 +318,47 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         $scope.changeStatus = function(Status) {
             $scope.object.Status = Status;
             $scope.update();
+        };
+
+        $scope.createDelivery = function() {
+
+            var modalInstance = $modal.open({
+                templateUrl: '/templates/_delivery/modal/create.html',
+                controller: "DeliveryCreateController",
+                resolve: {
+                    object: function() {
+                        return {
+                            order: $scope.object
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(delivery) {
+                //scope.contacts.push(contacts);
+                $scope.findOne(function(order) {
+                    order.deliveries.push(delivery._id);
+                    var partial = false;
+
+                    for (var i = 0; i < delivery.lines.length; i++) {
+                        //Refresh order quantities already sended
+                        order.lines[i].qty_deliv += delivery.lines[i].qty;
+                        if (order.lines[i].qty_deliv < order.lines[i].qty)
+                            partial = true;
+                    }
+
+                    if (partial == false) // CLOSE ORDER
+                        order.Status = "CLOSED";
+                    else // LEAVE IT OPENED
+                        order.Status = "SHIPPING";
+
+                    order.$update(function(response) {
+                        $rootScope.$state.go('delivery.show', {
+                            id: delivery._id
+                        });
+                    });
+                }, function() {});
+            });
         };
     }
 ]);
@@ -1120,3 +1162,78 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
     }
 ]);
+
+MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$http', '$modalInstance', 'object', function($scope, $rootScope, $http, $modalInstance, object) {
+
+    $scope.order = object.order;
+
+    for (var i = 0; i < $scope.order.lines.length; i++)
+        $scope.order.lines[i].qty_dl = $scope.order.lines[i].qty - $scope.order.lines[i].qty_deliv;
+
+    $scope.sum = function() {
+        $scope.total = 0;
+        $scope.weight = 0;
+        for (var i = 0; i < $scope.order.lines.length; i++) {
+            $scope.total += $scope.order.lines[i].qty_dl;
+            $scope.weight += $scope.order.lines[i].qty_dl * $scope.order.lines[i].weight;
+        }
+    };
+
+    function calculHT(line) {
+        if (line.qty) {
+            line.total_ht = round(line.qty * (line.pu_ht * (1 - (line.discount / 100))), 2);
+            line.total_tva = line.total_ht * line.tva_tx / 100;
+        } else {
+            line.total_ht = 0;
+            line.total_tva = 0;
+        }
+    }
+
+    $scope.createDelivery = function() {
+        var delivery = new Deliveries(object.order);
+
+        delivery.order = delivery._id;
+        delete delivery._id;
+        delete delivery.Status;
+        delete delivery.latex;
+        delete delivery.datec;
+        delete delivery.history;
+        delivery.datedl = delivery.date_livraison;
+        //delete delivery.datel;
+        delete delivery.createdAt;
+        delete delivery.updatedAt;
+        delete delivery.ref;
+        delivery.author.id = $rootScope.login._id;
+        delivery.author.name = $rootScope.login.name;
+        //delete delivery.notes;
+
+        delivery.contacts = _.pluck(delivery.contacts, '_id');
+
+        //console.log(delivery.bl);
+
+        //Copy first address BL
+        delivery.name = delivery.bl[0].name;
+        delivery.address = delivery.bl[0].address;
+        delivery.zip = delivery.bl[0].zip;
+        delivery.town = delivery.bl[0].town;
+
+        for (var i = 0; i < delivery.lines.length; i++) {
+            delivery.lines[i].qty_order = delivery.lines[i].qty;
+            delivery.lines[i].qty = delivery.lines[i].qty_dl;
+            calculHT(delivery.lines[i]);
+        }
+
+        //console.log(delivery);
+
+        delivery.$save(function(response) {
+            //console.log(response);
+            $modalInstance.close(response);
+        });
+    };
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+    };
+
+
+}]);

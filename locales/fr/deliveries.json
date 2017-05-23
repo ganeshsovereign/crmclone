@@ -19,6 +19,7 @@
     "ShippingCost": "Frais de transport",
     "QtyOrdered": "Qté cmdée",
     "QtyDelivered": "Qté livrée",
+    "QtyToDelivered": "Qté à livrer",
     "URLtracking": "URL de suivi",
     "SetDeliveryDate": "Définir la date de livraison",
     "ValidateDeliveryReceipt": "Valider le bon de livraison",
@@ -77,6 +78,5 @@
     "AmountSubcontractors": "Montant de la sous-traitance",
     "Period": "Période d'intervention",
     "Sended": "Classer expédié",
-    "Period": "Période d'intervention",
     "HelpConfirmQuantityDelivery": "La commande restera ouverte s'il s'agit d'une livraison partielle"
 }
