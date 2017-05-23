@@ -640,10 +640,11 @@ Object.prototype = {
 
         async.parallel({
             status: function(cb) {
-                Dict.dict({
-                    dictName: "fk_bill_status",
-                    object: true
-                }, cb);
+                /*Dict.dict({
+                     dictName: "fk_bill_status",
+                     object: true
+                 }, cb);*/
+                cb(null, MODEL('bill').Status);
             },
             datatable: function(cb) {
                 BillModel.dataTable(query, options, cb);

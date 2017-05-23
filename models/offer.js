@@ -298,23 +298,29 @@ exports.Status = {
         "NEW": {
             "enable": true,
             "label": "PropalStatusNew",
-            "cssClass": "ribbon-color-warning label-warning"
+            "cssClass": "ribbon-color-info label-info"
         },
         "VALIDATED": {
             "enable": true,
             "label": "PropalStatusValidated",
-            "cssClass": "ribbon-color-danger label-danger"
+            "cssClass": "ribbon-color-success label-success"
         },
         "SIGNED": {
             "enable": true,
             "label": "PropalStatusClosed",
-            "cssClass": "ribbon-color-success label-success",
+            "cssClass": "ribbon-color-danger label-danger",
+            "system": true
+        },
+        "NOTSIGNED": {
+            "enable": true,
+            "label": "PropalStatusNotSigned",
+            "cssClass": "ribbon-color-warning label-warning",
             "system": true
         },
         "CANCELED": {
             "enable": true,
             "label": "StatusOrderCanceled",
-            "cssClass": "ribbon-color-default label-default",
+            "cssClass": "ribbon-color-warning label-warning",
             "system": true
         }
     }

@@ -289,14 +289,68 @@ billSchema.methods.setNumber = function() {
         });
 };
 
-var statusList = {};
+/*var statusList = {};
 Dict.dict({ dictName: 'fk_bill_status', object: true }, function(err, doc) {
     if (err) {
         console.log(err);
         return;
     }
     statusList = doc;
-});
+});*/
+
+exports.Status = {
+    "_id": "fk_bill_status",
+    "lang": "bills",
+    "values": {
+        "DRAFT": {
+            "enable": true,
+            "label": "BillStatusDraft",
+            "cssClass": "ribbon-color-default label-default",
+            "system": true
+        },
+        "VALIDATED": {
+            "enable": true,
+            "label": "BillStatusValidated",
+            "cssClass": "ribbon-color-success label-success"
+        },
+        "NOT_PAID": {
+            "enable": true,
+            "label": "BillStatusNotPaid",
+            "cssClass": "ribbon-color-danger label-danger",
+            "system": true
+        },
+        "PAID": {
+            "enable": true,
+            "label": "BillShortStatusPaid",
+            "cssClass": "ribbon-color-success label-success",
+            "system": true
+        },
+        "PAID_PARTIALLY": {
+            "enable": true,
+            "label": "BillStatusClosedPaidPartially",
+            "cssClass": "ribbon-color-info label-info",
+            "system": true
+        },
+        "CANCELED": {
+            "enable": true,
+            "label": "BillStatusCanceled",
+            "cssClass": "ribbon-color-warning label-warning",
+            "system": true
+        },
+        "CONVERTED_TO_REDUC": {
+            "enable": true,
+            "label": "BillStatusConvertedToReduc",
+            "cssClass": "ribbon-color-success label-success",
+            "system": true
+        },
+        "PAID_BACK": {
+            "enable": true,
+            "label": "BillShortStatusPaid",
+            "cssClass": "ribbon-color-success label-success",
+            "system": true
+        }
+    }
+};
 
 billSchema.virtual('status')
     .get(function() {

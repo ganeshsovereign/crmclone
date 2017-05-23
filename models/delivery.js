@@ -269,20 +269,53 @@ deliverySchema.pre('save', function(next) {
 
 });
 
-var statusList = {};
+/*var statusList = {};
 Dict.dict({ dictName: 'fk_delivery_status', object: true }, function(err, doc) {
     if (err) {
         console.log(err);
         return;
     }
     statusList = doc;
-});
+});*/
+
+exports.Status = {
+    "_id": "fk_delivery_status",
+    "lang": "deliveries",
+    "values": {
+        "DRAFT": {
+            "enable": true,
+            "label": "DeliveryStatusDraft",
+            "cssClass": "ribbon-color-default label-default",
+            "system": true
+        },
+        "SEND": {
+            "enable": true,
+            "label": "DeliveryStatusSend",
+            "cssClass": "ribbon-color-danger label-danger"
+        },
+        "BILLED": {
+            "enable": true,
+            "label": "DeliveryStatusBilled",
+            "cssClass": "ribbon-color-primary label-primary",
+            "system": true
+        },
+        "CANCELED": {
+            "enable": true,
+            "label": "DeliveryStatusCanceled",
+            "cssClass": "ribbon-color-danger label-danger",
+            "system": true
+        }
+
+
+    }
+};
 
 deliverySchema.virtual('status')
     .get(function() {
         var res_status = {};
 
         var status = this.Status;
+        var statusList = exports.Status;
 
         if (status && statusList.values[status] && statusList.values[status].label) {
             //console.log(this);

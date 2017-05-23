@@ -339,13 +339,62 @@ orderSchema.pre('save', function(next) {
     });
 });
 
-var statusList = {};
+/*var statusList = {};
 Dict.dict({
     dictName: "fk_order_status",
     object: true
 }, function(err, docs) {
     statusList = docs;
-});
+});*/
+
+exports.Status = {
+    "_id": "fk_order_status",
+    "lang": "orders",
+    "values": {
+        "DRAFT": {
+            "enable": true,
+            "label": "StatusOrderDraft",
+            "cssClass": "ribbon-color-default label-default",
+            "system": true
+        },
+        "VALIDATED": {
+            "enable": true,
+            "label": "StatusOrderValidated",
+            "cssClass": "ribbon-color-warning label-warning"
+        },
+        "CANCELED": {
+            "enable": true,
+            "label": "StatusOrderCanceled",
+            "cssClass": "ribbon-color-danger label-danger",
+            "system": true
+        },
+        "PROCESSING": {
+            "enable": true,
+            "label": "StatusOrderProcessing",
+            "cssClass": "ribbon-color-info label-info"
+        },
+        "SHIPPING": {
+            "label": "StatusOrderSending",
+            "enable": true,
+            "cssClass": "ribbon-color-success label-success"
+        },
+        "CLOSED": {
+            "enable": true,
+            "label": "StatusOrderClosed",
+            "cssClass": "ribbon-color-success label-success",
+            "system": true
+        },
+        "ERROR": {
+            "label": "StatusOrderError",
+            "cssClass": "ribbon-color-danger label-danger",
+            "system": true
+        },
+        "BILLING": {
+            "label": "StatusOrderToBill",
+            "cssClass": "ribbon-color-default label-default"
+        }
+    }
+};
 
 /**
  * Methods
@@ -355,6 +404,7 @@ orderSchema.virtual('status')
         var res_status = {};
 
         var status = this.Status;
+        var statusList = exports.Status;
 
         if (status && statusList.values[status] && statusList.values[status].label) {
             res_status.id = status;

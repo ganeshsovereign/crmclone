@@ -368,17 +368,18 @@ Object.prototype = {
 
         async.parallel({
             status: function(cb) {
-                Dict.dict({
+                /*Dict.dict({
                     dictName: "fk_order_status",
                     object: true
-                }, cb);
+                }, cb);*/
+                cb(null, MODEL('order').Status);
             },
             datatable: function(cb) {
                 OrderModel.dataTable(query, options, cb);
             }
         }, function(err, res) {
             if (err)
-                return console.log(err);
+                console.log(err);
 
             SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
 

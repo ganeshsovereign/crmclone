@@ -289,10 +289,11 @@ Object.prototype = {
 
         async.parallel({
             status: function(cb) {
-                Dict.dict({
+                /*Dict.dict({
                     dictName: "fk_delivery_status",
                     object: true
-                }, cb);
+                }, cb);*/
+                cb(null, MODEL('delivery').Status);
             },
             datatable: function(cb) {
                 DeliveryModel.dataTable(query, options, cb);
