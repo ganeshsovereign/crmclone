@@ -27,6 +27,9 @@
                                             <th>@(Name)</th>
                                             <th>@(Currency)</th>
                                             <th>@(products:SupplierCost)</th>
+                                            <th>@(products:isCoef)</th>
+                                            <th>@(products:isGlobalDiscount)</th>
+                                            <th>@(Discount)</th>
                                             <th>@(NbOfCustomers)</th>
                                             <th>@(Action)</th>
                                         </tr>
@@ -36,7 +39,10 @@
                                             <td>{{line.priceListCode}}</td>
                                             <td>{{line.name}}</td>
                                             <td>{{line.currency}}</td>
-                                            <td><input type="checkbox" id="isActive" class="md-check has-success" ng-model="line.cost" disabled ng-checked="line.cost"></td>
+                                            <td><input type="checkbox" class="md-check has-success" ng-model="line.cost" disabled ng-checked="line.cost"></td>
+                                            <td><input type="checkbox" class="md-check has-success" ng-model="line.isCoef" disabled ng-checked="line.isCoef"></td>
+                                            <td><input type="checkbox" class="md-check has-success" ng-model="line.isGlobalDiscount" disabled ng-checked="line.isGlobalDiscount"></td>
+                                            <td>{{line.discount}} %</td>
                                             <td>{{line.countCustomers}}</td>
                                             <td>
                                                 <a class="btn green fa fa-pencil" ui-sref="settings.product.pricelists.show({id:line._id})" title="Editer"></a>

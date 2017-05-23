@@ -73,7 +73,8 @@ productPricesSchema.pre('save', function(next) {
 
                 //console.log(family);
                 //console.log(self);
-                var coef = product.sellFamily.isCoef;
+                //var coef = product.sellFamily.isCoef;
+                var coef = self.priceLists.isCoef;
 
                 if (self.priceLists.cost == true && self.isModified('prices')) {
                     product.directCost = self.prices[0].price;
@@ -218,8 +219,8 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
         if (err)
             return self.throw500("err : /api/product/autocomplete" + err);
 
-        if(!docs || !docs.length)
-            return callback(null,  { pu_ht: 0, discount: 0 });
+        if (!docs || !docs.length)
+            return callback(null, { pu_ht: 0, discount: 0 });
 
         Pricebreak.set(docs[0].prices);
 
@@ -243,11 +244,11 @@ F.on('load', function() {
             case 'product:updateDirectCost':
                 if (data.data._id)
                     exports.Schema.find({ 'product': data.data._id })
-                    .populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
+                    //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                     .populate("priceLists")
                     .exec(function(err, pricesList) {
                         pricesList.forEach(function(prices) {
-                            if (!prices.product.sellFamily.isCoef)
+                            if (!prices.priceLists.isCoef)
                                 return;
 
                             prices.save(function(err, doc) {

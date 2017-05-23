@@ -2441,7 +2441,10 @@ PricesList.prototype = {
                 currency: 1,
                 cost: 1,
                 defaultPriceList: 1,
-                removable: 1
+                removable: 1,
+                isCoef: 1,
+                discount: 1,
+                isGlobalDiscount: 1
             }
         }, {
             $group: {
@@ -2463,6 +2466,9 @@ PricesList.prototype = {
                     cost: '$root.cost',
                     defaultPriceList: '$root.defaultPriceList',
                     removable: '$root.removable',
+                    isGlobalDiscount: '$root.isGlobalDiscount',
+                    isCoef: '$root.isCoef',
+                    discount: '$root.discount',
                     countCustomers: '$root.countCustomers'
                 }
             }
@@ -2499,7 +2505,8 @@ PricesList.prototype = {
         var self = this;
         var PriceListModel = MODEL('priceList').Schema;
         var query = {
-            cost: false
+            cost: false,
+            isGlobalDiscount: false
         };
 
         if (self.query.cost && self.query.cost == 'true')
@@ -2536,10 +2543,24 @@ PricesList.prototype = {
         var PriceListModel = MODEL('priceList').Schema;
 
         PriceListModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
-            if (err)
-                return self.throw500("err : /api/product/prices/priceslist " + err);
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
 
-            return self.json(doc);
+
+            //console.log(doc);
+            doc = doc.toObject();
+            doc.successNotify = {
+                title: "Success",
+                message: "Configuration enregistree"
+            };
+            self.json(doc);
         });
     },
     create: function() {
@@ -3260,9 +3281,23 @@ ProductTypes.prototype = {
         var currentOptions;
 
         ProductTypesModel.findByIdAndUpdate(id, body, { new: true }, function(err, doc) {
-            if (err)
-                return self.throw500(err);
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
 
+
+            //console.log(doc);
+            doc = doc.toObject();
+            doc.successNotify = {
+                title: "Success",
+                message: "Configuration enregistree"
+            };
             self.json(doc);
         });
     },
@@ -3513,27 +3548,7 @@ ProductFamily.prototype = {
         var body = self.body;
         var _id = id;
         var currentOptions;
-
-        if (!body.options)
-            return ProductFamilyModel.findByIdAndUpdate(_id, body, { new: true }, function(err, doc) {
-                if (err) {
-                    console.log(err);
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
-                        }
-                    });
-                }
-
-                //console.log(doc);
-                doc = doc.toObject();
-                doc.successNotify = {
-                    title: "Success",
-                    message: "Configuration enregistree"
-                };
-                self.json(doc);
-            });
+        //console.log(body);
 
         function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, callback) {
             var deletedOptions;
@@ -3676,9 +3691,20 @@ ProductFamily.prototype = {
             });
         }
 
-        ProductFamilyModel.findOne({ _id: _id }, function(err, result) {
-            if (err)
-                return self.throw500(err);
+        let data = _.clone(body);
+        delete data.options;
+        delete data.variants;
+
+        ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, result) {
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
 
             currentOptions = {
                 options: result.options,
@@ -3695,6 +3721,7 @@ ProductFamily.prototype = {
                         }
                     });
                 }
+
 
                 //console.log(doc);
                 //doc = doc.toObject();

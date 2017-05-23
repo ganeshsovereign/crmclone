@@ -62,7 +62,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     if (current.length <= 2)
         return $rootScope.$state.go('settings.product.attributes');
 
-    $scope.createMod = true;
     $scope.edit = [];
 
     $scope.$dict = {
@@ -143,20 +142,30 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             }
         }).success(function(data, status) {
             $scope.dict = data;
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/product/prices/priceslist',
+                params: { cost: false }
+            }).success(function(data) {
+                $scope.pricesLists = data.data;
+
+
+                $http({
+                    method: 'GET',
+                    url: '/erp/api/currencies'
+                }).success(function(data, status) {
+                    $scope.$dict.currency = data.data;
+                    //console.log(data);
+
+                    if (current[current.length - 1] == 'show')
+                        $scope.findOne();
+
+                    $scope.find();
+
+                });
+            });
         });
-
-        $http({
-            method: 'GET',
-            url: '/erp/api/currencies'
-        }).success(function(data, status) {
-            $scope.$dict.currency = data.data;
-            //console.log(data);
-        });
-
-        if (current[current.length - 1] == 'show')
-            $scope.findOne();
-
-        $scope.find();
     });
 
     $scope.findOne = function() {
@@ -170,7 +179,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         }, function(object) {
             $scope.object = object;
             console.log(object);
-            $scope.createMod = false;
 
             if (object.opts) {
                 object.options = [];
@@ -183,7 +191,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     };
 
     $scope.find = function() {
-        $scope.createMod = true;
         Resource.query({}, function(data) {
             console.log(data);
             $scope.listObject = data.data;

@@ -7,7 +7,7 @@
                         <i class="icon-magic-wand"></i>
                         <span class="caption-subject dark bold uppercase"> @(products:FamilyProducts)</span>
                     </div>
-                    <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+                    <save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
@@ -44,7 +44,7 @@
                                 <span class="box"></span> @(Activated)</label>
                                         </div>
                                     </div>
-                                    <div class="md-checkbox-inline">
+                                    <!--<div class="md-checkbox-inline">
                                         <div class="md-checkbox">
                                             <input type="checkbox" id="isCoef" class="md-check" ng-model="object.isCoef" ng-checked="object.isCoef">
                                             <label for="isCoef">
@@ -52,7 +52,7 @@
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:SellByCoef)</label>
                                         </div>
-                                    </div>
+                                    </div>-->
                                     <div class="md-checkbox-inline">
                                         <div class="md-checkbox">
                                             <input type="checkbox" id="isCost" class="md-check" ng-model="object.isCost" ng-checked="object.isCost">

@@ -7,12 +7,12 @@
                         <i class="icon-magic-wand"></i>
                         <span class="caption-subject dark bold uppercase"> @(products:NewProductType)</span>
                     </div>
-                    <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+                    <save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
                         <div class="row">
-                            <div class=" col-md-12">
+                            <div class="col-md-8">
 
                                 <div class="form-group form-md-line-input">
                                     <input type="number" min="1" class="form-control" id="form_control_1" ng-model="object.sequence">
@@ -24,6 +24,28 @@
                                     <label for="form_control_1">@(Name)</label>
                                 </div>
 
+                            </div>
+                            <div class="col-md-4">
+                                <div class="portlet light">
+                                    <div class="md-checkbox-inline">
+                                        <div class="md-checkbox has-success">
+                                            <input type="checkbox" id="isActive" class="md-check" ng-model="object.isActive" ng-checked="object.isActive">
+                                            <label for="isActive">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(Activated)</label>
+                                        </div>
+                                    </div>
+                                    <div class="md-checkbox-inline">
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" id="isInventory" class="md-check" ng-model="object.inventory" ng-checked="object.isCoef">
+                                            <label for="isInventory">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(products:Inventory)</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
