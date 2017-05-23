@@ -44,12 +44,12 @@ var orderSchema = new Schema({
         type: String,
         default: 'RECEP'
     },
-    paymentTerm: { type: ObjectId, ref: 'PaymentTerm', default: null }, //NOT used
+    paymentTerm: { type: ObjectId, ref: 'PaymentTerm' }, //NOT used
     mode_reglement_code: {
         type: String,
         default: 'TIP'
     },
-    paymentMethod: { type: ObjectId, ref: 'PaymentMethod', default: null }, //NOT used
+    paymentMethod: { type: ObjectId, ref: 'PaymentMethod' }, //NOT used
 
     //bank_reglement: {type: String},
     //availability_code: {type: String, default: 'AV_NOW'},
@@ -60,6 +60,7 @@ var orderSchema = new Schema({
     supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
     contacts: [{ type: Schema.Types.ObjectId, ref: 'Customers' }],
     ref_client: { type: String, default: "" },
+    deliveries: [{ type: ObjectId, ref: 'delivery' }],
     datec: {
         type: Date,
         default: Date.now,
@@ -121,10 +122,10 @@ var orderSchema = new Schema({
             default: 0
         }*/
     },
-    createdBy: { type: ObjectId, ref: 'Users', default: null },
-    editedBy: { type: ObjectId, ref: 'Users', default: null },
-    salesPerson: { type: ObjectId, ref: 'Employees', default: null }, //commercial_id
-    salesTeam: { type: ObjectId, ref: 'Department', default: null },
+    createdBy: { type: ObjectId, ref: 'Users' },
+    editedBy: { type: ObjectId, ref: 'Users' },
+    salesPerson: { type: ObjectId, ref: 'Employees' }, //commercial_id
+    salesTeam: { type: ObjectId, ref: 'Department' },
     entity: String,
     offer: { type: Schema.Types.ObjectId, ref: 'offer' },
     optional: Schema.Types.Mixed,

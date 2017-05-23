@@ -145,15 +145,15 @@ var EmployeeSchema = new Schema({
 
     skype: { type: String, default: '' },
     officeLocation: { type: String, default: '' },
-    relatedUser: { type: ObjectId, ref: 'Users', default: null, sparse: true },
+    relatedUser: { type: ObjectId, ref: 'Users', sparse: true },
     visibility: { type: String, default: 'Public' },
-    department: { type: ObjectId, ref: 'Department', default: null },
-    jobPosition: { type: ObjectId, ref: 'JobPosition', default: null },
-    weeklyScheduler: { type: ObjectId, ref: 'weeklyScheduler', default: null },
-    payrollStructureType: { type: ObjectId, ref: 'payrollStructureTypes', default: null },
-    scheduledPay: { type: ObjectId, ref: 'scheduledPay', default: null },
-    manager: { type: ObjectId, ref: 'Employees', default: null },
-    coach: { type: ObjectId, ref: 'Employees', default: null },
+    department: { type: ObjectId, ref: 'Department' },
+    jobPosition: { type: ObjectId, ref: 'JobPosition' },
+    weeklyScheduler: { type: ObjectId, ref: 'weeklyScheduler' },
+    payrollStructureType: { type: ObjectId, ref: 'payrollStructureTypes' },
+    scheduledPay: { type: ObjectId, ref: 'scheduledPay' },
+    manager: { type: ObjectId, ref: 'Employees' },
+    coach: { type: ObjectId, ref: 'Employees' },
     nationality: { type: String, default: 'FR' },
     socialSecurityNumber: { type: String, default: '' },
     identNo: String,
@@ -179,13 +179,13 @@ var EmployeeSchema = new Schema({
     nextAction: Date,
     source: { type: String, default: '' },
     referredBy: { type: String, default: '' },
-    workflow: { type: ObjectId, ref: 'workflows', default: null },
+    workflow: { type: ObjectId, ref: 'workflows' },
     whoCanRW: { type: String, enum: ['owner', 'group', 'everyOne'], default: 'everyOne' },
 
     groups: {
-        owner: { type: ObjectId, ref: 'Users', default: null },
-        users: [{ type: ObjectId, ref: 'Users', default: null }],
-        group: [{ type: ObjectId, ref: 'Department', default: null }]
+        owner: { type: ObjectId, ref: 'Users' },
+        users: [{ type: ObjectId, ref: 'Users' }],
+        group: [{ type: ObjectId, ref: 'Department' }]
     },
 
     otherInfo: { type: String, default: '' },
@@ -194,9 +194,9 @@ var EmployeeSchema = new Schema({
     color: { type: String, default: '#4d5a75' },
     creationDate: { type: Date, default: Date.now },
 
-    createdBy: { type: ObjectId, ref: 'Users', default: null },
+    createdBy: { type: ObjectId, ref: 'Users' },
 
-    editedBy: { type: ObjectId, ref: 'Users', default: null },
+    editedBy: { type: ObjectId, ref: 'Users' },
 
     attachments: { type: Array, default: [] },
     notes: { type: Array, default: [] },

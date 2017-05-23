@@ -5,7 +5,7 @@
             <span class="caption-subject dark bold uppercase"> @(Pictures/Documents)</span>
             <span class="caption-helper"> - @(companies:CardCompany)</span>
         </div>
-        <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+        <save ng-disabled="!editable" mode="societe._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
     </div>
     <div class="portlet-body">
         <div ng-include="'/templates/gridfs/file.html'" ng-controller="FileCtrl" onload="init('Customers', societe)"></div>
