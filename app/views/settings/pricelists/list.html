@@ -26,6 +26,7 @@
                                             <th>@(Code)</th>
                                             <th>@(Name)</th>
                                             <th>@(Currency)</th>
+                                            <th>@(Default)</th>
                                             <th>@(products:SupplierCost)</th>
                                             <th>@(products:isCoef)</th>
                                             <th>@(products:isGlobalDiscount)</th>
@@ -39,6 +40,7 @@
                                             <td>{{line.priceListCode}}</td>
                                             <td>{{line.name}}</td>
                                             <td>{{line.currency}}</td>
+                                            <td><input type="checkbox" class="md-check has-success" ng-model="line.defaultPriceList" disabled ng-checked="line.defaultPriceList"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.cost" disabled ng-checked="line.cost"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.isCoef" disabled ng-checked="line.isCoef"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.isGlobalDiscount" disabled ng-checked="line.isGlobalDiscount"></td>

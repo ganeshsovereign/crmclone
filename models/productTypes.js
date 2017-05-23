@@ -16,6 +16,7 @@ var productTypesSchema = new Schema({
     //options: [{ type: Schema.Types.ObjectId, ref: 'productOptions' }], //variants
     //attributes: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }],
     inventory: { type: Boolean, default: true },
+    isService: { type: Boolean, default: false }, //Product or Service
 
     createdAt: { type: Date, default: Date.now },
     isActive: { type: Boolean, default: true },
