@@ -112,8 +112,7 @@ function Order(id, cb) {
         .populate("createdBy", "username")
         .populate("editedBy", "username")
         .populate("offer", "ref total_ht")
-
-    .exec(cb);
+        .exec(cb);
 }
 
 Object.prototype = {
@@ -427,12 +426,103 @@ Object.prototype = {
      */
     show: function(id) {
         var self = this;
-        Order(id, function(err, order) {
-            if (err)
-                console.log(err);
+        var OrderModel = MODEL('order').Schema;
+        var ObjectId = MODULE('utils').ObjectId;
 
-            self.json(order);
-        });
+        async.parallel({
+                order: function(pCb) {
+                    Order(id, pCb);
+                },
+                deliveries: function(pCb) {
+                    OrderModel.aggregate([{
+                        $match: { _id: ObjectId(id) }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            ref: 1,
+                            lines: 1
+                        }
+                    }, {
+                        $unwind: '$lines'
+                    }, {
+                        $group: {
+                            _id: "$lines.product",
+                            orderQty: { $sum: "$lines.qty" },
+                            order: { "$first": "$_id" }
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'Delivery',
+                            localField: 'order',
+                            foreignField: 'order',
+                            as: 'deliveries'
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$deliveries',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            orderQty: 1,
+                            order: 1,
+                            'deliveries.ref': 1,
+                            'deliveries._id': 1,
+                            'deliveries.lines': {
+                                $filter: {
+                                    input: "$deliveries.lines",
+                                    as: "line",
+                                    cond: { $eq: ["$$line.product", "$_id"] }
+                                }
+                            }
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$deliveries.lines',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    }, {
+                        $group: {
+                            _id: "$_id",
+                            orderQty: { $first: "$orderQty" },
+                            deliveryQty: { $sum: "$deliveries.lines.qty" },
+                            deliveries: { $addToSet: { _id: "$deliveries._id", ref: "$deliveries.ref", qty: "$deliveries.lines.qty" } }
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'Product',
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'product'
+                        }
+                    }, {
+                        $unwind: '$product'
+                    }, {
+                        $project: {
+                            _id: 1,
+                            deliveryQty: 1,
+                            orderQty: 1,
+                            deliveries: 1,
+                            'product._id': 1,
+                            'product.info.SKU': 1
+                        }
+                    }, {
+                        $sort: {
+                            'product.info.SKU': 1
+                        }
+                    }], pCb);
+                }
+            },
+            function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                result.order = result.order.toObject();
+                result.order.deliveries = result.deliveries;
+
+                self.json(result.order);
+            });
     },
     /**
      * List of orders
