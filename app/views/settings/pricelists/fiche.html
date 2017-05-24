@@ -42,30 +42,48 @@
                             <div class="col-md-4">
                                 <div class="portlet light">
                                     <div class="md-checkbox-inline">
-                                        <div class="md-checkbox has-success">
-                                            <input type="checkbox" ng-disabled="object.isCoef || object.isGlobalDiscount" id="isCost" class="md-check" ng-model="object.cost" ng-checked="object.cost">
-                                            <label for="isCost">
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" ng-disabled="object.isCoef|| object.cost || object.isGlobalDiscount" id="isFixed" class="md-check" ng-model="object.isFixed" ng-checked="object.isFixed">
+                                            <label for="isFixed">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(products:FixedPrices)</label>
+                                        </div>
+                                        <div class="md-checkbox-inline">
+                                            <div class="md-checkbox has-warning">
+                                                <input type="checkbox" ng-disabled="object.isFixed || object.isCoef || object.isGlobalDiscount" id="isCost" class="md-check" ng-model="object.cost" ng-checked="object.cost">
+                                                <label for="isCost">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:SupplierCost)</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="md-checkbox-inline">
-                                        <div class="md-checkbox">
-                                            <input type="checkbox" ng-disabled="object.cost || object.isGlobalDiscount" id="isCoef" class="md-check" ng-model="object.isCoef" ng-checked="object.isCoef">
-                                            <label for="isCoef">
+                                        <div class="md-checkbox-inline">
+                                            <div class="md-checkbox">
+                                                <input type="checkbox" ng-disabled="object.isFixed || object.cost || object.isGlobalDiscount" id="isCoef" class="md-check" ng-model="object.isCoef" ng-checked="object.isCoef">
+                                                <label for="isCoef">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:SellByCoef)</label>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="md-checkbox-inline">
-                                        <div class="md-checkbox">
-                                            <input type="checkbox" ng-disabled="object.cost || object.isCoef" id="isGlobalDiscount" class="md-check" ng-model="object.isGlobalDiscount" ng-checked="object.isGlobalDiscount">
-                                            <label for="isGlobalDiscount">
+                                        <div class="md-checkbox-inline">
+                                            <div class="md-checkbox">
+                                                <input type="checkbox" ng-disabled="object.isFixed || object.cost || object.isCoef" id="isGlobalDiscount" class="md-check" ng-model="object.isGlobalDiscount" ng-checked="object.isGlobalDiscount">
+                                                <label for="isGlobalDiscount">
                                 <span></span>
                                 <span class="check"></span>
                                 <span class="box"></span> @(products:GlobalDiscount)</label>
+                                            </div>
+                                        </div>
+                                        <div class="md-checkbox-inline">
+                                            <div class="md-checkbox">
+                                                <input type="checkbox" id="defaultPriceList" ng-disabled="true" class="md-check" ng-model="object.defaultPriceList" ng-checked="object.defaultPriceList">
+                                                <label for="defaultPriceList">
+                                <span></span>
+                                <span class="check"></span>
+                                <span class="box"></span> @(Default)</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -76,4 +94,3 @@
             </div>
         </div>
     </div>
-</div>

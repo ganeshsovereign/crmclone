@@ -12,6 +12,8 @@ var priceListsSchema = new Schema({
     currency: { type: String, ref: 'currency' },
     cost: { type: Boolean, default: false }, //true if supplier price
     isCoef: { type: Boolean, default: false }, //Price was calculated from a coefficient
+    isFixed: { type: Boolean, default: false }, //Special customer price
+
 
     isGlobalDiscount: { type: Boolean, default: false }, // PriceList is discount from an other
     discount: { type: Number, default: 0 }, //Global discount need a parent priceList
