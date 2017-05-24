@@ -227,7 +227,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             });
         };
 
-        $scope.findOne = function() {
+        $scope.findOne = function(callback) {
             if (!$rootScope.$stateParams.id) {
                 $scope.editable = true;
                 return;
@@ -246,6 +246,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.editable = true;
                 else
                     $scope.editable = false;
+
+                if (callback)
+                    callback(object);
             }, function(err) {
                 if (err.status === 401)
                     $location.path("401.html");
@@ -329,7 +332,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         $scope.createDelivery = function() {
 
             var modalInstance = $modal.open({
-                templateUrl: '/templates/_delivery/modal/create.html',
+                templateUrl: '/templates/delivery/modal/create.html',
                 controller: "DeliveryCreateController",
                 resolve: {
                     object: function() {
@@ -1181,7 +1184,7 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
         $scope.weight = 0;
         for (var i = 0; i < $scope.order.lines.length; i++) {
             $scope.total += $scope.order.lines[i].qty_dl;
-            $scope.weight += $scope.order.lines[i].qty_dl * $scope.order.lines[i].weight;
+            $scope.weight += $scope.order.lines[i].qty_dl * $scope.order.lines[i].product.weight;
         }
     };
 

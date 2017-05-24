@@ -106,7 +106,6 @@ var billSchema = new Schema({
     entity: { type: String },
     modelpdf: String,
     orders: [{ type: Schema.Types.ObjectId, ref: 'order' }],
-    deliveries: [{ type: Schema.Types.ObjectId, ref: 'delivery' }],
     groups: [Schema.Types.Mixed],
     weight: { type: Number, default: 0 }, // Poids total
     lines: [{

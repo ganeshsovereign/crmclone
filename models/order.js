@@ -60,7 +60,7 @@ var orderSchema = new Schema({
     supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
     contacts: [{ type: Schema.Types.ObjectId, ref: 'Customers' }],
     ref_client: { type: String, default: "" },
-    deliveries: [{ type: ObjectId, ref: 'delivery' }],
+    offer: { type: ObjectId, ref: 'offer' },
     datec: {
         type: Date,
         default: Date.now,

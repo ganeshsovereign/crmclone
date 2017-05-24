@@ -1,0 +1,47 @@
+<div class="modal-header">
+    <h3 class="modal-title">@(deliveries:NewDelivery)</h3>
+</div>
+<div class="modal-body">
+    <form ng-init="sum()" role="form">
+
+        <div class="form-group">
+            <label>@(orders:CustomerOrder) {{order.ref}} ({{order.ref_client}})</label>
+            <span class="help-block">@(deliveries:HelpConfirmQuantityDelivery)</span>
+
+
+            <div class="table-scrollable">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>@(products:ProductCode)</th>
+                            <th>@(Ref)</th>
+                            <th>@(deliveries:QtyOrdered)</th>
+                            <th>@(deliveries:QtyToDelivered)</th>
+                            <th>@(products:Weight)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="line in order.lines">
+                            <td> {{line.product.info.SKU }} {{line}}</td>
+                            <td> {{line.product.info.langs[0].name}} </td>
+                            <td> {{line.qty}} <span class="help-block" ng-if="line.qty_deliv">(livre : {{line.qty_deliv}})</span></td>
+                            <td> <input type="number" min="0" max="line.weight - line.qty_deliv" step="any" ng-model="line.qty_dl" ng-change="sum()" class="form-control" autocomplete="off"> </td>
+                            <td> {{line.qty_dl * line.product.weight | number:2}} kg</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4"> @(products:TotalWeightToBeDelivered)</td>
+                            <td>{{weight | number:2}} kg</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+</div>
+</form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-disabled="!total" ng-click="createDelivery()">@(Create)</button>
+    <button class="btn btn" type="button" ng-click="cancel()">@(Cancel)</button>
+</div>

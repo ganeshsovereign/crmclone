@@ -111,7 +111,9 @@ function Order(id, cb) {
         })
         .populate("createdBy", "username")
         .populate("editedBy", "username")
-        .exec(cb);
+        .populate("offer", "ref total_ht")
+
+    .exec(cb);
 }
 
 Object.prototype = {
