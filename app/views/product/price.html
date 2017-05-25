@@ -128,16 +128,16 @@
                                     <div class="portlet light bordered" ng-if="product._id" ng-init="init(product._id)" ng-controller="ProductPriceListController">
                                         <script type="text/ng-template" id="newModalPrice.html">
                                             <div class="modal-header">
-                                                <h3 class="no-margin-bottom">Nouveau prix</h3>
+                                                <h3 class="no-margin-bottom">@(products:NewPrice)</h3>
                                             </div>
                                             <div class="modal-body">
 
                                                 <p class="button-height inline-medium-label">
-                                                    <label for="price_list">Grille de tarifs</label>
+                                                    <label for="price_list">@(products:GridPrice)</label>
                                                     <select class="table-group-action-input form-control" ng-model="price.priceLists" ng-options="p as p.name for p in pricesLists"></select>
                                                 </p>
                                                 <p ng-show="price.priceLists.isFixed" class="button-height inline-medium-label">
-                                                    <label for="price">Tarif HT</label>
+                                                    <label for="price">@(products:RateHT)</label>
                                                     <input type="number" min="0" step="any" id="price" data-ng-model="price.prices[0].price" class="input">
                                                 </p>
                                                 <p ng-show="price.priceLists.isCoef" class="button-height inline-medium-label">
@@ -154,7 +154,7 @@
                                         <div class="portlet-title">
                                             <div class="caption caption-md">
                                                 <i class="fa fa-list font-grey-gallery"></i>
-                                                <span class="caption-subject font-grey-gallery bold uppercase">Liste des prix</span>
+                                                <span class="caption-subject font-grey-gallery bold uppercase">@(products:PriceLists)</span>
                                             </div>
                                             <div class="actions">
                                                 <a class="btn blue" ng-click="addNewPrice()" href="javascript:;">
@@ -175,15 +175,15 @@
                                                             <th width="2%">
                                                                 <input type="checkbox" class="group-checkable" />
                                                             </th>
-                                                            <th>@(Liste de prix)</th>
+                                                            <th>@(products:PriceLists)</th>
                                                             <th>@(Coef.) @(Qty)</th>
                                                             <th>@(Coef. total)</th>
                                                             <!--<th>@(products:Promo)</th>-->
-                                                            <th>Prix de revient</th>
+                                                            <th>@(products:CostPrice)</th>
                                                             <th>@(products:SellingPriceHT)</th>
                                                             <th>@(products:SellingPriceTTC)</th>
                                                             <th>@(products:Margin) HT</th>
-                                                            <th>Date MAJ</th>
+                                                            <th>@(UpdateDate)</th>
                                                             <th>@(Action)</th>
                                                         </tr>
                                                     </thead>

@@ -117,7 +117,7 @@ function Delivery(id, cb) {
         .populate({
             path: "total_taxes.taxeId"
         })
-        .populate("order", "lines total_ht")
+        .populate("order", "ref lines total_ht")
         .exec(cb);
 }
 

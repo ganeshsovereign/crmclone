@@ -27,11 +27,6 @@
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
-                <!--   <li>
-                    <a href="#" ng-click="clone()">
-                        <i class="fa fa-copy"></i> @(PrintPDF)
-                    </a>
-                </li> -->
                 <li>
                     <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
@@ -66,17 +61,11 @@
 
 <div class="row">
     <div class="col-md-12 col-sm-12">
-        <!-- BEGIN PROFILE SIDEBAR -->
         <div class="profile-sidebar">
-            <!-- PORTLET MAIN -->
             <div class="portlet light profile-sidebar-portlet">
-
-                <!-- SIDEBAR USERPIC -->
                 <div class="profile-userpic">
                     <img ng-src="{{getImage('employee', employee.imageSrc)}}" class="img-responsive" alt="Product" />
                 </div>
-                <!-- END SIDEBAR USERPIC -->
-                <!-- SIDEBAR USER TITLE -->
                 <div class="profile-usertitle">
                     <div class="profile-usertitle-name"> {{employee.name.first}} {{employee.name.last}}</div>
                 </div>
@@ -102,27 +91,28 @@
 
                     </ul>
                 </div>
-                <!-- END MENU -->
             </div>
-            <!-- END PORTLET MAIN -->
-            <!-- PORTLET MAIN -->
             <div class="portlet light">
-                <!-- STAT -->
-                <div class="row list-separated profile-stat">
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-text"> @(users:CreatedAt)</div>
-                        <div class="uppercase profile-stat-title"> {{employee.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
-
+                <div class="row list-separated profile-stat ">
+                    <div class=" col-md-6 col-sm-6 col-xs-6 ">
+                        <div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{employee.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
                     </div>
-                    <div class="col-md-6 col-sm-6 col-xs-6">
-                        <div class="uppercase profile-stat-text"> @(users:CreatedBy) </div>
-                        <div class="uppercase profile-stat-title"> {{employee.createdBy}} </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 ">
+                        <div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{employee.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                    </div>
 
+                    <div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{employee.createdBy.username}}</a> </div>
+                            <!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{employee.editedBy.username}}</a> </div>
+                            <!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
+                        </div>
                     </div>
                 </div>
-                <!-- END STAT -->
             </div>
-            <!-- END PORTLET MAIN -->
         </div>
 
         <div ui-view class="profile-content fade-in-up"></div>

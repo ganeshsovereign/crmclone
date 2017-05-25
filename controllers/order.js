@@ -505,7 +505,8 @@ Object.prototype = {
                             orderQty: 1,
                             deliveries: 1,
                             'product._id': 1,
-                            'product.info.SKU': 1
+                            'product.info.SKU': 1,
+                            'product.weight': 1
                         }
                     }, {
                         $sort: {
