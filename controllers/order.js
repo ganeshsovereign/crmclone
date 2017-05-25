@@ -345,7 +345,7 @@ Object.prototype = {
         var query = JSON.parse(self.body.query);
 
         var conditions = {
-            Status: { $ne: "CLOSED" },
+            // Status: { $ne: "CLOSED" },
             isremoved: { $ne: true }
         };
 

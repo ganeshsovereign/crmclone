@@ -14,18 +14,18 @@
                     <thead>
                         <tr>
                             <th>@(products:ProductCode)</th>
-                            <th>@(Ref)</th>
                             <th>@(deliveries:QtyOrdered)</th>
+                            <th>@(deliveries:QtyDelivered)</th>
                             <th>@(deliveries:QtyToDelivered)</th>
                             <th>@(products:Weight)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="line in order.lines">
-                            <td> {{line.product.info.SKU }} {{line}}</td>
-                            <td> {{line.product.info.langs[0].name}} </td>
-                            <td> {{line.qty}} <span class="help-block" ng-if="line.qty_deliv">(livre : {{line.qty_deliv}})</span></td>
-                            <td> <input type="number" min="0" max="line.weight - line.qty_deliv" step="any" ng-model="line.qty_dl" ng-change="sum()" class="form-control" autocomplete="off"> </td>
+                        <tr ng-repeat="line in order.deliveries">
+                            <td> {{line.product.info.SKU }}</td>
+                            <td> {{line.orderQty}} <span class="help-block" ng-if="line.qty_deliv">(livre : {{line.qty_deliv}})</span></td>
+                            <td> {{line.deliveryQty}}</td>
+                            <td> <input type="number" min="{{-1*line.orderQty}}" max="{{line.orderQty - line.deliveryQty}}" step="any" ng-model="line.qty_dl" ng-change="sum()" class="form-control" autocomplete="off"> </td>
                             <td> {{line.qty_dl * line.product.weight | number:2}} kg</td>
                         </tr>
                     </tbody>
