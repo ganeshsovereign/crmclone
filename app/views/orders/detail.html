@@ -256,7 +256,8 @@
                                             <td></td>
                                         </tr>
                                         <tr ng-repeat="delivery in line.deliveries">
-                                            <td class="text-right">{{delivery.ref}} </td>
+                                            <td class="text-right">
+                                                <a ui-sref="delivery.show({id:delivery._id})">{{delivery.ref}}</a> </td>
                                             <td></td>
                                             <td> </td>
                                             <td class="text-center">{{delivery.qty}}</td>
