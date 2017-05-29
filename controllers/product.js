@@ -766,6 +766,7 @@ function Product(id, cb) {
     ProductModel.findOne(query)
         .populate("suppliers.societe", "_id name")
         .populate("pack.id", "info directCost indirectCost")
+        .populate("bundles.id", "info directCost indirectCost")
         .populate({
             path: 'info.productType'
                 //    populate: { path: "options" }
@@ -862,8 +863,13 @@ Object.prototype = {
             query.caFamily = self.body.family;
 
         if (self.body.options) {
+            var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+
             let options = _.mapValues(self.body.options, function(elem) {
-                return ObjectId(elem);
+                if (checkForHexRegExp.test(id))
+                    return ObjectId(elem);
+
+                return elem;
             });
             query = _.extend(query, options);
         }

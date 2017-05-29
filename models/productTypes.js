@@ -18,6 +18,9 @@ var productTypesSchema = new Schema({
     inventory: { type: Boolean, default: true },
     isService: { type: Boolean, default: false }, //Product or Service
 
+    isBundle: { type: Boolean, default: false }, //Pack promo
+    isPackaging: { type: Boolean, default: false }, //Packaging of a product
+
     createdAt: { type: Date, default: Date.now },
     isActive: { type: Boolean, default: true },
     sequence: { type: Number, default: 0 } // sort list

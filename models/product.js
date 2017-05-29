@@ -85,6 +85,7 @@ var productSchema = new Schema({
     isSell: { type: Boolean, default: true },
     isBuy: { type: Boolean, default: false },
     isBundle: { type: Boolean, default: false },
+    isPackaging: { type: Boolean, default: false },
     isVariant: { type: Boolean, default: false },
     groupId: { type: String, default: null },
     //  job: { type: Schema.Types.ObjectId, ref: 'jobs', default: null },
@@ -436,6 +437,25 @@ productSchema.pre('save', function(next) {
     if (this.info && this.info.langs && this.info.langs.length)
         this.name = this.info.langs[0].name;
 
+    console.log(this.productType);
+    if (this.info.productType && this.info.productType._id) {
+        if (this.info.productType.isBundle) {
+            this.isBundle = true;
+            this.isBuy = false;
+        } else {
+            this.isBundle = false
+            this.bundles = [];
+        }
+
+        if (this.info.productType.isPackaging) {
+            this.isPackaging = true;
+            this.isBuy = false;
+        } else {
+            this.isPackaging = false
+            this.pack = [];
+        }
+    }
+
     /* if (this.category) {
          var category = prepare_subcategories(this.category);
          this.category = category.name;
@@ -461,7 +481,14 @@ productSchema.pre('save', function(next) {
 
 
 
-    if (this.isBundle) {
+    if (this.isBundle && this.isModified('bundles')) {
+        this.directCost = 0;
+        for (var i = 0; i < this.bundles.length; i++)
+            if (this.bundles[i].id && this.bundles[i].id.directCost)
+                this.directCost += this.bundles[i].id.directCost * this.bundles[i].qty;
+    }
+
+    if (this.isPackaging && this.isModified('pack')) {
         this.directCost = 0;
         for (var i = 0; i < this.pack.length; i++)
             if (this.pack[i].id && this.pack[i].id.directCost)

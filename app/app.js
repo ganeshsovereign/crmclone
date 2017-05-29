@@ -1071,12 +1071,18 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Ecommerce - Product '
             }
         })
-        // ecommerce
         .state("product.show.bundles", {
             url: "/bundle",
-            templateUrl: "/templates/product/bundles.html",
+            templateUrl: "/views/product/bundles.html",
             data: {
                 pageTitle: 'Compositions - Product '
+            }
+        })
+        .state("product.show.packaging", {
+            url: "/packaging",
+            templateUrl: "/views/product/packaging.html",
+            data: {
+                pageTitle: 'Conditionnement / lots'
             }
         })
         // Bank/Payment

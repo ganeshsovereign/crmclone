@@ -128,10 +128,16 @@
                                 <i class="icon-basket"></i> @(Price) </a>
                         </li>
 
-                        <li ng-if="product.isBundle || product.info.productType.isBunble" ng-class="{active: $state.includes('product.show.bundles')}">
+                        <li ng-if="product.info.productType.isBundle" ng-class="{active: $state.includes('product.show.bundles')}">
                             <a ui-sref="product.show.bundles({id:product._id})" class="nav-link">
-                                <i class="icon-settings"></i> @(products:Bundle) <span ng-if='product.pack.length' class='badge badge-success'>{{product.pack.length}}</span> </a>
+                                <i class="icon-settings"></i> @(products:Bundle) <span ng-if='product.bundles.length' class='badge badge-success'>{{product.bundles.length}}</span> </a>
                         </li>
+
+                        <li ng-if="product.info.productType.isPackaging" ng-class="{active: $state.includes('product.show.packaging')}">
+                            <a ui-sref="product.show.packaging({id:product._id})" class="nav-link">
+                                <i class="icon-settings"></i> @(products:Packaging) <span ng-if='product.pack.length' class='badge badge-success'>{{product.pack.length}}</span> </a>
+                        </li>
+
                         <li ng-class="{active: $state.includes('product.show.attributes')}">
                             <a ui-sref="product.show.attributes({id:product._id})">
                                 <i class="icon-target"></i> @(products:Attributes) </a>

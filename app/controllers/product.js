@@ -811,6 +811,9 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             pu_ht: data.directCost,
             id: {
                 _id: data._id,
+                info: {
+                    SKU: data.ref
+                },
                 name: data.info.langs[0].name,
                 directCost: data.directCost
             },
@@ -820,11 +823,17 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         $scope.changePackQty();
     };
 
-    $scope.addPack = function() {
+    $scope.addPack = function(type) {
+        if (!type)
+            return;
+
         if (!$scope.newPack.id)
             return;
 
-        $scope.product.pack.push($scope.newPack);
+        if ($scope.product[type])
+            $scope.product[type] = [];
+
+        $scope.product[type].push($scope.newPack);
         /*{
          id : { _id : $scope.newPack.product.id,
          label : $scope.newPack.product.label,
@@ -833,13 +842,13 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
          },
          qty : $scope.newPack.qty
          });*/
-        $scope.update(false);
+        $scope.update(true);
         $scope.newPack = {};
     };
 
-    $scope.deletePack = function(idx) {
-        $scope.product.pack.splice(idx, 1);
-        $scope.update();
+    $scope.deletePack = function(idx, type) {
+        $scope.product[type].splice(idx, 1);
+        $scope.update(true);
     };
 
     $scope.addProductToVariant = function(newProductId) {
