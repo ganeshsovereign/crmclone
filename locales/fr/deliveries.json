@@ -78,5 +78,8 @@
     "AmountSubcontractors": "Montant de la sous-traitance",
     "Period": "Période d'intervention",
     "Sended": "Classer expédié",
-    "HelpConfirmQuantityDelivery": "La commande restera ouverte s'il s'agit d'une livraison partielle"
+    "HelpConfirmQuantityDelivery": "La commande restera ouverte s'il s'agit d'une livraison partielle",
+    "ListBL": "Liste des Bons de Livraisons associés",
+    "Reserved": "Réservé(s)",
+    "DiscountOnQty": "Remise sur quantité"
 }
