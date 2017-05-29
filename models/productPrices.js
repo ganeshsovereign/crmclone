@@ -28,6 +28,8 @@ var productPricesSchema = new Schema({
     product: { type: ObjectId, ref: 'product' },
     prices: [priceSchema],
     discount: { type: Number, default: 0 },
+    qtyMin: { type: Number, default: 0 },
+    qtyMax: { type: Number },
     createdBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null },
     editedBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null }
 });
@@ -40,6 +42,7 @@ productPricesSchema.pre('save', function(next) {
     var self = this;
     var ProductModel = MODEL('product').Schema;
     var ProductFamilyCoefModel = MODEL('productFamilyCoef').Schema;
+    var round = MODULE('utils').round;
 
     async.waterfall([
         function(cb) {
@@ -77,7 +80,8 @@ productPricesSchema.pre('save', function(next) {
                 var coef = self.priceLists.isCoef;
 
                 if (self.priceLists.cost == true && self.isModified('prices')) {
-                    product.directCost = self.prices[0].price;
+                    product.directCost = round(self.prices[0].price, 3);
+                    product.indirectCost = round(product.directCost * product.sellFamily.indirectCostRate / 100, 3);
                     product.save(function(err, doc) {
                         if (err)
                             return cb(err);
@@ -88,10 +92,14 @@ productPricesSchema.pre('save', function(next) {
                 /* coef mode */
                 if (coef && self.priceLists.cost != true) {
                     //Recalcul product prices
-                    self.prices = _.each(self.prices, function(price) {
-                        price.coefTotal = (family.coef || 1) * price.coef;
-                        price.price = product.totalCost * price.coefTotal;
-                    });
+                    self.prices = [];
+                    for (var i = 0; i < product.sellFamily.discounts.length; i++) {
+                        var price = {};
+                        price.count = product.sellFamily.discounts[i].count;
+                        price.coef = (family.coef || 1) * (1 - product.sellFamily.discounts[i].discount / 100);
+                        price.price = round(product.totalCost * price.coef, 3);
+                        self.prices.push(price);
+                    }
                 }
 
                 if (self.priceLists.defaultPriceList == true && self.isModified('prices'))
@@ -220,13 +228,13 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
             return self.throw500("err : /api/product/autocomplete" + err);
 
         if (!docs || !docs.length)
-            return callback(null, { ok: false, prices: [], pu_ht: 0, discount: 0 });
+            return callback(null, { ok: false, prices: [], pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null });
 
         Pricebreak.set(docs[0].prices);
 
         //console.log(Pricebreak.humanize(true, 3));
 
-        callback(null, { ok: true, prices: Pricebreak.humanize(true, 3), pu_ht: Pricebreak.price(options.qty).price, discount: docs[0].discount || 0 });
+        callback(null, { ok: true, prices: Pricebreak.humanize(true, 3), pu_ht: Pricebreak.price(options.qty).price, discount: docs[0].discount || 0, qtyMin: docs[0].qtyMin, qtyMax: docs[0].qtyMax });
     });
 
 };
@@ -325,13 +333,19 @@ F.on('load', function() {
                 break;
                 // One element in the parent priceList changed, we must update all priceList that are parent form this priceList and are isGlobalDiscount
             case 'productPrices:updatePrice':
-                if (!data.data.priceLists || !data.data.priceLists._id)
+
+                // if data is from populate
+                if (data && data.data && data.priceLists && data.data.priceLists._id)
+                    data.data.priceLists = data.data.priceLists._id;
+
+                if (!data.data.priceLists || !data.data.priceLists)
                     return;
-                PriceListModel.find({ isGlobalDiscount: true, parent: data.data.priceLists._id }, function(err, docs) {
+
+                PriceListModel.find({ isGlobalDiscount: true, parent: data.data.priceLists }, function(err, docs) {
                     if (err || !docs || !docs.length)
                         return;
 
-                    console.log(docs);
+                    //console.log(docs);
                     docs.forEach(function(priceList) {
                         //Delete old PriceList
                         if (!data.data.product)
