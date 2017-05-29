@@ -96,7 +96,7 @@ productPricesSchema.pre('save', function(next) {
                     for (var i = 0; i < product.sellFamily.discounts.length; i++) {
                         var price = {};
                         price.count = product.sellFamily.discounts[i].count;
-                        price.coef = (family.coef || 1) * (1 - product.sellFamily.discounts[i].discount / 100);
+                        price.coef = (family && family.coef || 1) * (1 - product.sellFamily.discounts[i].discount / 100);
                         price.price = round(product.totalCost * price.coef, 3);
                         self.prices.push(price);
                     }
