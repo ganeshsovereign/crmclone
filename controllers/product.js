@@ -2750,6 +2750,41 @@ var Prices = function() {
             var self = this;
             var ProductPricesModel = MODEL('productPrices').Schema;
 
+            self.body.editedBy = self.user._id;
+            self.body.updatedAt = new Date();
+
+            //console.log(self.body);
+
+            // Update qtyMin or qtyMax
+            if (self.body.type && self.body.type == 'QTY') {
+                ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
+                    if (err) {
+                        console.log(err);
+                        return self.json({
+                            errorNotify: {
+                                title: 'Erreur',
+                                message: err
+                            }
+                        });
+                    }
+
+                    // Emit to refresh priceList from parent
+                    setTimeout2('productPrices:updatePrice_' + doc.priceLists.toString(), function() {
+                        F.functions.PubSub.emit('productPrices:updatePrice', {
+                            data: doc
+                        });
+                    }, 500);
+
+                    //console.log(doc);
+                    doc = doc.toObject();
+                    doc.successNotify = {
+                        title: "Success",
+                        message: "Prix enregistree"
+                    };
+                    self.json(doc);
+                });
+            }
+
             ProductPricesModel.findOne({ _id: id })
                 //.populate({ path: 'product', select: '_id directCost info', populate: { path: "info.productType", select: "coef" } })
                 .populate("priceLists", "cost")
@@ -2763,6 +2798,29 @@ var Prices = function() {
                             }
                         });
                     }
+
+                    // Just update one price in priceList
+                    if (!doc.priceLists.cost || self.body.updateAll)
+                        return ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
+                            if (err) {
+                                console.log(err);
+                                return self.json({
+                                    errorNotify: {
+                                        title: 'Erreur',
+                                        message: err
+                                    }
+                                });
+                            }
+
+                            //console.log(doc);
+                            doc = doc.toObject();
+                            doc.successNotify = {
+                                title: "Success",
+                                message: "Prix enregistree"
+                            };
+                            self.json(doc);
+                        });
+
 
                     doc = _.extend(doc, self.body);
                     doc.editedBy = self.user._id;
@@ -3350,7 +3408,9 @@ ProductFamily.prototype = {
                 sequence: 1,
                 isCoef: 1,
                 isActive: 1,
+                indirectCostRate: 1,
                 isCost: 1,
+                discounts: 1,
                 variants: 1,
                 opts: {
                     langs: '$options.langs',
@@ -3365,6 +3425,8 @@ ProductFamily.prototype = {
                 opts: { $push: '$opts' },
                 langs: { $first: '$langs' },
                 sequence: { $first: '$sequence' },
+                indirectCostRate: { $first: '$indirectCostRate' },
+                discounts: { $first: '$discounts' },
                 isCoef: { $first: '$isCoef' },
                 isCost: { $first: '$isCost' },
                 variants: { $first: '$variants' },
@@ -3437,6 +3499,7 @@ ProductFamily.prototype = {
                     name: '$langs',
                     sequence: 1,
                     createdAt: '$createdAt',
+                    indirectCostRate: 1,
                     opts: { $arrayElemAt: ['$productOptions', 0] }
                 }
             }, {
@@ -3454,6 +3517,7 @@ ProductFamily.prototype = {
                     options: { $push: '$opts' },
                     name: { $first: '$name.name' },
                     sequence: { $first: '$sequence' },
+                    indirectCostRate: { $first: '$indirectCostRate' },
                     createdAt: { $first: '$createdAt' },
                     countProducts: { $first: '$countProducts' }
                 }
@@ -3474,6 +3538,7 @@ ProductFamily.prototype = {
                         name: '$root.name',
                         options: '$root.options',
                         sequence: '$root.sequence',
+                        indirectCostRate: '$root.indirectCostRate',
                         countProducts: '$root.countProducts',
                         createdAt: '$root.createdAt'
                     }
@@ -3688,6 +3753,27 @@ ProductFamily.prototype = {
         delete data.options;
         delete data.variants;
 
+        data.discounts = _.filter(data.discounts, function(line) {
+            if (line.count == 0)
+                return true;
+
+            return (line.discount !== 0)
+        });
+
+        data.discounts = _.uniq(data.discounts, 'count');
+
+        function compare(a, b) {
+            if (a.count < b.count)
+                return -1;
+            if (a.count > b.count)
+                return 1;
+            return 0;
+        }
+
+        data.discounts.sort(compare);
+
+        data.discounts[0].count = 0;
+
         ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, result) {
             if (err) {
                 console.log(err);
@@ -3698,6 +3784,10 @@ ProductFamily.prototype = {
                     }
                 });
             }
+
+            setTimeout2('productFamily:updateIndirectCost_' + result._id.toString(), function() {
+                F.functions.PubSub.emit('productFamily:update', { data: result });
+            }, 5000);
 
             currentOptions = {
                 options: result.options,

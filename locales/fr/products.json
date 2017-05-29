@@ -335,9 +335,9 @@
     "EditVariants": "Edit. variantes",
     "CreateVariants": "Creat. variantes",
     "Costs": "Coûts",
-    "DirectCost": "Coût Direct",
-    "IndirectCost": "Coût Indirect",
-    "TotalCost": "Coût Total",
+    "DirectCost": "Achats directs",
+    "IndirectCost": "Achats indirects",
+    "TotalCost": "Prix de revient Total",
     "NewEmployee": "Nouveau Collaborateur",
     "QtyOfProductOnThisFamily": "Qté de produits dans la famille",
     "NewAttribute": "Nouvel attribut",
@@ -354,5 +354,6 @@
     "GlobalDiscount": "Remise Globale",
     "IsCoef": "Par coef.",
     "IsGlobalDiscount": "Par Remise Globale",
-    "BasePriceList": "Liste de prix référente"
+    "BasePriceList": "Liste de prix référente",
+    "indirectCostRate": "Majoration du prix revient (%)"
 }

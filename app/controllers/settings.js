@@ -64,6 +64,8 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
     $scope.edit = [];
 
+    $scope.newline = {};
+
     $scope.$dict = {
         attributesMode: [{
             id: 'text',

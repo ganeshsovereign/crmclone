@@ -60,7 +60,7 @@ Pricebreak.prototype.humanize = function(vague, len) {
     var self = this;
 
     var statements = this.sortedBreaks.map(function(_break, idx, arr) {
-        console.log(_break, idx, arr);
+        //console.log(_break, idx, arr);
 
         var nextBreak = (arr[idx + 1] ? arr[idx + 1].count : null);
         var start = _break.count;

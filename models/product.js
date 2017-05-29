@@ -468,7 +468,7 @@ productSchema.pre('save', function(next) {
                 this.directCost += this.pack[i].id.directCost * this.pack[i].qty;
     }
 
-    if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost'))) // Emit to all that a product change totalCost
+    if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
         F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: self._id } });
     }, 500);

@@ -42,7 +42,7 @@
                                                 <div class="row">
                                                     <label class="col-md-6 control-label">@(products:IndirectCost) :</label>
                                                     <div class="col-md-6">
-                                                        <input type="number" min="0" step="0.001" class="form-control" placeholder="" ng-model="product.indirectCost">
+                                                        <span class="col-md-1 control-label bold font-dark">{{product.indirectCost | currency}}</span>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -176,10 +176,12 @@
                                                                 <input type="checkbox" class="group-checkable" />
                                                             </th>
                                                             <th>@(Liste de prix)</th>
-                                                            <th>@(Coef.) @(Qty)</th>
-                                                            <th>@(Coef. total)</th>
+                                                            <!--<th>@(Qty) @(Coef.)</th>-->
                                                             <!--<th>@(products:Promo)</th>-->
+                                                            <th>@(Coef. final)</th>
                                                             <th>Prix de revient</th>
+                                                            <th>@(QtyMin)</th>
+                                                            <th>@(QtyMax)</th>
                                                             <th>@(products:SellingPriceHT)</th>
                                                             <th>@(products:SellingPriceTTC)</th>
                                                             <th>@(products:Margin) HT</th>
@@ -192,46 +194,11 @@
                                                             <td><input type="checkbox" ng-model="grid[line._id]" /></td>
                                                             <td>{{line.priceLists.name}} <span ng-if="line.priceLists.isGlobalDiscount">(-{{line.priceLists.discount}} %)</span></td>
                                                             <td>
-                                                                <div ng-if="line.priceLists.isCoef">
-                                                                    <table class="table-condensed">
-                                                                        <tbody>
-                                                                            <tr ng-repeat="price in line.prices">
-                                                                                <td class="text-info">{{price.count||1}}+</td>
-                                                                                <td><a href="#" editable-number="price.coef" e-step="0.001" e-min="0" onaftersave="update(line)">{{price.coef || 0 | number:3}}</a></td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-
-                                                                    <a ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>
-
-                                                                    <form ng-show="addNewRange" class="form-horizontal">
-                                                                        <div class="form-body">
-                                                                            <div class="form-group">
-                                                                                <label class="col-md-3 control-label">@(Qty)</label>
-                                                                                <div class="col-md-9">
-                                                                                    <input type="number" class="form-control input-sm" min="0" step='0.01' ng-model="price.count" />
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <label class="col-md-3 control-label">@(products:Coef)</label>
-                                                                                <div class="col-md-9">
-                                                                                    <input type="number" class="form-control input-sm" min="0" step="0.001" ng-model="price.coef" />
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="form-actions right1">
-                                                                            <button type="button" ng-click="addNewRange = false" class="btn btn-circle red">@(Cancel)</button>
-                                                                            <button type="button" ng-click="update(line, price)" class="btn blue btn-sm">@(Add)</button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
-                                                            </td>
-                                                            <td>
                                                                 <table class="table-condensed" ng-if="line.priceLists.isCoef">
                                                                     <tbody>
                                                                         <tr ng-repeat="price in line.prices">
                                                                             <td class="text-info">{{price.count ||1}}+</td>
-                                                                            <td>{{price.coefTotal || 0 | number:3}}</a>
+                                                                            <td>{{price.coef || 0 | number:3}}</a>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>
@@ -239,6 +206,14 @@
                                                             </td>
                                                             <td>
                                                                 {{line.product.directCost + line.product.indirectCost | currency}}
+                                                            </td>
+                                                            <td>
+                                                                <a ng-if="line.priceLists.isFixed || line.priceLists.isCoef" href="#" editable-number="line.qtyMin" e-step="1" e-min="0" onaftersave="updateQty(line)">{{(line.qtyMin === 0 ? 0 : line.qtyMin || "@(Empty)")}}</a>
+                                                                <span ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{(line.qtyMin === 0 ? 0 : line.qtyMin || "@(Empty)")}}</span>
+                                                            </td>
+                                                            <td>
+                                                                <a ng-if="line.priceLists.isFixed || line.priceLists.isCoef" href="#" editable-number="line.qtyMax" e-step="1" e-min="0" onaftersave="updateQty(line)">{{(line.qtyMax === 0 ? 0 : line.qtyMax || "@(Empty)")}}</a>
+                                                                <span ng-hide="line.priceLists.isFixed || line.priceLists.isCoef">{{(line.qtyMax === 0 ? 0 : line.qtyMax || "@(Empty)")}}</span>
                                                             </td>
                                                             <td>
                                                                 <table class="table-condensed">
@@ -252,7 +227,8 @@
                                                                     </tbody>
                                                                 </table>
 
-                                                                <a ng-if="line.priceLists.isFixed" ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>
+                                                                <span ng-if="line.priceLists.isFixed">
+                                                                <a ng-hide="addNewRange" ng-click="addNewRange = true">@(Add)</a>
 
                                                                 <form ng-show="addNewRange" class="form-horizontal">
                                                                     <div class="form-body">
@@ -273,7 +249,7 @@
                                                                         <button type="button" ng-click="addNewRange = false" class="btn red">@(Cancel)</button>
                                                                         <button type="button" ng-click="update(line, price)" class="btn blue btn-sm">@(Add)</button>
                                                                     </div>
-                                                                </form>
+                                                                </form></span>
                                                             </td>
                                                             <td>
                                                                 <table class="table-condensed">
@@ -307,7 +283,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </tab>
 
 
@@ -333,7 +308,7 @@
                                                 <div class="row">
                                                     <label class="col-md-6 control-label">@(products:IndirectCost) :</label>
                                                     <div class="col-md-6">
-                                                        <input type="number" min="0" step="0.001" class="form-control" placeholder="" ng-model="product.indirectCost">
+                                                        <span class="col-md-1 control-label bold font-dark">{{product.indirectCost | currency}}</span>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -473,7 +448,7 @@
                                                                     </tbody>
                                                                 </table>
 
-                                                                <!--<a ng-if="!product.sellFamily.isCoef" ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>-->
+                                                                <!--<a ng-if="!product.sellFamily.isCoef" ng-hide="addNewRange" ng-click="addNewRange = true" class="">@(Add)</a>
 
                                                                 <form ng-show="addNewRange" class="form-horizontal">
                                                                     <div class="form-body">
@@ -494,7 +469,7 @@
                                                                         <button type="button" ng-click="addNewRange = false" class="btn red">@(Cancel)</button>
                                                                         <button type="button" ng-click="update(line, price)" class="btn blue btn-sm">@(Add)</button>
                                                                     </div>
-                                                                </form>
+                                                                </form>-->
                                                             </td>
                                                             <td>
                                                                 <table class="table-condensed">

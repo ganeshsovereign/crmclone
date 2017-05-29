@@ -1258,17 +1258,18 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
     };
 
     $scope.updatePrice = function(line, price, key) {
+
         if (key == 'priceTTC')
             price.price = price[key] / (1 + line.product.taxes[0].taxeId.rate / 100);
 
         /*if price update with coef -> update coef*/
-        if ($scope.product)
+        /*if ($scope.product)
             if ($scope.product.sellFamily.isCoef && ($scope.product.directCost + $scope.product.indirectCost)) {
                 var coefFamily = price.coefTotal / price.coef;
                 //console.log(coefFamily);
 
                 price.coef = price.price / coefFamily / ($scope.product.directCost + $scope.product.indirectCost);
-            }
+            }*/
 
         $http({
             method: 'PUT',
@@ -1278,6 +1279,23 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
             $scope.find();
         });
     };
+
+    $scope.updateQty = function(line) {
+
+        $http({
+            method: 'PUT',
+            url: '/erp/api/product/prices/' + line._id,
+            data: {
+                _id: line._id,
+                type: "QTY",
+                qtyMin: line.qtyMin,
+                qtyMax: line.qtyMax
+            }
+        }).success(function(data, status) {
+            $scope.find();
+        });
+    };
+
 
 
     $scope.updateDiscount = function(productId, discount, price_level) {
