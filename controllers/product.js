@@ -3859,6 +3859,8 @@ ProductFamily.prototype = {
                 }, {
                     $unwind: '$priceLists'
                 }, {
+                    $match: { 'priceLists.isCoef': true }
+                }, {
                     $lookup: {
                         from: 'productFamily',
                         localField: 'family',
@@ -3886,7 +3888,7 @@ ProductFamily.prototype = {
 
             },
             column: function(pCb) {
-                PriceListModel.find({ cost: false }, "_id name", function(err, docs) {
+                PriceListModel.find({ cost: false, isCoef: true }, "_id name", function(err, docs) {
                     if (err)
                         return pCb(err);
 
