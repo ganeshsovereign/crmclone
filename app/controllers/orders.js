@@ -1176,15 +1176,15 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
 
     $scope.order = object.order;
 
-    for (var i = 0; i < $scope.order.lines.length; i++)
-        $scope.order.lines[i].qty_dl = $scope.order.lines[i].qty - $scope.order.lines[i].qty_deliv;
+    for (var i = 0; i < $scope.order.deliveries.length; i++)
+        $scope.order.deliveries[i].qty_dl = $scope.order.deliveries[i].orderQty - $scope.order.deliveries[i].deliveryQty;
 
     $scope.sum = function() {
         $scope.total = 0;
         $scope.weight = 0;
-        for (var i = 0; i < $scope.order.lines.length; i++) {
-            $scope.total += $scope.order.lines[i].qty_dl;
-            $scope.weight += $scope.order.lines[i].qty_dl * $scope.order.lines[i].product.weight;
+        for (var i = 0; i < $scope.order.deliveries.length; i++) {
+            $scope.total += $scope.order.deliveries[i].qty_dl;
+            $scope.weight += $scope.order.deliveries[i].qty_dl * $scope.order.deliveries[i].product.weight;
         }
     };
 

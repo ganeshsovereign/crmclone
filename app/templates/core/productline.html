@@ -34,7 +34,7 @@
                         <th>@(Discount)%</th>
                         <th>@(Taxes)</th>
                         <th>@(TotalHT)</th>
-                        <th style="width: 140px;"><span ng-show="tableform.$visible">Action</span></th>
+                        <th style="width: 140px;"><span ng-show="tableform.$visible">@(Action)</span></th>
                     </tr>
                 </thead>
                 <tr ng-repeat="line in linesModel| filter:filterLine" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL'}">
@@ -59,7 +59,7 @@
                                                     </span>
                     </td>
                     <td ng-if="line.type != 'SUBTOTAL'" class="align-right">
-                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-step="0.001" e-form="tableform">
+                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="{{-1*line.product.unit}}" e-step="0.001" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
                     </td>
@@ -97,7 +97,7 @@
                     </td>
 
                     <td ng-if="line.type == 'SUBTOTAL'" colspan="7">
-                        Sous-total
+                        @(SubTotal)
                     </td>
                     <td ng-if="line.type == 'SUBTOTAL'">
                         {{ line.total_ht | number:2 }}
@@ -122,10 +122,7 @@
             <!-- buttons -->
 
             <div class="btn-form" ng-show="tableform.$visible">
-
                 <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
-
-
                 <button type="submit" ng-disabled="tableform.$waiting" class="btn green pull-right"> @(Save) <i class="fa fa-check"></i></button>
                 <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel) </button>
             </div>

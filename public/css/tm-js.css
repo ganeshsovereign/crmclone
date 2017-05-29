@@ -15,6 +15,13 @@
     }
 }
 
+.page-sidebar-closed .page-sidebar,
+.page-sidebar.collapse,
+.page-sidebar-closed .page-sidebar .page-sidebar-menu.page-sidebar-menu-closed {
+    position: fixed;
+    z-index: 10;
+}
+
 body {
     font-size: 12px;
 }
@@ -26,7 +33,7 @@ h3,
 h4,
 h5,
 h6 {
-    font-family: Ubuntu, sans-serif;
+    font-family: "OpenSans Regular", Ubuntu, sans-serif;
 }
 
 .table td,
@@ -261,7 +268,7 @@ hr {
 
 .progress {
     margin: 2px 0;
-    height: 18px;
+    height: 14px;
 }
 
 .table-advance tr td.highlight:first-child span {
@@ -296,11 +303,11 @@ table.table-bordered.dataTable tbody td {
 }
 
 .mt-element-step .step-thin .mt-step-title {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .mt-element-step .step-thin .mt-step-number {
-    font-size: 18px;
+    font-size: 14px;
     padding: 3px 11px;
 }
 
@@ -309,7 +316,7 @@ table.table-bordered.dataTable tbody td {
 }
 
 .mt-element-step .step-default .mt-step-title {
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .mt-element-step .step-thin .mt-step-col {
@@ -318,7 +325,7 @@ table.table-bordered.dataTable tbody td {
 }
 
 .mt-element-step .step-thin .mt-step-col {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .table>.no-padding>tr>td {
@@ -421,8 +428,8 @@ hr {
 .portlet>.portlet-title>.caption {
     float: left;
     display: inline-block;
-    font-size: 16px;
-    line-height: 18px;
+    font-size: 14px;
+    line-height: 14px;
     padding: 10px 0;
 }
 
@@ -517,7 +524,7 @@ select.input-sm {
 }
 
 .profile-stat-title {
-    font-size: 16px;
+    font-size: 12px;
 }
 
 .form-group.form-md-line-input.form-md-floating-label .form-control~label {
@@ -559,7 +566,7 @@ select.input-sm {
 }
 
 .portlet.light>.portlet-title>.caption>.caption-subject {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .portlet.light>.portlet-title>.caption>i {

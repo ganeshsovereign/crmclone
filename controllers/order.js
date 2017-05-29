@@ -345,7 +345,7 @@ Object.prototype = {
         var query = JSON.parse(self.body.query);
 
         var conditions = {
-            Status: { $ne: "CLOSED" },
+            // Status: { $ne: "CLOSED" },
             isremoved: { $ne: true }
         };
 
@@ -505,7 +505,8 @@ Object.prototype = {
                             orderQty: 1,
                             deliveries: 1,
                             'product._id': 1,
-                            'product.info.SKU': 1
+                            'product.info.SKU': 1,
+                            'product.weight': 1
                         }
                     }, {
                         $sort: {
