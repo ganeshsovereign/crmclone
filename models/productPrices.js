@@ -246,6 +246,7 @@ F.on('load', function() {
 
     var ProductPricesModel = exports.Schema;
     var PriceListModel = MODEL('priceList').Schema;
+    var ProductModel = MODEL('product').Schema;
 
     // On refresh emit product
     // data : {data :{_id : product._id, }}
@@ -260,23 +261,28 @@ F.on('load', function() {
                     //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                     .populate("priceLists")
                     .exec(function(err, pricesList) {
-                        pricesList.forEach(function(prices) {
+                        async.each(pricesList, function(prices, aCb) {
                             if (!prices.priceLists.isCoef)
-                                return;
+                                return aCb();
 
                             prices.save(function(err, doc) {
                                 if (err)
-                                    return console.log(err);
+                                    return aCb(err);
 
                                 // Emit to all that a productPrice in product list by coef was changed
                                 //setTimeout2('productPrices:updatePrice_' + this._id.toString(), function() {
                                 F.functions.PubSub.emit('productPrices:updatePrice', {
                                     data: doc
                                 });
+                                aCb();
                                 //}, 5000);
                             });
+                        }, function(err) {
+                            if (err)
+                                console.log(err);
                         });
                     });
+
                 break;
         }
     });
