@@ -26,8 +26,8 @@ productFamilyCoefSchema.index({ priceLists: 1, family: 1 }, { unique: true });
 productFamilyCoefSchema.pre('save', function(next) {
     var self = this;
 
-    setTimeout2('product:updateDirectCost_' + this.product.toString(), function() {
-        F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: self.product } });
+    setTimeout2('productFamily:coef_' + this.family.toString(), function() {
+        F.functions.PubSub.emit('productFamily:coef', { data: { _id: self.family } });
     }, 500);
 
     next();

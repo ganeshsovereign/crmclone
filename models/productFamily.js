@@ -103,7 +103,24 @@ F.on('load', function() {
                 });
 
                 break;
+            case 'productFamily:coef':
+                if (!data.data._id)
+                    return;
 
+                ProductModel.find({ sellFamily: data.data._id })
+                    .populate("priceLists")
+                    .exec(function(err, docs) {
+
+                        docs.forEach(function(elem) {
+                            elem.save(function(err) {
+                                if (err)
+                                    console.log("update productFamily coef error ", err);
+                            });
+
+                        });
+                    });
+
+                break;
         }
     });
 });
