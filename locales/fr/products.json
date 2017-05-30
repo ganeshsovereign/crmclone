@@ -355,5 +355,6 @@
     "IsCoef": "Par coef.",
     "IsGlobalDiscount": "Par Remise Globale",
     "BasePriceList": "Liste de prix référente",
-    "indirectCostRate": "Majoration du prix revient (%)"
+    "indirectCostRate": "Majoration prix revient Transp. (%)",
+    "MinMargin": "Marge minimum (%)"
 }
