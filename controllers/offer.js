@@ -295,7 +295,7 @@ Object.prototype = {
                 doc = doc.toObject();
                 doc.successNotify = {
                     title: "Success",
-                    message: "Devis enregistree"
+                    message: "Devis enregistré"
                 };
                 self.json(doc);
             });
