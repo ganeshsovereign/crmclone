@@ -228,13 +228,13 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
             return self.throw500("err : /api/product/autocomplete" + err);
 
         if (!docs || !docs.length)
-            return callback(null, { ok: false, prices: [], pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null });
+            return callback(null, { ok: false, pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null });
 
         Pricebreak.set(docs[0].prices);
 
         //console.log(Pricebreak.humanize(true, 3));
 
-        callback(null, { ok: true, prices: Pricebreak.humanize(true, 3), pu_ht: Pricebreak.price(options.qty).price, discount: docs[0].discount || 0, qtyMin: docs[0].qtyMin, qtyMax: docs[0].qtyMax });
+        callback(null, { ok: true, pu_ht: Pricebreak.price(options.qty).price, discount: docs[0].discount || 0, qtyMin: docs[0].qtyMin, qtyMax: docs[0].qtyMax });
     });
 
 };
