@@ -30,6 +30,7 @@ var productFamiliesSchema = new Schema({
     isCost: { type: Boolean, default: false },
     sequence: { type: Number, default: 0 }, // sort list
     indirectCostRate: { type: Number, default: 0 }, // % based on cost Direct Price
+    minMargin: { type: Number, default: 0 },
 
     options: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }], //attributes
     variants: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }], //isVariant

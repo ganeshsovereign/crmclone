@@ -3415,6 +3415,7 @@ ProductFamily.prototype = {
                 isCoef: 1,
                 isActive: 1,
                 indirectCostRate: 1,
+                minMargin: 1,
                 isCost: 1,
                 discounts: 1,
                 variants: 1,
@@ -3432,6 +3433,7 @@ ProductFamily.prototype = {
                 langs: { $first: '$langs' },
                 sequence: { $first: '$sequence' },
                 indirectCostRate: { $first: '$indirectCostRate' },
+                minMargin: { $first: '$minMargin' },
                 discounts: { $first: '$discounts' },
                 isCoef: { $first: '$isCoef' },
                 isCost: { $first: '$isCost' },
@@ -3858,8 +3860,6 @@ ProductFamily.prototype = {
                     }
                 }, {
                     $unwind: '$priceLists'
-                }, {
-                    $match: { 'priceLists.isCoef': true }
                 }, {
                     $lookup: {
                         from: 'productFamily',
