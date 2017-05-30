@@ -15,9 +15,6 @@
             </li>
         </ul>
     </div>
-    <h3 class="page-title">
-        <i class="fa fa-gears font-grey-silver"></i> @(products:ProductConfiguration)
-    </h3>
 
     <div ng-if="product.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce produit est supprime. </div>
 
@@ -33,7 +30,7 @@
                     <!-- END SIDEBAR USERPIC -->
                     <!-- SIDEBAR USER TITLE -->
                     <div class="profile-usertitle">
-                        <div class="profile-usertitle-name"> {{product.info.SKU}} </div>
+                        <div class="profile-usertitle-name"> @(products:ProductConfiguration) </div>
                     </div>
                     <!-- END SIDEBAR USER TITLE
                     <div class="progress">

@@ -118,6 +118,8 @@ function Delivery(id, cb) {
             path: "total_taxes.taxeId"
         })
         .populate("order", "ref lines total_ht")
+        .populate("createdBy", "username")
+        .populate("editedBy", "username")
         .exec(cb);
 }
 

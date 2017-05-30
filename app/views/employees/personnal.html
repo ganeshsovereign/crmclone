@@ -17,7 +17,9 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="portlet light bordered">
 
-                                    <div class="form-group form-md-line-input">
+                                    <address ng-model=employee.homeAddress></address>
+
+                                    <!-- <div class="form-group form-md-line-input">
                                         <input type="text" class="form-control" id="form_control_1" ng-model="employee.homeAddress.street">
                                         <label for="form_control_1">@(users:HomeAddress)</label>
                                     </div>
@@ -36,6 +38,7 @@
                                         <input type="text" class="form-control" id="form_control_1" ng-model="employee.homeAddress.state">
                                         <label for="form_control_1">@(Region)</label>
                                     </div>
+                                    -->
 
                                     <div class="form-group form-md-line-input">
                                         <select class="table-group-action-input form-control" required ng-model="employee.homeAddress.country" ng-options="s.id as s.name for s in $dict.nationality.data"></select>

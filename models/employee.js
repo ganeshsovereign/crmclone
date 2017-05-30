@@ -263,31 +263,32 @@ if (CONFIG('storing-files')) {
 
 exports.Status = {
     "_id": "fk_employee_status",
+    "lang": "users",
     "default": "DISABLE",
     "values": {
         "NEVER": {
-            "label": "Inconnu",
+            "label": "Unknown",
             "enable": true,
             "cssClass": "label-default"
         },
         "ENABLE": {
             "enable": true,
-            "label": "Actif",
+            "label": "Enable",
             "cssClass": "label-success"
         },
         "DISABLE": {
             "enable": true,
-            "label": "Bloqué",
+            "label": "Disable",
             "cssClass": "label-danger"
         },
         "NOCONNECT": {
             "enable": false,
-            "label": "Actif / Sans connexion",
+            "label": "NoConnect",
             "cssClass": "label-info"
         },
         "WEB": {
             "enable": false,
-            "label": "Actif / Connexion Web",
+            "label": "Web",
             "cssClass": "label-warning"
         }
     }

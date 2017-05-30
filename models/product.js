@@ -675,6 +675,50 @@ productSchema.virtual('_units')
 
     });
 
+exports.Status = {
+    "_id": "fk_product_status",
+    "lang": "products",
+    "values": {
+        "ACTIVE": {
+            "enable": true,
+            "label": "Enabled",
+            "cssClass": "ribbon-color-info label-info",
+            "system": true
+        },
+        "INACTIVE": {
+            "enable": true,
+            "label": "Disabled",
+            "cssClass": "ribbon-color-warning label-warning"
+        }
+    }
+};
+
+
+/**
+ * Methods
+ */
+productSchema.virtual('status')
+    .get(function() {
+        var res_status = {};
+
+        var status = this.Status;
+        var statusList = exports.Status;
+
+        if (status && statusList.values[status] && statusList.values[status].label) {
+            res_status.id = status;
+            res_status.name = i18n.t("product:" + statusList.values[status].label);
+            //this.status.name = statusList.values[status].label;
+            res_status.css = statusList.values[status].cssClass;
+        } else { // By default
+            res_status.id = status;
+            res_status.name = status;
+            res_status.css = "";
+        }
+
+        return res_status;
+    });
+
+
 exports.Schema = mongoose.model('product', productSchema, 'Product');
 exports.name = 'product';
 

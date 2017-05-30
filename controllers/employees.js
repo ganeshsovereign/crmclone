@@ -1089,36 +1089,41 @@ Object.prototype = {
                         if (err)
                             return self.throw500(err);
 
+                        EmployeesModel.populate(res.datatable.data, { path: "createdBy" }, function(err, lines) {
+                            if (err)
+                                return self.throw500(err);
 
-                        for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                            var row = lines[i];
-                            console.log(row);
-                            // Add checkbox
-                            res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                            // Add link company                
+                            for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                                var row = lines[i];
+                                console.log(row);
+                                // Add checkbox
+                                res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                                // Add link company                
 
-                            // Add id
-                            res.datatable.data[i].DT_RowId = row._id.toString();
+                                // Add id
+                                res.datatable.data[i].DT_RowId = row._id.toString();
 
-                            res.datatable.data[i].name.first = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.first + '"><span class="fa fa-user"></span> ' + row.name.first + '</a>';
+                                res.datatable.data[i].name.first = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.first + '"><span class="fa fa-user"></span> ' + row.name.first + '</a>';
 
-                            res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
-                            res.datatable.data[i].department = (row.department ? row.department.name : "");
-                            res.datatable.data[i].manager = (row.manager ? row.manager.name : "");
-                            res.datatable.data[i].editedBy = (row.editedBy ? row.editedBy.name : "");
+                                res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.values[row.Status].label) + '</span>' : row.Status);
+                                res.datatable.data[i].department = (row.department ? row.department.name : "");
+                                res.datatable.data[i].manager = (row.manager ? row.manager.name : "");
+                                res.datatable.data[i].editedBy = (row.editedBy ? row.editedBy.name : "");
+                                res.datatable.data[i].createdBy = (row.createdBy ? row.createdBy.name : "");
 
-                            // Action
-                            res.datatable.data[i].action = '<a href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                            // Add url on name
-                            res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
-                            // Convert Date
-                            //res.datatable.data[i].LastConnection = (row.LastConnection ? moment(row.LastConnection).format(CONFIG('dateformatShort')) : '');
-                            //res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                        }
+                                // Action
+                                res.datatable.data[i].action = '<a href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                                // Add url on name
+                                res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '"><span class="fa fa-money"></span> ' + row.login + '</a>';
+                                // Convert Date
+                                //res.datatable.data[i].LastConnection = (row.LastConnection ? moment(row.LastConnection).format(CONFIG('dateformatShort')) : '');
+                                //res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                            }
 
-                        //console.log(res.datatable);
+                            //console.log(res.datatable);
 
-                        self.json(res.datatable);
+                            self.json(res.datatable);
+                        });
                     });
                 });
             });

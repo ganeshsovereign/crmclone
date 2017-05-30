@@ -8,6 +8,8 @@
         "OnBuySell": "Achat et vente"
     },
     "ProductRef": "Réf. produit",
+    "Enabled": "Actif",
+    "Disabled": "Inactif",
     "RefProductService": "Ref. produit / service",
     "ProductLabel": "Libellé produit",
     "ShowOnBill": "Visible sur les documents commerciaux (Commandes, factures, ...)",

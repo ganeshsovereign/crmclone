@@ -232,5 +232,11 @@
     "WorkPhone": "Téléphone Bureau",
     "JobPosition": "Poste",
     "HomeAddress": "Adresse",
-    "City": "Ville"
+    "City": "Ville",
+    "Unknown": "Inconnu",
+    "Enable": "Actif",
+    "Disable": "Bloqué",
+    "NoConnect": "Actif / Sans connexion",
+    "Web": "Actif / Connexion Web"
+
 }

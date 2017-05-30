@@ -143,6 +143,8 @@ function Bill(id, cb) {
         .populate("orders", "ref ref_client total_ht client")
         .populate("deliveries", "ref ref_client total_ht client")
         .populate("contacts", "firstname lastname phone email")
+        .populate("createdBy", "username")
+        .populate("editedBy", "username")
         .exec(cb);
 }
 
