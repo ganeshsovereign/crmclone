@@ -63,7 +63,7 @@
     "DeliveryStatus": "État du bon de livraison",
     "DeliveryStatusDraft": "Brouillon (à valider)",
     "DeliveryStatusValidated": "Validé / non expédié",
-    "DeliveryStatusSend": "Expédié / A facturer",
+    "DeliveryStatusSend": "Validé / Expédié",
     "DeliveryStatusBilled": "Facturé",
     "DeliveryStatusCanceled": "Abandonné",
     "DeliveryNotes": "Bons livraisons",

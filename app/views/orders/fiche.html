@@ -77,7 +77,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('delivery')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
+                    <a ng-if="module('delivery')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'VALIDATED' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
                         <i class="fa fa-plane"></i> @(deliveries:Sended)
                     </a>
                 </li>
