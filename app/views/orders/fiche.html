@@ -67,7 +67,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('order')" ng-show="object.Status == 'VALIDATED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()">
+                    <a ng-if="module('order')" ng-show="object.Status == 'VALIDATED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()" data-ng-click="changeStatus('BILLED')">
                         <i class="fa fa-money"></i> @(bills:CreateBill)
                     </a>
                 </li>
