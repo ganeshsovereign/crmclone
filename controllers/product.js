@@ -3936,7 +3936,7 @@ ProductFamily.prototype = {
                     var line = [coef._id, coef.name];
 
                     async.forEach(coef.priceLists, function(priceList, bCb) {
-                        line[fields[priceList._id.toString()]] = priceList.coef
+                        line[fields[priceList._id.toString()]] = priceList.coef.toString().replace(".", ",");
                         bCb();
                     }, function(err) {
                         line.push('\n');
