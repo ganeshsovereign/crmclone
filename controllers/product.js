@@ -3851,7 +3851,7 @@ ProductFamily.prototype = {
                             _id: 1,
                             priceLists: 1,
                             family: 1,
-                            ceof: 1
+                            coef: 1
                         }
                     }, {
                         $lookup: {
