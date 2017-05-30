@@ -305,7 +305,7 @@ Object.prototype = {
                     doc = doc.toObject();
                     doc.successNotify = {
                         title: "Success",
-                        message: "Facture enregistree"
+                        message: "Facture enregistrée"
                     };
                     self.json(doc);
                 });

@@ -268,7 +268,7 @@ Object.prototype = {
                     subject: "Nouvelle commande " + order.supplier.name + " - " + order.ref + " dans l'ERP"
                 };
 
-                mailOptions.text = "La commande " + order.ref + " vient d'etre cree \n";
+                mailOptions.text = "La commande " + order.ref + " vient d'etre crée \n";
                 mailOptions.text += "Pour consulter la commande cliquer sur ce lien : ";
                 mailOptions.text += '<a href="http://erp.chaumeil.net/commande/fiche.php?id=' + order._id + '">' + order.ref + '</a>';
                 mailOptions.text += "\n\n";
@@ -302,7 +302,7 @@ Object.prototype = {
                 doc = doc.toObject();
                 doc.successNotify = {
                     title: "Success",
-                    message: "Commande enregistree"
+                    message: "Commande enregistrée"
                 };
                 self.json(doc);
             });
