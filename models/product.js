@@ -118,7 +118,7 @@ var productSchema = new Schema({
         autoBarCode: { type: Boolean, default: false },
         //barCode: { type: String, index: true, uppercase: true, sparse: true },
         aclCode: { type: String, uppercase: true },
-        SKU: { type: String, default: null },
+        SKU: { type: String, index: true, unique: true, default: null },
         UPC: { type: String, default: null },
         ISBN: { type: String, default: null },
         EAN: { type: String, default: null, index: true, uppercase: true, sparse: true },
@@ -433,11 +433,11 @@ productSchema.methods.getPrice = function(qty, price_level) {
 productSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
+    var round = MODULE('utils').round;
 
     if (this.info && this.info.langs && this.info.langs.length)
         this.name = this.info.langs[0].name;
 
-    console.log(this.productType);
     if (this.info.productType && this.info.productType._id) {
         if (this.info.productType.isBundle) {
             this.isBundle = true;
@@ -481,19 +481,22 @@ productSchema.pre('save', function(next) {
 
 
 
-    if (this.isBundle && this.isModified('bundles')) {
+    if (this.isBundle) {
         this.directCost = 0;
         for (var i = 0; i < this.bundles.length; i++)
             if (this.bundles[i].id && this.bundles[i].id.directCost)
                 this.directCost += this.bundles[i].id.directCost * this.bundles[i].qty;
     }
 
-    if (this.isPackaging && this.isModified('pack')) {
+    if (this.isPackaging) {
         this.directCost = 0;
         for (var i = 0; i < this.pack.length; i++)
             if (this.pack[i].id && this.pack[i].id.directCost)
                 this.directCost += this.pack[i].id.directCost * this.pack[i].qty;
     }
+
+    if (this.sellFamily && this.sellFamily._id)
+        this.indirectCost = round(this.directCost * this.sellFamily.indirectCostRate / 100, 3);
 
     if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
@@ -701,20 +704,73 @@ F.on('load', function() {
 
         switch (channel) {
             case 'product:updateDirectCost':
-                if (data.data._id)
-                    exports.Schema.find({ 'pack.id': data.data._id })
-                    .populate("pack.id", "info directCost indirectCost")
-                    .exec(function(err, products) {
-                        products.forEach(function(product) {
-                            product.save(function(err, doc) {
-                                if (err)
-                                    return console.log(err);
+                if (data.data._id) {
+                    exports.Schema.find({ 'bundles.id': data.data._id })
+                        //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
+                        //.populate("priceLists")
+                        .populate("pack.id", "info directCost indirectCost")
+                        .populate("bundles.id", "info directCost indirectCost")
+                        .populate({
+                            path: 'info.productType'
+                                //    populate: { path: "options" }
+                        })
+                        .populate({
+                            path: 'sellFamily',
+                            populate: { path: "options", populate: { path: "group" } }
+                        })
+                        .exec(function(err, products) {
+                            products.forEach(function(product) {
+                                if (!product.isBundle)
+                                    return;
+
+                                product.save(function(err, doc) {
+                                    if (err)
+                                        return console.log(err);
+
+                                    //F.functions.PubSub.emit('product:updateDirectCost', {
+                                    //    data: doc
+                                    //});
+                                });
                             });
                         });
-                    });
+
+                    exports.Schema.find({ 'pack.id': data.data._id })
+                        //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
+                        //.populate("priceLists")
+                        .populate("pack.id", "info directCost indirectCost")
+                        .populate("bundles.id", "info directCost indirectCost")
+                        .populate({
+                            path: 'info.productType'
+                                //    populate: { path: "options" }
+                        })
+                        .populate({
+                            path: 'sellFamily',
+                            populate: { path: "options", populate: { path: "group" } }
+                        })
+                        .exec(function(err, products) {
+
+                            products.forEach(function(product) {
+                                if (!product.isPackaging)
+                                    return;
+
+                                console.log("PRODUCTS", product);
+                                product.save(function(err, doc) {
+                                    if (err)
+                                        return console.log(err);
+
+
+
+                                    // Emit to all that a productPrice in product list by coef was changed
+                                    //setTimeout2('productPrices:updatePrice_' + this._id.toString(), function() {
+                                    //F.functions.PubSub.emit('product:updateDirectCost', {
+                                    //    data: doc
+                                    //});
+                                    //}, 5000);
+                                });
+                            });
+                        });
+                }
                 break;
         }
-
-
     });
 });

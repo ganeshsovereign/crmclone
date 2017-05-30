@@ -830,7 +830,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         if (!$scope.newPack.id)
             return;
 
-        if ($scope.product[type])
+        if (!$scope.product[type])
             $scope.product[type] = [];
 
         $scope.product[type].push($scope.newPack);
