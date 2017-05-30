@@ -45,6 +45,7 @@
                                                         <span class="col-md-1 control-label bold font-dark">{{product.indirectCost | currency}}</span>
                                                     </div>
                                                 </div>
+                                                <hr>
                                                 <div class="row">
                                                     <label class="col-md-6 control-label">@(products:TotalCost) :</label>
                                                     <div class="col-md-6">
@@ -56,7 +57,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <div class="col-md-9">
                                     <div class="portlet light bordered">
@@ -82,6 +82,7 @@
                                                         <input class="form-control" ng-model="product.sellFamily.accounts[1].account" placeholder="Export EU" type="text" readonly>
                                                         <label for="ProductAccountancySellCodeEU">@(products:ProductAccountancySellCode) EU</label>
                                                     </div>
+
                                                     <div class="form-group form-md-line-input ">
                                                         <input class="form-control" ng-model="product.sellFamily.accounts[2].account" placeholder="Export" type="text" readonly>
                                                         <label for="ProductAccountancySellCodeEX">@(products:ProductAccountancySellCode) Export</label>
@@ -178,12 +179,12 @@
                                                             <th>@(products:PriceLists)</th>
                                                             <th>@(Coef.) @(Qty)</th>
                                                             <th>@(products:CostPriceHT)</th>
-                                                            <th>@(QtyMin)</th>
-                                                            <th>@(QtyMax)</th>
+                                                            <th>@(products:QtyMin)</th>
+                                                            <th>@(products:QtyMax)</th>
                                                             <th>@(products:SellingPriceHT)</th>
                                                             <th>@(products:SellingPriceTTC)</th>
-                                                            <th>@(products:Margin) HT</th>
-                                                            <th>@(UpdatedDate)</th>
+                                                            <th>@(products:MarginHT)</th>
+                                                            <th>@(UpdateMAJ)</th>
                                                             <th>@(Action)</th>
                                                         </tr>
                                                     </thead>
@@ -310,6 +311,7 @@
                                                         <span class="col-md-1 control-label bold font-dark">{{product.indirectCost | currency}}</span>
                                                     </div>
                                                 </div>
+                                                <hr>
                                                 <div class="row">
                                                     <label class="col-md-6 control-label">@(products:TotalCost) :</label>
                                                     <div class="col-md-6">
