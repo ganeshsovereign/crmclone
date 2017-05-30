@@ -3907,10 +3907,6 @@ ProductFamily.prototype = {
 
             var fields = {};
 
-
-            console.log(result.coef);
-            return console.log(result.coef.length);
-
             var i = 2; //0 is _id priceList 1 is name priceList
 
             _.each(result.column, function(elem) {
