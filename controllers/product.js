@@ -3848,7 +3848,8 @@ ProductFamily.prototype = {
                         $project: {
                             _id: 1,
                             priceLists: 1,
-                            family: 1
+                            family: 1,
+                            ceof: 1
                         }
                     }, {
                         $lookup: {
