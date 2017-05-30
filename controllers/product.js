@@ -3845,46 +3845,50 @@ ProductFamily.prototype = {
         async.parallel({
             coef: function(pCb) {
                 FamilyCoefModel.aggregate([{
-                    $project: {
-                        _id: 1,
-                        priceLists: 1,
-                        family: 1,
-                        coef: 1
+                        $project: {
+                            _id: 1,
+                            priceLists: 1,
+                            family: 1
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'PriceList',
+                            localField: 'priceLists',
+                            foreignField: '_id',
+                            as: 'priceLists'
+                        }
+                    }, {
+                        $unwind: '$priceLists'
+                    },
+                    {
+                        $match: { 'priceLists.isCoef': true }
+                    },
+                    {
+                        $lookup: {
+                            from: 'productFamily',
+                            localField: 'family',
+                            foreignField: '_id',
+                            as: 'family'
+                        }
+                    }, {
+                        $unwind: '$family'
+                    }, {
+                        $project: {
+                            _id: 1,
+                            priceListId: "$priceLists._id",
+                            priceListName: "$priceLists.name",
+                            familyId: "$family._id",
+                            familyName: { $arrayElemAt: ['$family.langs', 0] },
+                            coef: 1
+                        }
+                    }, {
+                        $group: {
+                            _id: "$familyId",
+                            name: { $first: "$familyName.name" },
+                            priceLists: { $addToSet: { _id: '$priceListId', name: '$priceListName', coef: "$coef" } }
+                        }
                     }
-                }, {
-                    $lookup: {
-                        from: 'PriceList',
-                        localField: 'priceLists',
-                        foreignField: '_id',
-                        as: 'priceLists'
-                    }
-                }, {
-                    $unwind: '$priceLists'
-                }, {
-                    $lookup: {
-                        from: 'productFamily',
-                        localField: 'family',
-                        foreignField: '_id',
-                        as: 'family'
-                    }
-                }, {
-                    $unwind: '$family'
-                }, {
-                    $project: {
-                        _id: 1,
-                        priceListId: "$priceLists._id",
-                        priceListName: "$priceLists.name",
-                        familyId: "$family._id",
-                        familyName: { $arrayElemAt: ['$family.langs', 0] },
-                        coef: 1
-                    }
-                }, {
-                    $group: {
-                        _id: "$familyId",
-                        name: { $first: "$familyName.name" },
-                        priceLists: { $addToSet: { _id: '$priceListId', name: '$priceListName', coef: "$coef" } }
-                    }
-                }], pCb);
+                ], pCb);
 
             },
             column: function(pCb) {
@@ -3903,6 +3907,10 @@ ProductFamily.prototype = {
 
             var fields = {};
 
+
+            console.log(result.coef);
+            return console.log(result.coef.length);
+
             var i = 2; //0 is _id priceList 1 is name priceList
 
             _.each(result.column, function(elem) {
@@ -3913,6 +3921,7 @@ ProductFamily.prototype = {
             _.each(result.column, function(elem) {
                 line[fields[elem._id.toString()]] = elem._id.toString();
             });
+
             line.push('\n');
             stream.emit('data', line.join(";"));
 
