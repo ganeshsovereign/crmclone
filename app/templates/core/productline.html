@@ -29,12 +29,12 @@
                         <th style="width: 140px;">@(products:ProductCode)</th>
                         <th style="width: 15%;">@(Name)</th>
                         <th style="width: 25%;">@(Description)</th>
-                        <th>@(Qty)</th>
-                        <th style="width: 120px;">@(AmountHT)</th>
-                        <th>@(Discount)%</th>
-                        <th>@(Taxes)</th>
-                        <th>@(TotalHT)</th>
-                        <th style="width: 140px;"><span ng-show="tableform.$visible">@(Action)</span></th>
+                        <th style="width: 80px;">@(Qty)</th>
+                        <th style="width: 100px;">@(AmountHT)</th>
+                        <th style="width: 100px;">@(Discount)%</th>
+                        <th style="width: 100px;">@(Taxes)</th>
+                        <th style="width: 100px;">@(TotalHT)</th>
+                        <th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th>
                     </tr>
                 </thead>
                 <tr ng-repeat="line in linesModel| filter:filterLine" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL'}">

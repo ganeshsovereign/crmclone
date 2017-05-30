@@ -72,7 +72,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-hide="module('delivery')" href="#" ng-show="object.Status == 'DRAFT'" ng-hide="!global.user.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                    <a ng-hide="module('delivery') || object.Status == 'VALIDATED'" ng-show="object.Status == 'DRAFT'" ng-hide="!global.user.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(Validate)
                     </a>
                 </li>
