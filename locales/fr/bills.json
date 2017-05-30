@@ -152,6 +152,8 @@
     "CustomersDraftInvoices": "Factures clients brouillons",
     "SuppliersDraftInvoices": "Factures fournisseurs brouillons",
     "Unpaid": "Impayées",
+    "ConfirmCloseBill": "Etes-vous sur de vouloir générer la facture ? Une fois généré la commande ne sera plus modifiable et sera classée facturée.",
+    "CloseBill": "Facturation de la commande",
     "ConfirmDeleteBill": "Êtes-vous sûr de vouloir supprimer cette facture ?",
     "ConfirmValidateBill": "Êtes-vous sûr de vouloir valider cette facture sous la référence <b>%s</b> ?",
     "ConfirmUnvalidateBill": "Êtes-vous sûr de vouloir repasser la facture <b>%s</b> au statut brouillon ?",
