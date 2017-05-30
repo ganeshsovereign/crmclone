@@ -393,6 +393,12 @@ exports.Status = {
         "BILLING": {
             "label": "StatusOrderToBill",
             "cssClass": "ribbon-color-default label-default"
+        },
+        "BILLED": {
+            "enable": true,
+            "label": "StatusOrderToBill",
+            "cssClass": "ribbon-color-primary label-primary",
+            "system": true
         }
     }
 };

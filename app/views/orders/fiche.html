@@ -61,11 +61,14 @@
                     <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!global.user.rights.order.createOrder" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusSigned)" confirmed-click="createOrder()">
                         <i class="fa fa-shopping-cart"></i> @(propal:CreateOrder)
                     </a>
-                    <a ng-if="module('delivery')" ng-show="object.Status == 'SEND'" ng-show="login.rights.delivery.createBills" ng-confirm-click="@(deliveries:ConfirmCloseDelivery)" ng-confirm-title="@(deliveries:CloseDelivery)" confirmed-click="createBill()">
-                        <i class="fa fa-money"></i> @(bills:CreateBill)
-                    </a>
+
                     <a ng-if="module('order')" ng-show="(object.Status == 'VALIDATED' || object.Status == 'PROCESSING' || object.Status == 'SHIPPING') && login.rights.order.createDelivery" ng-click="createDelivery()">
                         <i class="fa fa-plane"></i> @(orders:CreateDelivery)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="module('order')" ng-show="object.Status == 'VALIDATED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()" data-ng-click="changeStatus('BILLED')">
+                        <i class="fa fa-money"></i> @(bills:CreateBill)
                     </a>
                 </li>
                 <li>
@@ -74,7 +77,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('delivery')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
+                    <a ng-if="module('delivery')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'VALIDATED' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
                         <i class="fa fa-plane"></i> @(deliveries:Sended)
                     </a>
                 </li>
