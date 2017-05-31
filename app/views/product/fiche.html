@@ -71,6 +71,8 @@
                             <div class="profile aligntop">
                                 <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
                             </div>
+
+                            <span class="profile-desc-text"> {{product.info.langs[0].name}} </span>
                         </div>
                         <div class="col-md-6">
                             <div class="profile-usertitle">
@@ -105,13 +107,14 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
-                <div class="progress">
+                <!--<div class="progress">
                     <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
                         <span class="sr-only"> 60% Complete </span>
                     </div>
-                </div>
+                </div>-->
 
                 <div class="profile-usermenu">
                     <ul class="nav">
@@ -148,7 +151,7 @@
                         </li>-->
                         <li ng-class="{active: $state.includes('product.show.files')}">
                             <a ui-sref="product.show.files({id:product._id})">
-                                <i class="icon-picture"></i> @(products:Images/documents) </a>
+                                <i class="icon-picture"></i> @(products:Images) </a>
                         </li>
                         <li ng-class="{active: $state.includes('product.show.ecommerce')}">
                             <a ui-sref="product.show.ecommerce({id:product._id})">
@@ -185,10 +188,6 @@
                             <!-- <div class="uppercase profile-stat-text"> @(EditedBy) </div>-->
                         </div>
                     </div>
-                </div>
-                <div>
-                    <h4 class="profile-desc-title">{{product.info.SKU}}</h4>
-                    <span class="profile-desc-text"> {{product.info.langs[0].name}} </span>
                 </div>
             </div>
         </div>

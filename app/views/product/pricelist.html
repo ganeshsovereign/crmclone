@@ -8,7 +8,7 @@
             </li>
             <li>
                 <i class="fa fa-cogs"></i>
-                <a ui-sref="product.list">@(products:ProductsAndServices)</a>
+                <span>@(products:ProductsAndServices)</span>
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
@@ -117,11 +117,11 @@
         </div>
     </script>
 
-    <div class="portlet portlet light bordered" ng-init="init()">
+    <div class="portlet light bordered" ng-init="init()">
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-list-ol"></i>
-                <i class="caption-subject font-dark sbold uppercase"></i>@(products:PriceLevel)
+                <span class="caption-subject dark sbold uppercase">@(products:PriceLevel)</span>
             </div>
             <div class="actions">
                 <button class="btn blue" ng-click="addNewPrice()">@(Add) <i class="fa fa-plus"></i></button>
@@ -150,11 +150,11 @@
                                 </th>
                                 <th>@(RefOrLabel)</th>
                                 <th>@(Description)</th>
-                                <th>@(Liste de prix)</th>
-                                <th>@(Tarif HT)</th>
-                                <th>Remise Suppl.</th>
-                                <th>@(Base HT)</th>
-                                <th>Date MAJ</th>
+                                <th>@(products:PriceLists)</th>
+                                <th>@(products:RateHT)</th>
+                                <th>@(products:OverallDiscount)</th>
+                                <th>@(products:TaxFreeBasis)</th>
+                                <th>@(UpdateMAJ)</th>
                                 <th>@(Action)</th>
                             </tr>
                         </thead>
@@ -163,7 +163,7 @@
                                 <td><input type="checkbox" ng-model="grid[line._id]" /></td>
                                 <td><a ui-sref="product.show({id:line.product._id})" class="fa fa-cubes"> {{line.product.info.SKU}}</a></td>
                                 <td>{{line.product.name}}</td>
-                                <td>{{line.priceLists.priceListCode}}</td>
+                                <td>{{line.priceList.priceListCode}}</td>
                                 <!--<td>{{line.qtyMin}}</td>-->
                                 <td>
                                     <table class="table-condensed">

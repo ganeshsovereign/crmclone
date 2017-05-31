@@ -80,9 +80,14 @@
                                                         </select>
                                                 <label for="delivery_mode">@(orders:RemovingOrder)</label>
                                             </div>
-                                            <div class="form-group form-md-line-input">
+                                            <div ng-if="!module('bill')" class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="dateLivraison" date-input ng-model="object.date_livraison">
                                                 <label for="dateLivraison">@(DeliveryDate)</label>
+                                            </div>
+
+                                            <div ng-if="module('bill')" class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="datereglement" date-input ng-model="object.dater">
+                                                <label for="datereglement">@(bills:DatePayment)</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input">

@@ -57,14 +57,14 @@
                                     <span ng-show="item.isError" class="text-danger"><i class="glyphicon glyphicon-remove"></i></span>
                                 </td>
                                 <td nowrap>
-                                    <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-                                        <span class="glyphicon glyphicon-upload"></span> @(Upload)
+                                    <button type="button" class="btn btn-success btn-sm" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                        <span class="glyphicon glyphicon-upload"></span>
                                     </button>
-                                    <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                                        <span class="glyphicon glyphicon-ban-circle"></span> @(Cancel)
+                                    <button type="button" class="btn btn-warning btn-sm" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                        <span class="glyphicon glyphicon-ban-circle"></span>
                                     </button>
-                                    <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
-                                        <span class="glyphicon glyphicon-trash"></span> @(Delete)
+                                    <button type="button" class="btn red btn-sm" ng-click="item.remove()">
+                                        <span class="glyphicon glyphicon-trash"></span>
                                     </button>
                                 </td>
                             </tr>
@@ -78,14 +78,14 @@
                         <div class="progress-bar progress-bar-info" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
-                    <span class="glyphicon glyphicon-upload"></span> @(UploadAll)
+                <button type="button" class="btn btn-success btn-md" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+                    <span class="glyphicon glyphicon-upload"></span>
                 </button>
-                <button type="button" class="btn btn-warning btn-s" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
-                    <span class="glyphicon glyphicon-ban-circle"></span> @(CancelAll)
+                <button type="button" class="btn btn-warning btn-md" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+                    <span class="glyphicon glyphicon-ban-circle"></span> 
                 </button>
-                <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
-                    <span class="glyphicon glyphicon-trash"></span> @(DeleteAll)
+                <button type="button" class="btn red btn-md" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                    <span class="glyphicon glyphicon-trash"></span> 
                 </button>
             </div>
         </div>
@@ -116,10 +116,10 @@
                     <th width="45%">
                         @(Description) balise ALT
                     </th>
-                    <th width="10%">
+                    <th width="5%">
                         @(Top)
                     </th>
-                    <th width="10%">
+                    <th width="5%">
                     </th>
                 </tr>
             </thead>
@@ -142,8 +142,8 @@
                         </label>
                     </td>
                     <td>
-                        <a href="javascript:;" ng-confirm-click="Supprimer le fichier {{file.originalFilename}} ?" confirmed-click="delete(file._id)" class="btn default btn-sm">
-                            <i class="fa fa-times"></i> @(Delete) </a>
+                        <a href="javascript:;" ng-confirm-click="Supprimer le fichier {{file.originalFilename}} ?" confirmed-click="delete(file._id)" class="btn red btn-sm">
+                            <i class="glyphicon glyphicon-trash"></i> </a>
                     </td>
                 </tr>
             </tbody>

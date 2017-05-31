@@ -903,7 +903,7 @@ Object.prototype = {
 
 
                     self.res.setHeader('Content-type', 'application/pdf');
-                    Latex.Template("_list_bills.tex", self.query.entity)
+                    Latex.Template("list_bills.tex", self.query.entity)
                         .apply({
                             "DESTINATAIRE.NAME": {
                                 "type": "string",
@@ -1057,7 +1057,7 @@ Object.prototype = {
 
 
 function createBill(doc, cgv, callback) {
-    var SocieteModel = MODEL('societe').Schema;
+    var SocieteModel = MODEL('Customers').Schema;
     var BankModel = MODEL('bank').Schema;
     // Generation de la facture PDF et download
 
@@ -1072,18 +1072,18 @@ function createBill(doc, cgv, callback) {
     });
 
 
-    var model = "_bill.tex";
+    var model = "bill.tex";
     // check if discount
     for (var i = 0; i < doc.lines.length; i++) {
         if (doc.lines[i].discount > 0) {
-            model = "_bill_discount.tex";
+            model = "bill_discount.tex";
             discount = true;
             break;
         }
     }
 
-    SocieteModel.findOne({ _id: doc.client.id }, function(err, societe) {
-        BankModel.findOne({ ref: societe.bank_reglement }, function(err, bank) {
+    SocieteModel.findOne({ _id: doc.supplier.id }, function(err, societe) {
+        BankModel.findOne({ ref: doc.bank_reglement }, function(err, bank) {
             if (bank)
                 var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
@@ -1092,34 +1092,61 @@ function createBill(doc, cgv, callback) {
 
             if (discount)
                 tabLines.push({
-                    keys: [
-                        { key: "ref", type: "string" },
-                        { key: "description", type: "area" },
-                        { key: "tva_tx", type: "string" },
-                        { key: "pu_ht", type: "number", precision: 3 },
-                        { key: "discount", type: "string" },
-                        { key: "qty", type: "number", precision: 3 },
-                        { key: "total_ht", type: "euro" }
-                    ]
+                    keys: [{
+                        key: "ref",
+                        type: "string"
+                    }, {
+                        key: "description",
+                        type: "area"
+                    }, {
+                        key: "tva_tx",
+                        type: "string"
+                    }, {
+                        key: "pu_ht",
+                        type: "number",
+                        precision: 3
+                    }, {
+                        key: "discount",
+                        type: "string"
+                    }, {
+                        key: "qty",
+                        type: "number",
+                        precision: 3
+                    }, {
+                        key: "total_ht",
+                        type: "euro"
+                    }]
                 });
             else
                 tabLines.push({
-                    keys: [
-                        { key: "ref", type: "string" },
-                        { key: "description", type: "area" },
-                        { key: "tva_tx", type: "string" },
-                        { key: "pu_ht", type: "number", precision: 3 },
-                        { key: "qty", type: "number", precision: 3 },
-                        { key: "total_ht", type: "euro" }
-                    ]
+                    keys: [{
+                        key: "ref",
+                        type: "string"
+                    }, {
+                        key: "description",
+                        type: "area"
+                    }, {
+                        key: "tva_tx",
+                        type: "string"
+                    }, {
+                        key: "pu_ht",
+                        type: "number",
+                        precision: 3
+                    }, {
+                        key: "qty",
+                        type: "number",
+                        precision: 3
+                    }, {
+                        key: "total_ht",
+                        type: "euro"
+                    }]
                 });
-
             for (var i = 0; i < doc.lines.length; i++) {
                 //if (doc.lines[i].qty)
                 tabLines.push({
-                    ref: (doc.lines[i].product.name != 'SUBTOTAL' ? doc.lines[i].product.name.substring(0, 12) : ""),
+                    ref: (doc.lines[i].product.name != 'SUBTOTAL' ? doc.lines[i].product.info.SKU.substring(0, 12) : ""),
                     description: "\\textbf{" + doc.lines[i].product.label + "}\\\\" + doc.lines[i].description,
-                    tva_tx: doc.lines[i].tva_tx,
+                    tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
                     pu_ht: doc.lines[i].pu_ht,
                     discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
                     qty: doc.lines[i].qty,
@@ -1170,10 +1197,10 @@ function createBill(doc, cgv, callback) {
                 total: doc.total_ht
             });
 
-            for (var i = 0; i < doc.total_tva.length; i++) {
+            for (var i = 0; i < doc.total_taxes.length; i++) {
                 tabTotal.push({
-                    label: "Total TVA " + doc.total_tva[i].tva_tx + " %",
-                    total: doc.total_tva[i].total
+                    label: "Total " + doc.total_taxes[i].taxeId.langs[0].label,
+                    total: doc.total_taxes[i].value
                 });
             }
 
@@ -1212,12 +1239,30 @@ function createBill(doc, cgv, callback) {
                 .apply({
                     "TITLE": { "type": "string", "value": (doc.total_ttc < 0 ? "Avoir" : "Facture") },
                     "NUM": { "type": "string", "value": doc.ref },
-                    "DESTINATAIRE.NAME": { "type": "string", "value": doc.client.name },
-                    "DESTINATAIRE.ADDRESS": { "type": "area", "value": doc.address },
-                    "DESTINATAIRE.ZIP": { "type": "string", "value": doc.zip },
-                    "DESTINATAIRE.TOWN": { "type": "string", "value": doc.town },
-                    "DESTINATAIRE.TVA": { "type": "string", "value": societe.idprof6 },
-                    "CODECLIENT": { "type": "string", "value": societe.code_client },
+                    "DESTINATAIRE.NAME": {
+                        "type": "string",
+                        "value": doc.supplier.fullName
+                    },
+                    "DESTINATAIRE.ADDRESS": {
+                        "type": "area",
+                        "value": doc.address.street
+                    },
+                    "DESTINATAIRE.ZIP": {
+                        "type": "string",
+                        "value": doc.address.zip
+                    },
+                    "DESTINATAIRE.TOWN": {
+                        "type": "string",
+                        "value": doc.address.city
+                    },
+                    "DESTINATAIRE.TVA": {
+                        "type": "string",
+                        "value": societe.companyInfo.idprof6
+                    },
+                    "CODECLIENT": {
+                        "type": "string",
+                        "value": societe.salesPurchases.code_client
+                    },
                     //"TITLE": {"type": "string", "value": doc.title},
                     "REFCLIENT": { "type": "string", "value": doc.ref_client },
                     "PERIOD": { "type": "string", "value": period },

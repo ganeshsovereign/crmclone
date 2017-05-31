@@ -676,13 +676,8 @@ Object.prototype = {
                 }
             }
 
-            SocieteModel.findOne({
-                _id: doc.supplier._id
-            }, function(err, societe) {
-
-                BankModel.findOne({
-                    ref: doc.bank_reglement
-                }, function(err, bank) {
+            SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
+                BankModel.findOne({ ref: doc.bank_reglement }, function(err, bank) {
                     if (bank)
                         var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
@@ -756,7 +751,7 @@ Object.prototype = {
                             tabLines.push({
                                 ref: doc.lines[i].product.info.SKU.substring(0, 12),
                                 description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
-                                tva_tx: doc.lines[i].product.taxes[0].taxeId.rate,
+                                tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
                                 pu_ht: doc.lines[i].pu_ht,
                                 discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
                                 qty: doc.lines[i].qty,

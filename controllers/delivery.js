@@ -1540,7 +1540,7 @@ function createDelivery2(doc, callback) {
                     tabLines.push({
                         ref: doc.lines[i].product.info.SKU.substring(0, 12),
                         description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
-                        tva_tx: doc.lines[i].product.taxes[0].taxeId.rate,
+                        tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
                         pu_ht: doc.lines[i].pu_ht,
                         discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
                         qty: doc.lines[i].qty,
