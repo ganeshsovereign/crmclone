@@ -44,12 +44,10 @@ var offerSchema = new Schema({
         type: String,
         default: 'RECEP'
     },
-    paymentTerm: { type: ObjectId, ref: 'PaymentTerm', default: null }, //NOT used
     mode_reglement_code: {
         type: String,
         default: 'TIP'
     },
-    paymentMethod: { type: ObjectId, ref: 'PaymentMethod', default: null }, //NOT used
 
     //bank_reglement: {type: String},
     //availability_code: {type: String, default: 'AV_NOW'},

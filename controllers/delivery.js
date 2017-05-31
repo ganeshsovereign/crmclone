@@ -1299,7 +1299,7 @@ Billing.prototype = {
 };
 
 function createDelivery(doc, callback) {
-    var SocieteModel = MODEL('societe').Schema;
+    var SocieteModel = MODEL('Customers').Schema;
     // Generation du BL PDF et download
     var fk_livraison;
 
@@ -1312,7 +1312,7 @@ function createDelivery(doc, callback) {
         fk_livraison = doc;
     });
 
-    var model = "_delivery.tex";
+    var model = "delivery.tex";
 
     SocieteModel.findOne({ _id: doc.client.id }, function(err, societe) {
 
@@ -1390,12 +1390,34 @@ function createDelivery(doc, callback) {
 
         Latex.Template(model, doc.entity)
             .apply({
-                "NUM": { "type": "string", "value": doc.ref },
-                "DESTINATAIRE.NAME": { "type": "string", "value": doc.name },
-                "DESTINATAIRE.ADDRESS": { "type": "area", "value": doc.address },
-                "DESTINATAIRE.ZIP": { "type": "string", "value": doc.zip },
-                "DESTINATAIRE.TOWN": { "type": "string", "value": doc.town },
-                "CODECLIENT": { "type": "string", "value": societe.code_client },
+                "NUM": {
+                    "type": "string",
+                    "value": doc.ref
+                },
+                "DESTINATAIRE.NAME": {
+                    "type": "string",
+                    "value": doc.address.name
+                },
+                "DESTINATAIRE.ADDRESS": {
+                    "type": "area",
+                    "value": doc.address.street
+                },
+                "DESTINATAIRE.ZIP": {
+                    "type": "string",
+                    "value": doc.address.zip
+                },
+                "DESTINATAIRE.TOWN": {
+                    "type": "string",
+                    "value": doc.address.city
+                },
+                "DESTINATAIRE.TVA": {
+                    "type": "string",
+                    "value": societe.companyInfo.idprof6
+                },
+                "CODECLIENT": {
+                    "type": "string",
+                    "value": societe.salesPurchases.code_client
+                },
                 //"TITLE": {"type": "string", "value": doc.title},
                 "REFCLIENT": { "type": "string", "value": doc.ref_client },
                 "DELIVERYMODE": { "type": "string", "value": doc.delivery_mode },
@@ -1406,7 +1428,7 @@ function createDelivery(doc, callback) {
                 },
                 "DATEEXP": {
                     "type": "date",
-                    "value": doc.datedl,
+                    "value": doc.date_livraison,
                     "format": CONFIG('dateformatShort')
                 },
                 "ORDER": { "type": "string", "value": (doc.order && doc.order.ref ? doc.order.ref : "-") },
@@ -1426,7 +1448,7 @@ function createDelivery(doc, callback) {
 }
 
 function createDelivery2(doc, callback) {
-    var SocieteModel = MODEL('societe').Schema;
+    var SocieteModel = MODEL('Customers').Schema;
     var BankModel = MODEL('bank').Schema;
     // Generation des BL chiffre PDF et download
 
@@ -1453,7 +1475,7 @@ function createDelivery2(doc, callback) {
         }
     }
 
-    SocieteModel.findOne({ _id: doc.client.id }, function(err, societe) {
+    SocieteModel.findOne({ _id: doc.supplier.id }, function(err, societe) {
         BankModel.findOne({ ref: societe.bank_reglement }, function(err, bank) {
             if (bank)
                 var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
@@ -1501,18 +1523,28 @@ function createDelivery2(doc, callback) {
             }
 
             for (var i = 0; i < doc.lines.length; i++) {
-                if (doc.lines[i].product.name != 'SUBTOTAL' && doc.lines[i].qty !== 0)
+                if (doc.lines[i].type == 'SUBTOTAL')
                     tabLines.push({
-                        ref: (doc.lines[i].product.name != 'SUBTOTAL' ? doc.lines[i].product.name.substring(0, 12) : ""),
-                        description: "\\textbf{" + doc.lines[i].product.label + "}\\\\" + doc.lines[i].description,
-                        tva_tx: doc.lines[i].tva_tx,
+                        ref: "",
+                        description: "\\textbf{Sous-total}",
+                        tva_tx: null,
+                        pu_ht: "",
+                        discount: "",
+                        qty: "",
+                        total_ht: doc.lines[i].total_ht
+                    });
+                else
+                    tabLines.push({
+                        ref: doc.lines[i].product.info.SKU.substring(0, 12),
+                        description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                        tva_tx: doc.lines[i].product.taxes[0].taxeId.rate,
                         pu_ht: doc.lines[i].pu_ht,
                         discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
                         qty: doc.lines[i].qty,
                         total_ht: doc.lines[i].total_ht
                     });
 
-                if (doc.lines[i].product.name == 'SUBTOTAL') {
+                if (doc.lines[i].type == 'SUBTOTAL') {
                     tabLines[tabLines.length - 1].italic = true;
                     tabLines.push({ hline: 1 });
                 }
@@ -1539,14 +1571,12 @@ function createDelivery2(doc, callback) {
                 label: "Total HT",
                 total: doc.total_ht
             });
-
-            for (var i = 0; i < doc.total_tva.length; i++) {
+            for (var i = 0; i < doc.total_taxes.length; i++) {
                 tabTotal.push({
-                    label: "Total TVA " + doc.total_tva[i].tva_tx + " %",
-                    total: doc.total_tva[i].total
+                    label: "Total " + doc.total_taxes[i].taxeId.langs[0].label,
+                    total: doc.total_taxes[i].value
                 });
             }
-
             //Total TTC
             tabTotal.push({
                 label: "Total TTC",
@@ -1612,30 +1642,50 @@ function createDelivery2(doc, callback) {
             if (doc.dateOf && doc.dateTo)
                 period = "\\textit{P\\'eriode du " + moment(doc.dateOf).format(CONFIG('dateformatShort')) + " au " + moment(doc.dateTo).format(CONFIG('dateformatShort')) + "}\\\\";
 
-            var model_latex = "_delivery2.tex"; //PRICE
+            var model_latex = "delivery2.tex"; //PRICE
 
             if (model === "DISCOUNT")
-                model_latex = "_delivery2_discount.tex";
+                model_latex = "delivery2_discount.tex";
             else if (model === "NOPRICE")
-                model_latex = "_delivery.tex";
+                model_latex = "delivery.tex";
 
             Latex.Template(model_latex, doc.entity)
                 .apply({
-                    "TITLE": { "type": "string", "value": "Bon de livraison" },
-                    "NUM": { "type": "string", "value": doc.ref },
-                    "DESTINATAIRE.NAME": { "type": "string", "value": doc.name },
-                    "DESTINATAIRE.ADDRESS": { "type": "area", "value": doc.address },
-                    "DESTINATAIRE.ZIP": { "type": "string", "value": doc.zip },
-                    "DESTINATAIRE.TOWN": { "type": "string", "value": doc.town },
-                    //"DESTINATAIRE.TVA": {"type": "string", "value": societe.idprof6},
-                    "CODECLIENT": { "type": "string", "value": societe.code_client },
+                    "NUM": {
+                        "type": "string",
+                        "value": doc.ref
+                    },
+                    "DESTINATAIRE.NAME": {
+                        "type": "string",
+                        "value": doc.shippingAddress.name
+                    },
+                    "DESTINATAIRE.ADDRESS": {
+                        "type": "area",
+                        "value": doc.shippingAddress.street
+                    },
+                    "DESTINATAIRE.ZIP": {
+                        "type": "string",
+                        "value": doc.shippingAddress.zip
+                    },
+                    "DESTINATAIRE.TOWN": {
+                        "type": "string",
+                        "value": doc.shippingAddress.city
+                    },
+                    "DESTINATAIRE.TVA": {
+                        "type": "string",
+                        "value": societe.companyInfo.idprof6
+                    },
+                    "CODECLIENT": {
+                        "type": "string",
+                        "value": societe.salesPurchases.code_client
+                    },
                     //"TITLE": {"type": "string", "value": doc.title},
                     "REFCLIENT": { "type": "string", "value": doc.ref_client },
                     "PERIOD": { "type": "string", "value": period },
                     "DELIVERYMODE": { "type": "string", "value": doc.delivery_mode },
                     "DATEEXP": {
                         "type": "date",
-                        "value": doc.datedl,
+                        "value": doc.date_livraison,
                         "format": CONFIG('dateformatShort')
                     },
                     "DATEC": {
