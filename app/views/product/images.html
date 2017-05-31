@@ -1,3 +1,67 @@
+<div class="page-bar" ng-init="findOne()">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a ui-sref="product.list">@(products:ListProductsAndServices)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span></span>
+        </li>
+        <li>
+            <span ng-class="{'font-red':!product.info.isActive}"> @(products:ProductSheet) : {{product.info.SKU}}</span>
+        </li>
+
+        <li>
+            <small ng-hide="!product.info.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group">
+            <a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-flag"></i> {{languages[_language].name}} <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li ng-repeat="s in languages">
+                    <a href="#" ng-click="setLanguage(s.idx)">
+                        <i class="fa fa-copy"></i> {{s.name}}
+                    </a>
+
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li>
+                    <a href="#" ng-click="refreshDirectory()">
+                        <i class="fa fa-refresh"></i> @(Refresh)
+                    </a>
+                </li>
+                <!--   <li>
+                    <a href="#" ng-click="clone()">
+                        <i class="fa fa-copy"></i> @(PrintPDF)
+                    </a>
+                </li> -->
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div ng-if="product.isremoved" class="alert alert-danger"><strong>Attention !</strong> Ce produit est supprime. </div>
+
+
 <div class="portlet light portlet-form bordered">
     <div class="portlet-title">
         <div class="caption">
@@ -5,7 +69,6 @@
             <span class="caption-subject dark bold uppercase"> @(AttachedFiles)</span>
             <span class="caption-helper"> - @(products:ProductServiceCard)</span>
         </div>
-        <save mode="product._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
     </div>
     <div class="portlet-body">
         <div ng-include="'/templates/gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>

@@ -15,8 +15,8 @@ var mongoose = require('mongoose'),
 var Dict = require('./dict');
 
 var latex = {
-    models: framework.path.root() + "/latex/",
-    includes: framework.path.root() + "/latex/texpackages/"
+    models: F.path.root() + "/latex/",
+    includes: F.path.root() + "/latex/texpackages/"
 };
 
 /**
@@ -392,7 +392,7 @@ Template.prototype.compile = function(layout, inputTex) {
 
     var compile = function(tex) {
         // make temporary directory to create and compile latex pdf
-        var dirPath = framework.path.temp() + "pdfcreator-" + shortId.generate();
+        var dirPath = F.path.temp() + "pdfcreator-" + shortId.generate();
 
         fs.mkdirSync(dirPath);
 

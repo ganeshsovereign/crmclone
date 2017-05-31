@@ -187,9 +187,24 @@ var Images = function() {
     return new function() {
         this.scanDirectory = function() {
             var self = this;
+            var ImagesModel = MODEL('Images').Schema;
 
-            U.ls2('productImages', function(files) {
-                console.log(files);
+            U.ls(F.path.root() + '/productImages', function(files) {
+                async.forEach(files, function(file, aCb) {
+                    let name = file.split('/');
+                    name = name.pop();
+
+                    ImagesModel.update({ imageSrc: name }, {
+                        $set: {
+                            imageSrc: name
+                        }
+                    }, { upsert: true }, aCb);
+                }, function(err) {
+                    if (err)
+                        return self.throw500(err);
+
+                    return self.json({});
+                });
             });
         };
     };
