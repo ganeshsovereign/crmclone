@@ -18,8 +18,7 @@
     ],
     "license": "OSL v3",
     "rights": {
-        "product": [
-            {
+        "product": [{
                 "desc": "Lire les produits",
                 "perm": {
                     "read": true
@@ -92,6 +91,15 @@
                     "enabled": "$conf->product->enabled",
                     "icon": "fa-line-chart",
                     "title": "products:Consumptions"
+                },
+                "menu:images": {
+                    "url": "/erp/#!/product/images.html",
+                    "position": 25,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa-line-picture",
+                    "title": "products:Images"
                 }
             }
         }

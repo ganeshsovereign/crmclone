@@ -25,21 +25,13 @@ International Registered Trademark & Property of ToManage SAS
 
 
 "use strict";
-/* global angular: true */
 
-//Bills service used for REST endpoint
-MetronicApp.factory("Products", ['$resource', function($resource) {
-    return $resource('/erp/api/product/:Id', {
+MetronicApp.factory("ProductImages", ['$resource', function($resource) {
+    return $resource('/erp/api/images/:Id', {
         Id: '@_id'
     }, {
         update: {
             method: 'PUT'
-        },
-        clone: {
-            method: 'POST',
-            params: {
-                clone: 1
-            }
         }
     });
 }]);

@@ -96,7 +96,6 @@ var productSchema = new Schema({
     onlyWeb: { type: Boolean },
     istop: { type: Boolean, default: false },
     ischat: { type: Boolean, default: false },
-    //sourceDocument: { type: Schema.Types.ObjectId, ref: 'ProductImages', default: null },
     imageSrc: {
         type: Schema.Types.ObjectId,
         //    ref: 'Images',
@@ -177,7 +176,8 @@ var productSchema = new Schema({
 
     externalId: { type: String, default: '' },
 
-    files: { type: Array, default: [] },
+    //files: { type: Array, default: [] },
+    attachments: { type: Array, default: [] },
 
     //label: { type: String, default: "" },
     //description: { type: String, default: "" },

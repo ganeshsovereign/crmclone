@@ -1005,6 +1005,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductStatsController"
         })
+        .state('product.images', {
+            parent: "product",
+            url: "/images.html",
+            templateUrl: "/views/product/images.html",
+            data: {
+                pageTitle: 'Banques d\'images des produits'
+            },
+            controller: "ProductImagesController"
+        })
         .state('product.visual', {
             parent: "product",
             url: "/visual/{id:[0-9a-z]{24}}",

@@ -1559,3 +1559,29 @@ MetronicApp.controller('ProductStatsController', ['$scope', '$rootScope', '$http
     };
 
 }]);
+
+MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$http', 'ProductImages', function($scope, $rootScope, $http, ProductImages) {
+
+    $scope.refreshDirectory = function() {
+        ProductImages.$update(function(data) {
+            console.log(data);
+        });
+    };
+
+    $scope.$on('$viewContentLoaded', function() {
+
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
+
+        /*
+
+                $http({
+                    method: 'GET',
+                    url: '/erp/api/product/prices/priceslist/select',
+                    params: { cost: false }
+                }).success(function(data) {
+                    $scope.pricesLists = data.data;
+                });*/
+    });
+
+}]);
