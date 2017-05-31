@@ -188,7 +188,7 @@ var customerSchema = new Schema({
     emails: [{
         _id: false,
         type: { type: String, default: "pro" }, //billing, delivery...
-        email: { type: String, lowercase: true, trim: true, default: '' }
+        email: { type: String, lowercase: true, trim: true, unique: true }
     }],
     newsletter: { type: Boolean, default: false }, //newsletter
     sendEmailing: { type: Boolean, default: true }, //sendEmailing

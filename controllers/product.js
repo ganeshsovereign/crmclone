@@ -3851,7 +3851,7 @@ ProductFamily.prototype = {
                             _id: 1,
                             priceLists: 1,
                             family: 1,
-                            ceof: 1
+                            coef: 1
                         }
                     }, {
                         $lookup: {
@@ -3936,7 +3936,7 @@ ProductFamily.prototype = {
                     var line = [coef._id, coef.name];
 
                     async.forEach(coef.priceLists, function(priceList, bCb) {
-                        line[fields[priceList._id.toString()]] = priceList.coef
+                        line[fields[priceList._id.toString()]] = priceList.coef.toString().replace(".", ",");
                         bCb();
                     }, function(err) {
                         line.push('\n');

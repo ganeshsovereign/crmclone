@@ -104,6 +104,31 @@ F.on('load', function() {
 
                 break;
 
+                /**
+                 * Refresh all priceList if a coef changed in productFamilyCoef
+                 */
+            case 'productFamily:coef':
+                if (!data.data._id)
+                    return;
+
+                ProductModel.find({ sellFamily: data.data._id })
+                    //.populate("priceLists")
+                    .exec(function(err, docs) {
+
+                        docs.forEach(function(elem) {
+                            setTimeout2('product:updateDirectCost_' + elem._id.toString(), function() {
+                                F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: elem._id } });
+                            }, 500);
+
+                            //                elem.save(function(err) {
+                            //                    if (err)
+                            //                        console.log("update productFamily coef error ", err);
+                            //                });
+
+                        });
+                    });
+
+                break;
         }
     });
 });
