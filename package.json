@@ -57,8 +57,10 @@
     "symeos-mqtt": "latest",
     "total.js": "2.1.x",
     "unzip": "^0.1.11",
+    "validator": "4.2.1",
     "xml-writer": ">=1.4.1",
-    "xml2js": "latest"
+    "xml2js": "latest",
+    "xss-filters": "^1.2.6"
   },
   "devDependencies": {
     "autoprefixer": "^6.5.0",

@@ -7,8 +7,7 @@ var objectId = mongoose.Types.ObjectId;
 var _ = require('lodash'),
     async = require('async'),
     numeral = require('numeral'),
-    moment = require('moment'),
-    mongoose = require('mongoose');
+    moment = require('moment');
 
 exports.page = function(data) {
     "use strict";
