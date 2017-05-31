@@ -64,7 +64,7 @@
         <div class="profile-sidebar">
             <div class="portlet light profile-sidebar-portlet">
                 <div class="profile-userpic">
-                    <img ng-src="{{getImage('employee', employee.imageSrc)}}" class="img-responsive" alt="Product" />
+                    <img ng-src="{{getImage('employee', employee.imageSrc)}}" class="img-responsive" alt="Employee" />
                 </div>
                 <div class="profile-usertitle">
                     <div class="profile-usertitle-name"> {{employee.name.first}} {{employee.name.last}}</div>
@@ -76,9 +76,13 @@
                             <a ui-sref="employee.show.main">
                                 <i class="icon-info" class="selected"></i> @(users:Main) </a>
                         </li>
-                        <li ng-class="{active: $state.includes('employee.show.personnalinformation')}">
+                        <!--<li ng-class="{active: $state.includes('employee.show.personnalinformation')}">
                             <a ui-sref="employee.show.personnalinformation">
                                 <i class="icon-speech"></i> @(users:PersonnalInformation) </a>
+                        </li>-->
+                        <li ng-class="{active: $state.includes('employee.show.files')}">
+                            <a ui-sref="employee.show.files">
+                                <i class="icon-picture"></i> @(products:Images/documents) </a>
                         </li>
                         <!--<li ng-class="{active: $state.includes('employee.show.job')}">
                             <a ui-sref="employee.show.job">

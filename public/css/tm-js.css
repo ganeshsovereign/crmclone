@@ -24,6 +24,7 @@
 
 body {
     font-size: 12px;
+    zoom: 90%;
 }
 
 body,
@@ -617,4 +618,14 @@ small {
 
 .profile-sidebar-portlet {
     padding: 60px 0 px 0 !important;
+}
+
+.scroll-to-top>i {
+    color: #FF6600;
+    font-size: 36px;
+    opacity: .7;
+}
+
+.aligntop {
+    margin-top: 30%;
 }
