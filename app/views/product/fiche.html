@@ -68,7 +68,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-6 ">
-                            <div class="profile aligntop ">
+                            <div class="profile aligntop">
                                 <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
                             </div>
 
@@ -189,10 +189,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="portlet-body">
-                    <div ng-include="'/templates/gridfs/filelist.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
-                </div>
-
             </div>
         </div>
         <div ui-view class="profile-content fade-in-up"></div>

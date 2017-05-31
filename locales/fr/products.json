@@ -360,5 +360,7 @@
     "IsGlobalDiscount": "Par Remise Globale",
     "BasePriceList": "Liste de prix référente",
     "indirectCostRate": "Majoration prix revient Transp. (%)",
-    "MinMargin": "Marge minimum (%)"
+    "MinMargin": "Marge minimum (%)",
+    "OverallDiscount": "Remise Globale",
+    "TaxFreeBasis": "Base H.T."
 }
