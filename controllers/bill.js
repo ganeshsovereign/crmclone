@@ -1212,12 +1212,30 @@ function createBill(doc, cgv, callback) {
                 .apply({
                     "TITLE": { "type": "string", "value": (doc.total_ttc < 0 ? "Avoir" : "Facture") },
                     "NUM": { "type": "string", "value": doc.ref },
-                    "DESTINATAIRE.NAME": { "type": "string", "value": doc.client.name },
-                    "DESTINATAIRE.ADDRESS": { "type": "area", "value": doc.address },
-                    "DESTINATAIRE.ZIP": { "type": "string", "value": doc.zip },
-                    "DESTINATAIRE.TOWN": { "type": "string", "value": doc.town },
-                    "DESTINATAIRE.TVA": { "type": "string", "value": societe.idprof6 },
-                    "CODECLIENT": { "type": "string", "value": societe.code_client },
+                    "DESTINATAIRE.NAME": {
+                        "type": "string",
+                        "value": doc.supplier.fullName
+                    },
+                    "DESTINATAIRE.ADDRESS": {
+                        "type": "area",
+                        "value": doc.address.street
+                    },
+                    "DESTINATAIRE.ZIP": {
+                        "type": "string",
+                        "value": doc.address.zip
+                    },
+                    "DESTINATAIRE.TOWN": {
+                        "type": "string",
+                        "value": doc.address.city
+                    },
+                    "DESTINATAIRE.TVA": {
+                        "type": "string",
+                        "value": societe.companyInfo.idprof6
+                    },
+                    "CODECLIENT": {
+                        "type": "string",
+                        "value": societe.salesPurchases.code_client
+                    },
                     //"TITLE": {"type": "string", "value": doc.title},
                     "REFCLIENT": { "type": "string", "value": doc.ref_client },
                     "PERIOD": { "type": "string", "value": period },

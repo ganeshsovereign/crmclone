@@ -676,13 +676,8 @@ Object.prototype = {
                 }
             }
 
-            SocieteModel.findOne({
-                _id: doc.supplier._id
-            }, function(err, societe) {
-
-                BankModel.findOne({
-                    ref: doc.bank_reglement
-                }, function(err, bank) {
+            SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
+                BankModel.findOne({ ref: doc.bank_reglement }, function(err, bank) {
                     if (bank)
                         var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
