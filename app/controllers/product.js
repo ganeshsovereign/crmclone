@@ -1563,7 +1563,8 @@ MetronicApp.controller('ProductStatsController', ['$scope', '$rootScope', '$http
 MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$http', 'ProductImages', function($scope, $rootScope, $http, ProductImages) {
 
     $scope.refreshDirectory = function() {
-        ProductImages.$update(function(data) {
+        var images = new ProductImages();
+        images.$update(function(data) {
             console.log(data);
         });
     };

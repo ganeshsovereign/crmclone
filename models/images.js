@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ImagesSchema = new mongoose.Schema({
-    imageSrc: { type: String, default: '' },
+    imageSrc: { type: String, unique: true },
     size: { type: Number },
     langs: [{
         _id: false,
