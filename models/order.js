@@ -44,13 +44,10 @@ var orderSchema = new Schema({
         type: String,
         default: 'RECEP'
     },
-    paymentTerm: { type: ObjectId, ref: 'PaymentTerm' }, //NOT used
     mode_reglement_code: {
         type: String,
         default: 'TIP'
     },
-    paymentMethod: { type: ObjectId, ref: 'PaymentMethod' }, //NOT used
-
     //bank_reglement: {type: String},
     //availability_code: {type: String, default: 'AV_NOW'},
     type: {

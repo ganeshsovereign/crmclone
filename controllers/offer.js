@@ -561,12 +561,8 @@ Object.prototype = {
                 }
             }
 
-            SocieteModel.findOne({
-                _id: doc.supplier._id
-            }, function(err, societe) {
-                BankModel.findOne({
-                    ref: doc.bank_reglement
-                }, function(err, bank) {
+            SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
+                BankModel.findOne({ ref: doc.bank_reglement }, function(err, bank) {
                     if (bank)
                         var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
@@ -721,7 +717,7 @@ Object.prototype = {
                             },
                             "DESTINATAIRE.NAME": {
                                 "type": "string",
-                                "value": doc.address.name
+                                "value": doc.supplier.fullName
                             },
                             "DESTINATAIRE.ADDRESS": {
                                 "type": "area",
@@ -766,14 +762,8 @@ Object.prototype = {
                                 "value": doc.date_livraison,
                                 "format": CONFIG('dateformatShort')
                             },
-                            "REGLEMENT": {
-                                "type": "string",
-                                "value": cond_reglement_code.values[doc.cond_reglement_code].label
-                            },
-                            "PAID": {
-                                "type": "string",
-                                "value": mode_reglement_code.values[doc.mode_reglement_code].label
-                            },
+                            "REGLEMENT": { "type": "string", "value": cond_reglement_code.values[doc.cond_reglement_code].label },
+                            "PAID": { "type": "string", "value": mode_reglement_code.values[doc.mode_reglement_code].label },
                             "NOTES": {
                                 "type": "area",
                                 "value": (doc.notes.length ? doc.notes[0].note : ""),

@@ -834,7 +834,7 @@ Object.prototype = {
                             },
                             "DESTINATAIRE.NAME": {
                                 "type": "string",
-                                "value": doc.address.name
+                                "value": doc.supplier.fullName
                             },
                             "DESTINATAIRE.ADDRESS": {
                                 "type": "area",

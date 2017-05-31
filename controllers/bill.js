@@ -891,11 +891,30 @@ Object.prototype = {
                     self.res.setHeader('Content-type', 'application/pdf');
                     Latex.Template("_list_bills.tex", self.query.entity)
                         .apply({
-                            "DESTINATAIRE.NAME": { "type": "string", "value": doc.client.name },
-                            "DESTINATAIRE.ADDRESS": { "type": "area", "value": doc.address },
-                            "DESTINATAIRE.ZIP": { "type": "string", "value": doc.zip },
-                            "DESTINATAIRE.TOWN": { "type": "string", "value": doc.town },
-                            //"CODECLIENT": {"type": "string", "value": societe.code_client},
+                            "DESTINATAIRE.NAME": {
+                                "type": "string",
+                                "value": doc.shippingAddress.name
+                            },
+                            "DESTINATAIRE.ADDRESS": {
+                                "type": "area",
+                                "value": doc.shippingAddress.street
+                            },
+                            "DESTINATAIRE.ZIP": {
+                                "type": "string",
+                                "value": doc.shippingAddress.zip
+                            },
+                            "DESTINATAIRE.TOWN": {
+                                "type": "string",
+                                "value": doc.shippingAddress.city
+                            },
+                            "DESTINATAIRE.TVA": {
+                                "type": "string",
+                                "value": societe.companyInfo.idprof6
+                            },
+                            "CODECLIENT": {
+                                "type": "string",
+                                "value": societe.salesPurchases.code_client
+                            },
                             "DATEC": {
                                 "type": "date",
                                 "value": new Date(),
