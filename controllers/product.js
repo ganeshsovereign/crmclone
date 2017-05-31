@@ -93,7 +93,7 @@ exports.install = function() {
                 return self.json({
                     successNotify: {
                         title: "Success",
-                        message: "Prix enregistre"
+                        message: "Prix enregistré"
                     }
                 });
             });
@@ -134,7 +134,7 @@ exports.install = function() {
                 return self.json({
                     successNotify: {
                         title: "Success",
-                        message: "Prix enregistre"
+                        message: "Prix enregistré"
                     }
                 });
             });
@@ -160,7 +160,7 @@ exports.install = function() {
                 return self.json({
                     successNotify: {
                         title: "Success",
-                        message: "Remise enregistree"
+                        message: "Remise enregistrée"
                     }
                 });
             });
@@ -192,7 +192,7 @@ exports.install = function() {
                 return self.json({
                     successNotify: {
                         title: "Success",
-                        message: "Remise enregistree"
+                        message: "Remise enregistrée"
                     }
                 });
             });
@@ -569,7 +569,7 @@ exports.install = function() {
             return self.json({
                 successNotify: {
                     title: "Success",
-                    message: "Tarifs modifies"
+                    message: "Tarifs modifiés"
                 }
             });
         });
@@ -836,7 +836,7 @@ Object.prototype = {
             doc = doc.toObject();
             doc.successNotify = {
                 title: "Success",
-                message: "Produit enregistre"
+                message: "Produit enregistré"
             };
             self.json(doc);
         });
@@ -1131,7 +1131,6 @@ Object.prototype = {
                         // Add id
                         res.datatable.data[i].DT_RowId = row._id.toString();
                         //Prices 
-
                         if (row.prices && row.prices.pu_ht)
                             res.datatable.data[i].prices.pu_ht = MODULE('utils').printPrice(row.prices.pu_ht, 3);
                         //else if (row.Status == 'SELL' || row.Status == 'SELLBUY')
@@ -1147,6 +1146,11 @@ Object.prototype = {
                         if (res.datatable.data[i].info.isActive == false)
                         // Add color line 
                             res.datatable.data[i].DT_RowClass = "bg-red-haze";
+                        // Add Pictures
+                        if (row.imageSrc)
+                            res.datatable.data[i].imageSrc = '<img width="32" height="32" src="/erp/api/file/product/' + row.imageSrc + '"/>';
+                        else
+                            res.datatable.data[i].imageSrc = '<img width="32" height="32" src="/assets/admin/layout/img/nophoto.jpg"/>';
 
                         // Action
                         res.datatable.data[i].action = '<a href="#!/product/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.info.SKU + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
@@ -1974,7 +1978,7 @@ Object.prototype = {
                 doc = doc.toObject();
                 doc.successNotify = {
                     title: "Success",
-                    message: "Produit enregistre"
+                    message: "Produit enregistré"
                 };
                 self.json(doc);
             });
@@ -2604,7 +2608,7 @@ PricesList.prototype = {
             doc = doc.toObject();
             doc.successNotify = {
                 title: "Success",
-                message: "Configuration enregistree"
+                message: "Configuration enregistrée"
             };
             self.json(doc);
         });
@@ -2818,7 +2822,7 @@ var Prices = function() {
                     doc = doc.toObject();
                     doc.successNotify = {
                         title: "Success",
-                        message: "Prix enregistree"
+                        message: "Prix enregistré"
                     };
                     self.json(doc);
                 });
@@ -2855,7 +2859,7 @@ var Prices = function() {
                             doc = doc.toObject();
                             doc.successNotify = {
                                 title: "Success",
-                                message: "Prix enregistree"
+                                message: "Prix enregistré"
                             };
                             self.json(doc);
                         });
@@ -2879,7 +2883,7 @@ var Prices = function() {
                         doc = doc.toObject();
                         doc.successNotify = {
                             title: "Success",
-                            message: "Prix enregistree"
+                            message: "Prix enregistré"
                         };
                         self.json(doc);
                     });
@@ -2912,7 +2916,7 @@ var Prices = function() {
                     doc = doc.toObject();
                     doc.successNotify = {
                         title: "Success",
-                        message: "Nouveau prix enregistree"
+                        message: "Nouveau prix enregistré"
                     };
                     self.json(doc);
                 });
@@ -3386,7 +3390,7 @@ ProductTypes.prototype = {
             doc = doc.toObject();
             doc.successNotify = {
                 title: "Success",
-                message: "Configuration enregistree"
+                message: "Configuration enregistrée"
             };
             self.json(doc);
         });
@@ -3852,7 +3856,7 @@ ProductFamily.prototype = {
                 var doc = {};
                 doc.successNotify = {
                     title: "Success",
-                    message: "Configuration enregistree"
+                    message: "Configuration enregistrée"
                 };
                 self.json(doc);
             });

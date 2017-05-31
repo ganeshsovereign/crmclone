@@ -1,0 +1,13 @@
+<div class="portlet light portlet-form bordered" ng-if="product._id">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-picture"></i>
+            <span class="caption-subject dark bold uppercase"> @(AttachedFiles)</span>
+            <span class="caption-helper"> - @(products:ProductServiceCard)</span>
+        </div>
+        <save mode="product._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+    </div>
+    <div class="portlet-body">
+        <div ng-include="'/templates/gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
+    </div>
+</div>

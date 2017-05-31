@@ -1111,6 +1111,11 @@ Object.prototype = {
                                 res.datatable.data[i].editedBy = (row.editedBy ? row.editedBy.name : "");
                                 res.datatable.data[i].createdBy = (row.createdBy ? row.createdBy.name : "");
 
+                                if (row.imageSrc)
+                                    res.datatable.data[i].imageSrc = '<img width="32" height="32" src="/erp/api/file/product/' + row.imageSrc + '"/>';
+                                else
+                                    res.datatable.data[i].imageSrc = '<img width="32" height="32" src="/assets/admin/layout/img/nophoto.jpg"/>';
+
                                 // Action
                                 res.datatable.data[i].action = '<a href="#!/employee/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                                 // Add url on name

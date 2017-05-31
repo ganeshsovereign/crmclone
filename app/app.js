@@ -1526,7 +1526,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/employees/main.html",
             data: {
                 pageTitle: 'Main'
-            },
+            }
+        })
+        // Files
+        .state('employee.show.files', {
+            url: "/files",
+            templateUrl: "/views/employees/files.html",
+            data: {
+                pageTitle: 'Images / Documents'
+            }
         })
         // Personnal Information
         .state("employee.show.personnalinformation", {

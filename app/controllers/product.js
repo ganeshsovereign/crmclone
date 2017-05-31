@@ -428,6 +428,8 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 "columns": [{
                     data: 'bool'
                 }, {
+                    "data": "imageSrc"
+                }, {
                     "data": "info.SKU"
                 }, {
                     data: 'info.productType',
