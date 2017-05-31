@@ -2024,6 +2024,7 @@ Object.prototype = {
     create: function() {
         var self = this;
         var Model = MODEL('Employees').Schema;
+        var validatorEmployee = MODULE('validator');
         var userId = self.user._id;
         var currentDate = new Date();
         var body = self.body;
@@ -2051,10 +2052,12 @@ Object.prototype = {
         }
 
         if (!validatorEmployee.validEmployeeBody(body)) {
-            err = new Error();
-            err.status = 404;
-
-            return self.throw500(err);
+            return self.json({
+                errorNotify: {
+                    title: 'Erreur',
+                    message: 'Donnees manquantes'
+                }
+            });
         }
 
         body.createdBy = userId;
