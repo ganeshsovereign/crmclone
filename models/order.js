@@ -26,6 +26,7 @@ var setDate = MODULE('utils').setDate;
  */
 var orderSchema = new Schema({
     forSales: { type: Boolean, default: true },
+    isremoved: Boolean,
     ref: { type: String },
     /*title: {//For internal use only
         ref: String,
@@ -101,7 +102,8 @@ var orderSchema = new Schema({
     }],
     total_ttc: {
         type: Number,
-        default: 0
+        default: 0,
+        set: setPrice
     },
     shipping: {
         total_ht: {

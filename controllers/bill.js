@@ -139,10 +139,24 @@ function Bill(id, cb) {
     //console.log(query);
 
     BillModel.findOne(query, "-latex")
-        .populate("order", "ref lines total_ht")
-        .populate("orders", "ref ref_client total_ht client")
-        .populate("deliveries", "ref ref_client total_ht client")
-        .populate("contacts", "firstname lastname phone email")
+        .populate("orders", "ref total_ht")
+        .populate("contacts", "name phone email")
+        .populate({
+            path: "supplier",
+            select: "name salesPurchases",
+            populate: { path: "salesPurchases.priceList" }
+        })
+        .populate({
+            path: "lines.product",
+            select: "taxes info weight units",
+            //populate: { path: "taxes.taxeId" }
+        })
+        .populate({
+            path: "lines.total_taxes.taxeId"
+        })
+        .populate({
+            path: "total_taxes.taxeId"
+        })
         .populate("createdBy", "username")
         .populate("editedBy", "username")
         .exec(cb);

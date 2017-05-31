@@ -26,7 +26,8 @@ var taxSchema = new mongoose.Schema({
 });
 
 taxSchema.virtual('name').get(function() {
-    return this.langs[0].name;
+    if (this.langs && this.langs.length)
+        return this.langs[0].name;
 });
 
 exports.Schema = mongoose.model('taxes', taxSchema);

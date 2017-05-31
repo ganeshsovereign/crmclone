@@ -104,7 +104,10 @@ function Order(id, cb) {
         .populate({
             path: "lines.product",
             select: "taxes info weight units",
-            populate: { path: "taxes.taxeId" }
+            //populate: { path: "taxes.taxeId" }
+        })
+        .populate({
+            path: "lines.total_taxes.taxeId"
         })
         .populate({
             path: "total_taxes.taxeId"

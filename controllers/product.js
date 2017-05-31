@@ -906,6 +906,37 @@ Object.prototype = {
                 size: 1
             }
         }, {
+            $unwind: {
+                path: '$taxes',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $lookup: {
+                from: 'taxes',
+                localField: 'taxes.taxeId',
+                foreignField: '_id',
+                as: 'taxes.taxeId'
+            }
+        }, {
+            $unwind: {
+                path: '$taxes.taxeId',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $sort: { _id: 1, 'taxes.taxeId.sequence': 1 }
+        }, {
+            $group: {
+                _id: "$_id",
+                ref: { $first: "$ref" },
+                dynForm: { $first: "$dynForm" },
+                taxes: { $push: '$taxes' },
+                units: { $first: "$units" },
+                directCost: { $first: "$directCost" },
+                indirectCost: { $first: "$indirectCost" },
+                info: { $first: "$info" },
+                size: { $first: "$size" }
+            }
+        }, {
             $lookup: {
                 from: 'ProductPrices',
                 localField: '_id',
@@ -973,7 +1004,7 @@ Object.prototype = {
             if (err)
                 return self.throw500("err : /api/product/autocomplete" + err);
 
-            //console.log(docs);
+            console.log(docs);
             self.json(docs);
         });
     },

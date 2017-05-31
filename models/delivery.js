@@ -26,6 +26,7 @@ var setDate = MODULE('utils').setDate;
  */
 var deliverySchema = new Schema({
     forSales: { type: Boolean, default: true },
+    isremoved: Boolean,
     ref: { type: String },
     type: { type: String, default: 'DELIVERY_STANDARD' },
     currency: {
@@ -93,7 +94,8 @@ var deliverySchema = new Schema({
     }],
     total_ttc: {
         type: Number,
-        default: 0
+        default: 0,
+        set: setPrice
     },
     total_ht_subcontractors: { type: Number, default: 0 },
     delivery_mode: { type: String, default: "Comptoir" },

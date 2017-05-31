@@ -39,7 +39,7 @@ MetronicApp.directive('productLines', ['$http',
                     for (var i = 0; i < lines.length; i++) {
                         if (lines[i].idLine === index) {
                             lines[i] = {
-                                type: 'product',
+                                //type: 'product',
                                 pu_ht: data.prices.price,
                                 total_taxes: data.taxes,
                                 discount: data.discount,
@@ -207,8 +207,8 @@ MetronicApp.directive('productLines', ['$http',
                 scope.update = function() {
                     //console.log("save");
                     ngModel.$setViewValue(scope.linesModel);
-                    
-                        scope.ngChange();
+
+                    scope.ngChange();
 
                     return true;
                 };

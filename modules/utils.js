@@ -271,6 +271,9 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
         total_ttc = 0,
         weight = 0;
 
+    var taxesId = {};
+    var taxes = [];
+
     async.waterfall([
             function(cb) {
                 if (!societeId)
@@ -287,72 +290,53 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 if (!VATIsUsed)
                     return cb(null, VATIsUsed);
 
-                var rates = {};
+                var rates = [];
 
                 _.each(lines, function(line) {
                     if (!line.product)
                         return;
-                    _.each(line.product.taxes, function(taxe) {
-                        rates[taxe.taxeId.toString()] = null;
+
+                    _.each(line.total_taxes, function(taxe) {
+                        if (taxe.taxeId && taxe.taxeId._id)
+                            taxe.taxeId = taxe.taxeId._id;
+
+                        console.log(taxe);
+                        return rates.push(taxe.taxeId.toString());
                     });
                 });
 
-                async.forEachOf(rates, function(item, key, aCb) {
-                    TaxesModel.findOne({ _id: key }, function(err, taxe) {
-                        if (err)
-                            return aCb(err);
 
-                        rates[key] = taxe;
-                        aCb(err);
-                    });
-                }, function(err) {
+                TaxesModel.find({ _id: { $in: rates } }, {}, { sort: 'sequence' }, function(err, Taxes) {
                     if (err)
                         return cb(err);
+
+                    for (var i = 0; i < Taxes.length; i++) {
+                        taxes.push(Taxes[i]);
+                        taxesId[Taxes[i]._id.toString()] = i;
+                        total_taxes.push({
+                            taxeId: Taxes[i]._id,
+                            isFixValue: Taxes[i].isFixValue,
+                            total: 0
+                        });
+                    }
 
                     //Add VAT
                     for (var i = 0, length = lines.length; i < length; i++) {
 
                         //Update TAXES
-                        if (lines[i].product) {
-                            //console.log(lines[i].product.taxes);
-                            lines[i].total_taxes = _.map(lines[i].product.taxes, function(elem) {
-                                //console.log(elem);
-                                return {
-                                    taxeId: elem.taxeId,
-                                    value: 0
-                                }
-                            });
-                            if (lines[i].product.taxes)
-                                for (j = 0; j < lines[i].product.taxes.length; j++) {
-                                    //}
-                                    //console.log(lines[i]);
+                        if (lines[i].total_taxes.length)
+                            for (var j = 0; j < lines[i].total_taxes.length; j++) {
+                                //}
 
-                                    if (rates[lines[i].product.taxes[j].taxeId.toString()].isFixValue) //ecotax
-                                        lines[i].total_taxes[j].value = lines[i].qty * lines[i].product.taxes[j].value;
-                                    else
-                                        lines[i].total_taxes[j].value = lines[i].total_ht * rates[lines[i].product.taxes[j].taxeId.toString()].rate / 100;
-                                    //console.log(lines[i].total_taxes[0]);
-                                }
-                        }
+                                if (taxes[taxesId[lines[i].total_taxes[j].taxeId.toString()]].isFixValue) //ecotax
+                                    lines[i].total_taxes[j].value = lines[i].qty * taxes[taxesId[lines[i].total_taxes[j].taxeId.toString()]].value;
+                                else
+                                    lines[i].total_taxes[j].value = lines[i].total_ht * taxes[taxesId[lines[i].total_taxes[j].taxeId.toString()]].rate / 100;
+                                //console.log(lines[i].total_taxes[0]);
 
-                        for (var k = 0; k < lines[i].total_taxes.length; k++) {
-                            var found = false;
-                            for (var j = 0; j < total_taxes.length; j++) {
-                                if (total_taxes[j].taxeId.toString() === lines[i].total_taxes[k].taxeId.toString()) {
-                                    total_taxes[j].total += lines[i].total_taxes[k].value;
-                                    found = true;
-                                    break;
-                                }
+                                total_taxes[taxesId[lines[i].total_taxes[j].taxeId.toString()]].total += lines[i].total_taxes[j].value;
+
                             }
-
-                            if (!found) {
-                                total_taxes.push({
-                                    taxeId: lines[i].total_taxes[k].taxeId,
-                                    isFixValue: rates[lines[i].total_taxes[k].taxeId.toString()].isFixValue,
-                                    total: lines[i].total_taxes[k].value
-                                });
-                            }
-                        }
                     }
 
                     cb(null, VATIsUsed);
@@ -433,7 +417,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 count += lines[i].qty;
             }
 
-            if (discount && discount.discount && discount.discount.percent) {
+            if (discount && discount.discount && discount.discount.percent >= 0) {
                 discount.discount.value = exports.round(total_ht * discount.discount.percent / 100, 2);
                 total_ht -= discount.discount.value;
 
@@ -442,11 +426,11 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     for (j = 0; j < total_taxes.length; j++) {
                     if (total_taxes[j].isFixValue)
                         continue;
-                    total_taxes[j].value -= total_taxes[j].total * discount.discount.percent / 100;
+                    total_taxes[j].total -= total_taxes[j].total * discount.discount.percent / 100;
                 }
             }
 
-            if (discount && discount.escompte && discount.escompte.percent) {
+            if (discount && discount.escompte && discount.escompte.percent >= 0) {
                 discount.escompte.value = exports.round(total_ht * discount.escompte.percent / 100, 2);
                 total_ht -= discount.escompte.value;
 
@@ -455,7 +439,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     for (j = 0; j < total_taxes.length; j++) {
                     if (total_taxes[j].isFixValue)
                         continue;
-                    total_taxes[j].value -= total_taxes[j].total * discount.escompte.percent / 100;
+                    total_taxes[j].total -= total_taxes[j].total * discount.escompte.percent / 100;
                 }
             }
 
