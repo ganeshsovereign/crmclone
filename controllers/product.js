@@ -1117,9 +1117,9 @@ Object.prototype = {
                             res.datatable.data[i].DT_RowClass = "bg-red-haze";
                         // Add Pictures
                         if (row.imageSrc)
-                            res.datatable.data[i].imageSrc = '<img src="/erp/api/file/product/' + row.imageSrc + '?s=10"/>';
+                            res.datatable.data[i].imageSrc = '<img width="32" height="32" src="/erp/api/file/product/' + row.imageSrc + '"/>';
                         else
-                            res.datatable.data[i].imageSrc = '<img src="/assets/admin/layout/img/nophoto.jpg"/>';
+                            res.datatable.data[i].imageSrc = '<img width="32" height="32" src="/assets/admin/layout/img/nophoto.jpg"/>';
 
                         // Action
                         res.datatable.data[i].action = '<a href="#!/product/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.info.SKU + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';

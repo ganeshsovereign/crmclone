@@ -464,8 +464,8 @@ h4 {
     /*#F3C200;*/
     background-color: #364150;
     /* #F4F6F7;*/
-    border-left: 2px solid #F3C200;
-    margin-left: -2px;
+    border-left: 5px solid #F3C200;
+    margin-left: 0px;
 }
 
 .btn:not(.md-skip).btn-sm {
@@ -480,6 +480,7 @@ h4 {
 .profile-usermenu ul li a:hover {
     background-color: #F4F6F7;
     color: #364150;
+    border-left: 5px solid #F3C200;
 }
 
 .form-group.form-md-line-input .form-control.edited:not([readonly])~.form-control-focus:after,
@@ -621,7 +622,7 @@ small {
 }
 
 .scroll-to-top>i {
-    color: #FF6600;
+    color: #D6AB00;
     font-size: 36px;
     opacity: .7;
 }

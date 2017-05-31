@@ -241,6 +241,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
                 "columns": [{
                     data: 'bool'
                 }, {
+                    data: "imageSrc",
+                    defaultContent: ""
+                }, {
                     data: "name.first",
                     defaultContent: ""
                 }, {
