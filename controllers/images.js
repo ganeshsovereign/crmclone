@@ -230,6 +230,7 @@ var Images = function() {
 
                             let image = Image.load(file);
                             wCb();
+                            console.log('toto');
                             /*image.measure(function(err, size) {
                                 if (err)
                                     return wCb(err);
@@ -286,7 +287,6 @@ var Images = function() {
         // Reads specific picture from directory
         // URL: /images/small|large/*.jpg
         this.fileImage = function(req, res) {
-            const fs = require('fs');
             // Below method checks if the file exists (processed) in temporary directory
             // More information in total.js documentation
 
