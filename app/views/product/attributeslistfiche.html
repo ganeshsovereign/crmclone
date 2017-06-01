@@ -109,7 +109,7 @@
                                 <label for="minCharacters">@(products:MinCharacters)</label>
                             </div>
                         </div>
-                        <div class="portlet light bordered">
+                        <div class="portlet light bordered" ng-show="object.mode == 'date' || object.mode=='number' || object.mode=='metric'">
                             <div class="form-group form-md-line-input" ng-show="object.mode == 'date'">
                                 <input type="number" class="form-control" id="maxDate" ng-model="object.maxDate">
                                 <label for="maxDate">@(products:MaxDate)</label>
