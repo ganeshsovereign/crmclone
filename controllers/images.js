@@ -228,6 +228,10 @@ var Images = function() {
                             let name = file.split('/');
                             name = name.last();
 
+                            if (name.split('.').last() !== 'png' && name.split('.').last() !== 'jpg')
+                                return wCb();
+
+
                             let image = Image.load(file);
 
                             image.measure(function(err, info) {
