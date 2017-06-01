@@ -196,7 +196,7 @@ var Images = function() {
             var ImagesModel = MODEL('Images').Schema;
 
             U.ls(F.path.root() + '/productImages', function(files) {
-                async.forEach(files, function(file, aCb) {
+                async.forEachSeries(files, function(file, aCb) {
                     //Suppress special character in image filename
 
                     //Filter on no extension files
