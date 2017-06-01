@@ -196,7 +196,7 @@ var Images = function() {
             var ImagesModel = MODEL('Images').Schema;
 
             U.ls(F.path.root() + '/productImages', function(files) {
-                async.forEachSeries(files, function(file, aCb) {
+                async.forEach(files, function(file, aCb) {
                     //Suppress special character in image filename
 
                     //Filter on no extension files
@@ -210,7 +210,7 @@ var Images = function() {
                     newFile.push(extension);
                     newFile = newFile.join('.');
                     newFile = newFile.replace('.jpeg', '.jpg');
-                    console.log(newFile);
+
                     async.waterfall([
                         function(wCb) {
                             if (newFile === file)
