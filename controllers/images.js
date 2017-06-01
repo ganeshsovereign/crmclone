@@ -198,6 +198,11 @@ var Images = function() {
             U.ls(F.path.root() + '/productImages', function(files) {
                 async.forEach(files, function(file, aCb) {
                     //Suppress special character in image filename
+
+                    //Filter on no extension files
+                    if (file.split('/').last().indexOf('.') == -1)
+                        return aCb();
+
                     var newFile = file.replace(/[^a-zA-Z0-9-_./]/g, '');
                     var extension = newFile.split('.').last().toLowerCase();
                     newFile = newFile.split('.');
