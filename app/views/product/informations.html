@@ -49,8 +49,11 @@
 
 
                                     <div class="form-group form-md-line-input ">
-                                        <input type="text" class="form-control" id="Name" ng-model="product.info.langs[0].name" required placeholder="">
-                                        <label for="Name">@(Label)</label>
+                                        <div class="input-icon right">
+                                            <input type="text" class="form-control" id="Name" ng-model="product.info.langs[_language].name" required placeholder="" />
+                                            <label for="Name">@(Label)</label>
+                                            <i class="fa fa-flag"></i>
+                                        </div>
                                     </div>
 
                                     <!--<div class="form-group form-md-line-input ">
@@ -149,7 +152,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <p> @(Description) : @(products:ShowOnBill). </p>
-                                        <textarea class="form-control" ng-model="product.info.langs[0].shortDescription" rows="5"></textarea>
+                                        <textarea class="form-control" ng-model="product.info.langs[_language].shortDescription" rows="5"></textarea>
                                     </div>
                                 </div>
                             </tab>
@@ -157,7 +160,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <p> @(LongueDescription) : @(products:ShowOnCatalog). </p>
-                                        <summernote height="100" ng-model="product.info.langs[0].description"></summernote>
+                                        <summernote height="100" ng-model="product.info.langs[_language].description"></summernote>
                                     </div>
                                 </div>
                             </tab>
@@ -176,7 +179,7 @@
 
                 <div class="form-group form-md-line-input ">
                     <label for="tags">@(Keywords) / @(Tags)</label>
-                    <tags-input ng-model="product.info.langs[0].Tag" class="ti-input" placeholder="@(Add)">
+                    <tags-input ng-model="product.info.langs[_language].Tag" class="ti-input" placeholder="@(Add)">
                         <auto-complete source="AutoComplete($query,'/erp/api/product/Tag/autocomplete','')" min-length="1" max-results-to-show="10"></auto-complete>
                     </tags-input>
 

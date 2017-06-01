@@ -229,6 +229,11 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
             $rootScope.languages = data.data;
         });
 
+        $rootScope._language = 0;
+        $rootScope.setLanguage = function(idx) {
+            $rootScope._language = idx;
+        };
+
         // Return url Image
         $rootScope.getImage = function(model, data) {
             if (data)
