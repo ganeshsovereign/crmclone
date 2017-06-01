@@ -191,6 +191,18 @@ exports.install = function() {
 
 var Images = function() {
     return new function() {
+
+        function checkFilename(filename) {
+            var newFile = filename.replace(/[^a-zA-Z0-9-_./]/g, '');
+            var extension = newFile.split('.').last().toLowerCase();
+            newFile = newFile.split('.');
+            newFile.pop();
+            newFile.push(extension);
+            newFile = newFile.join('.');
+            newFile = newFile.replace('.jpeg', '.jpg');
+            return newFile;
+        }
+
         this.scanDirectory = function() {
             var self = this;
             var ImagesModel = MODEL('Images').Schema;
@@ -203,13 +215,7 @@ var Images = function() {
                     if (file.split('/').last().indexOf('.') == -1)
                         return aCb();
 
-                    var newFile = file.replace(/[^a-zA-Z0-9-_./]/g, '');
-                    var extension = newFile.split('.').last().toLowerCase();
-                    newFile = newFile.split('.');
-                    newFile.pop();
-                    newFile.push(extension);
-                    newFile = newFile.join('.');
-                    newFile = newFile.replace('.jpeg', '.jpg');
+                    var newFile = checkFilename(file);
 
                     async.waterfall([
                         function(wCb) {
@@ -328,6 +334,40 @@ var Images = function() {
                     // Releases F.exists()
                     next();
                 }).pipe(fs.createWriteStream(filename));
+            });
+        };
+
+        this.uploadImages = function() {
+            var self = this;
+            var ImagesModel = MODEL('Images').Schema;
+            var round = MODULE('utils').round;
+
+            var file = self.files[0];
+            if (self.files.length === 0 || !file.isImage())
+                return self.throw500();
+
+            var filename = checkFilename(file.filename);
+
+            var image = file.image();
+            image.save(F.path.root() + '/productImages/' + filename, function(err) {
+                if (err)
+                    return self.throw500(err);
+
+                ImagesModel.update({ imageSrc: filename }, {
+                    $set: {
+                        imageSrc: filename,
+                        size: {
+                            width: file.width,
+                            height: file.height
+                        },
+                        length: round(file.length / 1024000, 2) // MB
+                    }
+                }, { upsert: true }, function(err, doc) {
+                    if (err)
+                        return self.throw500(err);
+
+                    self.json();
+                });
             });
         };
     };

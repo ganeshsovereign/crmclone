@@ -64,7 +64,7 @@
         </div>
     </div>
     <div class="portlet-body">
-        <div ng-include="'/templates/gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
+        <div ng-include="'/templates/gridfs/file.html'"></div>
     </div>
 </div>
 
@@ -103,7 +103,7 @@
                                     <h3 class="mt-card-name">{{image.langs[0].name}}</h3>
                                     <p class="mt-card-desc font-grey-mint">{{image.imageSrc}}</p>
                                     <p class="mt-card-desc font-grey-mint">{{image.langs[0].description}}</p>
-                                    <!--<p class="mt-card-desc font-grey-mint">{{image.size.width}} x {{image.size.height}}</p>-->
+                                    <p class="mt-card-desc font-grey-mint">{{image.size.width}} x {{image.size.height}} ({{image.length | number:2}} MB)</p>
                                     <div class="mt-card-social">
                                         <ul>
                                             <li>

@@ -1560,16 +1560,19 @@ MetronicApp.controller('ProductStatsController', ['$scope', '$rootScope', '$http
 
 }]);
 
-MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$http', 'Files', function($scope, $rootScope, $http, Files) {
+MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$http', 'Files', 'FileUploader', function($scope, $rootScope, $http, Files, FileUploader) {
 
     $scope.images = [];
 
+    var uploader = $scope.uploader = new FileUploader({ autoUpload: true });
+    uploader.url = '/erp/api/images/bank';
+
     $scope.refreshDirectory = function() {
         var images = new Files.bank();
-        images.$update(function(data) {});
+        images.$update(function(data) {
+            $scope.find();
+        });
     };
-
-
 
     $scope.$on('$viewContentLoaded', function() {
 
@@ -1593,6 +1596,60 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
         images.$query({}, function(data) {
             $scope.images = data.data;
         });
+    };
+
+    $scope.delete = function(id) {
+        $http({
+            method: 'DELETE',
+            url: '/erp/api/file/' + $scope.model + '/' + $scope.id,
+            params: {
+                fileId: id
+            }
+        }).success(function(data, status) {
+
+            //console.log(data);
+            if ($scope.object) {
+                $scope.object.files = data.files;
+                $scope.object.__v = data.__v;
+            }
+
+            $scope.find();
+
+        });
+    };
+
+    // FILTERS
+    uploader.filters.push({
+        name: 'customFilter',
+        fn: function(item /*{File|FileLikeObject}*/ , options) {
+            return this.queue.length < 10;
+        }
+    });
+
+    $scope.typesConfig = {
+        "file": {
+            "icon": "fa fa-file-o icon-state-success"
+        },
+        "image": {
+            "icon": "fa fa-file-image-o icon-state-success"
+        }
+    };
+
+    // CALLBACKS
+    uploader.onErrorItem = function(fileItem, response, status, headers) {
+        console.info('onErrorItem', fileItem, response, status, headers);
+    };
+    uploader.onCancelItem = function(fileItem, response, status, headers) {
+        console.info('onCancelItem', fileItem, response, status, headers);
+    };
+    uploader.onCompleteAll = function() {
+        console.info('onCompleteAll');
+        $scope.find();
+    };
+
+    uploader.onCompleteItem = function(item, response, status, headers) {
+        console.log(response);
+        //$scope.images.push();
     };
 
 }]);

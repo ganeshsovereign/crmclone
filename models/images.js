@@ -12,6 +12,7 @@ var ImagesSchema = new mongoose.Schema({
         width: Number,
         height: Number
     },
+    length: Number, //MB
     langs: [{
         _id: false,
         linker: { type: String, default: '' },
