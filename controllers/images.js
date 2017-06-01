@@ -210,7 +210,7 @@ var Images = function() {
                     newFile.push(extension);
                     newFile = newFile.join('.');
                     newFile = newFile.replace('.jpeg', '.jpg');
-
+                    console.log(newFile);
                     async.waterfall([
                         function(wCb) {
                             if (newFile === file)
