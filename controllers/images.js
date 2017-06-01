@@ -200,29 +200,42 @@ var Images = function() {
                     //Suppress special character in image filename
                     var newFile = file.replace(/[^a-zA-Z0-9-_./]/g, '');
 
-                    if (newFile !== file) {
-                        fs.rename(file, newFile, function(err) {
-                            if (err) console.log('ERROR: ' + err);
-                        });
-                        file = newFile;
-                    }
+                    async.waterfall([
+                        function(wCb) {
+                            if (newFile === file)
+                                return wCb(null, newFile);
 
-                    let name = file.split('/');
-                    name = name.last();
+                            fs.rename(file, newFile, function(err) {
+                                if (err) console.log('ERROR: ' + err);
 
-                    let image = Image.load(file);
-                    image.measure(function(err, size) {
+                                return wCb(null, newFile);
+                            });
+                        },
+                        function(file, wCb) {
+
+                            let name = file.split('/');
+                            name = name.last();
+
+                            let image = Image.load(file);
+                            image.measure(function(err, size) {
+                                if (err)
+                                    return wCb(err);
+
+                                ImagesModel.update({ imageSrc: name }, {
+                                    $set: {
+                                        imageSrc: name,
+                                        size: size
+                                    }
+                                }, { upsert: true }, wCb);
+                            });
+                        }
+                    ], function(err) {
                         if (err) {
                             console.log(err);
                             return aCb();
                         }
 
-                        ImagesModel.update({ imageSrc: name }, {
-                            $set: {
-                                imageSrc: name,
-                                size: size
-                            }
-                        }, { upsert: true }, aCb);
+                        return aCb();
                     });
                 }, function(err) {
                     if (err) {
