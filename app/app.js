@@ -1017,17 +1017,38 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // Attributes
         .state('product.attributes', {
             parent: "product",
-            url: "/attributeslist.html",
+            url: "/attributeslist",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.attributes.list', {
+            url: "",
             templateUrl: "/views/product/attributeslist.html",
+            data: {
+                pageTitle: 'Liste des Attributs de produits'
+            },
+            controller: "SettingProductController"
+        })
+        .state('product.attributes.create', {
+            url: "/create.html",
+            templateUrl: "/views/product/attributeslistfiche.html",
             data: {
                 pageTitle: 'Ajouter un attribut'
             },
-            controller: "ProductAttributesController"
+            controller: "SettingProductController"
+        })
+        .state('product.attributes.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/product/attributeslistfiche.html",
+            data: {
+                pageTitle: 'Editer un attribut'
+            },
+            controller: "SettingProductController"
         })
         // Categories
         .state('product.categories', {
             parent: "product",
-            url: "/productcategories.html",
+            url: "/productcategories",
             templateUrl: "/views/product/productcategories.html",
             data: {
                 pageTitle: 'Configuration des categories'
@@ -1037,13 +1058,35 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         // Family configuration
         .state('product.family', {
             parent: "product",
-            url: "/familyproduct.html",
-            templateUrl: "/views/product/familyproduct.html",
+            url: "/familyproductlist",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.family.list', {
+            url: "",
+            templateUrl: "/views/product/familyproductlist.html",
             data: {
-                pageTitle: 'Configuration des familles de produits'
+                pageTitle: 'Liste des familles de produits'
             },
             controller: "SettingProductController"
         })
+        .state('product.family.create', {
+            url: "/create.html",
+            templateUrl: "/views/product/familyproductlistfiche.html",
+            data: {
+                pageTitle: 'Créer une famille de produit'
+            },
+            controller: "SettingProductController"
+        })
+        .state('product.family.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/product/familyproductlistfiche.html",
+            data: {
+                pageTitle: 'Editer une famille de produit'
+            },
+            controller: "SettingProductController"
+        })
+        // ---- //
         .state('product.visual', {
             parent: "product",
             url: "/visual/{id:[0-9a-z]{24}}",
@@ -1765,23 +1808,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "SettingProductController"
         })
-        // Attributes configuration
-        .state('settings.product.attributes.create', {
-            url: "/create.html",
-            templateUrl: "/views/settings/attributes/fiche.html",
-            data: {
-                pageTitle: 'Ajouter un attribut'
-            },
-            controller: "SettingProductController"
-        })
-        .state('settings.product.attributes.show', {
-            url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/settings/attributes/fiche.html",
-            data: {
-                pageTitle: 'Editer un attributs'
-            },
-            controller: "SettingProductController"
-        })
         // product types configuration
         .state('settings.product.types', {
             url: "/types",
@@ -1829,23 +1855,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/settings/shipping/fiche.html",
             data: {
                 pageTitle: 'Editer un tranport'
-            },
-            controller: "SettingProductController"
-        })
-        // Family configuration
-        .state('settings.product.family.create', {
-            url: "/create.html",
-            templateUrl: "/views/settings/family/fiche.html",
-            data: {
-                pageTitle: 'Ajouter une famille de produit'
-            },
-            controller: "SettingProductController"
-        })
-        .state('settings.product.family.show', {
-            url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/settings/family/fiche.html",
-            data: {
-                pageTitle: 'Editer une famille de produit'
             },
             controller: "SettingProductController"
         })
