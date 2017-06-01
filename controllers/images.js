@@ -230,11 +230,11 @@ var Images = function() {
 
                             let image = Image.load(file);
 
-                            image.measure(function(err, size) {
+                            image.identify(function(err, info) {
                                 if (err)
                                     return wCb(err);
                                 wCb();
-                                console.log('toto');
+                                console.log('toto', info);
                                 /*    ImagesModel.update({ imageSrc: name }, {
                                         $set: {
                                             imageSrc: name,
