@@ -200,7 +200,10 @@ var Images = function() {
                     //Suppress special character in image filename
                     var newFile = file.replace(/[^a-zA-Z0-9-_./]/g, '');
                     var extension = newFile.split('.').last().toLowerCase();
-                    newFile = newFile.split('.').pop().push(extension).join('.');
+                    newFile = newFile.split('.');
+                    newFile.pop();
+                    newFile.push(extension);
+                    newFile = newFile.join('.');
                     newFile = newFile.replace('.jpeg', '.jpg');
 
                     async.waterfall([
