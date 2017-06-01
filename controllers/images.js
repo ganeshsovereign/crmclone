@@ -228,7 +228,8 @@ var Images = function() {
                             name = name.last();
 
                             let image = Image.load(file);
-                            image.measure(function(err, size) {
+                            wCb();
+                            /*image.measure(function(err, size) {
                                 if (err)
                                     return wCb(err);
 
@@ -238,7 +239,7 @@ var Images = function() {
                                         size: size
                                     }
                                 }, { upsert: true }, wCb);
-                            });
+                            });*/
                         }
                     ], function(err) {
                         if (err) {
