@@ -232,20 +232,20 @@ var Images = function() {
                                 return wCb();
 
 
-                            let image = Image.load(file);
+                            /*crash with total.js 2.1 let image = Image.load(file);
 
                             image.measure(function(err, info) {
                                 if (err)
                                     return wCb(err);
                                 wCb();
-                                console.log('toto', info);
-                                /*    ImagesModel.update({ imageSrc: name }, {
-                                        $set: {
-                                            imageSrc: name,
-                                            size: size
-                                        }
-                                    }, { upsert: true }, wCb);*/
-                            });
+                                console.log('toto', info);*/
+                            ImagesModel.update({ imageSrc: name }, {
+                                $set: {
+                                    imageSrc: name
+                                        // size: size
+                                }
+                            }, { upsert: true }, wCb);
+                            //});
                         }
                     ], function(err) {
                         if (err) {
