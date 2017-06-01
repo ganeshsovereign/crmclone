@@ -1598,33 +1598,22 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
         });
     };
 
-    $scope.delete = function(id) {
+    $scope.delete = function(id, index) {
         $http({
             method: 'DELETE',
-            url: '/erp/api/file/' + $scope.model + '/' + $scope.id,
-            params: {
-                fileId: id
-            }
+            url: '/erp/api/images/bank/' + id
         }).success(function(data, status) {
-
-            //console.log(data);
-            if ($scope.object) {
-                $scope.object.files = data.files;
-                $scope.object.__v = data.__v;
-            }
-
-            $scope.find();
-
+            $scope.images.splice(index, 1);
         });
     };
 
     // FILTERS
-    uploader.filters.push({
-        name: 'customFilter',
-        fn: function(item /*{File|FileLikeObject}*/ , options) {
-            return this.queue.length < 10;
-        }
-    });
+    //uploader.filters.push({
+    //    name: 'customFilter',
+    //    fn: function(item /*{File|FileLikeObject}*/ , options) {
+    //        return this.queue.length < 10;
+    //    }
+    //});
 
     $scope.typesConfig = {
         "file": {

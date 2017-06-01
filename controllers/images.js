@@ -166,26 +166,7 @@ exports.install = function() {
     F.file('/erp/api/images/bank/l/*', images.fileImage); //large
     F.route('/erp/api/images/bank', images.uploadImages, ['upload', 'authorize'], 10240);
     F.route('/erp/api/images/bank/{Id}', images.replaceImages, ['upload', 'authorize'], 10240);
-
-    F.route('/erp/api/images/{Model}/{Id}', function(model, id) {
-        var self = this;
-        var Model = MODEL(model).Schema;
-
-        Model.findOne({
-            _id: id
-        }, function(err, doc) {
-
-            if (err)
-                return self.throw500(err);
-
-            doc.removeFile(self.query.fileId, function(err, result) {
-                if (err)
-                    return self.throw500(err);
-
-                return self.json( /*{status: "ok"}*/ result);
-            });
-        });
-    }, ['delete', 'authorize']);
+    F.route('/erp/api/images/bank/{Id}', images.removeImage, ['delete', 'authorize']);
 };
 
 
@@ -367,6 +348,26 @@ var Images = function() {
                         return self.throw500(err);
 
                     self.json();
+                });
+            });
+        };
+
+        this.removeImage = function(id) {
+            var self = this;
+            var ImagesModel = MODEL('Images').Schema;
+            var ProductImagesModel = MODEL('productImages').Schema;
+
+            ProductImagesModel.remove({ image: id }, function(err, doc) {
+                if (err)
+                    return self.throw500(err);
+
+                ImagesModel.findByIdAndRemove(id, function(err, doc) {
+                    if (err || !doc)
+                        return self.throw500(err);
+
+                    fs.unlinkSync(F.path.root() + '/productImages/' + doc.imageSrc);
+
+                    return self.json(doc);
                 });
             });
         };

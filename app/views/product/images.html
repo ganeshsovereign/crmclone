@@ -105,7 +105,7 @@
                                     <div class="mt-card-social">
                                         <ul>
                                             <li>
-                                                <a href="javascript:;">
+                                                <a href="javascript:;" ng-click="">
                                                     <i class="icon-social-facebook"></i>
                                                 </a>
                                             </li>
@@ -115,8 +115,8 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="javascript:;">
-                                                    <i class="icon-social-dribbble"></i>
+                                                <a href="javascript:;" confirmed-click="delete(image._id, $index)" ng-confirm-click="Supprimer l'image' {{image.imageSrc}} ?">
+                                                    <i class="fa fa-trash"></i>
                                                 </a>
                                             </li>
                                         </ul>
