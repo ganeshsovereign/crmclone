@@ -280,7 +280,7 @@ var Images = function() {
             let self = this;
             var ImagesModel = MODEL('Images').Schema;
 
-            ImagesModel.find({}, function(err, docs) {
+            ImagesModel.find({}, {}, { sort: { imageSrc: 1 } }, function(err, docs) {
                 if (err)
                     return self.throw500(err);
 
