@@ -197,7 +197,7 @@ var Images = function() {
 
             U.ls(F.path.root() + '/productImages', function(files) {
                 console.log(files);
-                async.forEach(files, function(file, aCb) {
+                async.eachLimit(files, 100, function(file, aCb) {
                     //Suppress special character in image filename
 
                     //Filter on no extension files
