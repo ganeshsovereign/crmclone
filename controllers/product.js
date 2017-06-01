@@ -3408,124 +3408,18 @@ ProductTypes.prototype = {
     }
 };
 
-function ProductFamily() {}
+var ProductFamily = function() {
+    return new function() {
+        this.getProductFamilyById = function(id) {
+            var self = this;
+            var ProductFamilyModel = MODEL('productFamily').Schema;
+            var _id = id;
+            var model;
 
-ProductFamily.prototype = {
-    getProductFamilyById: function(id) {
-        var self = this;
-        var ProductFamilyModel = MODEL('productFamily').Schema;
-        var _id = id;
-        var model;
+            _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
 
-        _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
-
-        ProductFamilyModel.aggregate([{
-            $match: { _id: MODULE('utils').ObjectId(_id) }
-        }, {
-            $unwind: {
-                path: '$options',
-                preserveNullAndEmptyArrays: true
-            }
-        }, {
-            $lookup: {
-                from: 'ProductAttributes',
-                localField: 'options',
-                foreignField: '_id',
-                as: 'options'
-            }
-        }, {
-            $unwind: {
-                path: '$options',
-                preserveNullAndEmptyArrays: true
-            }
-        }, {
-            $lookup: {
-                from: 'ProductAttributesValues',
-                localField: 'options._id',
-                foreignField: 'optionId',
-                as: 'optionsValue'
-            }
-        }, {
-            $project: {
-                langs: '$langs',
-                sequence: 1,
-                isCoef: 1,
-                isActive: 1,
-                indirectCostRate: 1,
-                minMargin: 1,
-                isCost: 1,
-                discounts: 1,
-                variants: 1,
-                opts: {
-                    langs: '$options.langs',
-                    _id: '$options._id',
-                    mode: '$options.mode',
-                    values: '$optionsValue'
-                }
-            }
-        }, {
-            $group: {
-                _id: '$_id',
-                opts: { $push: '$opts' },
-                langs: { $first: '$langs' },
-                sequence: { $first: '$sequence' },
-                indirectCostRate: { $first: '$indirectCostRate' },
-                minMargin: { $first: '$minMargin' },
-                discounts: { $first: '$discounts' },
-                isCoef: { $first: '$isCoef' },
-                isCost: { $first: '$isCost' },
-                variants: { $first: '$variants' },
-                isActive: { $first: '$isActive' }
-            }
-        }], function(err, result) {
-            if (err)
-                return self.throw500(err);
-
-            if (result.length) {
-                model = result[0];
-                model.opts = _.filter(model.opts, function(elem) {
-                    return elem._id != null;
-                });
-            } else
-                model = {};
-
-            self.json(model);
-        });
-    },
-    getAllProductFamily: function() {
-        var self = this;
-        var query = self.query;
-        var paginationObject = MODULE('helper').page(query);
-        var skip = paginationObject.skip;
-        var limit = paginationObject.limit;
-        var ProductFamilyModel = MODEL('productFamily').Schema;
-        var sortObj;
-        var key;
-
-        var isCost = (self.query.isCost == 'true' ? true : false);
-
-        var lang = 0;
-
-        if (query.sort) {
-            key = Object.keys(query.sort)[0];
-            req.query.sort[key] = parseInt(query.sort[key], 10);
-
-            sortObj = query.sort;
-        } else {
-            sortObj = {
-                'data.sequence': 1
-            };
-        }
-
-        ProductFamilyModel.aggregate([{
-                $match: { isActive: true, isCost: isCost }
-            }, {
-                $lookup: {
-                    from: 'Product',
-                    localField: '_id',
-                    foreignField: 'sellFamily',
-                    as: 'Products'
-                }
+            ProductFamilyModel.aggregate([{
+                $match: { _id: MODULE('utils').ObjectId(_id) }
             }, {
                 $unwind: {
                     path: '$options',
@@ -3536,310 +3430,394 @@ ProductFamily.prototype = {
                     from: 'ProductAttributes',
                     localField: 'options',
                     foreignField: '_id',
-                    as: 'productOptions'
-                }
-            }, {
-                $project: {
-                    countProducts: { $size: '$Products' },
-                    name: '$langs',
-                    sequence: 1,
-                    createdAt: '$createdAt',
-                    indirectCostRate: 1,
-                    opts: { $arrayElemAt: ['$productOptions', 0] }
+                    as: 'options'
                 }
             }, {
                 $unwind: {
-                    path: '$name',
-                    includeArrayIndex: 'langId'
+                    path: '$options',
+                    preserveNullAndEmptyArrays: true
                 }
             }, {
-                $match: {
-                    langId: lang
+                $lookup: {
+                    from: 'ProductAttributesValues',
+                    localField: 'options._id',
+                    foreignField: 'optionId',
+                    as: 'optionsValue'
+                }
+            }, {
+                $project: {
+                    langs: '$langs',
+                    sequence: 1,
+                    isCoef: 1,
+                    isActive: 1,
+                    indirectCostRate: 1,
+                    minMargin: 1,
+                    isCost: 1,
+                    discounts: 1,
+                    variants: 1,
+                    opts: {
+                        langs: '$options.langs',
+                        _id: '$options._id',
+                        mode: '$options.mode',
+                        values: '$optionsValue'
+                    }
                 }
             }, {
                 $group: {
                     _id: '$_id',
-                    options: { $push: '$opts' },
-                    name: { $first: '$name.name' },
+                    opts: { $push: '$opts' },
+                    langs: { $first: '$langs' },
                     sequence: { $first: '$sequence' },
                     indirectCostRate: { $first: '$indirectCostRate' },
-                    createdAt: { $first: '$createdAt' },
-                    countProducts: { $first: '$countProducts' }
+                    minMargin: { $first: '$minMargin' },
+                    discounts: { $first: '$discounts' },
+                    isCoef: { $first: '$isCoef' },
+                    isCost: { $first: '$isCost' },
+                    variants: { $first: '$variants' },
+                    isActive: { $first: '$isActive' }
                 }
-            }, {
-                $group: {
-                    _id: null,
-                    total: { $sum: 1 },
-                    root: { $push: '$$ROOT' }
-                }
-            }, {
-                $unwind: '$root'
-            }, {
-                $project: {
-                    _id: 1,
-                    total: 1,
-                    data: {
-                        _id: '$root._id',
-                        name: '$root.name',
-                        options: '$root.options',
-                        sequence: '$root.sequence',
-                        indirectCostRate: '$root.indirectCostRate',
-                        countProducts: '$root.countProducts',
-                        createdAt: '$root.createdAt'
+            }], function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                if (result.length) {
+                    model = result[0];
+                    model.opts = _.filter(model.opts, function(elem) {
+                        return elem._id != null;
+                    });
+                } else
+                    model = {};
+
+                self.json(model);
+            });
+        };
+        this.getAllProductFamily = function() {
+            var self = this;
+            var query = self.query;
+            var paginationObject = MODULE('helper').page(query);
+            var skip = paginationObject.skip;
+            var limit = paginationObject.limit;
+            var ProductFamilyModel = MODEL('productFamily').Schema;
+            var sortObj;
+            var key;
+
+            var isCost = (self.query.isCost == 'true' ? true : false);
+
+            var lang = 0;
+
+            if (query.sort) {
+                key = Object.keys(query.sort)[0];
+                req.query.sort[key] = parseInt(query.sort[key], 10);
+
+                sortObj = query.sort;
+            } else {
+                sortObj = {
+                    'data.sequence': 1
+                };
+            }
+
+            ProductFamilyModel.aggregate([{
+                    $match: { isActive: true, isCost: isCost }
+                }, {
+                    $lookup: {
+                        from: 'Product',
+                        localField: '_id',
+                        foreignField: 'sellFamily',
+                        as: 'Products'
+                    }
+                }, {
+                    $unwind: {
+                        path: '$options',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $lookup: {
+                        from: 'ProductAttributes',
+                        localField: 'options',
+                        foreignField: '_id',
+                        as: 'productOptions'
+                    }
+                }, {
+                    $project: {
+                        countProducts: { $size: '$Products' },
+                        name: '$langs',
+                        sequence: 1,
+                        createdAt: '$createdAt',
+                        indirectCostRate: 1,
+                        opts: { $arrayElemAt: ['$productOptions', 0] }
+                    }
+                }, {
+                    $unwind: {
+                        path: '$name',
+                        includeArrayIndex: 'langId'
+                    }
+                }, {
+                    $match: {
+                        langId: lang
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        options: { $push: '$opts' },
+                        name: { $first: '$name.name' },
+                        sequence: { $first: '$sequence' },
+                        indirectCostRate: { $first: '$indirectCostRate' },
+                        createdAt: { $first: '$createdAt' },
+                        countProducts: { $first: '$countProducts' }
+                    }
+                }, {
+                    $group: {
+                        _id: null,
+                        total: { $sum: 1 },
+                        root: { $push: '$$ROOT' }
+                    }
+                }, {
+                    $unwind: '$root'
+                }, {
+                    $project: {
+                        _id: 1,
+                        total: 1,
+                        data: {
+                            _id: '$root._id',
+                            name: '$root.name',
+                            options: '$root.options',
+                            sequence: '$root.sequence',
+                            indirectCostRate: '$root.indirectCostRate',
+                            countProducts: '$root.countProducts',
+                            createdAt: '$root.createdAt'
+                        }
+                    }
+                },
+                /* {
+                                $sort: sortObj
+                            },*/
+                {
+                    $sort: { 'data.name': 1 }
+                },
+                /*{
+                           $skip: skip
+                       }, {
+                           $limit: limit
+                       }, */
+                {
+                    $group: {
+                        _id: null,
+                        total: { $first: '$total' },
+                        data: { $push: '$data' }
+                    }
+                }, {
+                    $project: {
+                        _id: 1,
+                        total: '$total',
+                        data: '$data'
                     }
                 }
-            },
-            /* {
-                            $sort: sortObj
-                        },*/
-            {
-                $sort: { 'data.name': 1 }
-            },
-            /*{
-                       $skip: skip
-                   }, {
-                       $limit: limit
-                   }, */
-            {
-                $group: {
-                    _id: null,
-                    total: { $first: '$total' },
-                    data: { $push: '$data' }
-                }
-            }, {
-                $project: {
-                    _id: 1,
-                    total: '$total',
-                    data: '$data'
-                }
+            ]).exec(function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                if (result && result.length)
+                    return self.json(result[0]);
+
+                self.json({});
+            });
+        };
+        this.createProductFamily = function() {
+            var self = this;
+            var body = self.body;
+            var ProductFamilyModel = MODEL('productFamily').Schema;
+            var model;
+            var err;
+
+            if (!body.langs[0].name) {
+                err = 'Please provide Product Type name';
+                self.throw404(err);
             }
-        ]).exec(function(err, result) {
-            if (err)
-                return self.throw500(err);
 
-            if (result && result.length)
-                return self.json(result[0]);
+            model = new ProductFamilyModel(body);
+            model.save(function(err, result) {
+                if (err)
+                    return self.throw500(err);
 
-            self.json({});
-        });
-    },
-    createProductFamily: function() {
-        var self = this;
-        var body = self.body;
-        var ProductFamilyModel = MODEL('productFamily').Schema;
-        var model;
-        var err;
+                self.json(result);
+            });
+        };
+        this.updateProductFamily = function(id) {
+            var self = this;
+            var ProductFamilyModel = MODEL('productFamily').Schema;
+            var ProductModel = MODEL('product').Schema;
+            var body = self.body;
+            var _id = id;
+            var currentOptions;
+            //console.log(body);
 
-        if (!body.name) {
-            err = new Error('Please provide Product Type name');
-            err.status = 404;
-            self.throw404(err);
-        }
+            function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, callback) {
+                var deletedOptions;
+                var addedOptions;
+                var addingOption;
+                var deletingOptions;
 
-        model = new ProductFamilyModel(body);
-        model.save(function(err, result) {
-            if (err)
-                return self.throw500(err);
-
-            self.getProductFamilyById(result._id.toString());
-        });
-    },
-    updateProductFamily: function(id) {
-        var self = this;
-        var ProductFamilyModel = MODEL('productFamily').Schema;
-        var ProductModel = MODEL('product').Schema;
-        var body = self.body;
-        var _id = id;
-        var currentOptions;
-        //console.log(body);
-
-        function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, callback) {
-            var deletedOptions;
-            var addedOptions;
-            var addingOption;
-            var deletingOptions;
-
-            var deletedVariants;
-            var addedVariants;
-            var addingVariant;
-            var deletingVariants;
+                var deletedVariants;
+                var addedVariants;
+                var addingVariant;
+                var deletingVariants;
 
 
-            currentOpts.options = currentOpts.options.toStringObjectIds();
-            deletedOptions = _.difference(currentOpts.options, newOpts.options);
-            addedOptions = _.difference(newOpts.options, currentOpts.options);
+                currentOpts.options = currentOpts.options.toStringObjectIds();
+                deletedOptions = _.difference(currentOpts.options, newOpts.options);
+                addedOptions = _.difference(newOpts.options, currentOpts.options);
 
-            currentOpts.variants = currentOpts.variants.toStringObjectIds();
-            deletedVariants = _.difference(currentOpts.variants, newOpts.variants);
-            addedVariants = _.difference(newOpts.variants, currentOpts.variants);
+                currentOpts.variants = currentOpts.variants.toStringObjectIds();
+                deletedVariants = _.difference(currentOpts.variants, newOpts.variants);
+                addedVariants = _.difference(newOpts.variants, currentOpts.variants);
 
-            addingOption = function(pCb) {
-                if (!addedOptions.length)
-                    return pCb();
+                addingOption = function(pCb) {
+                    if (!addedOptions.length)
+                        return pCb();
 
-                addedOptions = addedOptions.objectID();
+                    addedOptions = addedOptions.objectID();
 
-                ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { options: { $each: addedOptions } } }, { new: true }, function(err, result) {
-                    if (err)
-                        return pCb(err);
-
-                    pCb();
-                });
-            };
-
-            addingVariant = function(pCb) {
-                if (!addedVariants.length)
-                    return pCb();
-
-                addedVariants = addedVariants.objectID();
-
-                ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { variants: { $each: addedVariants } } }, { new: true }, function(err, result) {
-                    if (err)
-                        return pCb(err);
-
-                    pCb();
-                });
-            };
-
-            deletingOptions = function(pCb) {
-                if (!deletedOptions.length)
-                    return pCb();
-
-                let deleteOptions = deletedOptions;
-                deletedOptions = deletedOptions.objectID();
-
-                ProductModel.find({ sellFamily: modelId, 'attributes.attribute': { $in: deletedOptions } }, function(err, docs) {
-                    if (!docs.length)
-                        return;
-
-                    docs.forEach(function(elem) {
-                        elem.attributes = _.filter(elem.attributes, function(elem) {
-                            if (deleteOptions.indexOf(elem.attribute.toString()) >= 0)
-                                return false;
-
-                            return true;
-                        });
-
-                        elem.save(function(err, result) {
-                            if (err)
-                                console.log(err);
-                        });
-                    });
-                });
-
-                ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { options: deletedOptions } }, { new: true }, function(err, result) {
-                    if (err)
-                        return pCb(err);
-
-                    pCb();
-                });
-            };
-
-            deletingVariants = function(pCb) {
-                if (!deletedVariants.length)
-                    return pCb();
-
-                let deleteVariants = deletedVariants;
-                deletedVariants = deletedVariants.objectID();
-
-                //Todo remove all attributesValues form Attributes in variants !
-
-                ProductModel.find({ sellFamily: modelId })
-                    .populate("variants")
-                    .exec(function(err, docs) {
+                    ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { options: { $each: addedOptions } } }, { new: true }, function(err, result) {
                         if (err)
-                            return console.log(err);
+                            return pCb(err);
 
+                        pCb();
+                    });
+                };
+
+                addingVariant = function(pCb) {
+                    if (!addedVariants.length)
+                        return pCb();
+
+                    addedVariants = addedVariants.objectID();
+
+                    ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { variants: { $each: addedVariants } } }, { new: true }, function(err, result) {
+                        if (err)
+                            return pCb(err);
+
+                        pCb();
+                    });
+                };
+
+                deletingOptions = function(pCb) {
+                    if (!deletedOptions.length)
+                        return pCb();
+
+                    let deleteOptions = deletedOptions;
+                    deletedOptions = deletedOptions.objectID();
+
+                    ProductModel.find({ sellFamily: modelId, 'attributes.attribute': { $in: deletedOptions } }, function(err, docs) {
                         if (!docs.length)
                             return;
 
                         docs.forEach(function(elem) {
-                            //console.log(elem);
-                            elem.variants = _.filter(elem.variants, function(elem) {
-                                if (deleteVariants.indexOf(elem.optionId.toString()) >= 0)
+                            elem.attributes = _.filter(elem.attributes, function(elem) {
+                                if (deleteOptions.indexOf(elem.attribute.toString()) >= 0)
                                     return false;
 
                                 return true;
                             });
 
-                            //console.log(elem.variants);
-
                             elem.save(function(err, result) {
                                 if (err)
                                     console.log(err);
-
-
                             });
                         });
                     });
 
-                ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { variants: deletedVariants } }, { new: true }, function(err, result) {
+                    ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { options: deletedOptions } }, { new: true }, function(err, result) {
+                        if (err)
+                            return pCb(err);
+
+                        pCb();
+                    });
+                };
+
+                deletingVariants = function(pCb) {
+                    if (!deletedVariants.length)
+                        return pCb();
+
+                    let deleteVariants = deletedVariants;
+                    deletedVariants = deletedVariants.objectID();
+
+                    //Todo remove all attributesValues form Attributes in variants !
+
+                    ProductModel.find({ sellFamily: modelId })
+                        .populate("variants")
+                        .exec(function(err, docs) {
+                            if (err)
+                                return console.log(err);
+
+                            if (!docs.length)
+                                return;
+
+                            docs.forEach(function(elem) {
+                                //console.log(elem);
+                                elem.variants = _.filter(elem.variants, function(elem) {
+                                    if (deleteVariants.indexOf(elem.optionId.toString()) >= 0)
+                                        return false;
+
+                                    return true;
+                                });
+
+                                //console.log(elem.variants);
+
+                                elem.save(function(err, result) {
+                                    if (err)
+                                        console.log(err);
+
+
+                                });
+                            });
+                        });
+
+                    ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { variants: deletedVariants } }, { new: true }, function(err, result) {
+                        if (err)
+                            return pCb(err);
+
+                        pCb();
+                    });
+                };
+
+                async.parallel([
+                    addingOption,
+                    addingVariant,
+                    deletingOptions,
+                    deletingVariants
+                ], function(err) {
                     if (err)
-                        return pCb(err);
+                        return callback(err);
 
-                    pCb();
-                });
-            };
-
-            async.parallel([
-                addingOption,
-                addingVariant,
-                deletingOptions,
-                deletingVariants
-            ], function(err) {
-                if (err)
-                    return callback(err);
-
-                callback();
-            });
-        }
-
-        let data = _.clone(body);
-        delete data.options;
-        delete data.variants;
-
-        data.discounts = _.filter(data.discounts, function(line) {
-            if (line.count == 0)
-                return true;
-
-            return (line.discount !== 0)
-        });
-
-        data.discounts = _.uniq(data.discounts, 'count');
-
-        function compare(a, b) {
-            if (a.count < b.count)
-                return -1;
-            if (a.count > b.count)
-                return 1;
-            return 0;
-        }
-
-        data.discounts.sort(compare);
-
-        data.discounts[0].count = 0;
-
-        ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, result) {
-            if (err) {
-                console.log(err);
-                return self.json({
-                    errorNotify: {
-                        title: 'Erreur',
-                        message: err
-                    }
+                    callback();
                 });
             }
 
-            setTimeout2('productFamily:updateIndirectCost_' + result._id.toString(), function() {
-                F.functions.PubSub.emit('productFamily:update', { data: result });
-            }, 5000);
+            let data = _.clone(body);
+            delete data.options;
+            delete data.variants;
 
-            currentOptions = {
-                options: result.options,
-                variants: result.variants
-            };
+            data.discounts = _.filter(data.discounts, function(line) {
+                if (line.count == 0)
+                    return true;
 
-            updateOptionsForProdTypes(_id, currentOptions, { options: body.options, variants: body.variants }, ProductFamilyModel, function(err) {
+                return (line.discount !== 0)
+            });
+
+            data.discounts = _.uniq(data.discounts, 'count');
+
+            function compare(a, b) {
+                if (a.count < b.count)
+                    return -1;
+                if (a.count > b.count)
+                    return 1;
+                return 0;
+            }
+
+            data.discounts.sort(compare);
+
+            data.discounts[0].count = 0;
+
+            ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, result) {
                 if (err) {
                     console.log(err);
                     return self.json({
@@ -3850,146 +3828,167 @@ ProductFamily.prototype = {
                     });
                 }
 
+                setTimeout2('productFamily:updateIndirectCost_' + result._id.toString(), function() {
+                    F.functions.PubSub.emit('productFamily:update', { data: result });
+                }, 5000);
 
-                //console.log(doc);
-                //doc = doc.toObject();
-                var doc = {};
-                doc.successNotify = {
-                    title: "Success",
-                    message: "Configuration enregistrée"
+                currentOptions = {
+                    options: result.options,
+                    variants: result.variants
                 };
-                self.json(doc);
-            });
-        });
-    },
-    deleteProductFamily: function(id) {},
-    exportCoefFamily: function() {
-        var self = this;
-        var query = {};
-        var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
-        var PriceListModel = MODEL('priceList').Schema;
 
-        var Stream = require('stream');
-        var stream = new Stream();
-
-        var self = this;
-
-        //query.price_level = priceLevel;
-
-        //console.log(query);
-
-        var date = new Date();
-        async.parallel({
-            coef: function(pCb) {
-                FamilyCoefModel.aggregate([{
-                        $project: {
-                            _id: 1,
-                            priceLists: 1,
-                            family: 1,
-                            coef: 1
-                        }
-                    }, {
-                        $lookup: {
-                            from: 'PriceList',
-                            localField: 'priceLists',
-                            foreignField: '_id',
-                            as: 'priceLists'
-                        }
-                    }, {
-                        $unwind: '$priceLists'
-                    },
-                    {
-                        $match: { 'priceLists.isCoef': true }
-                    },
-                    {
-                        $lookup: {
-                            from: 'productFamily',
-                            localField: 'family',
-                            foreignField: '_id',
-                            as: 'family'
-                        }
-                    }, {
-                        $unwind: '$family'
-                    }, {
-                        $project: {
-                            _id: 1,
-                            priceListId: "$priceLists._id",
-                            priceListName: "$priceLists.name",
-                            familyId: "$family._id",
-                            familyName: { $arrayElemAt: ['$family.langs', 0] },
-                            coef: 1
-                        }
-                    }, {
-                        $group: {
-                            _id: "$familyId",
-                            name: { $first: "$familyName.name" },
-                            priceLists: { $addToSet: { _id: '$priceListId', name: '$priceListName', coef: "$coef" } }
-                        }
-                    }
-                ], pCb);
-
-            },
-            column: function(pCb) {
-                PriceListModel.find({ cost: false, isCoef: true }, "_id name", function(err, docs) {
-                    if (err)
-                        return pCb(err);
-
-                    pCb(null, _.map(docs, function(elem) {
-                        return { _id: elem._id, name: elem.name }
-                    }));
-                });
-            }
-        }, function(err, result) {
-            if (err)
-                return self.throw500(err);
-
-            var fields = {};
-
-            var i = 2; //0 is _id priceList 1 is name priceList
-
-            _.each(result.column, function(elem) {
-                fields[elem._id.toString()] = i++;
-            });
-
-            var line = ['_id', 'name'];
-            _.each(result.column, function(elem) {
-                line[fields[elem._id.toString()]] = elem._id.toString();
-            });
-
-            line.push('\n');
-            stream.emit('data', line.join(";"));
-
-            line = ['_id', 'name'];
-            _.each(result.column, function(elem) {
-                line[fields[elem._id.toString()]] = elem.name;
-            });
-            line.push('\n');
-            stream.emit('data', line.join(";"));
-
-            async.forEach(result.coef, function(coef, aCb) {
-
-                    var line = [coef._id, coef.name];
-
-                    async.forEach(coef.priceLists, function(priceList, bCb) {
-                        line[fields[priceList._id.toString()]] = priceList.coef.toString().replace(".", ",");
-                        bCb();
-                    }, function(err) {
-                        line.push('\n');
-                        stream.emit('data', line.join(";"));
-
-                        aCb();
-                    });
-                },
-                function(err) {
-                    if (err)
+                updateOptionsForProdTypes(_id, currentOptions, { options: body.options, variants: body.variants }, ProductFamilyModel, function(err) {
+                    if (err) {
                         console.log(err);
+                        return self.json({
+                            errorNotify: {
+                                title: 'Erreur',
+                                message: err
+                            }
+                        });
+                    }
 
-                    stream.emit('end');
+
+                    //console.log(doc);
+                    //doc = doc.toObject();
+                    var doc = {};
+                    doc.successNotify = {
+                        title: "Success",
+                        message: "Configuration enregistrée"
+                    };
+                    self.json(doc);
                 });
-        });
+            });
+        };
+        this.deleteProductFamily = function(id) {};
+        this.exportCoefFamily = function() {
+            var self = this;
+            var query = {};
+            var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
+            var PriceListModel = MODEL('priceList').Schema;
 
-        self.stream('application/text', stream, 'Coef_' + date.getFullYear().toString() + "_" + (date.getMonth() + 1).toString() + ".csv");
-    }
+            var Stream = require('stream');
+            var stream = new Stream();
+
+            var self = this;
+
+            //query.price_level = priceLevel;
+
+            //console.log(query);
+
+            var date = new Date();
+            async.parallel({
+                coef: function(pCb) {
+                    FamilyCoefModel.aggregate([{
+                            $project: {
+                                _id: 1,
+                                priceLists: 1,
+                                family: 1,
+                                coef: 1
+                            }
+                        }, {
+                            $lookup: {
+                                from: 'PriceList',
+                                localField: 'priceLists',
+                                foreignField: '_id',
+                                as: 'priceLists'
+                            }
+                        }, {
+                            $unwind: '$priceLists'
+                        },
+                        {
+                            $match: { 'priceLists.isCoef': true }
+                        },
+                        {
+                            $lookup: {
+                                from: 'productFamily',
+                                localField: 'family',
+                                foreignField: '_id',
+                                as: 'family'
+                            }
+                        }, {
+                            $unwind: '$family'
+                        }, {
+                            $project: {
+                                _id: 1,
+                                priceListId: "$priceLists._id",
+                                priceListName: "$priceLists.name",
+                                familyId: "$family._id",
+                                familyName: { $arrayElemAt: ['$family.langs', 0] },
+                                coef: 1
+                            }
+                        }, {
+                            $group: {
+                                _id: "$familyId",
+                                name: { $first: "$familyName.name" },
+                                priceLists: { $addToSet: { _id: '$priceListId', name: '$priceListName', coef: "$coef" } }
+                            }
+                        }
+                    ], pCb);
+
+                },
+                column: function(pCb) {
+                    PriceListModel.find({ cost: false, isCoef: true }, "_id name", function(err, docs) {
+                        if (err)
+                            return pCb(err);
+
+                        pCb(null, _.map(docs, function(elem) {
+                            return { _id: elem._id, name: elem.name }
+                        }));
+                    });
+                }
+            }, function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                var fields = {};
+
+                var i = 2; //0 is _id priceList 1 is name priceList
+
+                _.each(result.column, function(elem) {
+                    fields[elem._id.toString()] = i++;
+                });
+
+                var line = ['_id', 'name'];
+                _.each(result.column, function(elem) {
+                    line[fields[elem._id.toString()]] = elem._id.toString();
+                });
+
+                line.push('\n');
+                stream.emit('data', line.join(";"));
+
+                line = ['_id', 'name'];
+                _.each(result.column, function(elem) {
+                    line[fields[elem._id.toString()]] = elem.name;
+                });
+                line.push('\n');
+                stream.emit('data', line.join(";"));
+
+                async.forEach(result.coef, function(coef, aCb) {
+
+                        var line = [coef._id, coef.name];
+
+                        async.forEach(coef.priceLists, function(priceList, bCb) {
+                            line[fields[priceList._id.toString()]] = priceList.coef.toString().replace(".", ",");
+                            bCb();
+                        }, function(err) {
+                            line.push('\n');
+                            stream.emit('data', line.join(";"));
+
+                            aCb();
+                        });
+                    },
+                    function(err) {
+                        if (err)
+                            console.log(err);
+
+                        stream.emit('end');
+                    });
+            });
+
+            self.stream('application/text', stream, 'Coef_' + date.getFullYear().toString() + "_" + (date.getMonth() + 1).toString() + ".csv");
+        };
+    };
 };
 
 function Taxes() {}

@@ -138,7 +138,7 @@
                                 </div>
 
                                 <div class="actions btn-set">
-                                    <button class="btn green" ng-hide="addNewRange" ng-click="addNewRange = true" class="">+</button>
+                                    <button class="btn green" ng-hide="addNewRange" ng-click="addNewRange = true">+</button>
                                 </div>
                             </div>
 
@@ -146,12 +146,10 @@
                                 <tbody>
                                     <tr ng-repeat="line in object.discounts">
                                         <td class="text-info">{{line.count||1}}+</td>
-                                        <td><a href="#" editable-number="line.discount" e-step="0.001" e-min="0">{{line.discount || 0 | number:3}} %</a></td>
+                                        <td><a href="#" editable-number="line.discount" e-step="0.001" e-min="0" onaftersave="update(true)">{{line.discount || 0 | number:3}} %</a></td>
                                     </tr>
                                 </tbody>
                             </table>
-
-
                             <form ng-show="addNewRange" class="form-horizontal">
                                 <div class="form-body">
                                     <div class="form-group">
@@ -169,7 +167,7 @@
 
                                     <div class="actions btn-set">
                                         <button type="button" ng-click="addNewRange = false" class="btn red btn-sm">@(Cancel)</button>
-                                        <button type="button" ng-click="object.discounts.push(newline); addNewRange = false; " class="btn blue btn-sm">@(Add)</button>
+                                        <button type="button" ng-click="object.discounts.push(newline); addNewRange = false; update(true);" class="btn blue btn-sm">@(Add)</button>
                                     </div>
                             </form>
                             </div>
@@ -177,7 +175,7 @@
                     </div>
                     <div class="col-md-7">
                         <div class="form-horizontal form-row-seperated">
-                            <div class="portlet portlet light bordered">
+                            <div class="portlet light bordered">
                                 <div class="portlet-title">
                                     <div class="caption">
                                         <i class="fa fa-list font-grey-gallery"></i>
@@ -224,18 +222,9 @@
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>
