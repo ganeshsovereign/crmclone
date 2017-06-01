@@ -84,7 +84,7 @@
                     "title": "products:ListOfAttributes"
                 },
                 "menu:productfamily": {
-                    "url": "/erp/#!/product/familyproductlist.html",
+                    "url": "/erp/#!/product/familyproductlist",
                     "position": 20,
                     "usertype": 2,
                     "perms": "product.read",
@@ -118,17 +118,7 @@
                     "enabled": "$conf->product->enabled",
                     "icon": "fa fa-picture-o",
                     "title": "products:Images"
-                },
-                "menu:productconsumption": {
-                    "url": "/erp/#!/product/consumption.html",
-                    "position": 40,
-                    "usertype": 2,
-                    "perms": "product.read",
-                    "enabled": "$conf->product->enabled",
-                    "icon": "fa-line-chart",
-                    "title": "products:Consumptions"
                 }
-
             }
         }
     }
