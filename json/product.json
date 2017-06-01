@@ -84,7 +84,7 @@
                     "title": "products:ListOfAttributes"
                 },
                 "menu:productfamily": {
-                    "url": "/erp/#!/product/familyproductlist.html",
+                    "url": "/erp/#!/product/familyproductlist",
                     "position": 20,
                     "usertype": 2,
                     "perms": "product.read",

@@ -60,7 +60,7 @@
             <span class="caption-subject dark sbold uppercase">@(products:FamilyProducts)</span>
         </div>
         <div class="actions">
-            <a class="btn blue" ui-sref="settings.product.family.create">@(Add) <i class="fa fa-plus"></i></a>
+            <a class="btn blue" ui-sref="product.family.create">@(Add) <i class="fa fa-plus"></i></a>
             <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
             </a>
         </div>
@@ -89,7 +89,7 @@
                                     <td>{{line.countProducts}}</td>
                                     <td>{{line.createdAt | date : "shortDate"}}</td>
                                     <td>
-                                        <a class="btn green fa fa-pencil" ui-sref="settings.product.family.show({id:line._id})" title="Editer"></a>
+                                        <a class="btn green fa fa-pencil" ui-sref="product.family.show({id:line._id})" title="Editer"></a>
                                         <button ng-if="line.countProducts == 0" class="btn red fa fa-trashe" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
                                     </td>
                                 </tr>
