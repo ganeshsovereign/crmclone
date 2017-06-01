@@ -65,14 +65,32 @@
             "icon": "fa-cubes",
             "title": "products:Products/Services",
             "submenus": {
-                "menu:productlist": {
-                    "url": "/erp/#!/product",
+                "menu:productcategories": {
+                    "url": "/erp/#!/product/productcategories.html",
                     "position": 1,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
-                    "icon": "fa-cubes",
-                    "title": "products:ListProducts"
+                    "icon": "fa fa-share-alt",
+                    "title": "products:ProductCategories"
+                },
+                "menu:productattributes": {
+                    "url": "/erp/#!/product/attributeslist.html",
+                    "position": 5,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "icon-settings",
+                    "title": "products:ListOfAttributes"
+                },
+                "menu:productfamily": {
+                    "url": "/erp/#!/product/familyproduct.html",
+                    "position": 2,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa fa-bars",
+                    "title": "products:FamilyProducts"
                 },
                 "menu:productpricelevel": {
                     "url": "/erp/#!/product/pricelevel.html",
@@ -80,27 +98,37 @@
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
-                    "icon": "fa-cubes",
+                    "icon": "fa fa-money",
                     "title": "products:PriceLevel"
+                },
+                "menu:productlist": {
+                    "url": "/erp/#!/product",
+                    "position": 15,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa-cubes",
+                    "title": "products:ListProducts"
+                },
+                "menu:images": {
+                    "url": "/erp/#!/product/images.html",
+                    "position": 20,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa fa-picture-o",
+                    "title": "products:Images"
                 },
                 "menu:productconsumption": {
                     "url": "/erp/#!/product/consumption.html",
-                    "position": 20,
+                    "position": 25,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
                     "icon": "fa-line-chart",
                     "title": "products:Consumptions"
-                },
-                "menu:images": {
-                    "url": "/erp/#!/product/images.html",
-                    "position": 25,
-                    "usertype": 2,
-                    "perms": "product.read",
-                    "enabled": "$conf->product->enabled",
-                    "icon": "fa-line-picture",
-                    "title": "products:Images"
                 }
+
             }
         }
     }
