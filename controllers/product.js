@@ -4120,16 +4120,16 @@ ProductAttributes.prototype = {
                 if (self.body.value.remove)
                     return ProductModel.update({ variants: self.body.value._id }, { $pull: { variants: self.body.value._id } }, { multi: true }, function(err, doc) {
                         if (err)
-                            return console.log(err);
+                            return self.throw500(err);
 
 
                         ProductModel.update({ 'attributes.options': self.body.value._id }, { $pull: { 'attributes.$.options': self.body.value._id } }, { multi: true }, function(err, doc) {
                             if (err)
-                                return console.log(err);
+                                return self.throw500(err);
 
                             ProductAttributesValuesModel.remove({ _id: self.body.value._id }, function(err, doc) {
                                 if (err)
-                                    return console.log(err);
+                                    return self.throw500(err);
 
                                 return self.json(doc);
                             });
@@ -4138,7 +4138,7 @@ ProductAttributes.prototype = {
                 else
                     return ProductAttributesValuesModel.findByIdAndUpdate(self.body.value._id, self.body.value, { new: true }, function(err, doc) {
                         if (err)
-                            console.log(err);
+                            return self.throw500(err);
 
                         return self.json(doc);
                     });
@@ -4147,11 +4147,12 @@ ProductAttributes.prototype = {
                 var attr = new ProductAttributesValuesModel(self.body.value);
                 attr.save(function(err, doc) {
                     if (err)
-                        console.log(err);
+                        return self.throw500(err);
 
                     return self.json(doc);
                 });
-            }
+            } else return self.json(doc);
+
         });
     },
     deleteProductAttributes: function(id) {}
