@@ -8,8 +8,8 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ProductImagesSchema = new mongoose.Schema({
-    image: { type: ObjectId, ref: 'Images' },
-    product: { type: ObjectId },
+    image: { type: ObjectId, ref: 'Images', index: true },
+    product: { type: ObjectId, index: true },
     channel: { type: ObjectId, ref: 'integrations' },
     integrationId: { type: String, default: '' }
 }, {
