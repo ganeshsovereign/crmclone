@@ -229,19 +229,19 @@ var Images = function() {
                             name = name.last();
 
                             let image = Image.load(file);
-                            wCb();
-                            console.log('toto');
-                            /*image.measure(function(err, size) {
+
+                            image.measure(function(err, size) {
                                 if (err)
                                     return wCb(err);
-
-                                ImagesModel.update({ imageSrc: name }, {
-                                    $set: {
-                                        imageSrc: name,
-                                        size: size
-                                    }
-                                }, { upsert: true }, wCb);
-                            });*/
+                                wCb();
+                                console.log('toto');
+                                /*    ImagesModel.update({ imageSrc: name }, {
+                                        $set: {
+                                            imageSrc: name,
+                                            size: size
+                                        }
+                                    }, { upsert: true }, wCb);*/
+                            });
                         }
                     ], function(err) {
                         if (err) {
