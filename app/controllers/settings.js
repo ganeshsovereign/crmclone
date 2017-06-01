@@ -60,7 +60,7 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     //console.log(current);
 
     if (current.length <= 2)
-        return $rootScope.$state.go('settings.product.attributes');
+        return $rootScope.$state.go('product.attributes');
 
     $scope.edit = [];
 

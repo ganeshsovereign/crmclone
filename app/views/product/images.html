@@ -6,18 +6,11 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="product.list">@(products:ListProductsAndServices)</a>
+            <span>@(products:ProductsAndServices)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span></span>
-        </li>
-        <li>
-            <span ng-class="{'font-red':!product.info.isActive}"> @(products:ProductSheet) : {{product.info.SKU}}</span>
-        </li>
-
-        <li>
-            <small ng-hide="!product.info.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
+            <span>@(Pictures)</span>
         </li>
     </ul>
     <div class="page-toolbar">

@@ -1014,6 +1014,36 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductImagesController"
         })
+        // Attributes
+        .state('product.attributes', {
+            parent: "product",
+            url: "/attributeslist.html",
+            templateUrl: "/views/product/attributeslist.html",
+            data: {
+                pageTitle: 'Ajouter un attribut'
+            },
+            controller: "ProductAttributesController"
+        })
+        // Categories
+        .state('product.categories', {
+            parent: "product",
+            url: "/productcategories.html",
+            templateUrl: "/views/product/productcategories.html",
+            data: {
+                pageTitle: 'Configuration des categories'
+            },
+            controller: "CategoryController"
+        })
+        // Family configuration
+        .state('product.family', {
+            parent: "product",
+            url: "/familyproduct.html",
+            templateUrl: "/views/product/familyproduct.html",
+            data: {
+                pageTitle: 'Configuration des familles de produits'
+            },
+            controller: "SettingProductController"
+        })
         .state('product.visual', {
             parent: "product",
             url: "/visual/{id:[0-9a-z]{24}}",
@@ -1710,15 +1740,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "SettingProductController"
         })
-        // categories
-        .state('settings.product.categories', {
-            url: "/categories",
-            templateUrl: "/views/settings/categories/list.html",
-            data: {
-                pageTitle: 'Configuration des categories'
-            },
-            controller: "CategoryController"
-        })
         // prices configuration
         .state('settings.product.pricelists', {
             url: "/pricelists",
@@ -1745,14 +1766,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "SettingProductController"
         })
         // Attributes configuration
-        .state('settings.product.attributes', {
-            url: "/attributes",
-            templateUrl: "/views/settings/attributes/list.html",
-            data: {
-                pageTitle: 'Configuration des attributs'
-            },
-            controller: "SettingProductController"
-        })
         .state('settings.product.attributes.create', {
             url: "/create.html",
             templateUrl: "/views/settings/attributes/fiche.html",
@@ -1820,14 +1833,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "SettingProductController"
         })
         // Family configuration
-        .state('settings.product.family', {
-            url: "/familyproducts",
-            templateUrl: "/views/settings/family/list.html",
-            data: {
-                pageTitle: 'Configuration des familles de produits'
-            },
-            controller: "SettingProductController"
-        })
         .state('settings.product.family.create', {
             url: "/create.html",
             templateUrl: "/views/settings/family/fiche.html",
