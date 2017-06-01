@@ -93,6 +93,10 @@ productPricesSchema.pre('save', function(next) {
                 if (coef && self.priceLists.cost != true) {
                     //Recalcul product prices
                     self.prices = [];
+
+                    if (!product.sellFamily.discounts.length)
+                        console.log('Error family configuration : no discount', product.sellFamily._id);
+
                     for (var i = 0; i < product.sellFamily.discounts.length; i++) {
                         var price = {};
                         price.count = product.sellFamily.discounts[i].count;
