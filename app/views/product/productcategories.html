@@ -59,6 +59,57 @@
             <button type="button" class="bootbox-close-button close" ng-click="cancel()" aria-hidden="true">×</button>
             <h4 class="no-margin-bottom">@(categories:CreateCat) </h4>
         </div>
+    </div>
+    <form class="modal-body form" ng-submit="ok()">
+        <div class="form-horizontal">
+            <div class="form-body">
+                <div class="col-md-5">
+                    <div class="portlet light bordered">
+                        <div class="form-group form-md-line-input">
+                            <input required class="form-control" ng-model="category.langs[0].name" placeholder="@(Name)" type="text">
+                            <label for="name">@(categories:Category) : META Title <span class="required">* </span></label>
+                        </div>
+                        <div class="form-group form-md-line-input">
+                            <input required class="form-control" ng-model="category.langs[0].url" placeholder="url-link" type="text">
+                            <label for="name">@(Url) <span class="required">* </span></label>
+                        </div>
+                        <div class="form-group form-md-line-input">
+                            <textarea class="form-control" ng-model="category.langs[0].meta.description" type="text"></textarea>
+                            <label for="name">META @(Description) <span class="required">* </span></label>
+                        </div>
+                        <div class="md-checkbox has-success">
+                            <input type="checkbox" id="isActive" class="md-check" ng-model="category.enabled" ng-checked="category.enabled">
+                            <label for="isActive">
+                                    <span></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span> @(Enabled)</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="portlet light bordered">
+                        <div class="form-group form-md-line-input">
+                            <label for="name"> @(Description) </label>
+                            <summernote height="150" ng-model="category.langs[0].body"></summernote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" ng-click="cancel()" class="btn btn red">@(Cancel)</button>
+            <button type="submit" class="btn green">@(Save)</button>
+        </div>
+    </form>
+</script>
+
+<!--
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <div class="portlet-title">
+            <button type="button" class="bootbox-close-button close" ng-click="cancel()" aria-hidden="true">×</button>
+            <h4 class="no-margin-bottom">@(categories:CreateCat) </h4>
+        </div>
         <form class="modal-body form" ng-submit="ok()">
             <div class="form-horizontal">
                 <div class="form-body">
@@ -94,6 +145,8 @@
             </div>
         </form>
 </script>
+
+-->
 
 <div class="row">
     <div class="col-md-12">

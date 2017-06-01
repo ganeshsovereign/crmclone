@@ -59,7 +59,7 @@
             <span class="caption-subject bold uppercase">@(products:ListOfAttributes)</span>
         </div>
         <div class="actions">
-            <a class="btn blue" ui-sref="settings.product.attributes.create">@(Add) <i class="fa fa-plus"></i></a>
+            <a class="btn blue" ui-sref="product.attributes.create">@(Add) <i class="fa fa-plus"></i></a>
             <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
             </a>
         </div>
@@ -88,7 +88,7 @@
                                     <td>{{line.mode}}</td>
                                     <td>{{line.createdAt | date : "shortDate"}}</td>
                                     <td>
-                                        <a class="btn green fa fa-pencil" ui-sref="settings.product.attributes.show({id:line._id})" title="Editer"></a>
+                                        <a class="btn green fa fa-pencil" ui-sref="product.attributes.show({id:line._id})" title="Editer"></a>
                                         <button ng-if="line.inventory == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
                                     </td>
                                 </tr>

@@ -57,10 +57,9 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
 angular.module("MetronicApp").controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
     var current = $rootScope.$state.current.name.split('.');
     $scope.backTo = 'settings.product.types';
-    //console.log(current);
 
-    if (current.length <= 2)
-        return $rootScope.$state.go('product.attributes');
+    //if (current[0] == 'settings' && current.length <= 2)
+    //    return $rootScope.$state.go('settings.product.types');
 
     $scope.edit = [];
 
@@ -110,23 +109,28 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     };
     $scope.listObject = [];
 
-    switch (current[2]) {
-        case 'types':
-            var Resource = Settings.productTypes;
-            break;
-        case 'family':
-            var Resource = Settings.productFamily;
-            Settings.productAttributes.query({}, function(res) {
-                $scope.attributes = res.data;
-            });
-            break;
-        case 'attributes':
-            var Resource = Settings.productAttributes;
-            break;
-        case 'pricelists':
-            var Resource = Settings.priceList;
-            break;
-    }
+    if (current[0] === 'settings')
+        switch (current[2]) {
+            case 'types':
+                var Resource = Settings.productTypes;
+                break;
+            case 'pricelists':
+                var Resource = Settings.priceList;
+                break;
+        }
+    else
+        switch (current[1]) {
+            case 'family':
+                var Resource = Settings.productFamily;
+                Settings.productAttributes.query({}, function(res) {
+                    $scope.attributes = res.data;
+                });
+                break;
+            case 'attributes':
+                var Resource = Settings.productAttributes;
+                break;
+        }
+
 
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components

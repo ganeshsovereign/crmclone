@@ -66,8 +66,8 @@
             "title": "products:Products/Services",
             "submenus": {
                 "menu:productcategories": {
-                    "url": "/erp/#!/product/productcategories.html",
-                    "position": 1,
+                    "url": "/erp/#!/product/productcategories",
+                    "position": 25,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
@@ -75,8 +75,8 @@
                     "title": "products:ProductCategories"
                 },
                 "menu:productattributes": {
-                    "url": "/erp/#!/product/attributeslist.html",
-                    "position": 5,
+                    "url": "/erp/#!/product/attributeslist",
+                    "position": 30,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
@@ -84,8 +84,8 @@
                     "title": "products:ListOfAttributes"
                 },
                 "menu:productfamily": {
-                    "url": "/erp/#!/product/familyproduct.html",
-                    "position": 2,
+                    "url": "/erp/#!/product/familyproductlist.html",
+                    "position": 20,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
@@ -103,7 +103,7 @@
                 },
                 "menu:productlist": {
                     "url": "/erp/#!/product",
-                    "position": 15,
+                    "position": 1,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
@@ -112,7 +112,7 @@
                 },
                 "menu:images": {
                     "url": "/erp/#!/product/images.html",
-                    "position": 20,
+                    "position": 30,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
@@ -121,7 +121,7 @@
                 },
                 "menu:productconsumption": {
                     "url": "/erp/#!/product/consumption.html",
-                    "position": 25,
+                    "position": 40,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
