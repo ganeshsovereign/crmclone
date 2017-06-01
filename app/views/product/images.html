@@ -1,4 +1,4 @@
-<div class="page-bar" ng-init="findOne()">
+<div class="page-bar" ng-init="find()">
     <ul class="page-breadcrumb">
         <li>
             <i class="fa fa-home"></i>
@@ -72,5 +72,70 @@
     </div>
     <div class="portlet-body">
         <div ng-include="'/templates/gridfs/file.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light portlet-fit bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class=" icon-layers font-green"></i>
+                    <span class="caption-subject font-green bold uppercase">@(products:Pictures)</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="mt-element-card mt-element-overlay">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-repeat="image in images">
+                            <div class="mt-card-item">
+                                <div class="mt-card-avatar mt-overlay-1">
+                                    <img ng-src="/erp/api/images/bank/m/{{image.imageSrc}}">
+                                    <div class="mt-overlay">
+                                        <ul class="mt-info">
+                                            <li>
+                                                <a class="btn default btn-outline" href="javascript:;">
+                                                    <i class="icon-magnifier"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="btn default btn-outline" href="javascript:;">
+                                                    <i class="icon-link"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-card-content">
+                                    <h3 class="mt-card-name">{{image.langs[0].name}}</h3>
+                                    <p class="mt-card-desc font-grey-mint">{{image.imageSrc}}</p>
+                                    <p class="mt-card-desc font-grey-mint">{{image.langs[0].description}}</p>
+                                    <p class="mt-card-desc font-grey-mint">{{image.size.width}} x {{image.size.height}}</p>
+                                    <div class="mt-card-social">
+                                        <ul>
+                                            <li>
+                                                <a href="javascript:;">
+                                                    <i class="icon-social-facebook"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:;">
+                                                    <i class="icon-social-twitter"></i>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:;">
+                                                    <i class="icon-social-dribbble"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

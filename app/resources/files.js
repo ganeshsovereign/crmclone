@@ -26,12 +26,13 @@ International Registered Trademark & Property of ToManage SAS
 
 "use strict";
 
-MetronicApp.factory("ProductImages", ['$resource', function($resource) {
-    return $resource('/erp/api/images/:Id', {
-        Id: '@_id'
-    }, {
-        update: {
-            method: 'PUT'
-        }
-    });
+MetronicApp.factory("Files", ['$resource', function($resource) {
+    return {
+        bank: $resource('/erp/api/images/bank/:Id', {
+            Id: '@_id'
+        }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false }
+        })
+    }
 }]);

@@ -1560,14 +1560,16 @@ MetronicApp.controller('ProductStatsController', ['$scope', '$rootScope', '$http
 
 }]);
 
-MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$http', 'ProductImages', function($scope, $rootScope, $http, ProductImages) {
+MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$http', 'Files', function($scope, $rootScope, $http, Files) {
+
+    $scope.images = [];
 
     $scope.refreshDirectory = function() {
-        var images = new ProductImages();
-        images.$update(function(data) {
-            console.log(data);
-        });
+        var images = new Files.bank();
+        images.$update(function(data) {});
     };
+
+
 
     $scope.$on('$viewContentLoaded', function() {
 
@@ -1584,5 +1586,13 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
                     $scope.pricesLists = data.data;
                 });*/
     });
+
+    $scope.find = function() {
+        var images = new Files.bank();
+
+        images.$query({}, function(data) {
+            $scope.images = data.data;
+        });
+    };
 
 }]);

@@ -104,7 +104,7 @@ exports.install = function() {
 
     }, ['authorize']);
 
-    F.route('/erp/api/images', function() {
+    /*F.route('/erp/api/images', function() {
         var self = this;
 
         if (!self.query.model)
@@ -156,10 +156,16 @@ exports.install = function() {
             self.json(result);
         });
 
-    }, ['authorize']);
+    }, ['authorize']);*/
 
     //Scan directory productImages and refresh collection Images 
-    F.route('/erp/api/images', images.scanDirectory, ['put', 'authorize']);
+    F.route('/erp/api/images/bank', images.scanDirectory, ['put', 'authorize']);
+    F.route('/erp/api/images/bank', images.getAllImages, ['authorize']);
+    F.file('/erp/api/images/bank/s/*', images.fileImage); //small
+    F.file('/erp/api/images/bank/m/*', images.fileImage); //medium
+    F.file('/erp/api/images/bank/l/*', images.fileImage); //large
+    F.route('/erp/api/images/bank', images.uploadImages, ['upload', 'authorize'], 10240);
+    F.route('/erp/api/images/bank/{Id}', images.replaceImages, ['upload', 'authorize'], 10240);
 
     F.route('/erp/api/images/{Model}/{Id}', function(model, id) {
         var self = this;
@@ -191,20 +197,109 @@ var Images = function() {
 
             U.ls(F.path.root() + '/productImages', function(files) {
                 async.forEach(files, function(file, aCb) {
+                    //Suppress special character in image filename
+                    var newFile = file.replace(/[^a-zA-Z0-9-_./]/g, '');
+
+                    if (newFile !== file) {
+                        fs.rename(file, newFile, function(err) {
+                            if (err) console.log('ERROR: ' + err);
+                        });
+                        file = newFile;
+                    }
+
                     let name = file.split('/');
-                    name = name.pop();
+                    name = name.last();
 
-                    ImagesModel.update({ imageSrc: name }, {
-                        $set: {
-                            imageSrc: name
+                    let image = Image.load(file);
+                    image.measure(function(err, size) {
+                        if (err) {
+                            console.log(err);
+                            return aCb();
                         }
-                    }, { upsert: true }, aCb);
-                }, function(err) {
-                    if (err)
-                        return self.throw500(err);
 
-                    return self.json({});
+                        ImagesModel.update({ imageSrc: name }, {
+                            $set: {
+                                imageSrc: name,
+                                size: size
+                            }
+                        }, { upsert: true }, aCb);
+                    });
+                }, function(err) {
+                    if (err) {
+                        console.log(err);
+                        return self.json({
+                            errorNotify: {
+                                title: 'Erreur',
+                                message: err
+                            }
+                        });
+                    }
+
+                    //console.log(doc);
+                    let doc = {};
+                    doc.successNotify = {
+                        title: "Success",
+                        message: "Mise a jour ok"
+                    };
+                    self.json(doc);
                 });
+            });
+        };
+        this.getAllImages = function() {
+            let self = this;
+            var ImagesModel = MODEL('Images').Schema;
+
+            ImagesModel.find({}, function(err, docs) {
+                if (err)
+                    return self.throw500(err);
+
+                return self.json({ data: docs });
+            });
+        };
+
+        // Reads specific picture from directory
+        // URL: /images/small|large/*.jpg
+
+        this.fileImage = function(req, res) {
+            const fs = require('fs');
+            // Below method checks if the file exists (processed) in temporary directory
+            // More information in total.js documentation
+
+            let self = this;
+            F.exists(req, res, 10, function(next, filename) {
+
+                let readStream;
+
+                if (fs.existsSync(F.path.root() + '/productImages/' + req.split.last()))
+                    readStream = fs.createReadStream(F.path.root() + '/productImages/' + req.split.last());
+                else
+                    readStream = fs.createReadStream(F.path.public() + '/assets/admin/layout/img/nophoto.jpg');
+
+                readStream.once('end', function() {
+
+                    // Image processing
+                    res.image(filename, function(image) {
+                        image.output('jpg');
+                        image.quality(90);
+
+                        switch (req.split[req.split.length - 2]) {
+                            case 'l':
+                                image.miniature(600, 400);
+                                break;
+                            case 'm':
+                                image.miniature(320, 180);
+                                break;
+                            case 's':
+                                image.miniature(200, 150);
+                                break;
+                        }
+
+                        image.minify();
+                    });
+
+                    // Releases F.exists()
+                    next();
+                }).pipe(fs.createWriteStream(filename));
             });
         };
     };

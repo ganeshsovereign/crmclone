@@ -8,12 +8,15 @@ var mongoose = require('mongoose'),
 
 var ImagesSchema = new mongoose.Schema({
     imageSrc: { type: String, unique: true },
-    size: { type: Number },
+    size: {
+        width: Number,
+        height: Number
+    },
     langs: [{
         _id: false,
         linker: { type: String, default: '' },
-        title: { type: String, default: '' },
-        descritpion: { type: String, default: '' }
+        name: { type: String, default: '' },
+        description: { type: String, default: '' }
     }],
 }, {
     collection: 'Images',
