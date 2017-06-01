@@ -196,7 +196,6 @@ var Images = function() {
             var ImagesModel = MODEL('Images').Schema;
 
             U.ls(F.path.root() + '/productImages', function(files) {
-                console.log(files);
                 async.eachLimit(files, 100, function(file, aCb) {
                     //Suppress special character in image filename
 
