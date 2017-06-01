@@ -230,7 +230,7 @@ var Images = function() {
 
                             let image = Image.load(file);
 
-                            image.identify(function(err, info) {
+                            image.measure(function(err, info) {
                                 if (err)
                                     return wCb(err);
                                 wCb();
