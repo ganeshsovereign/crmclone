@@ -14,7 +14,10 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span> @(products:Family)  : {{object.langs[0].name}} </span>
+            <span ng-class="{'font-red':!object.isActive}"> @(products:Family)  : {{object.langs[_language].name}} </span>
+        </li>
+        <li>
+            <small ng-hide="!object.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!object.isActive" class="font-red">@(Disabled)</small>
         </li>
     </ul>
     <div class="page-toolbar">
@@ -61,7 +64,7 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-magic-wand"></i>
-                <span class="caption-subject dark bold uppercase"> @(products:Family) : {{object.langs[0].name}}</span>
+                <span class="caption-subject dark bold uppercase"> @(products:Family) : <span ng-class="{'font-red':!object.isActive}"> {{object.langs[_language].name}}</span></span>
             </div>
             <save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
         </div>
@@ -75,13 +78,16 @@
                                 <label for="form_control_1">@(Code)</label>
                             </div>
                             <div class="form-group form-md-line-input">
-                                <input type="text" class="form-control" id="form_control_1" ng-model="object.langs[0].name">
-                                <label for="form_control_1">@(Name)</label>
+                                <div class="input-icon right">
+                                    <input type="text" class="form-control" id="form_control_1" ng-model="object.langs[_language].name">
+                                    <label for="form_control_1">@(Name)</label>
+                                    <i class="fa fa-flag"></i>
+                                </div>
                             </div>
                             <div class="form-group form-md-line-input ">
                                 <div class="input-group">
                                     <div class="input-group-control">
-                                        <select class="table-group-action-input form-control" required ng-model="familyId" ng-options="s._id as s.langs[0].name for s in attributes"></select>
+                                        <select class="table-group-action-input form-control" required ng-model="familyId" ng-options="s._id as s.langs[_language].name for s in attributes"></select>
                                         <label for="FamilyProducts">@(products:AddAttributesToFamily)</label>
                                     </div>
                                     <span class="input-group-btn btn-right"><button ng-click="object.options.push(familyId);update(true);" class="btn yellow" type="button">@(Add)</button></span>
@@ -132,7 +138,7 @@
                                 </div>
 
                                 <div class="actions btn-set">
-                                    <button class="btn green" ng-hide="addNewRange" ng-click="addNewRange = true" class="">+</button>
+                                    <button class="btn green" ng-hide="addNewRange" ng-click="addNewRange = true">+</button>
                                 </div>
                             </div>
 
@@ -140,12 +146,10 @@
                                 <tbody>
                                     <tr ng-repeat="line in object.discounts">
                                         <td class="text-info">{{line.count||1}}+</td>
-                                        <td><a href="#" editable-number="line.discount" e-step="0.001" e-min="0">{{line.discount || 0 | number:3}} %</a></td>
+                                        <td><a href="#" editable-number="line.discount" e-step="0.001" e-min="0" onaftersave="update(true)">{{line.discount || 0 | number:3}} %</a></td>
                                     </tr>
                                 </tbody>
                             </table>
-
-
                             <form ng-show="addNewRange" class="form-horizontal">
                                 <div class="form-body">
                                     <div class="form-group">
@@ -163,7 +167,7 @@
 
                                     <div class="actions btn-set">
                                         <button type="button" ng-click="addNewRange = false" class="btn red btn-sm">@(Cancel)</button>
-                                        <button type="button" ng-click="object.discounts.push(newline); addNewRange = false; " class="btn blue btn-sm">@(Add)</button>
+                                        <button type="button" ng-click="object.discounts.push(newline); addNewRange = false; update(true);" class="btn blue btn-sm">@(Add)</button>
                                     </div>
                             </form>
                             </div>
@@ -171,7 +175,7 @@
                     </div>
                     <div class="col-md-7">
                         <div class="form-horizontal form-row-seperated">
-                            <div class="portlet portlet light bordered">
+                            <div class="portlet light bordered">
                                 <div class="portlet-title">
                                     <div class="caption">
                                         <i class="fa fa-list font-grey-gallery"></i>
@@ -197,7 +201,7 @@
                                             </thead>
                                             <tbody>
                                                 <tr ng-repeat="line in object.opts">
-                                                    <td>{{line.langs[0].name}}</td>
+                                                    <td>{{line.langs[_language].name}}</td>
                                                     <td>{{line.mode}} <span ng-if="line.values.length">({{line.values.length}})</span></td>
                                                     <td>
                                                         <div class="md-checkbox-inline">
@@ -218,18 +222,9 @@
                                 </div>
                             </div>
                         </div>
-
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>

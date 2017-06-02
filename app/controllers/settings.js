@@ -113,21 +113,22 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         switch (current[2]) {
             case 'types':
                 var Resource = Settings.productTypes;
+                var go = 'product.family.show.....A DEFINIR';
                 break;
             case 'pricelists':
                 var Resource = Settings.priceList;
+                var go = 'product.family.show.....A DEFINIR';
                 break;
         }
     else
         switch (current[1]) {
             case 'family':
                 var Resource = Settings.productFamily;
-                Settings.productAttributes.query({}, function(res) {
-                    $scope.attributes = res.data;
-                });
+                var go = 'product.family.show';
                 break;
             case 'attributes':
                 var Resource = Settings.productAttributes;
+                var go = 'product.attributes.show';
                 break;
         }
 
@@ -206,19 +207,15 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     $scope.create = function() {
         var object = new Resource(this.object);
         object.$save(function(response) {
-            current.pop();
-            $rootScope.$state.go(current.join('.'));
+            $rootScope.$state.go(go, { id: response._id });
         });
     };
 
     $scope.update = function(stay) {
         $scope.object.$update(function(response) {
             $scope.object = response;
-            if (stay)
-                return $scope.findOne();
 
-            current.pop();
-            $rootScope.$state.go(current.join('.'));
+            return $scope.findOne();
         });
     };
 
