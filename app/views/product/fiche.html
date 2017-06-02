@@ -68,7 +68,7 @@
                     <div class="col-md-12">
                         <div class="col-md-6 ">
                             <div class="profile aligntop">
-                                <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
+                                <img ng-src="/erp/api/images/bank/s/{{product.imageSrc.imageSrc}}" class="img-responsive">
                             </div>
 
                             <span class="profile-desc-text"> {{product.info.langs[0].name}} </span>
@@ -148,8 +148,8 @@
                             <a ui-sref="product.show.stock({id:product._id})">
                                 <i class="icon-social-dropbox"></i> @(stocks:Stocks) </a>
                         </li>-->
-                        <li ng-class="{active: $state.includes('product.show.files')}">
-                            <a ui-sref="product.show.files({id:product._id})">
+                        <li ng-class="{active: $state.includes('product.show.images')}">
+                            <a ui-sref="product.show.images({id:product._id})">
                                 <i class="icon-picture"></i> @(products:Images) </a>
                         </li>
                         <li ng-class="{active: $state.includes('product.show.ecommerce')}">

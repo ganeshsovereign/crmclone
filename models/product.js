@@ -98,8 +98,7 @@ var productSchema = new Schema({
     ischat: { type: Boolean, default: false },
     imageSrc: {
         type: Schema.Types.ObjectId,
-        //    ref: 'Images',
-        default: null
+        ref: 'Images'
     },
 
     entity: [String],

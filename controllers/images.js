@@ -34,6 +34,11 @@ var async = require('async'),
 exports.install = function() {
 
     let images = new Images();
+    let productImages = new ProductImages();
+
+    F.route('/erp/api/images/product/{id}', productImages.getAllImagesByProductId, ['authorize']);
+    F.route('/erp/api/images/product/{id}', productImages.addImageToProductId, ['put', 'json', 'authorize']);
+    F.route('/erp/api/images/product/{Id}', productImages.removeImageFromProduct, ['delete', 'authorize']);
 
     F.route('/erp/api/images/{Model}/{Id}', function(model, id) {
         var self = this;
@@ -369,6 +374,50 @@ var Images = function() {
 
                     return self.json(doc);
                 });
+            });
+        };
+    };
+};
+
+var ProductImages = function() {
+    return new function() {
+        this.getAllImagesByProductId = function(id) {
+            let self = this;
+            var ProductImagesModel = MODEL('productImages').Schema;
+            console.log(id);
+
+            ProductImagesModel.find({ product: id })
+                .populate("image")
+                .sort({ 'image.imageSrc': 1 })
+                .exec(function(err, docs) {
+                    if (err)
+                        return self.throw500(err);
+
+                    return self.json({ data: docs, id: _.map(docs, elem => elem.image._id) });
+                });
+        };
+        this.addImageToProductId = function(id) {
+            let self = this;
+            var ProductImagesModel = MODEL('productImages').Schema;
+
+            ProductImagesModel.update({ product: id, image: self.body.image }, { $set: { product: id, image: self.body.image } }, { upsert: true }, function(err, doc) {
+                if (err)
+                    return self.throw500(err);
+
+                self.json(doc);
+            });
+
+        };
+        this.removeImageFromProduct = function(id) {
+            var self = this;
+
+            var ProductImagesModel = MODEL('productImages').Schema;
+
+            ProductImagesModel.remove({ _id: id }, function(err, doc) {
+                if (err)
+                    return self.throw500(err);
+
+                return self.json(doc);
             });
         };
     };

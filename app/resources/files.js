@@ -33,6 +33,12 @@ MetronicApp.factory("Files", ['$resource', function($resource) {
         }, {
             update: { method: 'PUT' },
             query: { method: 'GET', isArray: false }
+        }),
+        productImages: $resource('/erp/api/images/product/:Id', {
+            Id: '@_id'
+        }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false }
         })
     }
 }]);

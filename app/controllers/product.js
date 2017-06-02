@@ -1555,9 +1555,10 @@ MetronicApp.controller('ProductStatsController', ['$scope', '$rootScope', '$http
 
 }]);
 
-MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$http', 'Files', 'FileUploader', function($scope, $rootScope, $http, Files, FileUploader) {
+MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '$http', 'Files', 'FileUploader', function($scope, $rootScope, $http, Files, FileUploader) {
 
     $scope.images = [];
+    $scope.productImages = [];
 
     var uploader = $scope.uploader = new FileUploader({ autoUpload: true });
     uploader.url = '/erp/api/images/bank';
@@ -1583,15 +1584,30 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
                 }).success(function(data) {
                     $scope.pricesLists = data.data;
                 });*/
+        $scope.find();
     });
 
-    $scope.find = function() {
+    $scope.find = function(product) {
+        console.log(product);
+        $scope.product = product;
         var images = new Files.bank();
 
         images.$query({}, function(data) {
             $scope.images = data.data;
         });
+
+        if (product && product._id) {
+            var imagesProduct = new Files.productImages();
+
+            imagesProduct.$get({ Id: product._id }, function(data) {
+                console.log(data);
+                $scope.productImages = data.id;
+            });
+        }
+
     };
+
+
 
     $scope.delete = function(id, index) {
         $http({
@@ -1634,6 +1650,107 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
     uploader.onCompleteItem = function(item, response, status, headers) {
         console.log(response);
         //$scope.images.push();
+    };
+
+    $scope.addImageToProduct = function(image) {
+        if (!$scope.product._id)
+            return;
+
+        $http({
+            method: 'PUT',
+            url: '/erp/api/images/product/' + $scope.product._id,
+            data: {
+                image: image._id
+            }
+        }).success(function(data, status) {
+            console.log(data);
+            $scope.productImages.push(image._id);
+        });
+
+    };
+
+}]);
+
+MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$http', '$modal', 'Files', function($scope, $rootScope, $http, $modal, Files) {
+    $scope.images = [];
+    $scope.product = null;
+
+    $scope.init = function() {
+        $scope.product = $scope.$parent.product;
+
+        $scope.find();
+    };
+
+    $scope.find = function() {
+        var images = new Files.productImages();
+
+        images.$get({ Id: $scope.product._id }, function(data) {
+            console.log(data);
+            $scope.images = data.data;
+        });
+    };
+
+    $scope.addImages = function() {
+
+        var modalInstance = $modal.open({
+            templateUrl: '/templates/core/modal/images.html',
+            controller: 'ProductBankImagesModalController',
+            size: "lg",
+            resolve: {
+                options: function() {
+                    return {
+                        product: $scope.product
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then(function() {
+            $scope.find();
+            /*$http({
+                method: 'PUT',
+                url: '/erp/api/product/upgradeprice',
+                data: {
+                    id: grid.getSelectedRows(),
+                    price_level: "BASE",
+                    coef: coef
+                }
+            }).success(function(data, status) {
+                $scope.find();
+            });*/
+        }, function() {
+            $scope.find();
+        });
+
+    };
+
+    $scope.delete = function(image, index) {
+        $http({
+            method: 'DELETE',
+            url: '/erp/api/images/product/' + image._id
+        }).success(function(data, status) {
+            $scope.images.splice(index, 1);
+        });
+    };
+
+    $scope.addProductAsTop = function(image) {
+        $scope.$parent.product.imageSrc = image.image._id;
+        $scope.$parent.update();
+    };
+
+}]);
+
+MetronicApp.controller('ProductBankImagesModalController', ['$scope', '$rootScope', '$http', '$modalInstance', 'options', 'Files', function($scope, $rootScope, $http, $modalInstance, options, Files) {
+    console.log(options);
+
+    $scope.product = options.product;
+
+    $scope.ok = function() {
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
     };
 
 }]);

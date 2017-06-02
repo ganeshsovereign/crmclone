@@ -782,6 +782,7 @@ function Product(id, cb) {
         .populate("suppliers.taxes.taxeId")
         .populate("createdBy", "username")
         .populate("editedBy", "username")
+        .populate("imageSrc")
         /*.populate({
             path: 'attributes.attribute',
             populate: { path: "group" }

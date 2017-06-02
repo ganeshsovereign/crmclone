@@ -976,11 +976,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductController"
         })
-        .state('product.show.files', {
-            url: "/files",
-            templateUrl: "/views/product/files.html",
+        .state('product.show.images', {
+            url: "/images",
+            templateUrl: "/views/product/productImages.html",
             data: {
-                pageTitle: 'Images / Documents'
+                pageTitle: 'Images'
             }
         })
         .state('product.create', {
@@ -1017,7 +1017,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Banques d\'images des produits'
             },
-            controller: "ProductImagesController"
+            controller: "ProductBankImagesController"
         })
         // Attributes
         .state('product.attributes', {
