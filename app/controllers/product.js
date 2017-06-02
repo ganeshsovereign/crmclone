@@ -418,7 +418,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                     "url": getUrl() // ajax source
                 },
                 "order": [
-                    [1, "asc"]
+                    [2, "asc"]
                 ], // set first column as a default sort by asc
                 "columns": [{
                     data: 'bool'

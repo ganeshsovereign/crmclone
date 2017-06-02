@@ -67,7 +67,8 @@
                     <div class="col-md-12">
                         <div class="col-md-6 ">
                             <div class="profile aligntop">
-                                <img ng-src="/erp/api/images/bank/s/{{product.imageSrc.imageSrc}}" class="img-responsive">
+                                <img ng-if="product.imageSrc" ng-src="/erp/api/images/bank/s/{{product.imageSrc.imageSrc}}" class="img-responsive">
+                                <img ng-if="!product.imageSrc" src="/assets/admin/layout/img/nophoto.jpg" class="img-responsive">
                             </div>
 
                             <span class="profile-desc-text"> {{product.info.langs[0].name}} </span>

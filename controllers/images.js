@@ -166,6 +166,7 @@ exports.install = function() {
     //Scan directory productImages and refresh collection Images 
     F.route('/erp/api/images/bank', images.scanDirectory, ['put', 'authorize']);
     F.route('/erp/api/images/bank', images.getAllImages, ['authorize']);
+    F.file('/erp/api/images/bank/xs/*', images.fileImage); //small
     F.file('/erp/api/images/bank/s/*', images.fileImage); //small
     F.file('/erp/api/images/bank/m/*', images.fileImage); //medium
     F.file('/erp/api/images/bank/l/*', images.fileImage); //large
@@ -311,6 +312,9 @@ var Images = function() {
                                 break;
                             case 's':
                                 image.miniature(200, 150);
+                                break;
+                            case 'xs':
+                                image.miniature(32, 32);
                                 break;
                         }
 
