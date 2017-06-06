@@ -47,13 +47,13 @@
                                                 <label for="ref_client">@(propal:RefProposal)</label>
                                             </div>
 
-                                            <div ng-if="module('delivery')" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="ref_client" ng-model="object.order.ref">
+                                            <div ng-if="object.order" class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="ref_client" ng-model="object.order.ref" readonly>
                                                 <label for="ref_client">@(orders:RefOrderShort)</label>
                                             </div>
 
-                                            <div ng-hide="!object._id" ng-if="module('bill')" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="ref_client" ng-model="object.order.ref">
+                                            <div ng-repeat="order in object.orders" class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="ref_client" ng-model="order.ref" readonly>
                                                 <label for="ref_client">@(orders:RefOrderShort)</label>
                                             </div>
 

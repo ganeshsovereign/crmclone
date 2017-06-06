@@ -57,7 +57,7 @@
             </a>
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!global.user.rights.order.createOrder" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusSigned)" confirmed-click="createOrder()">
+                    <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createOrder" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusSigned)" confirmed-click="createOrder()">
                         <i class="fa fa-shopping-cart"></i> @(propal:CreateOrder)
                     </a>
 
@@ -66,12 +66,12 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('order')" ng-show="object.Status == 'VALIDATED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()" data-ng-click="changeStatus('BILLED')">
+                    <a ng-if="module('order')" ng-show="object.Status == 'CLOSED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()">
                         <i class="fa fa-money"></i> @(bills:CreateBill)
                     </a>
                 </li>
                 <li>
-                    <a ng-hide="module('delivery') || object.Status == 'VALIDATED' || object.Status =='BILLED'" ng-show="object.Status == 'DRAFT'" ng-hide="!global.user.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                    <a ng-if="object.Status == 'DRAFT' && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(Validate)
                     </a>
                 </li>
@@ -86,12 +86,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-show="object.Status !== 'DRAFT' && object.Status !== 'BILLED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                    <a href="#" ng-if="object.Status === 'VALIDATE' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
                         <i class="fa fa-history"></i> @(ReOpen)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!global.user.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)" confirmed-click="changeStatus('NOTSIGNED')">
+                    <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)" confirmed-click="changeStatus('NOTSIGNED')">
                         <i class="fa fa-thumbs-o-down"></i> @(propal:CloseOfferOrder)
                     </a>
                 </li>

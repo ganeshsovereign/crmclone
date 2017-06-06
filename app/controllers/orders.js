@@ -393,14 +393,15 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             modalInstance.result.then(function(delivery) {
                 //scope.contacts.push(contacts);
                 $scope.findOne(function(order) {
-                    order.deliveries.push(delivery._id);
                     var partial = false;
 
-                    for (var i = 0; i < delivery.lines.length; i++) {
+                    for (var i = 0; i < order.deliveries.length; i++) {
                         //Refresh order quantities already sended
-                        order.lines[i].qty_deliv += delivery.lines[i].qty;
-                        if (order.lines[i].qty_deliv < order.lines[i].qty)
+
+                        if (order.deliveries[i].deliveryQty < order.deliveries[i].orderQty) {
                             partial = true;
+                            break;
+                        }
                     }
 
                     if (partial == false) // CLOSE ORDER
@@ -1107,7 +1108,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                     }, {
                         data: "ref"
                     }, {
-                        data: "client.name",
+                        data: "supplier",
                         defaultContent: "",
                         visible: (params && params['client.id'] ? false : true)
                     }, {
@@ -1270,20 +1271,35 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
         //Copy first address BL
 
         delivery.lines = [];
+        var cpt = 0;
 
-        for (var j = 0; j < delivery.deliveries.length; j++) {
-            if (delivery.deliveries[j].qty_dl == 0)
-                continue;
+        function save(line) {
+            cpt--;
 
+            calculHT(line);
+            delivery.lines.push(line);
+
+            if (cpt > 0)
+                return;
+
+            console.log(delivery);
+
+            delivery.$save(function(response) {
+                //console.log(response);
+                $modalInstance.close(response);
+            });
+        };
+
+        function addLine(deliveryLine) {
             var line = {
                 type: 'product', //Used for subtotal
-                qty: delivery.deliveries[j].qty_dl,
+                qty: deliveryLine.qty_dl,
                 pu_ht: 0,
-                product: delivery.deliveries[j].product,
+                product: deliveryLine.product,
                 total_taxes: [],
                 discount: 0
             };
-            console.log(line, object);
+
             if (line.qty && line.product && line.product._id && !line.priceSpecific)
                 $http.post('/erp/api/product/price', {
                     priceList: object.priceList._id,
@@ -1296,22 +1312,25 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
                         line.discount = res.data.discount;
 
                     //return res.data;
-                    calculHT(line);
+
+                    save(line);
                 });
-
-            calculHT(line);
-
-            delivery.lines.push(line);
-
+            else
+                save(line);
         }
 
-        console.log(delivery);
-        return;
+        for (var j = 0; j < delivery.deliveries.length; j++) {
+            if (delivery.deliveries[j].qty_dl == 0)
+                continue;
 
-        delivery.$save(function(response) {
-            //console.log(response);
-            $modalInstance.close(response);
-        });
+            cpt++;
+
+            addLine(delivery.deliveries[j]);
+
+
+            //console.log(line, object);
+        }
+        return;
     };
 
     $scope.cancel = function() {

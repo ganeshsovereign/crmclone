@@ -53,13 +53,11 @@ exports.install = function() {
     F.route('/erp/api/order/lines/list', object.listLines, ['authorize']);
     F.route('/erp/api/order/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/order', object.all, ['authorize']);
-    F.route('/erp/api/order', object.create, ['post', 'json', 'authorize']);
+    F.route('/erp/api/order', object.create, ['post', 'json', 'authorize'],512);
     F.route('/erp/api/order/{orderId}', function(id) {
-        /*if (this.query.delivery)
-         object.createDelivery(this);*/
         if (this.query.clone)
             object.clone(id, this);
-    }, ['post', 'json', 'authorize']);
+    }, ['post', 'json', 'authorize'],512);
     F.route('/erp/api/order/{orderId}', object.show, ['authorize']);
     F.route('/erp/api/order/{orderId}', object.update, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/order/{orderId}', object.destroy, ['delete', 'authorize']);
@@ -459,6 +457,19 @@ Object.prototype = {
                             localField: 'order',
                             foreignField: 'order',
                             as: 'deliveries'
+                        }
+                    }, {
+                        "$project": {
+                            _id: 1,
+                            orderQty: 1,
+                            order: 1,
+                            "deliveries": {
+                                "$filter": {
+                                    "input": "$deliveries",
+                                    "as": "delivery",
+                                    "cond": { "$ne": ["$$delivery.isremoved", true] }
+                                }
+                            }
                         }
                     }, {
                         $unwind: {
