@@ -57,7 +57,7 @@
     <div class="modal-header">
         <div class="portlet-title">
             <button type="button" class="bootbox-close-button close" ng-click="cancel()" aria-hidden="true">×</button>
-            <h4 class="no-margin-bottom">@(categories:CreateCat) </h4>
+            <h4 class="no-margin-bottom">@(categories:CreateCat) {{category._id}}</h4>
         </div>
     </div>
     <form class="modal-body form" ng-submit="ok()">
@@ -183,7 +183,7 @@
                 <script type="text/ng-template" id="nodes_renderer.html">
                     <div ui-tree-handle class="tree-node tree-node-content">
                         <a class="" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-plus-square-o': collapsed,'fa-minus-square-o': !collapsed}"></span></a> {{node.langs[0].name}}
-                        <span style="margin-left: 20px;" class="font-blue">/{{node.langs[0].linker}}/</span> <small class="h6" ng-show="node.productsCount">({{node.productsCount}} @(products:Products))</small>
+                        <span style="margin-left: 20px;" class="font-blue">{{node.langs[0].linker}}</span> <small class="h6" ng-show="node.productsCount">({{node.productsCount}} @(products:Products))</small>
 
                         <a class="pull-right btn red btn-xs" data-nodrag ng-click="removeItem(this)"><span class="fa fa-trash"></span></a>
                         <a class="pull-right btn blue btn-xs" ng-hide="depth(this) == 5" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;">@(Add) <span class="fa fa-plus"></span></a>

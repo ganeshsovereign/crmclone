@@ -351,7 +351,7 @@ HTTP/1.1 200 OK
     "success":"Category updated success"
 }
      */
-    F.route('/erp/api/category/{id}', object.update, ['put', 'json', 'authorize']);
+    F.route('/erp/api/category/{id}', object.update, ['put', 'json', 'authorize'], 512);
     //other routes..
 };
 
@@ -667,7 +667,7 @@ Object.prototype = {
         var parentId;
         var newParentId = data.parent;
 
-        delete data.createdBy;
+        //console.log(data);
 
         ProductCategory.findOneAndUpdate({ _id: _id }, data, function(err, result) {
             if (err || !result)
@@ -683,7 +683,7 @@ Object.prototype = {
 
             async.waterfall([
                 function(cb) {
-                    ProductCategory.updateParentsCategory(_id, parentId, 'remove', cb);
+                    ProductCategory.updateParentsCategory(_id, parentId, null, cb);
                 },
                 function(cb) {
                     ProductCategory.updateFullName(_id, cb);
