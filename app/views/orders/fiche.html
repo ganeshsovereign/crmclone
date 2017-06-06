@@ -71,7 +71,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-hide="module('delivery') || object.Status == 'VALIDATED'" ng-show="object.Status == 'DRAFT'" ng-hide="!global.user.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                    <a ng-hide="module('delivery') || object.Status == 'VALIDATED' || object.Status =='BILLED'" ng-show="object.Status == 'DRAFT'" ng-hide="!global.user.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(Validate)
                     </a>
                 </li>
@@ -86,7 +86,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-show="object.Status !== 'DRAFT' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                    <a href="#" ng-show="object.Status !== 'DRAFT' && object.Status !== 'BILLED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
                         <i class="fa fa-history"></i> @(ReOpen)
                     </a>
                 </li>

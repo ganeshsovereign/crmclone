@@ -346,9 +346,28 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
 
         $scope.createBill = function() {
-            // CLOSE ORDER
-            $scope.object.$order(function(response) {
-                $rootScope.$state.go("order.show", { id: response._id });
+            var object = angular.copy($scope.object);
+
+            var id = object._id;
+            object.orders = [object._id];
+            delete object._id;
+            delete object.Status;
+            delete object.latex;
+            delete object.datec;
+            delete object.datel;
+            delete object.createdAt;
+            delete object.updatedAt;
+            delete object.ref;
+            delete object.history;
+
+            var order = new Orders.bill(object);
+
+            //create new bill
+            order.$save(function(response) {
+                $scope.object.Status = 'BILLED';
+                $scope.object.$update(function(object) {
+                    $rootScope.$state.go("bill.show", { id: response._id });
+                });
             });
         };
 
@@ -358,14 +377,14 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
 
         $scope.createDelivery = function() {
-
             var modalInstance = $modal.open({
                 templateUrl: '/templates/delivery/modal/create.html',
                 controller: "DeliveryCreateController",
                 resolve: {
                     object: function() {
                         return {
-                            order: $scope.object
+                            order: $scope.object,
+                            priceList: $scope.object.supplier.salesPurchases.priceList
                         };
                     }
                 }
@@ -1219,10 +1238,10 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
     function calculHT(line) {
         if (line.qty) {
             line.total_ht = round(line.qty * (line.pu_ht * (1 - (line.discount / 100))), 2);
-            line.total_tva = line.total_ht * line.tva_tx / 100;
+            //line.total_tva = line.total_ht * line.tva_tx / 100;
         } else {
             line.total_ht = 0;
-            line.total_tva = 0;
+            //line.total_tva = 0;
         }
     }
 
@@ -1239,6 +1258,7 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
         delete delivery.createdAt;
         delete delivery.updatedAt;
         delete delivery.ref;
+
         delivery.createdBy = $rootScope.login._id;
         delivery.editedBy = $rootScope.login._id;
         //delete delivery.notes;
@@ -1249,13 +1269,44 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
 
         //Copy first address BL
 
-        for (var i = 0; i < delivery.lines.length; i++) {
-            delivery.lines[i].qty_order = delivery.lines[i].qty;
-            delivery.lines[i].qty = delivery.lines[i].qty_dl;
-            calculHT(delivery.lines[i]);
+        delivery.lines = [];
+
+        for (var j = 0; j < delivery.deliveries.length; j++) {
+            if (delivery.deliveries[j].qty_dl == 0)
+                continue;
+
+            var line = {
+                type: 'product', //Used for subtotal
+                qty: delivery.deliveries[j].qty_dl,
+                pu_ht: 0,
+                product: delivery.deliveries[j].product,
+                total_taxes: [],
+                discount: 0
+            };
+            console.log(line, object);
+            if (line.qty && line.product && line.product._id && !line.priceSpecific)
+                $http.post('/erp/api/product/price', {
+                    priceList: object.priceList._id,
+                    qty: line.qty,
+                    _id: line.product._id
+                }).then(function(res) {
+                    console.log(res.data);
+                    line.pu_ht = res.data.pu_ht;
+                    if (res.data.discount)
+                        line.discount = res.data.discount;
+
+                    //return res.data;
+                    calculHT(line);
+                });
+
+            calculHT(line);
+
+            delivery.lines.push(line);
+
         }
 
-        //console.log(delivery);
+        console.log(delivery);
+        return;
 
         delivery.$save(function(response) {
             //console.log(response);
