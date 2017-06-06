@@ -70,7 +70,7 @@
             </div>
             <div class="actions">
                 <button class="btn blue" ui-sref="product.create">@(Add) <i class="fa fa-plus"></i></button>
-                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="family=null;find();"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
         <div class="tools">
@@ -88,8 +88,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group form-md-line-input ">
-                                <input class="form-control" placeholder="@(Family)" ng-model="family" typeahead="f.id as f.name for f in AutoComplete($viewValue,'/erp/api/product/family/autocomplete')" typeahead-on-select="find()" type="text" autocomplete="off" />
-                                <label for="Family">@(Family)</label>
+                                <select class="table-group-action-input form-control" ng-model="family" ng-options="s._id as s.name for s in sellFamilies" ng-change="find();"></select>
+                                <label for="FamilyProducts">@(products:Family)</label>
                             </div>
                         </div>
                     </div>

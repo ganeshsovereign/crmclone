@@ -1098,7 +1098,7 @@ Object.prototype = {
         }
 
         if (self.query.family !== 'null')
-            conditions["caFamily"] = self.query.family;
+            conditions["sellFamily"] = self.query.family;
 
         var options = {
             conditions: conditions,
