@@ -43,17 +43,17 @@
                                             </div>
 
                                             <div ng-hide="!object._id" ng-if="module('order')" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="ref_client" ng-model="object.offer.ref" readonly>
+                                                <div class="form-control form-control-static"> <a ui-sref="offer.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
                                                 <label for="ref_client">@(propal:RefProposal)</label>
                                             </div>
 
                                             <div ng-if="object.order" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="ref_client" ng-model="object.order.ref" readonly>
+                                                <div class="form-control form-control-static"> <a ui-sref="order.show({id:object.order._id})">{{object.order.ref}}</a> </div>
                                                 <label for="ref_client">@(orders:RefOrderShort)</label>
                                             </div>
 
-                                            <div ng-repeat="order in object.orders" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="ref_client" ng-model="order.ref" readonly>
+                                            <div ng-if="object.orders" ng-repeat="order in object.orders" class="form-group form-md-line-input">
+                                                <div class="form-control form-control-static"> <a ui-sref="order.show({id:order._id})">{{order.ref}}</a> </div>
                                                 <label for="ref_client">@(orders:RefOrderShort)</label>
                                             </div>
 
