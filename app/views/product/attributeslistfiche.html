@@ -62,7 +62,7 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-magic-wand"></i>
-                <span class="caption-subject dark bold uppercase"> @(products:Attributes) : {{object.langs[_language].name}}</span>
+                <span class="caption-subject dark bold uppercase"> @(products:Attribute) : {{object.langs[_language].name}}</span>
             </div>
             <save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
         </div>
@@ -138,17 +138,17 @@
                     </div>
 
                     <div class="col-md-7">
-                        <div class="portlet light bordered">
+                        <div class="portlet light bordered" ng-if="object.mode =='select'">
                             <div class="portlet-title">
                                 <div class="caption">
                                     <i class="fa fa-list font-grey-gallery"></i>
-                                    <span class="caption-subject font-grey-gallery bold uppercase">@(products:ListOfAttributes)</span>
+                                    <span class="caption-subject font-grey-gallery bold uppercase">@(products:ListOfValues)</span>
                                 </div>
                                 <div class="tools">
                                     <a href="" class="collapse" data-original-title="" title=""> </a>
                                 </div>
                                 <div class="actions btn-set">
-                                    <button class="btn green" ng-click="object.opts.unshift({optionId : object._id,code: 'New',langs : [{value:'New'}]});edit[_language]=true;" title="@(Create)">@(Create)</button>
+                                    <button class="btn green" ng-click="object.opts.unshift({optionId : object._id,code: 'New',langs : [{value:'New'}]});edit[_language]=true;" title="@(Add)">@(Add)</button>
                                 </div>
                             </div>
                             <div class="portlet-body" style="display: block;">

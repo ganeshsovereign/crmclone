@@ -75,22 +75,13 @@
                         <div class="portlet light bordered">
                             <div class="form-group form-md-line-input">
                                 <input type="text" class="form-control" id="form_control_1" ng-model="object.sequence">
-                                <label for="form_control_1">@(Code)</label>
+                                <label for="form_control_1">@(Order)</label>
                             </div>
                             <div class="form-group form-md-line-input">
                                 <div class="input-icon right">
                                     <input type="text" class="form-control" id="form_control_1" ng-model="object.langs[_language].name">
                                     <label for="form_control_1">@(Name)</label>
                                     <i class="fa fa-flag"></i>
-                                </div>
-                            </div>
-                            <div class="form-group form-md-line-input ">
-                                <div class="input-group">
-                                    <div class="input-group-control">
-                                        <select class="table-group-action-input form-control" required ng-model="familyId" ng-options="s._id as s.langs[_language].name for s in attributes"></select>
-                                        <label for="FamilyProducts">@(products:AddAttributesToFamily)</label>
-                                    </div>
-                                    <span class="input-group-btn btn-right"><button ng-click="object.options.push(familyId);update(true);" class="btn yellow" type="button">@(Add)</button></span>
                                 </div>
                             </div>
                         </div>
@@ -184,11 +175,21 @@
                                     <div class="tools">
                                         <a href="" class="collapse" data-original-title="" title=""> </a>
                                     </div>
-                                    <div class="actions btn-set">
+                                    <!--<div class="actions btn-set">
                                         <button class="btn green" ng-click="object.opts.unshift({optionId : object._id,code: 'New',langs : [{value:'New'}]});edit[0]=true;" title="@(Create)">@(Create)</button>
-                                    </div>
+                                    </div>-->
                                 </div>
                                 <div class="portlet-body">
+                                    <div class="form-group form-md-line-input ">
+                                        <div class="input-group">
+                                            <div class="input-group-control">
+                                                <select class="table-group-action-input form-control" required ng-model="familyId" ng-options="s._id as s.langs[_language].name for s in attributes"></select>
+                                                <label for="FamilyProducts">@(products:AddAttributesToFamily)</label>
+                                            </div>
+                                            <span class="input-group-btn btn-right"><button ng-click="object.options.push(familyId);update(true);" class="btn yellow" type="button">@(Add)</button></span>
+                                        </div>
+                                    </div>
+
                                     <div class="dataTables_wrapper no-footer table-responsive">
                                         <table class="table table-striped table-bordered table-hover no-footer">
                                             <thead>

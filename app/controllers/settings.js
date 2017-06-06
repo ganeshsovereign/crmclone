@@ -177,6 +177,11 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
                 });
             });
         });
+
+        if (current[1] === 'family')
+            Settings.productAttributes.query({}, function(data) {
+                $scope.attributes = data.data;
+            });
     });
 
     $scope.findOne = function() {
