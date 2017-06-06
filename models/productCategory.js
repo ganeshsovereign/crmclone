@@ -192,23 +192,24 @@ CategorySchema.statics.updateSequence = function(model, sequenceField, start, en
 CategorySchema.statics.updateFullName = function(id, cb) {
     var Model = this;
     var fullName;
-    var parrentFullName;
+    var parentFullName;
     var path;
 
     Model
         .findById(id)
         .populate('parent')
         .exec(function(err, category) {
-            parrentFullName = category && category.parent ? category.parent.fullName : null;
-            if (parrentFullName)
-                fullName = parrentFullName + ' / ' + category.langs[0].name;
+            parentFullName = category && category.parent ? category.parent.fullName : null;
+
+            if (parentFullName)
+                fullName = parentFullName + ' / ' + category.langs[0].name;
             else
                 fullName = category.langs[0].name;
 
             path = (category && category.parent ? category.parent.path + "#" : "") + category._id.toString();
 
             var previousUrl = category.langs[0].linker || category.langs[0].url;
-            category.langs[0].linker = (category && category.parent ? category.parent.langs[0].linker + "/" : "") + category.langs[0].url;
+            category.langs[0].linker = (category && category.parent ? (category.parent.langs[0].linker === '/' ? "" : category.parent.langs[0].linker) + "/" : "") + category.langs[0].url;
 
 
             // When the parent is changed we must rewrite all children paths as well

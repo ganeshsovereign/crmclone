@@ -689,10 +689,23 @@ Object.prototype = {
                     ProductCategory.updateFullName(_id, cb);
                 }
             ], function(err) {
-                if (err)
-                    return self.throw500(err);
+                if (err) {
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+                }
 
-                self.json({ success: 'Category updated success' });
+                //console.log(doc);
+                var doc = {};
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Category updated success"
+                };
+                self.json(doc);
             });
         });
     },
