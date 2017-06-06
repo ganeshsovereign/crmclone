@@ -53,13 +53,7 @@ exports.install = function() {
     F.route('/erp/api/offer/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/offer', object.all, ['authorize']);
     F.route('/erp/api/offer', object.create, ['post', 'json', 'authorize']);
-    F.route('/erp/api/offer/{offerId}', function(id) {
-        if (this.query.order)
-            object.createOrder(this);
-        else if (this.query.clone)
-            object.clone(id, this);
-
-    }, ['post', 'json', 'authorize']);
+    F.route('/erp/api/offer/{offerId}', object.clone, ['post', 'json', 'authorize']);
     F.route('/erp/api/offer/{offerId}', object.show, ['authorize']);
     F.route('/erp/api/offer/{offerId}', object.update, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/offer/{offerId}', object.destroy, ['delete', 'authorize']);
@@ -795,50 +789,6 @@ Object.prototype = {
                         });
                 });
             });
-        });
-    },
-    createOrder: function(self) {
-        var OrderModel = MODEL('order').Schema;
-        var OfferModel = MODEL('offer').Schema;
-
-        var id = self.body._id;
-
-        self.body.offer = self.body._id;
-        delete self.body._id;
-        delete self.body.Status;
-        delete self.body.latex;
-        delete self.body.datec;
-        delete self.body.datel;
-        delete self.body.createdAt;
-        delete self.body.updatedAt;
-        delete self.body.ref;
-        delete self.body.history;
-        self.body.createdBy = self.user.id;
-        self.body.editedBy = self.user.id;
-        //delete self.body.notes;
-
-        var order = new OrderModel(self.body);
-
-        order.save(function(err, doc) {
-            if (err)
-                return console.log(err);
-
-            OfferModel.update({
-                _id: id,
-            }, {
-                $set: {
-                    Status: 'SIGNED'
-                },
-                $addToSet: {
-                    orders: doc._id
-                }
-            }, function(err) {
-                if (err)
-                    console.log(err);
-            });
-
-            //console.log(doc);
-            self.json(doc);
         });
     },
     download: function(id) {

@@ -36,12 +36,6 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 params: {
                     clone: 1
                 }
-            },
-            order: {
-                method: 'POST',
-                params: {
-                    order: 1
-                }
             }
         }),
         order: $resource('/erp/api/order/:Id', { Id: '@_id' }, {
@@ -52,13 +46,6 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                     clone: 1
                 }
             }
-            /*,
-                        delivery: {
-                            method: 'POST',
-                            params: {
-                                delivery: 1
-                            }
-                        }*/
         }),
         delivery: $resource('/erp/api/delivery/:Id', { Id: '@_id' }, {
             update: { method: 'PUT' },

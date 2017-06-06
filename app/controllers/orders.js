@@ -319,6 +319,34 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         $scope.createOrder = function() {
             // CLOSE ORDER
+            var object = angular.copy($scope.object);
+
+            var id = object._id;
+            object.offer = object._id;
+            delete object._id;
+            delete object.Status;
+            delete object.latex;
+            delete object.datec;
+            delete object.datel;
+            delete object.createdAt;
+            delete object.updatedAt;
+            delete object.ref;
+            delete object.history;
+
+            var order = new Orders.order(object);
+
+            //create new order
+            order.$save(function(response) {
+                $scope.object.Status = 'SIGNED';
+                $scope.object.orders.push(response._id);
+                $scope.object.$update(function(object) {
+                    $rootScope.$state.go("order.show", { id: response._id });
+                });
+            });
+        };
+
+        $scope.createBill = function() {
+            // CLOSE ORDER
             $scope.object.$order(function(response) {
                 $rootScope.$state.go("order.show", { id: response._id });
             });
