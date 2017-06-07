@@ -295,7 +295,7 @@ F.on('load', function() {
     // Refresh prices on change Base price List or on discount productList
     F.functions.PubSub.on('productPrices:*', function(channel, data) {
         //console.log(data);
-        console.log("Update emit productList updateDiscount", data, channel);
+        console.log("Update emit productList updateDiscount", channel);
         //return;
         switch (channel) {
             // The discount changed in the productList : Destroy all prices and recreate all prices form parent priceList
@@ -324,7 +324,7 @@ F.on('load', function() {
                             elem = new ProductPricesModel(elem);
 
                             for (var i = 0; i < elem.prices.length; i++) {
-                                console.log(elem.prices[i]);
+                                //console.log(elem.prices[i]);
                                 elem.prices[i].price = MODULE('utils').round(elem.prices[i].price * (1 - data.data.discount / 100), 3);
                                 elem.prices[i].coef = 1;
                                 elem.prices[i].coefTotal = 1;
@@ -374,7 +374,7 @@ F.on('load', function() {
                             elem = new ProductPricesModel(elem);
 
                             for (var i = 0; i < elem.prices.length; i++) {
-                                console.log(elem.prices[i]);
+                                //console.log(elem.prices[i]);
                                 elem.prices[i].price = MODULE('utils').round(elem.prices[i].price * (1 - priceList.discount / 100), 3);
                                 elem.prices[i].coef = 1;
                                 elem.prices[i].coefTotal = 1;

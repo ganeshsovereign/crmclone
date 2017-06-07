@@ -1254,6 +1254,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Conditionnement / lots'
             }
         })
+        // channels
+        .state("product.show.channels", {
+            url: "/channels",
+            templateUrl: "/views/product/channels.html",
+            data: {
+                pageTitle: 'Canaux - Integration'
+            }
+        })
         // Bank/Payment
         .state('bank', {
             url: "/bank",

@@ -1,0 +1,62 @@
+<div class="row" ng-if="product._id">
+    <div class="col-md-12">
+        <div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)
+        </div>
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-docs"></i>
+                        <span class="caption-subject dark bold uppercase"> @(products:Channels)</span>
+                    </div>
+                    <save mode="product._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+                </div>
+
+
+                <div class="portlet-body" ng-init="loadChannels(product._id, 'product')">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="portlet light bordered">
+                                    <div class="no-footer table-responsive" ng-if="product.isVariant">
+                                        <div class="col-md-12">
+                                            <table class="table no-footer table-hover">
+                                                <colgroup>
+                                                    <col width="80px">
+                                                    <col width="30%">
+                                                    <col width="30%">
+                                                    <col width="20%">
+                                                    <col width="80px">
+                                                </colgroup>
+                                                <thead>
+                                                    <tr role="row" class="heading">
+                                                        <th>Image</th>
+                                                        <th>@(Name)</th>
+                                                        <th>@(Url)</th>
+                                                        <th>@(Active)</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="channel in channels">
+                                                        <td></td>
+                                                        <td>{{channel.channelName}}</td>
+                                                        <td>{{channel.baseUrl}}</td>
+                                                        <td><span ng-if="channel.channels.length" class="fa fa-check font-green"></span></td>
+                                                        <td>
+                                                            <button ng-hide="channel.channels.length" ng-click="addProductToChannel(product._id, channel)" type="button" class="btn btn-xs btn-info glyphicon glyphicon-plus" title="@(Add)"></button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

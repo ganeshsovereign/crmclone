@@ -67,7 +67,6 @@
                                                             <th>@(Top)</th>
                                                             <th>@(Variant)</th>
                                                             <th>@(products:Packing)</th>
-                                                            <th>@(Channel)</th>
                                                             <th>@(TotalHTsell)</th>
                                                             <th></th>
                                                         </tr>
@@ -87,7 +86,6 @@
 
                                                             </td>
                                                             <td>{{variant.packing}}</td>
-                                                            <td></td>
                                                             <td>{{variant.prices.pu_ht | currency}}</td>
                                                             <td>
                                                                 <button ng-hide="variant._id == product.groupId" type="button" confirmed-click="delProductToVariant(variant._id)" ng-confirm-click="Retirer la variante ? (Ne supprime pas le produit)" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>

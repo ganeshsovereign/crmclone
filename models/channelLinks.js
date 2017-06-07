@@ -8,10 +8,12 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var channelLinksSchema = new Schema({
-    product: { type: ObjectId, ref: 'product', default: null },
-    linkId: { type: String, default: null },
-    channel: { type: ObjectId, ref: 'integrations', default: null },
-    priceList: { type: ObjectId, ref: 'priceList', default: null },
+    type: { type: String, default: '' }, // product, image, order, customer, ...
+    image: { type: ObjectId, ref: 'Images', index: true },
+    product: { type: ObjectId, ref: 'product', index: true },
+    linkId: { type: String, default: null }, // id for external object
+    channel: { type: ObjectId, ref: 'integrations' },
+    isActive: { type: Boolean, default: true },
     creationDate: { type: Date, default: Date.now }
 });
 

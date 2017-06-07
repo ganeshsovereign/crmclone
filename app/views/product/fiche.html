@@ -164,6 +164,11 @@
                             <a ui-sref="product.show.declinations({id:product._id})">
                                 <i class="icon-docs"></i> @(Declinations) </a>
                         </li>
+
+                        <li ng-class="{active: $state.includes('product.show.channels')}">
+                            <a ui-sref="product.show.channels({id:product._id})">
+                                <i class="icon-shopping-cart"></i> @(products:Channels) </a>
+                        </li>
                     </ul>
                 </div>
             </div>
