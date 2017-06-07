@@ -543,24 +543,34 @@ productSchema.pre('save', function(next) {
         this.search = search.keywords(true, true);
     }
 
-
-
     if (this.isBundle) {
-        this.directCost = 0;
+        let directCost = 0;
+
         for (var i = 0; i < this.bundles.length; i++)
             if (this.bundles[i].id && this.bundles[i].id.directCost)
                 this.directCost += this.bundles[i].id.directCost * this.bundles[i].qty;
+
+        if (this.directCost != directCost)
+            this.directCost = directCost;
     }
 
     if (this.isPackaging) {
-        this.directCost = 0;
+        let directCost = 0;
         for (var i = 0; i < this.pack.length; i++)
             if (this.pack[i].id && this.pack[i].id.directCost)
-                this.directCost += this.pack[i].id.directCost * this.pack[i].qty;
+                directCost += this.pack[i].id.directCost * this.pack[i].qty;
+
+        if (this.directCost != directCost)
+            this.directCost = directCost;
     }
 
-    if (this.sellFamily && this.sellFamily._id)
-        this.indirectCost = round(this.directCost * this.sellFamily.indirectCostRate / 100, 3);
+    if (this.sellFamily && this.sellFamily._id) {
+        let indirectCost = round(this.directCost * this.sellFamily.indirectCostRate / 100, 3);
+
+        // Check if modify to do not need this.isModified after
+        if (this.indirectCost != indirectCost)
+            this.indirectCost = indirectCost;
+    }
 
     if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
@@ -603,39 +613,6 @@ Dict.dict({ dictName: ['fk_product_status', 'fk_units'], object: true }, functio
     }
     dict = doc;
 });
-
-/*productSchema.virtual('zone')
-    .get(function() {
-        var zone = "";
-
-        if (this.type !== 'PRODUCT')
-            return null;
-
-        if (!this.stock)
-            return "Inconnu";
-
-        if (!this.stock.zone)
-            return "Inconnu";
-
-        zone += this.stock.zone;
-
-        if (!this.stock.driveway)
-            return "Inconnu";
-
-        zone += this.stock.driveway;
-
-        if (!this.stock.rack)
-            return "Inconnu";
-
-        zone += "-" + MODULE('utils').numberFormat(this.stock.rack, 3);
-
-        if (!this.stock.floor)
-            return "Inconnu";
-
-        zone += "/" + this.stock.floor;
-
-        return zone;
-    });*/
 
 productSchema.virtual('totalCost')
     .get(function() {
@@ -861,7 +838,7 @@ F.on('load', function() {
                                 if (!product.isPackaging)
                                     return;
 
-                                console.log("PRODUCTS", product);
+                                //console.log("PRODUCTS", product);
                                 product.save(function(err, doc) {
                                     if (err)
                                         return console.log(err);

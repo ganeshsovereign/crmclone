@@ -326,12 +326,6 @@ var customerSchema = new Schema({
     },
 
     ID: { type: Number /*, unique: true -> BUG with versioner*/ },
-    channels: [{
-        _id: false,
-        id: { type: ObjectId, ref: 'integrations' },
-        integrationId: { type: String, default: '' }
-    }],
-
     oldId: String // only use for migration
 
 }, {

@@ -1118,7 +1118,6 @@ Object.prototype = {
             isremoved: { $ne: true }
         };
 
-
         if (!query.search.value) {
             conditions["info.isActive"] = true;
             switch (self.query.Status) {
@@ -1135,12 +1134,14 @@ Object.prototype = {
             }
         }
 
-        if (self.query.family !== 'null')
+        if (self.query.family !== 'null') {
             conditions["sellFamily"] = self.query.family;
+            delete conditions["info.isActive"];
+        }
 
         var options = {
             conditions: conditions,
-            select: "prices.pu_ht"
+            select: "prices.pu_ht info.isActive"
         };
 
         async.parallel({

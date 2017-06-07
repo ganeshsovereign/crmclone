@@ -9,7 +9,7 @@ var mongoose = require('mongoose'),
 
 var integrationsSchema = new Schema({
     channelName: { type: String, default: '' },
-    dbName: { type: String, default: '' },
+    entity: { type: String, default: '' },
     type: { type: String, default: '' },
     user: { type: ObjectId, default: null, ref: 'Users' },
     username: { type: String, default: '' },
@@ -23,7 +23,7 @@ var integrationsSchema = new Schema({
 
     updateShippingStatus: { type: Boolean, default: false },
     updateShippingMethod: { type: Boolean, default: false },
-    active: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: false },
     token: { type: String, default: '' },
     secret: { type: String, default: '' },
     consumerKey: { type: String, default: '' },
