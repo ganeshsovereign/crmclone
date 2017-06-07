@@ -363,5 +363,7 @@
     "MinMargin": "Marge minimum (%)",
     "OverallDiscount": "Remise Globale",
     "TaxFreeBasis": "Base H.T.",
-    "Sequence": "Sequence"
+    "Sequence": "Sequence",
+    "Purchases":"Achats",
+    "ListOfPurchases":"Liste des Achats"
 }

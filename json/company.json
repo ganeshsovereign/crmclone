@@ -93,16 +93,6 @@
                     "fk_menu": "menu:companies",
                     "icon": "fa-institution"
                 },
-                "menu:suppliers": {
-                    "position": 2,
-                    "url": "/erp/#!/societe/supplier?type=SUPPLIER_SUBCONTRACTOR",
-                    "perms": "societe.read",
-                    "enabled": "$conf->societe->enabled",
-                    "usertype": 2,
-                    "title": "companies:ListSuppliersShort",
-                    "fk_menu": "menu:companies",
-                    "icon": "fa-institution"
-                },
                 "menu:companysegmentation": {
                     "position": 3,
                     "url": "/erp/#!/societe/segmentation",
