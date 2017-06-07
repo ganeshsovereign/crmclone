@@ -188,7 +188,7 @@ var customerSchema = new Schema({
     emails: [{
         _id: false,
         type: { type: String, default: "pro" }, //billing, delivery...
-        email: { type: String, lowercase: true, trim: true, unique: true }
+        email: { type: String, lowercase: true, trim: true, index: true }
     }],
     newsletter: { type: Boolean, default: false }, //newsletter
     sendEmailing: { type: Boolean, default: true }, //sendEmailing
@@ -326,8 +326,11 @@ var customerSchema = new Schema({
     },
 
     ID: { type: Number /*, unique: true -> BUG with versioner*/ },
-    integrationId: { type: String, default: '' },
-    channel: { type: ObjectId, ref: 'integrations' },
+    channels: [{
+        _id: false,
+        id: { type: ObjectId, ref: 'integrations' },
+        integrationId: { type: String, default: '' }
+    }],
 
     oldId: String // only use for migration
 
