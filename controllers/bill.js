@@ -140,6 +140,7 @@ function Bill(id, cb) {
 
     BillModel.findOne(query, "-latex")
         .populate("orders", "ref total_ht")
+        .populate("order", "ref lines total_ht")
         .populate("contacts", "name phone email")
         .populate({
             path: "supplier",

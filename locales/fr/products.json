@@ -362,5 +362,6 @@
     "indirectCostRate": "Majoration prix revient Transp. (%)",
     "MinMargin": "Marge minimum (%)",
     "OverallDiscount": "Remise Globale",
-    "TaxFreeBasis": "Base H.T."
+    "TaxFreeBasis": "Base H.T.",
+    "Sequence": "Sequence"
 }
