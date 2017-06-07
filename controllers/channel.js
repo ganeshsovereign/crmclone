@@ -34,46 +34,13 @@ exports.install = function() {
 
     var object = new Object();
 
-    F.route('/erp/api/channel/{Type}/{Id}', object.getChannelListFromType, ['authorize']);
+    //F.route('/erp/api/channel/{Type}/{Id}', object.getChannelListFromId, ['authorize']);
     F.route('/erp/api/channel/{Type}', object.addChannelFromType, ['post', 'authorize']);
 };
 
 function Object() {};
 
 Object.prototype = {
-    getChannelListFromType: function(type, id) {
-        var ChannelModel = MODEL('integrations').Schema;
-        var ObjectId = MODULE('utils').ObjectId;
-        var self = this;
-
-        ChannelModel.aggregate([{
-                $lookup: {
-                    from: 'channelLinks',
-                    localField: '_id',
-                    foreignField: 'channel',
-                    as: 'channels'
-                }
-            }, {
-                $project: {
-                    _id: 1,
-                    channelName: 1,
-                    baseUrl: 1,
-                    channels: {
-                        $filter: {
-                            input: "$channels",
-                            as: "channel",
-                            cond: { $eq: ["$$channel." + type, ObjectId(id)] }
-                        }
-                    }
-                }
-            }],
-            function(err, docs) {
-                if (err)
-                    return self.throw500(err);
-
-                self.json({ data: docs });
-            });
-    },
     addChannelFromType: function(Type) {
         var self = this;
         var ChannelLinkModel = MODEL('channelLinks').Schema;

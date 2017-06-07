@@ -798,7 +798,6 @@ function Product(id, cb) {
 
 
 function Object() {}
-
 Object.prototype = {
     create: function() {
         var self = this;
@@ -1247,11 +1246,21 @@ Object.prototype = {
     },
     show: function(id) {
         var self = this;
+        var ChannelLinkModel = MODEL('channelLinks').Schema;
+
         Product(id, function(err, product) {
             if (err)
-                console.log(err);
+                return self.throw500(err);
 
-            self.json(product);
+            ChannelLinkModel.getChannelListFromId({ type: 'product', id: product._id }, function(err, channels) {
+                if (err)
+                    return self.throw500(err);
+
+                product = product.toObject();
+                product.channels = channels;
+
+                return self.json(product);
+            });
         });
     },
     getProductsById: function(id) {
@@ -4060,7 +4069,6 @@ ProductFamily.prototype = {
 };
 
 function Taxes() {}
-
 Taxes.prototype = {
     read: function(id) {
         var self = this;
@@ -4080,7 +4088,6 @@ Taxes.prototype = {
 };
 
 function ProductAttributes() {}
-
 ProductAttributes.prototype = {
     getProductAttributesById: function(id) {
         var self = this;

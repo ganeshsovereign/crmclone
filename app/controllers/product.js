@@ -931,15 +931,6 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         return cpt;
     };
 
-    $scope.channels = [];
-
-    $scope.loadChannels = function(id, type) {
-        $http.get('/erp/api/channel/' + type + '/' + id).then(function(res) {
-            console.log(res.data);
-            $scope.channels = res.data.data;
-        });
-    };
-
     $scope.addProductToChannel = function(id, channel) {
         $http.post('/erp/api/channel/product', { product: id, channel: channel._id, type: 'product' }).then(function(res) {
             channel.channels.push(res.data);

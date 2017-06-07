@@ -167,7 +167,7 @@
 
                         <li ng-class="{active: $state.includes('product.show.channels')}">
                             <a ui-sref="product.show.channels({id:product._id})">
-                                <i class="icon-shopping-cart"></i> @(products:Channels) </a>
+                                <i class="icon-shopping-cart"></i> @(products:Channels) <span ng-if="product.channels.active" class="badge badge-success">{{product.channels.active}}</span></a>
                         </li>
                     </ul>
                 </div>

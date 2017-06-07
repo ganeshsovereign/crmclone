@@ -13,12 +13,12 @@
                 </div>
 
 
-                <div class="portlet-body" ng-init="loadChannels(product._id, 'product')">
+                <div class="portlet-body">
                     <div class="form-body">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="portlet light bordered">
-                                    <div class="no-footer table-responsive" ng-if="product.isVariant">
+                                    <div class="no-footer table-responsive">
                                         <div class="col-md-12">
                                             <table class="table no-footer table-hover">
                                                 <colgroup>
@@ -38,7 +38,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr ng-repeat="channel in channels">
+                                                    <tr ng-repeat="channel in product.channels.data">
                                                         <td></td>
                                                         <td>{{channel.channelName}}</td>
                                                         <td>{{channel.baseUrl}}</td>
