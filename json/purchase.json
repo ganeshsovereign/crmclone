@@ -1,0 +1,102 @@
+{
+    "name": "purchase",
+    "version": "0.1.000",
+    "author": {
+        "name": "TM - ToManage"
+    },
+    "description": "Gestion des achats",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TM-js/bill.git"
+    },
+    "engines": {
+        "node": "4.6.x",
+        "TM": "0.5.x"
+    },
+    "contributors": [
+        "Herve Prot <herve.prot@tomanage.fr>"
+    ],
+    "license": "OSL v3",
+    "rights": {
+        "purchase": [{
+                "desc": "Lire les achats",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Creer/modifier les achats",
+                "perm": {
+                    "create": false
+                }
+            },
+            {
+                "desc": "Valider les achats",
+                "perm": {
+                    "delete": false
+                }
+            },
+          {
+                "desc": "Re-ouvrir les achats",
+                "perm": {
+                    "reopen": false
+                }
+            },
+            {
+                "desc": "Envoyer les achats",
+                "perm": {
+                    "send": true
+                }
+            },
+            {
+                "desc": "Cloturer les achats",
+                "perm": {
+                    "closed": false
+                }
+            },
+            {
+                "desc": "Supprimer les achats",
+                "perm": {
+                    "delete": false
+                }
+            },
+            {
+                "desc": "Exporter les achats et attributs",
+                "perm": {
+                    "export": false
+                }
+            }
+        ]
+    },
+    "menus": {
+        "menu:purchase": {
+            "position": 42,
+            "perms": "offer.read",
+            "enabled": "$conf->offer->enabled",
+            "usertype": 2,
+            "icon": "fa-credit-card",
+            "title": "products:Purchases",
+            "submenus": {
+                "menu:offerlist": {
+                    "position": 1,
+                    "url": "/erp/#!/purchase",
+                    "perms": "offer.read",
+                    "enabled": "$conf->purchase->enabled",
+                    "usertype": 2,
+                    "icon": "fa-credit-card",
+                    "title": "products:ListOfPurchases"
+                },
+                   "menu:suppliers": {
+                    "position": 2,
+                    "url": "/erp/#!/societe/supplier?type=SUPPLIER_SUBCONTRACTOR",
+                    "perms": "societe.read",
+                    "enabled": "$conf->societe->enabled",
+                    "usertype": 2,
+                    "title": "companies:ListSuppliersShort",
+                    "fk_menu": "menu:companies",
+                    "icon": "fa-institution"
+                }
+            }
+        }
+    }
+}

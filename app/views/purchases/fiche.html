@@ -1,0 +1,254 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('offer')">
+            <a ui-sref="{{backTo}}">@(propal:ListOfProposals)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('order')">
+            <a ui-sref="{{backTo}}">@(orders:ListOfCustomersOrders)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('delivery')">
+            <a ui-sref="{{backTo}}">@(deliveries:List)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('bill')" )>
+            <a ui-sref="{{backTo}}">@(bills:List)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('offer')">
+            <span ng-hide="!object._id">@(propal:Prop) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(propal:NewProp)</span>
+        </li>
+        <li ng-if="module('order')">
+            <span ng-hide="!object._id">@(orders:Order) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(orders:NewOrder)</span>
+        </li>
+        <li ng-if="module('delivery')">
+            <span ng-hide="!object._id">@(deliveries:DeliveryNote) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(deliveries:NewDelivery)</span>
+        </li>
+        <li ng-if="module('bill')">
+            <span ng-hide="!object._id">@(bills:BillsCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(bills:NewBill)</span>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group">
+            <a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-flag"></i> {{languages[_language].name}} <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li ng-repeat="s in languages">
+                    <a href="#" ng-click="setLanguage(s.idx)">
+                        <i class="fa fa-copy"></i> {{s.name}}
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createOrder" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusSigned)" confirmed-click="createOrder()">
+                        <i class="fa fa-shopping-cart"></i> @(propal:CreateOrder)
+                    </a>
+
+                    <a ng-if="module('order')" ng-show="(object.Status == 'VALIDATED' || object.Status == 'PROCESSING' || object.Status == 'SHIPPING') && login.rights.order.createDelivery" ng-click="createDelivery()">
+                        <i class="fa fa-plane"></i> @(orders:CreateDelivery)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="module('order')" ng-show="object.Status == 'CLOSED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()">
+                        <i class="fa fa-money"></i> @(bills:CreateBill)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="object.Status == 'DRAFT' && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                        <i class="fa fa-thumbs-o-up"></i> @(Validate)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="module('delivery')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'VALIDATED' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
+                        <i class="fa fa-plane"></i> @(deliveries:Sended)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="module('bill')" href="#" ng-show="(object.Status == 'NOT_PAID' || object.Status == 'VALIDATED') && object.journalId.length == 0 && login.rights.bill.validate" data-ng-click="exportAccounting(object._id)">
+                        <i class="fa fa-mail-forward"></i> @(bills:SendAccounting)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" ng-if="object.Status === 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                        <i class="fa fa-history"></i> @(ReOpen)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)" confirmed-click="changeStatus('NOTSIGNED')">
+                        <i class="fa fa-thumbs-o-down"></i> @(propal:CloseOfferOrder)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-ng-click="clone()">
+                        <i class="fa fa-copy"></i> @(ToClone)
+                    </a>
+                </li>
+                <li>
+                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="module('offer')" ng-show='object.Status == "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="module('order')" ng-show='object.Status != "DRAFT"' ng-href="/erp/api/order/pdf/{{object.ref}}?proforma=1" target="_blank">
+                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF) Proforma</a>
+                </li>
+                <li>
+                    <a ng-if="module('delivery')" ng-show="object.Status == 'SEND'" ng-href="#" ng-click="sendFTP()">
+                        <i class="fa fa-file-pdf-o"></i> @(SendToFtp)
+                    </a>
+                </li>
+                <li>
+                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail()">
+                        <i class="fa  fa-envelope"></i> @(mails:SendMail)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.order.delete && order.Status !== 'SIGNED'" confirmed-click="remove(orders)" ng-confirm-click="Supprimer le document ?" title="Supprimer le document">
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    </a>
+                </li>
+        </div>
+    </div>
+</div>
+
+<!--<h3 class="page-title" ng-class="{'font-red':!product.info.isActive}">
+    <i class="fa fa-cubes font-grey-silver"></i> @(products:ProductServiceCard) : {{product.info.langs[0].name}} <small ng-hide="!product.info.isActive" class="font-green">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
+</h3>-->
+
+<div ng-if="object.isremoved" class="alert alert-danger"><strong> @(BeCareful) !</strong> Cette fiche à été supprimée</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="profile-sidebar mt-element-ribbon portlet-fit bordered">
+            <div ng-hide="!object._id " class="ribbon ribbon-right ribbon-clip ribbon-shadow uppercase " ng-class="object.status.css ">
+                <div class="ribbon-sub ribbon-clip ribbon-right "></div> {{object.status.name}}
+            </div>
+            <div class="portlet light profile-sidebar-portlet ">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="profile">
+                                <img ng-src="{{getImage('product', product.imageSrc)}}" class="img-responsive" alt="Product" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="profile-usertitle">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div ng-if="module('offer')" class="uppercase profile-stat-text"> @(propal:Prop) </div>
+                                        <div ng-if="module('order')" class="uppercase profile-stat-text"> @(orders:Order) </div>
+                                        <div ng-if="module('delivery')" class="uppercase profile-stat-text"> @(deliveries:DeliveryNote) </div>
+                                        <div ng-if="module('bill')" class="uppercase profile-stat-text"> @(bills:Bill) </div>
+                                        <div class="uppercase profile-stat-title"> {{object.ref}} </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="uppercase profile-stat-text"> @(orders:RefCustomerOrder) </div>
+                                        <div class="uppercase profile-stat-title"> {{object.ref_client}} </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="md-checkbox-inline">
+                            <div class="md-checkbox">
+                                <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
+                                <label for="isSell">
+                                    <span></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span> @(products:Status.OnSell)</label>
+                            </div>
+                            <div class="md-checkbox">
+                                <input type="checkbox" id="isBuy" class="md-check" ng-model="product.isBuy" ng-checked="product.isBuy">
+                                <label for="isBuy">
+                                    <span></span>
+                                    <span class="check"></span>
+                                    <span class="box"></span> @(products:Status.OnBuy)</label>
+                            </div>
+                        </div>
+                    </div>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-usermenu ">
+                    <ul class="nav ">
+                        <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
+                            <a ng-if="module('offer')" ui-sref="offer.show.detail({id:object._id}) ">
+                                <i class="icon-info "></i> @(propal:Details) </a>
+                            <a ng-if="module('order')" ui-sref="order.show.detail({id:object._id}) ">
+                                <i class="icon-info "></i> @(orders:Details) </a>
+                            <a ng-if="module('delivery')" ui-sref="order.show.detail({id:object._id}) ">
+                                <i class="icon-info "></i> @(deliveries:Details) </a>
+                            <a ng-if="module('bill')" ui-sref="order.show.detail({id:object._id}) ">
+                                <i class="icon-info "></i> @(bill:Details) </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="portlet light ">
+                <div class="row list-separated profile-stat ">
+                    <div class="col-md-12 ">
+                        <div class="form-group form-md-line-input ">
+                            <select class="form-control " id="entity " ng-model="object.entity " ng-options="entity.id as entity.name for entity in entityList "></select>
+                            <label for="entity ">@(Entity)</label>
+                        </div>
+                        <crm-id label="@(companies:Customer) " name="societeId " ng-model="object.supplier " entity="object.entity " url="/erp/api/societe/autocomplete " required="true " on-select="updateAddress " placeholder="@(companies:CompanyName)
+            " class="form-group form-md-line-input "></crm-id>
+                    </div>
+                </div>
+
+                <div class="row list-separated profile-stat ">
+                    <div class=" col-md-6 col-sm-6 col-xs-6 ">
+                        <div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{object.createdAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6 ">
+                        <div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{object.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                    </div>
+
+                    <div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{object.createdBy.username}}</a> </div>
+                            <!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                            <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{object.editedBy.username}}</a> </div>
+                            <!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row list-separated profile-stat ">
+                    <div class="col-md-12 ">
+                        <div class="uppercase profile-stat-text ">@(Logs)</div>
+                        <div class="uppercase profile-stat-title "> {{object.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ui-view class="profile-content fade-in-up "></div>
+    </div>
+</div>
