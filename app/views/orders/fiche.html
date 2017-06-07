@@ -86,7 +86,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-if="object.Status === 'VALIDATE' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                    <a href="#" ng-if="object.Status === 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
                         <i class="fa fa-history"></i> @(ReOpen)
                     </a>
                 </li>
@@ -102,6 +102,11 @@
                 </li>
                 <li>
                     <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="module('offer')" ng-show='object.Status == "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
                     </a>
                 </li>
