@@ -18,8 +18,7 @@
     ],
     "license": "OSL v3",
     "rights": {
-        "delivery": [
-            {
+        "delivery": [{
                 "desc": "Lire les bons livraisons clients",
                 "perm": {
                     "read": true
@@ -94,7 +93,7 @@
             "enabled": "$conf->delivery->enabled",
             "usertype": 2,
             "icon": "fa-truck",
-            "title": "deliveries:Deliveries",
+            "title": "deliveries:Logistics",
             "submenus": {
                 "menu:deliverylist": {
                     "position": 1,
@@ -104,6 +103,15 @@
                     "usertype": 2,
                     "icon": "fa-truck",
                     "title": "deliveries:DeliveriesShort"
+                },
+                "menu:deliverysuppliers": {
+                    "position": 2,
+                    "url": "/erp/#!/deliverysupplier",
+                    "perms": "delivery.read",
+                    "enabled": "$conf->delivery->enabled",
+                    "usertype": 2,
+                    "icon": "fa-truck",
+                    "title": "deliveries:SuppliersDeliveries"
                 }
             }
         }

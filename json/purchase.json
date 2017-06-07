@@ -36,7 +36,7 @@
                     "delete": false
                 }
             },
-          {
+            {
                 "desc": "Re-ouvrir les achats",
                 "perm": {
                     "reopen": false
@@ -75,25 +75,34 @@
             "enabled": "$conf->offer->enabled",
             "usertype": 2,
             "icon": "fa-credit-card",
-            "title": "products:Purchases",
+            "title": "propal:Purchases",
             "submenus": {
-                "menu:offerlist": {
-                    "position": 1,
-                    "url": "/erp/#!/purchase",
-                    "perms": "offer.read",
-                    "enabled": "$conf->purchase->enabled",
-                    "usertype": 2,
-                    "icon": "fa-credit-card",
-                    "title": "products:ListOfPurchases"
-                },
-                   "menu:suppliers": {
-                    "position": 2,
+                "menu:suppliers": {
+                    "position": 10,
                     "url": "/erp/#!/societe/supplier?type=SUPPLIER_SUBCONTRACTOR",
                     "perms": "societe.read",
                     "enabled": "$conf->societe->enabled",
                     "usertype": 2,
-                    "title": "companies:ListSuppliersShort",
+                    "title": "companies:ListOfSuppliersShort",
                     "fk_menu": "menu:companies",
+                    "icon": "fa-institution"
+                },
+                "menu:ordersupplier": {
+                    "position": 5,
+                    "url": "/erp/#!/ordersupplier",
+                    "perms": "ordersuppliers.read",
+                    "enabled": "$conf->ordersupplier->enabled",
+                    "usertype": 2,
+                    "title": "orders:SuppliersOrders",
+                    "icon": "fa-institution"
+                },
+                "menu:offersupplier": {
+                    "position": 1,
+                    "url": "/erp/#!/offersupplier",
+                    "perms": "offersuppliers.read",
+                    "enabled": "$conf->offersupplier->enabled",
+                    "usertype": 2,
+                    "title": "propal:PurchaseRequests",
                     "icon": "fa-institution"
                 }
             }

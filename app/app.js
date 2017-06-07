@@ -744,69 +744,151 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "OrdersController"
         })
-        // Order Supplier
-        .state('orderSupplier', {
-            url: "/orderSupplier",
+        // OrderSupplier
+        .state('ordersupplier', {
+            url: "/ordersupplier",
             abstract: true,
-            templateUrl: "/views/order_supplier/index.html"
+            templateUrl: "/views/suppliers/index.html"
         })
-        .state('orderSupplier.list', {
+        .state('ordersupplier.list', {
             url: "",
-            templateUrl: "/views/order_supplier/list.html",
+            templateUrl: "/views/suppliers/listorder.html",
             data: {
-                pageTitle: 'Liste des commandes fournisseurs'
+                pageTitle: 'Liste des commandes'
             },
-            controller: "OrderSupplierController"
+            controller: "OrderSupplierListController"
         })
-        .state('orderSupplier.show', {
-            parent: "orderSupplier",
+        .state('ordersupplier.show', {
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/order_supplier/fiche.html",
+            templateUrl: "/views/suppliers/fiche.html",
             data: {
-                pageTitle: 'Commande fournisseur'
+                pageTitle: 'Commande'
             },
-            controller: "OrderSupplierController"
+            controller: "OrdersController"
         })
-        .state('orderSupplier.create', {
-            parent: "orderSupplier",
+        .state('ordersupplier.show.detail', {
+            url: "/detail",
+            templateUrl: "/views/suppliers/detail.html",
+            data: { pageTitle: 'Commande' }
+        })
+        .state('ordersupplier.create', {
+            parent: "order",
             url: "/create.html",
-            templateUrl: "/views/order_supplier/create.html",
+            templateUrl: "/views/suppliers/detail.html",
             data: {
-                pageTitle: 'Nouvelle commande fournisseur'
+                pageTitle: 'Nouvelle commande'
             },
-            controller: "OrderSupplierController"
+            controller: "OrdersController"
         })
         // BillSupplier
-        .state('billSupplier', {
-            url: "/billSupplier",
+        .state('billsupplier', {
+            url: "/billsupplier",
             abstract: true,
-            templateUrl: "/views/bill_supplier/index.html"
+            templateUrl: "/views/suppliers/index.html"
         })
-        .state('billSupplier.list', {
+        .state('billsupplier.list', {
             url: "",
-            templateUrl: "/views/bill_supplier/list.html",
+            templateUrl: "/views/suppliers/listbill.html",
             data: {
-                pageTitle: 'Liste des factures fournisseurs'
+                pageTitle: 'Liste des factures'
             },
-            controller: "BillSupplierController"
+            controller: "BillSupplierListController"
         })
-        .state('billSupplier.show', {
-            parent: "billSupplier",
+        .state('billsupplier.show', {
             url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/bill_supplier/fiche.html",
+            templateUrl: "/views/suppliers/fiche.html",
             data: {
-                pageTitle: 'Facture fournisseur'
+                pageTitle: 'Facture'
             },
-            controller: "BillSupplierController"
+            controller: "BillSupplierListController"
         })
-        .state('billSupplier.create', {
-            parent: "billSupplier",
+        .state('billsupplier.show.detail', {
+            url: "/detail",
+            templateUrl: "/views/suppliers/detail.html",
+            data: { pageTitle: 'Facture' }
+        })
+        .state('billsupplier.create', {
+            parent: "billsupplier",
             url: "/create.html",
-            templateUrl: "/views/bill_supplier/create.html",
+            templateUrl: "/views/suppliers/detail.html",
             data: {
-                pageTitle: 'Nouvelle facture fournisseur'
+                pageTitle: 'Nouvelle Facture'
             },
-            controller: "BillSupplierController"
+            controller: "BillSupplierListController"
+        })
+        // OfferSupplier
+        .state('offersupplier', {
+            url: "/offersupplier",
+            abstract: true,
+            templateUrl: "/views/suppliers/index.html"
+        })
+        .state('offersupplier.list', {
+            url: "",
+            templateUrl: "/views/suppliers/listoffer.html",
+            data: {
+                pageTitle: 'Liste des devis'
+            },
+            controller: "OfferSupplierListController"
+        })
+        .state('offersupplier.show', {
+            parent: 'offer',
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/suppliers/fiche.html",
+            data: {
+                pageTitle: 'Devis'
+            },
+            controller: "OfferSupplierListController"
+        })
+        .state('offersupplier.show.detail', {
+            url: "/detail",
+            templateUrl: "/views/suppliers/detail.html",
+            data: { pageTitle: 'Devis' }
+        })
+        .state('offersupplier.create', {
+            parent: "offer",
+            url: "/create.html",
+            templateUrl: "/views/suppliers/detail.html",
+            data: {
+                pageTitle: 'Nouvelle offre'
+            },
+            controller: "OfferSupplierListController"
+        })
+        // Delivery Supplier
+        .state('deliverysupplier', {
+            url: "/deliverysupplier",
+            abstract: true,
+            templateUrl: "/views/suppliers/index.html"
+        })
+        .state('deliverysupplier.list', {
+            url: "",
+            templateUrl: "/views/suppliers/listdelivery.html",
+            data: {
+                pageTitle: 'Liste des bons de livraison'
+            },
+            controller: "DeliverySupplierListController"
+        })
+        .state('deliverysupplier.show', {
+            parent: "delivery",
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/suppliers/fiche.html",
+            data: {
+                pageTitle: 'Bon de livraison'
+            },
+            controller: "DeliverySupplierListController"
+        })
+        .state('deliverysupplier.show.detail', {
+            url: "/detail",
+            templateUrl: "/views/suppliers/detail.html",
+            data: { pageTitle: 'Bon de livraison' }
+        })
+        .state('deliverysupplier.create', {
+            parent: "delivery",
+            url: "/create.html",
+            templateUrl: "/views/suppliers/detail.html",
+            data: {
+                pageTitle: 'Nouveau bon de livraion'
+            },
+            controller: "DeliverySupplierListController"
         })
         // Company
         .state('societe', {

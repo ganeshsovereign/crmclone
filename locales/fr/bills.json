@@ -11,6 +11,7 @@
     "BillsCustomers": "Factures clients",
     "BillsCustomer": "Factures client",
     "BillsSuppliers": "Factures fournisseurs",
+    "ListBillsSuppliers": "Liste des factures fournisseurs",
     "BillsSupplier": "Factures fournisseur",
     "BillsCustomersUnpaid": "Factures clients impayées",
     "BillsCustomersUnpaidForCompany": "Factures clients impayées pour %s",

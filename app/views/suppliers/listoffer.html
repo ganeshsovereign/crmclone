@@ -1,0 +1,173 @@
+<div>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a ui-sref="home">@(Home)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(propal:ListOfPurchases)</span>
+            </li>
+        </ul>
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <button class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+                            </button>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+                                        @(PrintList) </a>
+                    </li>
+                    <!--    <li>
+                                        <a href="#">
+                                            @(Update) </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            @(Delete) </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            @(BuildPDF) </a>
+                                    </li>-->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet light portlet-form bordered">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-calculator"></i>
+                <span class="caption-subject dark bold uppercase"> @(propal:ListOfPurchases)</span>
+            </div>
+            <div class="actions">
+                <button class="btn blue" ui-sref="offer.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+            </div>
+        </div>
+        <div class="tools">
+        </div>
+        <div class="portlet-body">
+            <div class="table-toolbar">
+                <div class="row hidden-print">
+                    <div class="form-group form-md-line-input">
+
+                        <div class="col-md-3">
+                            <div class="form-group form-md-line-input ">
+                                <select ng-model="status_id" ng-change="find();" id="Status" ng-options="s.id as s.label for s in dict.fk_offer_status.values" class="form-control"></select>
+                                <label for="Status">@(Status)</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group form-md-line-input ">
+                                <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control"></select>
+                                <label for="Status">@(Entity)</label>
+                            </div>
+                        </div>
+
+
+                        <!--<label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
+
+                        <div class="col-md-3">
+                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_offer_status.values" class="form-control">
+                                <option value="">-- @(All) --</option>
+                            </select>
+                            <div class="form-control-focus"> </div>
+                        </div>
+
+                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyEntity)</label>
+
+                        <div class="col-md-3">
+                            <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
+                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
+                            </select>
+                            <div class="form-control-focus"> </div>
+                        </div>
+                        <div class="col-md-1"></div>-->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dataTables_wrapper no-footer table-responsive">
+            <div class="col-md-12">
+                <table class="table dataTable no-footer table-hover" id="offerList">
+                    <thead>
+                        <tr role="row" class="heading">
+                            <th width="2%">
+                                <input type="checkbox" class="group-checkable" />
+                            </th>
+                            <th>@(Ref)</th>
+                            <th>@(companies:Company)</th>
+                            <th>@(RefCustomer)</th>
+                            <th>@(DeliveryDate)</th>
+                            <th>@(TotalHT)</th>
+                            <th>@(Status)</th>
+                            <th>@(Entity)</th>
+                            <th>@(DateCreation)</th>
+                            <th>@(Action)</th>
+                        </tr>
+                        <!--<tr role="row" class="filter">
+                            <td>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="ref">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="societe_name">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="contact_name">
+                            </td>
+                            <td>
+                                <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
+                                    <input type="text" class="form-control form-filter input-sm" readonly name="offer_date_from" placeholder="From">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
+                                    </span>
+                                </div>
+                                <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
+                                    <input type="text" class="form-control form-filter input-sm" readonly name="offer_date_to" placeholder="To">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="margin-bottom-5">
+                                    <input type="text" class="form-control form-filter input-sm" name="offer_price_from" placeholder="From"/>
+                                </div>
+                                <input type="text" class="form-control form-filter input-sm" name="offer_price_to" placeholder="To"/>
+                            </td>
+                            <td>
+                                <select name="offer_status" class="form-control form-filter input-sm">
+                                    <option value="">Select...</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="closed">Closed</option>
+                                    <option value="hold">On Hold</option>
+                                    <option value="fraud">Fraud</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-filter input-sm" name="offer_ship_to">
+                            </td>
+                            <td>
+                            </td>
+                            
+                            <td>
+                                <div class="margin-bottom-5">
+                                    <button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
+                                </div>
+                                <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
+                            </td>
+                        </tr>-->
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

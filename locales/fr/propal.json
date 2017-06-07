@@ -100,5 +100,9 @@
     "DocModelAzurDescription": "Modèle de devis complet (logo...)",
     "DocModelJauneDescription": "Modèle de devis Jaune",
     "Numbershort": "N°",
-    "LinkdedOrders": "Commandes jointes"
+    "LinkdedOrders": "Commandes jointes",
+    "SuppliersOffer": "Devis fournisseurs",
+    "PurchaseRequests": "Demandes d'achats",
+    "ListOfPurchases": "Liste des demandes d'achats",
+    "Purchases": "Achats"
 }

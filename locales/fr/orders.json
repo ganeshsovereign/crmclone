@@ -23,6 +23,7 @@
     "CustomerOrder": "Commande client",
     "CustomersOrders": "Commandes clients",
     "ListOfCustomersOrders": "Liste des Commandes clients",
+    "ListOfSuppliersOrders": "Liste des Commandes fournisseurs",
     "CustomersOrdersRunning": "Commandes clients en cours",
     "CustomersOrdersAndOrdersLines": "Commandes clients et lignes de commandes",
     "OrdersToValid": "Commandes clients à valider",

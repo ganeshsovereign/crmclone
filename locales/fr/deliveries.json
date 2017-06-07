@@ -8,6 +8,7 @@
     "Interventions": "Interventions",
     "InterventionsReceipt": "Bons d'interventions",
     "Deliveries": "Livraisons / interventions",
+    "SuppliersDeliveries": "Livraisons Fournisseurs",
     "DeliveryCard": "Fiche livraison",
     "DeliveryOrder": "Bon de réception",
     "DeliveryOrders": "Bons de réception",
@@ -38,6 +39,7 @@
     "Sender": "Expéditeur",
     "Recipient": "Destinataire",
     "List": "Liste des bons de livraisons / interventions",
+    "ListOfDeliveriesSupplier": "Liste des bons de livraisons Fournisseurs",
     "DateMaxPayment": "Date limite règlement",
     "DeliveryTo": "Expédié à",
     "DeliveryAddress": "Adr. livraison",
@@ -81,5 +83,6 @@
     "HelpConfirmQuantityDelivery": "La commande restera ouverte s'il s'agit d'une livraison partielle",
     "ListBL": "Liste des Bons de Livraisons associés",
     "Reserved": "Réservé(s)",
-    "DiscountOnQty": "Remise sur quantité"
+    "DiscountOnQty": "Remise sur quantité",
+    "Logistics": "Logistiques"
 }

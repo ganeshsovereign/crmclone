@@ -18,8 +18,7 @@
     ],
     "license": "OSL v3",
     "rights": {
-        "bill": [
-            {
+        "bill": [{
                 "desc": "Lire les factures",
                 "perm": {
                     "read": true
@@ -76,7 +75,7 @@
             "enabled": "$conf->facture->enabled",
             "usertype": 2,
             "icon": "fa-money",
-            "title": "bills:Invoices",
+            "title": "bills:Billing",
             "submenus": {
                 "menu:billslist": {
                     "position": 1,
@@ -86,6 +85,15 @@
                     "enabled": "$conf->facture->enabled",
                     "usertype": 2,
                     "title": "bills:CustomersInvoices"
+                },
+                "menu:billssupplierlist": {
+                    "position": 1,
+                    "url": "/erp/#!/billsupplier",
+                    "perms": "bill.read",
+                    "icon": "fa-money",
+                    "enabled": "$conf->facture->enabled",
+                    "usertype": 2,
+                    "title": "bills:SuppliersInvoices"
                 }
             }
         }

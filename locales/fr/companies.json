@@ -414,6 +414,8 @@
     "FiscalMonthStart": "Mois de début d'exercice",
     "YouMustCreateContactFirst": "Vous devez créer des contacts avec emails sur le compte pour pouvoir lui définir des notifications par mails.",
     "ListSuppliersShort": "Liste fournisseurs",
+    "ListOfSuppliersShort": "Liste des fournisseurs",
+    "SuppliersShort": "Fournisseurs",
     "ListProspectsShort": "Liste prospects",
     "ListCustomersShort": "Liste clients",
     "ThirdPartiesArea": "Espace Comptes",
