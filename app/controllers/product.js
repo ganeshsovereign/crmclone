@@ -389,6 +389,12 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         });
     };
 
+    $scope.refreshAllProducts = function() {
+        $http.post('/erp/api/product/refresh').then(function(res) {
+            $scope.find();
+        });
+    };
+
     function getUrl() {
         return "/erp/api/product/dt" + "?Status=" + $scope.type + "&family=" + $scope.family;
     }
@@ -444,7 +450,8 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 }, {
                     "data": "updatedAt"
                 }, {
-                    "data": "info.isActive"
+                    "data": "rating.total",
+                    defaultContent: ""
                 }, {
                     "data": "sellFamily",
                     defaultContent: ""

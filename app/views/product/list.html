@@ -26,6 +26,10 @@
                                         @(PrintList) </a>
                     </li>
                     <li>
+                        <a href="#" ng-click="refreshAllProducts()"><i class="fa fa-refresh"></i> 
+                                        Force @(Refresh) </a>
+                    </li>
+                    <li>
                         <a href="#" ng-show="login.rights.product.create" data-ng-click="updatePrices()">
                             <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
                         </a>

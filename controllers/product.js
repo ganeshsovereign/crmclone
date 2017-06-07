@@ -52,6 +52,7 @@ exports.install = function() {
     });
 
     F.route('/erp/api/product', object.read, ['authorize']);
+    F.route('/erp/api/product/refresh', object.refreshAllProduct, ['post', 'authorize']);
     F.route('/erp/api/product/dt', object.readDT, ['post', 'authorize']);
     // list for autocomplete
     F.route('/erp/api/product/autocomplete', object.autocomplete, ['post', 'json', 'authorize']);
@@ -1065,6 +1066,43 @@ Object.prototype = {
             res.send(200, docs);
         });
     },
+    refreshAllProduct: function() {
+        var ProductModel = MODEL('product').Schema;
+
+        ProductModel.find({ isremoved: { $ne: true }, 'info.isActive': true }, function(err, products) {
+            if (err) {
+                console.log("error refresh product", err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
+
+            async.each(products, function(product, aCb) {
+                product.save(aCb);
+            }, function(err) {
+                //console.log(doc);
+                if (err) {
+                    console.log("error refresh product", err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+                }
+
+                var doc = {};
+                doc.successNotify = {
+                    title: "Success",
+                    message: products.length + " produits recalculés"
+                };
+                self.json(doc);
+            });
+        });
+    },
     readDT: function() {
         var self = this;
         var ProductModel = MODEL('product').Schema;
@@ -1183,6 +1221,9 @@ Object.prototype = {
                             //console.log(res.datatable.data[i].info.productType);
                             res.datatable.data[i].info.productType = row.info.productType.langs[0].name;
                             res.datatable.data[i].sellFamily = row.sellFamily.langs[0].name;
+
+                            if (res.datatable.data[i].rating)
+                                res.datatable.data[i].rating.total = '<div class="progress"><div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="' + round(row.rating.total * 100, 0) + '" aria-valuemin="0" aria-valuemax="100" style="width: ' + round(row.rating.total * 100, 0) + '%"><span class="small"> ' + round(row.rating.total * 100, 0) + '% </span></div></div>';
 
                             //res.datatable.data[i].info.name = row.info.langs[0].name;
                             // Convert Date
