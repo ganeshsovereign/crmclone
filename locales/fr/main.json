@@ -826,5 +826,6 @@
     "SKU": "Ref (SKU)",
     "CreatedAt": "Créé le",
     "CreatedBy": "Créé par",
-    "EditedBy": "Edité par"
+    "EditedBy": "Edité par",
+    "SendToFtp": "Envoyé sur FTP"
 }
