@@ -665,6 +665,7 @@ exports.install = function() {
     F.route('/erp/api/product/family/{id}', productFamily.getProductFamilyById, ['authorize']);
     F.route('/erp/api/product/family/', productFamily.createProductFamily, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/family/{id}', productFamily.updateProductFamily, ['put', 'json', 'authorize'], 512);
+    F.route('/erp/api/product/family/{id}', productFamily.deleteProductFamily, ['delete', 'authorize']);
 
     var productAttributes = new ProductAttributes();
     F.route('/erp/api/product/attributes', productAttributes.getAllProductAttributes, ['authorize']);
@@ -2763,158 +2764,134 @@ PricesList.prototype = {
     }
 };
 
-var Prices = function() {
-    return new function() {
-        this.read = function() {
-            //console.log("toto");
-            var self = this;
-            var query = self.query;
-            var ProductPricesModel = MODEL('productPrices').Schema;
-            var ObjectId = MODULE('utils').ObjectId;
+function Prices() {};
+Prices.prototype = {
+    read: function() {
+        //console.log("toto");
+        var self = this;
+        var query = self.query;
+        var ProductPricesModel = MODEL('productPrices').Schema;
+        var ObjectId = MODULE('utils').ObjectId;
 
-            var priceList = query.priceList ? ObjectId(query.priceList) : null;
-            var product = query.product ? ObjectId(query.product) : null;
+        var priceList = query.priceList ? ObjectId(query.priceList) : null;
+        var product = query.product ? ObjectId(query.product) : null;
 
-            var cost = false;
+        var cost = false;
 
-            query = {};
-            var sort = 'product.name';
+        query = {};
+        var sort = 'product.name';
 
-            if (priceList)
-                query.priceLists = priceList;
+        if (priceList)
+            query.priceLists = priceList;
 
-            if (product) {
-                query.product = product;
-                sort = 'priceLists.priceListCode';
-            }
+        if (product) {
+            query.product = product;
+            sort = 'priceLists.priceListCode';
+        }
 
-            if (self.query.cost)
-                cost = true;
+        if (self.query.cost)
+            cost = true;
 
-            ProductPricesModel.find(query)
-                .populate({
-                    path: "product",
-                    select: "weight name taxes info directCost indirectCost",
-                    populate: { path: 'taxes.taxeId' }
-                })
-                .populate("priceLists")
-                .lean()
-                .exec(function(err, prices) {
-                    if (err)
-                        return self.throw500(err);
+        ProductPricesModel.find(query)
+            .populate({
+                path: "product",
+                select: "weight name taxes info directCost indirectCost",
+                populate: { path: 'taxes.taxeId' }
+            })
+            .populate("priceLists")
+            .lean()
+            .exec(function(err, prices) {
+                if (err)
+                    return self.throw500(err);
 
-                    if (prices == null)
-                        prices = [];
+                if (prices == null)
+                    prices = [];
 
-                    prices = _.filter(prices, function(price) {
-                        return price.priceLists.cost === cost;
-                    });
+                prices = _.filter(prices, function(price) {
+                    return price.priceLists.cost === cost;
+                });
 
-                    for (var j = 0, len = prices.length; j < len; j++) {
-                        var price = prices[j];
+                for (var j = 0, len = prices.length; j < len; j++) {
+                    var price = prices[j];
 
-                        //console.log(price);
-                        //build TTC price
-                        for (var i = 0; i < price.prices.length; i++) {
-                            price.prices[i].margin = {
-                                value: MODULE('utils').round(price.prices[i].price - price.product.directCost - price.product.indirectCost, 3),
-                                rate: MODULE('utils').round((price.prices[i].price - price.product.directCost - price.product.indirectCost) / price.prices[i].price * 100, 2)
-                            };
-                            if (price.prices[i].specialPrice)
-                                price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].specialPrice * (1 + price.product.taxes[0].taxeId.rate / 100));
-                            else
-                                price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].price * (1 + price.product.taxes[0].taxeId.rate / 100), 3);
+                    //console.log(price);
+                    //build TTC price
+                    for (var i = 0; i < price.prices.length; i++) {
+                        price.prices[i].margin = {
+                            value: MODULE('utils').round(price.prices[i].price - price.product.directCost - price.product.indirectCost, 3),
+                            rate: MODULE('utils').round((price.prices[i].price - price.product.directCost - price.product.indirectCost) / price.prices[i].price * 100, 2)
+                        };
+                        if (price.prices[i].specialPrice)
+                            price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].specialPrice * (1 + price.product.taxes[0].taxeId.rate / 100));
+                        else
+                            price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].price * (1 + price.product.taxes[0].taxeId.rate / 100), 3);
 
+                    }
+                }
+
+                //console.log(prices);
+
+                prices = _.sortBy(prices, sort);
+
+                self.json(prices);
+            });
+    },
+    update: function(id) {
+        var self = this;
+        var ProductPricesModel = MODEL('productPrices').Schema;
+
+        self.body.editedBy = self.user._id;
+        self.body.updatedAt = new Date();
+
+        //console.log(self.body);
+
+        // Update qtyMin or qtyMax
+        if (self.body.type && self.body.type == 'QTY') {
+            ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
                         }
-                    }
+                    });
+                }
 
-                    //console.log(prices);
+                // Emit to refresh priceList from parent
+                setTimeout2('productPrices:updatePrice_' + doc.priceLists.toString(), function() {
+                    F.functions.PubSub.emit('productPrices:updatePrice', {
+                        data: doc
+                    });
+                }, 500);
 
-                    prices = _.sortBy(prices, sort);
+                //console.log(doc);
+                doc = doc.toObject();
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Prix enregistré"
+                };
+                self.json(doc);
+            });
+        }
 
-                    self.json(prices);
-                });
-        };
-        this.update = function(id) {
-            var self = this;
-            var ProductPricesModel = MODEL('productPrices').Schema;
+        ProductPricesModel.findOne({ _id: id })
+            //.populate({ path: 'product', select: '_id directCost info', populate: { path: "info.productType", select: "coef" } })
+            .populate("priceLists", "cost")
+            .exec(function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+                }
 
-            self.body.editedBy = self.user._id;
-            self.body.updatedAt = new Date();
-
-            //console.log(self.body);
-
-            // Update qtyMin or qtyMax
-            if (self.body.type && self.body.type == 'QTY') {
-                ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
-                    if (err) {
-                        console.log(err);
-                        return self.json({
-                            errorNotify: {
-                                title: 'Erreur',
-                                message: err
-                            }
-                        });
-                    }
-
-                    // Emit to refresh priceList from parent
-                    setTimeout2('productPrices:updatePrice_' + doc.priceLists.toString(), function() {
-                        F.functions.PubSub.emit('productPrices:updatePrice', {
-                            data: doc
-                        });
-                    }, 500);
-
-                    //console.log(doc);
-                    doc = doc.toObject();
-                    doc.successNotify = {
-                        title: "Success",
-                        message: "Prix enregistré"
-                    };
-                    self.json(doc);
-                });
-            }
-
-            ProductPricesModel.findOne({ _id: id })
-                //.populate({ path: 'product', select: '_id directCost info', populate: { path: "info.productType", select: "coef" } })
-                .populate("priceLists", "cost")
-                .exec(function(err, doc) {
-                    if (err) {
-                        console.log(err);
-                        return self.json({
-                            errorNotify: {
-                                title: 'Erreur',
-                                message: err
-                            }
-                        });
-                    }
-
-                    // Just update one price in priceList
-                    if (!doc.priceLists.cost || self.body.updateAll)
-                        return ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
-                            if (err) {
-                                console.log(err);
-                                return self.json({
-                                    errorNotify: {
-                                        title: 'Erreur',
-                                        message: err
-                                    }
-                                });
-                            }
-
-                            //console.log(doc);
-                            doc = doc.toObject();
-                            doc.successNotify = {
-                                title: "Success",
-                                message: "Prix enregistré"
-                            };
-                            self.json(doc);
-                        });
-
-
-                    doc = _.extend(doc, self.body);
-                    doc.editedBy = self.user._id;
-
-                    doc.save(function(err, doc) {
+                // Just update one price in priceList
+                if (!doc.priceLists.cost || self.body.updateAll)
+                    return ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
                         if (err) {
                             console.log(err);
                             return self.json({
@@ -2933,21 +2910,12 @@ var Prices = function() {
                         };
                         self.json(doc);
                     });
-                });
-        };
-        this.add = function() {
-            var self = this;
-            var ProductPricesModel = MODEL('productPrices').Schema;
-            var price = new ProductPricesModel(self.body);
 
-            price.editedBy = self.user._id;
-            price.createdBy = self.user._id;
 
-            if (!price.product || !price.priceLists)
-                return self.throw500("Empty product or priceLists");
+                doc = _.extend(doc, self.body);
+                doc.editedBy = self.user._id;
 
-            return price.populate("priceLists", function(err, price) {
-                price.save(function(err, doc) {
+                doc.save(function(err, doc) {
                     if (err) {
                         console.log(err);
                         return self.json({
@@ -2962,248 +2930,278 @@ var Prices = function() {
                     doc = doc.toObject();
                     doc.successNotify = {
                         title: "Success",
-                        message: "Nouveau prix enregistré"
+                        message: "Prix enregistré"
                     };
                     self.json(doc);
                 });
             });
-        };
-        this.delete = function(id) {
-            var self = this;
-            var ProductPricesModel = MODEL('productPrices').Schema;
-            ProductPricesModel.remove({
-                _id: id
-            }, function(err) {
-                if (err)
-                    return self.throw500(err);
+    },
+    add: function() {
+        var self = this;
+        var ProductPricesModel = MODEL('productPrices').Schema;
+        var price = new ProductPricesModel(self.body);
 
-                self.json({});
-            });
-        };
-        this.autocomplete = function(body, callback) {
-            var PriceLevelModel = MODEL('pricelevel').Schema;
+        price.editedBy = self.user._id;
+        price.createdBy = self.user._id;
 
-            var query = {
-                "product.name": new RegExp(body.filter.filters[0].value, "i"),
-                price_level: body.price_level
-            };
+        if (!price.product || !price.priceLists)
+            return self.throw500("Empty product or priceLists");
 
-            var dict = {};
-
-            //console.log(body);
-
-            Dict.dict({
-                dictName: ['fk_product_status', 'fk_units'],
-                object: true
-            }, function(err, doc) {
+        return price.populate("priceLists", function(err, price) {
+            price.save(function(err, doc) {
                 if (err) {
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+                }
+
+                //console.log(doc);
+                doc = doc.toObject();
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Nouveau prix enregistré"
+                };
+                self.json(doc);
+            });
+        });
+    },
+    delete: function(id) {
+        var self = this;
+        var ProductPricesModel = MODEL('productPrices').Schema;
+        ProductPricesModel.remove({
+            _id: id
+        }, function(err) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({});
+        });
+    },
+    autocomplete: function(body, callback) {
+        var PriceLevelModel = MODEL('pricelevel').Schema;
+
+        var query = {
+            "product.name": new RegExp(body.filter.filters[0].value, "i"),
+            price_level: body.price_level
+        };
+
+        var dict = {};
+
+        //console.log(body);
+
+        Dict.dict({
+            dictName: ['fk_product_status', 'fk_units'],
+            object: true
+        }, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            dict = doc;
+        });
+
+        PriceLevelModel.find(query, "-history", {
+                limit: body.take
+            })
+            .populate("product", "_id label ref minPrice tva_tx caFamily units discount dynForm")
+            .sort({ ref: 1 })
+            .exec(function(err, prices) {
+                if (err) {
+                    console.log("err : /api/product/price/autocomplete");
                     console.log(err);
                     return;
                 }
-                dict = doc;
-            });
 
-            PriceLevelModel.find(query, "-history", {
-                    limit: body.take
-                })
-                .populate("product", "_id label ref minPrice tva_tx caFamily units discount dynForm")
-                .sort({ ref: 1 })
-                .exec(function(err, prices) {
-                    if (err) {
-                        console.log("err : /api/product/price/autocomplete");
-                        console.log(err);
-                        return;
+                // filter array on caFamily
+                if (body.family)
+                    prices = prices.filter(function(doc) {
+                        return (doc.product.caFamily === body.family);
+                    });
+
+                //console.log(prices);
+
+                var result = [];
+
+                for (var i = 0; i < prices.length; i++) {
+
+                    var units = prices[i].product.units;
+                    var res = {};
+
+                    if (units && dict.fk_units.values[units].label) {
+                        //console.log(this);
+                        res.id = units;
+                        res.name = i18n.t("products:" + dict.fk_units.values[units].label);
+                    } else { // By default
+                        res.id = units;
+                        res.name = units;
                     }
 
-                    // filter array on caFamily
-                    if (body.family)
-                        prices = prices.filter(function(doc) {
-                            return (doc.product.caFamily === body.family);
-                        });
-
-                    //console.log(prices);
-
-                    var result = [];
-
-                    for (var i = 0; i < prices.length; i++) {
-
-                        var units = prices[i].product.units;
-                        var res = {};
-
-                        if (units && dict.fk_units.values[units].label) {
-                            //console.log(this);
-                            res.id = units;
-                            res.name = i18n.t("products:" + dict.fk_units.values[units].label);
-                        } else { // By default
-                            res.id = units;
-                            res.name = units;
+                    var obj = {
+                        pu_ht: prices[i].pu_ht,
+                        price_level: prices[i].price_level,
+                        discount: prices[i].discount,
+                        qtyMin: 0,
+                        product: {
+                            id: prices[i].product._id,
+                            name: prices[i].product.ref,
+                            unit: res.name,
+                            label: prices[i].product.label,
+                            dynForm: prices[i].product.dynForm,
+                            caFamily: prices[i].product.caFamily
                         }
+                    };
+                    result.push(obj);
+                }
 
-                        var obj = {
-                            pu_ht: prices[i].pu_ht,
-                            price_level: prices[i].price_level,
-                            discount: prices[i].discount,
-                            qtyMin: 0,
-                            product: {
-                                id: prices[i].product._id,
-                                name: prices[i].product.ref,
-                                unit: res.name,
-                                label: prices[i].product.label,
-                                dynForm: prices[i].product.dynForm,
-                                caFamily: prices[i].product.caFamily
-                            }
-                        };
-                        result.push(obj);
-                    }
+                //prices[i].product._units = res;
 
-                    //prices[i].product._units = res;
-
-                    //console.log(result);
-                    callback(result);
-                });
-        };
-        this.upgrade = function(req, res) {
-            var PriceLevelModel = MODEL('pricelevel').Schema;
-
-            ProductModel.find(function(err, products) {
-                async.each(products, function(product, callback) {
-
-                    for (var i = 0; i < product.price.length; i++) {
-                        if (product.price[i].price_level === 'BASE')
-                            ProductModel.update({
-                                    _id: product._id
-                                }, {
-                                    pu_ht: product.price[i].pu_ht,
-                                    tva_tx: product.price[i].tva_tx,
-                                    tms: product.price[i].tms
-                                }, {
-                                    upsert: false
-                                },
-                                function(err, numberAffected, price) {
-                                    if (err)
-                                        return console.log(err);
-
-                                    //console.log(price);
-                                });
-                        else
-                            PriceLevelModel.update({
-                                    product: product._id,
-                                    price_level: product.price[i].price_level,
-                                    qtyMin: product.price[i].qtyMin
-                                }, {
-                                    product: {
-                                        id: product._id,
-                                        name: product.ref
-                                    },
-                                    price_level: product.price[i].price_level,
-                                    tms: product.price[i].tms,
-                                    pu_ht: product.price[i].pu_ht,
-                                    qtyMin: product.price[i].qtyMin,
-                                    user_mod: product.price[i].user_mod,
-                                    optional: {
-                                        ref_customer_code: product.price[i].ref_customer_code,
-                                        dsf_coef: product.price[i].dsf_coef,
-                                        dsf_time: product.price[i].dsf_time
-                                    },
-                                    $addToSet: {
-                                        history: {
-                                            tms: product.price[i].tms,
-                                            user_mod: product.price[i].user_mod,
-                                            pu_ht: product.price[i].pu_ht,
-                                            qtyMin: product.price[i].qtyMin
-                                        }
-                                    }
-                                }, {
-                                    upsert: true
-                                },
-                                function(err, numberAffected, price) {
-                                    if (err)
-                                        return console.log(err);
-
-                                    //console.log(price);
-                                });
-                    }
-
-                    callback();
-                }, function(err) {
-                    if (err)
-                        return res.json(err);
-                    res.send(200);
-                });
+                //console.log(result);
+                callback(result);
             });
-        };
-        this.findOne = function(id, price_level, callback) {
-            var PriceLevelModel = MODEL('pricelevel').Schema;
+    },
+    upgrade: function(req, res) {
+        var PriceLevelModel = MODEL('pricelevel').Schema;
 
-            PriceLevelModel.findOne({ price_level: price_level, product: id }, "product prices discount price_level")
-                //.populate("product", "label ref minPrice tva_tx caFamily units discount dynForm")
-                //.sort({ref: 1})
-                .exec(function(err, price) {
-                    if (err) {
-                        console.log("err : /erp/api/product/price/findOne");
-                        console.log(err);
-                        return;
-                    }
+        ProductModel.find(function(err, products) {
+            async.each(products, function(product, callback) {
 
-                    var result;
+                for (var i = 0; i < product.price.length; i++) {
+                    if (product.price[i].price_level === 'BASE')
+                        ProductModel.update({
+                                _id: product._id
+                            }, {
+                                pu_ht: product.price[i].pu_ht,
+                                tva_tx: product.price[i].tva_tx,
+                                tms: product.price[i].tms
+                            }, {
+                                upsert: false
+                            },
+                            function(err, numberAffected, price) {
+                                if (err)
+                                    return console.log(err);
 
-                    if (price)
-                        result = {
-                            _id: price.product,
-                            prices: price.prices,
-                            price_level: price.price_level,
-                            pu_ht: price.prices.pu_ht,
-                            discount: price.discount
-                        };
+                                //console.log(price);
+                            });
+                    else
+                        PriceLevelModel.update({
+                                product: product._id,
+                                price_level: product.price[i].price_level,
+                                qtyMin: product.price[i].qtyMin
+                            }, {
+                                product: {
+                                    id: product._id,
+                                    name: product.ref
+                                },
+                                price_level: product.price[i].price_level,
+                                tms: product.price[i].tms,
+                                pu_ht: product.price[i].pu_ht,
+                                qtyMin: product.price[i].qtyMin,
+                                user_mod: product.price[i].user_mod,
+                                optional: {
+                                    ref_customer_code: product.price[i].ref_customer_code,
+                                    dsf_coef: product.price[i].dsf_coef,
+                                    dsf_time: product.price[i].dsf_time
+                                },
+                                $addToSet: {
+                                    history: {
+                                        tms: product.price[i].tms,
+                                        user_mod: product.price[i].user_mod,
+                                        pu_ht: product.price[i].pu_ht,
+                                        qtyMin: product.price[i].qtyMin
+                                    }
+                                }
+                            }, {
+                                upsert: true
+                            },
+                            function(err, numberAffected, price) {
+                                if (err)
+                                    return console.log(err);
+
+                                //console.log(price);
+                            });
+                }
+
+                callback();
+            }, function(err) {
+                if (err)
+                    return res.json(err);
+                res.send(200);
+            });
+        });
+    },
+    findOne: function(id, price_level, callback) {
+        var PriceLevelModel = MODEL('pricelevel').Schema;
+
+        PriceLevelModel.findOne({ price_level: price_level, product: id }, "product prices discount price_level")
+            //.populate("product", "label ref minPrice tva_tx caFamily units discount dynForm")
+            //.sort({ref: 1})
+            .exec(function(err, price) {
+                if (err) {
+                    console.log("err : /erp/api/product/price/findOne");
+                    console.log(err);
+                    return;
+                }
+
+                var result;
+
+                if (price)
+                    result = {
+                        _id: price.product,
+                        prices: price.prices,
+                        price_level: price.price_level,
+                        pu_ht: price.prices.pu_ht,
+                        discount: price.discount
+                    };
 
 
-                    callback(err, result);
-                });
-        };
-        this.find = function(refs, price_level, callback) {
-            var PriceLevelModel = MODEL('pricelevel').Schema;
+                callback(err, result);
+            });
+    },
+    find: function(refs, price_level, callback) {
+        var PriceLevelModel = MODEL('pricelevel').Schema;
 
-            //var query = {
-            //    "product.name": ref,
-            //    price_level: price_level
-            //};
+        //var query = {
+        //    "product.name": ref,
+        //    price_level: price_level
+        //};
 
-            var dict = {};
+        var dict = {};
 
-            //console.log(body);
+        //console.log(body);
 
-            //console.log(refs);
+        //console.log(refs);
 
-            PriceLevelModel.find({ price_level: price_level, 'product': { $in: refs } }, "product prices price_level")
-                //.populate("product", "label ref minPrice tva_tx caFamily units discount dynForm")
-                //.sort({ref: 1})
-                .exec(function(err, prices) {
-                    if (err) {
-                        console.log("err : /api/product/price/autocomplete");
-                        console.log(err);
-                        return;
-                    }
+        PriceLevelModel.find({ price_level: price_level, 'product': { $in: refs } }, "product prices price_level")
+            //.populate("product", "label ref minPrice tva_tx caFamily units discount dynForm")
+            //.sort({ref: 1})
+            .exec(function(err, prices) {
+                if (err) {
+                    console.log("err : /api/product/price/autocomplete");
+                    console.log(err);
+                    return;
+                }
 
-                    var result = [];
+                var result = [];
 
-                    for (var i = 0, len = prices.length; i < len; i++) {
-                        result.push({
-                            _id: prices[i].product,
-                            prices: prices[i].prices,
-                            price_level: prices[i].price_level,
-                            pu_ht: prices[i].prices.pu_ht
-                        });
-                    }
+                for (var i = 0, len = prices.length; i < len; i++) {
+                    result.push({
+                        _id: prices[i].product,
+                        prices: prices[i].prices,
+                        price_level: prices[i].price_level,
+                        pu_ht: prices[i].prices.pu_ht
+                    });
+                }
 
-                    callback(result);
-                });
-        };
-    };
+                callback(result);
+            });
+    }
 };
 
 function DynForm() {}
-
-
 DynForm.prototype = {
     read: function() {
         var DynFormModel = MODEL('dynform').Schema;
@@ -3454,18 +3452,123 @@ ProductTypes.prototype = {
     }
 };
 
-var ProductFamily = function() {
-    return new function() {
-        this.getProductFamilyById = function(id) {
-            var self = this;
-            var ProductFamilyModel = MODEL('productFamily').Schema;
-            var _id = id;
-            var model;
+function ProductFamily() {};
+ProductFamily.prototype = {
+    getProductFamilyById: function(id) {
+        var self = this;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var _id = id;
+        var model;
 
-            _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
+        _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
 
-            ProductFamilyModel.aggregate([{
-                $match: { _id: MODULE('utils').ObjectId(_id) }
+        ProductFamilyModel.aggregate([{
+            $match: { _id: MODULE('utils').ObjectId(_id) }
+        }, {
+            $unwind: {
+                path: '$options',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $lookup: {
+                from: 'ProductAttributes',
+                localField: 'options',
+                foreignField: '_id',
+                as: 'options'
+            }
+        }, {
+            $unwind: {
+                path: '$options',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $lookup: {
+                from: 'ProductAttributesValues',
+                localField: 'options._id',
+                foreignField: 'optionId',
+                as: 'optionsValue'
+            }
+        }, {
+            $project: {
+                langs: '$langs',
+                sequence: 1,
+                isCoef: 1,
+                isActive: 1,
+                indirectCostRate: 1,
+                minMargin: 1,
+                isCost: 1,
+                discounts: 1,
+                variants: 1,
+                opts: {
+                    langs: '$options.langs',
+                    _id: '$options._id',
+                    mode: '$options.mode',
+                    values: '$optionsValue'
+                }
+            }
+        }, {
+            $group: {
+                _id: '$_id',
+                opts: { $push: '$opts' },
+                langs: { $first: '$langs' },
+                sequence: { $first: '$sequence' },
+                indirectCostRate: { $first: '$indirectCostRate' },
+                minMargin: { $first: '$minMargin' },
+                discounts: { $first: '$discounts' },
+                isCoef: { $first: '$isCoef' },
+                isCost: { $first: '$isCost' },
+                variants: { $first: '$variants' },
+                isActive: { $first: '$isActive' }
+            }
+        }], function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            if (result.length) {
+                model = result[0];
+                model.opts = _.filter(model.opts, function(elem) {
+                    return elem._id != null;
+                });
+            } else
+                model = {};
+
+            self.json(model);
+        });
+    },
+    getAllProductFamily: function() {
+        var self = this;
+        var query = self.query;
+        var paginationObject = MODULE('helper').page(query);
+        var skip = paginationObject.skip;
+        var limit = paginationObject.limit;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var sortObj;
+        var key;
+
+        var isCost = (self.query.isCost == 'true' ? true : false);
+
+        var lang = 0;
+
+        if (query.sort) {
+            key = Object.keys(query.sort)[0];
+            req.query.sort[key] = parseInt(query.sort[key], 10);
+
+            sortObj = query.sort;
+        } else {
+            sortObj = {
+                'data.sequence': 1
+            };
+        }
+
+        ProductFamilyModel.aggregate([{
+                $match: { isActive: true, isCost: isCost }
+            }, {
+                $lookup: {
+                    from: 'Product',
+                    localField: '_id',
+                    foreignField: 'sellFamily',
+                    as: 'Products'
+                }
             }, {
                 $unwind: {
                     path: '$options',
@@ -3476,394 +3579,309 @@ var ProductFamily = function() {
                     from: 'ProductAttributes',
                     localField: 'options',
                     foreignField: '_id',
-                    as: 'options'
-                }
-            }, {
-                $unwind: {
-                    path: '$options',
-                    preserveNullAndEmptyArrays: true
-                }
-            }, {
-                $lookup: {
-                    from: 'ProductAttributesValues',
-                    localField: 'options._id',
-                    foreignField: 'optionId',
-                    as: 'optionsValue'
+                    as: 'productOptions'
                 }
             }, {
                 $project: {
-                    langs: '$langs',
+                    countProducts: { $size: '$Products' },
+                    name: '$langs',
                     sequence: 1,
-                    isCoef: 1,
-                    isActive: 1,
+                    createdAt: '$createdAt',
                     indirectCostRate: 1,
-                    minMargin: 1,
-                    isCost: 1,
-                    discounts: 1,
-                    variants: 1,
-                    opts: {
-                        langs: '$options.langs',
-                        _id: '$options._id',
-                        mode: '$options.mode',
-                        values: '$optionsValue'
-                    }
+                    opts: { $arrayElemAt: ['$productOptions', 0] }
+                }
+            }, {
+                $unwind: {
+                    path: '$name',
+                    includeArrayIndex: 'langId'
+                }
+            }, {
+                $match: {
+                    langId: lang
                 }
             }, {
                 $group: {
                     _id: '$_id',
-                    opts: { $push: '$opts' },
-                    langs: { $first: '$langs' },
+                    options: { $push: '$opts' },
+                    name: { $first: '$name.name' },
                     sequence: { $first: '$sequence' },
                     indirectCostRate: { $first: '$indirectCostRate' },
-                    minMargin: { $first: '$minMargin' },
-                    discounts: { $first: '$discounts' },
-                    isCoef: { $first: '$isCoef' },
-                    isCost: { $first: '$isCost' },
-                    variants: { $first: '$variants' },
-                    isActive: { $first: '$isActive' }
+                    createdAt: { $first: '$createdAt' },
+                    countProducts: { $first: '$countProducts' }
                 }
-            }], function(err, result) {
-                if (err)
-                    return self.throw500(err);
-
-                if (result.length) {
-                    model = result[0];
-                    model.opts = _.filter(model.opts, function(elem) {
-                        return elem._id != null;
-                    });
-                } else
-                    model = {};
-
-                self.json(model);
-            });
-        };
-        this.getAllProductFamily = function() {
-            var self = this;
-            var query = self.query;
-            var paginationObject = MODULE('helper').page(query);
-            var skip = paginationObject.skip;
-            var limit = paginationObject.limit;
-            var ProductFamilyModel = MODEL('productFamily').Schema;
-            var sortObj;
-            var key;
-
-            var isCost = (self.query.isCost == 'true' ? true : false);
-
-            var lang = 0;
-
-            if (query.sort) {
-                key = Object.keys(query.sort)[0];
-                req.query.sort[key] = parseInt(query.sort[key], 10);
-
-                sortObj = query.sort;
-            } else {
-                sortObj = {
-                    'data.sequence': 1
-                };
-            }
-
-            ProductFamilyModel.aggregate([{
-                    $match: { isActive: true, isCost: isCost }
-                }, {
-                    $lookup: {
-                        from: 'Product',
-                        localField: '_id',
-                        foreignField: 'sellFamily',
-                        as: 'Products'
-                    }
-                }, {
-                    $unwind: {
-                        path: '$options',
-                        preserveNullAndEmptyArrays: true
-                    }
-                }, {
-                    $lookup: {
-                        from: 'ProductAttributes',
-                        localField: 'options',
-                        foreignField: '_id',
-                        as: 'productOptions'
-                    }
-                }, {
-                    $project: {
-                        countProducts: { $size: '$Products' },
-                        name: '$langs',
-                        sequence: 1,
-                        createdAt: '$createdAt',
-                        indirectCostRate: 1,
-                        opts: { $arrayElemAt: ['$productOptions', 0] }
-                    }
-                }, {
-                    $unwind: {
-                        path: '$name',
-                        includeArrayIndex: 'langId'
-                    }
-                }, {
-                    $match: {
-                        langId: lang
-                    }
-                }, {
-                    $group: {
-                        _id: '$_id',
-                        options: { $push: '$opts' },
-                        name: { $first: '$name.name' },
-                        sequence: { $first: '$sequence' },
-                        indirectCostRate: { $first: '$indirectCostRate' },
-                        createdAt: { $first: '$createdAt' },
-                        countProducts: { $first: '$countProducts' }
-                    }
-                }, {
-                    $group: {
-                        _id: null,
-                        total: { $sum: 1 },
-                        root: { $push: '$$ROOT' }
-                    }
-                }, {
-                    $unwind: '$root'
-                }, {
-                    $project: {
-                        _id: 1,
-                        total: 1,
-                        data: {
-                            _id: '$root._id',
-                            name: '$root.name',
-                            options: '$root.options',
-                            sequence: '$root.sequence',
-                            indirectCostRate: '$root.indirectCostRate',
-                            countProducts: '$root.countProducts',
-                            createdAt: '$root.createdAt'
-                        }
-                    }
-                },
-                /* {
-                                $sort: sortObj
-                            },*/
-                {
-                    $sort: { 'data.name': 1 }
-                },
-                /*{
-                           $skip: skip
-                       }, {
-                           $limit: limit
-                       }, */
-                {
-                    $group: {
-                        _id: null,
-                        total: { $first: '$total' },
-                        data: { $push: '$data' }
-                    }
-                }, {
-                    $project: {
-                        _id: 1,
-                        total: '$total',
-                        data: '$data'
+            }, {
+                $group: {
+                    _id: null,
+                    total: { $sum: 1 },
+                    root: { $push: '$$ROOT' }
+                }
+            }, {
+                $unwind: '$root'
+            }, {
+                $project: {
+                    _id: 1,
+                    total: 1,
+                    data: {
+                        _id: '$root._id',
+                        name: '$root.name',
+                        options: '$root.options',
+                        sequence: '$root.sequence',
+                        indirectCostRate: '$root.indirectCostRate',
+                        countProducts: '$root.countProducts',
+                        createdAt: '$root.createdAt'
                     }
                 }
-            ]).exec(function(err, result) {
-                if (err)
-                    return self.throw500(err);
-
-                if (result && result.length)
-                    return self.json(result[0]);
-
-                self.json({});
-            });
-        };
-        this.createProductFamily = function() {
-            var self = this;
-            var body = self.body;
-            var ProductFamilyModel = MODEL('productFamily').Schema;
-            var model;
-            var err;
-
-            if (!body.langs[0].name) {
-                err = 'Please provide Product Type name';
-                self.throw404(err);
+            },
+            /* {
+                            $sort: sortObj
+                        },*/
+            {
+                $sort: { 'data.name': 1 }
+            },
+            /*{
+                       $skip: skip
+                   }, {
+                       $limit: limit
+                   }, */
+            {
+                $group: {
+                    _id: null,
+                    total: { $first: '$total' },
+                    data: { $push: '$data' }
+                }
+            }, {
+                $project: {
+                    _id: 1,
+                    total: '$total',
+                    data: '$data'
+                }
             }
+        ]).exec(function(err, result) {
+            if (err)
+                return self.throw500(err);
 
-            model = new ProductFamilyModel(body);
-            model.save(function(err, result) {
-                if (err)
-                    return self.throw500(err);
+            if (result && result.length)
+                return self.json(result[0]);
 
-                self.json(result);
-            });
-        };
-        this.updateProductFamily = function(id) {
-            var self = this;
-            var ProductFamilyModel = MODEL('productFamily').Schema;
-            var ProductModel = MODEL('product').Schema;
-            var body = self.body;
-            var _id = id;
-            var currentOptions;
-            //console.log(body);
+            self.json({});
+        });
+    },
+    createProductFamily: function() {
+        var self = this;
+        var body = self.body;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var model;
+        var err;
 
-            function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, callback) {
-                var deletedOptions;
-                var addedOptions;
-                var addingOption;
-                var deletingOptions;
+        if (!body.langs[0].name) {
+            err = 'Please provide Product Type name';
+            self.throw404(err);
+        }
 
-                var deletedVariants;
-                var addedVariants;
-                var addingVariant;
-                var deletingVariants;
+        model = new ProductFamilyModel(body);
+        model.save(function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json(result);
+        });
+    },
+    updateProductFamily: function(id) {
+        var self = this;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var ProductModel = MODEL('product').Schema;
+        var body = self.body;
+        var _id = id;
+        var currentOptions;
+        //console.log(body);
+
+        function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, callback) {
+            var deletedOptions;
+            var addedOptions;
+            var addingOption;
+            var deletingOptions;
+
+            var deletedVariants;
+            var addedVariants;
+            var addingVariant;
+            var deletingVariants;
 
 
-                currentOpts.options = currentOpts.options.toStringObjectIds();
-                deletedOptions = _.difference(currentOpts.options, newOpts.options);
-                addedOptions = _.difference(newOpts.options, currentOpts.options);
+            currentOpts.options = currentOpts.options.toStringObjectIds();
+            deletedOptions = _.difference(currentOpts.options, newOpts.options);
+            addedOptions = _.difference(newOpts.options, currentOpts.options);
 
-                currentOpts.variants = currentOpts.variants.toStringObjectIds();
-                deletedVariants = _.difference(currentOpts.variants, newOpts.variants);
-                addedVariants = _.difference(newOpts.variants, currentOpts.variants);
+            currentOpts.variants = currentOpts.variants.toStringObjectIds();
+            deletedVariants = _.difference(currentOpts.variants, newOpts.variants);
+            addedVariants = _.difference(newOpts.variants, currentOpts.variants);
 
-                addingOption = function(pCb) {
-                    if (!addedOptions.length)
-                        return pCb();
+            addingOption = function(pCb) {
+                if (!addedOptions.length)
+                    return pCb();
 
-                    addedOptions = addedOptions.objectID();
+                addedOptions = addedOptions.objectID();
 
-                    ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { options: { $each: addedOptions } } }, { new: true }, function(err, result) {
-                        if (err)
-                            return pCb(err);
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { options: { $each: addedOptions } } }, { new: true }, function(err, result) {
+                    if (err)
+                        return pCb(err);
 
-                        pCb();
+                    pCb();
+                });
+            };
+
+            addingVariant = function(pCb) {
+                if (!addedVariants.length)
+                    return pCb();
+
+                addedVariants = addedVariants.objectID();
+
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { variants: { $each: addedVariants } } }, { new: true }, function(err, result) {
+                    if (err)
+                        return pCb(err);
+
+                    pCb();
+                });
+            };
+
+            deletingOptions = function(pCb) {
+                if (!deletedOptions.length)
+                    return pCb();
+
+                let deleteOptions = deletedOptions;
+                deletedOptions = deletedOptions.objectID();
+
+                ProductModel.find({ sellFamily: modelId, 'attributes.attribute': { $in: deletedOptions } }, function(err, docs) {
+                    if (!docs.length)
+                        return;
+
+                    docs.forEach(function(elem) {
+                        elem.attributes = _.filter(elem.attributes, function(elem) {
+                            if (deleteOptions.indexOf(elem.attribute.toString()) >= 0)
+                                return false;
+
+                            return true;
+                        });
+
+                        elem.save(function(err, result) {
+                            if (err)
+                                console.log(err);
+                        });
                     });
-                };
+                });
 
-                addingVariant = function(pCb) {
-                    if (!addedVariants.length)
-                        return pCb();
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { options: deletedOptions } }, { new: true }, function(err, result) {
+                    if (err)
+                        return pCb(err);
 
-                    addedVariants = addedVariants.objectID();
+                    pCb();
+                });
+            };
 
-                    ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { variants: { $each: addedVariants } } }, { new: true }, function(err, result) {
+            deletingVariants = function(pCb) {
+                if (!deletedVariants.length)
+                    return pCb();
+
+                let deleteVariants = deletedVariants;
+                deletedVariants = deletedVariants.objectID();
+
+                //Todo remove all attributesValues form Attributes in variants !
+
+                ProductModel.find({ sellFamily: modelId })
+                    .populate("variants")
+                    .exec(function(err, docs) {
                         if (err)
-                            return pCb(err);
+                            return console.log(err);
 
-                        pCb();
-                    });
-                };
-
-                deletingOptions = function(pCb) {
-                    if (!deletedOptions.length)
-                        return pCb();
-
-                    let deleteOptions = deletedOptions;
-                    deletedOptions = deletedOptions.objectID();
-
-                    ProductModel.find({ sellFamily: modelId, 'attributes.attribute': { $in: deletedOptions } }, function(err, docs) {
                         if (!docs.length)
                             return;
 
                         docs.forEach(function(elem) {
-                            elem.attributes = _.filter(elem.attributes, function(elem) {
-                                if (deleteOptions.indexOf(elem.attribute.toString()) >= 0)
+                            //console.log(elem);
+                            elem.variants = _.filter(elem.variants, function(elem) {
+                                if (deleteVariants.indexOf(elem.optionId.toString()) >= 0)
                                     return false;
 
                                 return true;
                             });
 
+                            //console.log(elem.variants);
+
                             elem.save(function(err, result) {
                                 if (err)
                                     console.log(err);
+
+
                             });
                         });
                     });
 
-                    ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { options: deletedOptions } }, { new: true }, function(err, result) {
-                        if (err)
-                            return pCb(err);
-
-                        pCb();
-                    });
-                };
-
-                deletingVariants = function(pCb) {
-                    if (!deletedVariants.length)
-                        return pCb();
-
-                    let deleteVariants = deletedVariants;
-                    deletedVariants = deletedVariants.objectID();
-
-                    //Todo remove all attributesValues form Attributes in variants !
-
-                    ProductModel.find({ sellFamily: modelId })
-                        .populate("variants")
-                        .exec(function(err, docs) {
-                            if (err)
-                                return console.log(err);
-
-                            if (!docs.length)
-                                return;
-
-                            docs.forEach(function(elem) {
-                                //console.log(elem);
-                                elem.variants = _.filter(elem.variants, function(elem) {
-                                    if (deleteVariants.indexOf(elem.optionId.toString()) >= 0)
-                                        return false;
-
-                                    return true;
-                                });
-
-                                //console.log(elem.variants);
-
-                                elem.save(function(err, result) {
-                                    if (err)
-                                        console.log(err);
-
-
-                                });
-                            });
-                        });
-
-                    ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { variants: deletedVariants } }, { new: true }, function(err, result) {
-                        if (err)
-                            return pCb(err);
-
-                        pCb();
-                    });
-                };
-
-                async.parallel([
-                    addingOption,
-                    addingVariant,
-                    deletingOptions,
-                    deletingVariants
-                ], function(err) {
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { variants: deletedVariants } }, { new: true }, function(err, result) {
                     if (err)
-                        return callback(err);
+                        return pCb(err);
 
-                    callback();
+                    pCb();
+                });
+            };
+
+            async.parallel([
+                addingOption,
+                addingVariant,
+                deletingOptions,
+                deletingVariants
+            ], function(err) {
+                if (err)
+                    return callback(err);
+
+                callback();
+            });
+        }
+
+        let data = _.clone(body);
+        delete data.options;
+        delete data.variants;
+
+        data.discounts = _.filter(data.discounts, function(line) {
+            if (line.count == 0)
+                return true;
+
+            return (line.discount !== 0)
+        });
+
+        data.discounts = _.uniq(data.discounts, 'count');
+
+        function compare(a, b) {
+            if (a.count < b.count)
+                return -1;
+            if (a.count > b.count)
+                return 1;
+            return 0;
+        }
+
+        data.discounts.sort(compare);
+
+        data.discounts[0].count = 0;
+
+        ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, result) {
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
                 });
             }
 
-            let data = _.clone(body);
-            delete data.options;
-            delete data.variants;
+            setTimeout2('productFamily:updateIndirectCost_' + result._id.toString(), function() {
+                F.functions.PubSub.emit('productFamily:update', { data: result });
+            }, 5000);
 
-            data.discounts = _.filter(data.discounts, function(line) {
-                if (line.count == 0)
-                    return true;
+            currentOptions = {
+                options: result.options,
+                variants: result.variants
+            };
 
-                return (line.discount !== 0)
-            });
-
-            data.discounts = _.uniq(data.discounts, 'count');
-
-            function compare(a, b) {
-                if (a.count < b.count)
-                    return -1;
-                if (a.count > b.count)
-                    return 1;
-                return 0;
-            }
-
-            data.discounts.sort(compare);
-
-            data.discounts[0].count = 0;
-
-            ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, result) {
+            updateOptionsForProdTypes(_id, currentOptions, { options: body.options, variants: body.variants }, ProductFamilyModel, function(err) {
                 if (err) {
                     console.log(err);
                     return self.json({
@@ -3874,167 +3892,171 @@ var ProductFamily = function() {
                     });
                 }
 
-                setTimeout2('productFamily:updateIndirectCost_' + result._id.toString(), function() {
-                    F.functions.PubSub.emit('productFamily:update', { data: result });
-                }, 5000);
 
-                currentOptions = {
-                    options: result.options,
-                    variants: result.variants
+                //console.log(doc);
+                //doc = doc.toObject();
+                var doc = {};
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Configuration enregistrée"
                 };
+                self.json(doc);
+            });
+        });
+    },
+    deleteProductFamily: function(id) {
+        var self = this;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
 
-                updateOptionsForProdTypes(_id, currentOptions, { options: body.options, variants: body.variants }, ProductFamilyModel, function(err) {
-                    if (err) {
-                        console.log(err);
-                        return self.json({
-                            errorNotify: {
-                                title: 'Erreur',
-                                message: err
-                            }
-                        });
+        ProductFamilyModel.remove({ _id: id }, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
                     }
-
-
-                    //console.log(doc);
-                    //doc = doc.toObject();
-                    var doc = {};
-                    doc.successNotify = {
-                        title: "Success",
-                        message: "Configuration enregistrée"
-                    };
-                    self.json(doc);
                 });
-            });
-        };
-        this.deleteProductFamily = function(id) {};
-        this.exportCoefFamily = function() {
-            var self = this;
-            var query = {};
-            var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
-            var PriceListModel = MODEL('priceList').Schema;
+            }
 
-            var Stream = require('stream');
-            var stream = new Stream();
 
-            var self = this;
+            //console.log(doc);
+            //doc = doc.toObject();
+            var doc = {};
+            doc.successNotify = {
+                title: "Success",
+                message: "Famille supprimee"
+            };
+            self.json(doc);
+        });
+    },
+    exportCoefFamily: function() {
+        var self = this;
+        var query = {};
+        var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
+        var PriceListModel = MODEL('priceList').Schema;
 
-            //query.price_level = priceLevel;
+        var Stream = require('stream');
+        var stream = new Stream();
 
-            //console.log(query);
+        var self = this;
 
-            var date = new Date();
-            async.parallel({
-                coef: function(pCb) {
-                    FamilyCoefModel.aggregate([{
-                            $project: {
-                                _id: 1,
-                                priceLists: 1,
-                                family: 1,
-                                coef: 1
-                            }
-                        }, {
-                            $lookup: {
-                                from: 'PriceList',
-                                localField: 'priceLists',
-                                foreignField: '_id',
-                                as: 'priceLists'
-                            }
-                        }, {
-                            $unwind: '$priceLists'
-                        },
-                        {
-                            $match: { 'priceLists.isCoef': true }
-                        },
-                        {
-                            $lookup: {
-                                from: 'productFamily',
-                                localField: 'family',
-                                foreignField: '_id',
-                                as: 'family'
-                            }
-                        }, {
-                            $unwind: '$family'
-                        }, {
-                            $project: {
-                                _id: 1,
-                                priceListId: "$priceLists._id",
-                                priceListName: "$priceLists.name",
-                                familyId: "$family._id",
-                                familyName: { $arrayElemAt: ['$family.langs', 0] },
-                                coef: 1
-                            }
-                        }, {
-                            $group: {
-                                _id: "$familyId",
-                                name: { $first: "$familyName.name" },
-                                priceLists: { $addToSet: { _id: '$priceListId', name: '$priceListName', coef: "$coef" } }
-                            }
+        //query.price_level = priceLevel;
+
+        //console.log(query);
+
+        var date = new Date();
+        async.parallel({
+            coef: function(pCb) {
+                FamilyCoefModel.aggregate([{
+                        $project: {
+                            _id: 1,
+                            priceLists: 1,
+                            family: 1,
+                            coef: 1
                         }
-                    ], pCb);
-
-                },
-                column: function(pCb) {
-                    PriceListModel.find({ cost: false, isCoef: true }, "_id name", function(err, docs) {
-                        if (err)
-                            return pCb(err);
-
-                        pCb(null, _.map(docs, function(elem) {
-                            return { _id: elem._id, name: elem.name }
-                        }));
-                    });
-                }
-            }, function(err, result) {
-                if (err)
-                    return self.throw500(err);
-
-                var fields = {};
-
-                var i = 2; //0 is _id priceList 1 is name priceList
-
-                _.each(result.column, function(elem) {
-                    fields[elem._id.toString()] = i++;
-                });
-
-                var line = ['_id', 'name'];
-                _.each(result.column, function(elem) {
-                    line[fields[elem._id.toString()]] = elem._id.toString();
-                });
-
-                line.push('\n');
-                stream.emit('data', line.join(";"));
-
-                line = ['_id', 'name'];
-                _.each(result.column, function(elem) {
-                    line[fields[elem._id.toString()]] = elem.name;
-                });
-                line.push('\n');
-                stream.emit('data', line.join(";"));
-
-                async.forEach(result.coef, function(coef, aCb) {
-
-                        var line = [coef._id, coef.name];
-
-                        async.forEach(coef.priceLists, function(priceList, bCb) {
-                            line[fields[priceList._id.toString()]] = priceList.coef.toString().replace(".", ",");
-                            bCb();
-                        }, function(err) {
-                            line.push('\n');
-                            stream.emit('data', line.join(";"));
-
-                            aCb();
-                        });
+                    }, {
+                        $lookup: {
+                            from: 'PriceList',
+                            localField: 'priceLists',
+                            foreignField: '_id',
+                            as: 'priceLists'
+                        }
+                    }, {
+                        $unwind: '$priceLists'
                     },
-                    function(err) {
-                        if (err)
-                            console.log(err);
+                    {
+                        $match: { 'priceLists.isCoef': true }
+                    },
+                    {
+                        $lookup: {
+                            from: 'productFamily',
+                            localField: 'family',
+                            foreignField: '_id',
+                            as: 'family'
+                        }
+                    }, {
+                        $unwind: '$family'
+                    }, {
+                        $project: {
+                            _id: 1,
+                            priceListId: "$priceLists._id",
+                            priceListName: "$priceLists.name",
+                            familyId: "$family._id",
+                            familyName: { $arrayElemAt: ['$family.langs', 0] },
+                            coef: 1
+                        }
+                    }, {
+                        $group: {
+                            _id: "$familyId",
+                            name: { $first: "$familyName.name" },
+                            priceLists: { $addToSet: { _id: '$priceListId', name: '$priceListName', coef: "$coef" } }
+                        }
+                    }
+                ], pCb);
 
-                        stream.emit('end');
-                    });
+            },
+            column: function(pCb) {
+                PriceListModel.find({ cost: false, isCoef: true }, "_id name", function(err, docs) {
+                    if (err)
+                        return pCb(err);
+
+                    pCb(null, _.map(docs, function(elem) {
+                        return { _id: elem._id, name: elem.name }
+                    }));
+                });
+            }
+        }, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            var fields = {};
+
+            var i = 2; //0 is _id priceList 1 is name priceList
+
+            _.each(result.column, function(elem) {
+                fields[elem._id.toString()] = i++;
             });
 
-            self.stream('application/text', stream, 'Coef_' + date.getFullYear().toString() + "_" + (date.getMonth() + 1).toString() + ".csv");
-        };
-    };
+            var line = ['_id', 'name'];
+            _.each(result.column, function(elem) {
+                line[fields[elem._id.toString()]] = elem._id.toString();
+            });
+
+            line.push('\n');
+            stream.emit('data', line.join(";"));
+
+            line = ['_id', 'name'];
+            _.each(result.column, function(elem) {
+                line[fields[elem._id.toString()]] = elem.name;
+            });
+            line.push('\n');
+            stream.emit('data', line.join(";"));
+
+            async.forEach(result.coef, function(coef, aCb) {
+
+                    var line = [coef._id, coef.name];
+
+                    async.forEach(coef.priceLists, function(priceList, bCb) {
+                        line[fields[priceList._id.toString()]] = priceList.coef.toString().replace(".", ",");
+                        bCb();
+                    }, function(err) {
+                        line.push('\n');
+                        stream.emit('data', line.join(";"));
+
+                        aCb();
+                    });
+                },
+                function(err) {
+                    if (err)
+                        console.log(err);
+
+                    stream.emit('end');
+                });
+        });
+
+        self.stream('application/text', stream, 'Coef_' + date.getFullYear().toString() + "_" + (date.getMonth() + 1).toString() + ".csv");
+    }
 };
 
 function Taxes() {}
