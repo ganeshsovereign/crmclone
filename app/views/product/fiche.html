@@ -106,20 +106,18 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
-                <!--<div class="progress">
-                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                        <span class="sr-only"> 60% Complete </span>
-                    </div>
-                </div>-->
+
+                <div class="col-md-12">
+                    <progressbar class="progress-striped" value="product.rating.total * 100" type="">{{product.rating.total*100 | percent}} Complete</progressbar>
+                </div>
 
                 <div class="profile-usermenu">
                     <ul class="nav">
                         <li ng-class="{active: $state.includes('product.show.informations')}">
                             <a ui-sref="product.show.informations({id:product._id})">
-                                <i class="icon-info"></i> @(Marketing) / PIM </a>
+                                <i class="icon-info"></i> @(Marketing) / PIM <span ng-if="product.rating.marketing != 1" class="fa fa-warning font-red" tooltip-placement="right" tooltip="{{product.rating.marketing*100 | percent}}"></span</a>
                         </li>
                         <!--       <li ng-class="{active: $state.includes('product.show.marketing')}">
                             <a ui-sref="product.show.marketing({id:product._id})">
@@ -142,7 +140,7 @@
 
                         <li ng-class="{active: $state.includes('product.show.attributes')}">
                             <a ui-sref="product.show.attributes({id:product._id})">
-                                <i class="icon-target"></i> @(products:Attributes) </a>
+                                <i class="icon-target"></i> @(products:Attributes) <span ng-if="product.rating.attributes != 1" class="fa fa-warning font-red" tooltip-placement="right" tooltip="{{product.rating.attributes*100 | percent}}"></span></a>
                         </li>
                         <!--<li ng-class="{active: $state.includes('product.show.stock')}">
                             <a ui-sref="product.show.stock({id:product._id})">
@@ -150,15 +148,16 @@
                         </li>-->
                         <li ng-class="{active: $state.includes('product.show.images')}">
                             <a ui-sref="product.show.images({id:product._id})">
-                                <i class="icon-picture"></i> @(products:Images) </a>
+                                <i class="icon-picture"></i> @(products:Images) <span ng-if="product.rating.images != 1" class="fa fa-warning font-red" tooltip-placement="right" tooltip="{{product.rating.images*100 | percent}}"></a>
                         </li>
                         <li ng-class="{active: $state.includes('product.show.ecommerce')}">
                             <a ui-sref="product.show.ecommerce({id:product._id})">
-                                <i class="icon-globe"></i> @(Ecommerce) </a>
+                                <i class="icon-globe"></i> @(Ecommerce) <span ng-if="product.rating.ecommerce != 1" class="fa fa-warning font-red" tooltip-placement="right" tooltip="{{product.rating.ecommerce*100 | percent}}"></span></a>
                         </li>
                         <li ng-class="{active: $state.includes('product.show.categories')}">
                             <a ui-sref="product.show.categories({id:product._id})">
-                                <i class="icon-share"></i> @(Categories) <span ng-if="product.info.categories.length" class="badge badge-success">{{product.info.categories.length}}</span></a>
+                                <i class="icon-share"></i> @(Categories) <span ng-if="product.rating.categories != 1" class="fa fa-warning font-red" tooltip-placement="right" tooltip="{{product.rating.categories*100 | percent}}"></span><span ng-if="product.info.categories.length"
+                                    class="badge badge-success">{{product.info.categories.length}}</span></a>
                         </li>
 
                         <li ng-if="product.isVariant" ng-class="{active: $state.includes('product.show.declinations')}">

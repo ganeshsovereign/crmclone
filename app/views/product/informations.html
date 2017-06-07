@@ -141,32 +141,19 @@
                                 </div>
                             </div>-->
 
-                        <tabset class="tabbable-line tabbable-full-width">
-                            <tab heading="@(Description)" ng-if="product._id && product.isSell">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p> @(Description) : @(products:ShowOnBill). </p>
-                                        <textarea class="form-control" ng-model="product.info.langs[_language].shortDescription" rows="5"></textarea>
-                                    </div>
-                                </div>
-                            </tab>
-                            <tab heading="@(LongueDescription)" ng-if="product._id && product.isSell">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p> @(LongueDescription) : @(products:ShowOnCatalog). </p>
-                                        <summernote height="100" ng-model="product.info.langs[_language].description"></summernote>
-                                    </div>
-                                </div>
-                            </tab>
-                            <tab heading="@(InternalDescription)" ng-if="product._id && product.isSell">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <p> @(InternalDescription) : @(products:InternalOnly). </p>
-                                        <textarea class="form-control" ng-model="product.info.notePrivate" rows="5"></textarea>
-                                    </div>
-                                </div>
-                            </tab>
-                        </tabset>
+                        <div class="row" ng-if="product._id && product.isSell">
+                            <div class="col-md-12">
+                                <p> @(Description) : @(products:ShowOnBill). </p>
+                                <textarea class="form-control" ng-model="product.info.langs[_language].description" rows="5"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-if="product._id">
+                            <div class="col-md-12">
+                                <p> @(InternalDescription) : @(products:InternalOnly). </p>
+                                <textarea class="form-control" ng-model="product.info.notePrivate" rows="5"></textarea>
+                            </div>
+                        </div>
                     </div>
 
                 </div>

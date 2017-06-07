@@ -15,6 +15,8 @@ var Dict = INCLUDE('dict');
  * Product Schema
  */
 
+var setRound3 = MODULE('utils').setRound3;
+
 var supplierPriceSchema = new Schema({
     _id: false,
     societe: { type: Schema.Types.ObjectId, ref: 'Customers' },
@@ -51,12 +53,12 @@ var supplierPriceSchema = new Schema({
 var LangSchema = new Schema({
     _id: false,
     description: { type: String, default: '' },
-    shortDescription: { type: String, default: '' },
-    body: { type: String, default: '' },
+    shortDescription: { type: String, default: '' }, // Resume ecommerce
+    body: { type: String, default: '' }, // HTML ecommerce
     name: { type: String, default: '' },
     meta: {
-        title: { type: String, default: '' },
-        description: { type: String, default: '' }
+        title: { type: String, default: '', trim: true },
+        description: { type: String, default: '', trim: true }
     },
     linker: { type: String, sparse: true, set: MODULE('utils').setLink }, // SEO URL
     Tag: { type: [], set: MODULE('utils').setTags }
@@ -235,7 +237,17 @@ var productSchema = new Schema({
     indirectCost: { type: Number, default: 0 }, //Total Effort
     /**********************************/
 
-    optional: Schema.Types.Mixed // TODO Remove ?
+    optional: Schema.Types.Mixed, // TODO Remove ?
+
+    // For color and % good quality of information
+    rating: {
+        marketing: { type: Number, default: 0, set: setRound3 },
+        attributes: { type: Number, default: 0, set: setRound3 },
+        ecommerce: { type: Number, default: 0, set: setRound3 },
+        images: { type: Number, default: 0, set: setRound3 },
+        categories: { type: Number, default: 0, set: setRound3 },
+        total: { type: Number, default: 0, set: setRound3 }
+    }
 
 }, {
     toObject: { virtuals: true },
@@ -429,6 +441,57 @@ productSchema.methods.getPrice = function(qty, price_level) {
     return d.promise;
 };
 
+productSchema.methods.updateRating = function() {
+    /* RATING UPDATE */
+    // attributes
+    if (this.attributes && this.attributes.length) {
+        let cpt = 0;
+        _.each(this.attributes, function(elem) {
+            if (elem.value || elem.options.length)
+                cpt++
+        });
+        this.rating.attributes = cpt * 1 / this.attributes.length;
+    }
+
+    //ecommerce
+    let ecommerce = 0;
+    if (this.info.langs[0].meta.title)
+        ecommerce++;
+    if (this.info.langs[0].meta.description)
+        ecommerce++;
+    if (this.info.langs[0].linker)
+        ecommerce++;
+    if (this.info.langs[0].shortDescription)
+        ecommerce++;
+    if (this.info.langs[0].body)
+        ecommerce++;
+    this.rating.ecommerce = ecommerce / 5;
+
+    //images
+    this.rating.images = 0;
+    if (this.imageSrc)
+        this.rating.images = 1;
+
+    //categories
+    this.rating.categories = 0;
+    if (this.info.categories.length)
+        this.rating.categories = 1;
+    //marketing
+
+
+    let marketing = 0;
+    if (this.info.langs[0].description)
+        marketing++;
+    if (this.info.langs[0].Tag.length)
+        marketing++;
+    if (this.weight !== null)
+        marketing++;
+
+    this.rating.marketing = marketing / 3;
+
+    this.rating.total = (this.rating.attributes + this.rating.ecommerce + this.rating.images + this.rating.marketing) / 4;
+}
+
 productSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var self = this;
@@ -454,6 +517,8 @@ productSchema.pre('save', function(next) {
             this.pack = [];
         }
     }
+
+    this.updateRating();
 
     /* if (this.category) {
          var category = prepare_subcategories(this.category);
