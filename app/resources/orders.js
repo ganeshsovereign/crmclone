@@ -38,7 +38,25 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
+        offerSupplier: $resource('/erp/api/offer/:Id?forSales=false', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            clone: {
+                method: 'POST',
+                params: {
+                    clone: 1
+                }
+            }
+        }),
         order: $resource('/erp/api/order/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            clone: {
+                method: 'POST',
+                params: {
+                    clone: 1
+                }
+            }
+        }),
+        orderSupplier: $resource('/erp/api/order/:Id?forSales=false', { Id: '@_id' }, {
             update: { method: 'PUT' },
             clone: {
                 method: 'POST',
@@ -62,7 +80,31 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
+        deliverySupplier: $resource('/erp/api/delivery/:Id?forSales=false', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            clone: {
+                method: 'POST',
+                params: {
+                    method: "clone"
+                }
+            },
+            bill: {
+                method: 'POST',
+                params: {
+                    method: "bill"
+                }
+            }
+        }),
         bill: $resource('/erp/api/bill/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            clone: {
+                method: 'POST',
+                params: {
+                    clone: 1
+                }
+            }
+        }),
+        billSupplier: $resource('/erp/api/bill/:Id?forSales=false', { Id: '@_id' }, {
             update: { method: 'PUT' },
             clone: {
                 method: 'POST',

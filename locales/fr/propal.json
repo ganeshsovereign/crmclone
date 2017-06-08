@@ -104,5 +104,6 @@
     "SuppliersOffer": "Devis fournisseurs",
     "PurchaseRequests": "Demandes d'achats",
     "ListOfPurchases": "Liste des demandes d'achats",
-    "Purchases": "Achats"
+    "Purchases": "Achats",
+    "NewQuotation": "Nouvelle demande d'achats"
 }

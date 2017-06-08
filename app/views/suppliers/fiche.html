@@ -5,36 +5,36 @@
             <a ui-sref="home">@(Home)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('offer')">
-            <a ui-sref="{{backTo}}">@(propal:ListOfProposals)</a>
+        <li ng-if="module('offersupplier')">
+            <a ui-sref="{{backTo}}">@(propal:ListOfPurchases)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('order')">
-            <a ui-sref="{{backTo}}">@(orders:ListOfCustomersOrders)</a>
+        <li ng-if="module('ordersupplier')">
+            <a ui-sref="{{backTo}}">@(orders:ListOfSuppliersOrders)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('delivery')">
-            <a ui-sref="{{backTo}}">@(deliveries:List)</a>
+        <li ng-if="module('deliverysupplier')">
+            <a ui-sref="{{backTo}}">@(deliveries:ListOfDeliveriesSupplier)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('bill')" )>
-            <a ui-sref="{{backTo}}">@(bills:List)</a>
+        <li ng-if="module('billsupplier')" )>
+            <a ui-sref="{{backTo}}">@(bills:ListBillsSuppliers)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('offer')">
-            <span ng-hide="!object._id">@(propal:Prop) : {{object.ref}} - {{object.supplier.fullName}}</span>
-            <span ng-show="!object._id">@(propal:NewProp)</span>
+        <li ng-if="module('offersupplier')">
+            <span ng-hide="!object._id">@(propal:PurchaseRequests) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(propal:NewQuotation)</span>
         </li>
-        <li ng-if="module('order')">
+        <li ng-if="module('ordersupplier')">
             <span ng-hide="!object._id">@(orders:Order) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewOrder)</span>
         </li>
-        <li ng-if="module('delivery')">
+        <li ng-if="module('deliverysupplier')">
             <span ng-hide="!object._id">@(deliveries:DeliveryNote) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(deliveries:NewDelivery)</span>
         </li>
-        <li ng-if="module('bill')">
-            <span ng-hide="!object._id">@(bills:BillsCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
+        <li ng-if="module('billsupplier')">
+            <span ng-hide="!object._id">@(bills:Billssupplier) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(bills:NewBill)</span>
         </li>
     </ul>
@@ -57,16 +57,16 @@
             </a>
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createOrder" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusSigned)" confirmed-click="createOrder()">
+                    <a ng-if="module('offersupplier')" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createOrder" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusSigned)" confirmed-click="createOrder()">
                         <i class="fa fa-shopping-cart"></i> @(propal:CreateOrder)
                     </a>
 
-                    <a ng-if="module('order')" ng-show="(object.Status == 'VALIDATED' || object.Status == 'PROCESSING' || object.Status == 'SHIPPING') && login.rights.order.createDelivery" ng-click="createDelivery()">
+                    <a ng-if="module('ordersupplier')" ng-show="(object.Status == 'VALIDATED' || object.Status == 'PROCESSING' || object.Status == 'SHIPPING') && login.rights.order.createDelivery" ng-click="createDelivery()">
                         <i class="fa fa-plane"></i> @(orders:CreateDelivery)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('order')" ng-show="object.Status == 'CLOSED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()">
+                    <a ng-if="module('ordersupplier')" ng-show="object.Status == 'CLOSED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()">
                         <i class="fa fa-money"></i> @(bills:CreateBill)
                     </a>
                 </li>
@@ -76,12 +76,12 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('delivery')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'VALIDATED' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
+                    <a ng-if="module('deliverysupplier')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'VALIDATED' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
                         <i class="fa fa-plane"></i> @(deliveries:Sended)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('bill')" href="#" ng-show="(object.Status == 'NOT_PAID' || object.Status == 'VALIDATED') && object.journalId.length == 0 && login.rights.bill.validate" data-ng-click="exportAccounting(object._id)">
+                    <a ng-if="module('billsupplier')" href="#" ng-show="(object.Status == 'NOT_PAID' || object.Status == 'VALIDATED') && object.journalId.length == 0 && login.rights.bill.validate" data-ng-click="exportAccounting(object._id)">
                         <i class="fa fa-mail-forward"></i> @(bills:SendAccounting)
                     </a>
                 </li>
@@ -91,7 +91,8 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)" confirmed-click="changeStatus('NOTSIGNED')">
+                    <a ng-if="module('offersupplier')" ng-hide="object.Status == 'NOTSIGNED'" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)"
+                        confirmed-click="changeStatus('NOTSIGNED')">
                         <i class="fa fa-thumbs-o-down"></i> @(propal:CloseOfferOrder)
                     </a>
                 </li>
@@ -106,16 +107,16 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('offer')" ng-show='object.Status == "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                    <a ng-if="module('offersupplier')" ng-show='object.Status == "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('order')" ng-show='object.Status != "DRAFT"' ng-href="/erp/api/order/pdf/{{object.ref}}?proforma=1" target="_blank">
+                    <a ng-if="module('ordersupplier')" ng-show='object.Status != "DRAFT"' ng-href="/erp/api/order/pdf/{{object.ref}}?proforma=1" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF) Proforma</a>
                 </li>
                 <li>
-                    <a ng-if="module('delivery')" ng-show="object.Status == 'SEND'" ng-href="#" ng-click="sendFTP()">
+                    <a ng-if="module('deliverysupplier')" ng-show="object.Status == 'SEND'" ng-href="#" ng-click="sendFTP()">
                         <i class="fa fa-file-pdf-o"></i> @(SendToFtp)
                     </a>
                 </li>
@@ -157,17 +158,17 @@
                             <div class="profile-usertitle">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div ng-if="module('offer')" class="uppercase profile-stat-text"> @(propal:Prop) </div>
-                                        <div ng-if="module('order')" class="uppercase profile-stat-text"> @(orders:Order) </div>
-                                        <div ng-if="module('delivery')" class="uppercase profile-stat-text"> @(deliveries:DeliveryNote) </div>
-                                        <div ng-if="module('bill')" class="uppercase profile-stat-text"> @(bills:Bill) </div>
+                                        <div ng-if="module('offersupplier')" class="uppercase profile-stat-text"> @(propal:PurchaseRequests) </div>
+                                        <div ng-if="module('ordersupplier')" class="uppercase profile-stat-text"> @(orders:Order) </div>
+                                        <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(deliveries:DeliveryNote) </div>
+                                        <div ng-if="module('billsupplier')" class="uppercase profile-stat-text"> @(bills:Bill) </div>
                                         <div class="uppercase profile-stat-title"> {{object.ref}} </div>
                                     </div>
                                 </div>
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="uppercase profile-stat-text"> @(orders:RefCustomerOrder) </div>
+                                        <div class="uppercase profile-stat-text"> @(orders:RefOfSupplier) </div>
                                         <div class="uppercase profile-stat-title"> {{object.ref_client}} </div>
                                     </div>
                                 </div>
@@ -196,13 +197,13 @@
                 <div class="profile-usermenu ">
                     <ul class="nav ">
                         <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
-                            <a ng-if="module('offer')" ui-sref="offer.show.detail({id:object._id}) ">
+                            <a ng-if="module('offersupplier')" ui-sref="offersupplier.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(propal:Details) </a>
-                            <a ng-if="module('order')" ui-sref="order.show.detail({id:object._id}) ">
+                            <a ng-if="module('ordersupplier')" ui-sref="ordersupplier.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(orders:Details) </a>
-                            <a ng-if="module('delivery')" ui-sref="order.show.detail({id:object._id}) ">
+                            <a ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(deliveries:Details) </a>
-                            <a ng-if="module('bill')" ui-sref="order.show.detail({id:object._id}) ">
+                            <a ng-if="module('billsupplier')" ui-sref="billsupplier.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(bill:Details) </a>
                         </li>
                     </ul>
@@ -216,7 +217,7 @@
                             <select class="form-control " id="entity " ng-model="object.entity " ng-options="entity.id as entity.name for entity in entityList "></select>
                             <label for="entity ">@(Entity)</label>
                         </div>
-                        <crm-id label="@(companies:Customer) " name="societeId " ng-model="object.supplier " entity="object.entity " url="/erp/api/societe/autocomplete " required="true " on-select="updateAddress " placeholder="@(companies:CompanyName)
+                        <crm-id label="@(companies:SuppliersShort) " name="societeId " ng-model="object.supplier " entity="object.entity " url="/erp/api/societe/autocomplete " required="true " on-select="updateAddress " placeholder="@(companies:CompanyName)
             " class="form-group form-md-line-input "></crm-id>
                     </div>
                 </div>

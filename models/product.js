@@ -109,7 +109,7 @@ var productSchema = new Schema({
 
     //ref: { type: String, required: true, unique: true, uppercase: true }, //TODO Remove
     name: { type: String, default: '' },
-    ID: { type: Number },
+    ID: { type: Number, unique: true },
     isremoved: { type: Boolean, default: false },
 
     info: {

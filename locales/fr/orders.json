@@ -116,6 +116,7 @@
     "RelatedOrders": "Commandes rattachées",
     "OnProcessOrders": "Commandes en cours de traitement",
     "RefOrderShort": "Réf. de la commande",
+    "RefOfSupplier":"Réf. du Fournisseur",
     "RefOrder": "Référence utile de la commande",
     "RefOrderSupplier": "Réf. commande fournisseur",
     "RefCustomerOrder": "Réf. du client",

@@ -11,16 +11,17 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-info"></i>
-                        <span ng-if="module('offer')" ng-show="object._id" class="caption-subject dark bold uppercase">@(propal:CommercialProposals) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('offer')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(propal:NewProp) </span>
-                        <span ng-if="module('order')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('order')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewOrder) </span>
-                        <span ng-if="module('delivery')" ng-show="object._id" class="caption-subject dark bold uppercase">@(deliveries:DeliveryNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('delivery')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(deliveries:NewDelivery) </span>
-                        <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillsCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
+                        <span ng-if="module('offersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(propal:PurchaseRequests) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('offersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(propal:NewQuotation) </span>
+                        <span ng-if="module('ordersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('ordersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewSupplierOrder) </span>
+                        <span ng-if="module('deliverysupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(deliveries:DeliveryNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('deliverysupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(deliveries:NewDelivery) </span>
+                        <span ng-if="module('billsupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillsCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('billsupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
-                    <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'BILLED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED'" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+                    <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'BILLED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED'" mode="object._id" ng-create="create()" ng-update="update()"
+                        back-to="backTo" class="actions btn-set"></save>
 
                 </div>
                 <div class="portlet-body">
@@ -39,10 +40,10 @@
 
                                             <div class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="ref_client" ng-model="object.ref_client">
-                                                <label for="ref_client">@(orders:RefCustomerOrder)</label>
+                                                <label for="ref_client">@(orders:RefOfSupplier)</label>
                                             </div>
 
-                                            <div ng-hide="!object._id" ng-if="module('order')" class="form-group form-md-line-input">
+                                            <div ng-hide="!object._id" ng-if="module('ordersupplier')" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> <a ui-sref="offer.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
                                                 <label for="ref_client">@(propal:RefProposal)</label>
                                             </div>
@@ -70,11 +71,7 @@
                                         </div>
 
                                         <div class="col-md-6 col-sm-12">
-                                            <div class="form-group form-md-line-input">
-                                                <select class="form-control" id="type" ng-model="object.type" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
-                                                        </select>
-                                                <label for="type">@(orders:OrderMode)</label>
-                                            </div>
+
                                             <div class="form-group form-md-line-input">
                                                 <select class="form-control" id="delivery_mode" ng-model="object.delivery_mode" ng-options="s as s for s in delivery_mode">
                                                         </select>
@@ -104,7 +101,7 @@
                                             <div class="form-group form-md-line-input">
                                                 <select class="form-control" id="commercial_id" ng-model="object.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees">
                                                         </select>
-                                                <label for="commercial_id">@(commercial:Commercial)</label>
+                                                <label for="commercial_id">@(orders:AuthorRequest)</label>
                                             </div>
                                         </div>
                                     </div>

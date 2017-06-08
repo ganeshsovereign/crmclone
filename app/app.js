@@ -775,7 +775,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: { pageTitle: 'Commande' }
         })
         .state('ordersupplier.create', {
-            parent: "order",
+            parent: "ordersupplier",
             url: "/create.html",
             templateUrl: "/views/suppliers/detail.html",
             data: {
@@ -803,7 +803,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Facture'
             },
-            controller: "BillSupplierListController"
+            controller: "OrdersController"
         })
         .state('billsupplier.show.detail', {
             url: "/detail",
@@ -817,7 +817,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Nouvelle Facture'
             },
-            controller: "BillSupplierListController"
+            controller: "OrdersController"
         })
         // OfferSupplier
         .state('offersupplier', {
@@ -840,7 +840,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Devis'
             },
-            controller: "OfferSupplierListController"
+            controller: "OrdersController"
         })
         .state('offersupplier.show.detail', {
             url: "/detail",
@@ -848,13 +848,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: { pageTitle: 'Devis' }
         })
         .state('offersupplier.create', {
-            parent: "offer",
+            parent: "offersupplier",
             url: "/create.html",
             templateUrl: "/views/suppliers/detail.html",
             data: {
                 pageTitle: 'Nouvelle offre'
             },
-            controller: "OfferSupplierListController"
+            controller: "OrdersController"
         })
         // Delivery Supplier
         .state('deliverysupplier', {
@@ -877,7 +877,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Bon de livraison'
             },
-            controller: "DeliverySupplierListController"
+            controller: "OrdersController"
         })
         .state('deliverysupplier.show.detail', {
             url: "/detail",
@@ -885,13 +885,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: { pageTitle: 'Bon de livraison' }
         })
         .state('deliverysupplier.create', {
-            parent: "delivery",
+            parent: "deliverysupplier",
             url: "/create.html",
             templateUrl: "/views/suppliers/detail.html",
             data: {
                 pageTitle: 'Nouveau bon de livraion'
             },
-            controller: "DeliverySupplierListController"
+            controller: "OrdersController"
         })
         // Company
         .state('societe', {

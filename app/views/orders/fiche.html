@@ -91,7 +91,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('offer')" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)" confirmed-click="changeStatus('NOTSIGNED')">
+                    <a ng-if="module('offer')" ng-hide="object.Status == 'NOTSIGNED'" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)" confirmed-click="changeStatus('NOTSIGNED')">
                         <i class="fa fa-thumbs-o-down"></i> @(propal:CloseOfferOrder)
                     </a>
                 </li>
@@ -200,9 +200,9 @@
                                 <i class="icon-info "></i> @(propal:Details) </a>
                             <a ng-if="module('order')" ui-sref="order.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(orders:Details) </a>
-                            <a ng-if="module('delivery')" ui-sref="order.show.detail({id:object._id}) ">
+                            <a ng-if="module('delivery')" ui-sref="delivery.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(deliveries:Details) </a>
-                            <a ng-if="module('bill')" ui-sref="order.show.detail({id:object._id}) ">
+                            <a ng-if="module('bill')" ui-sref="bill.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(bill:Details) </a>
                         </li>
                     </ul>

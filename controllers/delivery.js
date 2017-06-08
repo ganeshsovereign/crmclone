@@ -140,6 +140,9 @@ Object.prototype = {
         var DeliveryModel = MODEL('delivery').Schema;
         var self = this;
 
+        if (self.query.forSales == "false")
+            self.body.forSales = false;
+
         var delivery = {};
         delivery = new DeliveryModel(self.body);
 
@@ -276,8 +279,12 @@ Object.prototype = {
 
         var conditions = {
             Status: { $ne: "BILLED" },
-            isremoved: { $ne: true }
+            isremoved: { $ne: true },
+            forSales: true
         };
+
+        if (self.query.forSales == "false")
+            conditions.forSales = false;
 
         if (!query.search.value) {
             if (self.query.status_id && self.query.status_id !== 'null')
@@ -290,7 +297,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            //select: "client.id"
+            select: "ref"
         };
 
 
@@ -334,7 +341,7 @@ Object.prototype = {
                     // Action
                     res.datatable.data[i].action = '<a href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
-                    res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                    res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
