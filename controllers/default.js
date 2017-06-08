@@ -1,4 +1,4 @@
-exports.install = function () {
+exports.install = function() {
     F.route('/', view_homepage);
 };
 

@@ -184,7 +184,8 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
             });
 
         var login = function(userId) {
-            //websocketService.login('wss://' + $location.host() + ':' + $location.port() + '/erp/', userId);
+            console.log(userId);
+            websocketService.login('ws://' + $location.host() + ':' + $location.port() + '/erp/websocket/', userId);
             $rootScope.isLogged = true;
         };
 
@@ -464,6 +465,7 @@ MetronicApp.controller('SidebarController', ['$scope', '$rootScope', '$http',
         $scope.menus = {};
         $scope.menuTasks = [];
         $rootScope.showSearchInput = true;
+
         $scope.$on('$includeContentLoaded', function() {
             Layout.initSidebar(); // init sidebar
             $http({
@@ -471,6 +473,7 @@ MetronicApp.controller('SidebarController', ['$scope', '$rootScope', '$http',
                 url: '/erp/api/menus'
             }).success(function(data, status) {
                 $scope.menus = data;
+                console.log(data, status);
             });
         });
 

@@ -1,27 +1,27 @@
 "use strict";
 
 var async = require('async'),
-        mongoose = require('mongoose'),
-        fs = require('fs'),
-        i18n = require("i18next"),
-        _ = require('lodash');
+    mongoose = require('mongoose'),
+    fs = require('fs'),
+    i18n = require("i18next"),
+    _ = require('lodash');
 
 var menus = {};
 var rights = [];
 
-exports.install = function () {
+exports.install = function() {
 
     console.log("ToManage modules install...");
 
-    F.once('i18n', function () {
-
-        fs.readdirSync(__dirname + '/../json').forEach(function (file) {
+    F.on('i18n', function() {
+        console.log("toto");
+        fs.readdirSync(__dirname + '/../json').forEach(function(file) {
             if (file === "index.js")
                 return;
             if (!file.endsWith('.json')) // exclude not json
                 return;
 
-            fs.readFile(__dirname + '/../json/' + file, 'utf8', function (err, data) {
+            fs.readFile(__dirname + '/../json/' + file, 'utf8', function(err, data) {
                 if (err) {
                     console.log('Error: ' + err);
                     return;
@@ -85,7 +85,7 @@ exports.install = function () {
                     }
                 }
 
-                //console.dir(menus);
+                console.dir(menus);
             });
         });
 
@@ -121,10 +121,10 @@ function menu() {
                     var returnRight = true;
                     //console.log(perms);
 
-                    _.forEach(perms, function (values) {
+                    _.forEach(perms, function(values) {
                         if (_.isArray(values)) {
                             //console.log(values);
-                            _.forEach(values, function (value) {
+                            _.forEach(values, function(value) {
                                 //console.log('checkUserRightsLoop');
                                 //console.log('checkUserRights=' + value);
                                 if (!checkUserRights(value)) {
@@ -198,8 +198,7 @@ function menu() {
                 if (checkright(menus[i].submenus[j].submenus[k].perms)) {
                     level0 = true;
                     level1 = true;
-                }
-                else
+                } else
                     delete result[i].submenus[j].submenus[k];
             }
 
