@@ -312,18 +312,6 @@ Object.prototype = {
             });
         });
     },
-    updateField: function(req, res) {
-        if (req.body.value) {
-            var order = req.order;
-
-            order[req.params.field] = req.body.value;
-
-            order.save(function(err, doc) {
-                res.json(doc);
-            });
-        } else
-            res.send(500);
-    },
     /**
      * Delete an order
      */
