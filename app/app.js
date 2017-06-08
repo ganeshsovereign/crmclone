@@ -385,7 +385,7 @@ MetronicApp.controller('HeaderController', ['$scope', '$rootScope', '$http', '$n
          socket.on('refreshTask', function (data) {
          $scope.taskCounter();
          });
-         });*/
+        });*/
 
         $scope.ticketCounter = function() {
             $http({
@@ -420,9 +420,7 @@ MetronicApp.controller('HeaderController', ['$scope', '$rootScope', '$http', '$n
                 return;
 
             if (type === 'notify') {
-                var notification = $notification(data.title, {
-                    body: data.body
-                });
+                var notification = $notification(data.title, data.message);
 
                 if (data.url)
                     var deregister = notification.$on('click', function() {
@@ -2325,8 +2323,8 @@ MetronicApp.config(['dialogsProvider', '$translateProvider',
             DIALOGS_PLEASE_WAIT_ELIPS: "Veuillez patienter...",
             DIALOGS_PLEASE_WAIT_MSG: "Veuiller attendre la fin de l'opération.",
             DIALOGS_PERCENT_COMPLETE: "% complete",
-            DIALOGS_NOTIFICATION: "Notificacion",
-            DIALOGS_NOTIFICATION_MSG: "Notificacion inconnue.",
+            DIALOGS_NOTIFICATION: "Notification",
+            DIALOGS_NOTIFICATION_MSG: "Notification inconnue.",
             DIALOGS_CONFIRMATION: "Confirmation",
             DIALOGS_CONFIRMATION_MSG: "Confirmation requise.",
             DIALOGS_OK: "Ok",

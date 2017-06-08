@@ -56,11 +56,12 @@ MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($roo
             }
 
             if (data.type === 'notify') {
-                if (data.users.length)
+                $rootScope.$broadcast('websocket', data.type, data.message);
+                /*if (data.users.length)
                     angular.forEach(data.users, function(value, key) {
                         if (value === $rootScope.login._id)
                             $rootScope.$broadcast('websocket', data.type, data.message);
-                    });
+                    });*/
 
                 return;
             }

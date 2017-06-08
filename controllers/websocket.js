@@ -53,12 +53,15 @@ function websocket() {
         self.send({ type: 'task', message: data });
     });*/
     F.functions.PubSub.on('notify:*', function(channel, notify) {
-        //console.log(notify);
+        console.log(notify, channel);
         switch (channel) {
             case "update":
                 break;
             default: // send text notification
-                self.send({ type: 'notify', message: notify.data, users: notify.users, date: new Date() });
+                self.send({ type: 'notify', message: notify.data, date: new Date() }, function(id, client) {
+                    // send only to users in notify.users Array
+                    return notify.users.indexOf(client.alias) >= 0;
+                });
         }
 
 
