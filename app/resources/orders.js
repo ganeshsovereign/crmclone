@@ -38,6 +38,15 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
+        offerSupplier: $resource('/erp/api/offer/:Id?forSales=false', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            clone: {
+                method: 'POST',
+                params: {
+                    clone: 1
+                }
+            }
+        }),
         order: $resource('/erp/api/order/:Id', { Id: '@_id' }, {
             update: { method: 'PUT' },
             clone: {

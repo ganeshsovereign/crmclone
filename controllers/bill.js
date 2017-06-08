@@ -222,6 +222,9 @@ Object.prototype = {
         var BillModel = MODEL('bill').Schema;
         var self = this;
 
+        if (self.query.forSales == "false")
+            self.body.forSales = false;
+
         var bill = {};
         bill = new BillModel(self.body);
 
@@ -616,8 +619,12 @@ Object.prototype = {
         var conditions = {
             //Status: {$ne: "PAID"},
             isremoved: { $ne: true },
-            entity: self.query.entity
+            entity: self.query.entity,
+            forSales: true
         };
+
+        if (self.query.forSales == "false")
+            conditions.forSales = false;
 
         if (!query.search.value) {
             if (self.query.status_id) {
@@ -652,7 +659,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            select: "client.id dater journalId"
+            select: "client.id dater journalId ref"
         };
 
         //console.log(options);
@@ -703,7 +710,7 @@ Object.prototype = {
                     // Action
                     res.datatable.data[i].action = '<a href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
-                    res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-money"></span> ' + row.ref + '</a>';
+                    res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-money"></span> ' + row.ref + '</a>';
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].dater = (row.dater ? moment(row.dater).format(CONFIG('dateformatShort')) : '');

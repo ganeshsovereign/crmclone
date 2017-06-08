@@ -53,11 +53,11 @@ exports.install = function() {
     F.route('/erp/api/order/lines/list', object.listLines, ['authorize']);
     F.route('/erp/api/order/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/order', object.all, ['authorize']);
-    F.route('/erp/api/order', object.create, ['post', 'json', 'authorize'],512);
+    F.route('/erp/api/order', object.create, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/order/{orderId}', function(id) {
         if (this.query.clone)
             object.clone(id, this);
-    }, ['post', 'json', 'authorize'],512);
+    }, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/order/{orderId}', object.show, ['authorize']);
     F.route('/erp/api/order/{orderId}', object.update, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/order/{orderId}', object.destroy, ['delete', 'authorize']);
@@ -140,6 +140,9 @@ Object.prototype = {
         var self = this;
         var OrderModel = MODEL('order').Schema;
         var order;
+
+        if (self.query.forSales == "false")
+            self.body.forSales = false;
 
         order = new OrderModel(self.body);
 
@@ -347,8 +350,12 @@ Object.prototype = {
 
         var conditions = {
             // Status: { $ne: "CLOSED" },
-            isremoved: { $ne: true }
+            isremoved: { $ne: true },
+            forSales: true
         };
+
+        if (self.query.forSales == "false")
+            conditions.forSales = false;
 
         //console.log(self.query);
 
@@ -363,7 +370,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            select: "supplier"
+            select: "supplier ref"
         };
 
         //console.log(options);
@@ -408,7 +415,7 @@ Object.prototype = {
                     // Action
                     res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
-                    res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                    res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');

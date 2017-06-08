@@ -27,7 +27,9 @@ var setDate = MODULE('utils').setDate;
 var deliverySchema = new Schema({
     forSales: { type: Boolean, default: true },
     isremoved: Boolean,
-    ref: { type: String },
+    ref: { type: String, index: true },
+    ID: { type: Number, unique: true },
+
     type: { type: String, default: 'DELIVERY_STANDARD' },
     currency: {
         _id: { type: String, ref: 'currency', default: '' },
@@ -235,37 +237,26 @@ deliverySchema.pre('save', function(next) {
         for (i = 0, length = self.subcontractors.length; i < length; i++)
             self.total_ht_subcontractors += self.subcontractors[i].total_ht;
 
-        if (self.isNew) {
-            SeqModel.inc("BL", function(seq) {
+        if (self.isNew && !self.ref)
+            return SeqModel.inc("DELIVERY", function(seq) {
                 //console.log(seq);
-                self.ref = "BL" + seq;
-                next();
-            });
-        } else {
-            if (self.Status !== "DRAFT" && self.ref.substr(0, 4) === "BL") {
-                EntityModel.findOne({ _id: self.entity }, "cptRef", function(err, entity) {
+                self.ID = parseInt(seq);
+                EntityModel.findOne({
+                    _id: self.entity
+                }, "cptRef", function(err, entity) {
                     if (err)
                         console.log(err);
 
-                    /* if (entity && entity.cptRef) {
-                         SeqModel.inc("BL" + entity.cptRef, self.datec, function (seq) {
-                             //console.log(seq);
-                             self.ref = "BL" + entity.cptRef + seq;
-                             next();
-                         });
-                     } else {*/
-                    SeqModel.inc("BL", self.datec, function(seq) {
-                        //console.log(seq);
-                        self.ref = "BL" + seq;
-                        next();
-                    });
-                    //}
+                    if (entity && entity.cptRef)
+                        self.ref = (self.forSales == true ? "BL" : "RE") + entity.cptRef + seq;
+                    else
+                        self.ref = (self.forSales == true ? "BL" : "RE") + seq;
+                    next();
                 });
-            } else {
-                self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
-                next();
-            }
-        }
+            });
+
+        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+        next();
     });
 
 });

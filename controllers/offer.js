@@ -136,6 +136,9 @@ Object.prototype = {
         var OfferModel = MODEL('offer').Schema;
         var offer;
 
+        if (self.query.forSales == "false")
+            self.body.forSales = false;
+
         offer = new OfferModel(self.body);
 
         offer.editedBy = self.user._id;
@@ -297,18 +300,6 @@ Object.prototype = {
             });
         });
     },
-    updateField: function(req, res) {
-        if (req.body.value) {
-            var offer = req.offer;
-
-            offer[req.params.field] = req.body.value;
-
-            offer.save(function(err, doc) {
-                res.json(doc);
-            });
-        } else
-            res.send(500);
-    },
     /**
      * Delete an offer
      */
@@ -334,7 +325,12 @@ Object.prototype = {
         var query = JSON.parse(self.body.query);
         //console.log(JSON.parse(self.body.filters));
 
-        var conditions = {};
+        var conditions = {
+            forSales: true
+        };
+
+        if (self.query.forSales == "false")
+            conditions.forSales = false;
 
         if (!self.user.multiEntities)
             conditions.entity = self.user.entity;
@@ -348,8 +344,8 @@ Object.prototype = {
          */
 
         var options = {
-            conditions: conditions
-                //select: ""
+            conditions: conditions,
+            select: "ref"
         };
 
         async.parallel({
@@ -390,7 +386,7 @@ Object.prototype = {
                     // Action
                     res.datatable.data[i].action = '<a href="#!/offer/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
-                    res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/offer/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-calculator"></span> ' + row.ref + '</a>';
+                    res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/offer/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-calculator"></span> ' + row.ref + '</a>';
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
