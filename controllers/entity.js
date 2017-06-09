@@ -48,7 +48,6 @@ Entity.prototype = {
                     entity.id = docs[i]._id;
                     entity.name = docs[i].name;
                     entity.url = docs[i].url;
-                    entity.eshop = docs[i].eshop;
                     result.push(entity);
                 }
             }

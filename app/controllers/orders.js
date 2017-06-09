@@ -87,7 +87,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             $rootScope.settings.layout.pageBodySolid = false;
 
             current = $rootScope.$state.current.name.split('.');
-            console.log(current, $rootScope.$stateParams.id);
+            //console.log(current, $rootScope.$stateParams.id);
 
             module = current[0];
 
@@ -276,6 +276,18 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             });
         };
 
+        $scope.changeEntity = function() {
+            $scope.object.supplier = null;
+
+            // Update delivery address if supplier
+            if ($scope.object.forSales == false && $scope.object.entity)
+                $http.get('/erp/api/entity/' + $scope.object.entity).then(function(res) {
+                    //console.log(res.data);
+                    $scope.object.shippingAddress = res.data.address;
+                    $scope.object.shippingAddress.name = res.data.name;
+                });
+        };
+
         $scope.sendEmail = function() {
             $http.post('/erp/api/sendEmail', {
                 to: this.object.contacts,
@@ -319,23 +331,25 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             $scope.object.cond_reglement_code = data.salesPurchases.cond_reglement;
             $scope.object.mode_reglement_code = data.salesPurchases.mode_reglement;
             //$scope.object.priceList = data.salesPurchases.priceList;
-            $scope.object.salesPerson = data.salesPurchases.salesPerson;
-            $scope.object.salesTeam = data.salesPurchases.salesTeam;
-
 
             // Billing address
             $scope.object.billing = data.salesPurchases.cptBilling;
 
-            $scope.object.shippingAddress = data.shippingAddress[0];
+            if ($scope.object.forSales) {
+                $scope.object.salesPerson = data.salesPurchases.salesPerson;
+                $scope.object.salesTeam = data.salesPurchases.salesTeam;
 
-            $scope.object.addresses = data.shippingAddress;
+                $scope.object.shippingAddress = data.shippingAddress[0];
 
-            if (data.deliveryAddressId)
-                for (var i = 0; i < data.shippingAddress.length; i++)
-                    if (data.deliveryAddressId == data.shippingAddress[i]._id) {
-                        $scope.object.shippingAddress = data.shippingAddress[i];
-                        break;
-                    }
+                $scope.object.addresses = data.shippingAddress;
+
+                if (data.deliveryAddressId)
+                    for (var i = 0; i < data.shippingAddress.length; i++)
+                        if (data.deliveryAddressId == data.shippingAddress[i]._id) {
+                            $scope.object.shippingAddress = data.shippingAddress[i];
+                            break;
+                        }
+            }
         };
 
         $scope.createOrder = function() {

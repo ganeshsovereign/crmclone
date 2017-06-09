@@ -53,7 +53,7 @@ var billSchema = new Schema({
         type: String,
         default: 'SRC_COMM'
     },
-    supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
+    supplier: { type: Schema.Types.ObjectId, ref: 'Customers', require: true },
     contacts: [{ type: Schema.Types.ObjectId, ref: 'Customers' }],
     ref_client: { type: String, default: "" },
 

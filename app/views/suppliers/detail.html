@@ -58,10 +58,10 @@
                                                 <label for="ref_client">@(orders:RefOrderShort)</label>
                                             </div>
 
-                                            <div ng-hide="!object._id" class="form-group form-md-line-input">
+                                            <!--<div ng-hide="!object._id" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> {{object.supplier.salesPurchases.priceList.priceListCode}} </div>
                                                 <label for="price_level">@(products:PriceLevel)</label>
-                                            </div>
+                                            </div>-->
 
                                             <div ng-hide="!object._id" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> {{object.total_ht| currency}} @(HT) </div>
@@ -113,7 +113,7 @@
                                     <div class="portlet-title">
                                         <div class="caption">
                                             <i class="fa fa-money"></i>
-                                            <span class="caption-subject uppercase"> @(bills:BillAddress)</span>
+                                            <span class="caption-subject uppercase"> @(bills:BillSupplierAddress)</span>
                                         </div>
                                         <div ng-if="!module('delivery')" class="tools">
                                             <a href="" class="collapse" data-original-title="" title=""> </a>

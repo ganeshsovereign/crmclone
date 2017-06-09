@@ -439,5 +439,6 @@
     "DefaultBank": "Banque par défaut",
     "PaymentPeriod": "Délai de paiement",
     "AccountParameters": "Paramètres Comptables",
-    "DiscountGlobal": "Remise Globale"
+    "DiscountGlobal": "Remise Globale",
+    "BillSupplierAddress":"Adr. fournisseur"
 }

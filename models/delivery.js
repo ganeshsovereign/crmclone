@@ -175,7 +175,7 @@ var deliverySchema = new Schema({
         description: { type: String, default: "" },
         type: { type: String, default: 'product' }, //Used for subtotal
         product: { type: Schema.Types.ObjectId, ref: "product" },
-        supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
+        supplier: { type: Schema.Types.ObjectId, ref: 'Customers', require: true },
         qty: { type: Number, default: 0 },
         priceSpecific: { type: Boolean, default: false },
         pu_ht: {

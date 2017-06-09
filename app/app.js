@@ -471,7 +471,7 @@ MetronicApp.controller('SidebarController', ['$scope', '$rootScope', '$http',
                 url: '/erp/api/menus'
             }).success(function(data, status) {
                 $scope.menus = data;
-                console.log(data, status);
+                //console.log(data, status);
             });
         });
 
@@ -832,7 +832,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OfferSupplierListController"
         })
         .state('offersupplier.show', {
-            parent: 'offer',
+            parent: 'offersupplier',
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/suppliers/fiche.html",
             data: {
@@ -869,7 +869,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "DeliverySupplierListController"
         })
         .state('deliverysupplier.show', {
-            parent: "delivery",
+            parent: "deliverysupplier",
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/suppliers/fiche.html",
             data: {

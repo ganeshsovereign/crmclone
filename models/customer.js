@@ -13,7 +13,6 @@ var mongoose = require('mongoose'),
 
 var DataTable = require('mongoose-datatable');
 
-
 DataTable.configure({ verbose: false, debug: false });
 mongoose.plugin(DataTable.init);
 
@@ -180,9 +179,8 @@ var customerSchema = new Schema({
     dateBirth: Date,
 
     imageSrc: {
-        type: Schema.Types.ObjectId,
-        //    ref: 'Images',
-        default: null
+        type: Schema.Types.ObjectId
+            //    ref: 'Images',
     },
 
     emails: [{
