@@ -855,6 +855,7 @@ Object.prototype = {
 
         var query = {
             isremoved: { $ne: true },
+            'info.isActive': true,
             "$or": [{
                 'info.SKU': new RegExp("^" + self.body.filter.filters[0].value, "i")
             }, {
@@ -891,7 +892,7 @@ Object.prototype = {
             cost = true;
             base = false;
         } else
-            query.isBuy = true;
+            query.isSell = true;
 
         var request = [{
             $match: query
@@ -905,7 +906,14 @@ Object.prototype = {
                 directCost: 1,
                 indirectCost: 1,
                 info: 1,
-                size: 1
+                size: 1,
+                suppliers: {
+                    $filter: {
+                        input: "$suppliers",
+                        as: "supplier",
+                        cond: { $eq: ["$$supplier.societe", ObjectId(self.body.supplier || self.query.supplier)] }
+                    }
+                }
             }
         }, {
             $unwind: {
@@ -936,7 +944,8 @@ Object.prototype = {
                 directCost: { $first: "$directCost" },
                 indirectCost: { $first: "$indirectCost" },
                 info: { $first: "$info" },
-                size: { $first: "$size" }
+                size: { $first: "$size" },
+                suppliers: { $first: "$suppliers" }
             }
         }, {
             $lookup: {
@@ -965,6 +974,7 @@ Object.prototype = {
                 indirectCost: 1,
                 info: 1,
                 size: 1,
+                suppliers: 1,
                 prices: { $arrayElemAt: ['$prices.prices', 0] },
                 discount: '$prices.discount',
                 priceLists: { $arrayElemAt: ['$priceLists', 0] }

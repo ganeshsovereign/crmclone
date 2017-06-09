@@ -445,7 +445,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                         order.Status = "SHIPPING";
 
                     order.$update(function(response) {
-                        $rootScope.$state.go(current[0] + '.show.detail', {
+                        $rootScope.$state.go('delivery.show.detail', {
                             id: delivery._id
                         });
                     });
@@ -1317,7 +1317,7 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
             if (cpt > 0)
                 return;
 
-            console.log(delivery);
+            //console.log(delivery);
 
             delivery.$save(function(response) {
                 //console.log(response);
@@ -1331,6 +1331,8 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
                 qty: deliveryLine.qty_dl,
                 pu_ht: 0,
                 product: deliveryLine.product,
+                description: deliveryLine.description,
+                refProductSupplier: deliveryLine.refProductSupplier.join(','),
                 total_taxes: [],
                 discount: 0
             };

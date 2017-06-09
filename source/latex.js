@@ -320,52 +320,49 @@ Template.prototype.applyHeadFoot = function() {
     var entity = this.entity;
     var cgv = this.options.cgv;
     var emit = this.emit.bind(this);
+    var EntityModel = MODEL('entity').Schema;
     return function(tex, done) {
         Dict.dict({
             dictName: "fk_forme_juridique",
             object: true
         }, function(err, dict) {
 
-            mongoose.connection.db.collection('Mysoc', function(err, collection) {
-                collection.findOne({
-                    _id: entity
-                }, function(err, doc) {
-                    if (err || !doc)
-                        return emit("error", "Entity not found");
-                    var mysoc = "";
-                    mysoc = "\\textbf{\\large " + doc.name + "}\\\\" + doc.address.replace(/\n/g, "\\\\") + "\\\\" + doc.zip + " " + doc.town;
-                    if (doc.phone)
-                        mysoc += "\\\\Tel : " + doc.phone;
-                    if (doc.fax)
-                        mysoc += "\\\\ Fax : " + doc.fax;
-                    if (doc.email)
-                        mysoc += "\\\\ Email : " + doc.email;
-                    if (doc.tva_intra)
-                        mysoc += "\\\\ TVA Intra. : " + doc.tva_intra;
-                    tex = tex.replace(/--MYSOC--/g, mysoc);
-                    var foot = "";
-                    foot = "\\textsc{" + doc.name + "} - " + doc.idprof2 + " - NAF : " + doc.idprof3;
-                    if (doc.idprof1)
-                        foot += " - " + doc.idprof4;
-                    foot += " - " + doc.address + " " + doc.zip + " " + doc.town;
-                    foot += " - " + dict.values[doc.forme_juridique_code].label + " - capital " + doc.capital + " euros";
+            EntityModel.findOne({ _id: entity }, function(err, doc) {
+                if (err || !doc)
+                    return emit("error", "Entity not found");
+                var mysoc = "";
+                mysoc = "\\textbf{\\large " + doc.name + "}\\\\" + doc.address.street.replace(/\n/g, "\\\\") + "\\\\" + doc.address.zip + " " + doc.address.city;
+                if (doc.phone)
+                    mysoc += "\\\\Tel : " + doc.phones.phone;
+                if (doc.fax)
+                    mysoc += "\\\\ Fax : " + doc.phones.fax;
+                if (doc.email)
+                    mysoc += "\\\\ Email : " + doc.emails[0].email;
+                if (doc.companyInfo.idprof6)
+                    mysoc += "\\\\ TVA Intra. : " + doc.companyInfo.idprof6;
+                tex = tex.replace(/--MYSOC--/g, mysoc);
+                var foot = "";
+                foot = "\\textsc{" + doc.name + "} - " + doc.companyInfo.idprof2 + " - NAF : " + doc.companyInfo.idprof3;
+                if (doc.companyInfo.idprof1)
+                    foot += " - " + doc.companyInfo.idprof4;
+                foot += " - " + doc.address.street + " " + doc.address.zip + " " + doc.address.city;
+                foot += " - " + dict.values[doc.companyInfo.forme_juridique_code].label + " - capital " + doc.companyInfo.capital + " euros";
 
-                    tex = tex.replace(/--FOOT--/g, foot);
-                    tex = tex.replace(/--VATMODE--/g, i18n.t("bills:VATmode." + doc.tva_mode));
-                    tex = tex.replace(/--ENTITY--/g, "\\textbf{" + doc.name + "}");
-                    if (doc.iban)
-                        tex = tex.replace(/--IBAN--/g, doc.iban.name + "\\\\RIB : " + doc.iban.rib + "\\\\ IBAN : " + doc.iban.iban + "\\\\ BIC : " + doc.iban.bic);
-                    else
-                        tex = tex.replace(/--IBAN--/g, "RIB sur demande.");
-                    tex = tex.replace(/--LOGO--/g, doc.logo);
-                    tex = tex.replace(/é/g, "\\'e");
-                    tex = tex.replace(/è/g, "\\`e");
+                tex = tex.replace(/--FOOT--/g, foot);
+                tex = tex.replace(/--VATMODE--/g, i18n.t("bills:VATmode." + doc.tva_mode));
+                tex = tex.replace(/--ENTITY--/g, "\\textbf{" + doc.name + "}");
+                if (doc.iban)
+                    tex = tex.replace(/--IBAN--/g, doc.iban.bank + "\\\\RIB : " + doc.iban.rib + "\\\\ IBAN : " + doc.iban.id + "\\\\ BIC : " + doc.iban.bic);
+                else
+                    tex = tex.replace(/--IBAN--/g, "RIB sur demande.");
+                tex = tex.replace(/--LOGO--/g, doc.logo);
+                tex = tex.replace(/é/g, "\\'e");
+                tex = tex.replace(/è/g, "\\`e");
 
-                    if (doc.cgv && cgv)
-                        tex += "\n" + "\\input{" + doc.cgv.split(".")[0] + "}";
+                if (doc.cgv && cgv)
+                    tex += "\n" + "\\input{" + doc.cgv.split(".")[0] + "}";
 
-                    done(null, tex);
-                });
+                done(null, tex);
             });
         });
     };

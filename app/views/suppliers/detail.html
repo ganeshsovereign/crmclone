@@ -173,7 +173,7 @@
 
 <div ng-hide="!object._id" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" for-sales="false" supplier="object.supplier._id" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
     </div>
 </div>
 
@@ -258,7 +258,7 @@
                                     </tr>
                                     <tr ng-repeat="delivery in line.deliveries">
                                         <td class="text-right">
-                                            <a ui-sref="delivery.show({id:delivery._id})">{{delivery.ref}}</a> </td>
+                                            <a ui-sref="delivery.show({id:delivery._id})">{{delivery.ref}}</a> {{delivery.date_livraison|date:'dd/MM/yyyy'}} </td>
                                         <td></td>
                                         <td> </td>
                                         <td class="text-center">{{delivery.qty}}</td>

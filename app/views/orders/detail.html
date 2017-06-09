@@ -262,7 +262,7 @@
                                     </tr>
                                     <tr ng-repeat="delivery in line.deliveries">
                                         <td class="text-right">
-                                            <a ui-sref="delivery.show({id:delivery._id})">{{delivery.ref}}</a> </td>
+                                            <a ui-sref="delivery.show({id:delivery._id})">{{delivery.ref}}</a> {{delivery.date_livraison|date:'dd/MM/yyyy'}}</td>
                                         <td></td>
                                         <td> </td>
                                         <td class="text-center">{{delivery.qty}}</td>

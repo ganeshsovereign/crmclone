@@ -150,6 +150,7 @@ var deliverySchema = new Schema({
         _id: false,
         //pu: {type: Number, default: 0},
         type: { type: String, default: 'product' }, //Used for subtotal
+        refProductSupplier: String, //Only for an order Supplier
         qty: { type: Number, default: 0 },
         priceSpecific: { type: Boolean, default: false },
         pu_ht: {
@@ -174,6 +175,8 @@ var deliverySchema = new Schema({
         title: String,
         description: { type: String, default: "" },
         type: { type: String, default: 'product' }, //Used for subtotal
+        refProductSupplier: String, //Only for an order Supplier
+
         product: { type: Schema.Types.ObjectId, ref: "product" },
         supplier: { type: Schema.Types.ObjectId, ref: 'Customers', require: true },
         qty: { type: Number, default: 0 },
@@ -252,7 +255,8 @@ deliverySchema.pre('save', function(next) {
                 });
             });
 
-        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+        if (self.date_livraison)
+            self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
         next();
     });
 

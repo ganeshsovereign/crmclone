@@ -661,6 +661,21 @@ Object.prototype = {
                             total: doc.shipping.total_ht
                         });
 
+                    // Remise globale
+                    if (doc.discount && doc.discount.discount && doc.discount.discount.percent)
+                        tabTotal.push({
+                            italic: true,
+                            label: "Remise globale " + doc.discount.discount.percent + ' %',
+                            total: doc.discount.discount.value * -1
+                        });
+
+                    // Escompte
+                    if (doc.discount && doc.discount.escompte && doc.discount.escompte.percent)
+                        tabTotal.push({
+                            italic: true,
+                            label: "Escompte " + doc.discount.escompte.percent + ' %',
+                            total: doc.discount.escompte.value * -1
+                        });
 
                     //Total HT
                     tabTotal.push({

@@ -178,6 +178,7 @@ var offerSchema = new Schema({
         _id: false,
         //pu: {type: Number, default: 0},
         type: { type: String, default: 'product' }, //Used for subtotal
+        refProductSupplier: String, //Only for an order Supplier
         qty: { type: Number, default: 0 },
         /*taxes: [{
             _id: false,

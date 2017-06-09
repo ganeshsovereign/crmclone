@@ -7,11 +7,16 @@ MetronicApp.directive('productLines', ['$http',
                 linesModel: '=ngModel',
                 title: '=',
                 priceList: "=",
+                forSales: "=",
+                supplier: "=",
                 editable: '=ngDisabled',
                 ngChange: '&'
             },
             templateUrl: function(el, attr) {
-                return '/templates/core/productline.html';
+                console.log(attr);
+                if (attr.forSales == "false")
+                    return '/templates/core/productSupplierLine.html';
+                return '/templates/core/productLine.html';
             },
             link: function(scope, elem, attrs, ngModel) {
 
@@ -35,7 +40,7 @@ MetronicApp.directive('productLines', ['$http',
                 };
 
                 scope.addProduct = function(data, index, lines) {
-                    console.log(data);
+                    console.log("addProduct ", data);
                     for (var i = 0; i < lines.length; i++) {
                         if (lines[i].idLine === index) {
                             lines[i] = {
@@ -43,7 +48,7 @@ MetronicApp.directive('productLines', ['$http',
                                 pu_ht: data.prices.price,
                                 total_taxes: data.taxes,
                                 discount: data.discount,
-                                priceSpecific: (data.dynForm ? true : false),
+                                priceSpecific: ((data.dynForm || scope.forSales == false) ? true : false),
                                 product: {
                                     _id: data._id,
                                     info: data.info,
@@ -59,6 +64,13 @@ MetronicApp.directive('productLines', ['$http',
                                 //weight: data.info.weight,
                                 idLine: index
                             };
+
+                            if (scope.forSales == false && data.suppliers && data.suppliers.length) {
+                                lines[i].refProductSupplier = data.suppliers[0].ref;
+                                lines[i].pu_ht = data.suppliers[0].prices.pu_ht;
+                                lines[i].qty = data.suppliers[0].minQty;
+                            }
+
                             //console.log(lines[i]);
                             scope.calculMontantHT(lines[i]);
                         }
@@ -101,6 +113,8 @@ MetronicApp.directive('productLines', ['$http',
 
                     calculHT(line);
                 };
+
+
                 scope.productAutoComplete = function(val) {
                     return $http.post('/erp/api/product/autocomplete', {
                         take: 20,
@@ -108,7 +122,8 @@ MetronicApp.directive('productLines', ['$http',
                         page: 1,
                         pageSize: 5,
                         priceList: scope.priceList,
-                        //                supplier: options.supplier,
+                        forSales: scope.forSales,
+                        supplier: scope.supplier,
                         filter: {
                             logic: 'and',
                             filters: [{
@@ -120,6 +135,8 @@ MetronicApp.directive('productLines', ['$http',
                         return res.data;
                     });
                 };
+
+
                 // filter lines to show
                 scope.filterLine = function(line) {
                     return line.isDeleted !== true;

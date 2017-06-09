@@ -86,9 +86,9 @@ var entitySchema = new Schema({
 
     datec: Date,
     currency: { type: String, ref: 'currency', default: '' },
-    cgv: String
+    cgv: String,
 
-    //tva_mode: { type: String, enum: ["payment", "invoice"], default: 'invoice' }
+    tva_mode: { type: String, enum: ["payment", "invoice"], default: 'invoice' }
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }

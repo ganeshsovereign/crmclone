@@ -124,11 +124,8 @@ Object.prototype = {
         OrderModel.findOne({
             _id: self.query.id
         }, "lines", function(err, doc) {
-            if (err) {
-                console.log(err);
-                self.throw500();
-                return;
-            }
+            if (err)
+                return self.throw500(err);
 
             self.json(doc.lines);
         });
@@ -444,7 +441,9 @@ Object.prototype = {
                         $group: {
                             _id: "$lines.product",
                             orderQty: { $sum: "$lines.qty" },
-                            order: { "$first": "$_id" }
+                            order: { $first: "$_id" },
+                            refProductSupplier: { $addToSet: "$lines.refProductSupplier" },
+                            description: { $first: "$lines.description" }
                         }
                     }, {
                         $lookup: {
@@ -454,7 +453,7 @@ Object.prototype = {
                             as: 'deliveries'
                         }
                     }, {
-                        "$project": {
+                        $project: {
                             _id: 1,
                             orderQty: 1,
                             order: 1,
@@ -464,7 +463,9 @@ Object.prototype = {
                                     "as": "delivery",
                                     "cond": { "$ne": ["$$delivery.isremoved", true] }
                                 }
-                            }
+                            },
+                            refProductSupplier: 1,
+                            description: 1
                         }
                     }, {
                         $unwind: {
@@ -478,13 +479,16 @@ Object.prototype = {
                             order: 1,
                             'deliveries.ref': 1,
                             'deliveries._id': 1,
+                            'deliveries.date_livraison': 1,
                             'deliveries.lines': {
                                 $filter: {
                                     input: "$deliveries.lines",
                                     as: "line",
                                     cond: { $eq: ["$$line.product", "$_id"] }
                                 }
-                            }
+                            },
+                            refProductSupplier: 1,
+                            description: 1
                         }
                     }, {
                         $unwind: {
@@ -496,7 +500,9 @@ Object.prototype = {
                             _id: "$_id",
                             orderQty: { $first: "$orderQty" },
                             deliveryQty: { $sum: "$deliveries.lines.qty" },
-                            deliveries: { $addToSet: { _id: "$deliveries._id", ref: "$deliveries.ref", qty: "$deliveries.lines.qty" } }
+                            deliveries: { $addToSet: { _id: "$deliveries._id", ref: "$deliveries.ref", qty: "$deliveries.lines.qty", date_livraison: "$deliveries.date_livraison" } },
+                            refProductSupplier: { $first: "$refProductSupplier" },
+                            description: { $first: "$description" }
                         }
                     }, {
                         $lookup: {
@@ -515,7 +521,9 @@ Object.prototype = {
                             deliveries: 1,
                             'product._id': 1,
                             'product.info.SKU': 1,
-                            'product.weight': 1
+                            'product.weight': 1,
+                            refProductSupplier: 1,
+                            description: 1
                         }
                     }, {
                         $sort: {
@@ -788,6 +796,22 @@ Object.prototype = {
                         tabTotal.push({
                             label: "Frais de port",
                             total: doc.shipping.total_ht
+                        });
+
+                    // Remise globale
+                    if (doc.discount && doc.discount.discount && doc.discount.discount.percent)
+                        tabTotal.push({
+                            italic: true,
+                            label: "Remise globale " + doc.discount.discount.percent + ' %',
+                            total: doc.discount.discount.value * -1
+                        });
+
+                    // Escompte
+                    if (doc.discount && doc.discount.escompte && doc.discount.escompte.percent)
+                        tabTotal.push({
+                            italic: true,
+                            label: "Escompte " + doc.discount.escompte.percent + ' %',
+                            total: doc.discount.escompte.value * -1
                         });
 
 
