@@ -316,9 +316,9 @@ orderSchema.pre('save', function(next) {
         self.weight = result.weight;
 
         if (self.isNew && !self.ref)
-            return SeqModel.inc("ORDER", function(seq) {
+            return SeqModel.inc("ORDER", function(seq, number) {
                 //console.log(seq);
-                self.ID = parseInt(seq);
+                self.ID = number;
                 EntityModel.findOne({
                     _id: self.entity
                 }, "cptRef", function(err, entity) {

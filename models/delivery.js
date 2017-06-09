@@ -238,9 +238,9 @@ deliverySchema.pre('save', function(next) {
             self.total_ht_subcontractors += self.subcontractors[i].total_ht;
 
         if (self.isNew && !self.ref)
-            return SeqModel.inc("DELIVERY", function(seq) {
+            return SeqModel.inc("DELIVERY", function(seq, number) {
                 //console.log(seq);
-                self.ID = parseInt(seq);
+                self.ID = number;
                 EntityModel.findOne({
                     _id: self.entity
                 }, "cptRef", function(err, entity) {

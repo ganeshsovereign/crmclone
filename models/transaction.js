@@ -84,46 +84,5 @@ var TransationSchema = new Schema({
     toJSON: { virtuals: true }
 });
 
-/**
- * Pre-save hook
- */
-TransationSchema.pre('save', function(next) {
-    /*var SeqModel = MODEL('Sequence').Schema;
-     var EntityModel = MODEL('entity').Schema;
-     
-     var self = this;
-     if (!this.ref && this.isNew) {
-     SeqModel.inc("PROV", function (seq) {
-     //console.log(seq);
-     self.ref = "PROV" + seq;
-     next();
-     });
-     } else {
-     if (this.Status != "DRAFT" && this.total_ht != 0 && this.ref.substr(0, 4) == "PROV") {
-     EntityModel.findOne({_id: self.entity}, "cptRef", function (err, entity) {
-     if (err)
-     console.log(err);
-     
-     if (entity && entity.cptRef) {
-     SeqModel.inc("FA" + entity.cptRef, self.datec, function (seq) {
-     //console.log(seq);
-     self.ref = "FA" + entity.cptRef + seq;
-     next();
-     });
-     } else {
-     SeqModel.inc("FA", self.datec, function (seq) {
-     //console.log(seq);
-     self.ref = "FA" + seq;
-     next();
-     });
-     }
-     });
-     } else {*/
-    next();
-    //}
-    //}
-});
-
-
 exports.Schema = mongoose.model('Transaction', TransationSchema, 'Transaction');
 exports.name = 'transaction';
