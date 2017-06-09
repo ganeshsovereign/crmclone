@@ -102,7 +102,7 @@ exports.install = function(options) {
         return translation.translate(content, language);
     };
 
-    F.onLocate = function(req, res) {
+    F.onLocale = function(req, res) {
         var language = req.query.language;
 
         // Set the language according to the querystring and store to the cookie

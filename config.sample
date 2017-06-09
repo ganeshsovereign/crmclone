@@ -25,11 +25,11 @@ google-secret            : 6Y02V5G96hXYd0xU3SpsoZ
 google-callback          : http://tm.tomanage.fr/login/google/callback
 
 //SMTP
-mail.smtp                       : smtp.gmail.com
-mail.smtp.options               : {"secure":true,"port":465,"user":"myemail@tomanage.fr","password":"mypassword","timeout":10000,"tls":true}
-mail.address.from               : tm-js@tomanage.fr
-mail.address.reply              : contact@tomanage.fr
-mail.address.bcc                :
+mail-smtp                       : smtp.gmail.com
+mail-smtp-options               : {"secure":true,"port":465,"user":"myemail@tomanage.fr","password":"mypassword","timeout":10000,"tls":true}
+mail-address-from               : tm-js@tomanage.fr
+mail-address-reply              : contact@tomanage.fr
+mail-address-bcc                :
 
 //offer.emailNotify				: herve.prot@tomanage.fr
 accounting.VTE			: BLO
