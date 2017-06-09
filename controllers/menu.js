@@ -13,83 +13,82 @@ exports.install = function() {
 
     console.log("ToManage modules install...");
 
-    F.on('i18n', function() {
-        console.log("toto");
-        fs.readdirSync(__dirname + '/../json').forEach(function(file) {
-            if (file === "index.js")
+    //F.once('i18n', function() {
+    fs.readdirSync(__dirname + '/../json').forEach(function(file) {
+        if (file === "index.js")
+            return;
+        if (!file.endsWith('.json')) // exclude not json
+            return;
+
+        fs.readFile(__dirname + '/../json/' + file, 'utf8', function(err, data) {
+            if (err) {
+                console.log('Error: ' + err);
                 return;
-            if (!file.endsWith('.json')) // exclude not json
-                return;
+            }
 
-            fs.readFile(__dirname + '/../json/' + file, 'utf8', function(err, data) {
-                if (err) {
-                    console.log('Error: ' + err);
-                    return;
-                }
+            data = JSON.parse(data);
 
-                data = JSON.parse(data);
+            /* Load rights */
 
-                /* Load rights */
-
-                rights.push({
-                    name: data.name,
-                    desc: data.description,
-                    rights: data.rights
-                });
-
-                /* Load Menu : 3 levels MAX */
-
-                for (var i in data.menus) {
-                    if (data.menus[i].title)
-                        data.menus[i].title = i18n.t(data.menus[i].title);
-                    if (data.menus[i].submenus) {
-                        for (var j in data.menus[i].submenus) {
-                            if (data.menus[i].submenus[j].title)
-                                data.menus[i].submenus[j].title = i18n.t(data.menus[i].submenus[j].title);
-                            if (data.menus[i].submenus[j].submenus) {
-                                for (var k in data.menus[i].submenus[j].submenus) {
-                                    if (data.menus[i].submenus[j].submenus[k].title)
-                                        data.menus[i].submenus[j].submenus[k].title = i18n.t(data.menus[i].submenus[j].submenus[k].title);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                menus = _.defaults(menus, data.menus);
-
-                for (var i in data.menus) {
-                    // Convert for old menu speedealing
-                    if (menus[i].url && menus[i].url[0] === "#") {
-                        menus[i].url = "/" + menus[i].url;
-                        menus[i].target = "_self";
-                    }
-
-                    if (data.menus[i].submenus) {
-                        menus[i] = _.defaults(menus[i], data.menus[i]);
-                        menus[i].submenus = _.defaults(menus[i].submenus, data.menus[i].submenus);
-
-                        for (var j in data.menus[i].submenus) {
-                            // Convert for old menu speedealing
-                            if (menus[i].submenus[j].url && menus[i].submenus[j].url[0] === "#") {
-                                menus[i].submenus[j].url = "/" + menus[i].submenus[j].url;
-                                menus[i].submenus[j].target = "_self";
-                            }
-
-                            if (data.menus[i].submenus[j].submenus) {
-                                menus[i].submenus[j] = _.defaults(menus[i].submenus[j], data.menus[i].submenus[j]);
-                                menus[i].submenus[j].submenus = _.defaults(menus[i].submenus[j].submenus, data.menus[i].submenus[j].submenus);
-
-                            }
-                        }
-                    }
-                }
-
-                console.dir(menus);
+            rights.push({
+                name: data.name,
+                desc: data.description,
+                rights: data.rights
             });
-        });
 
+            /* Load Menu : 3 levels MAX */
+
+            for (var i in data.menus) {
+                if (data.menus[i].title)
+                    data.menus[i].title = i18n.t(data.menus[i].title);
+                if (data.menus[i].submenus) {
+                    for (var j in data.menus[i].submenus) {
+                        if (data.menus[i].submenus[j].title)
+                            data.menus[i].submenus[j].title = i18n.t(data.menus[i].submenus[j].title);
+                        if (data.menus[i].submenus[j].submenus) {
+                            for (var k in data.menus[i].submenus[j].submenus) {
+                                if (data.menus[i].submenus[j].submenus[k].title)
+                                    data.menus[i].submenus[j].submenus[k].title = i18n.t(data.menus[i].submenus[j].submenus[k].title);
+                            }
+                        }
+                    }
+                }
+            }
+
+            menus = _.defaults(menus, data.menus);
+
+            for (var i in data.menus) {
+                // Convert for old menu speedealing
+                if (menus[i].url && menus[i].url[0] === "#") {
+                    menus[i].url = "/" + menus[i].url;
+                    menus[i].target = "_self";
+                }
+
+                if (data.menus[i].submenus) {
+                    menus[i] = _.defaults(menus[i], data.menus[i]);
+                    menus[i].submenus = _.defaults(menus[i].submenus, data.menus[i].submenus);
+
+                    for (var j in data.menus[i].submenus) {
+                        // Convert for old menu speedealing
+                        if (menus[i].submenus[j].url && menus[i].submenus[j].url[0] === "#") {
+                            menus[i].submenus[j].url = "/" + menus[i].submenus[j].url;
+                            menus[i].submenus[j].target = "_self";
+                        }
+
+                        if (data.menus[i].submenus[j].submenus) {
+                            menus[i].submenus[j] = _.defaults(menus[i].submenus[j], data.menus[i].submenus[j]);
+                            menus[i].submenus[j].submenus = _.defaults(menus[i].submenus[j].submenus, data.menus[i].submenus[j].submenus);
+
+                        }
+                    }
+                }
+            }
+
+            //console.dir(menus);
+        });
     });
+
+    //});
 
     F.route('/erp/api/menus', menu, ['authorize']);
     F.route('/erp/api/rights', right, ['authorize']);

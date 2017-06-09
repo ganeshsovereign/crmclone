@@ -71,8 +71,7 @@ Translation.prototype.load = function() {
             lng: "fr",
             fallbackLng: ["fr"]
         }, function(err, t) {
-
-            F.emit('i18n');
+            //F.emit('i18n');
             console.log("traduction ok !");
         });
 };
