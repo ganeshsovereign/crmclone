@@ -943,7 +943,7 @@ Billing.prototype = {
         var DeliveryModel = MODEL('delivery').Schema;
         var FactureModel = MODEL('bill').Schema;
         var FactureSupplierModel = MODEL('billSupplier').Schema;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
         //console.log(req.body.dateEnd);
 
         if (!this.body.id)

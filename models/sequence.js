@@ -39,7 +39,7 @@ sequenceSchema.statics.incNumber = function(name, length, cb) {
         if (err)
             console.log(err);
 
-        return cb(numberFormat(doc.seq, length)); // format PROV return 000440
+        return cb(numberFormat(doc.seq, length), doc.seq); // format PROV return 000440
     });
 };
 

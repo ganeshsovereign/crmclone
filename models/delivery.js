@@ -173,25 +173,22 @@ var deliverySchema = new Schema({
     subcontractors: [{
         title: String,
         description: { type: String, default: "" },
-        product_type: String,
-        product: {
-            id: { type: Schema.Types.ObjectId, ref: "Product" },
-            name: { type: String },
-            label: String,
-            unit: String
-        },
-        societe: {
-            id: { type: Schema.Types.ObjectId, ref: 'Societe' },
-            name: String
-        },
+        type: { type: String, default: 'product' }, //Used for subtotal
+        product: { type: Schema.Types.ObjectId, ref: "product" },
+        supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
         qty: { type: Number, default: 0 },
         priceSpecific: { type: Boolean, default: false },
-        pu_ht: Number,
-        tva_tx: Number,
-        total_tva: Number,
+        pu_ht: {
+            type: Number,
+            default: 0
+        },
+        total_taxes: [{
+            _id: false,
+            taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+            value: { type: Number }
+        }],
         total_ht: { type: Number, set: setPrice },
-        discount: { type: Number, default: 0 },
-        qty_order: { type: Number, default: 0 }
+        discount: { type: Number, default: 0 }
     }],
     history: [{
         date: { type: Date, default: Date.now },

@@ -587,14 +587,11 @@ productSchema.pre('save', function(next) {
         //if (!this.body)
         //    this.body = this.description;
 
-        return SeqModel.incNumber("P", 7, function(seq) {
-            self.ID = seq;
+        return SeqModel.incNumber("P", 7, function(seq, number) {
+            self.ID = number;
 
             if (self.info.autoBarCode == true) {
                 self.info.EAN = "";
-
-                //if (self.caFamily)
-                //    self.info.barCode += self.caFamily.substr(0, 2);
 
                 self.info.EAN += seq;
             }

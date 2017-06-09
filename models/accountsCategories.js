@@ -48,7 +48,7 @@ CategorySchema.statics.updateParentsCategory = function(newCategoryId, parentId,
     var ProductCategory = this;
     var id;
     var updateCriterior;
-    var SocieteModel = MODEL('societe').Schema;
+    var SocieteModel = MODEL('Customers').Schema;
 
     if (modifier === 'remove')
         return SocieteModel.update({ 'companyInfo.category': newCategoryId }, { $set: { 'companyInfo.category': parentId } }, { upsert: false, multi: true }, function(err, doc) {
@@ -194,7 +194,7 @@ CategorySchema.statics.updateFullName = function(id, cb) {
 
 CategorySchema.statics.removeAllChild = function(id, callback) {
     var Model = this;
-    var Societe = MODEL('societe').Schema;
+    var Societe = MODEL('Customers').Schema;
 
     Model.find({
         $or: [

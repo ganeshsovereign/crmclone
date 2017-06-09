@@ -843,7 +843,7 @@ Object.prototype = {
         // Generation de la facture PDF et download
         var BillModel = MODEL('bill').Schema;
         var BankModel = MODEL('bank').Schema;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
         var self = this;
 
         var cond_reglement_code = {};

@@ -366,9 +366,9 @@ customerSchema.pre('save', function(next) {
     //if (this.code_client == null && this.entity !== "ALL" && this.Status !== 'ST_NEVER') {
     //console.log("Save societe");
     if (!this.ID)
-        SeqModel.incCpt("C", function(seq) {
+        SeqModel.incCpt("C", function(seq, number) {
             //self.barCode = "C" + seq;
-            self.ID = seq;
+            self.ID = number;
             next();
             //console.log(seq);
             /*EntityModel.findOne({ _id: self.entity }, "cptRef", function(err, entity) {

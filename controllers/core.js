@@ -696,7 +696,7 @@ function convert(type) {
             break;
 
         case 'deliveryAddress':
-            var SocieteModel = MODEL('societe').Schema;
+            var SocieteModel = MODEL('Customers').Schema;
 
             SocieteModel.find({}, function(err, docs) {
                 if (err)
@@ -723,7 +723,7 @@ function convert(type) {
             return self.plain("Type is deliveryAddress");
             break;
         case 'code_compta':
-            var SocieteModel = MODEL('societe').Schema;
+            var SocieteModel = MODEL('Customers').Schema;
 
             SocieteModel.find({ code_compta: null, code_client: { $ne: null } }, function(err, docs) {
                 if (err)
@@ -1015,7 +1015,7 @@ function convert(type) {
             break;
         case 'commercial_id':
             var BillModel = MODEL('bill').Schema;
-            var SocieteModel = MODEL('societe').Schema;
+            var SocieteModel = MODEL('Customers').Schema;
             var UserModel = MODEL('Users').Schema;
             var OfferModel = MODEL('offer').Schema;
             var OrderModel = MODEL('order').Schema;

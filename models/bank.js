@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-        Schema = mongoose.Schema,
-        async = require('async'),
-        _ = require('lodash');
+    Schema = mongoose.Schema,
+    async = require('async'),
+    _ = require('lodash');
 
 var Dict = INCLUDE('dict');
 var round = MODULE('utils').round;
@@ -15,7 +15,7 @@ var round = MODULE('utils').round;
  * Bank Schema
  */
 var bankSchema = new Schema({
-    ref: {type: String, unique: true},
+    ref: { type: String, unique: true },
     account_type: String,
     country: String,
     name_bank: String,
@@ -36,7 +36,7 @@ var bankSchema = new Schema({
     zip: String,
     town: String,
     comment: String,
-    entity: {type: String, trim: true},
+    entity: { type: String, trim: true },
     owner: {
         name: String,
         address: String,
@@ -44,23 +44,23 @@ var bankSchema = new Schema({
         town: String
     },
     author: {
-        id: {type: String, ref: 'User'},
+        id: { type: String, ref: 'User' },
         name: String
     },
-    journalId: {type: String, unique: true}, // BQ1
-    compta_bank: {type: String, unique: true} // 512xxxx
+    journalId: { type: String, unique: true }, // BQ1
+    compta_bank: { type: String, unique: true } // 512xxxx
 }, {
-    toObject: {virtuals: true},
-    toJSON: {virtuals: true}
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 var statusList = {};
 
-Dict.dict({dictName: "fk_account_status", object: true}, function (err, docs) {
+Dict.dict({ dictName: "fk_account_status", object: true }, function(err, docs) {
     statusList = docs;
 });
 
-bankSchema.virtual('acc_status').get(function () {
+bankSchema.virtual('acc_status').get(function() {
     var acc_status = {};
 
     var status = this.status;
@@ -77,18 +77,18 @@ bankSchema.virtual('acc_status').get(function () {
     return acc_status;
 });
 
-bankSchema.virtual('name').get(function () {
+bankSchema.virtual('name').get(function() {
     return this.journalId + " (" + this.name_bank + " " + this.account_number + ")";
 });
 
 var typeList = {};
 
-Dict.dict({dictName: "fk_account_type", object: true}, function (err, docs) {
+Dict.dict({ dictName: "fk_account_type", object: true }, function(err, docs) {
 
     typeList = docs;
 });
 
-bankSchema.virtual('acc_type').get(function () {
+bankSchema.virtual('acc_type').get(function() {
 
     var acc_type = {};
     var account_type = this.account_type;
@@ -108,12 +108,12 @@ bankSchema.virtual('acc_type').get(function () {
 
 var countryList = {};
 
-Dict.dict({dictName: "fk_country", object: true}, function (err, docs) {
+Dict.dict({ dictName: "fk_country", object: true }, function(err, docs) {
 
     countryList = docs;
 });
 
-bankSchema.virtual('acc_country').get(function () {
+bankSchema.virtual('acc_country').get(function() {
 
     var acc_country = "";
     var account_country = this.country;
@@ -149,9 +149,9 @@ bankSchema.virtual('acc_country').get(function () {
  * }]
  */
 
-bankSchema.methods.addPayment = function (options, user, callback) {
+bankSchema.methods.addPayment = function(options, user, callback) {
     var self = this;
-    //var SocieteModel = MODEL('societe').Schema;
+    //var SocieteModel = MODEL('Customers').Schema;
     var BillModel = MODEL('bill').Schema;
     var BillSupplierModel = MODEL('billSupplier').Schema;
 
@@ -180,7 +180,7 @@ bankSchema.methods.addPayment = function (options, user, callback) {
     var entry = myBook.entry(options.label, options.datec, user);
     var entryOD = myBookOD.entry(options.label, options.datec, user);
 
-    SeqModel.incCpt("PAY", function (seq) {
+    SeqModel.incCpt("PAY", function(seq) {
         //console.log(seq);
         entry.setSeq(seq);
         entryOD.setSeq(seq);
@@ -222,8 +222,8 @@ bankSchema.methods.addPayment = function (options, user, callback) {
 
         async.waterfall([
             // get entity
-            function (callback) {
-                return mongoose.connection.db.collection('Mysoc', function (err, collection) {
+            function(callback) {
+                return mongoose.connection.db.collection('Mysoc', function(err, collection) {
                     if (err)
                         callback(err);
 
@@ -231,7 +231,7 @@ bankSchema.methods.addPayment = function (options, user, callback) {
 
                     collection.findOne({
                         _id: user.entity
-                    }, {tva_mode: 1}, function (err, entity) {
+                    }, { tva_mode: 1 }, function(err, entity) {
                         //console.log(entity);
                         callback(err, entity);
                     });
@@ -243,7 +243,7 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                 //callback(null, entity);
             },
             // load tva_dict
-            function (entity, callback) {
+            function(entity, callback) {
                 var tva = {
                     tva_code_colle: [],
                     tva_code_deduc: [],
@@ -254,7 +254,7 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                 if (entity.tva_mode !== 'payment')
                     return callback(null, entity, tva);
 
-                Dict.dict({dictName: "fk_tva", object: true}, function (err, docs) {
+                Dict.dict({ dictName: "fk_tva", object: true }, function(err, docs) {
                     for (var i = 0; i < docs.values.length; i++) {
                         if (docs.values[i].pays_code === 'FR' && docs.values[i].enable) {
                             tva.tva_code_colle[docs.values[i].value] = docs.values[i].code_compta_colle;
@@ -269,7 +269,7 @@ bankSchema.methods.addPayment = function (options, user, callback) {
 
             },
             // apply entry
-            function (entity, tva, callback) {
+            function(entity, tva, callback) {
                 // client
                 for (var i = 0, len = options.bills.length; i < len; i++) {
                     var bill = options.bills[i];
@@ -295,36 +295,36 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                         if (entity.tva_mode === 'payment') // TVA sur encaissement
                             if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
                                 for (var j = 0, len2 = bill.total_tva.length; j < len2; j++) {
-                                    // No TVA
-                                    if (bill.total_tva[j].total == 0)
-                                        continue;
+                                // No TVA
+                                if (bill.total_tva[j].total == 0)
+                                    continue;
 
-                                    // TVA on payment
-                                    if (bill.total_tva[j].total > 0) {
-                                        entryOD.debit(tva.tva_code_colle[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billId: bill._id.toString(),
-                                            billRef: bill.ref,
-                                            tva_tx: bill.total_tva[j].tva_tx
-                                        });
-                                        entryOD.credit(tva.tva_code_colle_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billId: bill._id.toString(),
-                                            billRef: bill.ref,
-                                            tva_tx: bill.total_tva[j].tva_tx
-                                        });
-                                    } else {
-                                        // Si avoir
-                                        entryOD.credit(tva.tva_code_colle[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billId: bill._id.toString(),
-                                            billRef: bill.ref,
-                                            tva_tx: bill.total_tva[j].tva_tx
-                                        });
-                                        entryOD.debit(tva.tva_code_colle_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billId: bill._id.toString(),
-                                            billRef: bill.ref,
-                                            tva_tx: bill.total_tva[j].tva_tx
-                                        });
-                                    }
+                                // TVA on payment
+                                if (bill.total_tva[j].total > 0) {
+                                    entryOD.debit(tva.tva_code_colle[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
+                                        billId: bill._id.toString(),
+                                        billRef: bill.ref,
+                                        tva_tx: bill.total_tva[j].tva_tx
+                                    });
+                                    entryOD.credit(tva.tva_code_colle_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
+                                        billId: bill._id.toString(),
+                                        billRef: bill.ref,
+                                        tva_tx: bill.total_tva[j].tva_tx
+                                    });
+                                } else {
+                                    // Si avoir
+                                    entryOD.credit(tva.tva_code_colle[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
+                                        billId: bill._id.toString(),
+                                        billRef: bill.ref,
+                                        tva_tx: bill.total_tva[j].tva_tx
+                                    });
+                                    entryOD.debit(tva.tva_code_colle_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
+                                        billId: bill._id.toString(),
+                                        billRef: bill.ref,
+                                        tva_tx: bill.total_tva[j].tva_tx
+                                    });
                                 }
+                            }
                     }
                 }
 
@@ -352,35 +352,35 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                             if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
                                 for (var j = 0, len2 = bill.total_tva.length; j < len2; j++) {
 
-                                    if (bill.total_tva[j].total == 0)
-                                        continue;
+                                if (bill.total_tva[j].total == 0)
+                                    continue;
 
-                                    // TVA on payment
-                                    if (bill.total_tva[j].total > 0) {
-                                        entryOD.credit(tva.tva_code_deduc[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billSupplierId: bill._id.toString(),
-                                            billSupplierRef: bill.ref,
-                                            tva_tx: bill.total_tva[j].tva_tx
-                                        });
-                                        entryOD.debit(tva.tva_code_deduc_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billSupplierId: bill._id.toString(),
-                                            billSupplierRef: bill.ref,
-                                            tva_tx: bill.total_tva[j].tva_tx
-                                        });
-                                    } else {
-                                        // Si avoir
-                                        entryOD.debit(tva.tva_code_deduc[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billSupplierId: bill._id.toString(),
-                                            billSupplierRef: bill.ref,
-                                            tva_tx: bill.total_tva[j].tva_tx
-                                        });
-                                        entryOD.credit(tva.tva_code_deduc_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
-                                            billSupplierId: bill._id.toString(),
-                                            billSupplierRef: bill.ref,
-                                            tva_tx: bill.total_tva[j].tva_tx
-                                        });
-                                    }
+                                // TVA on payment
+                                if (bill.total_tva[j].total > 0) {
+                                    entryOD.credit(tva.tva_code_deduc[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
+                                        billSupplierId: bill._id.toString(),
+                                        billSupplierRef: bill.ref,
+                                        tva_tx: bill.total_tva[j].tva_tx
+                                    });
+                                    entryOD.debit(tva.tva_code_deduc_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
+                                        billSupplierId: bill._id.toString(),
+                                        billSupplierRef: bill.ref,
+                                        tva_tx: bill.total_tva[j].tva_tx
+                                    });
+                                } else {
+                                    // Si avoir
+                                    entryOD.debit(tva.tva_code_deduc[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
+                                        billSupplierId: bill._id.toString(),
+                                        billSupplierRef: bill.ref,
+                                        tva_tx: bill.total_tva[j].tva_tx
+                                    });
+                                    entryOD.credit(tva.tva_code_deduc_paid[bill.total_tva[j].tva_tx], Math.abs(bill.total_tva[j].total), {
+                                        billSupplierId: bill._id.toString(),
+                                        billSupplierRef: bill.ref,
+                                        tva_tx: bill.total_tva[j].tva_tx
+                                    });
                                 }
+                            }
                     }
                 }
 
@@ -389,32 +389,32 @@ bankSchema.methods.addPayment = function (options, user, callback) {
 
             },
             // save transaction
-            function (callback) {
+            function(callback) {
                 var journal_id = [];
 
-                entry.commit().then(function (journal) {
+                entry.commit().then(function(journal) {
                     //console.log(journal);
                     journal_id.push(journal);
 
                     // ADD TVA lines
                     if (entryOD.transactions.length)
-                        return entryOD.commit().then(function (journal) {
+                        return entryOD.commit().then(function(journal) {
                             journal_id.push(journal);
                             return callback(null, journal_id);
-                        }, function (err) {
+                        }, function(err) {
                             console.log(err);
                             return callback(null, journal_id);
                         });
 
                     return callback(null, journal_id);
-                }, function (err) {
+                }, function(err) {
                     callback(err.message);
                 });
             },
             // update bills
-            function (journal, callback) {
-                
-                var journalId = _.map(journal, function (item) {
+            function(journal, callback) {
+
+                var journalId = _.map(journal, function(item) {
                     return item._id;
                 });
 
@@ -426,26 +426,26 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                         var status = "STARTED";
                         if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2))
                             status = "PAID";
-                        
+
                         if (round(bill.payment + bill.total_paid, 2) == 0)
                             status = 'NOT_PAID';
 
-                        BillModel.update({_id: bill._id}, {$set: {Status: status, updatedAt: new Date()}, $inc: {total_paid: bill.payment}, $addToSet: {journalId: {$each: journalId}}}, function (err, doc) {
+                        BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date() }, $inc: { total_paid: bill.payment }, $addToSet: { journalId: { $each: journalId } } }, function(err, doc) {
                             if (err)
                                 console.log(err);
                             //console.log(doc);
                         });
-                    } 
+                    }
                 }
-                
-                 for (var i = 0, len = options.bills_supplier.length; i < len; i++) {
+
+                for (var i = 0, len = options.bills_supplier.length; i < len; i++) {
                     var bill = options.bills_supplier[i];
                     if (bill.payment != null) {
                         //console.log(bill);
                         var status = "STARTED";
                         if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2))
                             status = "PAID";
-                        BillSupplierModel.update({_id: bill._id}, {$set: {Status: status, updatedAt: new Date()}, $inc: {total_paid: bill.payment}, $addToSet: {journalId: {$each: journalId}}}, function (err, doc) {
+                        BillSupplierModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date() }, $inc: { total_paid: bill.payment }, $addToSet: { journalId: { $each: journalId } } }, function(err, doc) {
                             if (err)
                                 console.log(err);
                             //console.log(doc);
@@ -453,7 +453,8 @@ bankSchema.methods.addPayment = function (options, user, callback) {
                     }
                 }
                 callback(null, journal);
-            }], callback);
+            }
+        ], callback);
     });
 };
 

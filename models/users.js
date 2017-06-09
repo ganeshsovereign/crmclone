@@ -96,7 +96,7 @@ var UserSchema = new Schema({
     externalConnect: { type: Boolean, default: false },
     right_menu: { type: Boolean, default: true },
     home: String,
-    societe: { type: Schema.Types.ObjectId, ref: 'societe' },
+    societe: { type: Schema.Types.ObjectId, ref: 'Customers' }, // TODO rename to supplier
     multiEntities: { type: Boolean, default: false }, // Access to all entities ?
 
     kanbanSettings: {
