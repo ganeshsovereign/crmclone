@@ -24,13 +24,47 @@ Entity.prototype = {
         });
     },
     create: function() {
+        var EntityModel = MODEL('entity').Schema;
+        var self = this;
 
+        var entity = {};
+        entity = new EntityModel(self.body);
+
+        //console.log(delivery);
+        entity.save(function(err, doc) {
+            if (err) {
+                return console.log(err);
+            }
+
+            self.json(doc);
+        });
     },
     update: function() {
+        var EntityModel = MODEL('entity').Schema;
+        //console.log("update");
+        var self = this;
 
-    },
-    del: function() {
+        //console.log(self.query);
 
+        EntityModel.findByIdAndUpdate(id, self.body, function(err, doc) {
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
+
+            //console.log(doc);
+            doc = doc.toObject();
+            doc.successNotify = {
+                title: "Success",
+                message: "Entité enregistrée"
+            };
+            self.json(doc);
+        });
     },
     select: function() {
         var self = this;

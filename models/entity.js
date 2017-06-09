@@ -89,7 +89,11 @@ var entitySchema = new Schema({
     cgv: String
 
     //tva_mode: { type: String, enum: ["payment", "invoice"], default: 'invoice' }
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
+
 
 exports.Schema = mongoose.model('entity', entitySchema, 'Mysoc');
 exports.name = 'entity';

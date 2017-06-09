@@ -284,7 +284,6 @@ Object.prototype = {
     },
     update: function(id) {
         var BillModel = MODEL('bill').Schema;
-        var ProductModel = MODEL('product').Schema;
         //console.log("update");
         var self = this;
 
