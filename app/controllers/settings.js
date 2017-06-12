@@ -41,6 +41,12 @@ angular.module("MetronicApp").controller('SettingGeneralController', ['$rootScop
 }]);
 
 angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
+    var grid = new Datatable();
+    var user = $rootScope.login;
+
+    $scope.backTo = 'settings.entity.list';
+
+    $scope.societe = [];
 
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
@@ -48,6 +54,25 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
 
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
+
+        $scope.create = function() {
+            let societe = new Societe(this.societe);
+
+            societe.$save(function(response) {
+                //console.log(response);
+                $rootScope.$state.go("settings.entity.show", { id: response._id });
+            });
+        };
+
+        $scope.update = function(options, callback) { //example options : {status: Status}
+            let societe = $scope.societe;
+
+            entity.$update(options, function(response) {
+                $scope.societe = response;
+                if (callback)
+                    callback(null, response);
+            });
+        };
 
     });
 

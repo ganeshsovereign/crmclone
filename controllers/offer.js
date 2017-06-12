@@ -207,6 +207,7 @@ Object.prototype = {
      */
     clone: function(id, self) {
         var OfferModel = MODEL('offer').Schema;
+        var self = this;
 
         Offer(id, function(err, doc) {
             var offer = doc.toObject();

@@ -56,6 +56,7 @@
     "NoOpenedPropals": "Pas de devis ouvert",
     "NoOtherOpenedPropals": "Pas d'autre devis ouvert",
     "RefProposal": "Réf devis",
+    "RefQuotation":"Réf. Demande d'achats",
     "DateDeliveryPlannedShort": "Date limite de l'affaire",
     "SendPropalByMail": "Envoi devis par mail",
     "FileNotUploaded": "Le fichier n'a pas été téléchargé",
@@ -102,7 +103,7 @@
     "Numbershort": "N°",
     "LinkdedOrders": "Commandes jointes",
     "SuppliersOffer": "Devis fournisseurs",
-    "PurchaseRequests": "Demandes d'achats",
+    "PurchaseRequests": "Demande d'achats",
     "ListOfPurchases": "Liste des demandes d'achats",
     "Purchases": "Achats",
     "NewQuotation": "Nouvelle demande d'achats"
