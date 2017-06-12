@@ -370,6 +370,7 @@ Object.prototype = {
                     return console.log(err);
 
                 self.res.setHeader('Content-type', 'application/pdf');
+                self.res.setHeader('x-filename', doc.ref + ".pdf");
                 Latex.Template(null, doc.entity)
                     .on('error', function(err) {
                         console.log(err);
@@ -1547,7 +1548,7 @@ function createDelivery2(doc, callback) {
                     tabLines.push({
                         ref: doc.lines[i].product.info.SKU.substring(0, 12),
                         description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
-                        tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
+                        tva_tx: (doc.lines[i].total_taxes.length ? doc.lines[i].total_taxes[0].taxeId.rate : null),
                         pu_ht: doc.lines[i].pu_ht,
                         discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
                         qty: doc.lines[i].qty,

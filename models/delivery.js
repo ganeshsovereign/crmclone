@@ -30,6 +30,11 @@ var deliverySchema = new Schema({
     ref: { type: String, index: true },
     ID: { type: Number, unique: true },
 
+    isPrinted: { type: Date, default: null }, //Imprime
+    isPicked: { type: Date, default: null }, //Prepare
+    isPacked: { type: Date, default: null }, //Emballe
+    isShipped: { type: Date, default: null }, //Expedier
+
     type: { type: String, default: 'DELIVERY_STANDARD' },
     currency: {
         _id: { type: String, ref: 'currency', default: '' },

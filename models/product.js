@@ -261,6 +261,35 @@ if (CONFIG('storing-files')) {
     productSchema.plugin(gridfs.pluginGridFs, { root: "Product" });
 }
 
+productSchema.statics.next = function(options, callback) {
+    var self = this;
+
+    this.find({
+            _id: {
+                $gt: options._id,
+                isremove: { $ne: true }
+            }
+        })
+        .sort({ 'info.SKU': 1 })
+        .limit(1)
+        .exec(callback);
+};
+
+productSchema.statics.previous = function(options, callback) {
+    var self = this;
+
+    this.find({
+            _id: {
+                $gt: options._id,
+                isremove: { $ne: true }
+            }
+        })
+        .sort({ 'info.SKU': -1 })
+        .limit(1)
+        .exec(callback);
+};
+
+
 // Gets listing
 productSchema.statics.query = function(options, callback) {
     var self = this;

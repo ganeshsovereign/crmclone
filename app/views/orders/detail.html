@@ -26,6 +26,30 @@
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
+                        <div class="row" ng-if="module('delivery')">
+                            <div class="col-md-12">
+                                <div class="portlet light bordered">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <button ng-disabled="object.isShipped" ng-click="deliveryAction('VALIDATED','isPrinted',object.ref)" class="btn" ng-class="{'default':!object.isPrinted, 'green' : object.isPrinted}"> @(deliveries:Printed) <i class="fa fa-print"></i></button>
+                                            <span>{{object.isPrinted | date:'dd/MM/yyyy HH:mm'}}</span>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button ng-disabled="object.isShipped" class="btn" ng-click="deliveryAction(null,'isPicked',object.ref)" class="btn" ng-class="{'default':!object.isPicked, 'green' : object.isPicked}"> @(deliveries:Picked) <i class="fa fa-check-square"></i></button>
+                                            <span>{{object.isPicked | date:'dd/MM/yyyy HH:mm'}}</span>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button ng-disabled="object.isShipped" class="btn" ng-click="deliveryAction(null,'isPacked',object.ref)" class="btn" ng-class="{'default':!object.isPacked, 'green' : object.isPacked}"> @(deliveries:Packed) <i class="fa fa-archive"></i></button>
+                                            <span>{{object.isPacked | date:'dd/MM/yyyy HH:mm'}}</span>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button ng-disabled="!object.isPacked || object.isShipped" class="btn" ng-click="deliveryAction('SEND','isShipped',object.ref)" class="btn" ng-class="{'default':!object.isShipped, 'green' : object.isShipped}"> @(deliveries:Shipped) <i class="fa fa-truck"></i></button>
+                                            <span>{{object.isShipped | date:'dd/MM/yyyy HH:mm'}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-md-7">
                                 <div class="portlet light bordered">

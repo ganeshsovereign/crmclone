@@ -194,15 +194,27 @@
                 </div>
 
                 <div class="profile-usermenu ">
-                    <ul class="nav ">
+                    <ul class="nav " ng-if="module('offer')">
                         <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
-                            <a ng-if="module('offer')" ui-sref="offer.show.detail({id:object._id}) ">
+                            <a ui-sref="offer.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(propal:Details) </a>
-                            <a ng-if="module('order')" ui-sref="order.show.detail({id:object._id}) ">
+                        </li>
+                    </ul>
+                    <ul class="nav " ng-if="module('order')">
+                        <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
+                            <a ui-sref="order.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(orders:Details) </a>
-                            <a ng-if="module('delivery')" ui-sref="delivery.show.detail({id:object._id}) ">
+                        </li>
+                    </ul>
+                    <ul class="nav " ng-if="module('delivery')">
+                        <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
+                            <a ui-sref="delivery.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(deliveries:Details) </a>
-                            <a ng-if="module('bill')" ui-sref="bill.show.detail({id:object._id}) ">
+                        </li>
+                    </ul>
+                    <ul class="nav " ng-if="module('bill')">
+                        <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
+                            <a ui-sref="bill.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(bill:Details) </a>
                         </li>
                     </ul>

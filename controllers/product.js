@@ -745,6 +745,7 @@ exports.install = function() {
     F.route('/erp/api/product/{productId}/{field}', object.updateField, ['put', 'json', 'authorize']);
     F.route('/erp/api/product/{productId}', object.update, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/product/{productId}', object.clone, ['post', 'json', 'authorize'], 512);
+
     //other routes..
 };
 
@@ -1256,9 +1257,34 @@ Object.prototype = {
     },
     show: function(id) {
         var self = this;
+        var ProdutModel = MODEL('product').Schema;
         var ChannelLinkModel = MODEL('channelLinks').Schema;
 
-        Product(id, function(err, product) {
+        async.waterfall([
+            function(wCb) {
+                // Is Next
+                if (!self.query.next)
+                    return wCb(null, null);
+
+                ProdutModel.next({ _id: id }, function(err, product) {
+                    return wCb(err, product._id);
+                });
+            },
+            function(productId, wCb) {
+                // Is previous
+                if (productId)
+                    return wCb(null, productId);
+
+                if (!self.query.previous)
+                    return wCb(null, id); //Get product from the id
+
+                ProdutModel.previous({ _id: id }, function(err, product) {
+                    return wCb(err, product._id);
+                });
+
+            },
+            Product
+        ], function(err, product) {
             if (err)
                 return self.throw500(err);
 

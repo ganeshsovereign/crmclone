@@ -64,8 +64,8 @@
     "NoPackage": "Nombre de colis",
     "DeliveryStatus": "État du bon de livraison",
     "DeliveryStatusDraft": "Brouillon (à valider)",
-    "DeliveryStatusValidated": "Validé / non expédié",
-    "DeliveryStatusSend": "Validé / Expédié",
+    "DeliveryStatusValidated": "Validé",
+    "DeliveryStatusSend": "Expédié",
     "DeliveryStatusBilled": "Facturé",
     "DeliveryStatusCanceled": "Abandonné",
     "DeliveryNotes": "Bons livraisons",
@@ -84,5 +84,9 @@
     "ListBL": "Liste des Bons de Livraisons associés",
     "Reserved": "Réservé(s)",
     "DiscountOnQty": "Remise sur quantité",
-    "Logistics": "Logistiques"
+    "Logistics": "Logistiques",
+    "Printed": "Imprimé",
+    "Picked": "Scanné",
+    "Packed": "Emballé",
+    "Shipped": "Expédié"
 }

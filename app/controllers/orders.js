@@ -33,8 +33,8 @@ var round = function(value, decimals) {
 };
 
 /* global angular: true */
-MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'Orders',
-    function($scope, $rootScope, $http, $modal, $filter, $timeout, Orders) {
+MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', '$window', 'Orders',
+    function($scope, $rootScope, $http, $modal, $filter, $timeout, $window, Orders) {
 
         var grid = new Datatable();
         var user = $rootScope.login;
@@ -237,9 +237,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.editable = false;
 
                 if (callback)
-                    callback(null, response);*/
+                    return callback(null, response);*/
 
-                $scope.findOne();
+                $scope.findOne(callback);
             });
         };
 
@@ -409,6 +409,66 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         $scope.changeStatus = function(Status) {
             $scope.object.Status = Status;
             $scope.update();
+        };
+
+        // Delivery printed
+        $scope.deliveryAction = function(status, field, ref) {
+            if ($scope.object.Status == 'SEND')
+                return;
+
+            if (status)
+                $scope.object.Status = status;
+
+            if (field)
+                if ($scope.object[field] == null)
+                    $scope.object[field] = new Date();
+                else {
+                    $scope.object[field] = null;
+                    return $scope.update();
+                }
+
+            if (field == 'isPrinted')
+                $scope.update(function(err, object) {
+                    //var myWindow = $window.open('/erp/api/delivery/pdf/' + url, '_blank');
+                    //myWindow.document.write(table);
+                    //myWindow.print();
+
+                    //return
+                    $http({
+                        method: 'GET',
+                        url: '/erp/api/delivery/pdf/' + ref,
+                        responseType: 'arraybuffer'
+                    }).success(function(data, status, headers) {
+                        headers = headers();
+
+                        var filename = headers['x-filename'];
+                        var contentType = headers['content-type'];
+
+                        var linkElement = document.createElement('a');
+                        try {
+                            var blob = new Blob([data], { type: contentType });
+                            var url = window.URL.createObjectURL(blob);
+
+                            linkElement.setAttribute('href', url);
+                            //linkElement.setAttribute('target', '_blank');
+                            linkElement.setAttribute("download", filename);
+
+                            var clickEvent = new MouseEvent("click", {
+                                "view": window,
+                                "bubbles": true,
+                                "cancelable": false
+                            });
+                            linkElement.dispatchEvent(clickEvent);
+                        } catch (ex) {
+                            console.log(ex);
+                        }
+                    }).error(function(data) {
+                        console.log(data);
+                    });
+                });
+            else
+                $scope.update();
+
         };
 
         $scope.createDelivery = function() {
