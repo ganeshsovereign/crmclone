@@ -21,9 +21,6 @@ var Dict = INCLUDE('dict');
 var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
 
-/**
- * Article Schema
- */
 var deliverySchema = new Schema({
     forSales: { type: Boolean, default: true },
     isremoved: Boolean,
@@ -34,6 +31,11 @@ var deliverySchema = new Schema({
     isPicked: { type: Date, default: null }, //Prepare
     isPacked: { type: Date, default: null }, //Emballe
     isShipped: { type: Date, default: null }, //Expedier
+
+    pickedById: { type: ObjectId, ref: 'Users', default: null },
+    packedById: { type: ObjectId, ref: 'Users', default: null },
+    shippedById: { type: ObjectId, ref: 'Users', default: null },
+    printedById: { type: ObjectId, ref: 'Users', default: null },
 
     type: { type: String, default: 'DELIVERY_STANDARD' },
     currency: {

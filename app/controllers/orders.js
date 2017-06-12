@@ -419,15 +419,50 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             if (status)
                 $scope.object.Status = status;
 
-            if (field)
-                if ($scope.object[field] == null)
-                    $scope.object[field] = new Date();
-                else {
-                    $scope.object[field] = null;
-                    return $scope.update();
-                }
+            switch (field) {
+                case 'printed':
+                    if ($scope.object.isPrinted == null) {
+                        $scope.object.isPrinted = new Date();
+                        $scope.object.printedById = $rootScope.login._id;
+                    } else {
+                        $scope.object.isPrinted = null;
+                        $scope.object.printedById = null;
+                        return $scope.update();
+                    }
+                    break;
+                case 'picked':
+                    if ($scope.object.isPicked == null) {
+                        $scope.object.isPicked = new Date();
+                        $scope.object.pickedById = $rootScope.login._id;
+                    } else {
+                        $scope.object.isPicked = null;
+                        $scope.object.pickedById = null;
+                        return $scope.update();
+                    }
+                    break;
+                case 'packed':
+                    if ($scope.object.isPacked == null) {
+                        $scope.object.isPacked = new Date();
+                        $scope.object.packedById = $rootScope.login._id;
+                    } else {
+                        $scope.object.isPacked = null;
+                        $scope.object.packedById = null;
+                        return $scope.update();
+                    }
+                    break;
+                case 'shipped':
+                    if ($scope.object.isShipped == null) {
+                        $scope.object.isShipped = new Date();
+                        $scope.object.shippedById = $rootScope.login._id;
+                    } else {
+                        $scope.object.isShipped = null;
+                        $scope.object.shippedById = null;
+                        return $scope.update();
+                    }
+                    break;
+            }
 
-            if (field == 'isPacked') {
+            if (field == 'packed') {
                 var ModalCtrl = function($scope, $modalInstance, options) {
                     $scope.object = options.object;
 
@@ -455,10 +490,14 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
                 modalInstance.result.then(function(delivery) {
                     //scope.contacts.push(contacts);
-                    if (!$scope.object.isPrinted)
+                    if (!$scope.object.isPrinted) {
                         $scope.object.isPrinted = new Date();
-                    if (!$scope.object.isPicked)
+                        $scope.object.printedById = $rootScope.login._id;
+                    }
+                    if (!$scope.object.isPicked) {
                         $scope.object.isPicked = new Date();
+                        $scope.object.pickedById = $rootScope.login._id;
+                    }
 
                     $scope.update();
                 }, function() {
@@ -467,7 +506,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 return;
             }
 
-            if (field == 'isPrinted')
+            if (field == 'printed')
                 $scope.update(function(err, object) {
                     //var myWindow = $window.open('/erp/api/delivery/pdf/' + url, '_blank');
                     //myWindow.document.write(table);
