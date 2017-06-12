@@ -427,6 +427,46 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     return $scope.update();
                 }
 
+            if (field == 'isPacked') {
+                var ModalCtrl = function($scope, $modalInstance, options) {
+                    $scope.object = options.object;
+
+
+                    $scope.ok = function() {
+                        $modalInstance.close($scope.object);
+                    };
+
+                    $scope.cancel = function() {
+                        $modalInstance.dismiss('cancel');
+                    };
+                };
+                var modalInstance = $modal.open({
+                    templateUrl: '/templates/delivery/modal/ispacked.html',
+                    controller: ModalCtrl,
+                    size: 'sm',
+                    resolve: {
+                        options: function() {
+                            return {
+                                object: $scope.object
+                            };
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function(delivery) {
+                    //scope.contacts.push(contacts);
+                    if (!$scope.object.isPrinted)
+                        $scope.object.isPrinted = new Date();
+                    if (!$scope.object.isPicked)
+                        $scope.object.isPicked = new Date();
+
+                    $scope.update();
+                }, function() {
+                    $scope.findOne();
+                });
+                return;
+            }
+
             if (field == 'isPrinted')
                 $scope.update(function(err, object) {
                     //var myWindow = $window.open('/erp/api/delivery/pdf/' + url, '_blank');

@@ -4,6 +4,9 @@
     </a>
 </script>-->
 
+<div class="alert alert-info" ng-if="object.tracking">
+    <strong>Info!</strong> @(deliveries:TrackingNumber) : <strong>{{object.tracking}}</strong></div>
+
 <div class="row">
     <div class="col-md-12">
         <div class="form-horizontal form-row-seperated">
@@ -90,6 +93,11 @@
                                             <div ng-hide="!object._id" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> {{object.total_ht| currency}} @(HT) </div>
                                                 <label for="form_control_1">@(Amounts) @(propal:CommercialProposal)</label>
+                                            </div>
+
+                                            <div ng-hide="!object.tracking" class="form-group form-md-line-input">
+                                                <div class="form-control form-control-static"> {{object.tracking}} </div>
+                                                <label for="form_control_1">@(deliveries:TrackingNumber)</label>
                                             </div>
 
                                         </div>

@@ -107,7 +107,7 @@ var deliverySchema = new Schema({
     total_ht_subcontractors: { type: Number, default: 0 },
     delivery_mode: { type: String, default: "Comptoir" },
     transport: String,
-    tracking: String,
+    tracking: String, //Tracking number
     shipping: {
         total_ht: {
             type: Number,

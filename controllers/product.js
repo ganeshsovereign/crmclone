@@ -1262,26 +1262,7 @@ Object.prototype = {
 
         async.waterfall([
             function(wCb) {
-                // Is Next
-                if (!self.query.next)
-                    return wCb(null, null);
-
-                ProdutModel.next({ _id: id }, function(err, product) {
-                    return wCb(err, product._id);
-                });
-            },
-            function(productId, wCb) {
-                // Is previous
-                if (productId)
-                    return wCb(null, productId);
-
-                if (!self.query.previous)
-                    return wCb(null, id); //Get product from the id
-
-                ProdutModel.previous({ _id: id }, function(err, product) {
-                    return wCb(err, product._id);
-                });
-
+                wCb(null, id);
             },
             Product
         ], function(err, product) {

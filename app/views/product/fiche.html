@@ -113,18 +113,13 @@
                     <div class="col-md-12">
                         <progressbar class="progress-striped" value="product.rating.total * 100" type="">{{product.rating.total*100 | percent}} Complete</progressbar>
                     </div>
-                    <div class="col-md-offset-1 col-md-10">
-                        <ul class="pager">
-                            <li class="previous">
-                                <a href="javascript:;"> ← Précédent </a>
-                            </li>
-                            <li class="next">
-                                <a href="javascript:;"> Suivant → </a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
                 <hr>
+
+                <div class="profile-userbuttons">
+                    <button type="button" class="btn btn-circle default btn-sm"> ← @(Previous)</button>
+                    <button type="button" class="btn btn-circle default btn-sm">@(Next) →</button>
+                </div>
 
                 <div class="profile-usermenu">
                     <ul class="nav">
