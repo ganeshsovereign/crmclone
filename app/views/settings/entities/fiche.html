@@ -1,202 +1,313 @@
-<div class="form-holder _orgSettingsWrap">
-    <form class="_orgSettings">
-        <div class="_formGroup">
-            <div class="col m-2 hide-xs">
-                <label>Your Logo</label>
-            </div>
-            <div class="col m-8 inputBox">
-                <div class="avatar">
-                    <div class="upload">Edit
-                        <input type="file" value="Edit" id="inputImg">
-                    </div>
-                    <canvas id="avatar" width="140" height="140">
-                        </canvas>
-                </div>
-            </div>
+<div ng-if="user.isremoved" class="alert alert-danger">
+    <strong>@(users:BeCareful)</strong>&nbsp;@(users:UserHasBeenDeleted)
+</div>
+
+<div class="page-bar" ng-init="findOne()">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a ui-sref="settings.entity.list">@(companies:CompanyList)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(companies:CardCompany) </span>
+        </li>
+    </ul>
+    <div class="page-toolbar" ng-hide="user.isremoved">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn yellow-lemon dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                @(Tools) <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.entity.delete" confirmed-click="remove(entity)" ng-confirm-click="@(ConfirmDeleteUser)" title="Delete Users ?">
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    </a>
+                </li>
+            </ul>
         </div>
-        <div class="_formGroup">
-            <div class="col m-2 hide-xs">
-                <label class="_orgName">Organization Name</label>
-            </div>
-            <div class="col m-8 inputBox">
-                <div class="_animateInputBox">
-                    <input type="text" class="_animate" id="name" required value="<%=model.name%>" />
-                    <label class="_animate">Name</label>
-                </div>
-            </div>
-        </div>
-        <div class="_formGroup">
-            <div class="col m-2 hide-xs">
-                <label class="_orgName">Industry</label>
-            </div>
-            <div class="col m-8 inputBox">
-                <div class="_animateSelectBox">
-                    <span class="_selectTitle">Industry</span>
-                    <div class="_newSelectListWrap">
-                        <a href="javascript:;" class="current-selected" id="industry" data-id="<%=model.industry ? model.industry._id : ''%>">
-                            <%=model.industry ? model.industry.name :'Select'%>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="_formGroup ">
-            <h4>Company Address</h4>
-            <div class="col m-8 m-offset-2 inputBox">
-                <div class="row">
-                    <div class="col m-8">
-                        <div class="_animateInputBox">
-                            <input type="text" class="_animate" id="address_street" value="<%=model.address ? model.address.street : ''%>" required/>
-                            <label class="_animate">Street</label>
+    </div>
+</div>
+
+<div ng-if="user.isremoved" class="alert alert-danger"><strong>@(users:BeCareful) !</strong> @(users:UserHasBeenDeleted) </div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-2 col-sm-12">
+                    <div class="portlet light portlet bordered">
+                        <div class="portlet-body">
+                            <div class="row">
+                                <div class="row list-separated profile-stat ">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="profile">
+                                                <img ng-src="{{getImage('product', entity.imageSrc)}}" class="img-responsive" alt="Entity" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="profile-usertitle">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h5 class="page-title" ng-class="{'font-red':!entity.isEnable}">
+                                                            <i class="fa fa-user"></i> {{entity.name}}
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="md-checkbox-inline">
+                                                            <div class="md-checkbox has-success">
+                                                                <input type="checkbox" id="isEnable" class="md-check" ng-model="entity.isEnable" ng-checked="entity.isEnable">
+                                                                <label for="isEnable">
+                                                    <span></span>
+                                                     <span class="check"></span>
+                                                    <span class="box"></span> @(Activated)</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-offset-1 col-md-10">
+                                    <div class="row list-separated profile-stat ">
+                                        <div class=" col-md-6 col-sm-6 col-xs-6 ">
+                                            <div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{entity.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-6 ">
+                                            <div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{entity.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                                        </div>
+
+                                        <div>
+                                            <div class="col-md-6 col-sm-6 col-xs-6 ">
+                                                <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{entity.createdBy.username}}</a> </div>
+                                                <!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-xs-6 ">
+                                                <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{entity.editedBy.username}}</a> </div>
+                                                <!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row list-separated profile-stat ">
+                                        <div class="col-md-12 ">
+                                            <div class="uppercase profile-stat-title "> <i class="icon-key font-yellow-crusta "></i> {{user.lastConnection | date:'dd/MM/yyyy'}} </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col m-4">
-                        <div class="_animateInputBox">
-                            <input type="text" class="_animate" id="address_city" value="<%=model.address ? model.address.city : ''%>" required/>
-                            <label class="_animate">City</label>
-                        </div>
-                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="_formGroup">
-            <div class="col m-8 m-offset-2 inputBox">
-                <div class="row">
-                    <div class="col m-4">
-                        <div class="_animateInputBox">
-                            <input type="text" class="_animate" id="address_state" value="<%=model.address ? model.address.state : ''%>" required/>
-                            <label class="_animate">State</label>
-                        </div>
-                    </div>
-                    <div class="col m-4">
-                        <div class="_animateInputBox">
-                            <input type="text" class="_animate" id="address_zip" value="<%=model.address ? model.address.zip : ''%>" required/>
-                            <label class="_animate">Zip Code</label>
-                        </div>
-                    </div>
-                    <div class="col m-4 _newSelectListWrap">
-                        <div class="_animateSelectBox">
-                            <span class="_selectTitle">Industry</span>
-                            <div class="_newSelectListWrap">
-                                <a href="javascript:;" class="current-selected" id="country" data-id="<%=model.address && model.address.country ? model.address.country : ''%>">
-                                    <%=model.address
-                                        && model.address.country ? model.address.country : 'Select country'%>
-                                </a>
-                                </a>
+
+                <div class="col-md-10">
+                    <div class="form-horizontal form-row-seperated">
+                        <div class="portlet light bordered">
+                            <div class="portlet-title">
+                                <div ng-if="entity._id" class="caption">
+                                    <i class="icon-info"></i>
+                                    <span class="caption-subject dark bold uppercase"> @(users:Main)</span>
+                                    <span class="caption-helper"> - @(users:Employees)</span>
+                                </div>
+                                <div ng-if="!entity._id" class="caption">
+                                    <i class="icon-magic-wand"></i>
+                                    <span class="caption-subject dark bold uppercase"> @(companies:MenuNewCompany)</span>
+                                </div>
+                                <save mode="entity._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+                            </div>
+
+                            <div class="portlet-body">
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="portlet light bordered">
+                                                <div class="row">
+                                                    <div class=" col-md-6 col-sm-12">
+                                                        <div class="form-group form-md-line-input  has-success">
+                                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.name.last">
+                                                            <label for="form_control_1">@(entity:name)<span class="required">
+                                                            * </span></label>
+                                                        </div>
+
+                                                        <div class="form-group form-md-line-input  has-success">
+                                                            <input type="text" class="form-control" id="form_control_1" ng-model="entity.name">
+                                                            <label for="form_control_1">@(entity:name)<span class="required">
+                                                            * </span></label>
+                                                        </div>
+
+                                                        <address ng-model="entity.address"></address>
+                                                    </div>
+
+                                                    <div class=" col-md-6 col-sm-12 ">
+                                                        <div class="form-group form-md-line-input ">
+                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="entity.phones.mobile ">
+                                                            <label for="form_control_1 ">@(Tel-Mobile)</label>
+                                                        </div>
+
+                                                        <div class="form-group form-md-line-input ">
+                                                            <div class="input-group ">
+                                                                <div class="input-group-control ">
+                                                                    <input type="text " class="form-control " id="form_control_1 " ng-model="entity.emails.email ">
+                                                                    <label for="form_control_1 ">@(Email)</label>
+                                                                </div>
+                                                                <span class="input-group-btn btn-right ">
+                                                            <a ng-href="mailto:{{entity.emails.email}} "  class="btn yellow " type="button ">Go!</a>
+                                                        </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 ">
+                                            <div class="portlet light bordered ">
+                                                <div class="row ">
+                                                    <div class="col-md-6 col-sm-12 ">
+
+                                                        <div class="form-group form-md-line-input ">
+                                                            <select class="table-group-action-input form-control " required ng-model="employee.department " ng-options="s.id as s.name for s in $dict.department.data "></select>
+                                                            <label for="form_control_1 ">@(users:Department)</label>
+                                                        </div>
+
+                                                        <div class="form-group form-md-line-input ">
+                                                            <select class="table-group-action-input form-control " required ng-model="employee.manager " ng-options="s.id as s.fullName for s in $dict.employees.data "></select>
+                                                            <label for="form_control_1 ">@(users:Manager)</label>
+                                                        </div>
+
+                                                        <div class="form-group form-md-line-input ">
+                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.jobPosition ">
+                                                            <label for="form_control_1 ">@(users:JobPosition)</label>
+                                                        </div>
+
+                                                        <div class="form-group form-md-line-input ">
+                                                            <select class="table-group-action-input form-control " required ng-model="employee.homeAddress.country " ng-options="s.id as s.name for s in $dict.nationality.data "></select>
+                                                            <label for="form_control_1 ">@(users:CountryOfBirth)</label>
+                                                        </div>
+
+                                                        <div class="form-group form-md-line-input ">
+                                                            <select class="table-group-action-input form-control " required ng-model="employee.nationality " ng-options="s.id as s.name for s in $dict.nationality.data "></select>
+                                                            <label for="form_control_1 ">@(users:Nationality)</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6 col-sm-12 ">
+                                                        <div class="form-group form-md-line-input ">
+                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.socialSecurityNumber ">
+                                                            <label for="form_control_1 ">@(users:SocialeSecurityNumber)</label>
+                                                        </div>
+
+                                                        <div class="form-group form-md-line-input ">
+                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.iban.id ">
+                                                            <label for="form_control_1 ">@(users:BankingEtablishment)</label>
+                                                        </div>
+
+                                                        <div class="form-group form-md-line-input ">
+                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.iban.bank ">
+                                                            <label for="form_control_1 ">@(users:IBAN)</label>
+                                                        </div>
+
+                                                        <div class="form-group form-md-line-input ">
+                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.iban.swift ">
+                                                            <label for="form_control_1 ">@(users:BIC)</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="_formGroup">
-            <div class="col m-8 m-offset-2 inputBox">
-                <div class="row">
-                    <div class="col m-4">
-                        <div class="_animateInputBox">
-                            <input type="text" class="_animate" id="phone" value="<%=model.phone%>" required/>
-                            <label class="_animate">Phone</label>
+    </div>
+</div>
+
+
+
+<!--
+<div class="row ">
+    <div class="col-md-offset-3 col-md-6 ">
+        <div class="row ">
+            <div class="col-md-12 ">
+                <div class="form-horizontal form-row-seperated ">
+                    <div class="portlet portlet light bordered ">
+                        <div class="portlet-title ">
+                            <div class="caption font-yellow-crusta ">
+                                <h5 class="page-title " ng-class="{ 'font-red':!user.isEnable} ">
+                                    <i class="fa fa-user "></i> {{user.username}}
+                                </h5>
+                            </div>
+                            <save ng-disabled="!editable " mode="object._id " ng-create="create() " ng-update="update() " back-to="backTo " class="actions btn-set "></save>
                         </div>
-                    </div>
-                    <div class="col m-4">
-                        <input class="editable _formControl" placeholder="Fax" type="text" id="address_fax" value="<%=model.address ? model.address.fax : ''%>" />
-                    </div>
-                    <div class="col m-4">
-                        <input class="editable _formControl" placeholder="Website" type="text" id="website" value="<%=model.website%>">
+                        <div class="portlet-body ">
+                            <div class="form-body ">
+                                <div class="row ">
+                                    <div class="col-md-offset-1 col-md-10 ">
+                                        <div class="md-checkbox-inline ">
+                                            <div class="md-checkbox has-success ">
+                                                <input type="checkbox " id="isEnable " class="md-check " ng-model="user.isEnable " ng-checked="user.isEnable ">
+                                                <label for="isEnable ">
+                                                    <span></span>
+                                                     <span class="check "></span>
+                                                    <span class="box "></span> @(Activated)</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input has-success ">
+                                            <input type="text " class="form-control " id="form_control_1 " onbeforesave="checkUserExist($data) " ng-model="user.username ">
+                                            <label for="form_control_1 ">@(users:UserName)<span class="required ">
+                                        * </span></label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input has-success ">
+                                            <input type="text " class="form-control " id="form_control_1 " ng-model="user.password ">
+                                            <label for="form_control_1 ">@(users:Password)</label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input has-success ">
+                                            <input type="text " class="form-control " id="form_control_1 " ng-change="checkEmailExist " ng-model="user.email ">
+                                            <label for="form_control_1 ">@(Email)<span class="required ">
+                                        * </span></label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input has-success ">
+                                            <select type="text " class="form-control " id="form_control_1 " ng-model="user.groupe " ng-options="g.id as g.name for g in groups "></select>
+                                            <label for="form_control_1 ">@(users:Group)</label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input ">
+                                            <div class="form-control form-control-static "> {{user.lastConnection | date:'dd/MM/yyyy'}} </div>
+                                            <label for="lastConnection ">@(users:LastConnection)</label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input ">
+                                            <div class="form-control form-control-static "> {{user.creationDate|date:'dd/MM/yyyy'}} </div>
+                                            <label for="creationDate ">@(users:CreatedAt)</label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="_formGroup _primaryContactWrap">
-            <div class="col m-2 hide-xs">
-                <label>Primary Contact</label>
-            </div>
-            <div class="col m-3 inputBox _newSelectListWrap">
-                <a class="current-selected _currencySelection _" href="javascript:;" id="contact" data-id="<%=model.contact ? model.contact._id : ''%>">
-                    <%=model.contact ? model.contact.login :
-                        'Select'%>
-                </a>
-                <p id="email">
-                    <%=model.contact ? model.contact.email : ''%>
-                </p>
-            </div>
-            <div class="col m-4">
-                <a href="javascript:;" id="changeEmail" class="blue">Change</a>
-                <%if (model.defaultEmail) {%>
-                    <p class="_text-muted">Email will be sent with your organizational email address in the from field
-                    </p>
-                    <%} else {%>
-                        <p class="_text-muted">Email will be sent with 'easyerp no-replay@easyerp.com' in the from field</p>
-                        <%}%>
-            </div>
-
-        </div>
-        <div class="_formGroup _primaryContactWrap">
-            <div class="col m-2">
-                <label>Contact Name</label>
-            </div>
-            <div class="col m-8 inputBox">
-                <input class="editable _formControl" id="contactName" value="<%=model.contactName%>" />
-            </div>
-        </div>
-        <div class="_formGroup">
-            <h4>Regional Settings</h4>
-            <div class="col m-2 hide-xs">
-                <label>Base Currency
-                        <div class="_smallText">(Currency used for accounting)</div>
-                    </label>
-            </div>
-            <div class="col m-4 inputBox _newSelectListWrap">
-                <a class="current-selected _currencySelection" href="javascript:;" data-id="<%=model.currency ? model.currency._id : ''%>" id="currency" data-value="<%=model.currency ? model.currency.name : ''%>">
-                    <%=model.currency ?model.currency.name :'Select'%>
-                </a>
-            </div>
-        </div>
-        <div class="_formGroup">
-            <div class="col m-2 hide-xs">
-                <label>Start Date</label>
-            </div>
-            <div class="col m-4 inputBox">
-                <input id="startDate" class="extrainfo _formControl" type="text" name="startDate" value="<%=model.startDate%>" readonly>
-            </div>
-        </div>
-        <div class="_formGroup">
-            <div class="col m-10 m-offset-2">
-                <a href="javascript:;" id="saveBtn" class="btn blue btnSave">Save
-                    </a>
-            </div>
-        </div>
-        <div class="cropImages form" style="display:none;">
-            <div class="formTitle">
-                <h3 class="left">Crop Images</h3>
-
-                <div class="clearfix"></div>
-            </div>
-            <br/>
-            <div class="image_input" style="float: left;margin-right: 20px;"></div>
-            <img class="image_output" />
-            <div class="clearfix"></div>
-        </div>
-    </form>
-</div>
-
-<div class="_modalDialog">
-    <div class="_modalHeader">
-        <h4>Configure Email Policy</h4>
     </div>
-    <dl class="settings-info canReadAndWrite">
-        <div class="_circleRadioRadianceWrap">
-            <label for="defaultEmailEnable">
-                Send emails with <b>'easyerp no-replay@easyerp.com'</b> default email in the from field</label>
-            <input id="defaultEmailEnable" name="choosedType" maxlength="4" type="radio" class="_circleRadioRadiance onlyNumber" <%=model.defaultEmail ? 'checked' : ''%>/>
-            <label for="defaultEmailEnable" class="_circleRadioRadianceLabel"></label>
-        </div>
-        <div class="_circleRadioRadianceWrap">
-            <label for="defaultEmailDisable">
-                Send emails email using one of the organizational email addresses</label>
-            <input id="defaultEmailDisable" name="choosedType" maxlength="4" type="radio" class="_circleRadioRadiance onlyNumber" <%=model.defaultEmail ? '' : 'checked'%>/>
-            <label for="defaultEmailDisable" class="_circleRadioRadianceLabel"></label>
-        </div>
-
-    </dl>
-</div>
+</div>-->

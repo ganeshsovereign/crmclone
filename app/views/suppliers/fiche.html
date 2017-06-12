@@ -91,7 +91,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('offersupplier')" ng-hide="object.Status == 'NOTSIGNED'" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)"
+                    <a ng-if="module('offersupplier')" ng-hide="object.Status == 'NOTSIGNED' || object.Status == 'SIGNED' " ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)"
                         confirmed-click="changeStatus('NOTSIGNED')">
                         <i class="fa fa-thumbs-o-down"></i> @(propal:CloseOfferOrder)
                     </a>

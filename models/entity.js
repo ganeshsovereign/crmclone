@@ -25,8 +25,9 @@ var getUrl = function(url) {
  */
 var entitySchema = new Schema({
     _id: String,
-    name: String,
+    name: { type: String, required: true, unique: true },
     cptRef: String, //used for numerotation ex "IV" for : COIV0314-000001
+    isEnable: { type: Boolean, default: true },
 
     imageSrc: {
         type: Schema.Types.ObjectId
@@ -84,6 +85,7 @@ var entitySchema = new Schema({
 
     //typent_id: String,
 
+    creationDate: { type: Date, default: Date.now },
     datec: Date,
     currency: { type: String, ref: 'currency', default: '' },
     cgv: String,

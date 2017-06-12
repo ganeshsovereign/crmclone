@@ -177,14 +177,6 @@
                     "usertype": 2,
                     "title": "admin:Modules"
                 },
-                "settings.general": {
-                    "position": 1,
-                    "url": "/erp/#!/settings/general",
-                    "perms": "admin",
-                    "icon": "fa-cog",
-                    "usertype": 2,
-                    "title": "admin:General"
-                },
                 "settings.product": {
                     "position": 4,
                     "url": "/erp/#!/settings/product",

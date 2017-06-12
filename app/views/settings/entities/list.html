@@ -1,1 +1,89 @@
-LIST
+<div>
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a ui-sref="home">@(Home)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(companies:CompanyList)</span>
+            </li>
+        </ul>
+
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <button class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+                            </button>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+                                        @(PrintList) </a>
+                    </li>
+                    <!-- <li>
+                                    <a href="#">
+                                    @(Update) </a>
+                                </li>-->
+                    <li>
+                        <a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove()" ng-confirm-click="Confirmez-vous la suppression des sociétés ? Ceci sera irrémédiable.">
+                            <i class="fa fa-trash-o font-red"></i> @(Delete)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet light portlet-form bordered">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-institution"></i>
+                <span class="caption-subject dark bold uppercase"> @(companies:CompanyList)</span>
+            </div>
+            <div class="actions">
+                <button class="btn blue" ui-sref="settings.entity.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+            </div>
+        </div>
+        <div class="tools">
+        </div>
+        <div class="portlet-body">
+            <div class="table-toolbar">
+                <div class="row hidden-print">
+                    <div class="form-group form-md-line-input">
+                        <div class="col-md-3">
+                            <!--<select ng-model="status_id" ng-change="setCache('status_id', status_id);
+                            find();" ng-options="s.id as s.label for s in dict.fk_stcomm.values" class="form-control">
+                            <option value="">-- @(companies:ProspectStatus) --</option>-->
+                            </select>
+                            <div class="form-control-focus"> </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dataTables_wrapper table-responsive">
+                <div class="col-md-12">
+                    <table class="table dataTable table-hover" id="societeList">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th width="2%">
+                                    <input type="checkbox" class="group-checkable" />
+                                </th>
+                                <th>@(companies:Company)</th>
+                                <th>@(companies:IdThirdParty)</th>
+                                <th>@(commercial:Commercial)</th>
+                                <th>@(Zip)</th>
+                                <th>@(Town)</th>
+                                <th>@(companies:ProfId3FR)</th>
+                                <th>@(Status)</th>
+                                <th>@(Entity)</th>
+                                <th>@(Tag)</th>
+                                <th>@(DateModificationShort)</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

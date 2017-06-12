@@ -1832,7 +1832,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('settings.entity.create', {
             url: "/create.html",
-            templateUrl: "/views/settings/entities/create.html",
+            templateUrl: "/views/settings/entities/fiche.html",
             data: {
                 pageTitle: 'Creation d\'une organisation'
             },
