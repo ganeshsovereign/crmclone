@@ -34,7 +34,7 @@
             <span ng-show="!object._id">@(deliveries:NewDelivery)</span>
         </li>
         <li ng-if="module('billsupplier')">
-            <span ng-hide="!object._id">@(bills:Billssupplier) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-hide="!object._id">@(bills:BillSuppliers) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(bills:NewBill)</span>
         </li>
     </ul>

@@ -45,7 +45,7 @@
 
                                             <div ng-hide="!object._id" ng-if="module('ordersupplier')" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> <a ui-sref="offer.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
-                                                <label for="ref_client">@(propal:RefProposal)</label>
+                                                <label for="ref_client">@(propal:RefQuotation)</label>
                                             </div>
 
                                             <div ng-if="object.order" class="form-group form-md-line-input">
@@ -65,7 +65,7 @@
 
                                             <div ng-hide="!object._id" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> {{object.total_ht| currency}} @(HT) </div>
-                                                <label for="form_control_1">@(Amounts) @(propal:CommercialProposal)</label>
+                                                <label for="form_control_1">@(Amount) @(propal:PurchaseRequests)</label>
                                             </div>
 
                                         </div>

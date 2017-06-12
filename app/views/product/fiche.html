@@ -16,7 +16,7 @@
             <span ng-class="{'font-red':!product.info.isActive}"> @(products:ProductSheet) : {{product.info.SKU}}</span>
         </li>
         <li>
-            <small ng-hide="!product.info.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
+            <small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
         </li>
     </ul>
     <div class="page-toolbar">
@@ -109,9 +109,22 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
-                    <progressbar class="progress-striped" value="product.rating.total * 100" type="">{{product.rating.total*100 | percent}} Complete</progressbar>
+                <div class="row">
+                    <div class="col-md-12">
+                        <progressbar class="progress-striped" value="product.rating.total * 100" type="">{{product.rating.total*100 | percent}} Complete</progressbar>
+                    </div>
+                    <div class="col-md-offset-1 col-md-10">
+                        <ul class="pager">
+                            <li class="previous">
+                                <a href="javascript:;"> ← Précédent </a>
+                            </li>
+                            <li class="next">
+                                <a href="javascript:;"> Suivant → </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+                <hr>
 
                 <div class="profile-usermenu">
                     <ul class="nav">
