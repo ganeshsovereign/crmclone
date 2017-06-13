@@ -551,25 +551,27 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         //console.log("collection :", collection);
 
         function allPossibleCases(arr) {
-            if (arr.length == 1) {
-                return [arr[0]];
-            } else {
-                var result = [];
-                var allCasesOfRest = allPossibleCases(arr.slice(1)); // recur with the rest of array
-                for (var i = 0; i < allCasesOfRest.length; i++) {
-                    for (var j = 0; j < arr[0].length; j++) {
-                        //console.log(allCasesOfRest[i]);
-                        var res = []
+            if (arr.length === 0)
+                return [];
 
-                        res.push(arr[0][j]); // + allCasesOfRest[i]);
-                        for (var k = 0; k < allCasesOfRest[i].length; k++)
-                            res.push(allCasesOfRest[i][k]);
+            if (arr.length == 1)
+                return arr[0];
 
-                        result.push(res);
-                    }
+            var result = [];
+            var allCasesOfRest = allPossibleCases(arr.slice(1)); // recur with the rest of array
+            for (var i = 0; i < allCasesOfRest.length; i++) {
+                for (var j = 0; j < arr[0].length; j++) {
+                    //console.log(allCasesOfRest[i]);
+                    var res = []
+
+                    res.push(arr[0][j]); // + allCasesOfRest[i]);
+                    res.push(allCasesOfRest[i]);
+
+                    result.push(res);
                 }
-                return result;
             }
+            return result;
+
         }
 
         //console.log(collection);
