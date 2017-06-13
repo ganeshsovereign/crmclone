@@ -72,7 +72,7 @@ exports.install = function() {
 function Object() {}
 
 // Read an order
-function Order(id, OrderModel, cb) {
+/*function Order(id, OrderModel, cb) {
     var self = this;
 
     //TODO Check ACL here
@@ -112,7 +112,7 @@ function Order(id, OrderModel, cb) {
         .populate("editedBy", "username")
         //.populate("offer", "ref total_ht")
         .exec(cb);
-}
+}*/
 
 Object.prototype = {
     listLines: function() {
@@ -431,7 +431,7 @@ Object.prototype = {
 
         async.parallel({
                 order: function(pCb) {
-                    Order(id, OrderModel, pCb);
+                    OrderModel.getById(id, pCb);
                 },
                 deliveries: function(pCb) {
                     OrderModel.aggregate([{

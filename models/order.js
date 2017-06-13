@@ -64,7 +64,7 @@ const baseSchema = new Schema({
     supplier: { type: Schema.Types.ObjectId, ref: 'Customers', require: true },
     contacts: [{ type: Schema.Types.ObjectId, ref: 'Customers' }],
     ref_client: { type: String, default: "" },
-    offer: { type: ObjectId, ref: 'offer' },
+    offer: { type: ObjectId, ref: 'order' },
     datec: {
         type: Date,
         default: Date.now,
@@ -132,7 +132,6 @@ const baseSchema = new Schema({
     salesPerson: { type: ObjectId, ref: 'Employees' }, //commercial_id
     salesTeam: { type: ObjectId, ref: 'Department' },
     entity: String,
-    offer: { type: Schema.Types.ObjectId, ref: 'offer' },
     optional: Schema.Types.Mixed,
     delivery_mode: { type: String, default: "Comptoir" },
     billing: { type: Schema.Types.ObjectId, ref: 'Customers' },
@@ -181,17 +180,12 @@ const baseSchema = new Schema({
         }
     }],*/
     weight: { type: Number, default: 0 }, // Poids total
-    lines: [{
+    /*lines: [{
         _id: false,
         //pu: {type: Number, default: 0},
         type: { type: String, default: 'product' }, //Used for subtotal
         refProductSupplier: String, //Only for an order Supplier
         qty: { type: Number, default: 0 },
-        /*taxes: [{
-            _id: false,
-            taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
-            value: { type: Number }
-        }],*/
         //price_base_type: String,
         //title: String,
         priceSpecific: { type: Boolean, default: false },
@@ -208,15 +202,11 @@ const baseSchema = new Schema({
             taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
             value: { type: Number }
         }],
-        /*total_ttc: {
-            type: Number,
-            default: 0
-        },*/
         discount: { type: Number, default: 0 },
         total_ht: { type: Number, default: 0, set: setPrice },
         //weight: { type: Number, default: 0 },
         optional: { type: Schema.Types.Mixed }
-    }],
+    }],*/
     history: [{
         date: { type: Date, default: Date.now },
         author: {
@@ -306,6 +296,50 @@ baseSchema.statics.query = function(options, callback) {
         });
 };
 
+// Read Order
+baseSchema.statics.getById = function(id, callback) {
+    var self = this;
+
+    //TODO Check ACL here
+    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    var query = {};
+
+    if (checkForHexRegExp.test(id))
+        query = {
+            _id: id
+        };
+    else
+        query = {
+            ref: id
+        };
+
+    //console.log(query);
+
+    self.findOne(query, "-latex")
+        .populate("contacts", "name phone email")
+        .populate({
+            path: "supplier",
+            select: "name salesPurchases",
+            populate: { path: "salesPurchases.priceList" }
+        })
+        .populate({
+            path: "lines.product",
+            select: "taxes info weight units",
+            //populate: { path: "taxes.taxeId" }
+        })
+        .populate({
+            path: "lines.total_taxes.taxeId"
+        })
+        .populate({
+            path: "total_taxes.taxeId"
+        })
+        .populate("createdBy", "username")
+        .populate("editedBy", "username")
+        //.populate("offer", "ref total_ht")
+        .exec(callback);
+};
+//orderSupplierSchema.statics.getById = getById;
+
 /**
  * Methods
  */
@@ -372,7 +406,7 @@ function saveOrder(next) {
         next();
 
     });
-};
+}
 
 function saveQuotation(next) {
     var self = this;
@@ -413,7 +447,8 @@ function saveQuotation(next) {
         next();
 
     });
-};
+}
+
 
 orderCustomerSchema.pre('save', saveOrder);
 orderSupplierSchema.pre('save', saveOrder);

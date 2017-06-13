@@ -666,6 +666,7 @@ exports.install = function() {
     F.route('/erp/api/product/family/', productFamily.createProductFamily, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/family/{id}', productFamily.updateProductFamily, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/product/family/{id}', productFamily.deleteProductFamily, ['delete', 'authorize']);
+    F.route('/erp/api/product/family/{id}', productFamily.cloneProductFamily, ['post', 'json', 'authorize'], 512);
 
     var productAttributes = new ProductAttributes();
     F.route('/erp/api/product/attributes', productAttributes.getAllProductAttributes, ['authorize']);
@@ -4082,6 +4083,54 @@ ProductFamily.prototype = {
         });
 
         self.stream('application/text', stream, 'Coef_' + date.getFullYear().toString() + "_" + (date.getMonth() + 1).toString() + ".csv");
+    },
+    cloneProductFamily: function(id) {
+        var self = this;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+        var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
+        var model;
+
+        ProductFamilyModel.findById(id, function(err, doc) {
+            var family = doc.toObject();
+
+            //console.log(doc);
+
+            delete family._id;
+            delete family.__v;
+
+            family.langs[0].name += "-copy";
+
+            model = new ProductFamilyModel(family);
+            model.save(function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                //clone prices
+                FamilyCoefModel.find({ family: doc._id }, function(err, coefs) {
+
+                    async.each(coefs, function(coef, aCb) {
+                            var newCoef = coef.toObject();
+
+                            newCoef.family = result._id;
+                            delete newCoef._id;
+                            delete newCoef.__v;
+                            delete newCoef.createdAt;
+                            delete newCoef.updatedAt;
+                            newCoef.createdBy = self.user._id;
+                            newCoef.editedBy = self.user._id;
+
+                            newCoef = new FamilyCoefModel(newCoef);
+                            newCoef.save(aCb);
+                        },
+                        function(err) {
+                            if (err)
+                                return self.throw500(err);
+
+                            self.json(result);
+                        });
+                });
+            });
+        });
     }
 };
 
