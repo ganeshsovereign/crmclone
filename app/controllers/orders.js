@@ -372,7 +372,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             for (var i = 0; i < object.lines.length; i++)
                 delete object.lines[i]._id; //Force create a new lines
 
-            var order = new Orders.order(object);
+            if (object.forSales == true)
+                var order = new Orders.order(object);
+            else
+                var order = new Orders.orderSupplier(object);
 
             //create new order
             order.$save(function(response) {

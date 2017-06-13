@@ -31,10 +31,11 @@
                                 <div class="portlet light bordered">
                                     <div class="row">
                                         <div class=" col-md-6 col-sm-12">
-                                            <crm-id label="@(companies:Customer)" ng-if="!object._id" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
+                                            <crm-id label="@(companies:Customer)" ng-if="!object._id" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete?fournisseur=SUPPLIER&fournisseur=SUBCONTRACTOR" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)"
+                                                class="form-group form-md-line-input"></crm-id>
 
                                             <div class="form-group form-md-line-input" ng-if="!object._id">
-                                                <select class="form-control" id="entity" ng-model="object.entity" ng-options="entity.id as entity.name for entity in entityList"></select>
+                                                <select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
                                                 <label for="entity">@(Entity)</label>
                                             </div>
 
@@ -44,17 +45,17 @@
                                             </div>
 
                                             <div ng-hide="!object._id" ng-if="module('ordersupplier')" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> <a ui-sref="offer.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
+                                                <div class="form-control form-control-static"> <a ui-sref="offersupplier.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
                                                 <label for="ref_client">@(propal:RefQuotation)</label>
                                             </div>
 
                                             <div ng-if="object.order" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> <a ui-sref="order.show({id:object.order._id})">{{object.order.ref}}</a> </div>
+                                                <div class="form-control form-control-static"> <a ui-sref="ordersupplier.show({id:object.order._id})">{{object.order.ref}}</a> </div>
                                                 <label for="ref_client">@(orders:RefOrderShort)</label>
                                             </div>
 
                                             <div ng-if="object.orders" ng-repeat="order in object.orders" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> <a ui-sref="order.show({id:order._id})">{{order.ref}}</a> </div>
+                                                <div class="form-control form-control-static"> <a ui-sref="ordersupplier.show({id:order._id})">{{order.ref}}</a> </div>
                                                 <label for="ref_client">@(orders:RefOrderShort)</label>
                                             </div>
 

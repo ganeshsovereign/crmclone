@@ -233,7 +233,7 @@ var orderCustomerSchema = new Schema({
     offer: { type: ObjectId, ref: 'quotationCustomer' }
 });
 var orderSupplierSchema = new Schema({
-    offer: { type: ObjectId, ref: 'quotationCustomer' }
+    offer: { type: ObjectId, ref: 'quotationSupplier' }
 });
 
 var quotationCustomerSchema = new Schema({
