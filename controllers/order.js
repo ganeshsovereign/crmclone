@@ -207,6 +207,7 @@ Object.prototype = {
      */
     clone: function(id, self) {
         var OrderModel = MODEL('order').Schema;
+        var self = this;
 
         Order(id, function(err, doc) {
             var order = doc.toObject();
@@ -256,6 +257,11 @@ Object.prototype = {
 
         Order(id, function(err, order) {
             order = _.extend(order, self.body);
+
+            order.editedBy = self.user._id;
+
+            if (!order.createdBy)
+                order.createdBy = self.user._id;
             //console.log(order.history);
 
             if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
