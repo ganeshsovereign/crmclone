@@ -64,7 +64,6 @@ const baseSchema = new Schema({
     supplier: { type: Schema.Types.ObjectId, ref: 'Customers', require: true },
     contacts: [{ type: Schema.Types.ObjectId, ref: 'Customers' }],
     ref_client: { type: String, default: "" },
-    offer: { type: ObjectId, ref: 'order' },
     datec: {
         type: Date,
         default: Date.now,
@@ -230,11 +229,19 @@ if (CONFIG('storing-files')) {
 
 const Order = mongoose.model('order', baseSchema);
 
-var orderCustomerSchema = new Schema({});
-var orderSupplierSchema = new Schema({});
+var orderCustomerSchema = new Schema({
+    offer: { type: ObjectId, ref: 'quotationCustomer' }
+});
+var orderSupplierSchema = new Schema({
+    offer: { type: ObjectId, ref: 'quotationCustomer' }
+});
 
-var quotationCustomerSchema = new Schema({});
-var quotationSupplierSchema = new Schema({});
+var quotationCustomerSchema = new Schema({
+    orders: [{ type: ObjectId, ref: 'orderCustomer' }]
+});
+var quotationSupplierSchema = new Schema({
+    orders: [{ type: ObjectId, ref: 'orderSupplier' }]
+});
 
 // Gets listing
 baseSchema.statics.query = function(options, callback) {
@@ -328,12 +335,13 @@ baseSchema.statics.getById = function(id, callback) {
         })
         .populate("createdBy", "username")
         .populate("editedBy", "username")
-        //.populate("offer", "ref total_ht")
+        .populate("offer", "ref total_ht forSales")
+        .populate("orders", "ref total_ht forSales")
         .exec(function(err, order) {
             if (err)
                 return callback(err);
 
-            OrderRowModel.find({ order: order._id })
+            OrderRowModel.find({ order: order._id, isDeleted: { $ne: true } })
                 .populate({
                     path: "product",
                     select: "taxes info weight units",
@@ -421,37 +429,26 @@ function saveQuotation(next) {
     if (this.isNew)
         this.history = [];
 
-    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier, function(err, result) {
-        if (err)
-            return next(err);
+    if (self.isNew && !self.ref)
+        return SeqModel.inc("QUOTATION", function(seq, number) {
+            //console.log(seq);
+            self.ID = number;
+            EntityModel.findOne({
+                _id: self.entity
+            }, "cptRef", function(err, entity) {
+                if (err)
+                    console.log(err);
 
-        self.total_ht = result.total_ht;
-        self.total_taxes = result.total_taxes;
-        self.total_ttc = result.total_ttc;
-        self.weight = result.weight;
-
-        if (self.isNew && !self.ref)
-            return SeqModel.inc("QUOTATION", function(seq, number) {
-                //console.log(seq);
-                self.ID = number;
-                EntityModel.findOne({
-                    _id: self.entity
-                }, "cptRef", function(err, entity) {
-                    if (err)
-                        console.log(err);
-
-                    if (entity && entity.cptRef)
-                        self.ref = (self.forSales == true ? "PC" : "DA") + entity.cptRef + seq;
-                    else
-                        self.ref = (self.forSales == true ? "PC" : "DA") + seq;
-                    next();
-                });
+                if (entity && entity.cptRef)
+                    self.ref = (self.forSales == true ? "PC" : "DA") + entity.cptRef + seq;
+                else
+                    self.ref = (self.forSales == true ? "PC" : "DA") + seq;
+                next();
             });
+        });
 
-        self.ref = F.functions.refreshSeq(self.ref, self.datec);
-        next();
-
-    });
+    self.ref = F.functions.refreshSeq(self.ref, self.datec);
+    next();
 }
 
 

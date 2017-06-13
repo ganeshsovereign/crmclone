@@ -29,7 +29,7 @@ International Registered Trademark & Property of ToManage SAS
 //Orders service used for articles REST endpoint
 MetronicApp.factory("Orders", ['$resource', function($resource) {
     return {
-        offer: $resource('/erp/api/offer/:Id', { Id: '@_id' }, {
+        offer: $resource('/erp/api/order/:Id?quotation=true', { Id: '@_id' }, {
             update: { method: 'PUT' },
             clone: {
                 method: 'POST',
@@ -38,7 +38,7 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        offerSupplier: $resource('/erp/api/offer/:Id?forSales=false', { Id: '@_id' }, {
+        offerSupplier: $resource('/erp/api/order/:Id?forSales=false&quotation=true', { Id: '@_id' }, {
             update: { method: 'PUT' },
             clone: {
                 method: 'POST',

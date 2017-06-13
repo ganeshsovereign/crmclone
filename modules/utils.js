@@ -277,6 +277,15 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
     var taxesId = {};
     var taxes = [];
 
+    if (!lines || !lines.length)
+        return callback(null, {
+            total_ht: total_ht,
+            total_taxes: total_taxes,
+            total_ttc: total_ttc,
+            weight: weight,
+            count: count
+        });
+
     async.waterfall([
             function(cb) {
                 if (!societeId)

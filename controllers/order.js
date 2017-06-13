@@ -54,10 +54,7 @@ exports.install = function() {
     F.route('/erp/api/order/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/order', object.all, ['authorize']);
     F.route('/erp/api/order', object.create, ['post', 'json', 'authorize'], 512);
-    F.route('/erp/api/order/{orderId}', function(id) {
-        if (this.query.clone)
-            object.clone(id, this);
-    }, ['post', 'json', 'authorize'], 512);
+    F.route('/erp/api/order/{orderId}', object.clone, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/order/{orderId}', object.show, ['authorize']);
     F.route('/erp/api/order/{orderId}', object.update, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/order/{orderId}', object.destroy, ['delete', 'authorize']);
@@ -71,51 +68,8 @@ exports.install = function() {
 
 function Object() {}
 
-// Read an order
-/*function Order(id, OrderModel, cb) {
-    var self = this;
-
-    //TODO Check ACL here
-    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
-    var query = {};
-
-    if (checkForHexRegExp.test(id))
-        query = {
-            _id: id
-        };
-    else
-        query = {
-            ref: id
-        };
-
-    //console.log(query);
-
-    OrderModel.findOne(query, "-latex")
-        .populate("contacts", "name phone email")
-        .populate({
-            path: "supplier",
-            select: "name salesPurchases",
-            populate: { path: "salesPurchases.priceList" }
-        })
-        .populate({
-            path: "lines.product",
-            select: "taxes info weight units",
-            //populate: { path: "taxes.taxeId" }
-        })
-        .populate({
-            path: "lines.total_taxes.taxeId"
-        })
-        .populate({
-            path: "total_taxes.taxeId"
-        })
-        .populate("createdBy", "username")
-        .populate("editedBy", "username")
-        //.populate("offer", "ref total_ht")
-        .exec(cb);
-}*/
-
 Object.prototype = {
-    listLines: function() {
+    /*listLines: function() {
         var self = this;
         var OrderModel = MODEL('order').Schema;
 
@@ -127,13 +81,23 @@ Object.prototype = {
 
             self.json(doc.lines);
         });
-    },
+    },*/
     /**
      * Create an order
      */
     create: function() {
         var self = this;
-        var OrderModel = MODEL('order').Schema;
+        if (self.query.quotation === 'true') {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.QuotationSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.QuotationCustomer;
+        } else {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.OrderSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.OrderCustomer;
+        }
         var order;
 
         if (self.query.forSales == "false")
@@ -203,11 +167,25 @@ Object.prototype = {
     /**
      * Clone an order
      */
-    clone: function(id, self) {
-        var OrderModel = MODEL('order').Schema;
+    clone: function(id) {
+        var OrderRowsModel = MODEL('orderRows').Schema;
         var self = this;
 
-        Order(id, function(err, doc) {
+        if (self.query.quotation === 'true') {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.QuotationSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.QuotationCustomer;
+        } else {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.OrderSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.OrderCustomer;
+        }
+
+        var rows = self.body.lines;
+
+        OrderModel.findById(id, function(err, doc) {
             var order = doc.toObject();
             delete order._id;
             delete order.__v;
@@ -228,21 +206,41 @@ Object.prototype = {
             order.createdBy = self.user._id;
             order.editedBy = self.user._id;
 
-            // reset delivery qty
-            for (var i = 0, len = order.lines.length; i < len; i++)
-                order.lines[i].qty_deliv = 0;
-
             if (!order.entity)
                 order.entity = self.user.entity;
 
             //console.log(order);
 
-            order.save(function(err, doc) {
-                if (err) {
+            order.save(function(err, order) {
+                if (err)
                     return console.log(err);
-                }
 
-                self.json(doc);
+                async.each(rows, function(orderRow, aCb) {
+                        orderRow.order = order._id;
+
+                        if (orderRow.isDeleted && !orderRow._id)
+                            return aCb();
+
+                        delete orderRow._id;
+                        delete orderRow.__v;
+                        delete orderRow.createdAt;
+
+                        var orderRow = new OrderRowsModel(orderRow);
+                        orderRow.save(aCb);
+                    },
+                    function(err) {
+                        if (err) {
+                            console.log(err);
+                            return self.json({
+                                errorNotify: {
+                                    title: 'Erreur',
+                                    message: err
+                                }
+                            });
+                        }
+
+                        self.json(order);
+                    });
             });
         });
     },
@@ -254,10 +252,17 @@ Object.prototype = {
         var OrderRowsModel = MODEL('orderRows').Schema;
         //console.log("update");
 
-        if (self.body.forSales == false)
-            var OrderModel = MODEL('order').Schema.OrderSupplier;
-        else
-            var OrderModel = MODEL('order').Schema.OrderCustomer;
+        if (self.query.quotation === 'true') {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.QuotationSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.QuotationCustomer;
+        } else {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.OrderSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.OrderCustomer;
+        }
 
         var rows = self.body.lines;
         for (var i = 0; i < rows.length; i++)
@@ -293,62 +298,18 @@ Object.prototype = {
                 //console.log(rows);
                 //update all rows
                 async.each(rows, function(orderRow, aCb) {
-                    orderRow.order = order._id;
+                        orderRow.order = order._id;
 
-                    if (orderRow.isDeleted) {
-                        if (!orderRow._id)
+                        if (orderRow.isDeleted && !orderRow._id)
                             return aCb();
 
-                        return OrderRowsModel.remove({ _id: orderRow._id }, aCb);
-                    }
+                        if (orderRow._id)
+                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, aCb);
 
-                    if (orderRow._id)
-                        return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, aCb);
-
-                    var orderRow = new OrderRowsModel(orderRow);
-                    orderRow.save(aCb);
-                }, function(err) {
-                    if (err) {
-                        console.log(err);
-                        return self.json({
-                            errorNotify: {
-                                title: 'Erreur',
-                                message: err
-                            }
-                        });
-                    }
-
-                    if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
-                        return console.log("Mail order NOT");
-
-                        // Send an email
-                        var mailOptions = {
-                            from: "ERP Speedealing<no-reply@speedealing.com>",
-                            to: "Plan 92 Chaumeil<plan92@imprimeriechaumeil.fr>",
-                            cc: "herve.prot@symeos.com",
-                            subject: "Nouvelle commande " + order.supplier.name + " - " + order.ref + " dans l'ERP"
-                        };
-
-                        mailOptions.text = "La commande " + order.ref + " vient d'etre crée \n";
-                        mailOptions.text += "Pour consulter la commande cliquer sur ce lien : ";
-                        mailOptions.text += '<a href="http://erp.chaumeil.net/commande/fiche.php?id=' + order._id + '">' + order.ref + '</a>';
-                        mailOptions.text += "\n\n";
-
-                        // send mail with defined transport object
-                        smtpTransporter.sendMail(mailOptions, function(error, info) {
-                            if (error) {
-                                console.log(error);
-                            } else {
-                                console.log("Message sent: " + info.response);
-                            }
-
-                            // if you don't want to use this transport object anymore, uncomment following line
-                            smtpTransporter.close(); // shut down the connection pool, no more messages
-                        });
-                    }
-
-
-                    order.save(function(err, doc) {
+                        var orderRow = new OrderRowsModel(orderRow);
+                        orderRow.save(aCb);
+                    },
+                    function(err) {
                         if (err) {
                             console.log(err);
                             return self.json({
@@ -359,15 +320,56 @@ Object.prototype = {
                             });
                         }
 
-                        //console.log(doc);
-                        doc = doc.toObject();
-                        doc.successNotify = {
-                            title: "Success",
-                            message: "Commande enregistrée"
-                        };
-                        self.json(doc);
+                        if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
+                            return console.log("Mail order NOT");
+
+                            // Send an email
+                            var mailOptions = {
+                                from: "ERP Speedealing<no-reply@speedealing.com>",
+                                to: "Plan 92 Chaumeil<plan92@imprimeriechaumeil.fr>",
+                                cc: "herve.prot@symeos.com",
+                                subject: "Nouvelle commande " + order.supplier.name + " - " + order.ref + " dans l'ERP"
+                            };
+
+                            mailOptions.text = "La commande " + order.ref + " vient d'etre crée \n";
+                            mailOptions.text += "Pour consulter la commande cliquer sur ce lien : ";
+                            mailOptions.text += '<a href="http://erp.chaumeil.net/commande/fiche.php?id=' + order._id + '">' + order.ref + '</a>';
+                            mailOptions.text += "\n\n";
+
+                            // send mail with defined transport object
+                            smtpTransporter.sendMail(mailOptions, function(error, info) {
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                    console.log("Message sent: " + info.response);
+                                }
+
+                                // if you don't want to use this transport object anymore, uncomment following line
+                                smtpTransporter.close(); // shut down the connection pool, no more messages
+                            });
+                        }
+
+
+                        order.save(function(err, doc) {
+                            if (err) {
+                                console.log(err);
+                                return self.json({
+                                    errorNotify: {
+                                        title: 'Erreur',
+                                        message: err
+                                    }
+                                });
+                            }
+
+                            //console.log(doc);
+                            doc = doc.toObject();
+                            doc.successNotify = {
+                                title: "Success",
+                                message: "Commande enregistrée"
+                            };
+                            self.json(doc);
+                        });
                     });
-                });
             });
         });
     },
@@ -375,26 +377,52 @@ Object.prototype = {
      * Delete an order
      */
     destroy: function(id) {
-        var OrderModel = MODEL('order').Schema;
         var self = this;
+
+        if (self.query.quotation === 'true') {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.QuotationSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.QuotationCustomer;
+        } else {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.OrderSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.OrderCustomer;
+        }
+
+        var OrderRowsModel = MODEL('orderRows').Schema;
 
         OrderModel.update({
             _id: id
         }, { $set: { isremoved: true, Status: 'CANCELED', total_ht: 0, total_ttc: 0, total_tva: [] } }, function(err) {
             if (err)
-                self.throw500(err);
-            else
-                self.json({});
+                return self.throw500(err);
 
+            OrderRowsModel.update({ order: id }, { $set: { isDeleted: true } }, function(err) {
+                if (err)
+                    return self.throw500(err);
+                self.json({});
+            });
         });
     },
     readDT: function() {
         var self = this;
 
-        if (self.query.forSales == "false")
-            var OrderModel = MODEL('order').Schema.OrderSupplier;
-        else
-            var OrderModel = MODEL('order').Schema.OrderCustomer;
+        var link = 'order';
+
+        if (self.query.quotation === 'true') {
+            var link = 'offer';
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.QuotationSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.QuotationCustomer;
+        } else {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.OrderSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.OrderCustomer;
+        }
 
         var SocieteModel = MODEL('Customers').Schema;
 
@@ -465,9 +493,9 @@ Object.prototype = {
                     res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
                     if (row.forSales)
-                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + '/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
                     else
-                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/ordersupplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + 'supplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
@@ -486,10 +514,17 @@ Object.prototype = {
      */
     show: function(id) {
         var self = this;
-        if (self.query.forSales == "false")
-            var OrderModel = MODEL('order').Schema.OrderSupplier;
-        else
-            var OrderModel = MODEL('order').Schema.OrderCustomer;
+        if (self.query.quotation === 'true') {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.QuotationSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.QuotationCustomer;
+        } else {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.OrderSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.OrderCustomer;
+        }
 
         var ObjectId = MODULE('utils').ObjectId;
 
@@ -612,45 +647,6 @@ Object.prototype = {
 
                 self.json(result.order);
             });
-    },
-    /**
-     * List of orders
-     */
-    all: function(req, res) {
-        var query = {};
-
-        if (req.query) {
-            for (var i in req.query) {
-                if (i == "query") {
-                    var status = ["SHIPPING", "CLOSED", "CANCELED", "BILLING"];
-
-                    switch (req.query[i]) {
-                        case "NOW":
-                            query.Status = {
-                                "$nin": status
-                            };
-                            break;
-                        case "CLOSED":
-                            query.Status = {
-                                "$in": status
-                            };
-                            break;
-                        default:
-                            break;
-                    }
-                } else
-                    query[i] = req.query[i];
-            }
-        }
-
-        CommandeModel.find(query, "-files -latex", function(err, orders) {
-            if (err)
-                return res.render('error', {
-                    status: 500
-                });
-
-            res.json(orders);
-        });
     },
     /**
      * Add a file in an order
@@ -1017,48 +1013,6 @@ Object.prototype = {
             });
         });
     },
-    /*createDelivery: function (self) {
-     var DeliveryModel = MODEL('delivery').Schema;
-     
-     self.body.order = self.body._id;
-     delete self.body._id;
-     delete self.body.Status;
-     delete self.body.latex;
-     delete self.body.datec;
-     delete self.body.history;
-     self.body.datedl = self.body.date_livraison;
-     //delete self.body.datel;
-     delete self.body.createdAt;
-     delete self.body.updatedAt;
-     delete self.body.ref;
-     self.body.author.id = self.user.id;
-     self.body.author.name = self.user.name;
-     //delete self.body.notes;
-     
-     self.body.contacts = _.pluck(self.body.contacts, '_id');
-     
-     //console.log(self.body.bl);
-     
-     //Copy first address BL
-     self.body.name = self.body.bl[0].name;
-     self.body.address = self.body.bl[0].address;
-     self.body.zip = self.body.bl[0].zip;
-     self.body.town = self.body.bl[0].town;
-     
-     for (var i = 0; i < self.body.lines.length; i++) {
-     self.body.lines[i].qty_order = self.body.lines[i].qty;
-     }
-     
-     var delivery = new DeliveryModel(self.body);
-     
-     delivery.save(function (err, doc) {
-     if (err)
-     console.log(err);
-     
-     console.log(doc);
-     self.json(doc);
-     });
-     },*/
     download: function(id) {
         var self = this;
         var OrderModel = MODEL('order').Schema;

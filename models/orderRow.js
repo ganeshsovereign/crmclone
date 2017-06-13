@@ -35,7 +35,8 @@ var OrderRowSchema = mongoose.Schema({
     //nominalCode: { type: Number, default: 0 },
     channel: { type: ObjectId, ref: 'integrations' },
     integrationId: String,
-    sequence: Number // sequence
+    sequence: Number, // sequence
+    isDeleted: { type: Boolean, defaut: false }
 }, { collection: 'orderRows' });
 
 OrderRowSchema.plugin(timestamps);

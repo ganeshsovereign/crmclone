@@ -367,15 +367,23 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             delete object.updatedAt;
             delete object.ref;
             delete object.history;
+            delete object._type;
+
+            for (var i = 0; i < object.lines.length; i++)
+                delete object.lines[i]._id; //Force create a new lines
 
             var order = new Orders.order(object);
 
             //create new order
             order.$save(function(response) {
-                $scope.object.Status = 'SIGNED';
-                $scope.object.orders.push(response._id);
-                $scope.object.$update(function(object) {
-                    $rootScope.$state.go("order.show", { id: response._id });
+                response.lines = object.lines;
+                // Add lines and re-save
+                response.$update(function(response) {
+                    $scope.object.Status = 'SIGNED';
+                    $scope.object.orders.push(response._id);
+                    $scope.object.$update(function(object) {
+                        $rootScope.$state.go("order.show", { id: response._id });
+                    });
                 });
             });
         };
@@ -698,7 +706,7 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/offer/dt" // ajax source
+                        "url": "/erp/api/order/dt?quotation=true" // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -1634,7 +1642,7 @@ MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/offer/dt?forSales=false" // ajax source
+                        "url": "/erp/api/order/dt?quotation=true&forSales=false" // ajax source
                     },
                     "order": [
                         [1, "desc"]
