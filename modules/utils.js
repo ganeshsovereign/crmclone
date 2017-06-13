@@ -298,12 +298,16 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 _.each(lines, function(line) {
                     if (!line.product)
                         return;
+                    if (line.isDeleted)
+                        return;
+                    if (line.type === 'SUBTOTAL')
+                        return;
 
                     _.each(line.total_taxes, function(taxe) {
                         if (taxe.taxeId && taxe.taxeId._id)
                             taxe.taxeId = taxe.taxeId._id;
 
-                        console.log(taxe);
+                        //console.log(taxe);
                         return rates.push(taxe.taxeId.toString());
                     });
                 });
@@ -325,6 +329,10 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
                     //Add VAT
                     for (var i = 0, length = lines.length; i < length; i++) {
+                        if (lines[i].type === 'SUBTOTAL')
+                            continue;
+                        if (lines[i].isDeleted)
+                            continue;
 
                         //Update TAXES
                         if (lines[i].total_taxes.length)
@@ -407,6 +415,8 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     subtotal = 0;
                     continue;
                 }
+                if (lines[i].isDeleted)
+                    continue;
 
                 //console.log(object.lines[i].total_ht);
                 total_ht += lines[i].total_ht;

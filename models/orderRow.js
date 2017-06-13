@@ -12,7 +12,7 @@ var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
 
 var OrderRowSchema = mongoose.Schema({
-    product: { type: ObjectId, ref: 'Product' },
+    product: { type: ObjectId, ref: 'product' },
     product_type: String,
     order: { type: ObjectId, ref: 'order' },
     warehouse: { type: ObjectId, ref: 'warehouse' },
@@ -35,7 +35,7 @@ var OrderRowSchema = mongoose.Schema({
     //nominalCode: { type: Number, default: 0 },
     channel: { type: ObjectId, ref: 'integrations' },
     integrationId: String,
-    sequence: Number
+    sequence: Number // sequence
 }, { collection: 'orderRows' });
 
 OrderRowSchema.plugin(timestamps);

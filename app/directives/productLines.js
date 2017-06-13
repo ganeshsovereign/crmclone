@@ -201,8 +201,8 @@ MetronicApp.directive('productLines', ['$http',
                         qty: null
                     });
 
-                    for (var i in linesModel.lines) {
-                        linesModel.lines[i].idLine = i;
+                    for (var i in scope.linesModel.lines) {
+                        scope.linesModel.lines[i].idLine = i;
                     }
                 };
 

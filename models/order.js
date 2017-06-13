@@ -299,6 +299,7 @@ baseSchema.statics.query = function(options, callback) {
 // Read Order
 baseSchema.statics.getById = function(id, callback) {
     var self = this;
+    var OrderRowModel = MODEL('orderRows').Schema;
 
     //TODO Check ACL here
     var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
@@ -323,20 +324,35 @@ baseSchema.statics.getById = function(id, callback) {
             populate: { path: "salesPurchases.priceList" }
         })
         .populate({
-            path: "lines.product",
-            select: "taxes info weight units",
-            //populate: { path: "taxes.taxeId" }
-        })
-        .populate({
-            path: "lines.total_taxes.taxeId"
-        })
-        .populate({
             path: "total_taxes.taxeId"
         })
         .populate("createdBy", "username")
         .populate("editedBy", "username")
         //.populate("offer", "ref total_ht")
-        .exec(callback);
+        .exec(function(err, order) {
+            if (err)
+                return callback(err);
+
+            OrderRowModel.find({ order: order._id })
+                .populate({
+                    path: "product",
+                    select: "taxes info weight units",
+                    //populate: { path: "taxes.taxeId" }
+                })
+                .populate({
+                    path: "total_taxes.taxeId"
+                })
+                .sort({ sequence: 1 })
+                .exec(function(err, rows) {
+                    if (err)
+                        return callback(err);
+
+                    order = order.toObject();
+                    order.lines = rows || [];
+
+                    return callback(err, order);
+                });
+        });
 };
 //orderSupplierSchema.statics.getById = getById;
 
@@ -373,39 +389,28 @@ function saveOrder(next) {
     if (this.isNew)
         this.history = [];
 
-    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier, function(err, result) {
-        if (err)
-            return next(err);
+    if (self.isNew && !self.ref)
+        return SeqModel.inc("ORDER", function(seq, number) {
+            //console.log(seq);
+            self.ID = number;
+            EntityModel.findOne({
+                _id: self.entity
+            }, "cptRef", function(err, entity) {
+                if (err)
+                    console.log(err);
 
-        self.total_ht = result.total_ht;
-        self.total_taxes = result.total_taxes;
-        self.total_ttc = result.total_ttc;
-        self.weight = result.weight;
-
-        if (self.isNew && !self.ref)
-            return SeqModel.inc("ORDER", function(seq, number) {
-                //console.log(seq);
-                self.ID = number;
-                EntityModel.findOne({
-                    _id: self.entity
-                }, "cptRef", function(err, entity) {
-                    if (err)
-                        console.log(err);
-
-                    if (entity && entity.cptRef)
-                        self.ref = (self.forSales == true ? "CO" : "CF") + entity.cptRef + seq;
-                    else
-                        self.ref = (self.forSales == true ? "CO" : "CF") + seq;
-                    next();
-                });
+                if (entity && entity.cptRef)
+                    self.ref = (self.forSales == true ? "CO" : "CF") + entity.cptRef + seq;
+                else
+                    self.ref = (self.forSales == true ? "CO" : "CF") + seq;
+                next();
             });
+        });
 
-        if (self.date_livraison)
-            self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+    if (self.date_livraison)
+        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
 
-        next();
-
-    });
+    next();
 }
 
 function saveQuotation(next) {

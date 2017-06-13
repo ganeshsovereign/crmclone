@@ -250,60 +250,121 @@ Object.prototype = {
      */
     update: function(id) {
         var self = this;
+        var OrderRowsModel = MODEL('orderRows').Schema;
         //console.log("update");
 
-        Order(id, function(err, order) {
-            order = _.extend(order, self.body);
-            //console.log(order.history);
+        if (self.body.forSales == false)
+            var OrderModel = MODEL('order').Schema.OrderSupplier;
+        else
+            var OrderModel = MODEL('order').Schema.OrderCustomer;
 
-            if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
-                return console.log("Mail order NOT");
+        var rows = self.body.lines;
+        for (var i = 0; i < rows.length; i++)
+            rows[i].sequence = i;
 
-                // Send an email
-                var mailOptions = {
-                    from: "ERP Speedealing<no-reply@speedealing.com>",
-                    to: "Plan 92 Chaumeil<plan92@imprimeriechaumeil.fr>",
-                    cc: "herve.prot@symeos.com",
-                    subject: "Nouvelle commande " + order.supplier.name + " - " + order.ref + " dans l'ERP"
-                };
 
-                mailOptions.text = "La commande " + order.ref + " vient d'etre crée \n";
-                mailOptions.text += "Pour consulter la commande cliquer sur ce lien : ";
-                mailOptions.text += '<a href="http://erp.chaumeil.net/commande/fiche.php?id=' + order._id + '">' + order.ref + '</a>';
-                mailOptions.text += "\n\n";
+        //delete self.body.rows;
 
-                // send mail with defined transport object
-                smtpTransporter.sendMail(mailOptions, function(error, info) {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log("Message sent: " + info.response);
+        self.body.editedBy = self.user._id;
+
+        MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
                     }
-
-                    // if you don't want to use this transport object anymore, uncomment following line
-                    smtpTransporter.close(); // shut down the connection pool, no more messages
                 });
             }
 
+            self.body.total_ht = result.total_ht;
+            self.body.total_taxes = result.total_taxes;
+            self.body.total_ttc = result.total_ttc;
+            self.body.weight = result.weight;
 
-            order.save(function(err, doc) {
-                if (err) {
-                    console.log(err);
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
+            OrderModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, order) {
+                //order = _.extend(order, self.body);
+                //console.log(order.history);
+                //console.log(rows);
+                //update all rows
+                async.each(rows, function(orderRow, aCb) {
+                    orderRow.order = order._id;
+
+                    if (orderRow.isDeleted) {
+                        if (!orderRow._id)
+                            return aCb();
+
+                        return OrderRowsModel.remove({ _id: orderRow._id }, aCb);
+                    }
+
+                    if (orderRow._id)
+                        return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, aCb);
+
+                    var orderRow = new OrderRowsModel(orderRow);
+                    orderRow.save(aCb);
+                }, function(err) {
+                    if (err) {
+                        console.log(err);
+                        return self.json({
+                            errorNotify: {
+                                title: 'Erreur',
+                                message: err
+                            }
+                        });
+                    }
+
+
+                    if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
+                        return console.log("Mail order NOT");
+
+                        // Send an email
+                        var mailOptions = {
+                            from: "ERP Speedealing<no-reply@speedealing.com>",
+                            to: "Plan 92 Chaumeil<plan92@imprimeriechaumeil.fr>",
+                            cc: "herve.prot@symeos.com",
+                            subject: "Nouvelle commande " + order.supplier.name + " - " + order.ref + " dans l'ERP"
+                        };
+
+                        mailOptions.text = "La commande " + order.ref + " vient d'etre crée \n";
+                        mailOptions.text += "Pour consulter la commande cliquer sur ce lien : ";
+                        mailOptions.text += '<a href="http://erp.chaumeil.net/commande/fiche.php?id=' + order._id + '">' + order.ref + '</a>';
+                        mailOptions.text += "\n\n";
+
+                        // send mail with defined transport object
+                        smtpTransporter.sendMail(mailOptions, function(error, info) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                console.log("Message sent: " + info.response);
+                            }
+
+                            // if you don't want to use this transport object anymore, uncomment following line
+                            smtpTransporter.close(); // shut down the connection pool, no more messages
+                        });
+                    }
+
+
+                    order.save(function(err, doc) {
+                        if (err) {
+                            console.log(err);
+                            return self.json({
+                                errorNotify: {
+                                    title: 'Erreur',
+                                    message: err
+                                }
+                            });
                         }
-                    });
-                }
 
-                //console.log(doc);
-                doc = doc.toObject();
-                doc.successNotify = {
-                    title: "Success",
-                    message: "Commande enregistrée"
-                };
-                self.json(doc);
+                        //console.log(doc);
+                        doc = doc.toObject();
+                        doc.successNotify = {
+                            title: "Success",
+                            message: "Commande enregistrée"
+                        };
+                        self.json(doc);
+                    });
+                });
             });
         });
     },
@@ -543,7 +604,7 @@ Object.prototype = {
                 if (err)
                     return self.throw500(err);
 
-                result.order = result.order.toObject();
+                //result.order = result.order.toObject();
                 result.order.deliveries = result.deliveries;
 
                 self.json(result.order);

@@ -218,9 +218,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
             for (var i = object.lines.length; i--;) {
                 // actually delete lines
-                if (object.lines[i].isDeleted) {
-                    object.lines.splice(i, 1);
-                }
+                //if (object.lines[i].isDeleted) {
+                //    object.lines.splice(i, 1);
+                //}
             }
             object.$update(function(response) {
                 //$location.path('societe/' + societe._id);
