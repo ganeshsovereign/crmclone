@@ -660,7 +660,8 @@ productSchema.virtual('total_pack') // Set Total price for a pack
             return 0;
 
         for (var i = 0, len = this.pack.length; i < len; i++) {
-            total += this.pack[i].qty * this.pack[i].id.totalCost;
+            if (this.pack[i].id)
+                total += this.pack[i].qty * this.pack[i].id.totalCost;
         }
 
         return total;
