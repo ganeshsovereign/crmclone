@@ -1053,32 +1053,46 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
                         [1, "desc"]
                     ], // set first column as a default sort by asc
                     "columns": [{
-                        data: 'bool'
-                    }, {
-                        "data": "ID"
-                    }, {
-                        "data": "supplier",
-                        defaultContent: ""
-                    }, {
-                        "data": "ref_client",
-                        defaultContent: ""
-                    }, {
-                        "data": "date_livraison",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
-                    }, {
-                        "data": "entity",
-                        defaultContent: ""
-                    }, {
-                        "data": "datec",
-                        defaultContent: ""
-                    }, {
-                        data: 'action'
-                    }]
+                            data: 'bool'
+                        }, {
+                            "data": "ID"
+                        }, {
+                            "data": "supplier",
+                            defaultContent: ""
+                        }, {
+                            "data": "ref_client",
+                            defaultContent: ""
+                        }, {
+                            "data": "date_livraison",
+                            defaultContent: ""
+                        }, {
+                            "data": "total_ht",
+                            defaultContent: ""
+                        }, {
+                            "data": "Status"
+                        }, {
+                            "data": "entity",
+                            defaultContent: ""
+                        }, {
+                            "data": "datec",
+                            defaultContent: ""
+                        }, {
+                            "data": "isPrinted",
+                            defaultContent: ""
+                        }, {
+                            "data": "isPicked",
+                            defaultContent: ""
+                        }, {
+                            "data": "isPacked",
+                            defaultContent: ""
+                        }, {
+                            "data": "isShipped",
+                            defaultContent: ""
+                        },
+                        {
+                            data: 'action'
+                        }
+                    ]
                 }
             });
 

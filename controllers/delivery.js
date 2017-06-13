@@ -348,11 +348,11 @@ Object.prototype = {
                     res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
                     // Add id
                     res.datatable.data[i].DT_RowId = row._id.toString();
-                    if (res.datatable.data[i].Status === 'SEND')
                     // Add color line 
-                        res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
+                    //if (res.datatable.data[i].Status === 'SEND')
+                    //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
                     // Add link company
-                    // Add link company
+
                     if (row.supplier && row.supplier._id)
                         res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
                     else {
@@ -360,6 +360,27 @@ Object.prototype = {
                             res.datatable.data[i].supplier = {};
                         res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
                     }
+                    //Printed Picked Packed Shipped
+                    if (res.datatable.data[i].isPrinted == null)
+                        res.datatable.data[i].isPrinted = '<span class="fa fa-print font-red"></span>';
+                    else
+                        res.datatable.data[i].isPrinted = '<span class="fa fa-print font-green"></span>';
+
+                    if (res.datatable.data[i].isPicked == null)
+                        res.datatable.data[i].isPicked = '<span class="fa fa-close font-red"></span>';
+                    else
+                        res.datatable.data[i].isPicked = '<span class="fa fa-check font-green"></span>';
+
+                    if (res.datatable.data[i].isPacked == null)
+                        res.datatable.data[i].isPacked = '<span class="fa fa-archive font-red"></span>';
+                    else
+                        res.datatable.data[i].isPacked = '<span class="fa fa-archive font-green"></span>';
+
+                    if (res.datatable.data[i].isShipped == null)
+                        res.datatable.data[i].isShipped = '<span class="fa fa-truck font-red"></span>';
+                    else
+                        res.datatable.data[i].isShipped = '<span class="fa fa-truck font-green"></span>';
+
                     // Action
                     res.datatable.data[i].action = '<a href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
