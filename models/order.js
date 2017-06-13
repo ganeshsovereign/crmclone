@@ -21,10 +21,15 @@ var Dict = INCLUDE('dict');
 var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
 
-/**
- * Article Schema
- */
-var orderSchema = new Schema({
+var options = {
+    collection: 'Orders',
+    discriminatorKey: '_type',
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
+};
+
+
+const baseSchema = new Schema({
     forSales: { type: Boolean, default: true },
     isremoved: Boolean,
     ref: { type: String, index: true },
@@ -59,7 +64,7 @@ var orderSchema = new Schema({
     supplier: { type: Schema.Types.ObjectId, ref: 'Customers', require: true },
     contacts: [{ type: Schema.Types.ObjectId, ref: 'Customers' }],
     ref_client: { type: String, default: "" },
-    offer: { type: ObjectId, ref: 'offer' },
+    offer: { type: ObjectId, ref: 'order' },
     datec: {
         type: Date,
         default: Date.now,
@@ -127,7 +132,6 @@ var orderSchema = new Schema({
     salesPerson: { type: ObjectId, ref: 'Employees' }, //commercial_id
     salesTeam: { type: ObjectId, ref: 'Department' },
     entity: String,
-    offer: { type: Schema.Types.ObjectId, ref: 'offer' },
     optional: Schema.Types.Mixed,
     delivery_mode: { type: String, default: "Comptoir" },
     billing: { type: Schema.Types.ObjectId, ref: 'Customers' },
@@ -176,17 +180,12 @@ var orderSchema = new Schema({
         }
     }],*/
     weight: { type: Number, default: 0 }, // Poids total
-    lines: [{
+    /*lines: [{
         _id: false,
         //pu: {type: Number, default: 0},
         type: { type: String, default: 'product' }, //Used for subtotal
         refProductSupplier: String, //Only for an order Supplier
         qty: { type: Number, default: 0 },
-        /*taxes: [{
-            _id: false,
-            taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
-            value: { type: Number }
-        }],*/
         //price_base_type: String,
         //title: String,
         priceSpecific: { type: Boolean, default: false },
@@ -203,15 +202,11 @@ var orderSchema = new Schema({
             taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
             value: { type: Number }
         }],
-        /*total_ttc: {
-            type: Number,
-            default: 0
-        },*/
         discount: { type: Number, default: 0 },
         total_ht: { type: Number, default: 0, set: setPrice },
         //weight: { type: Number, default: 0 },
         optional: { type: Schema.Types.Mixed }
-    }],
+    }],*/
     history: [{
         date: { type: Date, default: Date.now },
         author: {
@@ -222,22 +217,27 @@ var orderSchema = new Schema({
         Status: String,
         msg: String
     }]
-}, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
-});
+}, options);
 
-orderSchema.plugin(timestamps);
+baseSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
     var gridfs = INCLUDE(CONFIG('storing-files'));
-    orderSchema.plugin(gridfs.pluginGridFs, {
-        root: 'Commande'
+    baseSchema.plugin(gridfs.pluginGridFs, {
+        root: 'Orders'
     });
 }
 
+const Order = mongoose.model('order', baseSchema);
+
+var orderCustomerSchema = new Schema({});
+var orderSupplierSchema = new Schema({});
+
+var quotationCustomerSchema = new Schema({});
+var quotationSupplierSchema = new Schema({});
+
 // Gets listing
-orderSchema.statics.query = function(options, callback) {
+baseSchema.statics.query = function(options, callback) {
     var self = this;
 
     // options.search {String}
@@ -296,10 +296,76 @@ orderSchema.statics.query = function(options, callback) {
         });
 };
 
+// Read Order
+baseSchema.statics.getById = function(id, callback) {
+    var self = this;
+
+    //TODO Check ACL here
+    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    var query = {};
+
+    if (checkForHexRegExp.test(id))
+        query = {
+            _id: id
+        };
+    else
+        query = {
+            ref: id
+        };
+
+    //console.log(query);
+
+    self.findOne(query, "-latex")
+        .populate("contacts", "name phone email")
+        .populate({
+            path: "supplier",
+            select: "name salesPurchases",
+            populate: { path: "salesPurchases.priceList" }
+        })
+        .populate({
+            path: "lines.product",
+            select: "taxes info weight units",
+            //populate: { path: "taxes.taxeId" }
+        })
+        .populate({
+            path: "lines.total_taxes.taxeId"
+        })
+        .populate({
+            path: "total_taxes.taxeId"
+        })
+        .populate("createdBy", "username")
+        .populate("editedBy", "username")
+        //.populate("offer", "ref total_ht")
+        .exec(callback);
+};
+//orderSupplierSchema.statics.getById = getById;
+
 /**
- * Pre-save hook
+ * Methods
  */
-orderSchema.pre('save', function(next) {
+baseSchema.virtual('_status')
+    .get(function() {
+        var res_status = {};
+
+        var status = this.Status;
+        var statusList = exports.Status;
+
+        if (status && statusList.values[status] && statusList.values[status].label) {
+            res_status.id = status;
+            res_status.name = i18n.t("orders:" + statusList.values[status].label);
+            //this.status.name = statusList.values[status].label;
+            res_status.css = statusList.values[status].cssClass;
+        } else { // By default
+            res_status.id = status;
+            res_status.name = status;
+            res_status.css = "";
+        }
+
+        return res_status;
+    });
+
+
+function saveOrder(next) {
     var self = this;
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
@@ -340,15 +406,66 @@ orderSchema.pre('save', function(next) {
         next();
 
     });
-});
+}
 
-/*var statusList = {};
-Dict.dict({
-    dictName: "fk_order_status",
-    object: true
-}, function(err, docs) {
-    statusList = docs;
-});*/
+function saveQuotation(next) {
+    var self = this;
+    var SeqModel = MODEL('Sequence').Schema;
+    var EntityModel = MODEL('entity').Schema;
+
+    if (this.isNew)
+        this.history = [];
+
+    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier, function(err, result) {
+        if (err)
+            return next(err);
+
+        self.total_ht = result.total_ht;
+        self.total_taxes = result.total_taxes;
+        self.total_ttc = result.total_ttc;
+        self.weight = result.weight;
+
+        if (self.isNew && !self.ref)
+            return SeqModel.inc("QUOTATION", function(seq, number) {
+                //console.log(seq);
+                self.ID = number;
+                EntityModel.findOne({
+                    _id: self.entity
+                }, "cptRef", function(err, entity) {
+                    if (err)
+                        console.log(err);
+
+                    if (entity && entity.cptRef)
+                        self.ref = (self.forSales == true ? "PC" : "DA") + entity.cptRef + seq;
+                    else
+                        self.ref = (self.forSales == true ? "PC" : "DA") + seq;
+                    next();
+                });
+            });
+
+        self.ref = F.functions.refreshSeq(self.ref, self.datec);
+        next();
+
+    });
+}
+
+
+orderCustomerSchema.pre('save', saveOrder);
+orderSupplierSchema.pre('save', saveOrder);
+quotationCustomerSchema.pre('save', saveQuotation);
+quotationSupplierSchema.pre('save', saveQuotation);
+
+const orderCustomer = Order.discriminator('orderCustomer', orderCustomerSchema);
+const orderSupplier = Order.discriminator('orderSupplier', orderSupplierSchema);
+const quotationCustomer = Order.discriminator('quotationCustomer', quotationCustomerSchema);
+const quotationSupplier = Order.discriminator('quotationSupplier', quotationSupplierSchema);
+
+exports.Schema = {
+    OrderCustomer: orderCustomer,
+    OrderSupplier: orderSupplier,
+    QuotationCustomer: quotationCustomer,
+    QuotationSupplier: quotationSupplier
+};
 
 exports.Status = {
     "_id": "fk_order_status",
@@ -401,33 +518,25 @@ exports.Status = {
             "label": "StatusOrderToBill",
             "cssClass": "ribbon-color-primary label-primary",
             "system": true
+        },
+        "NEW": {
+            "enable": true,
+            "label": "PropalStatusNew",
+            "cssClass": "ribbon-color-info label-info"
+        },
+        "SIGNED": {
+            "enable": true,
+            "label": "PropalStatusClosed",
+            "cssClass": "ribbon-color-danger label-danger",
+            "system": true
+        },
+        "NOTSIGNED": {
+            "enable": true,
+            "label": "PropalStatusNotSigned",
+            "cssClass": "ribbon-color-warning label-warning",
+            "system": true
         }
     }
 };
 
-/**
- * Methods
- */
-orderSchema.virtual('status')
-    .get(function() {
-        var res_status = {};
-
-        var status = this.Status;
-        var statusList = exports.Status;
-
-        if (status && statusList.values[status] && statusList.values[status].label) {
-            res_status.id = status;
-            res_status.name = i18n.t("orders:" + statusList.values[status].label);
-            //this.status.name = statusList.values[status].label;
-            res_status.css = statusList.values[status].cssClass;
-        } else { // By default
-            res_status.id = status;
-            res_status.name = status;
-            res_status.css = "";
-        }
-
-        return res_status;
-    });
-
-exports.Schema = mongoose.model('order', orderSchema, 'Orders');
 exports.name = "order";

@@ -13,8 +13,11 @@ var setDate = MODULE('utils').setDate;
 
 var OrderRowSchema = mongoose.Schema({
     product: { type: ObjectId, ref: 'Product' },
+    product_type: String,
     order: { type: ObjectId, ref: 'order' },
     warehouse: { type: ObjectId, ref: 'warehouse' },
+    type: { type: String, default: 'product' }, //Used for subtotal
+    refProductSupplier: String, //Only for an order Supplier
     qty: { type: Number, default: 0 },
     total_taxes: [{
         _id: false,
@@ -22,13 +25,17 @@ var OrderRowSchema = mongoose.Schema({
         value: { type: Number }
     }],
     description: String,
-    unitPrice: { type: Number, default: 0 },
+    private: String, // Private note
+    priceSpecific: { type: Boolean, default: false },
+    pu_ht: { type: Number, default: 0 }, //unitPrice
     costPrice: { type: Number, default: 0 },
     discount: { type: Number, default: 0 },
-    subTotal: { type: Number, default: 0, set: setPrice },
+    total_ht: { type: Number, default: 0, set: setPrice },
+    optional: { type: Schema.Types.Mixed },
     //nominalCode: { type: Number, default: 0 },
     channel: { type: ObjectId, ref: 'integrations' },
-    integrationId: String
+    integrationId: String,
+    sequence: Number
 }, { collection: 'orderRows' });
 
 OrderRowSchema.plugin(timestamps);

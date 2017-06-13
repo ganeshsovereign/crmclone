@@ -238,6 +238,12 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         });
     };
 
+    $scope.clone = function() {
+        $scope.object.$clone(function(response) {
+            $rootScope.$state.go(goShow, { id: response._id });
+        });
+    };
+
     $scope.create = function() {
         var object = new Resource(this.object);
         object.$save(function(response) {

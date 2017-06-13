@@ -82,8 +82,9 @@ exports.install = function() {
 function Object() {}
 
 // Read an offer
-function Delivery(id, cb) {
-    var DeliveryModel = MODEL('delivery').Schema;
+function Delivery(id, DeliveryModel, cb) {
+
+    //var DeliveryModel = MODEL('delivery').Schema;
 
     var self = this;
 
@@ -129,7 +130,13 @@ function Delivery(id, cb) {
 Object.prototype = {
     show: function(id) {
         var self = this;
-        Delivery(id, function(err, delivery) {
+
+        if (self.query.forSales == "false")
+            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
+        else
+            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
+
+        Delivery(id, DeliveryModel, function(err, delivery) {
             if (err)
                 console.log(err);
 
@@ -137,11 +144,12 @@ Object.prototype = {
         });
     },
     create: function() {
-        var DeliveryModel = MODEL('delivery').Schema;
         var self = this;
 
         if (self.query.forSales == "false")
-            self.body.forSales = false;
+            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
+        else
+            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
 
         var delivery = {};
         delivery = new DeliveryModel(self.body);
@@ -161,9 +169,12 @@ Object.prototype = {
         });
     },
     clone: function(id, self) {
-        var DeliveryModel = MODEL('delivery').Schema;
+        if (self.body.forSales == false)
+            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
+        else
+            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
 
-        Delivery(id, function(err, doc) {
+        Delivery(id, DeliveryModel, function(err, doc) {
             var delivery = doc.toObject();
 
             delete delivery._id;
@@ -197,7 +208,13 @@ Object.prototype = {
     },
     update: function(id) {
         var self = this;
-        Delivery(id, function(err, delivery) {
+
+        if (self.body.forSales == false)
+            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
+        else
+            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
+
+        Delivery(id, DeliveryModel, function(err, delivery) {
 
             console.log(delivery);
             delivery = _.extend(delivery, self.body);
@@ -270,7 +287,12 @@ Object.prototype = {
     },
     readDT: function() {
         var self = this;
-        var DeliveryModel = MODEL('delivery').Schema;
+
+        if (self.query.forSales == "false")
+            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
+        else
+            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
+
         var SocieteModel = MODEL('Customers').Schema;
 
         var query = JSON.parse(self.req.body.query);
@@ -280,11 +302,11 @@ Object.prototype = {
         var conditions = {
             Status: { $ne: "BILLED" },
             isremoved: { $ne: true },
-            forSales: true
+            //  forSales: true
         };
 
-        if (self.query.forSales == "false")
-            conditions.forSales = false;
+        //if (self.query.forSales == "false")
+        //    conditions.forSales = false;
 
         if (!query.search.value) {
             if (self.query.status_id && self.query.status_id !== 'null')
@@ -297,7 +319,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            select: "ref"
+            select: "ref forSales"
         };
 
 
@@ -362,7 +384,10 @@ Object.prototype = {
                     // Action
                     res.datatable.data[i].action = '<a href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
-                    res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                    if (row.forSales)
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                    else
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/deliverysupplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
