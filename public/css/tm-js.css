@@ -639,3 +639,7 @@ small {
 [class^=icon-] {
     line-height: 10px;
 }
+
+.table .center {
+    text-align: center;
+}

@@ -205,6 +205,7 @@ Object.prototype = {
      */
     clone: function(id, self) {
         var OrderModel = MODEL('order').Schema;
+        var self = this;
 
         Order(id, function(err, doc) {
             var order = doc.toObject();
@@ -267,6 +268,9 @@ Object.prototype = {
 
         self.body.editedBy = self.user._id;
 
+        if (!self.body.createdBy)
+            self.body.createdBy = self.user._id;
+
         MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
             if (err) {
                 console.log(err);
@@ -313,7 +317,6 @@ Object.prototype = {
                             }
                         });
                     }
-
 
                     if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
                         return console.log("Mail order NOT");
@@ -604,7 +607,7 @@ Object.prototype = {
                 if (err)
                     return self.throw500(err);
 
-                //result.order = result.order.toObject();
+                result.order = result.order.toObject();
                 result.order.deliveries = result.deliveries;
 
                 self.json(result.order);

@@ -66,14 +66,14 @@
             <div class="table-responsive">
                 <div class="dataTables_wrapper no-footer table-responsive">
                     <div class="col-md-12">
-                        <table class="table dataTable no-footer table-hover" id="familyProductList">
+                        <table class="table table-striped table-bordered table-hover no-footer" id="familyProductList">
                             <thead>
                                 <tr role="row" class="heading">
                                     <th>@(Name)</th>
                                     <th>@(Code)</th>
                                     <th>@(products:Value)</th>
-                                    <th>@(CreatedAt)</th>
-                                    <th>@(Action)</th>
+                                    <th width="8%" class="center">@(CreatedAt)</th>
+                                    <th width="8%" class="center">@(Action)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -81,8 +81,8 @@
                                     <td width="25%">{{line.langs[_language].name}}</td>
                                     <td>{{line.code}}</td>
                                     <td>{{line.mode}}</td>
-                                    <td>{{line.createdAt | date : "shortDate"}}</td>
-                                    <td width="100px">
+                                    <td class="center">{{line.createdAt | date : "shortDate"}}</td>
+                                    <td width="100px" class="center">
                                         <a class="btn green fa fa-pencil" ui-sref="product.attributes.show({id:line._id})" title="Editer"></a>
                                         <button class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteAttribut)" confirmed-click="remove(line)"></button>
                                     </td>
