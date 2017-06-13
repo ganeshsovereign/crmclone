@@ -340,9 +340,9 @@ Object.prototype = {
                     }
                     //Printed Picked Packed Shipped
                     if (res.datatable.data[i].isPrinted == null)
-                        res.datatable.data[i].isPrinted = '<span class="fa fa-close font-red"></span>';
+                        res.datatable.data[i].isPrinted = '<span class="fa fa-print font-red"></span>';
                     else
-                        res.datatable.data[i].isPrinted = '<span class="fa fa-check font-green"></span>';
+                        res.datatable.data[i].isPrinted = '<span class="fa fa-print font-green"></span>';
 
                     if (res.datatable.data[i].isPicked == null)
                         res.datatable.data[i].isPicked = '<span class="fa fa-close font-red"></span>';
@@ -350,14 +350,14 @@ Object.prototype = {
                         res.datatable.data[i].isPicked = '<span class="fa fa-check font-green"></span>';
 
                     if (res.datatable.data[i].isPacked == null)
-                        res.datatable.data[i].isPacked = '<span class="fa fa-close font-red"></span>';
+                        res.datatable.data[i].isPacked = '<span class="fa fa-archive font-red"></span>';
                     else
-                        res.datatable.data[i].isPacked = '<span class="fa fa-check font-green"></span>';
+                        res.datatable.data[i].isPacked = '<span class="fa fa-archive font-green"></span>';
 
                     if (res.datatable.data[i].isShipped == null)
-                        res.datatable.data[i].isShipped = '<span class="fa fa-close font-red"></span>';
+                        res.datatable.data[i].isShipped = '<span class="fa fa-truck font-red"></span>';
                     else
-                        res.datatable.data[i].isShipped = '<span class="fa fa-check font-green"></span>';
+                        res.datatable.data[i].isShipped = '<span class="fa fa-truck font-green"></span>';
 
                     // Action
                     res.datatable.data[i].action = '<a href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
