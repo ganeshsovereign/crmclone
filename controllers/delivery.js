@@ -326,10 +326,11 @@ Object.prototype = {
                     res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
                     // Add id
                     res.datatable.data[i].DT_RowId = row._id.toString();
-                    if (res.datatable.data[i].Status === 'SEND')
                     // Add color line 
-                        res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
+                    //if (res.datatable.data[i].Status === 'SEND')
+                    //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
                     // Add link company
+
                     if (row.supplier && row.supplier._id)
                         res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
                     else {
