@@ -361,10 +361,10 @@ Object.prototype = {
                         res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
                     }
                     //Printed Picked Packed Shipped
-                    if (res.datatable.data[i].isPrinted == null)
-                        res.datatable.data[i].isPrinted = '<span class="fa fa-close font-red"></span>';
+                    if (res.datatable.data[i].status.isPrinted == null)
+                        res.datatable.data[i].status.isPrinted = '<span class="fa fa-close font-red"></span>';
                     else
-                        res.datatable.data[i].isPrinted = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Imprimé le : ' + row.isPrinted.format(CONFIG('dateformatLong')) + '"></span>';
+                        res.datatable.data[i].status.isPrinted = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Imprimé le : ' + row.isPrinted.format(CONFIG('dateformatLong')) + '"></span>';
 
                     if (res.datatable.data[i].isPicked == null)
                         res.datatable.data[i].isPicked = '<span class="fa fa-close font-red"></span>';
