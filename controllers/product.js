@@ -673,7 +673,7 @@ exports.install = function() {
     F.route('/erp/api/product/attributes/{id}', productAttributes.getProductAttributesById, ['authorize']);
     F.route('/erp/api/product/attributes/', productAttributes.createProductAttributes, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/attributes/{id}', productAttributes.updateProductAttributes, ['put', 'json', 'authorize'], 512);
-    F.route('/erp/api/product/attributes/{id}', productAttributes.updateProductAttributes, ['delete', 'authorize']);
+    F.route('/erp/api/product/attributes/{id}', productAttributes.deleteProductAttributes, ['delete', 'authorize']);
 
     // list for autocomplete
     F.route('/erp/api/product/ref/autocomplete', function() {
@@ -3934,6 +3934,7 @@ ProductFamily.prototype = {
     deleteProductFamily: function(id) {
         var self = this;
         var ProductFamilyModel = MODEL('productFamily').Schema;
+        var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
 
         ProductFamilyModel.remove({ _id: id }, function(err, doc) {
             if (err) {
@@ -3946,15 +3947,26 @@ ProductFamily.prototype = {
                 });
             }
 
+            FamilyCoefModel.remove({ family: id }, function(err, result) {
+                if (err) {
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+                }
 
-            //console.log(doc);
-            //doc = doc.toObject();
-            var doc = {};
-            doc.successNotify = {
-                title: "Success",
-                message: "Famille supprimee"
-            };
-            self.json(doc);
+                //console.log(doc);
+                //doc = doc.toObject();
+                var doc = {};
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Famille supprimee"
+                };
+                self.json(doc);
+            });
         });
     },
     exportCoefFamily: function() {
@@ -4295,5 +4307,47 @@ ProductAttributes.prototype = {
 
         });
     },
-    deleteProductAttributes: function(id) {}
+    deleteProductAttributes: function(id) {
+        var self = this;
+        console.log(id);
+        var ProductAttributesModel = MODEL('productAttributes').Schema;
+        var ProductAttributesValuesModel = MODEL('productAttibutesValues').Schema;
+        var ProductModel = MODEL('product').Schema;
+        var ProductFamilyModel = MODEL('productFamily').Schema;
+
+        ProductAttributesValuesModel.find({ optionId: id }, "_id", function(err, values) {
+            //get all values    
+            values = _.map(values, function(elem) {
+                //Remove all variants
+                ProductModel.update({ variants: elem._id }, { $pull: { variants: elem._id } }, { multi: true }, function(err, doc) {
+                    if (err)
+                        console.log(err);
+                });
+            });
+
+            // Remove attributes in product
+            ProductModel.update({ 'attributes.attribute': id }, { $pull: { 'attributes': { 'attribute': id } } }, { multi: true }, function(err, doc) {
+                if (err)
+                    return self.throw500(err);
+
+                //suppress options attibutes in Family
+                ProductFamilyModel.update({ 'options': id }, { $pull: { 'options': id } }, { multi: true }, function(err, doc) {
+                    if (err)
+                        return self.throw500(err);
+                    //suppress variants attibutes in Family
+                    ProductFamilyModel.update({ 'variants': id }, { $pull: { 'variants': id } }, { multi: true }, function(err, doc) {
+                        if (err)
+                            return self.throw500(err);
+
+                        ProductAttributesModel.remove({ _id: id }, function(err, doc) {
+                            if (err)
+                                return self.throw500(err);
+
+                            return self.json(doc);
+                        });
+                    });
+                });
+            });
+        });
+    }
 };

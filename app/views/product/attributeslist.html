@@ -33,7 +33,7 @@
             </a>
             <ul class="dropdown-menu pull-right">
                 <li>
-                    <a href="#" ng-click="refreshDirectory()">
+                    <a href="#" ng-click="find()">
                         <i class="fa fa-refresh"></i> @(Refresh)
                     </a>
                 </li>
@@ -42,11 +42,6 @@
                         <i class="fa fa-copy"></i> @(PrintPDF)
                     </a>
                 </li> -->
-                <li>
-                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
-                        <i class="fa fa-trash-o font-red"></i> @(Delete)
-                    </a>
-                </li>
             </ul>
         </div>
     </div>
@@ -87,9 +82,9 @@
                                     <td>{{line.code}}</td>
                                     <td>{{line.mode}}</td>
                                     <td>{{line.createdAt | date : "shortDate"}}</td>
-                                    <td width="5%">
+                                    <td width="100px">
                                         <a class="btn green fa fa-pencil" ui-sref="product.attributes.show({id:line._id})" title="Editer"></a>
-                                        <button ng-if="line.inventory == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>
+                                        <button class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteAttribut)" confirmed-click="remove(line)"></button>
                                     </td>
                                 </tr>
                             </tbody>
