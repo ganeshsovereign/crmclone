@@ -425,7 +425,7 @@ exports.Status = {
     }
 };
 
-billSchema.virtual('status')
+billSchema.virtual('_status')
     .get(function() {
         var res_status = {};
 

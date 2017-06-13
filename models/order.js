@@ -21,10 +21,15 @@ var Dict = INCLUDE('dict');
 var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
 
-/**
- * Article Schema
- */
-var orderSchema = new Schema({
+var options = {
+    collection: 'Orders',
+    discriminatorKey: '_type',
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
+};
+
+
+const baseSchema = new Schema({
     forSales: { type: Boolean, default: true },
     isremoved: Boolean,
     ref: { type: String, index: true },
@@ -222,22 +227,27 @@ var orderSchema = new Schema({
         Status: String,
         msg: String
     }]
-}, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
-});
+}, options);
 
-orderSchema.plugin(timestamps);
+baseSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
     var gridfs = INCLUDE(CONFIG('storing-files'));
-    orderSchema.plugin(gridfs.pluginGridFs, {
-        root: 'Commande'
+    baseSchema.plugin(gridfs.pluginGridFs, {
+        root: 'Orders'
     });
 }
 
+const Order = mongoose.model('order', baseSchema);
+
+var orderCustomerSchema = new Schema({});
+var orderSupplierSchema = new Schema({});
+
+var quotationCustomerSchema = new Schema({});
+var quotationSupplierSchema = new Schema({});
+
 // Gets listing
-orderSchema.statics.query = function(options, callback) {
+baseSchema.statics.query = function(options, callback) {
     var self = this;
 
     // options.search {String}
@@ -297,9 +307,31 @@ orderSchema.statics.query = function(options, callback) {
 };
 
 /**
- * Pre-save hook
+ * Methods
  */
-orderSchema.pre('save', function(next) {
+baseSchema.virtual('_status')
+    .get(function() {
+        var res_status = {};
+
+        var status = this.Status;
+        var statusList = exports.Status;
+
+        if (status && statusList.values[status] && statusList.values[status].label) {
+            res_status.id = status;
+            res_status.name = i18n.t("orders:" + statusList.values[status].label);
+            //this.status.name = statusList.values[status].label;
+            res_status.css = statusList.values[status].cssClass;
+        } else { // By default
+            res_status.id = status;
+            res_status.name = status;
+            res_status.css = "";
+        }
+
+        return res_status;
+    });
+
+
+function saveOrder(next) {
     var self = this;
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
@@ -340,15 +372,65 @@ orderSchema.pre('save', function(next) {
         next();
 
     });
-});
+};
 
-/*var statusList = {};
-Dict.dict({
-    dictName: "fk_order_status",
-    object: true
-}, function(err, docs) {
-    statusList = docs;
-});*/
+function saveQuotation(next) {
+    var self = this;
+    var SeqModel = MODEL('Sequence').Schema;
+    var EntityModel = MODEL('entity').Schema;
+
+    if (this.isNew)
+        this.history = [];
+
+    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier, function(err, result) {
+        if (err)
+            return next(err);
+
+        self.total_ht = result.total_ht;
+        self.total_taxes = result.total_taxes;
+        self.total_ttc = result.total_ttc;
+        self.weight = result.weight;
+
+        if (self.isNew && !self.ref)
+            return SeqModel.inc("QUOTATION", function(seq, number) {
+                //console.log(seq);
+                self.ID = number;
+                EntityModel.findOne({
+                    _id: self.entity
+                }, "cptRef", function(err, entity) {
+                    if (err)
+                        console.log(err);
+
+                    if (entity && entity.cptRef)
+                        self.ref = (self.forSales == true ? "PC" : "DA") + entity.cptRef + seq;
+                    else
+                        self.ref = (self.forSales == true ? "PC" : "DA") + seq;
+                    next();
+                });
+            });
+
+        self.ref = F.functions.refreshSeq(self.ref, self.datec);
+        next();
+
+    });
+};
+
+orderCustomerSchema.pre('save', saveOrder);
+orderSupplierSchema.pre('save', saveOrder);
+quotationCustomerSchema.pre('save', saveQuotation);
+quotationSupplierSchema.pre('save', saveQuotation);
+
+const orderCustomer = Order.discriminator('orderCustomer', orderCustomerSchema);
+const orderSupplier = Order.discriminator('orderSupplier', orderSupplierSchema);
+const quotationCustomer = Order.discriminator('quotationCustomer', quotationCustomerSchema);
+const quotationSupplier = Order.discriminator('quotationSupplier', quotationSupplierSchema);
+
+exports.Schema = {
+    OrderCustomer: orderCustomer,
+    OrderSupplier: orderSupplier,
+    QuotationCustomer: quotationCustomer,
+    QuotationSupplier: quotationSupplier
+};
 
 exports.Status = {
     "_id": "fk_order_status",
@@ -401,33 +483,25 @@ exports.Status = {
             "label": "StatusOrderToBill",
             "cssClass": "ribbon-color-primary label-primary",
             "system": true
+        },
+        "NEW": {
+            "enable": true,
+            "label": "PropalStatusNew",
+            "cssClass": "ribbon-color-info label-info"
+        },
+        "SIGNED": {
+            "enable": true,
+            "label": "PropalStatusClosed",
+            "cssClass": "ribbon-color-danger label-danger",
+            "system": true
+        },
+        "NOTSIGNED": {
+            "enable": true,
+            "label": "PropalStatusNotSigned",
+            "cssClass": "ribbon-color-warning label-warning",
+            "system": true
         }
     }
 };
 
-/**
- * Methods
- */
-orderSchema.virtual('status')
-    .get(function() {
-        var res_status = {};
-
-        var status = this.Status;
-        var statusList = exports.Status;
-
-        if (status && statusList.values[status] && statusList.values[status].label) {
-            res_status.id = status;
-            res_status.name = i18n.t("orders:" + statusList.values[status].label);
-            //this.status.name = statusList.values[status].label;
-            res_status.css = statusList.values[status].cssClass;
-        } else { // By default
-            res_status.id = status;
-            res_status.name = status;
-            res_status.css = "";
-        }
-
-        return res_status;
-    });
-
-exports.Schema = mongoose.model('order', orderSchema, 'Orders');
 exports.name = "order";

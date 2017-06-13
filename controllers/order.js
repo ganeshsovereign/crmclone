@@ -72,9 +72,7 @@ exports.install = function() {
 function Object() {}
 
 // Read an order
-function Order(id, cb) {
-    var OrderModel = MODEL('order').Schema;
-
+function Order(id, OrderModel, cb) {
     var self = this;
 
     //TODO Check ACL here
@@ -112,7 +110,7 @@ function Order(id, cb) {
         })
         .populate("createdBy", "username")
         .populate("editedBy", "username")
-        .populate("offer", "ref total_ht")
+        //.populate("offer", "ref total_ht")
         .exec(cb);
 }
 
@@ -328,19 +326,21 @@ Object.prototype = {
     },
     readDT: function() {
         var self = this;
-        var OrderModel = MODEL('order').Schema;
+
+        if (self.query.forSales == "false")
+            var OrderModel = MODEL('order').Schema.OrderSupplier;
+        else
+            var OrderModel = MODEL('order').Schema.OrderCustomer;
+
         var SocieteModel = MODEL('Customers').Schema;
 
         var query = JSON.parse(self.body.query);
 
         var conditions = {
             // Status: { $ne: "CLOSED" },
-            isremoved: { $ne: true },
-            forSales: true
+            isremoved: { $ne: true }
+            //  forSales: true
         };
-
-        if (self.query.forSales == "false")
-            conditions.forSales = false;
 
         //console.log(self.query);
 
@@ -355,7 +355,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            select: "supplier ref"
+            select: "supplier ref forSales"
         };
 
         //console.log(options);
@@ -400,7 +400,10 @@ Object.prototype = {
                     // Action
                     res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
-                    res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                    if (row.forSales)
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                    else
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/ordersupplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
@@ -419,12 +422,16 @@ Object.prototype = {
      */
     show: function(id) {
         var self = this;
-        var OrderModel = MODEL('order').Schema;
+        if (self.query.forSales == "false")
+            var OrderModel = MODEL('order').Schema.OrderSupplier;
+        else
+            var OrderModel = MODEL('order').Schema.OrderCustomer;
+
         var ObjectId = MODULE('utils').ObjectId;
 
         async.parallel({
                 order: function(pCb) {
-                    Order(id, pCb);
+                    Order(id, OrderModel, pCb);
                 },
                 deliveries: function(pCb) {
                     OrderModel.aggregate([{

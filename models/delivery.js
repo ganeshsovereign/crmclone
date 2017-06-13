@@ -4,9 +4,9 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+    timestamps = require('mongoose-timestamp'),
     Schema = mongoose.Schema,
-    ObjectId = mongoose.Schema.Types.ObjectId,
-    timestamps = require('mongoose-timestamp');
+    ObjectId = mongoose.Schema.Types.ObjectId;
 
 var DataTable = require('mongoose-datatable');
 
@@ -16,26 +16,21 @@ DataTable.configure({
 });
 mongoose.plugin(DataTable.init);
 
-var Dict = INCLUDE('dict');
-
 var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
 
-var deliverySchema = new Schema({
-    forSales: { type: Boolean, default: true },
+var options = {
+    collection: 'Delivery',
+    discriminatorKey: '_type',
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
+};
+
+const goodsNoteSchema = new Schema({
     isremoved: Boolean,
     ref: { type: String, index: true },
     ID: { type: Number, unique: true },
-
-    isPrinted: { type: Date, default: null }, //Imprime
-    isPicked: { type: Date, default: null }, //Prepare
-    isPacked: { type: Date, default: null }, //Emballe
-    isShipped: { type: Date, default: null }, //Expedier
-
-    pickedById: { type: ObjectId, ref: 'Users', default: null },
-    packedById: { type: ObjectId, ref: 'Users', default: null },
-    shippedById: { type: ObjectId, ref: 'Users', default: null },
-    printedById: { type: ObjectId, ref: 'Users', default: null },
+    forSales: { type: Boolean, default: true },
 
     type: { type: String, default: 'DELIVERY_STANDARD' },
     currency: {
@@ -178,7 +173,7 @@ var deliverySchema = new Schema({
         //weight: { type: Number, default: 0 },
         optional: { type: Schema.Types.Mixed }
     }],
-    subcontractors: [{
+    /*subcontractors: [{
         title: String,
         description: { type: String, default: "" },
         type: { type: String, default: 'product' }, //Used for subtotal
@@ -199,7 +194,7 @@ var deliverySchema = new Schema({
         }],
         total_ht: { type: Number, set: setPrice },
         discount: { type: Number, default: 0 }
-    }],
+    }],*/
     history: [{
         date: { type: Date, default: Date.now },
         author: {
@@ -209,74 +204,287 @@ var deliverySchema = new Schema({
         mode: String, //email, order, alert, new, ...
         Status: String,
         msg: String
-    }]
-}, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
-});
+    }],
 
-deliverySchema.plugin(timestamps);
+    warehouse: { type: ObjectId, ref: 'warehouse', default: null },
 
-/**
- * Pre-save hook
- */
-deliverySchema.pre('save', function(next) {
-    var SeqModel = MODEL('Sequence').Schema;
-    var EntityModel = MODEL('entity').Schema;
-    var self = this;
+    boxes: { type: Number, default: 1 },
+    shippingMethod: { type: ObjectId, ref: 'shippingMethod', default: null },
+    shippingCost: { type: Number, default: 0 },
 
-    this.total_ht_subcontractors = 0;
+    attachments: { type: Array, default: [] },
+    orderRows: [{
+        _id: false,
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'product', default: null },
+        locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
+        cost: { type: Number, default: 0 },
+        quantity: Number
+    }],
 
-    if (this.isNew)
-        this.history = [];
+    channel: { type: ObjectId, ref: 'integrations', default: null },
+    integrationId: String,
+    sequence: Number,
+    name: String
+}, options);
 
-    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier, function(err, result) {
-        if (err)
-            return next(err);
 
-        self.total_ht = result.total_ht;
-        self.total_taxes = result.total_taxes;
-        self.total_ttc = result.total_ttc;
-        self.weight = result.weight;
+goodsNoteSchema.plugin(timestamps);
 
-        var i, length;
+const GoodsNote = mongoose.model('Delivery', goodsNoteSchema);
 
-        for (i = 0, length = self.subcontractors.length; i < length; i++)
-            self.total_ht_subcontractors += self.subcontractors[i].total_ht;
+goodsNoteSchema.virtual('_status')
+    .get(function() {
+        var res_status = {};
 
-        if (self.isNew && !self.ref)
-            return SeqModel.inc("DELIVERY", function(seq, number) {
-                //console.log(seq);
-                self.ID = number;
-                EntityModel.findOne({
-                    _id: self.entity
-                }, "cptRef", function(err, entity) {
-                    if (err)
-                        console.log(err);
+        var status = this.Status;
+        var statusList = exports.Status;
 
-                    if (entity && entity.cptRef)
-                        self.ref = (self.forSales == true ? "BL" : "RE") + entity.cptRef + seq;
-                    else
-                        self.ref = (self.forSales == true ? "BL" : "RE") + seq;
-                    next();
-                });
-            });
+        if (status && statusList.values[status] && statusList.values[status].label) {
+            //console.log(this);
+            res_status.id = status;
+            res_status.name = i18n.t("deliveries:" + statusList.values[status].label);
+            //res_status.name = statusList.values[status].label;
+            res_status.css = statusList.values[status].cssClass;
+        } else { // By default
+            res_status.id = status;
+            res_status.name = status;
+            res_status.css = "";
+        }
+        return res_status;
 
-        if (self.date_livraison)
-            self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
-        next();
     });
 
+var goodsOutNoteSchema = new Schema({
+    status: {
+        isPrinted: { type: Date, default: null }, //Imprime
+        isPicked: { type: Date, default: null }, //Prepare
+        isPacked: { type: Date, default: null }, //Emballe
+        isShipped: { type: Date, default: null }, //Expedier
+
+        pickedById: { type: ObjectId, ref: 'Users', default: null },
+        packedById: { type: ObjectId, ref: 'Users', default: null },
+        shippedById: { type: ObjectId, ref: 'Users', default: null },
+        printedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    archived: { type: Boolean, default: false }
 });
 
-/*var statusList = {};
-Dict.dict({ dictName: 'fk_delivery_status', object: true }, function(err, doc) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    statusList = doc;
-});*/
+var goodsInNoteSchema = new Schema({
+    status: {
+        isReceived: { type: Date, default: null },
+        receivedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    description: { type: String },
+
+    orderRows: [{
+        _id: false,
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'product', default: null },
+        cost: { type: Number, default: 0 },
+        locationsReceived: [{
+            location: { type: ObjectId, ref: 'location', default: null },
+            quantity: Number
+        }],
+
+        quantity: Number
+    }]
+});
+
+var stockCorrectionSchema = new Schema({
+    status: {
+        isReceived: { type: Date, default: null },
+        receivedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    description: { type: String },
+
+    orderRows: [{
+        _id: false,
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'Product', default: null },
+        cost: { type: Number, default: 0 },
+        locationsReceived: [{
+            location: { type: ObjectId, ref: 'location', default: null },
+            quantity: Number
+        }],
+
+        quantity: Number
+    }]
+});
+
+var stockReturnSchema = new Schema({
+    status: {
+        isReceived: { type: Date, default: null },
+        receivedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    description: { type: String },
+
+    journalEntrySources: [{ type: String, default: '' }],
+
+    orderRows: [{
+        _id: false,
+        goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
+        goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
+        product: { type: ObjectId, ref: 'Product', default: null },
+        cost: { type: Number, default: 0 },
+        quantity: Number,
+        warehouse: { type: ObjectId, ref: 'warehouse', default: null }
+    }]
+});
+
+var stockTransactionsSchema = new Schema({
+    warehouseTo: { type: ObjectId, ref: 'warehouse', default: null },
+    status: {
+        isPrinted: { type: Date, default: null }, //Imprime
+        isPicked: { type: Date, default: null }, //Prepare
+        isPacked: { type: Date, default: null }, //Emballe
+        isShipped: { type: Date, default: null }, //Expedier
+
+        pickedById: { type: ObjectId, ref: 'Users', default: null },
+        packedById: { type: ObjectId, ref: 'Users', default: null },
+        shippedById: { type: ObjectId, ref: 'Users', default: null },
+        printedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    orderRows: [{
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'Product', default: null },
+        locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
+        batchesDeliver: [{
+            goodsNote: { type: ObjectId, ref: 'goodsInNotes', default: null },
+            quantity: Number,
+            cost: Number
+        }],
+
+        locationsReceived: [{
+            location: { type: ObjectId, ref: 'location', default: null },
+            quantity: Number
+        }],
+
+        cost: { type: Number, default: 0 },
+        quantity: Number
+    }]
+
+});
+
+function setName(next) {
+    var order = this;
+    var db = order.db.db;
+
+    db.collection('settings').findOneAndUpdate({
+        dbName: db.databaseName,
+        name: 'goodsOutNote',
+        order: order.name
+    }, {
+        $inc: { seq: 1 }
+    }, {
+        returnOriginal: false,
+        upsert: true
+    }, function(err, rate) {
+        if (err) {
+            return next(err);
+        }
+
+        order.name += '*' + rate.value.seq;
+
+        next();
+    });
+}
+
+function setNameTransfer(next) {
+    var transaction = this;
+    var db = transaction.db.db;
+    var prefix = 'TX';
+
+    db.collection('settings').findOneAndUpdate({
+        dbName: db.databaseName,
+        name: prefix
+    }, {
+        $inc: { seq: 1 }
+    }, {
+        returnOriginal: false,
+        upsert: true
+    }, function(err, rate) {
+        if (err) {
+            return next(err);
+        }
+
+        transaction.name = prefix + '-' + rate.value.seq;
+
+        next();
+    });
+}
+
+function setNameReturns(next) {
+    var transaction = this;
+    var db = transaction.db.db;
+    var prefix = 'RT';
+
+    db.collection('settings').findOneAndUpdate({
+        dbName: db.databaseName,
+        name: prefix
+    }, {
+        $inc: { seq: 1 }
+    }, {
+        returnOriginal: false,
+        upsert: true
+    }, function(err, rate) {
+        if (err) {
+            return next(err);
+        }
+
+        transaction.name = prefix + '-' + rate.value.seq;
+
+        next();
+    });
+}
+
+function setNamePurchase(next) {
+    var order = this;
+    var db = order.db.db;
+
+    db.collection('settings').findOneAndUpdate({
+        dbName: db.databaseName,
+        name: 'goodsInNote',
+        order: order.name
+    }, {
+        $inc: { seq: 1 }
+    }, {
+        returnOriginal: false,
+        upsert: true
+    }, function(err, rate) {
+        if (err) {
+            return next(err);
+        }
+
+        order.name += '*' + rate.value.seq;
+
+        next();
+    });
+}
+
+goodsOutNoteSchema.pre('save', setName);
+stockTransactionsSchema.pre('save', setNameTransfer);
+goodsInNoteSchema.pre('save', setNamePurchase);
+stockReturnSchema.pre('save', setNameReturns);
+
+const goodsOutNote = GoodsNote.discriminator('GoodsOutNote', goodsOutNoteSchema);
+const stockTransactions = GoodsNote.discriminator('stockTransactions', stockTransactionsSchema);
+const stockReturns = GoodsNote.discriminator('stockReturns', stockReturnSchema);
+const stockCorrection = GoodsNote.discriminator('stockCorrections', stockCorrectionSchema);
+const goodsInNote = GoodsNote.discriminator('GoodsInNote', goodsInNoteSchema);
+
+exports.Schema = {
+    GoodsOutNote: goodsOutNote,
+    GoodsInNote: goodsInNote,
+    stockCorrections: stockCorrection,
+    stockTransactions: stockTransactions,
+    stockReturns: stockReturns
+};
 
 exports.Status = {
     "_id": "fk_delivery_status",
@@ -316,28 +524,4 @@ exports.Status = {
     }
 };
 
-deliverySchema.virtual('status')
-    .get(function() {
-        var res_status = {};
-
-        var status = this.Status;
-        var statusList = exports.Status;
-
-        if (status && statusList.values[status] && statusList.values[status].label) {
-            //console.log(this);
-            res_status.id = status;
-            res_status.name = i18n.t("deliveries:" + statusList.values[status].label);
-            //res_status.name = statusList.values[status].label;
-            res_status.css = statusList.values[status].cssClass;
-        } else { // By default
-            res_status.id = status;
-            res_status.name = status;
-            res_status.css = "";
-        }
-        return res_status;
-
-    });
-
-
-exports.Schema = mongoose.model('delivery', deliverySchema, 'Delivery');
-exports.name = 'delivery';
+exports.name = "delivery";
