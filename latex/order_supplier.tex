@@ -1,0 +1,105 @@
+\newcommand{\FOOT}{--FOOT--}
+
+%%ligne de tableau avec \\
+\newcommand{\specialcell}[2][c]{
+	\parbox[#1]{6.3cm}{#2}}
+	
+\begin{tabular}{p{9cm} p{8cm}}
+    \vspace{0pt} 
+    \includegraphics[width=7.5cm]{--LOGO--}
+    & 
+    \vspace{0pt}
+   \raggedleft
+	%\begin{flushright}
+	\textcolor{violet}{\textsc{\Large Commande fournisseur --NUM--}}\\
+	Date de commande : --DATEC--\\
+	%{\small Date d'expédition : \textbf{--DATEEXP--}\\
+	Ref. commande fournisseur : --REFCLIENT--\\
+	SN : --SN--\\
+	%TVA Intra. du  client : --DESTINATAIRE.TVA--\\}~\\
+\end{tabular}
+
+%\vspace{-0.7cm}
+
+\begin{minipage}[t]{0.40\textwidth}
+{\small Emetteur :}\\
+\begin{fminipage}
+--MYSOC--
+\end{fminipage}
+\end{minipage}
+\hspace{1cm}
+\begin{minipage}[t]{0.52\textwidth}
+{\small Destinataire :}
+
+\begin{fminipage}
+\textbf{\large --DESTINATAIRE.NAME--}\\
+--DESTINATAIRE.ADDRESS--\\
+\textsc{--DESTINATAIRE.ZIP-- --DESTINATAIRE.TOWN--}\\
+\begin{minipage}{\textwidth}
+\flushright
+{\tiny --CODESUPPLIER--}
+\end{minipage}
+\end{fminipage}
+\end{minipage}
+
+\begin{minipage}{\textwidth}
+\flushright 
+{\footnotesize \textit{Montants exprimés en €}}
+\end{minipage}\\
+\setlength\LTleft{0pt}
+\setlength\LTright{0pt}
+\setlength\LTpre{0pt}
+\begin{longtable}{|p{2.5cm}|p{6.5cm}@{\extracolsep{1mm plus 1fil}}|c|r|r|r|}
+\hline
+\multicolumn{1}{|c}{R\'ef} &
+\multicolumn{1}{c}{D\'esignation} &
+TVA &
+PU &
+Qt\'e &
+\multicolumn{1}{c|}{Total HT} \\
+\hline \hline
+\endfirsthead
+
+\hline
+\multicolumn{6}{|l|}{\small\sl suite de la page pr\'ec\'edente}\\
+\hline \multicolumn{1}{|c}{R\'ef} &
+\multicolumn{1}{c}{D\'esignation} &
+TVA &
+PU &
+Qt\'e &
+\multicolumn{1}{c|}{Total HT} \\ \hline \hline
+\endhead
+
+\hline \multicolumn{6}{|r|}{{\small\sl suite sur la prochaine page}} \\ \hline
+\endfoot
+
+\hline
+\endlastfoot
+
+--TABULAR--
+
+\end{longtable}
+
+
+\begin{minipage}[t]{0.40\textwidth}
+Notes : --NOTE--
+\end{minipage}
+\hspace{1cm}
+\begin{minipage}[t]{0.50\textwidth}
+\begin{flushright}
+\begin{tabular}{p{4.5cm} r}
+--TOTAL-- 
+\end{tabular} 
+\end{flushright}
+%\begin{flushright}
+%\begin{footnotesize}
+%Versements déjà effectués :
+% \begin{tabular}{p{1.8cm} c p{1.8cm} c}
+%Règlement & Montant & Type & Numéro \\ 
+%\ghline 
+% --DATEACPTE--& --ACPTE-- & --MODEREG-- & --NUMP-- \\ 
+%\ghline 
+%\end{tabular}
+% \end{footnotesize} 
+%\end{flushright}
+\end{minipage}

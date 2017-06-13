@@ -717,14 +717,10 @@ Object.prototype = {
         // Generation de la facture PDF et download
         var SocieteModel = MODEL('Customers').Schema;
         var BankModel = MODEL('bank').Schema;
+        var OrderModel = MODEL('order').Schema.Order;
 
         if (!self)
             self = this;
-
-        var title = "Commande";
-
-        if (self.query.proforma)
-            title = "Facture pro forma";
 
         var discount = false;
         var cond_reglement_code = {};
@@ -742,16 +738,47 @@ Object.prototype = {
             mode_reglement_code = docs;
         });
 
-        Order(ref, function(err, doc) {
+
+
+        OrderModel.getById(ref, function(err, doc) {
+
+            var title = "";
+
+            var model = 'order'; //Latex model
+
+            if (self.query.proforma)
+                title = "Facture pro forma";
+            else
+                switch (doc._type) {
+                    case 'orderCustomer':
+                        title = 'Commande';
+                        model = "order";
+                        break;
+                    case 'orderSupplier':
+                        title = 'Commande fournisseur';
+                        model = "order_supplier";
+                        break;
+                    case 'quotationCustomer':
+                        title = 'Devis';
+                        model = "offer";
+                        break;
+                    case 'quotationSupplier':
+                        title = 'Demande d\'achat';
+                        model = "offer_supplier";
+                        break;
+                }
+
+
+
             if (doc.Status == "DRAFT") {
-                return self.plain("Impossible de générer le PDF, la commande n'est pas validée");
+                return self.plain("Impossible de générer le PDF, le document n'est pas validée");
             }
 
-            var model = "order.tex";
+
             // check if discount
             for (var i = 0; i < doc.lines.length; i++) {
                 if (doc.lines[i].discount > 0) {
-                    model = "order_discount.tex";
+                    model += "_discount";
                     discount = true;
                     break;
                 }
@@ -921,7 +948,7 @@ Object.prototype = {
 
 
                     self.res.setHeader('Content-type', 'application/pdf');
-                    Latex.Template(model, doc.entity)
+                    Latex.Template(model + ".tex", doc.entity)
                         .apply({
                             "NUM": {
                                 "type": "string",

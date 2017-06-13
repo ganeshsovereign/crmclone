@@ -227,8 +227,6 @@ if (CONFIG('storing-files')) {
     });
 }
 
-const Order = mongoose.model('order', baseSchema);
-
 var orderCustomerSchema = new Schema({
     offer: { type: ObjectId, ref: 'quotationCustomer' }
 });
@@ -451,6 +449,7 @@ function saveQuotation(next) {
     next();
 }
 
+const Order = mongoose.model('order', baseSchema);
 
 orderCustomerSchema.pre('save', saveOrder);
 orderSupplierSchema.pre('save', saveOrder);
@@ -463,6 +462,7 @@ const quotationCustomer = Order.discriminator('quotationCustomer', quotationCust
 const quotationSupplier = Order.discriminator('quotationSupplier', quotationSupplierSchema);
 
 exports.Schema = {
+    Order: Order, //Only for READING
     OrderCustomer: orderCustomer,
     OrderSupplier: orderSupplier,
     QuotationCustomer: quotationCustomer,
