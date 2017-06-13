@@ -607,7 +607,7 @@ Object.prototype = {
                 if (err)
                     return self.throw500(err);
 
-                result.order = result.order.toObject();
+                //result.order = result.order.toObject();
                 result.order.deliveries = result.deliveries;
 
                 self.json(result.order);
