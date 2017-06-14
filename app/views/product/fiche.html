@@ -42,6 +42,16 @@
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
+                <li>
+                    <a ng-if="product.Status == 'PREPARED'" data-ng-click="update(true)">
+                        <i class="fa fa-thumbs-o-up"></i> @(Validate)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="product.Status == 'VALIDATED'" data-ng-click="changeStatus('POSTED')">
+                        <i class="fa fa-thumbs-o-up"></i> @(Send)
+                    </a>
+                </li>
                 <!--   <li>
                     <a href="#" ng-click="clone()">
                         <i class="fa fa-copy"></i> @(PrintPDF)
@@ -61,7 +71,10 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="profile-sidebar">
+        <div class="profile-sidebar mt-element-ribbon portlet-fit bordered">
+            <div class="ribbon ribbon-right ribbon-clip ribbon-shadow uppercase " ng-class="product.status.css ">
+                <div class="ribbon-sub ribbon-clip ribbon-right "></div> {{product.status.name}}
+            </div>
             <div class="portlet light profile-sidebar-portlet">
                 <div class="row">
                     <div class="col-md-12">
@@ -158,17 +171,17 @@
                             <a ui-sref="product.show.images({id:product._id})">
                                 <i class="icon-picture"></i> @(products:Images) <span ng-if="product.rating.images != 1" class="fa fa-warning font-red" tooltip-placement="right" tooltip="{{product.rating.images*100 | percent}}"></a>
                         </li>
-                        <li ng-class="{active: $state.includes('product.show.ecommerce')}">
+                        <!--<li ng-class="{active: $state.includes('product.show.ecommerce')}">
                             <a ui-sref="product.show.ecommerce({id:product._id})">
                                 <i class="icon-globe"></i> @(Ecommerce) <span ng-if="product.rating.ecommerce != 1" class="fa fa-warning font-red" tooltip-placement="right" tooltip="{{product.rating.ecommerce*100 | percent}}"></span></a>
-                        </li>
+                        </li>-->
                         <li ng-class="{active: $state.includes('product.show.categories')}">
                             <a ui-sref="product.show.categories({id:product._id})">
                                 <i class="icon-share"></i> @(Categories) <span ng-if="product.rating.categories != 1" class="fa fa-warning font-red" tooltip-placement="right" tooltip="{{product.rating.categories*100 | percent}}"></span><span ng-if="product.info.categories.length"
                                     class="badge badge-success">{{product.info.categories.length}}</span></a>
                         </li>
 
-                        <li ng-if="product.isVariant" ng-class="{active: $state.includes('product.show.declinations')}">
+                        <!--<li ng-if="product.isVariant" ng-class="{active: $state.includes('product.show.declinations')}">
                             <a ui-sref="product.show.declinations({id:product._id})">
                                 <i class="icon-docs"></i> @(Declinations) </a>
                         </li>
@@ -176,7 +189,7 @@
                         <li ng-class="{active: $state.includes('product.show.channels')}">
                             <a ui-sref="product.show.channels({id:product._id})">
                                 <i class="icon-shopping-cart"></i> @(products:Channels) <span ng-if="product.channels.active" class="badge badge-success">{{product.channels.active}}</span></a>
-                        </li>
+                        </li>-->
                     </ul>
                 </div>
             </div>
@@ -199,6 +212,43 @@
                             <!-- <div class="uppercase profile-stat-text"> @(EditedBy) </div>-->
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="portlet light">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-docs"></i>
+                        <span class="caption-subject dark bold uppercase"> @(products:Channels)</span>
+                    </div>
+                </div>
+                <div class="no-footer table-responsive">
+                    <table class="table no-footer table-hover">
+                        <colgroup>
+                            <col width="60%">
+                            <!--<col width="30%">-->
+                            <col width="20%">
+                            <col width="80px">
+                        </colgroup>
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th>@(Name)</th>
+                                <!--<th>@(Url)</th>-->
+                                <th>@(Active)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="channel in product.channels.data">
+                                <td>{{channel.channelName}}</td>
+                                <!--<td>{{channel.baseUrl}}</td>-->
+                                <td><span ng-if="channel.channels.length" class="fa fa-check font-green"></span></td>
+                                <td>
+                                    <button ng-hide="channel.channels.length" ng-click="addProductToChannel(product._id, channel)" type="button" class="btn btn-xs btn-info glyphicon glyphicon-plus" title="@(Add)"></button>
+                                    <button ng-hide="!channel.channels.length" ng-click="deleteProductToChannel(product._id, channel)" type="button" class="btn btn-xs btn-info glyphicon glyphicon-minus" title="@(Delete)"></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

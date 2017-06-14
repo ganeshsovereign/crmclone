@@ -89,12 +89,13 @@ var productSchema = new Schema({
     isBundle: { type: Boolean, default: false },
     isPackaging: { type: Boolean, default: false },
     isVariant: { type: Boolean, default: false },
+    isValidated: { type: Boolean, default: false }, //Integration publication
     groupId: { type: String, default: null },
     //  job: { type: Schema.Types.ObjectId, ref: 'jobs', default: null },
     canBeSold: { type: Boolean, default: true },
     canBeExpensed: { type: Boolean, default: true },
     eventSubscription: { type: Boolean, default: true },
-    canBePurchased: { type: Boolean, default: true },
+
     onlyWeb: { type: Boolean },
     istop: { type: Boolean, default: false },
     ischat: { type: Boolean, default: false },
@@ -185,7 +186,7 @@ var productSchema = new Schema({
     //body: { type: String, default: "" }, // Description For SEO
 
     //type: { type: String, default: 'PRODUCT' },
-    Status: String,
+    Status: { type: String, default: 'DISABLED' },
     //enabled: { type: Boolean, default: true },
     //ischat: { type: Boolean, default: false },
     //negociate: { type: Number, default: 0 }, // 0 is no negociate
@@ -547,6 +548,16 @@ productSchema.pre('save', function(next) {
         }
     }
 
+    if (this.info.isActive == false) {
+        this.isValidated = false;
+        this.Status = 'DISABLED'
+    } else {
+        if (this.isValidated == true)
+            this.Status = 'VALIDATED';
+        else
+            this.Status = 'PREPARED';
+    }
+
     this.updateRating();
 
     /* if (this.category) {
@@ -709,13 +720,13 @@ productSchema.virtual('status')
         var res_status = {};
 
         var status = this.Status;
+        var statusList = exports.Status;
 
-        if (status && dict.fk_product_status.values[status].label) {
-            //console.log(this);
+        if (status && statusList.values[status] && statusList.values[status].label) {
             res_status.id = status;
-            res_status.name = i18n.t("products:" + dict.fk_product_status.values[status].label);
-            //res_status.name = statusList.values[status].label;
-            res_status.css = dict.fk_product_status.values[status].cssClass;
+            res_status.name = i18n.t("product:" + statusList.values[status].label);
+            //this.status.name = statusList.values[status].label;
+            res_status.css = statusList.values[status].cssClass;
         } else { // By default
             res_status.id = status;
             res_status.name = status;
@@ -750,17 +761,35 @@ exports.Status = {
         "ACTIVE": {
             "enable": true,
             "label": "Enabled",
-            "cssClass": "ribbon-color-info label-info",
+            "cssClass": "ribbon-color-success label-success",
             "system": true
         },
-        "INACTIVE": {
+        "DISABLED": {
             "enable": true,
             "label": "Disabled",
-            "cssClass": "ribbon-color-warning label-warning"
+            "cssClass": "ribbon-color-default label-default",
+            "system": true
+        },
+        "POSTED": {
+            "enable": true,
+            "label": "Posted",
+            "cssClass": "ribbon-color-primary label-primary",
+            "system": true
+        },
+        "VALIDATED": {
+            "enable": true,
+            "label": "Validated",
+            "cssClass": "ribbon-color-warning label-warning",
+            "system": true
+        },
+        "PREPARED": {
+            "enable": true,
+            "label": "Preparation",
+            "cssClass": "ribbon-color-danger label-danger",
+            "system": true
         }
     }
 };
-
 
 /**
  * Methods

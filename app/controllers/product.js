@@ -181,9 +181,14 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         });
     };
 
-    $scope.update = function() {
+    $scope.update = function(isValidated) {
         var product = $scope.product;
         var self = this;
+
+        if (isValidated)
+            product.isValidated = true;
+        else
+            product.isValidated = false;
 
         product.$update(function(response) {
             $scope.findOne(); // refresh product with populate
@@ -452,6 +457,9 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 }, {
                     "data": "rating.total",
                     defaultContent: ""
+                }, {
+                    "data": "Status",
+                    defaultContent: "DISABLED"
                 }, {
                     "data": "sellFamily",
                     defaultContent: ""
@@ -937,6 +945,10 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         $http.post('/erp/api/channel/product', { product: id, channel: channel._id, type: 'product' }).then(function(res) {
             channel.channels.push(res.data);
         });
+    };
+
+    $scope.deleteProductToChannel = function() {
+
     };
 
 
