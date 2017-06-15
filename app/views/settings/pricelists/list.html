@@ -40,19 +40,19 @@
                                         <tr ng-repeat="line in listObject">
                                             <td>{{line.priceListCode}}</td>
                                             <td>{{line.name}}</td>
-                                            <td class="center">{{line.currency}}</td>
-                                            <td class="center"><span ng-show="line.defaultPriceList == true" class="fa fa-check font-blue"></span></td>
-                                            <td class="center"><span ng-show="line.isFixed == true" class="fa fa-check font-blue"></span></td>
-                                            <td class="center"><span ng-show="line.cost == true" class="fa fa-check font-blue"></span></td>
-                                            <td class="center"><span ng-show="line.isCoef == true" class="fa fa-check font-blue"></span></td>
-                                            <td class="center"><span ng-show="line.isGlobalDiscount == true" class="fa fa-check font-blue"></span></td>
+                                            <td class="text-center">{{line.currency}}</td>
+                                            <td class="text-center"><span ng-show="line.defaultPriceList == true" class="fa fa-check font-blue"></span></td>
+                                            <td class="text-center"><span ng-show="line.isFixed == true" class="fa fa-check font-blue"></span></td>
+                                            <td class="text-center"><span ng-show="line.cost == true" class="fa fa-check font-blue"></span></td>
+                                            <td class="text-center"><span ng-show="line.isCoef == true" class="fa fa-check font-blue"></span></td>
+                                            <td class="text-center"><span ng-show="line.isGlobalDiscount == true" class="fa fa-check font-blue"></span></td>
                                             <!--<td><input type="checkbox" class="md-check has-success" ng-model="line.defaultPriceList" disabled ng-checked="line.defaultPriceList"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.isFixed" disabled ng-checked="line.isFixed"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.cost" disabled ng-checked="line.cost"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.isCoef" disabled ng-checked="line.isCoef"></td>
                                             <td><input type="checkbox" class="md-check has-success" ng-model="line.isGlobalDiscount" disabled ng-checked="line.isGlobalDiscount"></td>-->
-                                            <td class="center">{{line.discount}} %</td>
-                                            <td class="center">{{line.countCustomers}}</td>
+                                            <td class="text-center">{{line.discount}} %</td>
+                                            <td class="text-center">{{line.countCustomers}}</td>
                                             <td>
                                                 <a class="btn green fa fa-pencil" ui-sref="settings.product.pricelists.show({id:line._id})" title="Editer"></a>
                                                 <button ng-if="line.countCustomers == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeletePriceList)" confirmed-click="remove(line)"></button>

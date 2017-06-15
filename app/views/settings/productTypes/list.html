@@ -24,21 +24,21 @@
                                 <tr role="row" class="heading">
                                     <th>@(Code)</th>
                                     <th>@(Name)</th>
-                                    <th width="15%" class="center">@(products:Inventory)</th>
-                                    <th width="10%" class="center">@(products:Quantity)</th>
-                                    <th width="10%" class="center">@(CreatedAt)</th>
-                                    <th width="10%" class="center">@(Action)</th>
+                                    <th width="15%" class="text-center">@(products:Inventory)</th>
+                                    <th width="10%" class="text-center">@(products:Quantity)</th>
+                                    <th width="10%" class="text-center">@(CreatedAt)</th>
+                                    <th width="10%" class="text-center">@(Action)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="line in listObject">
                                     <td>{{line.sequence}}</td>
                                     <td>{{line.name}}</td>
-                                    <td class="center"><span ng-show="line.inventory == true" class="fa fa-check font-blue"></span></td>
+                                    <td class="text-center"><span ng-show="line.inventory == true" class="fa fa-check font-blue"></span></td>
                                     <!--<input type="checkbox" id="isActive" class="md-check" ng-model="line.inventory" disabled ng-checked="line.inventory"></td>-->
 
-                                    <td class="center">{{line.countProducts}}</td>
-                                    <td class="center">{{line.createdAt | date : "shortDate"}}</th>
+                                    <td class="text-center">{{line.countProducts}}</td>
+                                    <td class="text-center">{{line.createdAt | date : "shortDate"}}</th>
                                         <td>
                                             <a class="btn green fa fa-pencil" ui-sref="settings.product.types.show({id:line._id})" title="Editer"></a>
                                             <button ng-if="line.countProducts == 0" class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteProduct)" confirmed-click="remove(line)"></button>

@@ -72,8 +72,8 @@
                                     <th>@(Name)</th>
                                     <th>@(Code)</th>
                                     <th>@(products:Value)</th>
-                                    <th width="8%" class="center">@(CreatedAt)</th>
-                                    <th width="8%" class="center">@(Action)</th>
+                                    <th width="8%" class="text-center">@(CreatedAt)</th>
+                                    <th width="8%" class="text-center">@(Action)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -81,8 +81,8 @@
                                     <td width="25%">{{line.langs[_language].name}}</td>
                                     <td>{{line.code}}</td>
                                     <td>{{line.mode}}</td>
-                                    <td class="center">{{line.createdAt | date : "shortDate"}}</td>
-                                    <td width="100px" class="center">
+                                    <td class="text-center">{{line.createdAt | date : "shortDate"}}</td>
+                                    <td width="100px" class="text-center">
                                         <a class="btn green fa fa-pencil" ui-sref="product.attributes.show({id:line._id})" title="Editer"></a>
                                         <button class="btn red fa fa-trash ng-scope" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteAttribut)" confirmed-click="remove(line)"></button>
                                     </td>
