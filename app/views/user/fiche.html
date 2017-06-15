@@ -32,10 +32,7 @@
         </div>
     </div>
 </div>
-
 <div ng-if="user.isremoved" class="alert alert-danger"><strong>@(users:BeCareful) !</strong> @(users:UserHasBeenDeleted) </div>
-
-
 <div class="row">
     <div class="col-md-offset-2 col-md-8">
         <div class="row">
@@ -88,7 +85,6 @@
                                         <div class="col-md-6 col-sm-6 col-xs-6 ">
                                             <div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
                                         </div>
-
                                         <div>
                                             <div class="col-md-6 col-sm-6 col-xs-6 ">
                                                 <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{user.createdBy.username}}</a> </div>
@@ -100,7 +96,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row list-separated profile-stat ">
                                         <div class="col-md-12 ">
                                             <div class="uppercase profile-stat-title "> <i class="icon-key font-yellow-crusta "></i> {{user.lastConnection | date:'dd/MM/yyyy'}} </div>
@@ -112,16 +107,13 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-7 col-sm-12">
                     <div class="portlet light portlet bordered">
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class="icon-info"></i>
                                 <span class="caption-subject dark bold uppercase"> @(users:Main)</span>
-
                             </div>
-
                             <save ng-disabled="!editable" mode="user._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
                         </div>
                         <div class="portlet-body">
@@ -134,23 +126,19 @@
                                             <label for="form_control_1">@(users:UserName)<span class="required">
                                         * </span></label>
                                         </div>
-
                                         <div class="form-group form-md-line-input has-success">
                                             <input type="text" class="form-control" id="form_control_1" ng-model="user.password">
                                             <label for="form_control_1">@(users:Password)</label>
                                         </div>
-
                                         <div class="form-group form-md-line-input has-success">
                                             <input type="text" class="form-control" id="form_control_1" ng-change="checkEmailExist" ng-model="user.email">
                                             <label for="form_control_1">@(Email)<span class="required">
                                         * </span></label>
                                         </div>
-
                                         <div class="form-group form-md-line-input has-success">
                                             <select type="text" class="form-control" id="form_control_1" ng-model="user.groupe" ng-options="g.id as g.name for g in groups"></select>
                                             <label for="form_control_1">@(users:Group)</label>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>

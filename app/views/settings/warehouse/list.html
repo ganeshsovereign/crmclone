@@ -22,22 +22,24 @@
                         <table class="table dataTable no-footer table-hover" id="priceList">
                             <thead>
                                 <tr role="row" class="heading">
-                                    <th>@(Code)</th>
                                     <th>@(Name)</th>
-                                    <th>@()</th>
-                                    <th>@(:)</th>
-                                    <th>@(Action)</th>
+                                    <th class="center" width="100px">@(Owner)</th>
+                                    <th class="center" width="100px">@(products:Main)</th>
+                                    <th widht="30%">@(products:Locations)</th>
+                                    <th>@(products:Zones)</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="line in listObject">
-                                    <td>{{line.priceListCode}}</td>
-                                    <td>{{line.name}}</td>
-                                    <td>{{line.currency}}</td>
-                                    <td><input type="checkbox" id="isActive" class="md-check has-success" ng-model="line.cost" disabled ng-checked="line.cost"></td>
+                                    <td>{{}}</td>
+                                    <td class="center"><span ng-show=" == true" class="fa fa-check font-blue"></span></td>
+                                    <td class="center"><span ng-show=" == true" class="fa fa-check font-blue"></span></td>
+                                    <td>{{}}</td>
+                                    <td>{{}}</td>
                                     <td>
                                         <a class="btn green fa fa-pencil" ui-sref="settings.product.pricelists.show({id:line._id})" title="Editer"></a>
-                                        <button ng-if="line.removable == true" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeletePriceList)" confirmed-click="remove(line)"></button>
+                                        <button ng-if="line.countCustomers == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="remove()"></button>
                                     </td>
                                 </tr>
                             </tbody>

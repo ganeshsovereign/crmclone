@@ -827,5 +827,6 @@
     "CreatedAt": "Créé le",
     "CreatedBy": "Créé par",
     "EditedBy": "Edité par",
-    "SendToFtp": "Envoyé sur FTP"
+    "SendToFtp": "Envoyé sur FTP",
+    "Send": "Envoyé"
 }

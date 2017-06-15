@@ -19,7 +19,7 @@
                     <div class="caption">
                         <i class="icon-target"></i>
                         <span class="caption-subject dark bold uppercase"> @(products:Attributes)</span>
-                        <span class="caption-helper"> - @(products:ProductServiceCard)</span>
+                        <span class="caption-helper font-yellow-crusta"> -  {{product.sellFamily.name}}</span>
                     </div>
                     <save mode="product._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
 
@@ -48,11 +48,6 @@
                     </ul>-->
 
                     <div class="mt-element-list">
-                        <div class="mt-list-head list-todo yellow-crusta">
-                            <div class="list-head-title-container">
-                                <h3 class="list-title">Attributs famille : {{product.sellFamily.name}}</h3>
-                            </div>
-                        </div>
                         <div class="mt-list-container list-todo" id="accordion1" role="tablist" aria-multiselectable="true">
                             <div class="list-todo-line"></div>
                             <ul ng-repeat="(key, value) in product.sellFamily.options | groupBy: 'group.langs[0].name'">

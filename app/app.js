@@ -1865,7 +1865,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('settings.product.warehouse.create', {
             url: "/create.html",
-            templateUrl: "/views/settings/warehouse/create.html",
+            templateUrl: "/views/settings/warehouse/fiche.html",
             data: {
                 pageTitle: 'Ajouter un entrepot'
             },
