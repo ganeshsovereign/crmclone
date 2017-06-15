@@ -61,8 +61,9 @@
             <!-- buttons -->
 
             <div class="btn-form" ng-show="tableform.$visible">
+                <button type="button" ng-disabled="tableform.$waiting || true" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
                 <button type="submit" ng-disabled="tableform.$waiting" class="btn green pull-right"> @(Save) <i class="fa fa-check"></i></button>
-                <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel) </button>
+                <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel)</button>
             </div>
         </form>
     </div>

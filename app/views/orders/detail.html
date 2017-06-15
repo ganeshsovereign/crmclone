@@ -206,7 +206,6 @@
     </div>
 </div>
 
-
 <div ng-hide="!object._id  || object._id !== object.order._id " class="row">
     <div class="col-md-12">
         <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
@@ -219,17 +218,12 @@
     </div>
 </div>
 
-
-
 <div ng-hide="!object._id" class="row">
     <div class="col-md-12">
         <div class="row">
             <div class="col-sm-12 col-md-7 ">
                 <crm-notes ng-model="object.notes[0]" ng-change="update()"></crm-notes>
             </div>
-
-
-
             <div class="col-md-5 col-sm-12">
                 <div class="portlet light portlet bordered">
                     <div class="portlet-title">
@@ -262,7 +256,6 @@
                                                 {{object.discount.escompte.percent | percent:2}} (-{{object.discount.escompte.value | currency}})
                                             </span></div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -287,7 +280,6 @@
                                         <th>@(Reserved)</th>
                                         <th>@(shippedQty)</th>
                                         <th>@(Reminder)</th>
-
                                     </tr>
                                 </thead>
                                 <tbody ng-repeat="line in object.orderRows ">

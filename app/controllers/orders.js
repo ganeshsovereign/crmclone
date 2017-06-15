@@ -1122,16 +1122,16 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
                             "data": "datec",
                             defaultContent: ""
                         }, {
-                            "data": "isPrinted",
+                            "data": "status.isPrinted",
                             defaultContent: ""
                         }, {
-                            "data": "isPicked",
+                            "data": "status.isPicked",
                             defaultContent: ""
                         }, {
-                            "data": "isPacked",
+                            "data": "status.isPacked",
                             defaultContent: ""
                         }, {
-                            "data": "isShipped",
+                            "data": "status.isShipped",
                             defaultContent: ""
                         },
                         {
