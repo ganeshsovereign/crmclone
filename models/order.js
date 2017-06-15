@@ -6,7 +6,9 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId,
-    timestamps = require('mongoose-timestamp');
+    timestamps = require('mongoose-timestamp'),
+    async = require('async'),
+    _ = require('lodash');
 
 var DataTable = require('mongoose-datatable');
 
@@ -132,6 +134,7 @@ const baseSchema = new Schema({
     salesTeam: { type: ObjectId, ref: 'Department' },
     entity: String,
     optional: Schema.Types.Mixed,
+    order: { type: ObjectId, ref: 'order' }, //Link to OrderRow
     delivery_mode: { type: String, default: "Comptoir" },
     billing: { type: Schema.Types.ObjectId, ref: 'Customers' },
     //costList: { type: ObjectId, ref: 'priceList', default: null }, //Not used
@@ -215,7 +218,30 @@ const baseSchema = new Schema({
         mode: String, //email, order, alert, new, ...
         Status: String,
         msg: String
-    }]
+    }],
+
+    warehouse: { type: ObjectId, ref: 'warehouse', default: null },
+
+    shippingMethod: { type: ObjectId, ref: 'shippingMethod', default: null },
+    shippingCost: { type: Number, default: 0 },
+
+    attachments: { type: Array, default: [] },
+    orderRows: [{
+        _id: false,
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'product', default: null },
+        locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
+        cost: { type: Number, default: 0 },
+        qty: Number,
+
+        isDeleted: { type: Boolean, default: false }
+    }],
+
+    channel: { type: ObjectId, ref: 'integrations', default: null },
+    integrationId: String,
+    //sequence: Number,
+    //name: String
+
 }, options);
 
 baseSchema.plugin(timestamps);
@@ -228,17 +254,17 @@ if (CONFIG('storing-files')) {
 }
 
 var orderCustomerSchema = new Schema({
-    offer: { type: ObjectId, ref: 'quotationCustomer' }
+    offer: { type: ObjectId, ref: 'order' }
 });
 var orderSupplierSchema = new Schema({
-    offer: { type: ObjectId, ref: 'quotationSupplier' }
+    offer: { type: ObjectId, ref: 'order' }
 });
 
 var quotationCustomerSchema = new Schema({
-    orders: [{ type: ObjectId, ref: 'orderCustomer' }]
+    orders: [{ type: ObjectId, ref: 'order' }]
 });
 var quotationSupplierSchema = new Schema({
-    orders: [{ type: ObjectId, ref: 'orderSupplier' }]
+    orders: [{ type: ObjectId, ref: 'order' }]
 });
 
 // Gets listing
@@ -302,7 +328,7 @@ baseSchema.statics.query = function(options, callback) {
 };
 
 // Read Order
-baseSchema.statics.getById = function(id, callback) {
+/*baseSchema.statics.getById = function(id, callback) {
     var self = this;
     var OrderRowModel = MODEL('orderRows').Schema;
 
@@ -334,12 +360,16 @@ baseSchema.statics.getById = function(id, callback) {
         .populate("createdBy", "username")
         .populate("editedBy", "username")
         .populate("offer", "ref total_ht forSales")
+        .populate("order", "ref total_ht forSales")
         .populate("orders", "ref total_ht forSales")
         .exec(function(err, order) {
             if (err)
                 return callback(err);
 
-            OrderRowModel.find({ order: order._id, isDeleted: { $ne: true } })
+            if (!order.order)
+                order.order = { _id: order._id };
+
+            OrderRowModel.find({ order: order.order._id, isDeleted: { $ne: true } })
                 .populate({
                     path: "product",
                     select: "taxes info weight units",
@@ -358,6 +388,227 @@ baseSchema.statics.getById = function(id, callback) {
 
                     return callback(err, order);
                 });
+        });
+};*/
+baseSchema.statics.getById = function(id, callback) {
+    var self = this;
+    var OrderRowModel = MODEL('orderRows').Schema;
+    var ObjectId = MODULE('utils').ObjectId;
+
+    //TODO Check ACL here
+    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    var query = {};
+
+    if (checkForHexRegExp.test(id))
+        query = {
+            _id: id
+        };
+    else
+        query = {
+            ref: id
+        };
+
+    //console.log(query);
+
+    async.waterfall([
+            function(wCb) {
+                self.findOne(query, "-latex")
+                    .populate("contacts", "name phone email")
+                    .populate({
+                        path: "supplier",
+                        select: "name salesPurchases",
+                        populate: { path: "salesPurchases.priceList" }
+                    })
+                    .populate({
+                        path: "total_taxes.taxeId"
+                    })
+                    .populate("createdBy", "username")
+                    .populate("editedBy", "username")
+                    .populate("offer", "ref total_ht forSales")
+                    .populate("order", "ref total_ht forSales")
+                    .populate("orders", "ref total_ht forSales")
+                    .populate("orderRows.product", "taxes info weight units")
+                    .exec(wCb);
+            },
+            function(order, wCb) {
+
+                if (!order.order)
+                    order.order = { _id: order._id };
+
+                OrderRowModel.find({ order: order.order._id, isDeleted: { $ne: true } })
+                    .populate({
+                        path: "product",
+                        select: "taxes info weight units",
+                        //populate: { path: "taxes.taxeId" }
+                    })
+                    .populate({
+                        path: "total_taxes.taxeId"
+                    })
+                    .sort({ sequence: 1 })
+                    .lean()
+                    .exec(function(err, rows) {
+                        if (err)
+                            return wCb(err);
+
+                        //return console.log(rows);
+
+                        order = order.toObject();
+                        order.lines = rows || [];
+
+                        return wCb(err, order);
+                    });
+            },
+            function(order, wCb) {
+                OrderRowModel.aggregate([{
+                            $match: { order: ObjectId(order.order._id), isDeleted: { $ne: true }, type: 'product' }
+                        },
+                        {
+                            $lookup: {
+                                from: 'Product',
+                                localField: 'product',
+                                foreignField: '_id',
+                                as: 'product'
+                            }
+                        }, {
+                            $unwind: {
+                                path: '$product'
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: 'productTypes',
+                                localField: 'product.info.productType',
+                                foreignField: '_id',
+                                as: 'productType'
+                            }
+                        }, {
+                            $unwind: {
+                                path: '$productType'
+                            }
+                        },
+                        {
+                            $lookup: {
+                                from: 'Orders',
+                                localField: 'order',
+                                foreignField: 'order',
+                                as: 'deliveries'
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 1,
+                                inventory: "$productType.inventory",
+                                'product._id': 1,
+                                'product.info.SKU': 1,
+                                'product.info.langs': 1,
+                                'product.weight': 1,
+                                'product.directCost': 1,
+                                orderQty: "$qty",
+                                order: 1,
+                                sequence: 1,
+                                "deliveries": {
+                                    "$filter": {
+                                        "input": "$deliveries",
+                                        "as": "delivery",
+                                        "cond": { $and: [{ $ne: ["$$delivery.isremoved", true] }, { $or: [{ $eq: ['$$delivery._type', 'GoodsOutNote'] }, { $eq: ['$$delivery._type', 'GoodsInNote'] }] }] }
+                                    }
+                                },
+                                refProductSupplier: 1,
+                                description: 1
+                            }
+                        }, {
+                            $match: { inventory: true }
+                        }, {
+                            $unwind: {
+                                path: '$deliveries',
+                                preserveNullAndEmptyArrays: true
+                            }
+                        }, {
+                            $match: { 'deliveries._id': { $ne: ObjectId(order._id) } }
+                        }, {
+                            $project: {
+                                _id: 1,
+                                orderQty: 1,
+                                order: 1,
+                                product: 1,
+                                sequence: 1,
+                                'deliveries.ref': 1,
+                                'deliveries._id': 1,
+                                'deliveries.status': 1,
+                                'deliveries.date_livraison': 1,
+                                'deliveries.orderRows': {
+                                    $filter: {
+                                        input: "$deliveries.orderRows",
+                                        as: "row",
+                                        cond: { $eq: ["$$row.orderRowId", "$_id"] }
+                                    }
+                                },
+                                refProductSupplier: 1,
+                                description: 1
+                            }
+                        }, {
+                            $unwind: {
+                                path: '$deliveries.orderRows',
+                                preserveNullAndEmptyArrays: true
+                            }
+                        }, {
+                            $group: {
+                                _id: "$_id",
+                                orderQty: { $first: "$orderQty" },
+                                sequence: { $first: "$sequence" },
+                                product: { $first: "$product" },
+                                deliveryQty: { $sum: "$deliveries.orderRows.qty" },
+                                deliveries: { $addToSet: { _id: "$deliveries._id", ref: "$deliveries.ref", qty: "$deliveries.orderRows.qty", date_livraison: "$deliveries.date_livraison", status: "$deliveries.status" } },
+                                refProductSupplier: { $first: "$refProductSupplier" },
+                                description: { $first: "$description" }
+                            }
+                        }, {
+                            $project: {
+                                _id: 0,
+                                orderRowId: "$_id",
+                                orderQty: 1,
+                                qty: { $subtract: ["$orderQty", "$deliveryQty"] },
+                                sequence: 1,
+                                product: 1,
+                                cost: "$product.directCost",
+                                deliveryQty: 1,
+                                deliveries: 1,
+                                refProductSupplier: 1,
+                                description: 1
+                            }
+                        }, {
+                            $sort: {
+                                sequence: 1
+                            }
+                        }
+                    ],
+                    function(err, result) {
+                        wCb(err, order, result);
+                    });
+            }
+        ],
+        function(err, order, orderRows) {
+            if (err)
+                return callback(err);
+
+            //return console.log(order.orderRows);
+
+            order.orderRows = _.map(orderRows, function(item) {
+                return _.extend(item, _.findWhere(order.orderRows, { orderRowId: item.orderRowId }));
+            });
+
+            //console.log(order.orderRows);
+
+            /*orderRows: [{
+                    _id: false,
+                    orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+                    product: { type: ObjectId, ref: 'product', default: null },
+                    locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
+                    cost: { type: Number, default: 0 },
+                    qty: Number
+                }],*/
+
+            return callback(err, order);
         });
 };
 //orderSupplierSchema.statics.getById = getById;
@@ -386,6 +637,158 @@ baseSchema.virtual('_status')
         return res_status;
     });
 
+//Check if orderRow is attached to this main order
+baseSchema.virtual('_isOwn')
+    .get(function() {
+        if (!this.order)
+            return false;
+
+        return (this._id === this.order || this._id === this.order._id);
+    });
+
+
+
+const Order = mongoose.model('order', baseSchema);
+
+/**
+ * Delivery
+ */
+
+var goodsOutNoteSchema = new Schema({
+
+    tracking: String, //Tracking number
+
+    status: {
+        isPrinted: { type: Date, default: null }, //Imprime
+        isPicked: { type: Date, default: null }, //Prepare
+        isPacked: { type: Date, default: null }, //Emballe
+        isShipped: { type: Date, default: null }, //Expedier
+
+        pickedById: { type: ObjectId, ref: 'Users', default: null },
+        packedById: { type: ObjectId, ref: 'Users', default: null },
+        shippedById: { type: ObjectId, ref: 'Users', default: null },
+        printedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    boxes: { type: Number, default: 1 },
+
+    archived: { type: Boolean, default: false }
+});
+
+var goodsInNoteSchema = new Schema({
+
+    status: {
+        isReceived: { type: Date, default: null },
+        receivedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    description: { type: String },
+
+    boxes: { type: Number, default: 1 },
+
+    orderRows: [{
+        _id: false,
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'product', default: null },
+        cost: { type: Number, default: 0 },
+        locationsReceived: [{
+            _id: false,
+            location: { type: ObjectId, ref: 'location', default: null },
+            qty: Number
+        }],
+
+        isDeleted: { type: Boolean, default: false },
+
+        qty: Number
+    }]
+});
+
+var stockCorrectionSchema = new Schema({
+    status: {
+        isReceived: { type: Date, default: null },
+        receivedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    description: { type: String },
+
+    boxes: { type: Number, default: 1 },
+
+    orderRows: [{
+        _id: false,
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'Product', default: null },
+        cost: { type: Number, default: 0 },
+        locationsReceived: [{
+            _id: false,
+            location: { type: ObjectId, ref: 'location', default: null },
+            qty: Number
+        }],
+
+        qty: Number
+    }]
+});
+
+var stockReturnSchema = new Schema({
+    status: {
+        isReceived: { type: Date, default: null },
+        receivedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    description: { type: String },
+
+    boxes: { type: Number, default: 1 },
+
+    journalEntrySources: [{ type: String, default: '' }],
+
+    orderRows: [{
+        _id: false,
+        goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
+        goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
+        product: { type: ObjectId, ref: 'Product', default: null },
+        cost: { type: Number, default: 0 },
+        qty: Number,
+        warehouse: { type: ObjectId, ref: 'warehouse', default: null }
+    }]
+});
+
+var stockTransactionsSchema = new Schema({
+    warehouseTo: { type: ObjectId, ref: 'warehouse', default: null },
+    status: {
+        isPrinted: { type: Date, default: null }, //Imprime
+        isPicked: { type: Date, default: null }, //Prepare
+        isPacked: { type: Date, default: null }, //Emballe
+        isShipped: { type: Date, default: null }, //Expedier
+
+        pickedById: { type: ObjectId, ref: 'Users', default: null },
+        packedById: { type: ObjectId, ref: 'Users', default: null },
+        shippedById: { type: ObjectId, ref: 'Users', default: null },
+        printedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    boxes: { type: Number, default: 1 },
+
+    orderRows: [{
+        _id: false,
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'Product', default: null },
+        locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
+        batchesDeliver: [{
+            goodsNote: { type: ObjectId, ref: 'goodsInNotes', default: null },
+            qty: Number,
+            cost: Number
+        }],
+
+        locationsReceived: [{
+            _id: false,
+            location: { type: ObjectId, ref: 'location', default: null },
+            qty: Number
+        }],
+
+        cost: { type: Number, default: 0 },
+        qty: Number
+    }]
+
+});
 
 function saveOrder(next) {
     var self = this;
@@ -449,24 +852,126 @@ function saveQuotation(next) {
     next();
 }
 
-const Order = mongoose.model('order', baseSchema);
+function setNameDelivery(next) {
+    var self = this;
+    var SeqModel = MODEL('Sequence').Schema;
+    var EntityModel = MODEL('entity').Schema;
+
+    if (self.isNew && !self.ref)
+        return SeqModel.inc("ORDER", function(seq, number) {
+            //console.log(seq);
+            self.ID = number;
+            EntityModel.findOne({
+                _id: self.entity
+            }, "cptRef", function(err, entity) {
+                if (err)
+                    console.log(err);
+
+                if (entity && entity.cptRef)
+                    self.ref = (self.forSales == true ? "BL" : "RE") + entity.cptRef + seq;
+                else
+                    self.ref = (self.forSales == true ? "BL" : "RE") + seq;
+                next();
+            });
+        });
+
+    if (self.isNew && self.ref)
+        return SeqModel.incCpt(self.order, function(number) {
+            //console.log(seq);
+            self.ref += '/' + number;
+            next();
+
+        });
+
+    if (self.date_livraison)
+        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+    next();
+}
+
+function setNameTransfer(next) {
+    var transaction = this;
+    var db = transaction.db.db;
+    var prefix = 'TX';
+
+    db.collection('settings').findOneAndUpdate({
+        dbName: db.databaseName,
+        name: prefix
+    }, {
+        $inc: { seq: 1 }
+    }, {
+        returnOriginal: false,
+        upsert: true
+    }, function(err, rate) {
+        if (err) {
+            return next(err);
+        }
+
+        transaction.name = prefix + '-' + rate.value.seq;
+
+        next();
+    });
+}
+
+function setNameReturns(next) {
+    var transaction = this;
+    var db = transaction.db.db;
+    var prefix = 'RT';
+
+    db.collection('settings').findOneAndUpdate({
+        dbName: db.databaseName,
+        name: prefix
+    }, {
+        $inc: { seq: 1 }
+    }, {
+        returnOriginal: false,
+        upsert: true
+    }, function(err, rate) {
+        if (err) {
+            return next(err);
+        }
+
+        transaction.name = prefix + '-' + rate.value.seq;
+
+        next();
+    });
+}
 
 orderCustomerSchema.pre('save', saveOrder);
 orderSupplierSchema.pre('save', saveOrder);
 quotationCustomerSchema.pre('save', saveQuotation);
 quotationSupplierSchema.pre('save', saveQuotation);
 
+goodsOutNoteSchema.pre('save', setNameDelivery);
+stockTransactionsSchema.pre('save', setNameTransfer);
+goodsInNoteSchema.pre('save', setNameDelivery);
+stockReturnSchema.pre('save', setNameReturns);
+
+//goodsOutNoteSchema.statics.getById = getDeliveryById;
+//goodsInNoteSchema.statics.getById = getDeliveryById;
+
 const orderCustomer = Order.discriminator('orderCustomer', orderCustomerSchema);
 const orderSupplier = Order.discriminator('orderSupplier', orderSupplierSchema);
 const quotationCustomer = Order.discriminator('quotationCustomer', quotationCustomerSchema);
 const quotationSupplier = Order.discriminator('quotationSupplier', quotationSupplierSchema);
+
+const goodsOutNote = Order.discriminator('GoodsOutNote', goodsOutNoteSchema);
+const stockTransactions = Order.discriminator('stockTransactions', stockTransactionsSchema);
+const stockReturns = Order.discriminator('stockReturns', stockReturnSchema);
+const stockCorrection = Order.discriminator('stockCorrections', stockCorrectionSchema);
+const goodsInNote = Order.discriminator('GoodsInNote', goodsInNoteSchema);
 
 exports.Schema = {
     Order: Order, //Only for READING
     OrderCustomer: orderCustomer,
     OrderSupplier: orderSupplier,
     QuotationCustomer: quotationCustomer,
-    QuotationSupplier: quotationSupplier
+    QuotationSupplier: quotationSupplier,
+
+    GoodsOutNote: goodsOutNote,
+    GoodsInNote: goodsInNote,
+    stockCorrections: stockCorrection,
+    stockTransactions: stockTransactions,
+    stockReturns: stockReturns
 };
 
 exports.Status = {

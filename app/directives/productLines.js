@@ -9,11 +9,16 @@ MetronicApp.directive('productLines', ['$http',
                 priceList: "=",
                 forSales: "=",
                 supplier: "=",
+                ngTemplate: "@",
                 editable: '=ngDisabled',
                 ngChange: '&'
             },
             templateUrl: function(el, attr) {
                 console.log(attr);
+
+                if (attr.ngTemplate)
+                    return attr.ngTemplate;
+
                 if (attr.forSales == "false")
                     return '/templates/core/productSupplierLine.html';
                 return '/templates/core/productLine.html';

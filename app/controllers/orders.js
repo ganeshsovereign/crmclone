@@ -372,10 +372,13 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             for (var i = 0; i < object.lines.length; i++)
                 delete object.lines[i]._id; //Force create a new lines
 
-            if (object.forSales == true)
+            if (object.forSales == true) {
                 var order = new Orders.order(object);
-            else
+                var go = "order.show";
+            } else {
                 var order = new Orders.orderSupplier(object);
+                var go = "ordersupplier.show";
+            }
 
             //create new order
             order.$save(function(response) {
@@ -385,7 +388,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.object.Status = 'SIGNED';
                     $scope.object.orders.push(response._id);
                     $scope.object.$update(function(object) {
-                        $rootScope.$state.go("order.show", { id: response._id });
+                        $rootScope.$state.go(go, { id: response._id });
                     });
                 });
             });
@@ -562,46 +565,77 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
 
         $scope.createDelivery = function() {
-            var modalInstance = $modal.open({
-                templateUrl: '/templates/delivery/modal/create.html',
-                controller: "DeliveryCreateController",
-                resolve: {
-                    object: function() {
-                        return {
-                            order: $scope.object,
-                            priceList: $scope.object.supplier.salesPurchases.priceList
-                        };
-                    }
-                }
-            });
+            var object = angular.copy($scope.object);
 
-            modalInstance.result.then(function(delivery) {
-                //scope.contacts.push(contacts);
-                $scope.findOne(function(order) {
-                    var partial = false;
+            var id = object._id;
+            object.order = object._id;
+            delete object._id;
+            delete object.Status;
+            delete object.latex;
+            delete object.datec;
+            delete object.datel;
+            delete object.createdAt;
+            delete object.updatedAt;
+            object.ref;
+            delete object.history;
+            delete object._type;
 
-                    for (var i = 0; i < order.deliveries.length; i++) {
-                        //Refresh order quantities already sended
+            if (object.forSales == true) {
+                var delivery = new Orders.delivery(object);
+                var go = "delivery.show";
+            } else {
+                var delivery = new Orders.deliverySupplier(object);
+                var go = "deliverysupplier.show";
+            }
 
-                        if (order.deliveries[i].deliveryQty < order.deliveries[i].orderQty) {
-                            partial = true;
-                            break;
-                        }
-                    }
-
-                    if (partial == false) // CLOSE ORDER
-                        order.Status = "CLOSED";
-                    else // LEAVE IT OPENED
-                        order.Status = "SHIPPING";
-
-                    order.$update(function(response) {
-                        $rootScope.$state.go('delivery.show.detail', {
-                            id: delivery._id
-                        });
-                    });
-                }, function() {});
+            //create new order
+            delivery.$save(function(response) {
+                $scope.object.Status = 'PROCESSING';
+                $scope.object.$update(function(object) {
+                    $rootScope.$state.go(go, { id: response._id });
+                });
             });
         };
+        /*var modalInstance = $modal.open({
+            templateUrl: '/templates/delivery/modal/create.html',
+            controller: "DeliveryCreateController",
+            resolve: {
+                object: function() {
+                    return {
+                        order: $scope.object,
+                        priceList: $scope.object.supplier.salesPurchases.priceList
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then(function(delivery) {
+            //scope.contacts.push(contacts);
+            $scope.findOne(function(order) {
+                var partial = false;
+
+                for (var i = 0; i < order.deliveries.length; i++) {
+                    //Refresh order quantities already sended
+
+                    if (order.deliveries[i].deliveryQty < order.deliveries[i].orderQty) {
+                        partial = true;
+                        break;
+                    }
+                }
+
+                if (partial == false) // CLOSE ORDER
+                    order.Status = "CLOSED";
+                else // LEAVE IT OPENED
+                    order.Status = "SHIPPING";
+
+                order.$update(function(response) {
+                    $rootScope.$state.go('delivery.show.detail', {
+                        id: delivery._id
+                    });
+                });
+            }, function() {});
+        });*/
+
     }
 ]);
 

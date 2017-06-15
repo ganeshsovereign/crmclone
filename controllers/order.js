@@ -108,6 +108,9 @@ Object.prototype = {
         order.createdBy = self.user._id;
         order.editedBy = self.user._id;
 
+        if (!order.order)
+            order.order = order._id;
+
         if (!order.entity)
             order.entity = self.user.entity;
 

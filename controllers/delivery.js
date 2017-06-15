@@ -81,64 +81,18 @@ exports.install = function() {
 
 function Object() {}
 
-// Read an offer
-function Delivery(id, DeliveryModel, cb) {
-
-    //var DeliveryModel = MODEL('delivery').Schema;
-
-    var self = this;
-
-    //TODO Check ACL here
-    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
-    var query = {};
-
-    if (checkForHexRegExp.test(id))
-        query = {
-            _id: id
-        };
-    else
-        query = {
-            ref: id
-        };
-
-    //console.log(query);
-
-    DeliveryModel.findOne(query, "-latex")
-        .populate("contacts", "name phone email")
-        .populate({
-            path: "supplier",
-            select: "name salesPurchases",
-            populate: { path: "salesPurchases.priceList" }
-        })
-        .populate({
-            path: "lines.product",
-            select: "taxes info weight units",
-            //populate: { path: "taxes.taxeId" }
-        })
-        .populate({
-            path: "lines.total_taxes.taxeId"
-        })
-        .populate({
-            path: "total_taxes.taxeId"
-        })
-        .populate("order", "ref lines total_ht")
-        .populate("createdBy", "username")
-        .populate("editedBy", "username")
-        .exec(cb);
-}
-
 Object.prototype = {
     show: function(id) {
         var self = this;
 
         if (self.query.forSales == "false")
-            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
+            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
         else
-            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
+            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
 
-        Delivery(id, DeliveryModel, function(err, delivery) {
+        DeliveryModel.getById(id, function(err, delivery) {
             if (err)
-                console.log(err);
+                return self.throw500(err);
 
             self.json(delivery);
         });
@@ -147,9 +101,9 @@ Object.prototype = {
         var self = this;
 
         if (self.query.forSales == "false")
-            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
+            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
         else
-            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
+            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
 
         var delivery = {};
         delivery = new DeliveryModel(self.body);
@@ -184,6 +138,7 @@ Object.prototype = {
             delete delivery.updatedAt;
             delete delivery.bill;
             delete delivery.history;
+            delete delivery.orderRows;
             delivery.Status = "DRAFT";
             delivery.notes = [];
             delivery.latex = {};
@@ -210,35 +165,61 @@ Object.prototype = {
         var self = this;
 
         if (self.body.forSales == false)
-            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
+            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
         else
-            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
+            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
 
-        Delivery(id, DeliveryModel, function(err, delivery) {
+        self.body.editedBy = self.user._id;
 
-            console.log(delivery);
-            delivery = _.extend(delivery, self.body);
+        var rows = self.body.lines;
+        for (var i = 0; i < rows.length; i++)
+            rows[i].sequence = i;
 
-            delivery.editedBy = self.user._id;
+        if (!self.body.createdBy)
+            self.body.createdBy = self.user._id;
 
-            delivery.save(function(err, doc) {
-                if (err) {
-                    console.log(err);
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
-                        }
-                    });
-                }
+        MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
 
-                //console.log(doc);
-                doc = doc.toObject();
-                doc.successNotify = {
-                    title: "Success",
-                    message: "Bon de livraison enregistre"
-                };
-                self.json(doc);
+            self.body.total_ht = result.total_ht;
+            self.body.total_taxes = result.total_taxes;
+            self.body.total_ttc = result.total_ttc;
+            self.body.weight = result.weight;
+
+            DeliveryModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, delivery) {
+
+                console.log(delivery);
+                //delivery = _.extend(delivery, self.body);
+
+                //delivery.editedBy = self.user._id;
+
+                delivery.save(function(err, doc) {
+                    if (err) {
+                        console.log(err);
+                        return self.json({
+                            errorNotify: {
+                                title: 'Erreur',
+                                message: err
+                            }
+                        });
+                    }
+
+                    //console.log(doc);
+                    doc = doc.toObject();
+                    doc.successNotify = {
+                        title: "Success",
+                        message: "Bon de livraison enregistre"
+                    };
+                    self.json(doc);
+                });
             });
         });
     },
@@ -289,9 +270,9 @@ Object.prototype = {
         var self = this;
 
         if (self.query.forSales == "false")
-            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
+            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
         else
-            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
+            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
 
         var SocieteModel = MODEL('Customers').Schema;
 
@@ -319,7 +300,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            select: "ref forSales"
+            select: "ref forSales status"
         };
 
 
@@ -329,7 +310,7 @@ Object.prototype = {
                     dictName: "fk_delivery_status",
                     object: true
                 }, cb);*/
-                cb(null, MODEL('delivery').Status);
+                cb(null, MODEL('order').Status);
             },
             datatable: function(cb) {
                 DeliveryModel.dataTable(query, options, cb);
@@ -364,22 +345,22 @@ Object.prototype = {
                     if (res.datatable.data[i].status.isPrinted == null)
                         res.datatable.data[i].status.isPrinted = '<span class="fa fa-close font-red"></span>';
                     else
-                        res.datatable.data[i].status.isPrinted = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Imprimé le : ' + row.isPrinted.format(CONFIG('dateformatLong')) + '"></span>';
+                        res.datatable.data[i].status.isPrinted = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Imprimé le : ' + row.status.isPrinted.format(CONFIG('dateformatLong')) + '"></span>';
 
-                    if (res.datatable.data[i].isPicked == null)
-                        res.datatable.data[i].isPicked = '<span class="fa fa-close font-red"></span>';
+                    if (res.datatable.data[i].status.isPicked == null)
+                        res.datatable.data[i].status.isPicked = '<span class="fa fa-close font-red"></span>';
                     else
-                        res.datatable.data[i].isPicked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Scanné le : ' + row.isPicked.format(CONFIG('dateformatLong')) + '"></span>';
+                        res.datatable.data[i].status.isPicked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Scanné le : ' + row.status.isPicked.format(CONFIG('dateformatLong')) + '"></span>';
 
-                    if (res.datatable.data[i].isPacked == null)
-                        res.datatable.data[i].isPacked = '<span class="fa fa-close font-red"></span>';
+                    if (res.datatable.data[i].status.isPacked == null)
+                        res.datatable.data[i].status.isPacked = '<span class="fa fa-close font-red"></span>';
                     else
-                        res.datatable.data[i].isPacked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Emballé le : ' + row.isPacked.format(CONFIG('dateformatLong')) + '"></span>';
+                        res.datatable.data[i].status.isPacked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Emballé le : ' + row.status.isPacked.format(CONFIG('dateformatLong')) + '"></span>';
 
-                    if (res.datatable.data[i].isShipped == null)
-                        res.datatable.data[i].isShipped = '<span class="fa fa-close font-red"></span>';
+                    if (res.datatable.data[i].status.isShipped == null)
+                        res.datatable.data[i].status.isShipped = '<span class="fa fa-close font-red"></span>';
                     else
-                        res.datatable.data[i].isShipped = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Expédié le : ' + row.isShipped.format(CONFIG('dateformatLong')) + '"></span>';
+                        res.datatable.data[i].status.isShipped = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Expédié le : ' + row.status.isShipped.format(CONFIG('dateformatLong')) + '"></span>';
 
                     // Action
                     res.datatable.data[i].action = '<a href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';

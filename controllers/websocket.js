@@ -18,7 +18,8 @@ function websocket() {
         self.all(function(client) {
             if (client.alias) {
                 usersId[client.alias] = client.id;
-                usersList.push(client.alias);
+                if (usersList.indexOf(client.alias) < 0)
+                    usersList.push(client.alias);
             }
         });
         UserModel.find({ _id: { $in: usersList } }, "username email photo societe", function(err, users) {
