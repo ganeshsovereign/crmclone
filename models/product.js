@@ -715,27 +715,6 @@ productSchema.virtual('total_pack') // Set Total price for a pack
         return Pricebreak.humanize(true, 3);
     });*/
 
-productSchema.virtual('status')
-    .get(function() {
-        var res_status = {};
-
-        var status = this.Status;
-        var statusList = exports.Status;
-
-        if (status && statusList.values[status] && statusList.values[status].label) {
-            res_status.id = status;
-            res_status.name = i18n.t("product:" + statusList.values[status].label);
-            //this.status.name = statusList.values[status].label;
-            res_status.css = statusList.values[status].cssClass;
-        } else { // By default
-            res_status.id = status;
-            res_status.name = status;
-            res_status.css = "";
-        }
-        return res_status;
-
-    });
-
 productSchema.virtual('_units')
     .get(function() {
         var res = {};
@@ -784,7 +763,7 @@ exports.Status = {
         },
         "PREPARED": {
             "enable": true,
-            "label": "Preparation",
+            "label": "Prepared",
             "cssClass": "ribbon-color-danger label-danger",
             "system": true
         }
@@ -794,7 +773,7 @@ exports.Status = {
 /**
  * Methods
  */
-productSchema.virtual('status')
+productSchema.virtual('_status')
     .get(function() {
         var res_status = {};
 
@@ -803,7 +782,7 @@ productSchema.virtual('status')
 
         if (status && statusList.values[status] && statusList.values[status].label) {
             res_status.id = status;
-            res_status.name = i18n.t("product:" + statusList.values[status].label);
+            res_status.name = i18n.t(statusList.lang + ":" + statusList.values[status].label);
             //this.status.name = statusList.values[status].label;
             res_status.css = statusList.values[status].cssClass;
         } else { // By default

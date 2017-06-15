@@ -29,7 +29,7 @@
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
-                        <div class="row" ng-if="module('delivery')">
+                        <div class="row" ng-if="module('delivery') && delivery.create">
                             <div class="col-md-12">
                                 <div class="portlet light bordered">
                                     <div class="row">
@@ -71,33 +71,33 @@
                                             </div>
 
                                             <div ng-hide="!object._id" ng-if="module('order')" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> <a ui-sref="offer.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
-                                                <label for="ref_client">@(propal:RefProposal)</label>
+                                                <div class="form-control form-control-static" id="RefProposal"> <a ui-sref="offer.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
+                                                <label for="RefProposal">@(propal:RefProposal)</label>
                                             </div>
 
                                             <div ng-if="object.order" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> <a ui-sref="order.show({id:object.order._id})">{{object.order.ref}}</a> </div>
-                                                <label for="ref_client">@(orders:RefOrderShort)</label>
+                                                <div class="form-control form-control-static" id="RefOrderShort"> <a ui-sref="order.show({id:object.order._id})">{{object.order.ref}}</a> </div>
+                                                <label for="RefOrderShort">@(orders:RefOrderShort)</label>
                                             </div>
 
                                             <div ng-if="object.orders" ng-repeat="order in object.orders" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> <a ui-sref="order.show({id:order._id})">{{order.ref}}</a> </div>
-                                                <label for="ref_client">@(orders:RefOrderShort)</label>
+                                                <div class="form-control form-control-static" id="RefOrderShort"> <a ui-sref="order.show({id:order._id})">{{order.ref}}</a> </div>
+                                                <label for="RefOrderShort">@(orders:RefOrderShort)</label>
                                             </div>
 
                                             <div ng-hide="!object._id" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> {{object.supplier.salesPurchases.priceList.priceListCode}} </div>
+                                                <div class="form-control form-control-static" id="price_level"> {{object.supplier.salesPurchases.priceList.priceListCode}} </div>
                                                 <label for="price_level">@(products:PriceLevel)</label>
                                             </div>
 
                                             <div ng-hide="!object._id" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> {{object.total_ht| currency}} @(HT) </div>
-                                                <label for="form_control_1">@(Amounts) @(propal:CommercialProposal)</label>
+                                                <div class="form-control form-control-static" id="Amounts"> {{object.total_ht| currency}} @(HT) </div>
+                                                <label for="Amounts">@(Amounts) @(propal:CommercialProposal)</label>
                                             </div>
 
                                             <div ng-hide="!object.tracking" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> {{object.tracking}} </div>
-                                                <label for="form_control_1">@(deliveries:TrackingNumber)</label>
+                                                <div class="form-control form-control-static" id="TrackingNumber"> {{object.tracking}} </div>
+                                                <label for="TrackingNumber">@(deliveries:TrackingNumber)</label>
                                             </div>
 
                                         </div>

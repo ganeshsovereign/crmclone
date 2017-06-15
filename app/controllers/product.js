@@ -459,7 +459,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                     defaultContent: ""
                 }, {
                     "data": "Status",
-                    defaultContent: "DISABLED"
+                    defaultContent: ""
                 }, {
                     "data": "sellFamily",
                     defaultContent: ""

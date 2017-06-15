@@ -1124,6 +1124,7 @@ Object.prototype = {
 
         var query = JSON.parse(self.req.body.query);
 
+        var Status;
         //console.log(self.body);
 
         var conditions = {
@@ -1158,10 +1159,10 @@ Object.prototype = {
 
         async.parallel({
             status: function(cb) {
-                Dict.dict({
+                /*Dict.dict({
                     dictName: "fk_user_status",
-                    object: true
-                }, cb);
+                    object: true*/
+                cb(null, MODEL('product').Status);
             },
             datatable: function(cb) {
                 ProductModel.dataTable(query, options, cb);
@@ -1245,7 +1246,6 @@ Object.prototype = {
                                 res.datatable.data[i].weight = MODULE('utils').printWeight(row.weight, 3);
                             // Convert Status
                             res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-                            //res.datatable.data[i].Status = (row.info.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
                         }
 
                         //console.log(res.datatable);
