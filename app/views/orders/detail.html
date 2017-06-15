@@ -100,6 +100,12 @@
                                                 <label for="TrackingNumber">@(deliveries:TrackingNumber)</label>
                                             </div>
 
+                                            <div class="form-group form-md-line-input">
+                                                <select class="form-control" id="warehouse" ng-model="object.warehouse.name" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
+                                                        </select>
+                                                <label for="warehouse">@(products:Warehouse)</label>
+                                            </div>
+
                                         </div>
 
                                         <div class="col-md-6 col-sm-12">
@@ -276,10 +282,10 @@
                                 <thead>
                                     <tr role="row " class="heading ">
                                         <th>@(Ref)</th>
-                                        <th>@(orderQty)</th>
-                                        <th>@(Reserved)</th>
-                                        <th>@(shippedQty)</th>
-                                        <th>@(Reminder)</th>
+                                        <th>@(deliveries:OrderQty)</th>
+                                        <th>@(deliveries:Reserved)</th>
+                                        <th>@(deliveries:ShippedQty)</th>
+                                        <th>@(deliveries:Reminder)</th>
                                     </tr>
                                 </thead>
                                 <tbody ng-repeat="line in object.orderRows ">

@@ -82,12 +82,15 @@
     "Sended": "Classer expédié",
     "HelpConfirmQuantityDelivery": "La commande restera ouverte s'il s'agit d'une livraison partielle",
     "ListBL": "Liste des Bons de Livraisons associés",
-    "Reserved": "Réservé(s)",
+    "Reserved": "Qté Réservée",
     "DiscountOnQty": "Remise sur quantité",
     "Logistics": "Logistiques",
     "Printed": "Imprimé",
     "Picked": "Scanné",
     "Packed": "Emballé",
     "Shipped": "Expédié",
-    "ProductCart": "Articles a expédier"
+    "ProductCart": "Articles a expédier",
+    "OrderQty": "Qté commandée",
+    "ShippedQty": "Qté Expédiée",
+    "Reminder": "Qté restante"
 }

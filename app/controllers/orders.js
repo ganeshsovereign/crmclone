@@ -1098,46 +1098,44 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
                         [1, "desc"]
                     ], // set first column as a default sort by asc
                     "columns": [{
-                            data: 'bool'
-                        }, {
-                            "data": "ID"
-                        }, {
-                            "data": "supplier",
-                            defaultContent: ""
-                        }, {
-                            "data": "ref_client",
-                            defaultContent: ""
-                        }, {
-                            "data": "date_livraison",
-                            defaultContent: ""
-                        }, {
-                            "data": "total_ht",
-                            defaultContent: ""
-                        }, {
-                            "data": "Status"
-                        }, {
-                            "data": "entity",
-                            defaultContent: ""
-                        }, {
-                            "data": "datec",
-                            defaultContent: ""
-                        }, {
-                            "data": "status.isPrinted",
-                            defaultContent: ""
-                        }, {
-                            "data": "status.isPicked",
-                            defaultContent: ""
-                        }, {
-                            "data": "status.isPacked",
-                            defaultContent: ""
-                        }, {
-                            "data": "status.isShipped",
-                            defaultContent: ""
-                        },
-                        {
-                            data: 'action'
-                        }
-                    ]
+                        data: 'bool'
+                    }, {
+                        "data": "ID"
+                    }, {
+                        "data": "supplier",
+                        defaultContent: ""
+                    }, {
+                        "data": "ref_client",
+                        defaultContent: ""
+                    }, {
+                        "data": "date_livraison",
+                        defaultContent: ""
+                    }, {
+                        "data": "total_ht",
+                        defaultContent: ""
+                    }, {
+                        "data": "Status"
+                    }, {
+                        "data": "entity",
+                        defaultContent: ""
+                    }, {
+                        "data": "datec",
+                        defaultContent: ""
+                    }, {
+                        "data": "status.isPrinted",
+                        defaultContent: ""
+                    }, {
+                        "data": "status.isPicked",
+                        defaultContent: ""
+                    }, {
+                        "data": "status.isPacked",
+                        defaultContent: ""
+                    }, {
+                        "data": "status.isShipped",
+                        defaultContent: ""
+                    }, {
+                        data: 'action'
+                    }]
                 }
             });
 
@@ -1170,6 +1168,8 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
                 }
             });
         }
+
+
 
         $scope.find = function() {
             grid.resetFilter();
@@ -2010,7 +2010,7 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
         function initDatatable() {
 
             grid.init({
-                src: $("#deliveryList"),
+                src: $("#deliveryListSupplier"),
                 onSuccess: function(grid) {
                     // execute some code after table records loaded
                 },
@@ -2028,7 +2028,7 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/delivery/dt?forSales=false" // ajax source
+                        "url": "/erp/api/delivery/dt_supplier?forSales=false" // ajax source
                     },
                     "order": [
                         [1, "desc"]

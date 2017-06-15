@@ -42,6 +42,7 @@ exports.install = function() {
 
     F.route('/erp/api/delivery', object.read, ['authorize']);
     F.route('/erp/api/delivery/dt', object.readDT, ['post', 'authorize']);
+    F.route('/erp/api/delivery/dt_supplier', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/delivery/caFamily', object.caFamily, ['authorize']);
     F.route('/erp/api/delivery/statistic', object.statistic, ['post', 'json', 'authorize']);
     F.route('/erp/api/delivery/pdf/', object.pdfAll, ['post', 'json', 'authorize']);
@@ -61,18 +62,7 @@ exports.install = function() {
 
     F.route('/erp/api/delivery', object.create, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/delivery/{deliveryId}', object.show, ['authorize']);
-    F.route('/erp/api/delivery/{deliveryId}', function(id) {
-        var self = this;
-        if (self.query.method)
-            switch (self.query.method) {
-                case "clone":
-                    object.clone(id, self);
-                    break;
-                case "bill":
-                    billing.create(id, self);
-                    break;
-            }
-    }, ['post', 'json', 'authorize'], 512);
+    F.route('/erp/api/delivery/{deliveryId}', object.clone, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/delivery/{deliveryId}', object.update, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/delivery/', object.destroyList, ['delete', 'authorize']);
     F.route('/erp/api/delivery/{deliveryId}', object.destroy, ['delete', 'authorize']);
@@ -122,14 +112,17 @@ Object.prototype = {
             self.json(doc);
         });
     },
-    clone: function(id, self) {
-        if (self.body.forSales == false)
-            var DeliveryModel = MODEL('delivery').Schema.GoodsInNote;
-        else
-            var DeliveryModel = MODEL('delivery').Schema.GoodsOutNote;
+    clone: function(id) {
+        var self = this;
 
-        Delivery(id, DeliveryModel, function(err, doc) {
-            var delivery = doc.toObject();
+        if (self.body.forSales == false)
+            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+        else
+            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+
+        DeliveryModel.getById(id, function(err, delivery) {
+            if (err)
+                return self.throw500(err);
 
             delete delivery._id;
             delete delivery.__v;
@@ -300,7 +293,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            select: "ref forSales status"
+            select: "ref forSales"
         };
 
 
@@ -362,6 +355,104 @@ Object.prototype = {
                     else
                         res.datatable.data[i].status.isShipped = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Expédié le : ' + row.status.isShipped.format(CONFIG('dateformatLong')) + '"></span>';
 
+                    // Action
+                    res.datatable.data[i].action = '<a href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                    // Add url on name
+                    if (row.forSales)
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                    else
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/deliverysupplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                    // Convert Date
+                    res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
+                    res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
+                    res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                    res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+
+                    // Convert Status
+                    res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+                }
+
+                //console.log(res.datatable);
+
+                self.json(res.datatable);
+            });
+        });
+    },
+    readDT_supplier: function() {
+        var self = this;
+
+        if (self.query.forSales == "false")
+            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+        else
+            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+
+        var SocieteModel = MODEL('Customers').Schema;
+
+        var query = JSON.parse(self.req.body.query);
+
+        //console.log(self.query);
+
+        var conditions = {
+            Status: { $ne: "BILLED" },
+            isremoved: { $ne: true },
+            //  forSales: true
+        };
+
+        //if (self.query.forSales == "false")
+        //    conditions.forSales = false;
+
+        if (!query.search.value) {
+            if (self.query.status_id && self.query.status_id !== 'null')
+                conditions.Status = self.query.status_id;
+        } else
+            delete conditions.Status;
+
+        if (!self.user.multiEntities)
+            conditions.entity = self.user.entity;
+
+        var options = {
+            conditions: conditions,
+            select: "ref forSales"
+        };
+
+
+        async.parallel({
+            status: function(cb) {
+                /*Dict.dict({
+                    dictName: "fk_delivery_status",
+                    object: true
+                }, cb);*/
+                cb(null, MODEL('order').Status);
+            },
+            datatable: function(cb) {
+                DeliveryModel.dataTable(query, options, cb);
+            }
+        }, function(err, res) {
+            if (err)
+                console.log(err);
+
+            //console.log(res);
+            SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
+
+                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                    var row = res.datatable.data[i];
+
+                    // Add checkbox
+                    res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                    // Add id
+                    res.datatable.data[i].DT_RowId = row._id.toString();
+                    // Add color line 
+                    //if (res.datatable.data[i].Status === 'SEND')
+                    //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
+                    // Add link company
+
+                    if (row.supplier && row.supplier._id)
+                        res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
+                    else {
+                        if (!row.supplier)
+                            res.datatable.data[i].supplier = {};
+                        res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                    }
                     // Action
                     res.datatable.data[i].action = '<a href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
