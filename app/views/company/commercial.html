@@ -20,7 +20,6 @@
                                         <div class="caption">
                                             <i class="fa fa-cog"></i>@(commercial:CommercialParameters)
                                         </div>
-
                                     </div>
                                     <div class="portlet-body">
                                         <div class="form-body">
@@ -51,12 +50,9 @@
                                                         <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.rival">
                                                         <label for="form_control_1">@(companies:RivalShort)</label>
                                                     </div>
-
-
                                                 </div>
 
                                                 <div class="col-md-6">
-
                                                     <div class="form-group form-md-line-input">
                                                         <input type="text" class="form-control" id="form_control_1" ng-model="societe.companyInfo.idprof2">
                                                         <label for="form_control_1">@(companies:ProfId2FR) </label>
@@ -81,7 +77,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
                             <!-- <div class="col-md-4">
@@ -143,14 +138,12 @@
                                             <div class="actions" ng-show="!editableReport.$visible">
                                                 <a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn default" data-original-title="" title="@(Edit)"><i class="fa fa-pencil"></i>@(Edit)</a>
                                                 <a href="#" class="btn btn-icon-only btn-default fullscreen" data-original-title="" title="@(FullScreen)"></a>
-
                                             </div>
                                             <div class="actions" ng-show="editableReport.$visible">
-                                                <button type="submit" ng-disabled="editableReport.$waiting" class="btn btn-outline uppercase green"><i class="fa fa-check"></i> @(Save) </button>
+                                                <button type="submit" ng-disabled="editableReport.$waiting" class="btn green"><i class="fa fa-check"></i> @(Save) </button>
                                                 <button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel();
-                                    findOne();" class="btn btn-outline uppercase red">@(Cancel) <i class="fa fa-angle-right"></i></button>
+                                    findOne();" class="btn red">@(Cancel) <i class="fa fa-angle-right"></i></button>
                                             </div>
-
                                         </div>
                                         <div class="portlet-body">
                                             <div ng-hide="editableReport.$visible" ng-if="societe.internalNotes.author.name" class="alert alert-info alert-dismissable">
@@ -159,7 +152,6 @@
                                             </div>
                                             <div ng-if="!editableReport.$visible" marked="societe.internalNotes.new"></div>
                                             <div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="societe.internalNotes"></div>
-
                                             <!--<div markdown-diff origin="societe.internalNotes.old" new="societe.internalNotes.new"></div>-->
                                             <hr>
                                             <p>
