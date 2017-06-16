@@ -92,5 +92,8 @@
     "ProductCart": "Articles a expédier",
     "OrderQty": "Qté commandée",
     "ShippedQty": "Qté Expédiée",
-    "Reminder": "Qté restante"
+    "Reminder": "Qté restante",
+    "StockReturn": "Retours stock",
+    "NewStockReturn": "Nouveau retour stock",
+    "ListStockReturn": "Liste des  retours stock"
 }

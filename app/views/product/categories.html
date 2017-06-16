@@ -13,73 +13,64 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-share"></i>
-                        <span class="caption-subject dark bold uppercase"> @(Associations)</span>
-                        <span class="caption-helper"> - @(products:ProductServiceCard)</span>
+                        <span class="caption-subject dark bold uppercase">@(Categories) @(Ecommerce)</span>
                     </div>
                     <save mode="product._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
                 </div>
-                <div class="portlet-body">
-                    <tabset class="tabbable-line tabbable-full-width">
-                        <tab heading="@(Categories)" ng-if="product._id">
-                            <div class="form-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="portlet light bordered" ng-init="init()">
-                                            <div class="portlet-title">
-                                                <div class="caption">
-                                                    <i class="fa fa-share-alt font-yellow-crusta"></i>
-                                                    <span class="caption-subject font-yellow-crusta bold uppercase">@(Categories) @(Ecommerce)</span>
-                                                </div>
-                                            </div>
+                <div class="portlet-body" ng-if="product._id">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="portlet light bordered" ng-init="init()">
 
-                                            <div class="portlet-body">
-                                                <div class="table-toolbar">
-                                                    <div class="row">
-                                                        <div class="col-md-9">
-                                                            <div class="btn-group">
-                                                                <button class="btn btn-default" ng-click="expandAll()"><i class="fa fa-plus-square"></i> @(categories:ExpandAll)</button>
-                                                                <button class="btn btn-default" ng-click="collapseAll()"><i class="fa fa-minus-square"></i> @(categories:CollapseAll)</button>
-                                                                <button title="@(Refresh)" class="btn btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-3">
-                                                            <div class="btn-group pull-right">
-                                                            </div>
-                                                        </div>
+                                    <div class="portlet-body">
+                                        <div class="table-toolbar">
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-default" ng-click="expandAll()"><i class="fa fa-plus-square"></i> @(categories:ExpandAll)</button>
+                                                        <button class="btn btn-default" ng-click="collapseAll()"><i class="fa fa-minus-square"></i> @(categories:CollapseAll)</button>
+                                                        <button title="@(Refresh)" class="btn btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
                                                     </div>
                                                 </div>
-
-                                                <!-- Nested node template -->
-                                                <script type="text/ng-template" id="nodes_renderer.html">
-                                                    <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'bg-yellow': product.info.categories.indexOf(node._id) >= 0}">
-                                                        <a class="" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-plus-square-o': collapsed,'fa-minus-square-o': !collapsed}"></span></a>                                                        <input type="checkbox" ng-checked="product.info.categories.indexOf(node._id) >= 0" ng-click="checkCategory(product.info.categories, node._id); product.$update();" /> {{node.langs[0].name}}
-                                                        <span style="margin-left: 20px;" class="font-blue">{{node.langs[0].linker}}</span>
-                                                        <small class="pull-right bold h6" ng-show="node.productsCount">{{node.productsCount}} @(products:Products)</small>
-                                                        <h6 class="">{{node.langs[0].description}}</h6>
-                                                    </div>
-                                                    <ol ui-tree-nodes="" ng-model="node.nodes" data-nodrag ng-class="{hidden: collapsed}">
-                                                        <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
-                                                        </li>
-                                                    </ol>
-                                                </script>
-
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div ui-tree="treeOptions" id="tree-root" data-max-depth="5">
-                                                            <ol ui-tree-nodes ng-model="categories">
-                                                                <li ng-repeat="node in categories" ui-tree-node data-nodrag ng-include="'nodes_renderer.html'"></li>
-                                                            </ol>
-                                                        </div>
+                                                <div class="col-md-3">
+                                                    <div class="btn-group pull-right">
                                                     </div>
                                                 </div>
-
                                             </div>
                                         </div>
+
+                                        <!-- Nested node template -->
+                                        <script type="text/ng-template" id="nodes_renderer.html">
+                                            <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'bg-yellow': product.info.categories.indexOf(node._id) >= 0}">
+                                                <a class="" ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)"><span class="fa" ng-class="{'fa-plus-square-o': collapsed,'fa-minus-square-o': !collapsed}"></span></a> <input
+                                                    type="checkbox" ng-checked="product.info.categories.indexOf(node._id) >= 0" ng-click="checkCategory(product.info.categories, node._id); product.$update();" /> {{node.langs[0].name}}
+                                                <span style="margin-left: 20px;" class="font-blue">{{node.langs[0].linker}}</span>
+                                                <small class="pull-right bold h6" ng-show="node.productsCount">{{node.productsCount}} @(products:Products)</small>
+                                                <h6 class="">{{node.langs[0].description}}</h6>
+                                            </div>
+                                            <ol ui-tree-nodes="" ng-model="node.nodes" data-nodrag ng-class="{hidden: collapsed}">
+                                                <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
+                                                </li>
+                                            </ol>
+                                        </script>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div ui-tree="treeOptions" id="tree-root" data-max-depth="5">
+                                                    <ol ui-tree-nodes ng-model="categories">
+                                                        <li ng-repeat="node in categories" ui-tree-node data-nodrag ng-include="'nodes_renderer.html'"></li>
+                                                    </ol>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
-                        </tab>
-                        <!-- 
+                        </div>
+                    </div>
+                    <!-- 
                             <tab-heading>
                                 <span ng-if='product.attributes.length' class='badge badge-success'>{{product.attributes.length}}</span> @(products:Cross-Sell)
                             </tab-heading>
@@ -326,7 +317,6 @@
                         </tab> -->
                 </div>
             </div>
-            </tabset>
         </div>
     </div>
 </div>

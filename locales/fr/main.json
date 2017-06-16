@@ -680,6 +680,7 @@
     "SettingsOverview": "Aperçu des paramètres",
     "Method": "Méthode",
     "Receive": "Réceptionner",
+    "ReturnDate": "Date de retour",
     "PartialWoman": "Partielle",
     "PartialMan": "Partiel",
     "TotalWoman": "Totale",
@@ -805,6 +806,7 @@
     "Store": "Magasin",
     "Delivery": "Livraison",
     "DeliveryDate": "Date de Livraison",
+    "DateReturn": "Date de retour",
     "Members": "Membres",
     "Print": "Imprimer",
     "PrintBy": "Imprimer par",
@@ -828,5 +830,6 @@
     "CreatedBy": "Créé par",
     "EditedBy": "Edité par",
     "SendToFtp": "Envoyé sur FTP",
-    "Send": "Envoyé"
+    "Send": "Envoyé",
+    "AddPictures": "Ajouter des images"
 }

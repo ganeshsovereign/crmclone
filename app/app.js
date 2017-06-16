@@ -891,6 +891,43 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "OrdersController"
         })
+        // Product Return
+        .state('stockreturn', {
+            url: "/stockreturn",
+            abstract: true,
+            templateUrl: "/views/orders/index.html"
+        })
+        .state('stockreturn.list', {
+            url: "",
+            templateUrl: "/views/orders/liststockreturn.html",
+            data: {
+                pageTitle: 'Liste des retours'
+            },
+            controller: "StockReturnListController"
+        })
+        .state('stockreturn.show', {
+            parent: 'stockreturn',
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/orders/fiche.html",
+            data: {
+                pageTitle: 'Retour produit'
+            },
+            controller: "OrdersController"
+        })
+        .state('stockreturn.show.detail', {
+            url: "/detail",
+            templateUrl: "/views/orders/detail.html",
+            data: { pageTitle: 'Bon de retour' }
+        })
+        .state('stockreturn.create', {
+            parent: "stockreturn",
+            url: "/create.html",
+            templateUrl: "/views/orders/detail.html",
+            data: {
+                pageTitle: 'Nouveau retour'
+            },
+            controller: "OrdersController"
+        })
         // Company
         .state('societe', {
             url: "/societe",

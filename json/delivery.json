@@ -105,13 +105,22 @@
                     "title": "deliveries:DeliveriesShort"
                 },
                 "menu:deliverysuppliers": {
-                    "position": 2,
+                    "position": 5,
                     "url": "/erp/#!/deliverysupplier",
                     "perms": "delivery.read",
                     "enabled": "$conf->delivery->enabled",
                     "usertype": 2,
                     "icon": "fa-truck",
                     "title": "deliveries:SuppliersDeliveries"
+                },
+                "menu:stockreturn": {
+                    "position": 10,
+                    "url": "/erp/#!/stockreturn",
+                    "perms": "delivery.read",
+                    "enabled": "$conf->delivery->enabled",
+                    "usertype": 2,
+                    "icon": "fa-refresh",
+                    "title": "deliveries:StockReturn"
                 }
             }
         }

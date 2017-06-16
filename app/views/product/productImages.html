@@ -8,11 +8,11 @@
     </div>
     <div class="portlet-body" ng-controller="ProductImagesController" ng-init="init()">
 
-        <button ng-click="addImages()">Ajouter une image</button>
+        <button ng-click="addImages()" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(AddPictures) </button>
 
         <div class="mt-element-card mt-element-overlay">
             <div class="row">
-                <div class="col-sm-6 col-xs-12" ng-repeat="image in images">
+                <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12" ng-repeat="image in images">
                     <div class="mt-card-item">
                         <div class="mt-card-avatar mt-overlay-1">
                             <img ng-src="/erp/api/images/bank/l/{{image.image.imageSrc}}">

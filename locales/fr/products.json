@@ -209,6 +209,8 @@
     "ProductSpecial": "Special",
     "QtyMin": "Qté min.",
     "QtyMax": "Qté max.",
+    "QtyMinBasket": "Qté panier min.",
+    "QtyMaxBasket": "Qté panier max.",
     "MarginHT": "Marge H.T.",
     "PriceQty": "Prix pour la quantité",
     "PriceQtyMin": "Prix quantité min. (sans remise)",
