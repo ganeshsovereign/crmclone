@@ -58,6 +58,9 @@ function websocket() {
         switch (channel) {
             case "update":
                 break;
+            case "notify:controllerAngular":
+                self.send({ type: 'refresh', data: notify });
+                break;
             default: // send text notification
                 self.send({ type: 'notify', message: notify.data, date: new Date() }, function(id, client) {
                     // send only to users in notify.users Array

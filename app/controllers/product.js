@@ -27,7 +27,7 @@
 "use strict";
 /* global angular: true */
 
-MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout', '$http', '$modal', '$filter', 'Products', function($scope, $rootScope, $timeout, $http, $modal, $filter, Products) {
+MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout', '$http', '$modal', '$filter', 'toastr', 'Products', function($scope, $rootScope, $timeout, $http, $modal, $filter, toastr, Products) {
 
     $scope.backTo = 'product.list';
     $scope.newPack = {};
@@ -71,6 +71,25 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     ];
 
     var grid = new Datatable();
+
+    $scope.$on('websocket', function(e, type, data) {
+        if (type !== 'refresh')
+            return;
+
+        //console.log(data);
+        //console.log(type);
+
+        if (!data || !data.data || !data.data.route || data.data.route.indexOf('product'))
+            return;
+
+        if ($rootScope.$stateParams.id) {
+            if (data.data._id == $rootScope.$stateParams.id) {
+                $scope.findOne();
+                toastr.warning(data.data.message, 'Notification serveur', { timeOut: 5000, progressBar: true });
+            }
+        } else
+            $scope.find();
+    });
 
     $scope.isValidRef = function() {
         var ref = this.product.info.SKU.trim().toUpperCase();
