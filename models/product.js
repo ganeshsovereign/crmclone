@@ -193,7 +193,7 @@ var productSchema = new Schema({
     taxes: [{
         _id: false,
         taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
-        value: { type: Number }
+        value: { type: Number } // sample ecotax
     }],
     //tva_tx: { type: Number, default: 20 },
     //datec: { type: Date, default: Date.now },
@@ -650,6 +650,18 @@ Dict.dict({ dictName: ['fk_product_status', 'fk_units'], object: true }, functio
     }
     dict = doc;
 });
+
+productSchema.virtual('ecotax')
+    .get(function() {
+        if (!this.taxes || !this.taxes.length)
+            return 0;
+
+        for (var i = 0; i < this.taxes.length; i++)
+            if (this.taxes[i].value)
+                return this.taxes[i].value
+
+        return 0;
+    });
 
 productSchema.virtual('totalCost')
     .get(function() {

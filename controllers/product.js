@@ -4261,6 +4261,10 @@ ProductAttributes.prototype = {
         var _id = id;
         var currentOptions;
 
+        setTimeout2('product:' + id.toString(), function() {
+            F.functions.PubSub.emit('product:attributes', { data: { _id: id, user: self.user._id } });
+        }, 1000);
+
         ProductAttributesModel.findByIdAndUpdate(_id, body, { new: true }, function(err, doc) {
             if (err)
                 return self.throw500(err);
