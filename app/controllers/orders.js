@@ -368,6 +368,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             delete object.ref;
             delete object.history;
             delete object._type;
+            delete object.order;
 
             for (var i = 0; i < object.lines.length; i++)
                 delete object.lines[i]._id; //Force create a new lines
