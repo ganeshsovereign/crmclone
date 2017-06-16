@@ -26,7 +26,12 @@ var ProductAttributesSchema = new Schema({
     sequence: Number, // Order idx
     mode: { type: String, enum: ['text', 'number', 'metric', 'textarea', 'boolean', 'select', 'date', 'file', 'image'] },
     isWysiwyg: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    channels: [{
+        _id: false,
+        channel: { type: Schema.Types.ObjectId, ref: 'integrations', default: null },
+        integrationId: String
+    }]
 });
 
 exports.Schema = mongoose.model('productAttributes', ProductAttributesSchema, 'ProductAttributes');
