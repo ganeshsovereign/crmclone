@@ -70,8 +70,7 @@ exports.setLink = function(link) {
     if (link === "/") // only for root url in categories
         return link;
 
-    link = link.replace(/ /g, "_");
-    link = link.replace(/\//g, "");
+    link = link.replace(/[^a-zA-Z0-9]/g, '_');
 
     //console.log(result);
     return link;

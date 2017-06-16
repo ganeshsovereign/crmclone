@@ -196,6 +196,7 @@ Object.prototype = {
             delete order.createdAt;
             delete order.updatedAt;
             delete order.history;
+            delete order.orderRows;
             order.Status = "DRAFT";
             order.notes = [];
             order.latex = {};
@@ -206,6 +207,7 @@ Object.prototype = {
 
             order = new OrderModel(order);
 
+            order.order = order._id;
             order.createdBy = self.user._id;
             order.editedBy = self.user._id;
 
