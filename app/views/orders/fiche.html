@@ -17,6 +17,10 @@
             <a ui-sref="{{backTo}}">@(deliveries:List)</a>
             <i class="fa fa-angle-right"></i>
         </li>
+        <li ng-if="module('stockreturn')" )>
+            <a ui-sref="{{backTo}}">@(deliveries:ListStockReturn)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
         <li ng-if="module('bill')" )>
             <a ui-sref="{{backTo}}">@(bills:List)</a>
             <i class="fa fa-angle-right"></i>
@@ -32,6 +36,10 @@
         <li ng-if="module('delivery')">
             <span ng-hide="!object._id">@(deliveries:DeliveryNote) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(deliveries:NewDelivery)</span>
+        </li>
+        <li ng-if="module('stockreturn')">
+            <span ng-hide="!object._id">@(deliveries:StockReturn) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(deliveries:NewStockReturn)</span>
         </li>
         <li ng-if="module('bill')">
             <span ng-hide="!object._id">@(bills:BillsCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
