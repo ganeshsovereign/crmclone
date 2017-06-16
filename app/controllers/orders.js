@@ -576,7 +576,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             delete object.datel;
             delete object.createdAt;
             delete object.updatedAt;
-            object.ref;
+            delete object.ref;
             delete object.history;
             delete object._type;
 

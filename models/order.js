@@ -254,7 +254,13 @@ if (CONFIG('storing-files')) {
 }
 
 var orderCustomerSchema = new Schema({
-    offer: { type: ObjectId, ref: 'order' }
+    offer: { type: ObjectId, ref: 'order' },
+
+    status: {
+        allocateStatus: { type: String, default: 'NOR', enum: ['NOR', 'NOT', 'NOA', 'ALL'] },
+        fulfillStatus: { type: String, default: 'NOR', enum: ['NOR', 'NOT', 'NOA', 'ALL'] },
+        shippingStatus: { type: String, default: 'NOR', enum: ['NOR', 'NOT', 'NOA', 'ALL'] }
+    }
 });
 var orderSupplierSchema = new Schema({
     offer: { type: ObjectId, ref: 'order' }
@@ -519,13 +525,31 @@ baseSchema.statics.getById = function(id, callback) {
                         }, {
                             $match: { inventory: true }
                         }, {
+                            $project: {
+                                _id: 1,
+                                inventory: 1,
+                                product: 1,
+                                orderQty: 1,
+                                order: 1,
+                                sequence: 1,
+                                "deliveries": {
+                                    "$filter": {
+                                        "input": "$deliveries",
+                                        "as": "delivery",
+                                        "cond": { $ne: ["$$delivery._id", ObjectId(order._id)] }
+                                    }
+                                },
+                                refProductSupplier: 1,
+                                description: 1
+                            }
+                        },
+                        {
                             $unwind: {
                                 path: '$deliveries',
                                 preserveNullAndEmptyArrays: true
                             }
-                        }, {
-                            $match: { 'deliveries._id': { $ne: ObjectId(order._id) } }
-                        }, {
+                        },
+                        {
                             $project: {
                                 _id: 1,
                                 orderQty: 1,
@@ -546,12 +570,14 @@ baseSchema.statics.getById = function(id, callback) {
                                 refProductSupplier: 1,
                                 description: 1
                             }
-                        }, {
+                        },
+                        {
                             $unwind: {
                                 path: '$deliveries.orderRows',
                                 preserveNullAndEmptyArrays: true
                             }
-                        }, {
+                        },
+                        {
                             $group: {
                                 _id: "$_id",
                                 orderQty: { $first: "$orderQty" },
@@ -562,7 +588,8 @@ baseSchema.statics.getById = function(id, callback) {
                                 refProductSupplier: { $first: "$refProductSupplier" },
                                 description: { $first: "$description" }
                             }
-                        }, {
+                        },
+                        {
                             $project: {
                                 _id: 0,
                                 orderRowId: "$_id",
@@ -576,7 +603,8 @@ baseSchema.statics.getById = function(id, callback) {
                                 refProductSupplier: 1,
                                 description: 1
                             }
-                        }, {
+                        },
+                        {
                             $sort: {
                                 sequence: 1
                             }
@@ -591,13 +619,13 @@ baseSchema.statics.getById = function(id, callback) {
             if (err)
                 return callback(err);
 
-            //return console.log(order.orderRows);
+            //return console.log(orderRows);
 
             order.orderRows = _.map(orderRows, function(item) {
                 return _.extend(item, _.findWhere(order.orderRows, { orderRowId: item.orderRowId }));
             });
 
-            //console.log(order.orderRows);
+            console.log(order.orderRows);
 
             /*orderRows: [{
                     _id: false,
@@ -856,8 +884,9 @@ function setNameDelivery(next) {
     var self = this;
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
+    var OrderModel = MODEL('order').Schema.Order;
 
-    if (self.isNew && !self.ref)
+    if (self.isNew && self.order === self._id)
         return SeqModel.inc("ORDER", function(seq, number) {
             //console.log(seq);
             self.ID = number;
@@ -875,12 +904,15 @@ function setNameDelivery(next) {
             });
         });
 
-    if (self.isNew && self.ref)
-        return SeqModel.incCpt(self.order, function(number) {
-            //console.log(seq);
-            self.ref += '/' + number;
-            next();
+    if (self.isNew && !self.ref)
+        return OrderModel.findById(self.order, "ref ID", function(err, order) {
+            SeqModel.incCpt(order._id, function(number) {
+                //console.log(seq);
 
+                self.ref = (self.forSales == true ? "BL" : "RE") + order.ref.substring(2) + '/' + number;
+
+                next();
+            });
         });
 
     if (self.date_livraison)

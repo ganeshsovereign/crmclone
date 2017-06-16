@@ -101,6 +101,9 @@ Object.prototype = {
         delivery.editedBy = self.user._id;
         delivery.createdBy = self.user._id;
 
+        if (!delivery.order)
+            delivery.order = delivery._id;
+
         if (!delivery.entity)
             delivery.entity = self.user.entity;
 
@@ -114,15 +117,24 @@ Object.prototype = {
     },
     clone: function(id) {
         var self = this;
+        var OrderRowsModel = MODEL('orderRows').Schema;
 
         if (self.body.forSales == false)
             var DeliveryModel = MODEL('order').Schema.GoodsInNote;
         else
             var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
 
+        var rows = self.body.lines;
+
         DeliveryModel.getById(id, function(err, delivery) {
             if (err)
                 return self.throw500(err);
+
+            var orderOld = null;
+
+            // Check if this delivery include its owns lines : order._id == _id
+            if (delivery._id == delivery.order._id)
+                var orderOld = delivery.order._id;
 
             delete delivery._id;
             delete delivery.__v;
@@ -141,14 +153,45 @@ Object.prototype = {
             delivery.editedBy = self.user._id;
             delivery.createdBy = self.user._id;
 
+            if (orderOld) //clone BL with lines
+                delivery.order = delivery._id;
+
             if (delivery.entity == null)
                 delivery.entity = self.user.entity;
 
+
             //console.log(delivery);
             delivery.save(function(err, doc) {
-                if (err) {
+                if (err)
                     return console.log(err);
-                }
+
+                if (orderOld) //duplicate lines
+                    return async.each(rows, function(orderRow, aCb) {
+                        orderRow.order = order._id;
+
+                        if (orderRow.isDeleted && !orderRow._id)
+                            return aCb();
+
+                        delete orderRow._id;
+                        delete orderRow.__v;
+                        delete orderRow.createdAt;
+
+                        var orderRow = new OrderRowsModel(orderRow);
+                        orderRow.save(aCb);
+                    },
+                    function(err) {
+                        if (err) {
+                            console.log(err);
+                            return self.json({
+                                errorNotify: {
+                                    title: 'Erreur',
+                                    message: err
+                                }
+                            });
+                        }
+
+                        self.json(doc);
+                    });
 
                 self.json(doc);
             });
