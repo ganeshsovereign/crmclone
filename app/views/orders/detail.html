@@ -16,7 +16,11 @@
                         <i class="icon-info"></i>
                         <span ng-if="module('offer')" ng-show="object._id" class="caption-subject dark bold uppercase">@(propal:CommercialProposals) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('offer')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(propal:NewProp) </span>
-                        <span ng-if="module('order')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('order')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}}</span>
+
+                        <span title="Allocated" class="fa-info-circle"></span>
+                        <span title="Fulfilled" class="fa-inbox"></span>
+                        <span title="Shipped" class="fa-truck"></span>
                         <span ng-if="module('order')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewOrder) </span>
                         <span ng-if="module('delivery')" ng-show="object._id" class="caption-subject dark bold uppercase">@(deliveries:DeliveryNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('delivery')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(deliveries:NewDelivery) </span>

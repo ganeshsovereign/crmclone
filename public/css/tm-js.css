@@ -647,3 +647,7 @@ small {
 .font-yellow-crusta2 {
     color: #D6AB00;
 }
+
+.large {
+    font-size: 24px;
+}
