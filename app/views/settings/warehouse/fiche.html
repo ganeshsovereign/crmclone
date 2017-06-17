@@ -15,25 +15,25 @@
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="form-group form-md-line-input">
-                                    <input type="text" class="form-control" id="Name" ng-model="warehouse.name">
+                                    <input type="text" class="form-control" id="Name" ng-model="object.name">
                                     <label for="Name">@(Name)</label>
                                 </div>
-                                <div class="form-group form-md-line-input">
+                                <!--<div class="form-group form-md-line-input">
                                     <select class="table-group-action-input form-control" id="Account" ng-model="object.currency" ng-options="s._id as s.name for s in $dict.currency"></select>
                                     <label for="Account">@(products:Account)</label>
-                                </div>
+                                </div>-->
                             </div>
                             <div class="col-md-4">
                                 <div class="portlet light">
                                     <div class="md-checkbox">
-                                        <input type="checkbox" id="Owner" class="md-check" ng-model="warehouse.isOwn" ng-checked="warehouse.isOwn">
+                                        <input type="checkbox" id="Owner" class="md-check" ng-model="object.isOwn" ng-checked="object.isOwn">
                                         <label for="Owner">
                                             <span></span>
                                             <span class="check"></span>
                                             <span class="box"></span> @(Owner)</label>
                                     </div>
                                     <div class="md-checkbox">
-                                        <input type="checkbox" id="Main" class="md-check" ng-model="warehouse.isMain" ng-checked="warehouse.isMain">
+                                        <input type="checkbox" id="Main" class="md-check" ng-model="object.isMain" ng-checked="object.isMain">
                                         <label for="Main">
                                             <span></span>
                                             <span class="check"></span>
@@ -44,7 +44,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <address ng-model="warehouse.address"></address>
+                                <address ng-model="object.address"></address>
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                                             <input ng-model="zone.name" class="bootbox-input bootbox-input-text form-control" type="text">
                                         </div>
                                         <button class="btn red" ng-click="openZone = 0" type="button"><i class="fa fa-times"></i>@(Cancel)</button>
-                                        <button class="btn green" ng-click "openZone = 0" type="button"><i class="fa fa-check-circle"></i> @(Add)</button>
+                                        <button class="btn green" ng-click="addZone(zone)" type="button"><i class="fa fa-check-circle"></i> @(Add)</button>
                                     </form>
                                 </div>
                             </div>
@@ -78,7 +78,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="">
+                                                        <tr ng-repeat="zone in object.zones">
                                                             <td>{{zone.name}}</td>
                                                             <td>
                                                                 <a class="btn green fa fa-pencil" ui-sref="settings.product.warehouse.show({id})" title="Editer"></a>
@@ -128,7 +128,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr ng-repeat="">
+                                                        <tr ng-repeat="location in object.locations">
                                                             <td>{{zone.name}}</td>
                                                             <td>{{location.name}}</td>
                                                             <td>

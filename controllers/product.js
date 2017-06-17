@@ -736,6 +736,36 @@ exports.install = function() {
     F.route('/erp/api/product/productTypes', productTypes.deleteProductType, ['delete', 'authorize']);
     F.route('/erp/api/product/productTypes/{id}', productTypes.deleteProductType, ['delete', 'authorize']);
 
+    //warehouse
+    var warehouse = new Warehouse();
+    var stock = new StockCorrection();
+    F.route('/erp/api/product/warehouse/{id}', warehouse.get, ['authorize']);
+    F.route('/erp/api/product/warehouse/getHierarchyWarehouse', warehouse.getHierarchyWarehouse, ['authorize']);
+    F.route('/erp/api/product/warehouse/', warehouse.getForDd, ['authorize']);
+    F.route('/erp/api/product/warehouse/zone/getForDd', warehouse.getForDdZone, ['authorize']);
+    F.route('/erp/api/product/warehouse/location/getForDd', warehouse.getForDdLocation, ['authorize']);
+
+    F.route('/erp/api/product/warehouse/stockCorrection', stock.getCorrections, ['authorize']);
+    F.route('/erp/api/product/warehouse/stockCorrection/{id}', stock.getById, ['authorize']);
+    F.route('/erp/api/product/warehouse/getAvailability', stock.getProductsAvailable, ['authorize']);
+
+    F.route('/erp/api/product/warehouse/location/{id}', warehouse.updateLocation, ['put', 'json', 'authorize']);
+    F.route('/erp/api/product/warehouse/zone/{id}', warehouse.updateZone, ['put', 'json', 'authorize']);
+    F.route('/erp/api/product/warehouse/{id}', warehouse.update, ['put', 'json', 'authorize']);
+
+    F.route('/erp/api/product/warehouse/', warehouse.create, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/warehouse/location', warehouse.createLocation, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/warehouse/zone', warehouse.createZone, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/warehouse/stockCorrection', stock.create, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/warehouse/allocate', stock.allocate, ['post', 'json', 'authorize']);
+
+    // router.delete('/', authStackMiddleware, handler.bulkRemove);
+    F.route('/erp/api/product/warehouse/location/{id}', warehouse.removeLocation, ['delete', 'authorize']);
+    F.route('/erp/api/product/warehouse/stockCorrection', stock.bulkRemove, ['delete', 'authorize']);
+    F.route('/erp/api/product/warehouse/stockCorrection/{id}', stock.remove, ['delete', 'authorize']); //TODO: it doesn't use
+    F.route('/erp/api/product/warehouse/zone/{id}', warehouse.removeZone, ['delete', 'authorize']);
+    F.route('/erp/api/product/warehouse/{id}', warehouse.remove, ['delete', 'authorize']);
+
     //variants
     F.route('/erp/api/product/variants/{productId}', object.getProductsById, ['authorize']);
     F.route('/erp/api/product/variants/{productId}', object.createProductVariants, ['post', 'json', 'authorize']);
@@ -2511,7 +2541,6 @@ Object.prototype = {
 
 
 function PricesList() {}
-
 PricesList.prototype = {
     getAllPricesLists: function() {
         var self = this;
@@ -3279,7 +3308,6 @@ DynForm.prototype = {
 };
 
 function ProductTypes() {}
-
 ProductTypes.prototype = {
     getProductTypeById: function(id) {
         var self = this;
@@ -4354,4 +4382,401 @@ ProductAttributes.prototype = {
             });
         });
     }
+};
+
+function Warehouse() {}
+Warehouse.prototype = {
+    get: function(id) {
+        var Model = MODEL('warehouse').Schema;
+        var self = this;
+        var ObjectId = MODULE('utils').ObjectId;
+
+        Model.aggregate([{
+            $match: { _id: ObjectId(id) }
+        }, {
+            $lookup: {
+                from: 'locations',
+                localField: '_id',
+                foreignField: 'warehouse',
+                as: 'locations'
+            }
+        }, {
+            $unwind: {
+                path: '$locations',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $lookup: {
+                from: 'zones',
+                localField: 'locations.zone',
+                foreignField: '_id',
+                as: 'locations.zone'
+            }
+        }, {
+            $lookup: {
+                from: 'zones',
+                localField: '_id',
+                foreignField: 'warehouse',
+                as: 'zones'
+            }
+        }, {
+            $lookup: {
+                from: 'chartOfAccount',
+                localField: 'account',
+                foreignField: '_id',
+                as: 'account'
+            }
+        }, {
+            $project: {
+                account: { $arrayElemAt: ['$account', 0] },
+                'locations.zone': { $arrayElemAt: ['$locations.zone', 0] },
+                'locations.name': 1,
+                'locations._id': 1,
+                name: 1,
+                address: 1,
+                isOwn: 1,
+                main: 1,
+                zones: 1,
+                warehouseId: '$_id'
+            }
+        }, {
+            $group: {
+                _id: '$locations.zone',
+                root: { $push: '$$ROOT' }
+            }
+        }, {
+            $unwind: '$root'
+        }, {
+            $group: {
+                _id: '$root.warehouseId',
+                account: { $first: '$root.account' },
+                address: { $first: '$root.address' },
+                main: { $first: '$root.main' },
+                name: { $first: '$root.name' },
+                isOwn: { $first: '$root.isOwn' },
+                locations: { $addToSet: '$root.locations' },
+                zones: { $first: '$root.zones' }
+            }
+        }], function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            return self.json(result && result.length ? result[0] : {});
+
+            //self.json({ data: result });
+        });
+    },
+
+    getHierarchyWarehouse: function() {
+        var Model = MODEL('warehouse').Schema;
+        var self = this;
+
+        Model.aggregate([{
+            $lookup: {
+                from: 'zones',
+                localField: '_id',
+                foreignField: 'warehouse',
+                as: 'zones'
+            }
+        }, {
+            $unwind: {
+                path: '$zones',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $lookup: {
+                from: 'locations',
+                localField: 'zones._id',
+                foreignField: 'zone',
+                as: 'locations'
+            }
+        }, {
+            $project: {
+                name: 1,
+                main: 1,
+                'locations._id': 1,
+                'locations.name': 1,
+                zones: 1
+            }
+        }, {
+            $group: {
+                _id: '$_id',
+                zones: {
+                    $addToSet: {
+                        name: '$zones.name',
+                        locations: '$locations'
+                    }
+                },
+
+                name: { $first: '$name' },
+                main: { $first: '$main' }
+            }
+        }], function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({ data: result });
+        });
+    },
+
+    getForDd: function() {
+        var query = MODEL('warehouse').Schema;
+        var self = this;
+
+        query
+            .find({}, { name: 1, account: 1 })
+            .find('main')
+            .exec(function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                self.json({ data: result });
+            });
+    },
+
+    getForDdZone: function() {
+        var Model = MODEL('zone').Schema;
+        var self = this;
+        var query = this.query || {};
+
+        Model
+            .find(query, { name: 1 })
+            .exec(function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                self.json({ data: result });
+            });
+    },
+
+    getForDdLocation: function() {
+        var Model = MODEL('location').Schema;
+        var self = this;
+        var findObject = {};
+
+        if (self.query)
+            findObject = self.query;
+
+        if (findObject.warehouse && findObject.warehouse.length !== 24)
+            return self.json({ data: [] });
+
+        Model.find(findObject, { name: 1 })
+            .exec(function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                self.json({ data: result });
+            });
+    },
+
+    update: function(id) {
+        var self = this;
+        var Model = MODEL('warehouse').Schema;
+        var data = self.body;
+
+        data.editeddBy = self.user._id;
+
+        if (data.main)
+            return Model.update({ _id: { $nin: [id] } }, { $set: { main: false } }, { multi: true }, function(err, result) {
+                delete data._id;
+
+                Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
+                    if (err)
+                        return self.throw500(err);
+
+                    self.json(result);
+                });
+            });
+
+        delete data._id;
+
+        Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json(result);
+        });
+
+    },
+
+    updateLocation: function(id) {
+        var Model = MODEL('location').Schema;
+        var self = this;
+        var data = this.body;
+
+        data.editeddBy = self.user._id;
+
+        Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({ data: result });
+        });
+    },
+
+    updateZone: function(id) {
+        var Model = MODEL('zone').Schema;
+        var self = this;
+        var data = self.body;
+
+        data.editeddBy = self.user._id;
+
+        Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({ data: result });
+        });
+    },
+
+    create: function() {
+        var self = this;
+        var Model = MODEL('warehouse').Schema;
+        var LocationModel = MODEL('location').Schema;
+        var body = self.body;
+        var uId = self.user._id;
+        var locationBody = {
+            groupingA: '0',
+            groupingB: '0',
+            groupingC: '0',
+            groupingD: '0',
+            name: '0.0.0.0'
+        };
+        var item;
+
+        function checkMain(wCb) {
+            if (!body.main)
+                return wCb();
+
+            Model.update({ main: true }, { main: false }, { multi: true, upsert: true }, function(err, result) {
+                if (err)
+                    return wCb(err);
+
+                wCb();
+            });
+        }
+
+        function createWarehouse(wCb) {
+            item = new Model(body);
+
+            item.save(function(err, result) {
+                if (err)
+                    return wCb(err);
+
+                Model.update({ _id: { $nin: [result._id] } }, { $set: { main: false } }, { multi: true }, function(err, result) {
+
+                });
+
+                locationBody.warehouse = result._id;
+
+                LocationModel.createLocation(locationBody, uId, function(err) {
+                    if (err)
+                        return wCb(err);
+
+                    wCb();
+                });
+            });
+        }
+
+        body.createdBy = uId;
+
+        body.editedBy = uId;
+
+        async.waterfall([checkMain, createWarehouse], function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json(result);
+        });
+    },
+
+    createLocation: function() {
+        var Model = MODEL('location').Schema;
+        var self = this;
+        var body = self.body;
+
+        Model.createLocation(body, this.user._id, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json(result);
+        });
+    },
+
+    createZone: function() {
+        var Model = MODEL('zone').Schema;
+        var self = this;
+        var body = self.body;
+        var item;
+
+        body.createdBy = self.user._id;
+
+        body.editedBy = self.user._id;
+
+        item = new Model(body);
+
+        item.save(function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json(result);
+        });
+    },
+
+    remove: function(id) {
+        var Model = MODEL('warehouse').Schema;
+        var productsAvailability = MODEL('productsAvailability').Schema;
+        var self = this;
+
+        productsAvailability.find({ warehouse: id }, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+
+            if (!result.length)
+                return Model.remove({ _id: id }, function(err, result) {
+                    if (err)
+                        return self.throw500(err);
+
+                    self.json(result);
+                });
+
+            self.json({ error: 'You can delete only empty Warehouse. Please, remove products first' });
+        });
+    },
+
+    removeLocation: function(id) {
+        var Model = MODEL('location').Schema;
+        var self = this;
+
+        Model.remove({ _id: id }, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            self.json(result);
+        });
+    },
+
+    removeZone: function(id) {
+        var Model = MODEL('zone').Schema;
+        var Location = MODEL('location').Schema;
+        var self = this;
+
+        Model.remove({ _id: id }, function(err, result) {
+            if (err)
+                return sel.throw500(err);
+
+            Location.update({ zone: id }, { $set: { zone: null } }, { multi: true }, function(err) {
+                if (err)
+                    return self.throw500(err);
+
+                self.json(result);
+            });
+        });
+    }
+};
+
+function StockCorrection() {}
+StockCorrection.prototype = {
+
 };

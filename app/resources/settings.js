@@ -25,6 +25,10 @@ MetronicApp.factory("Settings", ['$resource', function($resource) {
         priceList: $resource('/erp/api/product/prices/priceslist/:Id', { Id: '@_id' }, {
             update: { method: 'PUT' },
             query: { method: 'GET', isArray: false }
+        }),
+        warehouse: $resource('/erp/api/product/warehouse/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false }
         })
     };
 }]);

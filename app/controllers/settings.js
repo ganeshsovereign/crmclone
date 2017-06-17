@@ -130,10 +130,13 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         }]
     };
     $scope.object = {
-        langs: []
+        langs: [],
+        zones: [],
+        locations: []
     };
     $scope.listObject = [];
 
+    console.log(current);
     if (current[0] === 'settings')
         switch (current[2]) {
             case 'types':
@@ -145,6 +148,17 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
                 var Resource = Settings.priceList;
                 $scope.backTo = 'settings.product.pricelists';
                 var goShow = 'settings.product.pricelists.show';
+                break;
+            case 'warehouse':
+                var Resource = Settings.warehouse;
+                $scope.backTo = 'settings.product.warehouse';
+                var goShow = 'settings.product.warehouse.show'
+
+                $scope.addZone = function(zone) {
+                    console.log(zone);
+                    $scope.openZone = 0;
+                };
+
                 break;
         }
     else

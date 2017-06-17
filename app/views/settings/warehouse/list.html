@@ -38,7 +38,7 @@
                                     <td>{{}}</td>
                                     <td>{{}}</td>
                                     <td>
-                                        <a class="btn green fa fa-pencil" ui-sref="settings.product.pricelists.show({id:line._id})" title="Editer"></a>
+                                        <a class="btn green fa fa-pencil" ui-sref="settings.product.warehouse.show({id:line._id})" title="Editer"></a>
                                         <button ng-if="line.countCustomers == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="remove()"></button>
                                     </td>
                                 </tr>
