@@ -761,10 +761,10 @@ exports.Status = {
             "cssClass": "ribbon-color-default label-default",
             "system": true
         },
-        "POSTED": {
+        "PUBLISHED": {
             "enable": true,
-            "label": "Posted",
-            "cssClass": "ribbon-color-primary label-primary",
+            "label": "Published",
+            "cssClass": "ribbon-color-success label-success",
             "system": true
         },
         "VALIDATED": {

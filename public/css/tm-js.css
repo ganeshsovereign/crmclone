@@ -652,3 +652,9 @@ small {
     font-size: 24px;
     margin: 5px;
 }
+
+.mt-element-list .list-todo.mt-list-container {
+    border-left: 0px solid;
+    border-right: 0px solid;
+    border-bottom: 0px solid;
+}

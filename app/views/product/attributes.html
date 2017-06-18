@@ -52,9 +52,6 @@
                             <div class="row">
                                 <ul ng-repeat="(key, value) in product.sellFamily.options | groupBy: 'group.langs[0].name'" class="col-md-6">
                                     <li class="mt-list-item">
-                                        <div class="list-todo-icon bg-white">
-                                            <i class="fa fa-paint-brush"></i>
-                                        </div>
                                         <div class="list-todo-item grey-gallery">
                                             <a class="list-toggle-container" data-toggle="collapse" data-parent="#accordion1" href="#" aria-expanded="true">
                                                 <div class="list-toggle done uppercase">
@@ -171,6 +168,38 @@
                                                             <h4 class="uppercase bold ">
                                                                 <a href="javascript:; ">{{attribute.langs[0].name}}</a>
                                                             </h4>
+
+                                                            <div class="row">
+                                                                <div class="col-md-5">
+                                                                    <div class="table-scrollable" style="height:350px;overflow:auto;">
+                                                                        <table class="table table-condensed table-hover">
+                                                                            <tbody>
+                                                                                <tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | orderBy:'code'">
+                                                                                    <td>{{value.langs[0].value}} </td>
+                                                                                </tr>
+
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <a><i class="large fa fa-arrow-left"></i></a>
+                                                                    <a><i class="large fa fa-arrow-right"></i></a>
+                                                                </div>
+                                                                <div class="col-md-5">
+                                                                    <div class="table-scrollable" style="height:350px;overflow:auto;">
+                                                                        <table class="table table-condensed table-hover">
+                                                                            <tbody>
+                                                                                <tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | orderBy:'code'">
+                                                                                    <td>{{value.langs[0].value}} </td>
+                                                                                </tr>
+
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
                                                             <div class="row ">
                                                                 <div class="col-md-12">
                                                                     <div class="form-group form-md-line-input">
