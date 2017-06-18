@@ -33,7 +33,7 @@
                                             <span class="box"></span> @(Owner)</label>
                                     </div>
                                     <div class="md-checkbox">
-                                        <input type="checkbox" id="Main" class="md-check" ng-model="object.isMain" ng-checked="object.isMain">
+                                        <input type="checkbox" id="Main" class="md-check" ng-model="object.main" ng-checked="object.main">
                                         <label for="Main">
                                             <span></span>
                                             <span class="check"></span>
@@ -44,7 +44,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <address ng-model="object.address"></address>
+                                <address ng-model="object.address" ng-disabled="false"></address>
                             </div>
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                     <div class="col-md-12">
                         <div class="portlet light">
                             <div class="portlet-title">
-                                <button ng-hide="openZone" ng-click="openZone = 1" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(products:AddZone) </button>
+                                <button ng-hide="openZone" ng-click="openZone = 1;zone={};" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(products:AddZone) </button>
                                 <div class="bootbox-body" ng-show="openZone">
                                     <form class="bootbox-form">
                                         <div class="col-md-9">
@@ -81,8 +81,8 @@
                                                         <tr ng-repeat="zone in object.zones">
                                                             <td>{{zone.name}}</td>
                                                             <td>
-                                                                <a class="btn green fa fa-pencil" ui-sref="settings.product.warehouse.show({id})" title="Editer"></a>
-                                                                <button ng-if="" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="remove()"></button>
+                                                                <a class="btn green fa fa-pencil" ng-click="editZone(zone)" title="Editer"></a>
+                                                                <button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="removeZone(zone)"></button>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -97,21 +97,23 @@
                     <div class="col-md-12">
                         <div class="portlet light">
                             <div class="portlet-title">
-                                <button ng-hide="openLocation" ng-click="openLocation = 1" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(products:AddLocation) </button>
+                                <button ng-hide="openLocation" ng-click="openLocation = 1;location = {};" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(products:AddLocation) </button>
                                 <div class="bootbox-body" ng-show="openLocation">
                                     <form class="bootbox-form">
                                         <div class="col-md-9">
-                                            <input placeholder="Emplacement 1" ng-model="location.groupingA" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
-                                            <input placeholder="Emplacement 2" ng-model="location.groupingB" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
-                                            <input placeholder="Emplacement 3" ng-model="location.groupingC" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
-                                            <input placeholder="Emplacement 4" ng-model="location.groupingD" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
+                                            <input placeholder="@(products:Aisle)" ng-model="location.groupingA" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
+                                            <input placeholder="@(products:Bay)" ng-model="location.groupingB" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
+                                            <input placeholder="@(products:Shelf)" ng-model="location.groupingC" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
+                                            <input placeholder="@(products:Bin)" ng-model="location.groupingD" class="bootbox-input bootbox-input-text form-control" autocomplete="off" type="text">
                                             <div class="form-group form-md-line-input">
-                                                <select class="table-group-action-input form-control" required ng-model="" ng-options="s._id as s.fullName for s in $dict.employees"></select>
+                                                <select class="table-group-action-input form-control" ng-model="location.zone" ng-options="s._id as s.name for s in $dict.zones">
+                                                    <option value="">-- @(No zone) --</option>
+                                                </select>
                                                 <label for="form_control_1">@(products:SelectZone)</label>
                                             </div>
                                         </div>
                                         <button class="btn red" ng-click="openLocation = 0" type="button"><i class="fa fa-times"></i>@(Cancel)</button>
-                                        <button class="btn green" ng-click "openZone = 0" type="button"><i class="fa fa-check-circle"></i> @(Add)</button>
+                                        <button class="btn green" ng-click="addLocation(location)" type="button"><i class="fa fa-check-circle"></i> @(Add)</button>
                                     </form>
                                 </div>
                             </div>
@@ -129,11 +131,11 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr ng-repeat="location in object.locations">
-                                                            <td>{{zone.name}}</td>
+                                                            <td>{{location.zone.name}}</td>
                                                             <td>{{location.name}}</td>
                                                             <td>
-                                                                <a class="btn green fa fa-pencil" ui-sref="settings.product.warehouse.show({id})" title="Editer"></a>
-                                                                <button ng-if=" == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteLocation)" confirmed-click="remove()"></button>
+                                                                <a class="btn green fa fa-pencil" ng-click="editLocation(location)" title="Editer"></a>
+                                                                <button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteLocation)" confirmed-click="removeLocation(location)"></button>
                                                             </td>
                                                         </tr>
                                                     </tbody>

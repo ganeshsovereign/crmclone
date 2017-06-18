@@ -45,5 +45,19 @@ locationsSchema.statics.createLocation = function(body, uId, callback) {
     });
 };
 
+locationsSchema.pre('save', function(next) {
+    var self = this;
+
+    var name = [];
+    name.push(this.groupingA.replace(".", "_") || '0');
+    name.push(this.groupingB.replace(".", "_") || '0');
+    name.push(this.groupingC.replace(".", "_") || '0');
+    name.push(this.groupingD.replace(".", "_") || '0');
+
+    this.name = name.join(".");
+
+    next();
+});
+
 exports.Schema = mongoose.model('location', locationsSchema);
 exports.name = "location";

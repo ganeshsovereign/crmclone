@@ -131,6 +131,7 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     };
     $scope.object = {
         langs: [],
+        address: {},
         zones: [],
         locations: []
     };
@@ -154,26 +155,110 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
                 $scope.backTo = 'settings.product.warehouse';
                 var goShow = 'settings.product.warehouse.show'
 
+                var Zone = Settings.zone;
+                var Location = Settings.location;
+
+                $http({
+                    method: 'GET',
+                    url: '/erp/api/product/warehouse/zone/select',
+                    params: {
+                        warehouse: $rootScope.$stateParams.id
+                    }
+                }).success(function(data, status) {
+                    $scope.$dict.zones = data.data;
+                });
+
                 $scope.addZone = function(zone) {
                     console.log(zone);
-                    $scope.openZone = 0;
+                    if (!$scope.object._id)
+                        return;
+                    zone.warehouse = $scope.object._id;
+
+                    if (!zone._id) {
+                        // create
+                        var zone = new Zone(zone);
+                        zone.$save(function(response) {
+                            $scope.openZone = 0;
+                            $scope.zone = {};
+                            $scope.findOne();
+                        });
+                    } else {
+                        //update
+                        var zone = new Zone(zone);
+                        zone.$update(function(response) {
+                            $scope.openZone = 0;
+                            $scope.zone = {};
+                            $scope.findOne();
+                        });
+                    }
+                };
+                $scope.editZone = function(zone) {
+                    $scope.openZone = 1;
+                    $scope.zone = zone;
+                };
+                $scope.removeZone = function(zone) {
+                    var zone = new Zone(zone);
+                    zone.$remove(function(response) {
+                        $scope.findOne();
+                    });
+                };
+                //location
+                $scope.addLocation = function(location) {
+                    console.log(location);
+                    if (!$scope.object._id)
+                        return;
+                    location.warehouse = $scope.object._id;
+
+                    if (!location._id) {
+                        // create
+                        var location = new Location(location);
+                        location.$save(function(response) {
+                            $scope.openLocation = 0;
+                            $scope.location = {};
+                            $scope.findOne();
+                        });
+                    } else {
+                        //update
+                        var location = new Location(location);
+                        location.$update(function(response) {
+                            $scope.openLocation = 0;
+                            $scope.location = {};
+                            $scope.findOne();
+                        });
+                    }
+                };
+                $scope.editLocation = function(location) {
+                    $scope.openLocation = 1;
+                    $scope.location = location;
+                    var names = location.name.split(".");
+                    $scope.location.groupingA = names[0];
+                    $scope.location.groupingB = names[1];
+                    $scope.location.groupingC = names[2];
+                    $scope.location.groupingD = names[3];
+                    if ($scope.location.zone && $scope.location.zone._id)
+                        $scope.location.zone = $scope.location.zone._id;
+                };
+                $scope.removeLocation = function(location) {
+                    var location = new Location(location);
+                    location.$remove(function(response) {
+                        $scope.findOne();
+                    });
                 };
 
                 break;
-        }
-    else
-        switch (current[1]) {
-            case 'family':
-                var Resource = Settings.productFamily;
-                $scope.backTo = 'product.family.list';
-                var goShow = 'product.family.show';
-                break;
-            case 'attributes':
-                var Resource = Settings.productAttributes;
-                $scope.backTo = 'product.attributes.list';
-                var goShow = 'product.attributes.show';
-                break;
-        }
+        } else
+            switch (current[1]) {
+                case 'family':
+                    var Resource = Settings.productFamily;
+                    $scope.backTo = 'product.family.list';
+                    var goShow = 'product.family.show';
+                    break;
+                case 'attributes':
+                    var Resource = Settings.productAttributes;
+                    $scope.backTo = 'product.attributes.list';
+                    var goShow = 'product.attributes.show';
+                    break;
+            }
 
 
     $scope.$on('$viewContentLoaded', function() {

@@ -384,5 +384,9 @@
     "Account": "Compte",
     "ConfirmDeleteWarehouse": "Voulez-vous supprimer cet entrepôt ?",
     "ConfirmDeleteLocation": "Voulez-vous supprimer cet emplacement",
-    "ProductTypes": "Types de produits"
+    "ProductTypes": "Types de produits",
+    "Aisle": "Rayon",
+    "Bay": "Baie",
+    "Shelf": "Étagère",
+    "Bin": "Compartiment"
 }

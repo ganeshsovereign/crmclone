@@ -739,10 +739,11 @@ exports.install = function() {
     //warehouse
     var warehouse = new Warehouse();
     var stock = new StockCorrection();
+    F.route('/erp/api/product/warehouse/', warehouse.get, ['authorize']);
+    F.route('/erp/api/product/warehouse/select', warehouse.getForDd, ['authorize']);
     F.route('/erp/api/product/warehouse/{id}', warehouse.get, ['authorize']);
     F.route('/erp/api/product/warehouse/getHierarchyWarehouse', warehouse.getHierarchyWarehouse, ['authorize']);
-    F.route('/erp/api/product/warehouse/', warehouse.getForDd, ['authorize']);
-    F.route('/erp/api/product/warehouse/zone/getForDd', warehouse.getForDdZone, ['authorize']);
+    F.route('/erp/api/product/warehouse/zone/select', warehouse.getForDdZone, ['authorize']);
     F.route('/erp/api/product/warehouse/location/getForDd', warehouse.getForDdLocation, ['authorize']);
 
     F.route('/erp/api/product/warehouse/stockCorrection', stock.getCorrections, ['authorize']);
@@ -4390,9 +4391,10 @@ Warehouse.prototype = {
         var Model = MODEL('warehouse').Schema;
         var self = this;
         var ObjectId = MODULE('utils').ObjectId;
+        var query = (id ? { _id: ObjectId(id) } : {});
 
         Model.aggregate([{
-            $match: { _id: ObjectId(id) }
+            $match: query
         }, {
             $lookup: {
                 from: 'locations',
@@ -4461,9 +4463,11 @@ Warehouse.prototype = {
             if (err)
                 return self.throw500(err);
 
-            return self.json(result && result.length ? result[0] : {});
+            if (id)
+                return self.json(result && result.length ? result[0] : {});
 
-            //self.json({ data: result });
+            //list all
+            self.json({ data: result });
         });
     },
 
@@ -4535,7 +4539,7 @@ Warehouse.prototype = {
     },
 
     getForDdZone: function() {
-        var Model = MODEL('zone').Schema;
+        var Model = MODEL('zones').Schema;
         var self = this;
         var query = this.query || {};
 
@@ -4610,12 +4614,17 @@ Warehouse.prototype = {
             if (err)
                 return self.throw500(err);
 
-            self.json({ data: result });
+            result.save(function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                self.json({ data: result });
+            });
         });
     },
 
     updateZone: function(id) {
-        var Model = MODEL('zone').Schema;
+        var Model = MODEL('zones').Schema;
         var self = this;
         var data = self.body;
 
@@ -4704,13 +4713,12 @@ Warehouse.prototype = {
     },
 
     createZone: function() {
-        var Model = MODEL('zone').Schema;
+        var Model = MODEL('zones').Schema;
         var self = this;
         var body = self.body;
         var item;
 
         body.createdBy = self.user._id;
-
         body.editedBy = self.user._id;
 
         item = new Model(body);
@@ -4758,7 +4766,7 @@ Warehouse.prototype = {
     },
 
     removeZone: function(id) {
-        var Model = MODEL('zone').Schema;
+        var Model = MODEL('zones').Schema;
         var Location = MODEL('location').Schema;
         var self = this;
 

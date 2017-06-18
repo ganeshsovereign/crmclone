@@ -32,14 +32,22 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="line in listObject">
-                                    <td>{{}}</td>
-                                    <td class="text-center"><span ng-show=" == true" class="fa fa-check font-blue"></span></td>
-                                    <td class="text-center"><span ng-show=" == true" class="fa fa-check font-blue"></span></td>
-                                    <td>{{}}</td>
-                                    <td>{{}}</td>
+                                    <td>{{line.name}}</td>
+                                    <td class="text-center"><span ng-show="line.isOwn == true" class="fa fa-check font-blue"></span></td>
+                                    <td class="text-center"><span ng-show="line.main == true" class="fa fa-check font-blue"></span></td>
+                                    <td>
+                                        <ul>
+                                            <li ng-repeat="location in line.locations">{{location.name}}</li>
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul>
+                                            <li ng-repeat="zone in line.zones">{{zone.name}}</li>
+                                        </ul>
+                                    </td>
                                     <td>
                                         <a class="btn green fa fa-pencil" ui-sref="settings.product.warehouse.show({id:line._id})" title="Editer"></a>
-                                        <button ng-if="line.countCustomers == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="remove()"></button>
+                                        <button ng-if="line.zones.length == 0 && line.locations.length == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="remove()"></button>
                                     </td>
                                 </tr>
                             </tbody>
