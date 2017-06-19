@@ -1,8 +1,8 @@
 "use strict";
 /* global angular: true */
 
-MetronicApp.filter('euro', function () {
-    return function (text, size) {
+MetronicApp.filter('euro', function() {
+    return function(text, size) {
 
         size = size || 2;
 
@@ -17,8 +17,8 @@ MetronicApp.filter('euro', function () {
     };
 });
 
-MetronicApp.filter('percent', function () {
-    return function (text, size) {
+MetronicApp.filter('percent', function() {
+    return function(text, size) {
 
         if (size == null)
             size = 2;
@@ -34,11 +34,11 @@ MetronicApp.filter('percent', function () {
     };
 });
 
-MetronicApp.filter('object2Array', function () {
-    return function (input) {
+MetronicApp.filter('object2Array', function() {
+    return function(input) {
         var out = [];
         for (var i in input) {
-            if(!input[i])
+            if (!input[i])
                 continue;
 
             input[i].id = i;
@@ -48,8 +48,8 @@ MetronicApp.filter('object2Array', function () {
     };
 });
 
-MetronicApp.filter('capitalize', function () {
-    return function (input, scope) {
+MetronicApp.filter('capitalize', function() {
+    return function(input, scope) {
         if (input == null)
             return;
 
@@ -58,8 +58,8 @@ MetronicApp.filter('capitalize', function () {
     };
 });
 
-MetronicApp.filter('phone', function () {
-    return function (tel) {
+MetronicApp.filter('phone', function() {
+    return function(tel) {
         if (!tel) {
             return '';
         }
@@ -118,8 +118,8 @@ MetronicApp.filter('phone', function () {
     };
 });
 
-MetronicApp.filter('makeRange', function () {
-    return function (input) {
+MetronicApp.filter('makeRange', function() {
+    return function(input) {
         var lowBound, highBound;
         switch (input.length) {
             case 1:
@@ -140,14 +140,14 @@ MetronicApp.filter('makeRange', function () {
     };
 });
 
-MetronicApp.filter('userGroupArrayFilter', function () {
-    return function (myArray) {
+MetronicApp.filter('userGroupArrayFilter', function() {
+    return function(myArray) {
         return myArray.join(', ');
     };
 });
 
-MetronicApp.filter('tag', function () {
-    return function (array) {
+MetronicApp.filter('tag', function() {
+    return function(array) {
 
         var t = "";
 
@@ -166,18 +166,19 @@ MetronicApp.filter('tag', function () {
     };
 });
 
-MetronicApp.filter('unique', function () {
+MetronicApp.filter('unique', function() {
 
-    return function (items, filterOn) {
+    return function(items, filterOn) {
 
         if (filterOn === false) {
             return items;
         }
 
         if ((filterOn || angular.isUndefined(filterOn)) && angular.isArray(items)) {
-            var hashCheck = {}, newItems = [];
+            var hashCheck = {},
+                newItems = [];
 
-            var extractValueToCompare = function (item) {
+            var extractValueToCompare = function(item) {
                 if (angular.isObject(item) && angular.isString(filterOn)) {
                     return item[filterOn];
                 } else {
@@ -185,7 +186,7 @@ MetronicApp.filter('unique', function () {
                 }
             };
 
-            angular.forEach(items, function (item) {
+            angular.forEach(items, function(item) {
                 var valueToCheck, isDuplicate = false;
 
                 for (var i = 0; i < newItems.length; i++) {
@@ -208,18 +209,18 @@ MetronicApp.filter('unique', function () {
 /*
  * Special for ng-repeat on accounting for credit or debit
  */
-MetronicApp.filter('filterAmount', function () {
-    return function (data, filter) {
-        if(!filter)
+MetronicApp.filter('filterAmount', function() {
+    return function(data, filter) {
+        if (!filter)
             return data;
-        
+
         var items = {
             amount: filter,
             out: []
         };
-        angular.forEach(data, function (value, key) {
-            
-            if (this.amount  == value.credit || this.amount == value.debit) {
+        angular.forEach(data, function(value, key) {
+
+            if (this.amount == value.credit || this.amount == value.debit) {
                 this.out.push(value);
             }
         }, items);
@@ -228,21 +229,44 @@ MetronicApp.filter('filterAmount', function () {
 });
 
 MetronicApp.filter('range', function() {
-  return function(input, total) {
-    total = parseInt(total);
+    return function(input, total) {
+        total = parseInt(total);
 
-    for (var i=0; i<total; i++) {
-      input.push(i);
-    }
+        for (var i = 0; i < total; i++) {
+            input.push(i);
+        }
 
-    return input;
-  };
+        return input;
+    };
 });
 
 MetronicApp.filter('monthName', [function() {
-    return function (monthNumber) { //1 = January
-        var monthNames = [ 'Jan', 'Fev', 'Mar', 'Avril', 'Mai', 'Juin',
-            'Juil', 'Aout', 'Sept', 'Oct', 'Nov', 'Dec' ];
+    return function(monthNumber) { //1 = January
+        var monthNames = ['Jan', 'Fev', 'Mar', 'Avril', 'Mai', 'Juin',
+            'Juil', 'Aout', 'Sept', 'Oct', 'Nov', 'Dec'
+        ];
         return monthNames[monthNumber - 1];
     };
 }]);
+
+MetronicApp.filter('filterToggleSelection', function() {
+    return function(input, tab, mode) {
+        //console.log(input, tab);
+        if (!input)
+            return [];
+
+        var resultNotSelected = [];
+        var resultSelected = [];
+
+        for (var i = 0; i < input.length; i++) {
+            if (tab.indexOf(input[i]._id) >= 0)
+                resultSelected.push(input[i]);
+            else
+                resultNotSelected.push(input[i]);
+        }
+
+        if (mode == true)
+            return resultSelected;
+        return resultNotSelected;
+    };
+});

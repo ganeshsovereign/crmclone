@@ -171,48 +171,31 @@
 
                                                             <div class="row">
                                                                 <div class="col-md-5">
-                                                                    <div class="table-scrollable" style="height:350px;overflow:auto;">
+                                                                    <div class="table-scrollable" style="height:140px;overflow:auto;">
                                                                         <table class="table table-condensed table-hover">
                                                                             <tbody>
-                                                                                <tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | orderBy:'code'">
-                                                                                    <td>{{value.langs[0].value}} </td>
+                                                                                <tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | filterToggleSelection : product.attributes[attributeMap[attribute._id]].options:false | orderBy:'code'">
+                                                                                    <td ng-click="toggleSelection(product.attributes[attributeMap[attribute._id]].options, value._id)">{{value.langs[0].value}} </td>
                                                                                 </tr>
 
                                                                             </tbody>
                                                                         </table>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-2">
+                                                                <div class="col-md-2" style="margin-top:50px;">
                                                                     <a><i class="large fa fa-arrow-left"></i></a>
                                                                     <a><i class="large fa fa-arrow-right"></i></a>
                                                                 </div>
                                                                 <div class="col-md-5">
-                                                                    <div class="table-scrollable" style="height:350px;overflow:auto;">
+                                                                    <div class="table-scrollable" style="height:140px;overflow:auto;">
                                                                         <table class="table table-condensed table-hover">
                                                                             <tbody>
-                                                                                <tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | orderBy:'code'">
-                                                                                    <td>{{value.langs[0].value}} </td>
+                                                                                <tr ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | filterToggleSelection : product.attributes[attributeMap[attribute._id]].options:true | orderBy:'code'">
+                                                                                    <td ng-click="toggleSelection(product.attributes[attributeMap[attribute._id]].options, value._id)">{{value.langs[0].value}} </td>
                                                                                 </tr>
 
                                                                             </tbody>
                                                                         </table>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="row ">
-                                                                <div class="col-md-12">
-                                                                    <div class="form-group form-md-line-input">
-                                                                        <div class="md-checkbox-inline">
-                                                                            <div class="md-checkbox" ng-repeat="value in product.attributes[attributeMap[attribute._id]].values | orderBy:'code'">
-                                                                                <input type="checkbox" class="md-check" name="attributesObj[]" id="{{value._id}}" ng-click="toggleSelection(product.attributes[attributeMap[attribute._id]].options, value._id)" ng-checked="product.attributes[attributeMap[attribute._id]].options.indexOf(value._id) >= 0"
-                                                                                />
-                                                                                <label for="{{value._id}}">
-                                                            <span></span>
-                                                            <span class="check"></span>
-                                                            <span class="box"></span> {{value.langs[0].value}} </label>
-                                                                            </div>
-                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
