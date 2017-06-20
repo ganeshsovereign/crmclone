@@ -244,9 +244,9 @@ Object.prototype = {
 
         UserModel.update({ _id: id }, { $set: { isremoved: true, Status: 'DISABLE' } }, function(err, user) {
             if (err)
-                self.throw500(err);
-            else
-                self.json(user);
+                return self.throw500(err);
+
+            self.json(user);
         });
     },
     connection: function() {

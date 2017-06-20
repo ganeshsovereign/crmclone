@@ -113,7 +113,6 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                     $scope.find();
             });
         }
-
         user.$remove(function() {
             $rootScope.$state.go("user.list");
         });
