@@ -168,8 +168,9 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
     return settings;
 }]);
 /* Setup App Main Controller */
-MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$location', 'dialogs', 'websocketService', '$notification',
-    function($scope, $rootScope, $http, $location, dialogs, websocketService, $notification) {
+MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$location', 'dialogs', 'websocketService', '$notification', '$window'
+
+    function($scope, $rootScope, $http, $location, dialogs, websocketService, $notification, $window) {
         $rootScope.noteStatus = [
             { id: "note-info", name: "Info" },
             { id: "note-warning", name: "Warning" },
@@ -185,7 +186,10 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
 
         var login = function(userId) {
             //console.log(userId);
-            websocketService.login('ws://' + $location.host() + ':' + $location.port() + '/erp/websocket/', userId);
+            if ($window.location.protocol == "https")
+                websocketService.login('wss://' + $location.host() + ':' + $location.port() + '/erp/websocket/', userId);
+            else
+                websocketService.login('ws://' + $location.host() + ':' + $location.port() + '/erp/websocket/', userId);
             $rootScope.isLogged = true;
         };
 
