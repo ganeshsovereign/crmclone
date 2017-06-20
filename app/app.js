@@ -168,8 +168,7 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
     return settings;
 }]);
 /* Setup App Main Controller */
-MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$location', 'dialogs', 'websocketService', '$notification', '$window'
-
+MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$location', 'dialogs', 'websocketService', '$notification', '$window',
     function($scope, $rootScope, $http, $location, dialogs, websocketService, $notification, $window) {
         $rootScope.noteStatus = [
             { id: "note-info", name: "Info" },
