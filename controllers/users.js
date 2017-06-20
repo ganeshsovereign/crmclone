@@ -326,8 +326,8 @@ Object.prototype = {
             delete conditions.Status;
 
 
-        if (!self.user.multiEntities)
-            conditions.entity = self.user.entity;
+        //if (!self.user.multiEntities)
+        //    conditions.entity = self.user.entity;
 
         //console.log(self.query);
 
