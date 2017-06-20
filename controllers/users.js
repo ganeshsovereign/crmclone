@@ -241,8 +241,8 @@ Object.prototype = {
         //return req.body.models;
         var self = this;
         var UserModel = MODEL('Users').Schema;
-
-        UserModel.update({ _id: id }, { $set: { isremoved: true, Status: 'DISABLE' } }, function(err, user) {
+        console.log(id);
+        UserModel.update({ _id: id }, { $set: { isremoved: true, isEnable: false } }, function(err, user) {
             if (err)
                 return self.throw500(err);
 
