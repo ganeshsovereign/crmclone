@@ -241,12 +241,12 @@ Object.prototype = {
         //return req.body.models;
         var self = this;
         var UserModel = MODEL('Users').Schema;
-
-        UserModel.update({ _id: id }, { $set: { isremoved: true, Status: 'DISABLE' } }, function(err, user) {
+        console.log(id);
+        UserModel.update({ _id: id }, { $set: { isremoved: true, isEnable: false } }, function(err, user) {
             if (err)
-                self.throw500(err);
-            else
-                self.json(user);
+                return self.throw500(err);
+
+            self.json(user);
         });
     },
     connection: function() {

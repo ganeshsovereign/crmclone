@@ -62,6 +62,8 @@ var UserSchema = new Schema({
     isEnable: { type: Boolean, default: true },
     admin: { type: Boolean, default: false },
 
+    isremoved: { type: Boolean, default: false },
+
     facebook: {},
     twitter: {},
     github: {},
