@@ -658,3 +658,12 @@ small {
     border-right: 0px solid;
     border-bottom: 0px solid;
 }
+
+.mt-element-list .list-todo .list-todo-item.grey-gallery .list-toggle {
+    background: #364150;
+    color: #fff!important;
+}
+
+.mt-element-list .list-todo.mt-list-container ul>.mt-list-item {
+    padding: 5px;
+}

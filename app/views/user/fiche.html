@@ -137,7 +137,13 @@
                                         </div>
                                         <div class="form-group form-md-line-input has-success">
                                             <select type="text" class="form-control" id="form_control_1" ng-model="user.groupe" ng-options="g.id as g.name for g in groups"></select>
-                                            <label for="form_control_1">@(users:Group)</label>
+                                            <label for="Group">@(users:Group)</label>
+                                        </div>
+
+                                        <div class="form-group form-md-line-input has-success">
+                                            <select type="text" class="form-control" id="Entity" ng-model="user.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
+                                            <label for="Entity">@(Entity)<span class="required">
+                                              *  </label>
                                         </div>
                                     </div>
                                 </div>
