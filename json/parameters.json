@@ -169,7 +169,7 @@
             "icon": "fa-cogs",
             "submenus": {
                 "menu:modules": {
-                    "position": 3,
+                    "position": 55,
                     "enabled": "$user->admin",
                     "url": "",
                     "perms": "admin",
@@ -178,7 +178,7 @@
                     "title": "admin:Modules"
                 },
                 "settings.product": {
-                    "position": 4,
+                    "position": 1,
                     "url": "/erp/#!/settings/product",
                     "perms": "settings.read",
                     "usertype": 2,
@@ -186,7 +186,7 @@
                     "icon": "fa-globe"
                 },
                 "menu:systemtools": {
-                    "position": 10,
+                    "position": 60,
                     "usertype": 2,
                     "enabled": "$user->admin",
                     "title": "admin:SystemTools",
@@ -201,7 +201,7 @@
                             "title": "admin:Audit"
                         },
                         "menu:sessions": {
-                            "position": 2,
+                            "position": 5,
                             "perms": "admin",
                             "url": "",
                             "usertype": 2,
@@ -209,38 +209,30 @@
                         }
                     }
                 },
-                "menu:user": {
-                    "position": 11,
-                    "perms": "user.write",
+
+                "menu:team": {
+                    "position": 15,
+                    "url": "/erp/#!/user",
+                    "perms": "user.read",
                     "usertype": 2,
-                    "title": "User",
                     "icon": "fa-group",
-                    "submenus": {
-                        "menu:team": {
-                            "position": 3,
-                            "url": "/erp/#!/user",
-                            "perms": "user.read",
-                            "usertype": 2,
-                            "icon": "fa-group",
-                            "title": "users:Collaborators"
-                        },
-                        "menu:groups": {
-                            "position": 4,
-                            "url": "/erp/#!/group",
-                            "perms": "group.read",
-                            "usertype": 2,
-                            "icon": "fa-group",
-                            "title": "users:GroupManagement"
-                        },
-                        "menu:absences": {
-                            "position": 5,
-                            "url": "/erp/#!/europexpress/absence.html",
-                            "perms": "user.holidayAll",
-                            "usertype": 2,
-                            "icon": "fa-group",
-                            "title": "Gestion des conges / absences"
-                        }
-                    }
+                    "title": "users:Collaborators"
+                },
+                "menu:groups": {
+                    "position": 20,
+                    "url": "/erp/#!/group",
+                    "perms": "group.read",
+                    "usertype": 2,
+                    "icon": "fa-group",
+                    "title": "users:GroupManagement"
+                },
+                "menu:absences": {
+                    "position": 25,
+                    "url": "/erp/#!/europexpress/absence.html",
+                    "perms": "user.holidayAll",
+                    "usertype": 2,
+                    "icon": "fa-group",
+                    "title": "users:LeaveManagement"
                 }
             }
         }
