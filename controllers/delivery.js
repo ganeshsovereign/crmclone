@@ -111,7 +111,7 @@ Object.prototype = {
         //console.log(delivery);
         delivery.save(function(err, doc) {
             if (err)
-                return console.log(err);
+                return self.throw500(err);
 
             self.json(doc);
         });
@@ -201,6 +201,7 @@ Object.prototype = {
     update: function(id) {
         var self = this;
         var OrderRowsModel = MODEL('orderRows').Schema;
+        var Availability = MODEL('productsAvailability').Schema;
 
         if (self.body.forSales == false)
             var DeliveryModel = MODEL('order').Schema.GoodsInNote;
@@ -219,7 +220,6 @@ Object.prototype = {
         var rows = self.body.lines;
         for (var i = 0; i < rows.length; i++)
             rows[i].sequence = i;
-
         MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
             if (err) {
                 console.log(err);
@@ -242,7 +242,6 @@ Object.prototype = {
                 //delivery = _.extend(delivery, self.body);
 
                 //delivery.editedBy = self.user._id;
-
                 async.waterfall([
                         function(wCb) {
                             // Delivery depend on other order
@@ -261,9 +260,99 @@ Object.prototype = {
                                 var orderRow = new OrderRowsModel(orderRow);
                                 orderRow.save(aCb);
                             }, wCb);
+                        },
+                        function(wCb) {
+                            delivery.save(function(err, doc) {
+                                wCb(err, doc);
+                            });
+                        },
+                        function(doc, wCb) {
+                            if (doc.forSales == true && !doc.status.isShipped)
+                                F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: doc.order } });
+
+                            //update inventory IN
+
+                            if (doc.status.isInventory)
+                                return wCb(null, doc);
+
+                            if (!doc.status.isReceived)
+                                return wCb(null, doc);
+
+                            return DeliveryModel.findById(doc._id)
+                                .populate('order', 'shippingMethod shippingExpenses')
+                                .exec(function(err, result) {
+                                    if (err)
+                                        return wCb(err);
+
+                                    return Availability.receiveProducts({
+                                        uId: self.user._id,
+                                        goodsInNote: result.toJSON()
+                                    }, function(err) {
+                                        if (err)
+                                            return wCb(err);
+
+                                        if (result && result.order)
+                                            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order._id } });
+
+                                        doc.status.isInventory = new Date();
+                                        doc.save(function(err, doc) {
+                                            if (err)
+                                                return wCb(err);
+
+                                            doc = doc.toObject();
+                                            doc.successNotify = {
+                                                title: "Success",
+                                                message: "Bon de reception cloture"
+                                            };
+
+                                            return wCb(null, doc);
+                                        });
+                                    });
+                                });
+                        },
+                        function(doc, wCb) {
+                            //update inventory OUT
+                            if (doc.status.isInventory)
+                                return wCb(null, doc);
+
+                            if (!doc.status.isShipped)
+                                return wCb(null, doc);
+
+                            return DeliveryModel.findById(doc._id)
+                                .populate('order', 'shippingMethod shippingExpenses')
+                                .exec(function(err, result) {
+                                    if (err)
+                                        return wCb(err);
+
+                                    return Availability.deliverProducts({
+                                        uId: self.user._id,
+                                        goodsInNote: result.toJSON()
+                                    }, function(err) {
+                                        if (err)
+                                            return wCb(err);
+
+                                        if (result && result.order)
+                                            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order._id } });
+
+                                        doc.status.isInventory = new Date();
+                                        doc.save(function(err, doc) {
+                                            if (err)
+                                                return wCb(err);
+
+                                            doc = doc.toObject();
+                                            doc.successNotify = {
+                                                title: "Success",
+                                                message: "Bon de livraison cloture"
+                                            };
+
+                                            return wCb(null, doc);
+                                        });
+                                    });
+                                });
+
                         }
                     ],
-                    function(err) {
+                    function(err, doc) {
                         if (err) {
                             console.log(err);
                             return self.json({
@@ -273,6 +362,9 @@ Object.prototype = {
                                 }
                             });
                         }
+
+                        if (doc.successNotify)
+                            return self.json(doc);
 
                         delivery.save(function(err, doc) {
                             if (err) {
@@ -301,14 +393,12 @@ Object.prototype = {
         var DeliveryModel = MODEL('delivery').Schema;
         var self = this;
 
-        DeliveryModel.update({
-            _id: id
-        }, { $set: { isremoved: true, Status: 'CANCELED', total_ht: 0, total_ttc: 0, total_tva: [] } }, function(err) {
-            if (err) {
-                self.throw500(err);
-            } else {
-                self.json({});
-            }
+        DeliveryModel.findByIdAndUpdate(id, { $set: { isremoved: true, Status: 'CANCELED', total_ht: 0, total_ttc: 0, total_tva: [] } }, function(err, result) {
+            if (err)
+                return self.throw500(err);
+
+            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order } });
+            self.json({});
         });
     },
     destroyList: function() {
@@ -330,14 +420,77 @@ Object.prototype = {
         else
             ids.push(list);
 
-        DeliveryModel.remove({
-            _id: { $in: ids }
+        async.each(ids, function(id, cb) {
+            DeliveryModel.findById(id)
+                .populate('order')
+                .exec(function(err, goodsNote) {
+                    var options;
+
+                    if (err)
+                        return cb(err);
+
+                    if (goodsNote && goodsNote.order) {
+                        async.each(goodsNote.orderRows, function(goodsOrderRow, callback) {
+
+                            var query = goodsNote.order.project ? {
+                                product: goodsOrderRow.product,
+                                warehouse: goodsNote.warehouse
+                            } : {
+                                'goodsOutNotes.goodsNoteId': goodsNote._id,
+                                product: goodsOrderRow.product,
+                                warehouse: goodsNote.warehouse
+                            };
+
+                            AvailabilityService.updateByQuery({
+                                dbName: req.session.lastDb,
+                                query: query,
+
+                                body: {
+                                    $inc: {
+                                        onHand: goodsOrderRow.quantity
+                                    },
+
+                                    $pull: {
+                                        goodsOutNotes: { goodsNoteId: goodsNote._id }
+                                    }
+                                }
+                            }, function(err) {
+                                if (err)
+                                    return callback(err);
+
+                                options = {
+                                    query: {
+                                        'sourceDocument.model': 'goodsOutNote',
+                                        'sourceDocument._id': id
+                                    }
+                                };
+
+                                JournalEntryService.remove(options);
+
+                                callback();
+                            });
+                        }, function(err) {
+                            if (err)
+                                return cb(err);
+
+                            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order._id } });
+
+                            cb();
+                        });
+
+                    } else
+                        cb();
+                });
         }, function(err) {
-            if (err) {
-                self.throw500(err);
-            } else {
+            if (err)
+                return self.throw500(err);
+            DeliveryModel.remove({
+                _id: { $in: ids }
+            }, function(err) {
+                if (err)
+                    return self.throw500(err);
                 self.json({});
-            }
+            });
         });
     },
     readDT: function() {

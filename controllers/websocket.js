@@ -59,7 +59,10 @@ function websocket() {
             case "update":
                 break;
             case "notify:controllerAngular":
-                self.send({ type: 'refresh', data: notify });
+                self.send({ type: 'refresh', data: notify }, function(id, client) {
+                    //send to all
+                    return true;
+                });
                 break;
             default: // send text notification
                 self.send({ type: 'notify', message: notify.data, date: new Date() }, function(id, client) {

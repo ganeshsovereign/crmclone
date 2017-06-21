@@ -744,7 +744,7 @@ exports.install = function() {
     F.route('/erp/api/product/warehouse/{id}', warehouse.get, ['authorize']);
     F.route('/erp/api/product/warehouse/getHierarchyWarehouse', warehouse.getHierarchyWarehouse, ['authorize']);
     F.route('/erp/api/product/warehouse/zone/select', warehouse.getForDdZone, ['authorize']);
-    F.route('/erp/api/product/warehouse/location/getForDd', warehouse.getForDdLocation, ['authorize']);
+    F.route('/erp/api/product/warehouse/location/select', warehouse.getForDdLocation, ['authorize']);
 
     F.route('/erp/api/product/warehouse/stockCorrection', stock.getCorrections, ['authorize']);
     F.route('/erp/api/product/warehouse/stockCorrection/{id}', stock.getById, ['authorize']);
@@ -5023,7 +5023,8 @@ StockCorrection.prototype = {
             if (err)
                 return self.throw500(err);
 
-            event.emit('recalculateStatus', req, orderId, next);
+            //event.emit('recalculateStatus', req, orderId, next);
+            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: orderId } });
             self.json({ success: 'Products updated' });
         });
 

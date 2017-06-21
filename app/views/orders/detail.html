@@ -18,8 +18,8 @@
                         <span ng-if="module('offer')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(propal:NewProp) </span>
                         <span ng-if="module('order')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}}</span>
                         <!--/Puces-->
-                        <span ng-if="module('order')" ng-hide="!object._id" ng-class="{ 'large font-green-jungle fa fa-check-circle': NO, 'large font-yellow-lemon fa fa-check-circle': NOA, 'large font-red fa fa-check-circle' : NOT }"></span>
-                        <span ng-if="module('order')" ng-hide="!object._id" ng-class="{ 'large font-green-jungle fa fa-inbox': NO, 'large font-yellow-lemon fa fa-inbox': NOA, 'large font-red fa fa-inbox' : NOT }"></span>
+                        <span ng-if="module('order')" ng-hide="!object._id" class="large fa fa-check-circle" ng-class="{ 'font-grey': object.status.allocateStatus=='NOR','font-green-jungle': object.status.allocateStatus=='ALL' , 'font-yellow-lemon': object.status.allocateStatus=='NOA', 'font-red' : object.status.allocateStatus=='NOT' }"></span>
+                        <span ng-if="module('order')" ng-hide="!object._id" class="" ng-class="{ 'large font-green-jungle fa fa-inbox': NO, 'large font-yellow-lemon fa fa-inbox': NOA, 'large font-red fa fa-inbox' : NOT }"></span>
                         <span ng-if="module('order')" ng-hide="!object._id" ng-class="{ 'large font-green-jungle fa fa-truck': NO, 'large font-yellow-lemon fa fa-truck': NOA, 'large font-red fa fa-truck' : NOT }"></span>
                         <!--Puces/-->
                         <span ng-if="module('order')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewOrder) </span>

@@ -72,23 +72,23 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
     var grid = new Datatable();
 
-    $scope.$on('websocket', function(e, type, data) {
+    $rootScope.$on('websocket', function(e, type, data) {
         if (type !== 'refresh')
             return;
 
         //console.log(data);
         //console.log(type);
 
-        if (!data || !data.data || !data.data.route || data.data.route.indexOf('product'))
+        if (!data || !data.data || !data.data.route || data.data.route.indexOf('product') < 0)
             return;
 
-        if ($rootScope.$stateParams.id) {
+        if ($rootScope.$stateParams.id)
             if (data.data._id == $rootScope.$stateParams.id) {
                 $scope.findOne();
                 toastr.warning(data.data.message, 'Notification serveur', { timeOut: 5000, progressBar: true });
             }
-        } else
-            $scope.find();
+
+        $scope.find();
     });
 
     $scope.isValidRef = function() {

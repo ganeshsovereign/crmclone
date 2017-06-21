@@ -366,6 +366,9 @@ Object.prototype = {
                                 });
                             }
 
+                            if (rows.length)
+                                F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: doc._id } });
+
                             //console.log(doc);
                             doc = doc.toObject();
                             doc.successNotify = {
