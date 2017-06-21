@@ -23,32 +23,31 @@
                     <tr role="row" class="heading">
                         <th style="width: 140px;">@(products:ProductCode)</th>
                         <th style="width: 15%;">@(Name)</th>
-                        <th style="width: 80px;">@(QtyOrder)</th>
-                        <th style="width: 100px;">@(QtyFulfilled)</th>
-                        <th style="width: 50px;">@(Qty)</th>
-                        <th style="width: 120px;">@(Reminder)</th>
-                        <th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th>
-                    </tr>
+                        <th class="center" style="width: 80px;">@(QtyOrder)</th>
+                        <th class="center" style="width: 100px;">@(QtyFulfilled)</th>
+                        <th class="center" style="width: 120px;">@(Reminder)</th>
+                        <th class="center" style="width: 100px;">@(QtyDelivered)</th>
+                        <th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th </tr>
                 </thead>
                 <tr ng-repeat="line in linesModel| filter:filterLine" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL'}">
                     <td>
                         <a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
                     </td>
-                    <td>
+                    <td class="center">
                         {{ line.product.info.langs[0].name || 'empty' }}
                     </td>
-                    <td>
+                    <td class="center">
                         {{ line.orderQty || '0' }}
                     </td>
-                    <td>
+                    <td class="center">
                         {{ line.deliveryQty || '0' }}
                     </td>
-                    <td class="align-right">
+                    <td class="center"> {{line.orderQty - line.deliveryQty - line.qty }} </td>
+                    <td class="center">
                         <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-max="{{line.orderQty - line.deliveryQty}}" e-step="any" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
                     </td>
-                    <td class="center"> {{line.orderQty - line.deliveryQty - line.qty }} </td>
                     <td>
                         <div class="btn-toolbar" role="toolbar">
                             <div class="btn-group btn-group">

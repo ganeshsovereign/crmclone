@@ -219,12 +219,11 @@
     </div>
 </div>
 
-<div ng-hide="!object._id  || object._id !== object.order._id " class="row">
+<div ng-hide="!object._id  || object._id !== object.order._id || module('delivery') " class="row">
     <div class="col-md-12">
         <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
     </div>
 </div>
-
 <div ng-if="object._id && module('delivery')" class="row">
     <div class="col-md-12">
         <product-lines ng-model="object.orderRows" title="'@(deliveries:ProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
