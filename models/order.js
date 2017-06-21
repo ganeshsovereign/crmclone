@@ -226,16 +226,6 @@ const baseSchema = new Schema({
     shippingCost: { type: Number, default: 0 },
 
     attachments: { type: Array, default: [] },
-    orderRows: [{
-        _id: false,
-        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
-        product: { type: ObjectId, ref: 'product', default: null },
-        locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
-        cost: { type: Number, default: 0 },
-        qty: Number,
-
-        isDeleted: { type: Boolean, default: false }
-    }],
 
     channel: { type: ObjectId, ref: 'integrations', default: null },
     integrationId: String,
@@ -625,7 +615,7 @@ baseSchema.statics.getById = function(id, callback) {
                 return _.extend(item, _.findWhere(order.orderRows, { orderRowId: item.orderRowId }));
             });
 
-            console.log(order.orderRows);
+            //console.log(order.orderRows);
 
             /*orderRows: [{
                     _id: false,
@@ -684,6 +674,17 @@ const Order = mongoose.model('order', baseSchema);
 
 var goodsOutNoteSchema = new Schema({
 
+    orderRows: [{
+        _id: false,
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'product', default: null },
+        locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
+        cost: { type: Number, default: 0 },
+        qty: Number,
+
+        isDeleted: { type: Boolean, default: false }
+    }],
+
     tracking: String, //Tracking number
 
     status: {
@@ -691,6 +692,7 @@ var goodsOutNoteSchema = new Schema({
         isPicked: { type: Date, default: null }, //Prepare
         isPacked: { type: Date, default: null }, //Emballe
         isShipped: { type: Date, default: null }, //Expedier
+        isInventory: { type: Date, default: null }, //Inventory done
 
         pickedById: { type: ObjectId, ref: 'Users', default: null },
         packedById: { type: ObjectId, ref: 'Users', default: null },
@@ -707,6 +709,8 @@ var goodsInNoteSchema = new Schema({
 
     status: {
         isReceived: { type: Date, default: null },
+        isInventory: { type: Date, default: null }, //Inventory done
+
         receivedById: { type: ObjectId, ref: 'Users', default: null }
     },
 
@@ -734,6 +738,8 @@ var goodsInNoteSchema = new Schema({
 var stockCorrectionSchema = new Schema({
     status: {
         isReceived: { type: Date, default: null },
+        isInventory: { type: Date, default: null }, //Inventory done
+
         receivedById: { type: ObjectId, ref: 'Users', default: null }
     },
 
@@ -759,6 +765,8 @@ var stockCorrectionSchema = new Schema({
 var stockReturnSchema = new Schema({
     status: {
         isReceived: { type: Date, default: null },
+        isInventory: { type: Date, default: null }, //Inventory done
+
         receivedById: { type: ObjectId, ref: 'Users', default: null }
     },
 
@@ -786,6 +794,7 @@ var stockTransactionsSchema = new Schema({
         isPicked: { type: Date, default: null }, //Prepare
         isPacked: { type: Date, default: null }, //Emballe
         isShipped: { type: Date, default: null }, //Expedier
+        isInventory: { type: Date, default: null }, //Inventory done
 
         pickedById: { type: ObjectId, ref: 'Users', default: null },
         packedById: { type: ObjectId, ref: 'Users', default: null },
@@ -1084,3 +1093,227 @@ exports.Status = {
 };
 
 exports.name = "order";
+
+
+F.on('load', function() {
+    // Refresh pack prices from directCost
+    F.functions.PubSub.on('order:*', function(channel, data) {
+        const Order = exports.Schema.Order;
+        const OrderRows = MODEL('orderRows').Schema;
+
+        //console.log(data);
+        console.log("Update emit order", data);
+
+        switch (channel) {
+            case 'order:recalculateStatus':
+                if (!data.data || !data.data._id)
+                    return;
+
+                function getAvailableForRows(docs, cb) {
+                    var Availability;
+                    var GoodsOutNote;
+
+                    Availability = MODEL('productsAvailability').Schema;
+                    GoodsOutNote = exports.Schema.GoodsOutNote;
+
+                    var stockStatus = {};
+
+                    if (docs && docs.length) {
+                        async.each(docs, function(elem, eahcCb) {
+                            var product;
+
+                            elem = elem.toJSON();
+                            product = elem.product ? elem.product._id : null;
+
+                            Availability.aggregate([{
+                                $match: {
+                                    product: product,
+                                    warehouse: elem.warehouse
+                                }
+                            }, {
+                                $project: {
+                                    product: 1,
+                                    warehouse: 1,
+                                    onHand: 1,
+                                    filterRows: {
+                                        $filter: {
+                                            input: '$orderRows',
+                                            as: 'elem',
+                                            cond: { $eq: ['$$elem.orderRowId', elem._id] }
+                                        }
+                                    },
+
+                                    orderRows: 1
+                                }
+                            }, {
+                                $project: {
+                                    product: 1,
+                                    warehouse: 1,
+                                    onHand: 1,
+                                    allocated: {
+                                        $sum: '$filterRows.qty'
+                                    }
+                                }
+                            }, {
+                                $project: {
+                                    product: 1,
+                                    warehouse: 1,
+                                    onHand: 1,
+                                    allocated: 1
+                                }
+                            }, {
+                                $group: {
+                                    _id: '$warehouse',
+                                    allocated: {
+                                        $sum: '$allocated'
+                                    }
+                                }
+                            }], function(err, availability) {
+                                if (err)
+                                    return eahcCb(err);
+
+                                GoodsOutNote.aggregate([{
+                                    $match: {
+                                        'orderRows.orderRowId': elem._id,
+                                        _type: { $ne: 'stockReturns' }
+                                    }
+                                }, {
+                                    $project: {
+                                        name: '$name',
+                                        orderRow: {
+                                            $filter: {
+                                                input: '$orderRows',
+                                                as: 'elem',
+                                                cond: { $eq: ['$$elem.orderRowId', elem._id] }
+                                            }
+                                        },
+
+                                        status: 1
+                                    }
+                                }, {
+                                    $project: {
+                                        name: '$name',
+                                        orderRow: { $arrayElemAt: ['$orderRow', 0] },
+                                        status: 1
+                                    }
+                                }, {
+                                    $project: {
+                                        name: '$name',
+                                        orderRow: '$orderRow.orderRowId',
+                                        qty: '$orderRow.qty',
+                                        status: 1
+                                    }
+                                }], function(err, docs) {
+                                    var fullfillOnRow = 0;
+                                    var shippedOnRow = 0;
+                                    var allocatedOnRow;
+                                    var shippedDocs;
+
+                                    if (err)
+                                        return eahcCb(err);
+
+                                    availability = availability && availability.length ? availability[0].allocated : 0;
+
+                                    if (!docs || !docs.length) {
+
+                                        /*if (!stockStatus.fulfillStatus) {
+                                         stockStatus.fulfillStatus = 'NOA';
+                                         }*/
+
+                                        stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
+                                        stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
+                                    } else {
+                                        shippedDocs = _.filter(docs, function(el) {
+                                            if (el.status && el.status.shipped)
+                                                return el;
+                                        });
+
+                                        if (shippedDocs.length) {
+                                            shippedDocs.forEach(function(el) {
+                                                shippedOnRow += el.qty;
+                                            });
+
+                                            if (shippedOnRow !== elem.qty)
+                                                stockStatus.shippingStatus = 'NOA';
+                                            else
+                                                stockStatus.shippingStatus = stockStatus.shippingStatus && (stockStatus.shippingStatus === 'NOA') ? 'NOA' : 'ALL';
+
+                                        } else
+                                            stockStatus.shippingStatus = ((stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL')) ? 'NOA' : 'NOT';
+
+
+                                        docs.forEach(function(el) {
+                                            fullfillOnRow += el.qty;
+                                        });
+
+                                        if (fullfillOnRow !== elem.qty)
+                                            stockStatus.fulfillStatus = 'NOA';
+                                        else
+                                            stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'ALL';
+
+                                    }
+
+                                    allocatedOnRow = fullfillOnRow + availability;
+
+                                    if (!allocatedOnRow) {
+                                        // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
+                                        stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'ALL')) ? 'NOA' : 'NOT';
+                                    } else if (allocatedOnRow !== elem.qty)
+                                        stockStatus.allocateStatus = 'NOA';
+                                    else
+                                        stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
+
+                                    eahcCb();
+
+                                });
+                            });
+
+                        }, function(err) {
+                            if (err)
+                                return cb(err);
+
+                            cb(null, stockStatus);
+
+                        });
+                    } else {
+                        stockStatus.fulfillStatus = 'NOR';
+                        stockStatus.allocateStatus = 'NOR';
+                        stockStatus.shippingStatus = 'NOR';
+
+                        cb(null, stockStatus);
+                    }
+
+                }
+
+                OrderRows.find({
+                        order: data.data._id, //orderId
+                        product: { $ne: null }
+                    })
+                    .populate('product', 'cost name sku info')
+                    .exec(function(err, docs) {
+                        if (err)
+                            return console(err);
+
+                        getAvailableForRows(docs, function(err, status) {
+                            if (err)
+                                return console.log(err);
+
+                            Order.findByIdAndUpdate(data.data._id, { status: status }, { new: true }, function(err, el) {
+                                if (err)
+                                    return console.log(err);
+
+                                console.log('Status updated');
+                                //Force reload order
+                                F.functions.PubSub.emit('notify:controllerAngular', {
+                                    route: 'order',
+                                    _id: el._id,
+                                    message: "Commande " + el.ref + ' modifie.'
+                                });
+                            });
+                        });
+
+                    });
+                break;
+        }
+    });
+});

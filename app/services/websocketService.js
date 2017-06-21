@@ -57,6 +57,7 @@ MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($roo
 
             if (data.type === 'refresh') {
                 $rootScope.$broadcast('websocket', 'refresh', data);
+                console.log('Notify ', data);
                 return;
             }
 

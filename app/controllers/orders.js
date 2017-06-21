@@ -33,8 +33,8 @@ var round = function(value, decimals) {
 };
 
 /* global angular: true */
-MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', '$window', 'Orders',
-    function($scope, $rootScope, $http, $modal, $filter, $timeout, $window, Orders) {
+MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', '$window', 'toastr', 'Orders',
+    function($scope, $rootScope, $http, $modal, $filter, $timeout, $window, toastr, Orders) {
 
         var grid = new Datatable();
         var user = $rootScope.login;
@@ -76,6 +76,24 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         $scope.$dict = {};
 
         var module;
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
+                return;
+
+            if ($rootScope.$stateParams.id)
+                if (data.data._id == $rootScope.$stateParams.id) {
+                    $scope.findOne();
+                    toastr.warning(data.data.message, 'Notification serveur', { timeOut: 5000, progressBar: true });
+                }
+
+            $scope.find();
+        });
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
@@ -858,6 +876,19 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
         };
 
         $scope.$dict = {};
+
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
+                return;
+
+            $scope.find();
+        });
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
