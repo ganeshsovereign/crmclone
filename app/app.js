@@ -931,6 +931,37 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "OrdersController"
         })
+        // Stock Correction
+        .state('product.stockcorrection', {
+            parent: "product",
+            url: "/stockcorrectionlist",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.stockcorrection.list', {
+            url: "",
+            templateUrl: "/views/product/stockcorrectionlist.html",
+            data: {
+                pageTitle: 'Liste des corrections de stokc'
+            },
+            controller: "ProductStockCorrectionController"
+        })
+        .state('product.stockcorrection.create', {
+            url: "/create.html",
+            templateUrl: "/views/product/stockcorrectionlistfiche.html",
+            data: {
+                pageTitle: 'Créer une correction de stock'
+            },
+            controller: "ProductStockCorrectionController"
+        })
+        .state('product.stockcorrection.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/product/stockcorrectionlistfiche.html",
+            data: {
+                pageTitle: 'Editer une famille de produit'
+            },
+            controller: "ProductStockCorrectionController"
+        })
         // Company
         .state('societe', {
             url: "/societe",

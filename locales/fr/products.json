@@ -388,5 +388,7 @@
     "Aisle": "Rayon",
     "Bay": "Baie",
     "Shelf": "Étagère",
-    "Bin": "Compartiment"
+    "Bin": "Compartiment",
+    "StockCorrection": "Correction stock",
+    "ListOfStockCorrection": "Liste des corrections de stock"
 }

@@ -56,9 +56,13 @@
 <script type="text/ng-template" id="myModalContent.html">
     <div class="modal-header">
         <div class="portlet-title">
-            <button type="button" class="bootbox-close-button close" ng-click="cancel()" aria-hidden="true">×</button>
-            <h4 class="no-margin-bottom">@(categories:CreateCat) {{category._id}}</h4>
+            <div class="caption">
+                <i class="icon-pencil"></i>
+                <span class="caption-subject dark bold uppercase"> @(categories:CreateCat) {{category._id}}</span></span>
+                <button type="button" class="bootbox-close-button close" ng-click="cancel()" aria-hidden="true">×</button>
+            </div>
         </div>
+    </div>
     </div>
     <form class="modal-body form" ng-submit="ok()">
         <div class="form-horizontal">
@@ -87,10 +91,13 @@
                     </div>
                 </div>
                 <div class="col-md-7">
-                    <div class="portlet light bordered">
-                        <div class="form-group form-md-line-input">
-                            <label for="name"> @(Description) </label>
-                            <summernote height="150" ng-model="category.langs[0].body"></summernote>
+                    <div class="form-horizontal form-row-seperated">
+                        <div class="portlet light bordered">
+                            <div class="form-group form-md-line-input ">
+                                <textarea class="form-control" ng-model="category.langs[0].body" rows="10"></textarea>
+                                <label for="MetaDes">@(Description)</label>
+                                <span class="help-block">@(Description)</span>
+                            </div>
                         </div>
                     </div>
                 </div>
