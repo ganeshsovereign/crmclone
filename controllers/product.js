@@ -2366,9 +2366,8 @@ Object.prototype = {
                     }
 
                     if (!model) {
-                        error = new Error('Such product not found');
-                        error.status = 404;
-                        return next(err);
+                        error = 'Such product not found';
+                        return self.throw404(err);
                     }
 
                     modelJSON = model.toJSON();
@@ -2385,9 +2384,8 @@ Object.prototype = {
                     }
 
                     if (!model) {
-                        error = new Error('Such product not found');
-                        error.status = 404;
-                        return next(err);
+                        error = 'Such product not found';
+                        return self.throw404(err);
                     }
 
                     modelJSON = model.toJSON();
@@ -4910,10 +4908,11 @@ StockCorrection.prototype = {
         });
     },
 
-    allocate: function(req, res, next) {
-        var body = req.body;
-        var Availability = models.get(req.session.lastDb, 'productsAvailability', AvailabilitySchema);
-        var GoodsOutNote = models.get(req.session.lastDb, 'GoodsOutNote', GoodsOutSchema);
+    allocate: function() {
+        var self = this;
+        var body = self.body;
+        var Availability = MODEL('productsAvailability').Schema;
+        var GoodsOutNote = MODEL('orders').Schema.GoodsOutNote;
         var orderId = body.order;
 
         async.each(body.data, function(elem, eachCb) {
@@ -4925,9 +4924,9 @@ StockCorrection.prototype = {
                 warehouse: elem.warehouse,
                 product: elem.product
             }, function(err, avalabilities) {
-                if (err) {
+                if (err)
                     return eachCb(err);
-                }
+
                 if (avalabilities.length) {
                     async.each(avalabilities, function(availability, cb) {
                         var allocated = 0;
@@ -4939,35 +4938,31 @@ StockCorrection.prototype = {
                         var allOnHand;
 
                         availability.orderRows.forEach(function(orderRow) {
-                            if (orderRow.orderRowId.toJSON() === elem.orderRowId) {
+                            if (orderRow.orderRowId.toJSON() === elem.orderRowId)
                                 existedRow = orderRow;
-                            } else {
+                            else
                                 allocated += orderRow.quantity;
-                            }
                         });
 
-                        if (isFilled && elem.quantity) {
+                        if (isFilled && elem.quantity)
                             return cb();
-                        }
 
                         allOnHand = availability.onHand + existedRow.quantity;
 
-                        if (!allOnHand) {
+                        if (!allOnHand)
                             return cb();
-                        }
 
                         resultOnHand = allOnHand - lastSum;
 
                         if (resultOnHand < 0) {
                             lastSum = Math.abs(resultOnHand);
                             resultOnHand = 0;
-                        } else {
+                        } else
                             isFilled = true;
-                        }
 
                         if (existedRow.orderRowId) {
 
-                            if (!elem.quantity) {
+                            if (!elem.quantity)
                                 Availability.update({ _id: availability._id }, {
                                     $inc: {
                                         onHand: existedRow.quantity
@@ -4976,12 +4971,12 @@ StockCorrection.prototype = {
                                         orderRows: { orderRowId: existedRow.orderRowId }
                                     }
                                 }, function(err) {
-                                    if (err) {
+                                    if (err)
                                         return cb(err);
-                                    }
+
                                     cb();
                                 });
-                            } else {
+                            else
                                 Availability.update({
                                     _id: availability._id,
                                     'orderRows.orderRowId': existedRow.orderRowId
@@ -4994,7 +4989,7 @@ StockCorrection.prototype = {
                                     }
                                     cb();
                                 });
-                            }
+
 
                         } else if (elem.quantity) {
                             Availability.findByIdAndUpdate(availability._id, {
@@ -5006,43 +5001,42 @@ StockCorrection.prototype = {
                                 },
                                 onHand: resultOnHand
                             }, function(err) {
-                                if (err) {
+                                if (err)
                                     return cb(err);
-                                }
+
                                 cb();
                             });
-                        } else {
+                        } else
                             cb();
-                        }
+
                     }, function(err) {
-                        if (err) {
+                        if (err)
                             return eachCb(err);
-                        }
+
                         eachCb();
                     });
-                } else {
+                } else
                     eachCb();
-                }
             });
 
         }, function(err) {
-            if (err) {
-                return next(err);
-            }
+            if (err)
+                return self.throw500(err);
 
             event.emit('recalculateStatus', req, orderId, next);
-            res.status(200).send({ success: 'Products updated' });
+            self.json({ success: 'Products updated' });
         });
 
     },
 
-    getCorrections: function(req, res, next) {
-        var data = req.query;
+    getCorrections: function() {
+        var sefl = this;
+        var data = self.query;
         var limit = parseInt(data.count, 10);
         var skip = (parseInt(data.page || 1, 10) - 1) * limit;
         var obj = {};
         var addObj = {};
-        var StockCorrection = models.get(req.session.lastDb, 'stockCorrections', StockCorrectionsSchema);
+        var StockCorrection = MODEL('orders').Schema.StockCorrections;
         /* var filterMapper = new FilterMapper();*/
 
         var keys;
@@ -5060,95 +5054,91 @@ StockCorrection.prototype = {
             keys = Object.keys(data.sort)[0];
             data.sort[keys] = parseInt(data.sort[keys], 10);
             sort = data.sort;
-        } else {
+        } else
             sort = { 'dueDate': -1 };
-        }
 
-        StockCorrection
-            .aggregate([{
-                    $match: obj
-                },
-                {
-                    $lookup: {
-                        from: 'warehouse',
-                        localField: 'warehouse',
-                        foreignField: '_id',
-                        as: 'warehouse'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'locations',
-                        localField: 'location',
-                        foreignField: '_id',
-                        as: 'location'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'Users',
-                        localField: 'createdBy.user',
-                        foreignField: '_id',
-                        as: 'createdBy.user'
-                    }
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        location: { $arrayElemAt: ['$location', 0] },
-                        warehouse: { $arrayElemAt: ['$warehouse', 0] },
-                        'createdBy.user': { $arrayElemAt: ['$createdBy.user', 0] },
-                        'createdBy.date': 1,
-                        description: 1
-                    }
-                },
-                {
-                    $group: {
-                        _id: null,
-                        total: { $sum: 1 },
-                        root: { $push: '$$ROOT' }
-                    }
-                },
-                {
-                    $unwind: '$root'
-                },
-                {
-                    $project: {
-                        _id: '$root._id',
-                        location: '$root.location',
-                        warehouse: '$root.warehouse',
-                        createdBy: '$root.createdBy',
-                        description: '$root.description',
-                        total: 1
-                    }
-                },
-                {
-                    $sort: sort
-                }, {
-                    $skip: skip
-                }, {
-                    $limit: limit
+        StockCorrection.aggregate([{
+                $match: obj
+            },
+            {
+                $lookup: {
+                    from: 'warehouse',
+                    localField: 'warehouse',
+                    foreignField: '_id',
+                    as: 'warehouse'
                 }
-            ], function(err, result) {
-                var count;
-                var response = {};
-
-                if (err) {
-                    return next(err);
+            },
+            {
+                $lookup: {
+                    from: 'locations',
+                    localField: 'location',
+                    foreignField: '_id',
+                    as: 'location'
                 }
+            },
+            {
+                $lookup: {
+                    from: 'Users',
+                    localField: 'createdBy.user',
+                    foreignField: '_id',
+                    as: 'createdBy.user'
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    location: { $arrayElemAt: ['$location', 0] },
+                    warehouse: { $arrayElemAt: ['$warehouse', 0] },
+                    'createdBy.user': { $arrayElemAt: ['$createdBy.user', 0] },
+                    'createdBy.date': 1,
+                    description: 1
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: 1 },
+                    root: { $push: '$$ROOT' }
+                }
+            },
+            {
+                $unwind: '$root'
+            },
+            {
+                $project: {
+                    _id: '$root._id',
+                    location: '$root.location',
+                    warehouse: '$root.warehouse',
+                    createdBy: '$root.createdBy',
+                    description: '$root.description',
+                    total: 1
+                }
+            },
+            {
+                $sort: sort
+            }, {
+                $skip: skip
+            }, {
+                $limit: limit
+            }
+        ], function(err, result) {
+            var count;
+            var response = {};
 
-                count = result[0] && result[0].total ? result[0].total : 0;
+            if (err)
+                return self.throw500(err);
 
-                response.total = count;
-                response.data = result;
-                res.status(200).send(response);
-            });
+            count = result[0] && result[0].total ? result[0].total : 0;
+
+            response.total = count;
+            response.data = result;
+            self.json(response);
+        });
 
     },
 
-    getById: function(req, res, next) {
-        var id = req.params.id;
-        var StockCorrection = models.get(req.session.lastDb, 'stockCorrections', StockCorrectionsSchema);
+    getById: function(id) {
+        var StockCorrection = MODEL('orders').Schema.StockCorrections;
 
         StockCorrection.findById(id)
             .populate('warehouse', ' name')
@@ -5156,23 +5146,25 @@ StockCorrection.prototype = {
             .populate('orderRows.product', ' name')
             .populate('createdBy.user', 'login')
             .exec(function(err, correction) {
-                if (err) {
-                    return next(err);
-                }
+                if (err)
+                    return self.throw500(err);
 
-                res.status(200).send(correction);
+
+                self.json(correction);
             });
     },
 
-    getProductsAvailable: function(req, res, next) {
-        var Availability = models.get(req.session.lastDb, 'productsAvailability', AvailabilitySchema);
-        var queryObject = req.query;
+    getProductsAvailable: function() {
+        var self = this;
+        var Availability = MODEL('productsAvailability').Schema;
+        var queryObject = self.query;
         var product = queryObject.product;
         var warehouseFrom = queryObject.warehouse;
         var warehouseTo = queryObject.warehouseTo;
         var location = queryObject.location;
         var queryFrom;
         var queryTo;
+        var objectId = MODULE('utils').ObjectId;
 
         queryFrom = {
             warehouse: objectId(warehouseFrom),
@@ -5216,9 +5208,8 @@ StockCorrection.prototype = {
                     product: { $first: '$product' }
                 }
             }], function(err, availability) {
-                if (err) {
+                if (err)
                     return pCb(err);
-                }
 
                 pCb(null, availability && availability.length ? availability[0] : {});
             });
@@ -5246,9 +5237,8 @@ StockCorrection.prototype = {
                     onHand: { $sum: '$onHand' }
                 }
             }], function(err, availability) {
-                if (err) {
+                if (err)
                     return pCb(err);
-                }
 
                 pCb(null, availability && availability.length ? availability[0] : {});
             });
@@ -5262,44 +5252,42 @@ StockCorrection.prototype = {
             var getAvailabilityTo = result.getAvailabilityTo;
             var data = getAvailabilityFrom;
 
-            if (err) {
-                return next(err);
-            }
+            if (err)
+                return self.throw500(err);
 
-            if (getAvailabilityTo && getAvailabilityTo.onHand) {
+
+            if (getAvailabilityTo && getAvailabilityTo.onHand)
                 data.destination = getAvailabilityTo.onHand;
-            }
 
-            res.status(200).send(data);
+            self.json(data);
         });
     },
 
-    bulkRemove: function(req, res, next) {
-        var StockCorrection = models.get(req.session.lastDb, 'stockCorrections', StockCorrectionsSchema);
+    bulkRemove: function() {
+        var self = this;
+        var StockCorrection = MODEL('orders').Schema.stockCorrections;
         var body = req.body || { ids: [] };
         var ids = body.ids;
 
         // todo some validation on ids array, like check for objectId
 
         StockCorrection.remove({ _id: { $in: ids } }, function(err, removed) {
-            if (err) {
-                return next(err);
-            }
+            if (err)
+                return self.throw500(err);
 
-            res.status(200).send(removed);
+            self.json(removed);
         });
     },
 
-    remove: function(req, res, next) {
-        var StockCorrection = models.get(req.session.lastDb, 'stockCorrections', StockCorrectionsSchema);
-        var id = req.params.id;
+    remove: function(id) {
+        var self = this;
+        var StockCorrection = MODEL('orders').Schema.stockCorrections;
 
         StockCorrection.findOneAndRemove({ _id: id }, function(err, correction) {
-            if (err) {
-                return next(err);
-            }
+            if (err)
+                return self.throw500(err);
 
-            res.status(200).send({ success: correction });
+            self.json({ success: correction });
         });
     }
 };
