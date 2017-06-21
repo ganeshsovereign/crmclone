@@ -200,6 +200,7 @@ Object.prototype = {
     },
     update: function(id) {
         var self = this;
+        var OrderRowsModel = MODEL('orderRows').Schema;
 
         if (self.body.forSales == false)
             var DeliveryModel = MODEL('order').Schema.GoodsInNote;
@@ -214,6 +215,10 @@ Object.prototype = {
 
         if (!self.body.createdBy)
             self.body.createdBy = self.user._id;
+
+        var rows = self.body.lines;
+        for (var i = 0; i < rows.length; i++)
+            rows[i].sequence = i;
 
         MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
             if (err) {
@@ -233,30 +238,62 @@ Object.prototype = {
 
             DeliveryModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, delivery) {
 
-                console.log(delivery);
+                //console.log(delivery);
                 //delivery = _.extend(delivery, self.body);
 
                 //delivery.editedBy = self.user._id;
 
-                delivery.save(function(err, doc) {
-                    if (err) {
-                        console.log(err);
-                        return self.json({
-                            errorNotify: {
-                                title: 'Erreur',
-                                message: err
-                            }
-                        });
-                    }
+                async.waterfall([
+                        function(wCb) {
+                            // Delivery depend on other order
+                            if (delivery.order.toString() !== id || !rows.length)
+                                return wCb();
 
-                    //console.log(doc);
-                    doc = doc.toObject();
-                    doc.successNotify = {
-                        title: "Success",
-                        message: "Bon de livraison enregistre"
-                    };
-                    self.json(doc);
-                });
+                            async.each(rows, function(orderRow, aCb) {
+                                orderRow.order = delivery._id;
+
+                                if (orderRow.isDeleted && !orderRow._id)
+                                    return aCb();
+
+                                if (orderRow._id)
+                                    return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, aCb);
+
+                                var orderRow = new OrderRowsModel(orderRow);
+                                orderRow.save(aCb);
+                            }, wCb);
+                        }
+                    ],
+                    function(err) {
+                        if (err) {
+                            console.log(err);
+                            return self.json({
+                                errorNotify: {
+                                    title: 'Erreur',
+                                    message: err
+                                }
+                            });
+                        }
+
+                        delivery.save(function(err, doc) {
+                            if (err) {
+                                console.log(err);
+                                return self.json({
+                                    errorNotify: {
+                                        title: 'Erreur',
+                                        message: err
+                                    }
+                                });
+                            }
+
+                            //console.log(doc);
+                            doc = doc.toObject();
+                            doc.successNotify = {
+                                title: "Success",
+                                message: "Bon de livraison enregistre"
+                            };
+                            self.json(doc);
+                        });
+                    });
             });
         });
     },

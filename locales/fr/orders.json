@@ -58,6 +58,7 @@
     "StatusOrderSending": "Envoi en cours",
     "StatusOrderClosed": "Clôturée",
     "StatusOrderToBill": "Facturée",
+    "StatusOrderSend": "Expédié",
     "StatusOrderToBill2": "A facturer",
     "StatusOrderApproved": "Approuvée",
     "StatusOrderRefused": "Refusée",

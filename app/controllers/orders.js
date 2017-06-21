@@ -176,6 +176,15 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 //console.log(data);
             });
 
+            $http({
+                method: 'GET',
+                url: '/erp/api/product/warehouse/select'
+
+            }).success(function(data, status) {
+                $scope.$dict.warehouse = data.data;
+                //console.log(data);
+            });
+
             $scope.findOne();
 
         });

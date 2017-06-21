@@ -1027,6 +1027,11 @@ exports.Status = {
             "cssClass": "ribbon-color-danger label-danger",
             "system": true
         },
+        "SEND": {
+            "enable": true,
+            "label": "StatusOrderSend",
+            "cssClass": "ribbon-color-primary label-primary"
+        },
         "PROCESSING": {
             "enable": true,
             "label": "StatusOrderProcessing",

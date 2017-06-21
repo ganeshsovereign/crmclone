@@ -32,7 +32,7 @@
                                             <span class="check"></span>
                                             <span class="box"></span> @(Owner)</label>
                                     </div>
-                                    <div class="md-checkbox">
+                                    <div ng-hide="!object._id" class="md-checkbox">
                                         <input type="checkbox" id="Main" class="md-check" ng-model="object.main" ng-checked="object.main">
                                         <label for="Main">
                                             <span></span>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <hr>
-                <div class="row">
+                <div ng-hide="!object._id" class="row">
                     <div class="col-md-12">
                         <div class="portlet light">
                             <div class="portlet-title">

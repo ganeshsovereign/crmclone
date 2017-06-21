@@ -831,5 +831,8 @@
     "EditedBy": "Edité par",
     "SendToFtp": "Envoyé sur FTP",
     "Send": "Envoyé",
-    "AddPictures": "Ajouter des images"
+    "AddPictures": "Ajouter des images",
+    "QtyOrder": "Qté commandée",
+    "QtyFulfilled": "Qté Livrée",
+    "Reminder": "Qté restante à expédier"
 }

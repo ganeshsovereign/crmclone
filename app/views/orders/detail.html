@@ -36,7 +36,7 @@
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
-                        <div class="row" ng-if="module('delivery') && delivery.create">
+                        <div class="row" ng-if="module('delivery') && object._id">
                             <div class="col-md-12">
                                 <div class="portlet light bordered">
                                     <div class="row">
@@ -108,11 +108,10 @@
                                             </div>
 
                                             <div class="form-group form-md-line-input">
-                                                <select class="form-control" id="warehouse" ng-model="object.warehouse.name" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
+                                                <select class="form-control" id="warehouse" ng-model="object.warehouse" ng-options="s._id as s.name for s in $dict.warehouse">
                                                         </select>
                                                 <label for="warehouse">@(products:Warehouse)</label>
                                             </div>
-
                                         </div>
 
                                         <div class="col-md-6 col-sm-12">
@@ -228,7 +227,7 @@
 
 <div ng-if="object._id && module('delivery')" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.orderRows" title=" '@(deliveries:ProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.orderRows" title="'@(deliveries:ProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
     </div>
 </div>
 
