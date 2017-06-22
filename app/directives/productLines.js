@@ -9,6 +9,7 @@ MetronicApp.directive('productLines', ['$http',
                 priceList: "=",
                 forSales: "=",
                 supplier: "=",
+                warehouse: "=",
                 ngTemplate: "@",
                 editable: '=ngDisabled',
                 ngChange: '&'
@@ -35,6 +36,16 @@ MetronicApp.directive('productLines', ['$http',
                     //console.log(data);
                     scope.taxes = data.data;
                 });
+
+                if (scope.warehouse)
+                    $http({
+                        method: 'GET',
+                        url: '/erp/api/product/warehouse/location/select',
+                        params: { warehouse: warehouse._id }
+                    }).success(function(data, status) {
+                        //console.log(data);
+                        scope.locations = data.data;
+                    });
 
                 scope.checkLine = function(data) {
                     //console.log(data);

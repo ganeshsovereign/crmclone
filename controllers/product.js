@@ -767,6 +767,10 @@ exports.install = function() {
     F.route('/erp/api/product/warehouse/zone/{id}', warehouse.removeZone, ['delete', 'authorize']);
     F.route('/erp/api/product/warehouse/{id}', warehouse.remove, ['delete', 'authorize']);
 
+    var stockInventory = new StockInventory();
+    F.route('/erp/api/product/stockInventory/', stockInventory.getList, ['get', 'authorize']);
+    F.route('/erp/api/product/stockInventory/{id}', stockInventory.transfert, ['put', 'json', 'authorize']);
+
     //variants
     F.route('/erp/api/product/variants/{productId}', object.getProductsById, ['authorize']);
     F.route('/erp/api/product/variants/{productId}', object.createProductVariants, ['post', 'json', 'authorize']);
@@ -5288,6 +5292,146 @@ StockCorrection.prototype = {
                 return self.throw500(err);
 
             self.json({ success: correction });
+        });
+    }
+};
+
+function StockInventory() {}
+StockInventory.prototype = {
+    getList: function() {
+        var self = this;
+        var ProductsAvailabilityModel = MODEL('productsAvailability').Schema;
+
+        var data = self.query;
+        var limit = parseInt(data.count, 10);
+        var skip = (parseInt(data.page || 1, 10) - 1) * limit;
+        var obj = {};
+        var filterMapper = new FilterMapper();
+        var keys;
+        var sort;
+        var options;
+
+        if (data && data.filter) {
+            obj.$and = [];
+            obj.$and.push(filterMapper.mapFilter(data.filter, 'DealTasks'));
+        }
+
+        if (data.sort) {
+            keys = Object.keys(data.sort)[0];
+            data.sort[keys] = parseInt(data.sort[keys], 10);
+            sort = data.sort;
+        } else
+            sort = { 'dueDate': -1 };
+
+        options = {
+            sort: sort,
+            skip: skip,
+            limit: limit,
+            match: obj
+        };
+
+        ProductsAvailabilityModel.getList(options, function(err, result) {
+            var count;
+            var response = {};
+
+            if (err)
+                return self.throw500(err);
+
+            count = result[0] && result[0].total ? result[0].total : 0;
+
+            response.total = count;
+            response.data = result;
+            self.json(response);
+        });
+
+    },
+    transfer: function(id) {
+        var self = this;
+        var ProductsAvailabilityModel = MODEL('productsAvailability').Schema;
+        var body = self.body;
+        var availabilities = body.availabilities;
+
+        var options = {
+            body: body,
+            id: id,
+            options: { new: true }
+        };
+
+        delete body.availabilities;
+
+        ProductsAvailabilityModel.updateById(options, function(err, doc) {
+            if (err)
+                return self.throw500(err);
+
+
+            ProductsAvailabilityModel.updateByQuery({
+                query: {
+                    location: doc.location,
+                    product: doc.product,
+                    onHand: 0,
+                    goodsOutNotes: { $size: 0 },
+                    orderRows: { $size: 0 }
+                },
+
+                body: { $set: { archived: true } }
+            }, function(err) {
+                if (err)
+                    return self.throw500(err);
+
+
+                async.each(availabilities, function(elem, eachCb) {
+
+                    function callback(err, doc) {
+                        if (err)
+                            return eachCb(err);
+
+                        eachCb();
+                    }
+
+                    ProductsAvailabilityModel.find({
+                        product: doc.product,
+                        location: elem.location,
+                        goodsInNote: doc.goodsInNote
+                    }, function(err, docs) {
+                        var existedAvailability;
+
+                        if (err)
+                            return eachCb(err);
+
+
+                        if (docs && docs.length) {
+                            existedAvailability = docs[0];
+                            ProductsAvailabilityModel.updateById({
+                                id: existedAvailability._id,
+                                body: {
+                                    $inc: {
+                                        onHand: elem.quantity
+                                    }
+                                }
+                            }, callback);
+                        } else {
+                            ProductsAvailabilityModel.create({
+                                body: {
+                                    product: doc.product,
+                                    location: elem.location,
+                                    goodsInNote: doc.goodsInNote,
+                                    warehouse: doc.warehouse,
+                                    onHand: elem.quantity,
+                                    cost: doc.cost,
+                                    isJob: false
+                                }
+                            }, callback);
+                        }
+                    });
+
+                }, function(err) {
+                    if (err)
+                        return self.throw500(err);
+
+                    self.json(doc);
+                });
+            });
+
         });
     }
 };

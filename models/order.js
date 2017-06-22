@@ -220,14 +220,14 @@ const baseSchema = new Schema({
         msg: String
     }],
 
-    warehouse: { type: ObjectId, ref: 'warehouse', default: null },
+    warehouse: { type: ObjectId, ref: 'warehouse' },
 
-    shippingMethod: { type: ObjectId, ref: 'shippingMethod', default: null },
+    shippingMethod: { type: ObjectId, ref: 'shippingMethod' },
     shippingCost: { type: Number, default: 0 },
 
     attachments: { type: Array, default: [] },
 
-    channel: { type: ObjectId, ref: 'integrations', default: null },
+    channel: { type: ObjectId, ref: 'integrations' },
     integrationId: String,
     //sequence: Number,
     //name: String
@@ -424,10 +424,15 @@ baseSchema.statics.getById = function(id, callback) {
                     .populate("order", "ref total_ht forSales")
                     .populate("orders", "ref total_ht forSales")
                     .populate("orderRows.product", "taxes info weight units")
+                    .populate("orderRows.locationsReceived.location", "_id name")
+                    .populate('warehouse', 'name')
+                    .populate('invoiceControl')
+                    .populate('project', '_id name')
+                    .populate('shippingMethod', '_id name')
+                    .populate('workflow', '_id name status')
                     .exec(wCb);
             },
             function(order, wCb) {
-
                 if (!order.order)
                     order.order = { _id: order._id };
 
@@ -448,10 +453,18 @@ baseSchema.statics.getById = function(id, callback) {
 
                         //return console.log(rows);
 
-                        order = order.toObject();
-                        order.lines = rows || [];
+                        OrderRowModel.getAvailableForRows(rows, order.forSales, function(err, rows, deliveries) {
+                            //return console.log(rows);
 
-                        return wCb(err, order);
+                            rows = _.sortBy(rows, 'sequence');
+
+                            order = order.toObject();
+                            order.lines = rows || [];
+
+                            //console.log(deliveries);
+
+                            return wCb(err, order);
+                        });
                     });
             },
             function(order, wCb) {
@@ -629,6 +642,7 @@ baseSchema.statics.getById = function(id, callback) {
             return callback(err, order);
         });
 };
+
 //orderSupplierSchema.statics.getById = getById;
 
 /**
@@ -1072,6 +1086,12 @@ exports.Status = {
             "cssClass": "ribbon-color-primary label-primary",
             "system": true
         },
+        "INSTOCK": {
+            "enable": true,
+            "label": "StatusDeliveryInStock",
+            "cssClass": "ribbon-color-success label-success",
+            "system": true
+        },
         "NEW": {
             "enable": true,
             "label": "PropalStatusNew",
@@ -1100,6 +1120,7 @@ F.on('load', function() {
     F.functions.PubSub.on('order:*', function(channel, data) {
         const Order = exports.Schema.Order;
         const OrderRows = MODEL('orderRows').Schema;
+        var ObjectId = MODULE('utils').ObjectId;
 
         //console.log(data);
         console.log("Update emit order", data);
@@ -1120,67 +1141,22 @@ F.on('load', function() {
 
                     if (docs && docs.length) {
                         async.each(docs, function(elem, eahcCb) {
-                            var product;
+                                var product;
 
-                            elem = elem.toJSON();
-                            product = elem.product ? elem.product._id : null;
+                                elem = elem.toJSON();
+                                product = elem.product ? elem.product._id : null;
 
-                            Availability.aggregate([{
-                                $match: {
-                                    product: product,
-                                    warehouse: elem.warehouse
-                                }
-                            }, {
-                                $project: {
-                                    product: 1,
-                                    warehouse: 1,
-                                    onHand: 1,
-                                    filterRows: {
-                                        $filter: {
-                                            input: '$orderRows',
-                                            as: 'elem',
-                                            cond: { $eq: ['$$elem.orderRowId', elem._id] }
-                                        }
-                                    },
-
-                                    orderRows: 1
-                                }
-                            }, {
-                                $project: {
-                                    product: 1,
-                                    warehouse: 1,
-                                    onHand: 1,
-                                    allocated: {
-                                        $sum: '$filterRows.qty'
-                                    }
-                                }
-                            }, {
-                                $project: {
-                                    product: 1,
-                                    warehouse: 1,
-                                    onHand: 1,
-                                    allocated: 1
-                                }
-                            }, {
-                                $group: {
-                                    _id: '$warehouse',
-                                    allocated: {
-                                        $sum: '$allocated'
-                                    }
-                                }
-                            }], function(err, availability) {
-                                if (err)
-                                    return eahcCb(err);
-
-                                GoodsOutNote.aggregate([{
+                                Availability.aggregate([{
                                     $match: {
-                                        'orderRows.orderRowId': elem._id,
-                                        _type: { $ne: 'stockReturns' }
+                                        product: ObjectId(product),
+                                        warehouse: elem.warehouse
                                     }
                                 }, {
                                     $project: {
-                                        name: '$name',
-                                        orderRow: {
+                                        product: 1,
+                                        warehouse: 1,
+                                        onHand: 1,
+                                        filterRows: {
                                             $filter: {
                                                 input: '$orderRows',
                                                 as: 'elem',
@@ -1188,93 +1164,141 @@ F.on('load', function() {
                                             }
                                         },
 
-                                        status: 1
+                                        orderRows: 1
                                     }
                                 }, {
                                     $project: {
-                                        name: '$name',
-                                        orderRow: { $arrayElemAt: ['$orderRow', 0] },
-                                        status: 1
+                                        product: 1,
+                                        warehouse: 1,
+                                        onHand: 1,
+                                        allocated: {
+                                            $sum: '$filterRows.qty'
+                                        }
                                     }
                                 }, {
                                     $project: {
-                                        name: '$name',
-                                        orderRow: '$orderRow.orderRowId',
-                                        qty: '$orderRow.qty',
-                                        status: 1
+                                        product: 1,
+                                        warehouse: 1,
+                                        onHand: 1,
+                                        allocated: 1
                                     }
-                                }], function(err, docs) {
-                                    var fullfillOnRow = 0;
-                                    var shippedOnRow = 0;
-                                    var allocatedOnRow;
-                                    var shippedDocs;
-
+                                }, {
+                                    $group: {
+                                        _id: '$warehouse',
+                                        allocated: {
+                                            $sum: '$allocated'
+                                        }
+                                    }
+                                }], function(err, availability) {
                                     if (err)
                                         return eahcCb(err);
 
-                                    availability = availability && availability.length ? availability[0].allocated : 0;
+                                    //return console.log(availability);
 
-                                    if (!docs || !docs.length) {
+                                    GoodsOutNote.aggregate([{
+                                        $match: {
+                                            'orderRows.orderRowId': elem._id,
+                                            _type: { $ne: 'stockReturns' }
+                                        }
+                                    }, {
+                                        $project: {
+                                            name: '$name',
+                                            orderRow: {
+                                                $filter: {
+                                                    input: '$orderRows',
+                                                    as: 'elem',
+                                                    cond: { $eq: ['$$elem.orderRowId', elem._id] }
+                                                }
+                                            },
 
-                                        /*if (!stockStatus.fulfillStatus) {
-                                         stockStatus.fulfillStatus = 'NOA';
-                                         }*/
+                                            status: 1
+                                        }
+                                    }, {
+                                        $project: {
+                                            name: '$name',
+                                            orderRow: { $arrayElemAt: ['$orderRow', 0] },
+                                            status: 1
+                                        }
+                                    }, {
+                                        $project: {
+                                            name: '$name',
+                                            orderRow: '$orderRow.orderRowId',
+                                            qty: '$orderRow.qty',
+                                            status: 1
+                                        }
+                                    }], function(err, docs) {
+                                        var fullfillOnRow = 0;
+                                        var shippedOnRow = 0;
+                                        var allocatedOnRow;
+                                        var shippedDocs;
 
-                                        stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
-                                        stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
-                                    } else {
-                                        shippedDocs = _.filter(docs, function(el) {
-                                            if (el.status && el.status.shipped)
-                                                return el;
-                                        });
+                                        if (err)
+                                            return eahcCb(err);
 
-                                        if (shippedDocs.length) {
-                                            shippedDocs.forEach(function(el) {
-                                                shippedOnRow += el.qty;
+                                        availability = availability && availability.length ? availability[0].allocated : 0;
+
+                                        if (!docs || !docs.length) {
+
+                                            /*if (!stockStatus.fulfillStatus) {
+                                             stockStatus.fulfillStatus = 'NOA';
+                                             }*/
+
+                                            stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
+                                            stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
+                                        } else {
+                                            shippedDocs = _.filter(docs, function(el) {
+                                                if (el.status && el.status.shipped)
+                                                    return el;
                                             });
 
-                                            if (shippedOnRow !== elem.qty)
-                                                stockStatus.shippingStatus = 'NOA';
+                                            if (shippedDocs.length) {
+                                                shippedDocs.forEach(function(el) {
+                                                    shippedOnRow += el.qty;
+                                                });
+
+                                                if (shippedOnRow !== elem.qty)
+                                                    stockStatus.shippingStatus = 'NOA';
+                                                else
+                                                    stockStatus.shippingStatus = stockStatus.shippingStatus && (stockStatus.shippingStatus === 'NOA') ? 'NOA' : 'ALL';
+
+                                            } else
+                                                stockStatus.shippingStatus = ((stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL')) ? 'NOA' : 'NOT';
+
+
+                                            docs.forEach(function(el) {
+                                                fullfillOnRow += el.qty;
+                                            });
+
+                                            if (fullfillOnRow !== elem.qty)
+                                                stockStatus.fulfillStatus = 'NOA';
                                             else
-                                                stockStatus.shippingStatus = stockStatus.shippingStatus && (stockStatus.shippingStatus === 'NOA') ? 'NOA' : 'ALL';
+                                                stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'ALL';
 
-                                        } else
-                                            stockStatus.shippingStatus = ((stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL')) ? 'NOA' : 'NOT';
+                                        }
 
+                                        allocatedOnRow = fullfillOnRow + availability;
 
-                                        docs.forEach(function(el) {
-                                            fullfillOnRow += el.qty;
-                                        });
-
-                                        if (fullfillOnRow !== elem.qty)
-                                            stockStatus.fulfillStatus = 'NOA';
+                                        if (!allocatedOnRow) {
+                                            // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
+                                            stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'ALL')) ? 'NOA' : 'NOT';
+                                        } else if (allocatedOnRow !== elem.qty)
+                                            stockStatus.allocateStatus = 'NOA';
                                         else
-                                            stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'ALL';
+                                            stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
 
-                                    }
+                                        eahcCb();
 
-                                    allocatedOnRow = fullfillOnRow + availability;
-
-                                    if (!allocatedOnRow) {
-                                        // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
-                                        stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'ALL')) ? 'NOA' : 'NOT';
-                                    } else if (allocatedOnRow !== elem.qty)
-                                        stockStatus.allocateStatus = 'NOA';
-                                    else
-                                        stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
-
-                                    eahcCb();
-
+                                    });
                                 });
+
+                            },
+                            function(err) {
+                                if (err)
+                                    return cb(err);
+
+                                cb(null, stockStatus);
+
                             });
-
-                        }, function(err) {
-                            if (err)
-                                return cb(err);
-
-                            cb(null, stockStatus);
-
-                        });
                     } else {
                         stockStatus.fulfillStatus = 'NOR';
                         stockStatus.allocateStatus = 'NOR';

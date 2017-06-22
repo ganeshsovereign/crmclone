@@ -42,8 +42,8 @@ exports.install = function() {
 
     F.route('/erp/api/delivery', object.read, ['authorize']);
     F.route('/erp/api/delivery/dt', object.readDT, ['post', 'authorize']);
-    F.route('/erp/api/delivery/dt_supplier', object.readDT, ['post', 'authorize']);
-    F.route('/erp/api/delivery/dt_stockreturn', object.readDT, ['post', 'authorize']);
+    F.route('/erp/api/delivery/dt_supplier', object.readDT_supplier, ['post', 'authorize']);
+    F.route('/erp/api/delivery/dt_stockreturn', object.readDT_stockreturn, ['post', 'authorize']);
     F.route('/erp/api/delivery/caFamily', object.caFamily, ['authorize']);
     F.route('/erp/api/delivery/statistic', object.statistic, ['post', 'json', 'authorize']);
     F.route('/erp/api/delivery/pdf/', object.pdfAll, ['post', 'json', 'authorize']);
@@ -202,6 +202,7 @@ Object.prototype = {
         var self = this;
         var OrderRowsModel = MODEL('orderRows').Schema;
         var Availability = MODEL('productsAvailability').Schema;
+        var isShipping = false;
 
         if (self.body.forSales == false)
             var DeliveryModel = MODEL('order').Schema.GoodsInNote;
@@ -209,6 +210,17 @@ Object.prototype = {
             var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
 
         self.body.editedBy = self.user._id;
+
+        if (self.body.Status == 'INSTOCK' && !self.body.status.isReceived) {
+            self.body.status.isReceived = new Date();
+            self.body.status.receivedById = self.user._id;
+        }
+
+        if (self.body.Status == "SEND") {
+            isShipping = true;
+            self.body.Status = "VALIDATED";
+        }
+
 
         var rows = self.body.lines;
         for (var i = 0; i < rows.length; i++)
@@ -237,6 +249,8 @@ Object.prototype = {
             self.body.weight = result.weight;
 
             DeliveryModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, delivery) {
+                if (err)
+                    return self.throw500(err);
 
                 //console.log(delivery);
                 //delivery = _.extend(delivery, self.body);
@@ -286,7 +300,7 @@ Object.prototype = {
 
                                     return Availability.receiveProducts({
                                         uId: self.user._id,
-                                        goodsInNote: result.toJSON()
+                                        goodsInNote: result.toObject()
                                     }, function(err) {
                                         if (err)
                                             return wCb(err);
@@ -315,7 +329,7 @@ Object.prototype = {
                             if (doc.status.isInventory)
                                 return wCb(null, doc);
 
-                            if (!doc.status.isShipped)
+                            if (!isShipping)
                                 return wCb(null, doc);
 
                             return DeliveryModel.findById(doc._id)
@@ -324,32 +338,44 @@ Object.prototype = {
                                     if (err)
                                         return wCb(err);
 
-                                    return Availability.deliverProducts({
-                                        uId: self.user._id,
-                                        goodsInNote: result.toJSON()
-                                    }, function(err) {
+                                    return Availability.updateAvailableProducts({
+                                        doc: result.toObject()
+                                    }, function(err, rows) {
                                         if (err)
                                             return wCb(err);
 
-                                        if (result && result.order)
-                                            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order._id } });
+                                        result.orderRows = rows;
 
-                                        doc.status.isInventory = new Date();
-                                        doc.save(function(err, doc) {
+                                        return Availability.deliverProducts({
+                                            uId: self.user._id,
+                                            goodsOutNote: result.toObject()
+                                        }, function(err) {
                                             if (err)
                                                 return wCb(err);
 
-                                            doc = doc.toObject();
-                                            doc.successNotify = {
-                                                title: "Success",
-                                                message: "Bon de livraison cloture"
-                                            };
+                                            if (result && result.order)
+                                                F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order._id } });
 
-                                            return wCb(null, doc);
+                                            doc.status.isInventory = new Date();
+                                            doc.status.isShipped = new Date();
+                                            doc.status.shippedById = self.user._id;
+                                            doc.Status = "SEND";
+
+                                            doc.save(function(err, doc) {
+                                                if (err)
+                                                    return wCb(err);
+
+                                                doc = doc.toObject();
+                                                doc.successNotify = {
+                                                    title: "Success",
+                                                    message: "Bon de livraison cloture"
+                                                };
+
+                                                return wCb(null, doc);
+                                            });
                                         });
                                     });
                                 });
-
                         }
                     ],
                     function(err, doc) {

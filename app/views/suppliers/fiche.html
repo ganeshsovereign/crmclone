@@ -64,8 +64,8 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('deliverysupplier')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'VALIDATED' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
-                        <i class="fa fa-plane"></i> @(deliveries:Sended)
+                    <a ng-if="module('deliverysupplier')" href="#" ng-show="object.Status == 'VALIDATED'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('INSTOCK')">
+                        <i class="fa fa-check"></i> @(deliveries:PutInStock)
                     </a>
                 </li>
                 <li>

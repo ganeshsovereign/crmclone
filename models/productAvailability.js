@@ -5,6 +5,8 @@
  */
 var mongoose = require('mongoose'),
     timestamps = require('mongoose-timestamp'),
+    _ = require('lodash'),
+    async = require('async'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -16,14 +18,16 @@ var AvailabilitySchema = new Schema({
     cost: { type: Number, default: 0 },
     onHand: { type: Number, default: 0 },
     goodsOutNotes: [{
+        _id: false,
         goodsNoteId: { type: ObjectId, ref: 'goodsOutNotes', default: null },
-        quantity: { type: Number, default: 0 }
+        qty: { type: Number, default: 0 }
     }],
 
     isJob: { type: Boolean, default: false },
     orderRows: [{
+        _id: false,
         orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
-        quantity: { type: Number, default: 0 }
+        qty: { type: Number, default: 0 }
     }],
 
     creationDate: { type: Date, default: Date.now },
@@ -241,11 +245,11 @@ AvailabilitySchema.statics.getProductAvailability = function(query, options, cal
             onHand: 1,
             cost: 1,
             allocated: {
-                $sum: '$orderRows.quantity'
+                $sum: '$orderRows.qty'
             },
 
             fulfilled: {
-                $sum: '$goodsOutNotes.quantity'
+                $sum: '$goodsOutNotes.qty'
             }
         }
     }, {
@@ -366,17 +370,17 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 onHand: 1,
                 allocated: {
                     $add: [{
-                        $sum: '$orderRows.quantity'
+                        $sum: '$orderRows.qty'
                     }, {
-                        $sum: '$goodsOutNotes.quantity'
+                        $sum: '$goodsOutNotes.qty'
                     }]
                 },
 
                 inStock: {
                     $add: ['$onHand', {
-                        $sum: '$orderRows.quantity'
+                        $sum: '$orderRows.qty'
                     }, {
-                        $sum: '$goodsOutNotes.quantity'
+                        $sum: '$goodsOutNotes.qty'
                     }]
                 }
             }
@@ -534,186 +538,185 @@ AvailabilitySchema.statics.getAvailabilityForProducts = function(query, options,
 
 
 
-AvailabilitySchema.methods.updateAvailableProducts = function(options, mainCb) {
-    var doc = self;
-    var error = new Error('Not enough available products');
-    error.status = 404;
+AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
+    var self = this;
+    var doc = options.doc;
+    var error = 'Not enough available products';
 
     if (doc && doc.orderRows.length) {
-        async.each(doc.orderRows, function(orderRow, eachCb) {
-            var lastSum;
-            var isFilled;
+        async.eachSeries(doc.orderRows, function(orderRow, eachCb) {
+                var lastSum;
+                var isFilled = false;
 
-            lastSum = orderRow.quantity;
+                lastSum = orderRow.qty;
 
-            doc.model.find(_.extend({
-                query: {
+                //console.log(orderRow, doc.warehouse, options);
+
+                self.find({
                     warehouse: doc.warehouse,
                     product: orderRow.product
-                }
-            }, options), function(err, avalabilities) {
-                if (err)
-                    return eachCb(err);
+                }, function(err, avalabilities) {
+                    if (err)
+                        return eachCb(err);
 
-                if (avalabilities.length) {
-                    async.each(avalabilities, function(avalability, cb) {
-                        var resultOnHand;
-                        var existedRow = {
-                            quantity: 0
-                        };
-                        var onHand;
-                        var quantityDeliver;
+                    if (avalabilities.length) {
+                        async.each(avalabilities, function(avalability, cb) {
+                            var resultOnHand;
+                            var existedRow = {
+                                qty: 0
+                            };
+                            var onHand;
+                            var qtyDeliver;
 
-                        if (orderRow.orderRowId) {
-                            avalability.orderRows.forEach(function(orderRowEl) {
-                                if (orderRowEl.orderRowId && (orderRowEl.orderRowId.toJSON() === orderRow.orderRowId.toJSON())) {
-                                    existedRow = orderRow;
-                                }
-                            });
-                        }
-
-                        if (isFilled) {
-                            return cb();
-                        }
-
-                        onHand = avalability.onHand + existedRow.quantity;
-
-                        if (!onHand || onHand < 0)
-                            return cb();
-
-                        resultOnHand = onHand - lastSum;
-
-                        if (resultOnHand < 0) {
-                            lastSum = Math.abs(resultOnHand);
-                            resultOnHand = 0;
-                        } else
-                            isFilled = true;
-
-                        quantityDeliver = resultOnHand ? lastSum : onHand;
-
-                        function callback() {
-                            var locationsDeliverIds;
-                            var existedBatch;
-
-                            if (err)
-                                return cb(err);
-
-                            if (orderRow.locationsDeliver && avalability.location) {
-                                locationsDeliverIds = orderRow.locationsDeliver.map(function(elem) {
-                                    return elem.toString();
+                            if (orderRow.orderRowId)
+                                avalability.orderRows.forEach(function(orderRowEl) {
+                                    if (orderRowEl.orderRowId && (orderRowEl.orderRowId.toJSON() === orderRow.orderRowId.toJSON())) {
+                                        existedRow = orderRow;
+                                    }
                                 });
-                                if (!locationsDeliverIds.length || locationsDeliverIds.indexOf(avalability.location._id.toString()) === -1) {
-                                    orderRow.locationsDeliver.push(avalability.location._id);
-                                }
-                            }
 
-                            if (orderRow.batchesDeliver) {
-                                existedBatch = _.find(orderRow.batchesDeliver, function(el) {
-                                    return (el.goodsNote.toString() === avalability.goodsInNote.toString());
-                                });
-                                if (existedBatch)
-                                    existedBatch.quantity += quantityDeliver;
-                                else
-                                    orderRow.batchesDeliver.push({
-                                        goodsNote: avalability.goodsInNote,
-                                        quantity: quantityDeliver,
-                                        cost: avalability.cost
+                            if (isFilled)
+                                return cb();
+
+                            onHand = avalability.onHand + existedRow.qty;
+
+                            if (!onHand || onHand < 0)
+                                return cb();
+
+                            resultOnHand = onHand - lastSum;
+
+                            if (resultOnHand < 0) {
+                                lastSum = Math.abs(resultOnHand);
+                                resultOnHand = 0;
+                            } else
+                                isFilled = true;
+
+                            qtyDeliver = resultOnHand ? lastSum : onHand;
+
+                            function callback() {
+                                var locationsDeliverIds;
+                                var existedBatch;
+
+                                if (err)
+                                    return cb(err);
+
+                                if (orderRow.locationsDeliver && avalability.location) {
+                                    locationsDeliverIds = orderRow.locationsDeliver.map(function(elem) {
+                                        return elem.toString();
                                     });
+                                    if (!locationsDeliverIds.length || locationsDeliverIds.indexOf(avalability.location._id.toString()) === -1) {
+                                        orderRow.locationsDeliver.push(avalability.location._id);
+                                    }
+                                }
 
+                                if (orderRow.batchesDeliver) {
+                                    existedBatch = _.find(orderRow.batchesDeliver, function(el) {
+                                        return (el.goodsNote.toString() === avalability.goodsInNote.toString());
+                                    });
+                                    if (existedBatch)
+                                        existedBatch.qty += qtyDeliver;
+                                    else
+                                        orderRow.batchesDeliver.push({
+                                            goodsNote: avalability.goodsInNote,
+                                            qty: qtyDeliver,
+                                            cost: avalability.cost
+                                        });
+
+                                }
+
+                                orderRow.cost += avalability.cost * qtyDeliver;
+                                cb();
                             }
 
-                            orderRow.cost += avalability.cost * quantityDeliver;
-                            cb();
-                        }
-
-                        if (existedRow.orderRowId) {
-                            if (existedRow.quantity > quantityDeliver) {
-                                doc.model.updateByQuery(_.extend({
-                                    query: {
-                                        _id: avalability._id,
-                                        'orderRows.orderRowId': existedRow.orderRowId
-                                    },
-
-                                    body: {
-                                        $inc: {
-                                            'orderRows.$.quantity': -quantityDeliver
+                            if (existedRow.orderRowId) {
+                                if (existedRow.qty > qtyDeliver) {
+                                    self.updateByQuery(_.extend({
+                                        query: {
+                                            _id: avalability._id,
+                                            'orderRows.orderRowId': existedRow.orderRowId
                                         },
 
-                                        $addToSet: {
-                                            goodsOutNotes: {
-                                                goodsNoteId: doc._id,
-                                                quantity: quantityDeliver
+                                        body: {
+                                            $inc: {
+                                                'orderRows.$.qty': -qtyDeliver
+                                            },
+
+                                            $addToSet: {
+                                                goodsOutNotes: {
+                                                    goodsNoteId: doc._id,
+                                                    qty: qtyDeliver
+                                                }
                                             }
                                         }
-                                    }
-                                }, options), callback);
+                                    }, options), callback);
+                                } else {
+                                    self.updateByQuery(_.extend({
+                                        query: {
+                                            _id: avalability._id,
+                                            'orderRows.orderRowId': existedRow.orderRowId
+                                        },
+
+                                        body: {
+                                            $addToSet: {
+                                                goodsOutNotes: {
+                                                    goodsNoteId: doc._id,
+                                                    qty: qtyDeliver
+                                                }
+                                            },
+
+                                            $pull: {
+                                                orderRows: { orderRowId: existedRow.orderRowId }
+                                            },
+
+                                            onHand: resultOnHand
+                                        }
+                                    }, options), callback);
+                                }
                             } else {
-                                doc.model.updateByQuery(_.extend({
+                                self.updateByQuery(_.extend({
                                     query: {
-                                        _id: avalability._id,
-                                        'orderRows.orderRowId': existedRow.orderRowId
+                                        _id: avalability._id
                                     },
 
                                     body: {
                                         $addToSet: {
                                             goodsOutNotes: {
                                                 goodsNoteId: doc._id,
-                                                quantity: quantityDeliver
+                                                qty: qtyDeliver
                                             }
-                                        },
-
-                                        $pull: {
-                                            orderRows: { orderRowId: existedRow.orderRowId }
                                         },
 
                                         onHand: resultOnHand
                                     }
                                 }, options), callback);
                             }
-                        } else {
-                            doc.model.updateByQuery(_.extend({
-                                query: {
-                                    _id: avalability._id
-                                },
+                        }, function(err) {
+                            if (err)
+                                return eachCb(err);
 
-                                body: {
-                                    $addToSet: {
-                                        goodsOutNotes: {
-                                            goodsNoteId: doc._id,
-                                            quantity: quantityDeliver
-                                        }
-                                    },
+                            if (!orderRow.qty)
+                                return eachCb(error);
 
-                                    onHand: resultOnHand
-                                }
-                            }, options), callback);
-                        }
-                    }, function(err) {
-                        if (err)
-                            return eachCb(err);
+                            eachCb();
 
-                        if (!orderRow.quantity)
-                            return eachCb(error);
+                        });
+                    } else
+                        eachCb(error);
+                });
+            },
+            function(err) {
+                if (err)
+                    return mainCb(err);
 
-                        eachCb();
-
-                    });
-                } else
-                    eachCb(error);
+                mainCb(null, doc.orderRows);
             });
-        }, function(err) {
-            if (err)
-                return mainCb(err);
-
-            mainCb(null, doc.orderRows);
-        });
     } else
         mainCb(error);
 };
-AvailabilitySchema.methods.deliverProducts = function(options, mainCb) {
-    var self = this.model;
+AvailabilitySchema.statics.deliverProducts = function(options, mainCb) {
+    var self = this;
     var OrderRows = MODEL('orderRows').Schema;
-    var goodsOutNote = this;
+    var goodsOutNote = options.goodsOutNote;
     var body;
     var uId = options.uId;
 
@@ -736,19 +739,21 @@ AvailabilitySchema.methods.deliverProducts = function(options, mainCb) {
             body = {
                 journal: null,
                 currency: {
-                    _id: CONSTANTS.CURRENCY_USD
+                    _id: "EUR"
                 },
 
                 date: goodsOutNote.status.isShipped,
                 sourceDocument: {
                     model: 'goodsOutNote',
                     _id: goodsOutNote._id,
-                    name: goodsOutNote.name
+                    ref: goodsOutNote.ref
                 },
 
                 accountsItems: accountsItems,
                 amount: orderRow.cost
             };
+
+            return cb();
 
             OrderRows.populate(orderRow, {
                 path: 'orderRowId',
@@ -790,7 +795,7 @@ AvailabilitySchema.methods.deliverProducts = function(options, mainCb) {
                 body = {
                     journal: null,
                     currency: {
-                        _id: CONSTANTS.CURRENCY_USD
+                        _id: "EUR"
                     },
 
                     date: goodsOutNote.status.shippedOn,
@@ -840,10 +845,10 @@ AvailabilitySchema.methods.deliverProducts = function(options, mainCb) {
         });
     });
 };
-AvailabilitySchema.methods.receiveProducts = function(options, mainCb) {
-    var self = this.model;
+AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
+    var self = this;
     var OrderRows = MODEL('orderRows').Schema;
-    var goodsInNote = this;
+    var goodsInNote = options.goodsInNote;
     var warehouseTo = goodsInNote.warehouseTo ? goodsInNote.warehouseTo._id : goodsInNote.warehouse;
     var uId = options.uId;
     var body;
@@ -851,7 +856,7 @@ AvailabilitySchema.methods.receiveProducts = function(options, mainCb) {
     async.each(goodsInNote.orderRows, function(elem, eachCb) {
         var locations = elem.locationsReceived;
         var batches = elem.batchesDeliver;
-        var cost = elem.cost * elem.quantity;
+        var cost = elem.cost * elem.qty;
 
         options.availabilities = [];
         if (locations.length) {
@@ -860,31 +865,31 @@ AvailabilitySchema.methods.receiveProducts = function(options, mainCb) {
                 cost = 0;
 
                 locations.forEach(function(el) {
-                    if (!el.quantity)
+                    if (!el.qty)
                         return false;
 
 
                     batches.forEach(function(batch) {
-                        var batchQuantity = batch.quantity;
+                        var batchqty = batch.qty;
 
-                        if (!batch.quantity || !el.quantity)
+                        if (!batch.qty || !el.qty)
                             return false;
 
 
-                        if (batch.quantity >= el.quantity) {
-                            batchQuantity = el.quantity;
-                            batch.quantity -= el.quantity;
-                            el.quantity = 0;
-                        } else if (el.quantity > batch.quantity) {
-                            el.quantity -= batch.quantity;
-                            batch.quantity = 0;
+                        if (batch.qty >= el.qty) {
+                            batchqty = el.qty;
+                            batch.qty -= el.qty;
+                            el.qty = 0;
+                        } else if (el.qty > batch.qty) {
+                            el.qty -= batch.qty;
+                            batch.qty = 0;
                         }
 
-                        cost += batch.cost * batchQuantity;
+                        cost += batch.cost * batchqty;
 
                         options.availabilities.push({
                             location: el.location,
-                            onHand: batchQuantity,
+                            onHand: batchqty,
                             goodsInNote: batch.goodsNote,
                             warehouse: warehouseTo,
                             product: elem.product,
@@ -900,7 +905,7 @@ AvailabilitySchema.methods.receiveProducts = function(options, mainCb) {
                 locations.forEach(function(el) {
                     options.availabilities.push({
                         location: el.location,
-                        onHand: el.quantity,
+                        onHand: el.qty,
                         goodsInNote: goodsInNote._id,
                         warehouse: warehouseTo,
                         goodsOutNotes: [],
@@ -920,7 +925,7 @@ AvailabilitySchema.methods.receiveProducts = function(options, mainCb) {
             body = {
                 journal: null,
                 currency: {
-                    _id: CONSTANTS.CURRENCY_USD
+                    _id: "EUR"
                 },
 
                 date: goodsInNote.status.receivedOn,
@@ -977,7 +982,7 @@ AvailabilitySchema.methods.receiveProducts = function(options, mainCb) {
             });
         }
 
-        async.parallel([createAvailabilities, createEntries], function(err) {
+        async.parallel([createAvailabilities /*, createEntries*/ ], function(err) {
             if (err)
                 return eachCb(err);
 
