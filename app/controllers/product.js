@@ -1863,6 +1863,7 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
         // initialize core components
         Metronic.initAjax();
 
+        $scope.backTo = 'product.stockdetail.list';
 
         // set default layout mode
         $rootScope.settings.layout.pageSidebarClosed = true;

@@ -977,6 +977,14 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductStockDetailController"
         })
+        .state('product.stockdetail.show', {
+            url: "",
+            templateUrl: "/views/product/stockdetailfiche.html",
+            data: {
+                pageTitle: 'Mouvement de stock'
+            },
+            controller: "ProductStockDetailController"
+        })
         // Company
         .state('societe', {
             url: "/societe",

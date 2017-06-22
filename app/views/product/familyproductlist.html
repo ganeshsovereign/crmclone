@@ -72,14 +72,14 @@
             <div class="table-responsive">
                 <div class="dataTables_wrapper no-footer table-responsive">
                     <div class="col-md-12">
-                        <table class="table dataTable no-footer table-hover" id="familyProductList">
+                        <table class="table table-striped table-bordered table-hover no-footer" id="familyProductList">
                             <thead>
                                 <tr role="row" class="heading">
                                     <th>@(products:Sequence)</th>
                                     <th>@(Name)</th>
                                     <th>@(products:QtyOfProductOnThisFamily)</th>
                                     <th>@(CreatedAt)</th>
-                                    <th>@(Action)</th>
+                                    <th class="center" width="120px">@(Action)</th>
                                 </tr>
                             </thead>
                             <tbody>

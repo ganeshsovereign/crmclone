@@ -3994,7 +3994,7 @@ ProductFamily.prototype = {
                 var doc = {};
                 doc.successNotify = {
                     title: "Success",
-                    message: "Famille supprimee"
+                    message: "Famille supprimée"
                 };
                 self.json(doc);
             });
