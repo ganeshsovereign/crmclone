@@ -91,8 +91,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.findOne();
                     toastr.warning(data.data.message, 'Notification serveur', { timeOut: 5000, progressBar: true });
                 }
-
-            $scope.find();
         });
 
         // Init

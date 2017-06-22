@@ -42,8 +42,8 @@ exports.install = function() {
 
     F.route('/erp/api/delivery', object.read, ['authorize']);
     F.route('/erp/api/delivery/dt', object.readDT, ['post', 'authorize']);
-    F.route('/erp/api/delivery/dt_supplier', object.readDT, ['post', 'authorize']);
-    F.route('/erp/api/delivery/dt_stockreturn', object.readDT, ['post', 'authorize']);
+    F.route('/erp/api/delivery/dt_supplier', object.readDT_supplier, ['post', 'authorize']);
+    F.route('/erp/api/delivery/dt_stockreturn', object.readDT_stockreturn, ['post', 'authorize']);
     F.route('/erp/api/delivery/caFamily', object.caFamily, ['authorize']);
     F.route('/erp/api/delivery/statistic', object.statistic, ['post', 'json', 'authorize']);
     F.route('/erp/api/delivery/pdf/', object.pdfAll, ['post', 'json', 'authorize']);
@@ -210,6 +210,11 @@ Object.prototype = {
 
         self.body.editedBy = self.user._id;
 
+        if (self.body.Status == 'INSTOCK' && !self.body.status.isReceived) {
+            self.body.status.isReceived = new Date();
+            self.body.status.receivedById = self.user._id;
+        }
+
         var rows = self.body.lines;
         for (var i = 0; i < rows.length; i++)
             rows[i].sequence = i;
@@ -237,6 +242,8 @@ Object.prototype = {
             self.body.weight = result.weight;
 
             DeliveryModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, delivery) {
+                if (err)
+                    return self.throw500(err);
 
                 //console.log(delivery);
                 //delivery = _.extend(delivery, self.body);
@@ -286,7 +293,7 @@ Object.prototype = {
 
                                     return Availability.receiveProducts({
                                         uId: self.user._id,
-                                        goodsInNote: result.toJSON()
+                                        goodsInNote: result.toObject()
                                     }, function(err) {
                                         if (err)
                                             return wCb(err);

@@ -217,141 +217,140 @@
             </div>
         </div>
     </div>
-</div>
 
-<div ng-hide="!object._id  || object._id !== object.order._id " class="row">
-    <div class="col-md-12">
-        <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
-    </div>
-</div>
-
-<div ng-if="object._id && module('delivery')" class="row">
-    <div class="col-md-12">
-        <product-lines ng-model="object.orderRows" title="'@(deliveries:ProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
-    </div>
-</div>
-
-<div ng-hide="!object._id" class="row">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-sm-12 col-md-7 ">
-                <crm-notes ng-model="object.notes[0]" ng-change="update()"></crm-notes>
-            </div>
-            <div class="col-md-5 col-sm-12">
-                <div class="portlet light portlet bordered">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="icon-plane font-grey-gallery"></i>
-                            <span class="caption-subject bold font-grey-gallery uppercase"> @(Options) </span>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(TotalWeight) : </div>
-                            <div class="col-md-7 value">{{object.weight| number : 2}} kg</div>
-                        </div>
-
-                        <div class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(deliveries:ShippingCost) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
-                            <div class="col-md-7 value"><span editable-text="object.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
-                                                {{object.shipping.total_ht| currency}}
-                                            </span></div>
-                        </div>
-                        <div ng-hide="module('delivery')" class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(bills:DiscountGlobal) : <span class="icon-pencil grey" ng-click="discount.$show()" ng-hide="discount.$visible || !editable"></span></div>
-                            <div class="col-md-7 value"><span editable-number="object.discount.discount.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="discount">
-                                                {{object.discount.discount.percent | percent:2}}  (-{{object.discount.discount.value | currency}})
-                                            </span></div>
-                        </div>
-                        <div class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(bills:EscompteOffered) : <span class="icon-pencil grey" ng-click="escompte.$show()" ng-hide="escompte.$visible || !editable"></span></div>
-                            <div class="col-md-7 value"><span editable-number="object.discount.escompte.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="escompte">
-                                                {{object.discount.escompte.percent | percent:2}} (-{{object.discount.escompte.value | currency}})
-                                            </span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div ng-hide="!object._id  || object._id !== object.order._id " class="row">
+        <div class="col-md-12">
+            <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-md-7 col-sm-12">
-                <div ng-if="module( 'order') && object.orderRows && object.orderRows.length " class="portlet light portlet bordered ">
-                    <div class="portlet-title ">
-                        <div class="caption ">
-                            <i class="fa fa-calculator "></i>
-                            <span class="caption-subject dark bold uppercase "> @(deliveries:ListBL) - {{object.ref}}</span>
-                        </div>
-                    </div>
-                    <div class="portlet-body ">
-                        <div class="dataTables_wrapper no-footer table-responsive ">
-                            <table class="table table-striped table-bordered table-hover no-footer ">
-                                <thead>
-                                    <tr role="row " class="heading ">
-                                        <th>@(Ref)</th>
-                                        <th>@(deliveries:OrderQty)</th>
-                                        <th>@(deliveries:Reserved)</th>
-                                        <th>@(deliveries:ShippedQty)</th>
-                                        <th>@(deliveries:Reminder)</th>
-                                    </tr>
-                                </thead>
-                                <tbody ng-repeat="line in object.orderRows ">
-                                    <tr class="text-center ">
-                                        <td class="text-left ">{{line.product.info.SKU}} </td>
-                                        <td>{{line.orderQty}}</td>
-                                        <td> </td>
-                                        <td>{{line.deliveryQty}}</td>
-                                        <td> <span ng-class="{ 'label label-warning':line.orderQty - line.deliveryQty> 0}">{{line.orderQty - line.deliveryQty}}</span>
-                                        </td>
-                                    </tr>
-                                    <tr ng-repeat="delivery in line.deliveries">
-                                        <td class="text-right">
-                                            <a ui-sref="delivery.show({id:delivery._id})">{{delivery.ref}}</a> {{delivery.date_livraison|date:'dd/MM/yyyy'}}</td>
-                                        <td></td>
-                                        <td> </td>
-                                        <td class="text-center">{{delivery.qty}}</td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+    <div ng-if="object._id && module('delivery')" class="row">
+        <div class="col-md-12">
+            <product-lines ng-model="object.orderRows" title="'@(deliveries:ProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
+        </div>
+    </div>
+
+    <div ng-hide="!object._id" class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-sm-12 col-md-7 ">
+                    <crm-notes ng-model="object.notes[0]" ng-change="update()"></crm-notes>
                 </div>
-            </div>
-
-            <div ng-hide="module( 'delivery') " class="col-md-5 col-sm-12 ">
-                <div class="portlet mt-element-ribbon light portlet-fit bordered ">
-                    <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase ">
-                        <div class="ribbon-sub ribbon-bookmark "></div>
-                        <i class="fa fa-pause "></i>
-                    </div>
-                    <div class="portlet-title ">
-                        <div class="caption ">
-                            <i class=" icon-control-pause font-yellow-crusta "></i>
-                            <span class="caption-subject font-yellow-crusta bold uppercase ">@(Totaux)</span>
-                        </div>
-                    </div>
-                    <div class="portlet-body ">
-                        <div class="row static-info align-reverse ">
-                            <div class="col-md-5 name ">@(AmountHT) :</div>
-                            <div class="col-md-7 value ">{{object.total_ht| currency}}</div>
-                        </div>
-                        <div class="row static-info align-reverse ">
-                            <div class="col-md-5 name ">@(AmountTaxes) :</div>
-                            <div class="col-md-7 value ">
-                                <div class="row static-info align-reverse " ng-repeat="vat in object.total_taxes ">
-                                    <div class="col-md-6 name ">{{vat.taxeId.langs[0].label}}</div>
-                                    <div class="col-md-6 value ">{{vat.value| currency}}</div>
-                                </div>
+                <div class="col-md-5 col-sm-12">
+                    <div class="portlet light portlet bordered">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="icon-plane font-grey-gallery"></i>
+                                <span class="caption-subject bold font-grey-gallery uppercase"> @(Options) </span>
                             </div>
                         </div>
-                        <div class="row static-info align-reverse ">
-                            <div class="col-md-5 name bold ">@(AmountTTC) :</div>
-                            <div class="col-md-7 value bold ">{{object.total_ttc| currency}}</div>
+                        <div class="portlet-body">
+                            <div class="row static-info align-reverse">
+                                <div class="col-md-5 name">@(TotalWeight) : </div>
+                                <div class="col-md-7 value">{{object.weight| number : 2}} kg</div>
+                            </div>
+
+                            <div class="row static-info align-reverse">
+                                <div class="col-md-5 name">@(deliveries:ShippingCost) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
+                                <div class="col-md-7 value"><span editable-text="object.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
+                                                {{object.shipping.total_ht| currency}}
+                                            </span></div>
+                            </div>
+                            <div ng-hide="module('delivery')" class="row static-info align-reverse">
+                                <div class="col-md-5 name">@(bills:DiscountGlobal) : <span class="icon-pencil grey" ng-click="discount.$show()" ng-hide="discount.$visible || !editable"></span></div>
+                                <div class="col-md-7 value"><span editable-number="object.discount.discount.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="discount">
+                                                {{object.discount.discount.percent | percent:2}}  (-{{object.discount.discount.value | currency}})
+                                            </span></div>
+                            </div>
+                            <div class="row static-info align-reverse">
+                                <div class="col-md-5 name">@(bills:EscompteOffered) : <span class="icon-pencil grey" ng-click="escompte.$show()" ng-hide="escompte.$visible || !editable"></span></div>
+                                <div class="col-md-7 value"><span editable-number="object.discount.escompte.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="escompte">
+                                                {{object.discount.escompte.percent | percent:2}} (-{{object.discount.escompte.value | currency}})
+                                            </span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-7 col-sm-12">
+                    <div ng-if="module( 'order') && object.orderRows && object.orderRows.length " class="portlet light portlet bordered ">
+                        <div class="portlet-title ">
+                            <div class="caption ">
+                                <i class="fa fa-calculator "></i>
+                                <span class="caption-subject dark bold uppercase "> @(deliveries:ListBL) - {{object.ref}}</span>
+                            </div>
+                        </div>
+                        <div class="portlet-body ">
+                            <div class="dataTables_wrapper no-footer table-responsive ">
+                                <table class="table table-striped table-bordered table-hover no-footer ">
+                                    <thead>
+                                        <tr role="row " class="heading ">
+                                            <th>@(Ref)</th>
+                                            <th>@(deliveries:OrderQty)</th>
+                                            <th>@(deliveries:Reserved)</th>
+                                            <th>@(deliveries:ShippedQty)</th>
+                                            <th>@(deliveries:Reminder)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-repeat="line in object.orderRows ">
+                                        <tr class="text-center ">
+                                            <td class="text-left ">{{line.product.info.SKU}} </td>
+                                            <td>{{line.orderQty}}</td>
+                                            <td> </td>
+                                            <td>{{line.deliveryQty}}</td>
+                                            <td> <span ng-class="{ 'label label-warning':line.orderQty - line.deliveryQty> 0}">{{line.orderQty - line.deliveryQty}}</span>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="delivery in line.deliveries">
+                                            <td class="text-right">
+                                                <a ui-sref="delivery.show({id:delivery._id})">{{delivery.ref}}</a> {{delivery.date_livraison|date:'dd/MM/yyyy'}}</td>
+                                            <td></td>
+                                            <td> </td>
+                                            <td class="text-center">{{delivery.qty}}</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-hide="module( 'delivery') " class="col-md-5 col-sm-12 ">
+                    <div class="portlet mt-element-ribbon light portlet-fit bordered ">
+                        <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase ">
+                            <div class="ribbon-sub ribbon-bookmark "></div>
+                            <i class="fa fa-pause "></i>
+                        </div>
+                        <div class="portlet-title ">
+                            <div class="caption ">
+                                <i class=" icon-control-pause font-yellow-crusta "></i>
+                                <span class="caption-subject font-yellow-crusta bold uppercase ">@(Totaux)</span>
+                            </div>
+                        </div>
+                        <div class="portlet-body ">
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(AmountHT) :</div>
+                                <div class="col-md-7 value ">{{object.total_ht| currency}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(AmountTaxes) :</div>
+                                <div class="col-md-7 value ">
+                                    <div class="row static-info align-reverse " ng-repeat="vat in object.total_taxes ">
+                                        <div class="col-md-6 name ">{{vat.taxeId.langs[0].label}}</div>
+                                        <div class="col-md-6 value ">{{vat.value| currency}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name bold ">@(AmountTTC) :</div>
+                                <div class="col-md-7 value bold ">{{object.total_ttc| currency}}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

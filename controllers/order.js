@@ -522,6 +522,24 @@ Object.prototype = {
      */
     show: function(id) {
         var self = this;
+
+        var objectId = MODULE('utils').ObjectId;
+
+        var Prepayments = MODEL('payment').Schema.prepayment;
+        var OrderRows = MODEL('orderRows').Schema;
+        var Invoice = MODEL('bill').Schema;
+        var departmentSearcher;
+        var contentIdsSearcher;
+        var orderRowsSearcher;
+        var contentSearcher;
+        var prepaymentsSearcher;
+        var invoiceSearcher;
+        var stockReturnsSearcher;
+        var waterfallTasks;
+
+        if (id.length < 24)
+            return self.throw400();
+
         if (self.query.quotation === 'true') {
             if (self.query.forSales == "false")
                 var OrderModel = MODEL('order').Schema.QuotationSupplier;
@@ -535,6 +553,196 @@ Object.prototype = {
         }
 
         var ObjectId = MODULE('utils').ObjectId;
+
+        departmentSearcher = function(waterfallCallback) {
+            MODEL('Department').Schema.aggregate({
+                    $match: {
+                        users: objectId(self.user._id)
+                    }
+                }, {
+                    $project: {
+                        _id: 1
+                    }
+                },
+
+                waterfallCallback);
+        };
+
+        contentIdsSearcher = function(deps, waterfallCallback) {
+            var everyOne = rewriteAccess.everyOne();
+            var owner = rewriteAccess.owner(req.session.uId);
+            var group = rewriteAccess.group(req.session.uId, deps);
+            var whoCanRw = [everyOne, owner, group];
+            var matchQuery = {
+                $or: whoCanRw
+            };
+
+            var Model = models.get(req.session.lastDb, 'Order', OrderSchema);
+
+            Model.aggregate({
+                $match: matchQuery
+            }, {
+                $project: {
+                    _id: 1
+                }
+            }, waterfallCallback);
+        };
+
+        contentSearcher = function(quotationsIds, waterfallCallback) {
+            var query;
+
+            query = OrderModel.findById(id);
+
+            query
+                .populate('supplier', '_id name fullName address')
+                .populate('destination')
+                .populate('currency._id')
+                .populate('incoterm')
+                .populate('priceList', 'name')
+                .populate('costList', 'name')
+                .populate('warehouse', 'name')
+                .populate('salesPerson', 'name')
+                .populate('invoiceControl')
+                .populate('paymentTerm')
+                .populate('paymentMethod', '_id name account bank address swiftCode owner')
+                .populate('editedBy.user', '_id login')
+                .populate('deliverTo', '_id, name')
+                .populate('project', '_id name')
+                .populate('shippingMethod', '_id name')
+                .populate('workflow', '_id name status');
+
+            query.exec(waterfallCallback);
+        };
+
+        orderRowsSearcher = function(order, waterfallCallback) {
+
+            OrderRows.find({ order: order._id })
+                .populate('product', 'cost name sku info')
+                .populate('debitAccount', 'name')
+                .populate('creditAccount', 'name')
+                .populate('taxes.taxCode', 'fullName rate')
+                .populate('warehouse', 'name')
+                .sort('products')
+                .exec(function(err, docs) {
+                    if (err) {
+                        return waterfallCallback(err);
+                    }
+
+                    //order = order.toJSON();
+
+                    OrderRows.getAvailableForRows(docs, order.forSales, function(err, docs, goodsNotes) {
+                        if (err)
+                            return waterfallCallback(err);
+
+                        order.products = docs;
+                        order.account = docs && docs.length ? docs[0].debitAccount : {};
+
+                        if (!order.forSales) {
+                            order.account = docs && docs.length ? docs[0].creditAccount : {};
+                        }
+
+                        order.goodsNotes = goodsNotes;
+
+                        waterfallCallback(null, order);
+                    });
+
+                });
+        };
+
+        prepaymentsSearcher = function(order, waterfallCallback) {
+            Prepayments.aggregate([{
+                $match: {
+                    order: objectId(id)
+                }
+            }, {
+                $project: {
+                    paidAmount: 1,
+                    currency: 1,
+                    date: 1,
+                    name: 1,
+                    refund: 1
+                }
+            }, {
+                $project: {
+                    paidAmount: { $divide: ['$paidAmount', '$currency.rate'] },
+                    date: 1,
+                    name: 1,
+                    refund: 1
+                }
+            }, {
+                $project: {
+                    paidAmount: { $cond: [{ $eq: ['$refund', true] }, { $multiply: ['$paidAmount', -1] }, '$paidAmount'] },
+                    date: 1,
+                    name: 1,
+                    refund: 1
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    sum: { $sum: '$paidAmount' },
+                    names: { $push: '$name' },
+                    date: { $min: '$date' }
+                }
+            }], function(err, result) {
+                if (err) {
+                    return waterfallCallback(err);
+                }
+
+                order.prepayment = result && result.length ? result[0] : {};
+
+                waterfallCallback(null, order);
+            });
+        };
+
+        invoiceSearcher = function(order, waterfallCallback) {
+            Invoice.aggregate([{
+                $match: {
+                    sourceDocument: objectId(id)
+                }
+            }, {
+                $project: {
+                    name: 1
+                }
+            }], function(err, result) {
+                if (err) {
+                    return waterfallCallback(err);
+                }
+
+                order.invoice = result && result.length ? result[0] : {};
+                waterfallCallback(null, order);
+            });
+        };
+
+        stockReturnsSearcher = function(order, waterfallCallback) {
+            StockReturnsService.findForOrder({
+                query: { order: objectId(order._id) },
+                dbName: req.session.lastDb
+            }, function(err, docs) {
+                if (err) {
+                    return waterfallCallback(err);
+                }
+
+                order.stockReturns = docs || [];
+
+                waterfallCallback(null, order);
+            })
+        };
+
+        waterfallTasks = [departmentSearcher, /*contentIdsSearcher,*/ contentSearcher, orderRowsSearcher, prepaymentsSearcher, invoiceSearcher, stockReturnsSearcher];
+
+        async.waterfall(waterfallTasks, function(err, result) {
+            console.log(result);
+
+            if (err)
+                return self.throw500(err);
+
+            //getHistory(req, result, function(err, order) {
+            //    if (err)
+            //        return self.throw500(err);
+
+            //self.json(result);
+            //});
+        });
 
         async.parallel({
                 order: function(pCb) {

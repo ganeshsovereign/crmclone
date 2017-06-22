@@ -20,7 +20,7 @@
                         <span ng-if="module('billsupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillsCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('billsupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
-                    <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'BILLED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED'" mode="object._id" ng-create="create()" ng-update="update()"
+                    <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'BILLED' ||object.Status == 'SIGNED' || object.Status == 'INSTOCK' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED'" mode="object._id" ng-create="create()" ng-update="update()"
                         back-to="backTo" class="actions btn-set"></save>
 
                 </div>
@@ -67,6 +67,12 @@
                                             <div ng-hide="!object._id" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> {{object.total_ht| currency}} @(HT) </div>
                                                 <label for="form_control_1">@(Amount) @(propal:PurchaseRequests)</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input">
+                                                <select class="form-control" id="warehouse" ng-model="object.warehouse" ng-options="s._id as s.name for s in $dict.warehouse">
+                                                        </select>
+                                                <label for="warehouse">@(products:Warehouse)</label>
                                             </div>
 
                                         </div>
@@ -180,7 +186,8 @@
 
 <div ng-if="object._id && module('deliverysupplier')" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.orderRows" title=" '@(deliveries:ProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.orderRows" warehouse="object.warehouse" title="'@(deliveries:ProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliverySupplierLine.html"
+            ng-change="update()"></product-lines>
     </div>
 </div>
 
