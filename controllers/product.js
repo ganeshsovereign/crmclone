@@ -896,7 +896,7 @@ Object.prototype = {
             "$or": [{
                 'info.SKU': new RegExp("^" + self.body.filter.filters[0].value, "i")
             }, {
-                'info.langs[0].name': new RegExp(self.body.filter.filters[0].value, "gi")
+                'info.langs.name': new RegExp(self.body.filter.filters[0].value, "gi")
             }]
         };
 
@@ -4269,10 +4269,9 @@ ProductAttributes.prototype = {
         var model;
         var err;
 
-        if (!body.name) {
-            err = new Error('Please provide Product Type name');
-            err.status = 404;
-            self.throw404(err);
+        if (!body.langs[0].name) {
+            err = 'Please provide Product Type name';
+            self.throw500(err);
         }
 
         model = new ProductAttributesModel(body);
@@ -4280,7 +4279,7 @@ ProductAttributes.prototype = {
             if (err)
                 return self.throw500(err);
 
-            self.getProductFamilyById(result._id.toString());
+            self.json(result);
         });
     },
     updateProductAttributes: function(id) {

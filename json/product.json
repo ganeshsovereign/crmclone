@@ -93,7 +93,7 @@
                     "title": "products:FamilyProducts"
                 },
                 "menu:productpricelevel": {
-                    "url": "/erp/#!/product/pricelevel.html",
+                    "url": "/erp/#!/product/pricelevel.h",
                     "position": 10,
                     "usertype": 2,
                     "perms": "product.read",
@@ -112,12 +112,21 @@
                 },
                 "menu:images": {
                     "url": "/erp/#!/product/images.html",
-                    "position": 30,
+                    "position": 50,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
                     "icon": "fa fa-picture-o",
                     "title": "products:Images"
+                },
+                "menu:stockcorrestion": {
+                    "url": "/erp/#!/product/stockcorrectionlist",
+                    "position": 35,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa fa-picture-o",
+                    "title": "products:StockCorrection"
                 }
             }
         }

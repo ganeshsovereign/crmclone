@@ -1601,7 +1601,7 @@ MetronicApp.controller('ProductStatsController', ['$scope', '$rootScope', '$http
 
 }]);
 
-MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '$http', 'Files', 'FileUploader', function($scope, $rootScope, $http, Files, FileUploader) {
+MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '$http', 'Files', '$modal', 'FileUploader', function($scope, $rootScope, $http, Files, $modal, FileUploader) {
 
     $scope.images = [];
     $scope.productImages = [];
@@ -1634,11 +1634,11 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
     });
 
     $scope.find = function(product) {
-        console.log(product);
+        //console.log(product);
         $scope.product = product;
         var images = new Files.bank();
 
-        images.$query({}, function(data) {
+        images.$query({ filter: $scope.filter }, function(data) {
             $scope.images = data.data;
         });
 
@@ -1652,8 +1652,6 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
         }
 
     };
-
-
 
     $scope.delete = function(id, index) {
         $http({
@@ -1715,6 +1713,44 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
 
     };
 
+    $scope.editImage = function(image) {
+
+        var modalInstance = $modal.open({
+            templateUrl: '/templates/core/modal/imagesInfo.html',
+            controller: 'ProductBankImagesModalController',
+            size: "lg",
+            resolve: {
+                options: function() {
+                    return {
+                        image: image
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then(function() {
+            image = new Files.bank(image);
+
+            image.$update(function(response) {
+                $scope.find();
+            });
+
+            /*$http({
+                method: 'PUT',
+                url: '/erp/api/product/upgradeprice',
+                data: {
+                    id: grid.getSelectedRows(),
+                    price_level: "BASE",
+                    coef: coef
+                }
+            }).success(function(data, status) {
+                $scope.find();
+            });*/
+        }, function() {
+            $scope.find();
+        });
+    };
+
 }]);
 
 MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$http', '$modal', 'Files', function($scope, $rootScope, $http, $modal, Files) {
@@ -1741,7 +1777,7 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
         var modalInstance = $modal.open({
             templateUrl: '/templates/core/modal/images.html',
             controller: 'ProductBankImagesModalController',
-            size: "lg",
+            size: "md",
             resolve: {
                 options: function() {
                     return {
@@ -1789,7 +1825,7 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
 MetronicApp.controller('ProductBankImagesModalController', ['$scope', '$rootScope', '$http', '$modalInstance', 'options', 'Files', function($scope, $rootScope, $http, $modalInstance, options, Files) {
     console.log(options);
 
-    $scope.product = options.product;
+    $scope.image = options.image;
 
     $scope.ok = function() {
         $modalInstance.close();
@@ -1798,5 +1834,31 @@ MetronicApp.controller('ProductBankImagesModalController', ['$scope', '$rootScop
     $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
     };
+
+}]);
+
+MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
+
+    $scope.dict = {};
+
+    $scope.$on('$viewContentLoaded', function() {
+        // initialize core components
+        Metronic.initAjax();
+
+        $scope.backTo = 'product.stockcorrection.list';
+
+        // set default layout mode
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/product/warehouse/select'
+
+        }).success(function(data, status) {
+            $scope.$dict.warehouse = data.data;
+            //console.log(data);
+        });
+    });
 
 }]);

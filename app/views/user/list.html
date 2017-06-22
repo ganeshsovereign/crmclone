@@ -21,8 +21,8 @@
                                         @(PrintList) </a>
                     </li>
                     <li>
-                        <a href="#" confirmed-click="remove()" ng-confirm-click="@(users:ConfirmDeleteUser)">
-                            <i class="fa fa-mail-forward"></i>@(Delete)
+                        <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove()" ng-confirm-click="@(users:ConfirmDeleteUser)">
+                            <i class="fa fa-trash-o font-red"></i> @(Delete)
                         </a>
                     </li>
                     <!--    <li>

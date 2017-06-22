@@ -5,7 +5,7 @@
                 <div class="caption">
                     <i class="fa fa-file-image-o"></i>
                     <span class="caption-subject bold">@(SelectFiles)</span>
-                    <span class="caption-helper hide"></span>
+                    <span class="caption-helper hide"> </span>
                 </div>
             </div>
             <div class="portlet-body">
@@ -17,7 +17,12 @@
                     <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
                 </div>
                 <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
-                <input type="file" nv-file-select="" uploader="uploader" multiple />
+                <label>
+                <input type="file" nv-file-select="" uploader="uploader" multiple style="display: none;" />
+                    <span class="btn btn-default btn-info">
+                        @(SelectFiles)
+                    </span>
+                </label>
             </div>
         </div>
     </div>

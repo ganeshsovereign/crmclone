@@ -139,6 +139,7 @@ exports.install = function() {
     F.route('/erp/api/users/{userId}', object.update, ['put', 'json', 'authorize']);
 
     F.route('/erp/api/users/{userId}', object.del, ['delete', 'authorize']);
+    F.route('/erp/api/users/', object.destroyList, ['delete', 'authorize']);
 
     /*app.delete('/api/user', auth.requiresLogin, function (req, res) {
      console.log(JSON.stringify(req.body));
@@ -247,6 +248,31 @@ Object.prototype = {
                 return self.throw500(err);
 
             self.json(user);
+        });
+    },
+    destroyList: function() {
+        var UserModel = MODEL('Users').Schema;
+        var self = this;
+
+        if (!this.query.id)
+            return self.throw500("No ids in destroy list");
+
+        //var list = JSON.parse(this.query.id);
+        var list = this.query.id;
+        if (!list)
+            return self.throw500("No ids in destroy list");
+
+        var ids = [];
+
+        if (typeof list === 'object')
+            ids = list;
+        else
+            ids.push(list);
+
+        UserModel.update({ _id: { $in: ids } }, { $set: { isremoved: true, isEnable: false } }, function(err, users) {
+            if (err)
+                return self.throw500(err);
+            self.json({});
         });
     },
     connection: function() {
