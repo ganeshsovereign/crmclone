@@ -942,7 +942,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "",
             templateUrl: "/views/product/stockcorrectionlist.html",
             data: {
-                pageTitle: 'Liste des corrections de stokc'
+                pageTitle: 'Liste des corrections de stock'
             },
             controller: "ProductStockCorrectionController"
         })
@@ -958,9 +958,24 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/product/stockcorrectionlistfiche.html",
             data: {
-                pageTitle: 'Editer une famille de produit'
+                pageTitle: 'Editer une correction de stock'
             },
             controller: "ProductStockCorrectionController"
+        })
+        // Stock Detail
+        .state('product.stockdetail', {
+            parent: "product",
+            url: "/stockdetail",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.stockdetail.list', {
+            url: "",
+            templateUrl: "/views/product/stockdetail.html",
+            data: {
+                pageTitle: 'Liste des états de stock'
+            },
+            controller: "ProductStockDetailController"
         })
         // Company
         .state('societe', {

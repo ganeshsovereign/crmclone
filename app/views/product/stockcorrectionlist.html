@@ -16,19 +16,6 @@
     </ul>
     <div class="page-toolbar">
         <div class="btn-group">
-            <a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
-                <i class="fa fa-flag"></i> {{languages[_language].name}} <i class="fa fa-angle-down"></i>
-            </a>
-            <ul class="dropdown-menu pull-right">
-                <li ng-repeat="s in languages">
-                    <a href="#" ng-click="setLanguage(s.idx)">
-                        <i class="fa fa-copy"></i> {{s.name}}
-                    </a>
-
-                </li>
-            </ul>
-        </div>
-        <div class="btn-group">
             <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
             </a>
@@ -42,12 +29,12 @@
                     <a href="#" ng-click="clone()">
                         <i class="fa fa-copy"></i> @(PrintPDF)
                     </a>
-                </li> -->
+                </li>
                 <li>
                     <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>
@@ -56,7 +43,7 @@
 <div class="portlet light bordered">
     <div class="portlet-title">
         <div class="caption">
-            <i class="fa fa-bars"></i>
+            <i class="fa fa-pencil"></i>
             <span class="caption-subject dark sbold uppercase">@(products:ListOfStockCorrection)</span>
         </div>
         <div class="actions">

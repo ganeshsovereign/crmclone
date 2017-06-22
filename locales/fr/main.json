@@ -807,6 +807,7 @@
     "Store": "Magasin",
     "Delivery": "Livraison",
     "DeliveryDate": "Date de Livraison",
+    "DateOfReceipt": "Date de réception",
     "DateReturn": "Date de retour",
     "Members": "Membres",
     "Print": "Imprimer",
@@ -836,5 +837,6 @@
     "QtyOrder": "Qté commandée",
     "QtyFulfilled": "Qté déjà expédiée",
     "Reminder": "Qté restante à expédier",
-    "QtyDelivered": "Qté à livrée"
+    "QtyDelivered": "Qté à livrée",
+    "Move": "Mouvement"
 }

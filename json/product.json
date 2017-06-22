@@ -125,8 +125,17 @@
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
-                    "icon": "fa fa-picture-o",
+                    "icon": "fa fa-pencil",
                     "title": "products:StockCorrection"
+                },
+                "menu:stockdetail": {
+                    "url": "/erp/#!/product/stockdetail",
+                    "position": 40,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa fa-line-chart",
+                    "title": "products:StockDetail"
                 }
             }
         }

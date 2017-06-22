@@ -390,5 +390,12 @@
     "Shelf": "Étagère",
     "Bin": "Compartiment",
     "StockCorrection": "Correction stock",
-    "ListOfStockCorrection": "Liste des corrections de stock"
+    "ListOfStockCorrection": "Liste des corrections de stock",
+    "StockDetail": "Etat des stocks",
+    "Allocated": "Attribué",
+    "InStock": "En stock",
+    "OnHand": "Disponible",
+    "LowStock": "Stock Bas",
+    "UnitCost": "Coût unitaire",
+    "Total": "Coût Total"
 }

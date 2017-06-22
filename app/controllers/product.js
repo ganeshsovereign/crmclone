@@ -1851,14 +1851,23 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
-        $http({
-            method: 'GET',
-            url: '/erp/api/product/warehouse/select'
+    });
 
-        }).success(function(data, status) {
-            $scope.$dict.warehouse = data.data;
-            //console.log(data);
-        });
+}]);
+
+MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
+
+    $scope.dict = {};
+
+    $scope.$on('$viewContentLoaded', function() {
+        // initialize core components
+        Metronic.initAjax();
+
+
+        // set default layout mode
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
+
     });
 
 }]);
