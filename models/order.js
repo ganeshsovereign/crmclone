@@ -220,14 +220,14 @@ const baseSchema = new Schema({
         msg: String
     }],
 
-    warehouse: { type: ObjectId, ref: 'warehouse', default: null },
+    warehouse: { type: ObjectId, ref: 'warehouse' },
 
-    shippingMethod: { type: ObjectId, ref: 'shippingMethod', default: null },
+    shippingMethod: { type: ObjectId, ref: 'shippingMethod' },
     shippingCost: { type: Number, default: 0 },
 
     attachments: { type: Array, default: [] },
 
-    channel: { type: ObjectId, ref: 'integrations', default: null },
+    channel: { type: ObjectId, ref: 'integrations' },
     integrationId: String,
     //sequence: Number,
     //name: String
@@ -433,7 +433,6 @@ baseSchema.statics.getById = function(id, callback) {
                     .exec(wCb);
             },
             function(order, wCb) {
-
                 if (!order.order)
                     order.order = { _id: order._id };
 
@@ -455,10 +454,14 @@ baseSchema.statics.getById = function(id, callback) {
                         //return console.log(rows);
 
                         OrderRowModel.getAvailableForRows(rows, order.forSales, function(err, rows, deliveries) {
-                            //return console.log(rows)
+                            //return console.log(rows);
+
+                            rows = _.sortBy(rows, 'sequence');
 
                             order = order.toObject();
                             order.lines = rows || [];
+
+                            //console.log(deliveries);
 
                             return wCb(err, order);
                         });

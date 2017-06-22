@@ -18,12 +18,14 @@ var AvailabilitySchema = new Schema({
     cost: { type: Number, default: 0 },
     onHand: { type: Number, default: 0 },
     goodsOutNotes: [{
+        _id: false,
         goodsNoteId: { type: ObjectId, ref: 'goodsOutNotes', default: null },
         qty: { type: Number, default: 0 }
     }],
 
     isJob: { type: Boolean, default: false },
     orderRows: [{
+        _id: false,
         orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
         qty: { type: Number, default: 0 }
     }],
@@ -536,124 +538,144 @@ AvailabilitySchema.statics.getAvailabilityForProducts = function(query, options,
 
 
 
-AvailabilitySchema.methods.updateAvailableProducts = function(options, mainCb) {
-    var doc = self;
-    var error = new Error('Not enough available products');
-    error.status = 404;
+AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
+    var self = this;
+    var doc = options.doc;
+    var error = 'Not enough available products';
 
     if (doc && doc.orderRows.length) {
-        async.each(doc.orderRows, function(orderRow, eachCb) {
-            var lastSum;
-            var isFilled;
+        async.eachSeries(doc.orderRows, function(orderRow, eachCb) {
+                var lastSum;
+                var isFilled = false;
 
-            lastSum = orderRow.qty;
+                lastSum = orderRow.qty;
 
-            doc.model.find(_.extend({
-                query: {
+                //console.log(orderRow, doc.warehouse, options);
+
+                self.find({
                     warehouse: doc.warehouse,
                     product: orderRow.product
-                }
-            }, options), function(err, avalabilities) {
-                if (err)
-                    return eachCb(err);
+                }, function(err, avalabilities) {
+                    if (err)
+                        return eachCb(err);
 
-                if (avalabilities.length) {
-                    async.each(avalabilities, function(avalability, cb) {
-                        var resultOnHand;
-                        var existedRow = {
-                            qty: 0
-                        };
-                        var onHand;
-                        var qtyDeliver;
+                    if (avalabilities.length) {
+                        async.each(avalabilities, function(avalability, cb) {
+                            var resultOnHand;
+                            var existedRow = {
+                                qty: 0
+                            };
+                            var onHand;
+                            var qtyDeliver;
 
-                        if (orderRow.orderRowId) {
-                            avalability.orderRows.forEach(function(orderRowEl) {
-                                if (orderRowEl.orderRowId && (orderRowEl.orderRowId.toJSON() === orderRow.orderRowId.toJSON())) {
-                                    existedRow = orderRow;
-                                }
-                            });
-                        }
-
-                        if (isFilled) {
-                            return cb();
-                        }
-
-                        onHand = avalability.onHand + existedRow.qty;
-
-                        if (!onHand || onHand < 0)
-                            return cb();
-
-                        resultOnHand = onHand - lastSum;
-
-                        if (resultOnHand < 0) {
-                            lastSum = Math.abs(resultOnHand);
-                            resultOnHand = 0;
-                        } else
-                            isFilled = true;
-
-                        qtyDeliver = resultOnHand ? lastSum : onHand;
-
-                        function callback() {
-                            var locationsDeliverIds;
-                            var existedBatch;
-
-                            if (err)
-                                return cb(err);
-
-                            if (orderRow.locationsDeliver && avalability.location) {
-                                locationsDeliverIds = orderRow.locationsDeliver.map(function(elem) {
-                                    return elem.toString();
+                            if (orderRow.orderRowId)
+                                avalability.orderRows.forEach(function(orderRowEl) {
+                                    if (orderRowEl.orderRowId && (orderRowEl.orderRowId.toJSON() === orderRow.orderRowId.toJSON())) {
+                                        existedRow = orderRow;
+                                    }
                                 });
-                                if (!locationsDeliverIds.length || locationsDeliverIds.indexOf(avalability.location._id.toString()) === -1) {
-                                    orderRow.locationsDeliver.push(avalability.location._id);
-                                }
-                            }
 
-                            if (orderRow.batchesDeliver) {
-                                existedBatch = _.find(orderRow.batchesDeliver, function(el) {
-                                    return (el.goodsNote.toString() === avalability.goodsInNote.toString());
-                                });
-                                if (existedBatch)
-                                    existedBatch.qty += qtyDeliver;
-                                else
-                                    orderRow.batchesDeliver.push({
-                                        goodsNote: avalability.goodsInNote,
-                                        qty: qtyDeliver,
-                                        cost: avalability.cost
+                            if (isFilled)
+                                return cb();
+
+                            onHand = avalability.onHand + existedRow.qty;
+
+                            if (!onHand || onHand < 0)
+                                return cb();
+
+                            resultOnHand = onHand - lastSum;
+
+                            if (resultOnHand < 0) {
+                                lastSum = Math.abs(resultOnHand);
+                                resultOnHand = 0;
+                            } else
+                                isFilled = true;
+
+                            qtyDeliver = resultOnHand ? lastSum : onHand;
+
+                            function callback() {
+                                var locationsDeliverIds;
+                                var existedBatch;
+
+                                if (err)
+                                    return cb(err);
+
+                                if (orderRow.locationsDeliver && avalability.location) {
+                                    locationsDeliverIds = orderRow.locationsDeliver.map(function(elem) {
+                                        return elem.toString();
                                     });
+                                    if (!locationsDeliverIds.length || locationsDeliverIds.indexOf(avalability.location._id.toString()) === -1) {
+                                        orderRow.locationsDeliver.push(avalability.location._id);
+                                    }
+                                }
 
+                                if (orderRow.batchesDeliver) {
+                                    existedBatch = _.find(orderRow.batchesDeliver, function(el) {
+                                        return (el.goodsNote.toString() === avalability.goodsInNote.toString());
+                                    });
+                                    if (existedBatch)
+                                        existedBatch.qty += qtyDeliver;
+                                    else
+                                        orderRow.batchesDeliver.push({
+                                            goodsNote: avalability.goodsInNote,
+                                            qty: qtyDeliver,
+                                            cost: avalability.cost
+                                        });
+
+                                }
+
+                                orderRow.cost += avalability.cost * qtyDeliver;
+                                cb();
                             }
 
-                            orderRow.cost += avalability.cost * qtyDeliver;
-                            cb();
-                        }
-
-                        if (existedRow.orderRowId) {
-                            if (existedRow.qty > qtyDeliver) {
-                                doc.model.updateByQuery(_.extend({
-                                    query: {
-                                        _id: avalability._id,
-                                        'orderRows.orderRowId': existedRow.orderRowId
-                                    },
-
-                                    body: {
-                                        $inc: {
-                                            'orderRows.$.qty': -qtyDeliver
+                            if (existedRow.orderRowId) {
+                                if (existedRow.qty > qtyDeliver) {
+                                    self.updateByQuery(_.extend({
+                                        query: {
+                                            _id: avalability._id,
+                                            'orderRows.orderRowId': existedRow.orderRowId
                                         },
 
-                                        $addToSet: {
-                                            goodsOutNotes: {
-                                                goodsNoteId: doc._id,
-                                                qty: qtyDeliver
+                                        body: {
+                                            $inc: {
+                                                'orderRows.$.qty': -qtyDeliver
+                                            },
+
+                                            $addToSet: {
+                                                goodsOutNotes: {
+                                                    goodsNoteId: doc._id,
+                                                    qty: qtyDeliver
+                                                }
                                             }
                                         }
-                                    }
-                                }, options), callback);
+                                    }, options), callback);
+                                } else {
+                                    self.updateByQuery(_.extend({
+                                        query: {
+                                            _id: avalability._id,
+                                            'orderRows.orderRowId': existedRow.orderRowId
+                                        },
+
+                                        body: {
+                                            $addToSet: {
+                                                goodsOutNotes: {
+                                                    goodsNoteId: doc._id,
+                                                    qty: qtyDeliver
+                                                }
+                                            },
+
+                                            $pull: {
+                                                orderRows: { orderRowId: existedRow.orderRowId }
+                                            },
+
+                                            onHand: resultOnHand
+                                        }
+                                    }, options), callback);
+                                }
                             } else {
-                                doc.model.updateByQuery(_.extend({
+                                self.updateByQuery(_.extend({
                                     query: {
-                                        _id: avalability._id,
-                                        'orderRows.orderRowId': existedRow.orderRowId
+                                        _id: avalability._id
                                     },
 
                                     body: {
@@ -662,60 +684,39 @@ AvailabilitySchema.methods.updateAvailableProducts = function(options, mainCb) {
                                                 goodsNoteId: doc._id,
                                                 qty: qtyDeliver
                                             }
-                                        },
-
-                                        $pull: {
-                                            orderRows: { orderRowId: existedRow.orderRowId }
                                         },
 
                                         onHand: resultOnHand
                                     }
                                 }, options), callback);
                             }
-                        } else {
-                            doc.model.updateByQuery(_.extend({
-                                query: {
-                                    _id: avalability._id
-                                },
+                        }, function(err) {
+                            if (err)
+                                return eachCb(err);
 
-                                body: {
-                                    $addToSet: {
-                                        goodsOutNotes: {
-                                            goodsNoteId: doc._id,
-                                            qty: qtyDeliver
-                                        }
-                                    },
+                            if (!orderRow.qty)
+                                return eachCb(error);
 
-                                    onHand: resultOnHand
-                                }
-                            }, options), callback);
-                        }
-                    }, function(err) {
-                        if (err)
-                            return eachCb(err);
+                            eachCb();
 
-                        if (!orderRow.qty)
-                            return eachCb(error);
+                        });
+                    } else
+                        eachCb(error);
+                });
+            },
+            function(err) {
+                if (err)
+                    return mainCb(err);
 
-                        eachCb();
-
-                    });
-                } else
-                    eachCb(error);
+                mainCb(null, doc.orderRows);
             });
-        }, function(err) {
-            if (err)
-                return mainCb(err);
-
-            mainCb(null, doc.orderRows);
-        });
     } else
         mainCb(error);
 };
 AvailabilitySchema.statics.deliverProducts = function(options, mainCb) {
-    var self = this.model;
+    var self = this;
     var OrderRows = MODEL('orderRows').Schema;
-    var goodsOutNote = this;
+    var goodsOutNote = options.goodsOutNote;
     var body;
     var uId = options.uId;
 
@@ -738,19 +739,21 @@ AvailabilitySchema.statics.deliverProducts = function(options, mainCb) {
             body = {
                 journal: null,
                 currency: {
-                    _id: CONSTANTS.CURRENCY_USD
+                    _id: "EUR"
                 },
 
                 date: goodsOutNote.status.isShipped,
                 sourceDocument: {
                     model: 'goodsOutNote',
                     _id: goodsOutNote._id,
-                    name: goodsOutNote.name
+                    ref: goodsOutNote.ref
                 },
 
                 accountsItems: accountsItems,
                 amount: orderRow.cost
             };
+
+            return cb();
 
             OrderRows.populate(orderRow, {
                 path: 'orderRowId',
@@ -792,7 +795,7 @@ AvailabilitySchema.statics.deliverProducts = function(options, mainCb) {
                 body = {
                     journal: null,
                     currency: {
-                        _id: CONSTANTS.CURRENCY_USD
+                        _id: "EUR"
                     },
 
                     date: goodsOutNote.status.shippedOn,

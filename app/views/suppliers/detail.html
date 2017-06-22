@@ -70,7 +70,7 @@
                                             </div>
 
                                             <div class="form-group form-md-line-input">
-                                                <select class="form-control" id="warehouse" ng-model="object.warehouse" ng-options="s._id as s.name for s in $dict.warehouse">
+                                                <select class="form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse">
                                                         </select>
                                                 <label for="warehouse">@(products:Warehouse)</label>
                                             </div>

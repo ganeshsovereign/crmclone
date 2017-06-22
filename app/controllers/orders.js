@@ -496,14 +496,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     }
                     break;
                 case 'shipped':
-                    if ($scope.object.status.isShipped == null) {
-                        $scope.object.status.isShipped = new Date();
-                        $scope.object.status.shippedById = $rootScope.login._id;
-                    } else {
-                        $scope.object.status.isShipped = null;
-                        $scope.object.status.shippedById = null;
-                        return $scope.update();
-                    }
                     break;
             }
 

@@ -214,15 +214,10 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
                         'status.pickedById': { $arrayElemAt: ['$status.pickedById', 0] },
                         'status.packedById': { $arrayElemAt: ['$status.packedById', 0] },
                         'status.shippedById': { $arrayElemAt: ['$status.shippedById', 0] },
-                        'status.printedOn': 1,
-                        'status.pickedOn': 1,
-                        'status.packedOn': 1,
-                        'status.shippedOn': 1,
-                        'status.receivedOn': 1,
-                        'status.shipped': 1,
-                        'status.picked': 1,
-                        'status.packed': 1,
-                        'status.printed': 1
+                        'status.isShipped': 1,
+                        'status.isPicked': 1,
+                        'status.isPacked': 1,
+                        'status.isPrinted': 1
                     }
                 }, {
                     $project: {
@@ -245,9 +240,10 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
                         'order.name': 1
                     }
                 }], function(err, docs) {
-                    if (err) {
+                    if (err)
                         return parallelCb(err);
-                    }
+
+                    //console.log(docs);
                     if (docs && docs.length) {
                         docs = docs.map(function(el) {
                             el._id = el._id.toJSON();
@@ -293,9 +289,9 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
             });
 
         }, function(err) {
-            if (err) {
+            if (err)
                 return cb(err);
-            }
+
 
             allGoodsNotes = _.uniq(allGoodsNotes, '_id');
 

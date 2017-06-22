@@ -305,6 +305,8 @@ Object.prototype = {
                 async.each(rows, function(orderRow, aCb) {
                         orderRow.order = order._id;
 
+                        orderRow.warehouse = order.warehouse;
+
                         if (orderRow.isDeleted && !orderRow._id)
                             return aCb();
 
@@ -622,11 +624,10 @@ Object.prototype = {
                 .populate('creditAccount', 'name')
                 .populate('taxes.taxCode', 'fullName rate')
                 .populate('warehouse', 'name')
-                .sort('products')
+                .sort('sequence')
                 .exec(function(err, docs) {
-                    if (err) {
+                    if (err)
                         return waterfallCallback(err);
-                    }
 
                     //order = order.toJSON();
 
@@ -637,9 +638,9 @@ Object.prototype = {
                         order.products = docs;
                         order.account = docs && docs.length ? docs[0].debitAccount : {};
 
-                        if (!order.forSales) {
+                        if (!order.forSales)
                             order.account = docs && docs.length ? docs[0].creditAccount : {};
-                        }
+
 
                         order.goodsNotes = goodsNotes;
 
@@ -684,9 +685,8 @@ Object.prototype = {
                     date: { $min: '$date' }
                 }
             }], function(err, result) {
-                if (err) {
+                if (err)
                     return waterfallCallback(err);
-                }
 
                 order.prepayment = result && result.length ? result[0] : {};
 
@@ -704,9 +704,8 @@ Object.prototype = {
                     name: 1
                 }
             }], function(err, result) {
-                if (err) {
+                if (err)
                     return waterfallCallback(err);
-                }
 
                 order.invoice = result && result.length ? result[0] : {};
                 waterfallCallback(null, order);
@@ -714,24 +713,39 @@ Object.prototype = {
         };
 
         stockReturnsSearcher = function(order, waterfallCallback) {
-            StockReturnsService.findForOrder({
-                query: { order: objectId(order._id) },
-                dbName: req.session.lastDb
-            }, function(err, docs) {
-                if (err) {
-                    return waterfallCallback(err);
-                }
+            var StockReturnsModel = MODEL('order').Schema.stockReturns;
 
-                order.stockReturns = docs || [];
+            StockReturnsModel.aggregate([{
+                $match: { order: objectId(order._id) }
+            }, {
+                $unwind: {
+                    path: '$journalEntrySources',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $group: {
+                    _id: null,
+                    date: { $max: '$releaseDate' },
+                    names: { $addToSet: '$name' },
+                    journalEntrySources: { $addToSet: '$journalEntrySources' }
+                }
+            }], function(err, docs) {
+                if (err)
+                    return waterfallCallback(err);
+
+
+                docs = docs && docs.length ? result[0] : {};
+
+                order.stockReturns = (docs || []);
 
                 waterfallCallback(null, order);
-            })
+            });
         };
 
         waterfallTasks = [departmentSearcher, /*contentIdsSearcher,*/ contentSearcher, orderRowsSearcher, prepaymentsSearcher, invoiceSearcher, stockReturnsSearcher];
 
         async.waterfall(waterfallTasks, function(err, result) {
-            console.log(result);
+            //console.log(result);
 
             if (err)
                 return self.throw500(err);

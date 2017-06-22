@@ -833,6 +833,7 @@
     "Send": "Envoyé",
     "AddPictures": "Ajouter des images",
     "QtyOrder": "Qté commandée",
-    "QtyFulfilled": "Qté Livrée",
-    "Reminder": "Qté restante à expédier"
+    "QtyFulfilled": "Qté déjà expédiée",
+    "Reminder": "Qté restante à expédier",
+    "QtyDelivered": "Qté à livrée"
 }

@@ -233,5 +233,4 @@ exports.Schema = {
     wTrackPayOut: wTrackPayOut
 };
 
-exports.Schema = mongoose.model('payment', basePaymentSchema);
 exports.name = "payment";
