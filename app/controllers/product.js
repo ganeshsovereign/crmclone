@@ -1868,6 +1868,22 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
+        $scope.find();
+
     });
+
+    $scope.find = function() {
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/product/stockInventory',
+            params: {}
+        }).success(function(data, status) {
+            console.log(data);
+            $scope.listObject = data.data;
+            //$scope.totalEntries = data.total;
+        });
+
+    };
 
 }]);

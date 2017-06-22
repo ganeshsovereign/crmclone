@@ -5303,10 +5303,10 @@ StockInventory.prototype = {
         var ProductsAvailabilityModel = MODEL('productsAvailability').Schema;
 
         var data = self.query;
-        var limit = parseInt(data.count, 10);
-        var skip = (parseInt(data.page || 1, 10) - 1) * limit;
+        var limit = parseInt(data.count, 10) || 1000;
+        var skip = 0; //(parseInt(data.page || 1, 10) - 1) * limit;
         var obj = {};
-        var filterMapper = new FilterMapper();
+        //var filterMapper = new FilterMapper();
         var keys;
         var sort;
         var options;

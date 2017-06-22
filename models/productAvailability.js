@@ -327,7 +327,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
 
         {
             $lookup: {
-                from: 'Products',
+                from: 'Product',
                 localField: 'product',
                 foreignField: '_id',
                 as: 'product'
@@ -343,7 +343,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
         },
         {
             $lookup: {
-                from: 'GoodsNote',
+                from: 'Orders',
                 localField: 'goodsInNote',
                 foreignField: '_id',
                 as: 'goodsInNote'
@@ -351,10 +351,10 @@ AvailabilitySchema.statics.getList = function(options, callback) {
         },
         {
             $lookup: {
-                from: 'Users',
-                localField: 'createdBy.user',
+                from: 'users',
+                localField: 'createdBy',
                 foreignField: '_id',
-                as: 'createdBy.user'
+                as: 'createdBy'
             }
         },
         {
@@ -364,7 +364,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 warehouse: { $arrayElemAt: ['$warehouse', 0] },
                 product: { $arrayElemAt: ['$product', 0] },
                 goodsInNote: { $arrayElemAt: ['$goodsInNote', 0] },
-                'createdBy.user': { $arrayElemAt: ['$createdBy.user', 0] },
+                'createdBy': { $arrayElemAt: ['$createdBy', 0] },
                 description: 1,
                 cost: 1,
                 onHand: 1,
@@ -432,7 +432,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
         },
         {
             $lookup: {
-                from: 'Order',
+                from: 'Orders',
                 localField: 'goodsInNote.order',
                 foreignField: '_id',
                 as: 'order'
