@@ -1,0 +1,103 @@
+<div class="page-bar" ng-init="findOne()">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(products:ProductsAndServices)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span> @(products:ListOfStockCorrection) </span>
+        </li>
+
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group">
+            <a class="btn purple-sharp dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-flag"></i> {{languages[_language].name}} <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li ng-repeat="s in languages">
+                    <a href="#" ng-click="setLanguage(s.idx)">
+                        <i class="fa fa-copy"></i> {{s.name}}
+                    </a>
+
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li>
+                    <a href="#" ng-click="refreshDirectory()">
+                        <i class="fa fa-refresh"></i> @(Refresh)
+                    </a>
+                </li>
+                <!--   <li>
+                    <a href="#" ng-click="clone()">
+                        <i class="fa fa-copy"></i> @(PrintPDF)
+                    </a>
+                </li> -->
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-bars"></i>
+            <span class="caption-subject dark sbold uppercase">@(products:ListOfStockCorrection)</span>
+        </div>
+        <div class="actions">
+            <a class="btn blue" ui-sref="product.stockcorrection.create">@(Add) <i class="fa fa-plus"></i></a>
+            <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
+            </a>
+        </div>
+    </div>
+    <div class="tools">
+    </div>
+    <div class="portlet light">
+        <div class="form-body">
+            <div class="table-responsive">
+                <div class="dataTables_wrapper no-footer table-responsive">
+                    <div class="col-md-12">
+                        <table class="table dataTable no-footer table-hover" id="stockCorrectionList">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th width="80px">@(Date)</th>
+                                    <th>@(Reason)</th>
+                                    <th>@(Warehouse)</th>
+                                    <th width="120px">@(CreatedBy)</th>
+                                    <th width="80px">@(Action)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="line in listObject">
+                                    <td>{{line.date}}</td>
+                                    <td>{{line.reason}}</td>
+                                    <td>{{line.warehouse}}</td>
+                                    <td>{{line.createdBy | date : "shortDate"}}</td>
+                                    <td>
+                                        <a class="btn green fa fa-pencil" ui-sref="product.stockcorrection.show({id:line._id})" title="Editer"></a>
+                                        <button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

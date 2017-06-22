@@ -165,6 +165,7 @@ exports.install = function() {
 
     //Scan directory productImages and refresh collection Images 
     F.route('/erp/api/images/bank', images.scanDirectory, ['put', 'authorize']);
+    F.route('/erp/api/images/bank/{id}', images.updateFields, ['put', 'json', 'authorize']);
     F.route('/erp/api/images/bank', images.getAllImages, ['authorize']);
     F.file('/erp/api/images/bank/xs/*', images.fileImage); //small
     F.file('/erp/api/images/bank/s/*', images.fileImage); //small
@@ -272,7 +273,20 @@ var Images = function() {
             let self = this;
             var ImagesModel = MODEL('Images').Schema;
 
-            ImagesModel.find({}, {}, { sort: { imageSrc: 1 } }, function(err, docs) {
+            console.log(self.query);
+
+            var query = {};
+            if (self.query.filter)
+                query = {
+                    "$or": [{
+                        'langs.description': new RegExp(self.query.filter, "gi")
+                    }, {
+                        'langs.name': new RegExp(self.query.filter, "gi")
+                    }]
+                };
+
+            console.log(query);
+            ImagesModel.find(query, {}, { sort: { imageSrc: 1 } }, function(err, docs) {
                 if (err)
                     return self.throw500(err);
 
@@ -378,6 +392,18 @@ var Images = function() {
 
                     return self.json(doc);
                 });
+            });
+        };
+
+        this.updateFields = function(id) {
+            var self = this;
+            var ImagesModel = MODEL('Images').Schema;
+
+            ImagesModel.findByIdAndUpdate(id, self.body, function(err, doc) {
+                if (err)
+                    return self.throw500(err);
+
+                return self.json({});
             });
         };
     };

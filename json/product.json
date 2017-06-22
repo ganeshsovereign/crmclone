@@ -93,7 +93,7 @@
                     "title": "products:FamilyProducts"
                 },
                 "menu:productpricelevel": {
-                    "url": "/erp/#!/product/pricelevel.html",
+                    "url": "/erp/#!/product/pricelevel.h",
                     "position": 10,
                     "usertype": 2,
                     "perms": "product.read",

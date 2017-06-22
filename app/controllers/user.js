@@ -104,7 +104,7 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
         if (!user && grid) {
             return $http({
                 method: 'DELETE',
-                url: '/erp/api/user',
+                url: '/erp/api/users',
                 params: {
                     id: grid.getSelectedRows()
                 }

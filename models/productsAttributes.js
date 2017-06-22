@@ -7,7 +7,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var ProductAttributesSchema = new Schema({
-    code: String,
+    code: { type: String, unique: true },
     langs: [{
         _id: false,
         name: String
