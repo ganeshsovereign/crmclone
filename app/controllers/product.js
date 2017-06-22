@@ -1855,7 +1855,7 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
 
 }]);
 
-MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
+MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', '$http', '$modal', function($scope, $rootScope, $http, $modal) {
 
     $scope.dict = {};
 
@@ -1885,6 +1885,43 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
             //$scope.totalEntries = data.total;
         });
 
+    };
+
+    $scope.Movement = function(object) {
+
+        var modalInstance = $modal.open({
+            templateUrl: '/templates/core/modal/stockdetailmovement.html',
+            controller: 'ProductBankImagesModalController',
+            size: "lg",
+            resolve: {
+                options: function() {
+                    return {
+                        object: object
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then(function() {
+
+            object.$update(function(response) {
+                $scope.find();
+            });
+
+            /*$http({
+                method: 'PUT',
+                url: '/erp/api/product/upgradeprice',
+                data: {
+                    id: grid.getSelectedRows(),
+                    price_level: "BASE",
+                    coef: coef
+                }
+            }).success(function(data, status) {
+                $scope.find();
+            });*/
+        }, function() {
+            $scope.find();
+        });
     };
 
 }]);
