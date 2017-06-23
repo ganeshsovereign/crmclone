@@ -253,7 +253,13 @@ var orderCustomerSchema = new Schema({
     }
 });
 var orderSupplierSchema = new Schema({
-    offer: { type: ObjectId, ref: 'order' }
+    offer: { type: ObjectId, ref: 'order' },
+
+    status: {
+        allocateStatus: { type: String, default: 'NOR', enum: ['NOR', 'NOT', 'NOA', 'ALL'] },
+        fulfillStatus: { type: String, default: 'NOR', enum: ['NOR', 'NOT', 'NOA', 'ALL'] },
+        shippingStatus: { type: String, default: 'NOR', enum: ['NOR', 'NOT', 'NOA', 'ALL'] }
+    }
 });
 
 var quotationCustomerSchema = new Schema({
@@ -845,32 +851,53 @@ function saveOrder(next) {
     var self = this;
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
+    var WarehouseModel = MODEL('warehouse').Schema;
 
     if (this.isNew)
         this.history = [];
 
-    if (self.isNew && !self.ref)
-        return SeqModel.inc("ORDER", function(seq, number) {
-            //console.log(seq);
-            self.ID = number;
-            EntityModel.findOne({
-                _id: self.entity
-            }, "cptRef", function(err, entity) {
-                if (err)
-                    console.log(err);
+    async.waterfall([
+        function(wCb) {
+            if (self.warehouse)
+                return wCb();
 
-                if (entity && entity.cptRef)
-                    self.ref = (self.forSales == true ? "CO" : "CF") + entity.cptRef + seq;
-                else
-                    self.ref = (self.forSales == true ? "CO" : "CF") + seq;
-                next();
+            return WarehouseModel.findOne({ main: true }, "_id", function(err, warehouse) {
+                if (warehouse)
+                    self.warehouse = warehouse._id;
+
+                return wCb();
             });
-        });
+        },
+        function(wCb) {
+            if (!self.isNew || self.ref)
+                return wCb();
 
-    if (self.date_livraison)
-        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+            return SeqModel.inc("ORDER", function(seq, number) {
+                //console.log(seq);
+                self.ID = number;
+                EntityModel.findOne({
+                    _id: self.entity
+                }, "cptRef", function(err, entity) {
+                    if (err)
+                        console.log(err);
 
-    next();
+                    if (entity && entity.cptRef)
+                        self.ref = (self.forSales == true ? "CO" : "CF") + entity.cptRef + seq;
+                    else
+                        self.ref = (self.forSales == true ? "CO" : "CF") + seq;
+                    wCb();
+                });
+            });
+        },
+        function(wCb) {
+            if (self.date_livraison)
+                self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+
+            wCb();
+        }
+    ], function(err) {
+        next();
+    });
 }
 
 function saveQuotation(next) {
@@ -1135,7 +1162,7 @@ F.on('load', function() {
                     var GoodsOutNote;
 
                     Availability = MODEL('productsAvailability').Schema;
-                    GoodsOutNote = exports.Schema.GoodsOutNote;
+                    GoodsOutNote = exports.Schema.Order;
 
                     var stockStatus = {};
 
@@ -1163,7 +1190,6 @@ F.on('load', function() {
                                                 cond: { $eq: ['$$elem.orderRowId', elem._id] }
                                             }
                                         },
-
                                         orderRows: 1
                                     }
                                 }, {
@@ -1202,7 +1228,7 @@ F.on('load', function() {
                                         }
                                     }, {
                                         $project: {
-                                            name: '$name',
+                                            ref: '$ref',
                                             orderRow: {
                                                 $filter: {
                                                     input: '$orderRows',
@@ -1215,13 +1241,13 @@ F.on('load', function() {
                                         }
                                     }, {
                                         $project: {
-                                            name: '$name',
+                                            ref: '$ref',
                                             orderRow: { $arrayElemAt: ['$orderRow', 0] },
                                             status: 1
                                         }
                                     }, {
                                         $project: {
-                                            name: '$name',
+                                            ref: '$ref',
                                             orderRow: '$orderRow.orderRowId',
                                             qty: '$orderRow.qty',
                                             status: 1
@@ -1231,6 +1257,8 @@ F.on('load', function() {
                                         var shippedOnRow = 0;
                                         var allocatedOnRow;
                                         var shippedDocs;
+
+                                        console.log(docs);
 
                                         if (err)
                                             return eahcCb(err);
@@ -1247,9 +1275,11 @@ F.on('load', function() {
                                             stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
                                         } else {
                                             shippedDocs = _.filter(docs, function(el) {
-                                                if (el.status && el.status.shipped)
+                                                if (el.status && (el.status.isShipped || el.status.isReceived))
                                                     return el;
                                             });
+
+                                            console.log("toto", shippedDocs);
 
                                             if (shippedDocs.length) {
                                                 shippedDocs.forEach(function(el) {
@@ -1313,7 +1343,7 @@ F.on('load', function() {
                         order: data.data._id, //orderId
                         product: { $ne: null }
                     })
-                    .populate('product', 'cost name sku info')
+                    .populate('product', 'directCost info')
                     .exec(function(err, docs) {
                         if (err)
                             return console(err);

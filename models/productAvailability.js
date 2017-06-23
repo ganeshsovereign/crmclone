@@ -998,7 +998,7 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
             body = {
                 journal: null,
                 currency: {
-                    _id: CONSTANTS.CURRENCY_USD
+                    _id: "EUR"
                 },
 
                 date: goodsInNote.status.receivedOn,

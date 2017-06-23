@@ -1777,7 +1777,7 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
         var modalInstance = $modal.open({
             templateUrl: '/templates/core/modal/images.html',
             controller: 'ProductBankImagesModalController',
-            size: "md",
+            size: "lg",
             resolve: {
                 options: function() {
                     return {
@@ -1823,9 +1823,10 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
 }]);
 
 MetronicApp.controller('ProductBankImagesModalController', ['$scope', '$rootScope', '$http', '$modalInstance', 'options', 'Files', function($scope, $rootScope, $http, $modalInstance, options, Files) {
-    console.log(options);
+    //console.log(options);
 
     $scope.image = options.image;
+    $scope.product = options.product;
 
     $scope.ok = function() {
         $modalInstance.close();
