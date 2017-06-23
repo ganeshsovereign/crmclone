@@ -220,6 +220,8 @@ const baseSchema = new Schema({
         msg: String
     }],
 
+    status: {},
+
     warehouse: { type: ObjectId, ref: 'warehouse' },
 
     shippingMethod: { type: ObjectId, ref: 'shippingMethod' },
@@ -1304,6 +1306,7 @@ F.on('load', function() {
                                             else
                                                 stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'ALL';
 
+                                            console.log(stockStatus);
                                         }
 
                                         allocatedOnRow = fullfillOnRow + availability;
@@ -1355,6 +1358,8 @@ F.on('load', function() {
                             Order.findByIdAndUpdate(data.data._id, { status: status }, { new: true }, function(err, el) {
                                 if (err)
                                     return console.log(err);
+
+                                console.log(status, el.status);
 
                                 console.log('Status updated');
                                 //Force reload order
