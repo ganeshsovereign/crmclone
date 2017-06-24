@@ -398,5 +398,7 @@
     "OnHand": "Disponible",
     "LowStock": "Stock Bas",
     "UnitCost": "Coût unitaire",
-    "Total": "Coût Total"
+    "Total": "Coût Total",
+    "toTransfer": "Transférer",
+    "QtytoTransfer": "Qté à transférer"
 }

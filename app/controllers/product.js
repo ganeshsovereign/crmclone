@@ -1734,18 +1734,6 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
             image.$update(function(response) {
                 $scope.find();
             });
-
-            /*$http({
-                method: 'PUT',
-                url: '/erp/api/product/upgradeprice',
-                data: {
-                    id: grid.getSelectedRows(),
-                    price_level: "BASE",
-                    coef: coef
-                }
-            }).success(function(data, status) {
-                $scope.find();
-            });*/
         }, function() {
             $scope.find();
         });
@@ -1789,17 +1777,6 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
 
         modalInstance.result.then(function() {
             $scope.find();
-            /*$http({
-                method: 'PUT',
-                url: '/erp/api/product/upgradeprice',
-                data: {
-                    id: grid.getSelectedRows(),
-                    price_level: "BASE",
-                    coef: coef
-                }
-            }).success(function(data, status) {
-                $scope.find();
-            });*/
         }, function() {
             $scope.find();
         });
