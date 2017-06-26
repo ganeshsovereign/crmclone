@@ -197,6 +197,7 @@ Object.prototype = {
             delete order.updatedAt;
             delete order.history;
             delete order.orderRows;
+            order.status = {};
             order.Status = "DRAFT";
             order.notes = [];
             order.latex = {};
@@ -244,6 +245,8 @@ Object.prototype = {
                             });
                         }
 
+                        F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: order._id } });
+
                         self.json(order);
                     });
             });
@@ -255,6 +258,7 @@ Object.prototype = {
     update: function(id) {
         var self = this;
         var OrderRowsModel = MODEL('orderRows').Schema;
+        var Availability = MODEL('productsAvailability').Schema;
         //console.log("update");
 
         if (self.query.quotation === 'true') {
@@ -281,27 +285,24 @@ Object.prototype = {
         if (!self.body.createdBy)
             self.body.createdBy = self.user._id;
 
-        MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
-            if (err) {
-                console.log(err);
-                return self.json({
-                    errorNotify: {
-                        title: 'Erreur',
-                        message: err
-                    }
-                });
-            }
+        async.waterfall([
+            function(wCb) {
+                MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, wCb);
+            },
+            function(result, wCb) {
+                self.body.total_ht = result.total_ht;
+                self.body.total_taxes = result.total_taxes;
+                self.body.total_ttc = result.total_ttc;
+                self.body.weight = result.weight;
 
-            self.body.total_ht = result.total_ht;
-            self.body.total_taxes = result.total_taxes;
-            self.body.total_ttc = result.total_ttc;
-            self.body.weight = result.weight;
-
-            OrderModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, order) {
+                OrderModel.findByIdAndUpdate(id, self.body, { new: true }, wCb);
+            },
+            function(order, wCb) {
                 //order = _.extend(order, self.body);
                 //console.log(order.history);
                 //console.log(rows);
                 //update all rows
+                var newRows = [];
                 async.each(rows, function(orderRow, aCb) {
                         orderRow.order = order._id;
 
@@ -311,75 +312,215 @@ Object.prototype = {
                             return aCb();
 
                         if (orderRow._id)
-                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, aCb);
+                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, { new: true }, function(err, doc) {
+                                if (err)
+                                    return aCb(err);
+                                newRows.push(doc);
+                                aCb();
+                            });
 
                         var orderRow = new OrderRowsModel(orderRow);
-                        orderRow.save(aCb);
+                        orderRow.save(function(err, doc) {
+                            if (err)
+                                return aCb(err);
+                            newRows.push(doc);
+                            aCb();
+                        });
                     },
                     function(err) {
-                        if (err) {
-                            console.log(err);
-                            return self.json({
-                                errorNotify: {
-                                    title: 'Erreur',
-                                    message: err
-                                }
-                            });
-                        }
-
-                        if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
-                            return console.log("Mail order NOT");
-
-                            // Send an email
-                            var mailOptions = {
-                                from: "ERP Speedealing<no-reply@speedealing.com>",
-                                to: "Plan 92 Chaumeil<plan92@imprimeriechaumeil.fr>",
-                                cc: "herve.prot@symeos.com",
-                                subject: "Nouvelle commande " + order.supplier.name + " - " + order.ref + " dans l'ERP"
-                            };
-
-                            mailOptions.text = "La commande " + order.ref + " vient d'etre crée \n";
-                            mailOptions.text += "Pour consulter la commande cliquer sur ce lien : ";
-                            mailOptions.text += '<a href="http://erp.chaumeil.net/commande/fiche.php?id=' + order._id + '">' + order.ref + '</a>';
-                            mailOptions.text += "\n\n";
-
-                            // send mail with defined transport object
-                            smtpTransporter.sendMail(mailOptions, function(error, info) {
-                                if (error) {
-                                    console.log(error);
-                                } else {
-                                    console.log("Message sent: " + info.response);
-                                }
-
-                                // if you don't want to use this transport object anymore, uncomment following line
-                                smtpTransporter.close(); // shut down the connection pool, no more messages
-                            });
-                        }
-
-
-                        order.save(function(err, doc) {
-                            if (err) {
-                                console.log(err);
-                                return self.json({
-                                    errorNotify: {
-                                        title: 'Erreur',
-                                        message: err
-                                    }
-                                });
-                            }
-
-                            if (rows.length)
-                                F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: doc._id } });
-
-                            //console.log(doc);
-                            doc = doc.toObject();
-                            doc.successNotify = {
-                                title: "Success",
-                                message: "Commande enregistrée"
-                            };
-                            self.json(doc);
-                        });
+                        if (err)
+                            return wCb(err);
+                        wCb(null, order, newRows);
                     });
+            },
+            function(order, newRows, wCb) {
+                return wCb(null, order, newRows);
+
+                if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
+                    return console.log("Mail order NOT");
+
+                    // Send an email
+                    var mailOptions = {
+                        from: "ERP Speedealing<no-reply@speedealing.com>",
+                        to: "Plan 92 Chaumeil<plan92@imprimeriechaumeil.fr>",
+                        cc: "herve.prot@symeos.com",
+                        subject: "Nouvelle commande " + order.supplier.name + " - " + order.ref + " dans l'ERP"
+                    };
+
+                    mailOptions.text = "La commande " + order.ref + " vient d'etre crée \n";
+                    mailOptions.text += "Pour consulter la commande cliquer sur ce lien : ";
+                    mailOptions.text += '<a href="http://erp.chaumeil.net/commande/fiche.php?id=' + order._id + '">' + order.ref + '</a>';
+                    mailOptions.text += "\n\n";
+
+                    // send mail with defined transport object
+                    smtpTransporter.sendMail(mailOptions, function(error, info) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log("Message sent: " + info.response);
+                        }
+
+                        // if you don't want to use this transport object anymore, uncomment following line
+                        smtpTransporter.close(); // shut down the connection pool, no more messages
+                    });
+                }
+            },
+            function(order, newRows, wCb) {
+
+                //Allocated product order
+                if (order.Status !== "TOVALIDATE")
+                    return wCb(null, order);
+
+                async.eachSeries(newRows, function(elem, eachCb) {
+
+                    var lastSum = elem.qty;
+                    var isFilled;
+
+                    console.log(elem);
+
+                    Availability.find({
+                        warehouse: elem.warehouse,
+                        product: elem.product
+                    }, function(err, avalabilities) {
+                        if (err)
+                            return eachCb(err);
+
+                        if (avalabilities.length) {
+                            async.each(avalabilities, function(availability, cb) {
+                                var allocated = 0;
+                                var resultOnHand;
+                                var existedRow = {
+                                    qty: 0
+                                };
+
+                                var allOnHand;
+
+                                availability.orderRows.forEach(function(orderRow) {
+                                    if (orderRow.orderRowId.toString() === elem._id.toString())
+                                        existedRow = orderRow;
+                                    else
+                                        allocated += orderRow.qty;
+                                });
+
+                                if (isFilled && elem.qty)
+                                    return cb();
+
+
+                                allOnHand = availability.onHand + existedRow.qty;
+
+                                if (!allOnHand)
+                                    return cb();
+
+
+                                resultOnHand = allOnHand - lastSum;
+
+                                if (resultOnHand < 0) {
+                                    lastSum = Math.abs(resultOnHand);
+                                    resultOnHand = 0;
+                                } else
+                                    isFilled = true;
+
+
+                                if (existedRow.orderRowId) {
+
+                                    if (!elem.qty) {
+                                        Availability.update({ _id: availability._id }, {
+                                            $inc: {
+                                                onHand: existedRow.qty
+                                            },
+                                            $pull: {
+                                                orderRows: { orderRowId: existedRow.orderRowId }
+                                            }
+                                        }, function(err) {
+                                            if (err)
+                                                return cb(err);
+
+                                            cb();
+                                        });
+                                    } else {
+                                        Availability.update({
+                                            _id: availability._id,
+                                            'orderRows.orderRowId': existedRow.orderRowId
+                                        }, {
+                                            'orderRows.$.qty': resultOnHand ? lastSum : allOnHand,
+                                            onHand: resultOnHand
+                                        }, function(err) {
+                                            if (err)
+                                                return cb(err);
+
+                                            cb();
+                                        });
+                                    }
+
+                                } else if (elem.qty) {
+                                    Availability.findByIdAndUpdate(availability._id, {
+                                        $addToSet: {
+                                            orderRows: {
+                                                orderRowId: elem._id,
+                                                qty: resultOnHand ? lastSum : allOnHand
+                                            }
+                                        },
+                                        onHand: resultOnHand
+                                    }, function(err) {
+                                        if (err)
+                                            return cb(err);
+
+                                        cb();
+                                    });
+                                } else {
+                                    cb();
+                                }
+                            }, function(err) {
+                                if (err)
+                                    return eachCb(err);
+
+                                eachCb();
+                            });
+                        } else
+                            eachCb();
+
+                    });
+
+                }, function(err) {
+                    if (err)
+                        return wCb(err);
+                    order.Status = "VALIDATED";
+                    wCb(null, order);
+                });
+            }
+        ], function(err, order) {
+            if (err) {
+                console.log(err);
+                OrderModel.update({ _id: id }, { $set: { Status: 'DRAFT' } }, function(err, doc) {});
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
+
+            order.save(function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
+                }
+
+                if (rows.length)
+                    F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: doc._id } });
+
+                //console.log(doc);
+                doc = doc.toObject();
+                doc.successNotify = {
+                    title: "Success",
+                    message: "Commande enregistrée"
+                };
+                self.json(doc);
             });
         });
     },
@@ -556,7 +697,7 @@ Object.prototype = {
 
         var ObjectId = MODULE('utils').ObjectId;
 
-        departmentSearcher = function(waterfallCallback) {
+        /*departmentSearcher = function(waterfallCallback) {
             MODEL('Department').Schema.aggregate({
                     $match: {
                         users: objectId(self.user._id)
@@ -742,21 +883,22 @@ Object.prototype = {
             });
         };
 
-        waterfallTasks = [departmentSearcher, /*contentIdsSearcher,*/ contentSearcher, orderRowsSearcher, prepaymentsSearcher, invoiceSearcher, stockReturnsSearcher];
+        waterfallTasks = [departmentSearcher, /*contentIdsSearcher,*/
+        /*contentSearcher, orderRowsSearcher, prepaymentsSearcher, invoiceSearcher, stockReturnsSearcher];
 
-        async.waterfall(waterfallTasks, function(err, result) {
-            //console.log(result);
+               async.waterfall(waterfallTasks, function(err, result) {
+                   //console.log(result);
 
-            if (err)
-                return self.throw500(err);
+                   if (err)
+                       return self.throw500(err);
 
-            //getHistory(req, result, function(err, order) {
-            //    if (err)
-            //        return self.throw500(err);
+                   //getHistory(req, result, function(err, order) {
+                   //    if (err)
+                   //        return self.throw500(err);
 
-            //self.json(result);
-            //});
-        });
+                   //self.json(result);
+                   //});
+               });*/
 
         async.parallel({
                 order: function(pCb) {

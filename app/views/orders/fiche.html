@@ -67,13 +67,18 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="object.Status == 'DRAFT' && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
-                        <i class="fa fa-thumbs-o-up"></i> @(Validate)
+                    <a ng-if="module('offer') && object.Status == 'DRAFT' && login.rights.offer.validate" data-ng-click="changeStatus('VALIDATED')">
+                        <i class="fa fa-thumbs-o-up"></i> @(ValidateQuotation)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('delivery')" href="#" ng-show="object.Status == 'NEW' || object.Status == 'VALIDATED' || object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('SEND')">
-                        <i class="fa fa-plane"></i> @(deliveries:Sended)
+                    <a ng-if="module('delivery') && object.Status == 'DRAFT' && login.rights.delivery.validate" data-ng-click="changeStatus('VALIDATED')">
+                        <i class="fa fa-thumbs-o-up"></i> @(ValidateDelivery)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="module('order') && object.Status == 'DRAFT' && login.rights.order.validate" data-ng-click="changeStatus('TOVALIDATE')">
+                        <i class="fa fa-thumbs-o-up"></i> @(ValidateOrder)
                     </a>
                 </li>
                 <li>
@@ -82,7 +87,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-if="object.Status === 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                    <a href="#" ng-if="object.Status === 'VALIDATED' && !module('delivery') && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
                         <i class="fa fa-history"></i> @(ReOpen)
                     </a>
                 </li>

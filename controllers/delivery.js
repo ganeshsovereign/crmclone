@@ -96,6 +96,8 @@ Object.prototype = {
         else
             var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
 
+        delete self.body.status;
+
         var delivery = {};
         delivery = new DeliveryModel(self.body);
 
@@ -148,6 +150,8 @@ Object.prototype = {
             delivery.Status = "DRAFT";
             delivery.notes = [];
             delivery.latex = {};
+            delivery.status = {};
+            delivery.tracking = "";
             delivery.datec = new Date();
 
             delivery = new DeliveryModel(delivery);
@@ -202,7 +206,7 @@ Object.prototype = {
         var self = this;
         var OrderRowsModel = MODEL('orderRows').Schema;
         var Availability = MODEL('productsAvailability').Schema;
-        var isShipping = false;
+        var isInventory = false;
 
         if (self.body.forSales == false)
             var DeliveryModel = MODEL('order').Schema.GoodsInNote;
@@ -216,9 +220,9 @@ Object.prototype = {
             self.body.status.receivedById = self.user._id;
         }
 
-        if (self.body.Status == "SEND") {
-            isShipping = true;
-            self.body.Status = "VALIDATED";
+        if (self.body.Status == "VALIDATED" && !self.body.status.isInventory) {
+            isInventory = true;
+            self.body.Status = "DRAFT";
         }
 
 
@@ -329,8 +333,9 @@ Object.prototype = {
                             if (doc.status.isInventory)
                                 return wCb(null, doc);
 
-                            if (!isShipping)
+                            if (!isInventory)
                                 return wCb(null, doc);
+
 
                             return DeliveryModel.findById(doc._id)
                                 .populate('order', 'shippingMethod shippingExpenses')
@@ -338,8 +343,13 @@ Object.prototype = {
                                     if (err)
                                         return wCb(err);
 
+                                    result = result.toObject();
+                                    result.orderRows = _.filter(result.orderRows, function(elem) {
+                                        return elem.qty && !elem.isDeleted;
+                                    });
+
                                     return Availability.updateAvailableProducts({
-                                        doc: result.toObject()
+                                        doc: result
                                     }, function(err, rows) {
                                         if (err)
                                             return wCb(err);
@@ -348,7 +358,7 @@ Object.prototype = {
 
                                         return Availability.deliverProducts({
                                             uId: self.user._id,
-                                            goodsOutNote: result.toObject()
+                                            goodsOutNote: result
                                         }, function(err) {
                                             if (err)
                                                 return wCb(err);
@@ -357,9 +367,9 @@ Object.prototype = {
                                                 F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order._id } });
 
                                             doc.status.isInventory = new Date();
-                                            doc.status.isShipped = new Date();
-                                            doc.status.shippedById = self.user._id;
-                                            doc.Status = "SEND";
+                                            //doc.status.isShipped = new Date();
+                                            //doc.status.shippedById = self.user._id;
+                                            doc.Status = "VALIDATED";
 
                                             doc.save(function(err, doc) {
                                                 if (err)
@@ -381,6 +391,13 @@ Object.prototype = {
                     function(err, doc) {
                         if (err) {
                             console.log(err);
+
+                            delivery.update({
+                                'status.isPrinted': null,
+                                'status.isPacked': null,
+                                'status.isPicked': null
+                            }, function(err, doc) {});
+
                             return self.json({
                                 errorNotify: {
                                     title: 'Erreur',

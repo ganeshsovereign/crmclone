@@ -61,14 +61,16 @@ function websocket() {
             case "notify:controllerAngular":
                 self.send({ type: 'refresh', data: notify }, function(id, client) {
                     //send to all
+                    console.log("toto");
                     return true;
                 });
                 break;
             default: // send text notification
-                self.send({ type: 'notify', message: notify.data, date: new Date() }, function(id, client) {
-                    // send only to users in notify.users Array
-                    return notify.users.indexOf(client.alias) >= 0;
-                });
+                self.send({ type: 'notify', message: notify.data, date: new Date() });
+                /*, function(id, client) {
+                                    // send only to users in notify.users Array
+                                    return notify.users.indexOf(client.alias) >= 0;
+                                });*/
         }
 
 

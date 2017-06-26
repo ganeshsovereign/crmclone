@@ -453,6 +453,7 @@ baseSchema.statics.getById = function(id, callback) {
                     .populate({
                         path: "total_taxes.taxeId"
                     })
+                    .populate('warehouse', 'name')
                     .sort({ sequence: 1 })
                     .lean()
                     .exec(function(err, rows) {
@@ -1260,7 +1261,7 @@ F.on('load', function() {
                                         var allocatedOnRow;
                                         var shippedDocs;
 
-                                        console.log(docs);
+                                        //console.log(docs);
 
                                         if (err)
                                             return eahcCb(err);
@@ -1280,8 +1281,6 @@ F.on('load', function() {
                                                 if (el.status && (el.status.isShipped || el.status.isReceived))
                                                     return el;
                                             });
-
-                                            console.log("toto", shippedDocs);
 
                                             if (shippedDocs.length) {
                                                 shippedDocs.forEach(function(el) {
@@ -1359,7 +1358,7 @@ F.on('load', function() {
                                 if (err)
                                     return console.log(err);
 
-                                console.log(status, el.status);
+                                //console.log(status, el.status);
 
                                 console.log('Status updated');
                                 //Force reload order

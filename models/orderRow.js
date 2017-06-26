@@ -53,251 +53,254 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
 
     if (docs && docs.length) {
         async.each(docs, function(elem, eachCb) {
-            var product;
-            var warehouseId;
+                var product;
+                var warehouseId;
 
-            var parallelTasks;
+                var parallelTasks;
 
-            //elem = elem.toJSON();
+                //elem = elem.toJSON();
+                //return console.log(elem);
 
-            product = elem.product ? elem.product._id : null;
-            warehouseId = elem.warehouse ? objectId(elem.warehouse._id) : null;
+                product = elem.product ? elem.product._id : null;
+                warehouseId = elem.warehouse ? elem.warehouse._id : null;
 
-            function getAvailabilities(parallelCb) {
-                Availability.aggregate([{
-                    $match: {
-                        product: objectId(product),
-                        warehouse: warehouseId
-                    }
-                }, {
-                    $project: {
-                        product: 1,
-                        warehouse: 1,
-                        onHand: 1,
-                        filterRows: {
-                            $filter: {
-                                input: '$orderRows',
-                                as: 'elem',
-                                cond: { $eq: ['$$elem.orderRowId', objectId(elem._id)] }
+                function getAvailabilities(parallelCb) {
+                    Availability.aggregate([{
+                        $match: {
+                            product: product,
+                            warehouse: warehouseId
+                        },
+                    }, {
+                        $project: {
+                            product: 1,
+                            warehouse: 1,
+                            onHand: 1,
+                            filterRows: {
+                                $filter: {
+                                    input: '$orderRows',
+                                    as: 'elem',
+                                    cond: { $eq: ['$$elem.orderRowId', objectId(elem._id)] }
+                                }
+                            },
+                            orderRows: 1,
+                            goodsOutNotes: 1
+                        }
+                    }, {
+                        $project: {
+                            product: 1,
+                            warehouse: 1,
+                            onHand: 1,
+                            allocated: {
+                                $sum: '$filterRows.qty'
+                            },
+
+                            allocatedAll: {
+                                $sum: '$orderRows.qty'
+                            },
+
+                            fulfillAll: {
+                                $sum: '$goodsOutNotes.qty'
                             }
-                        },
-                        orderRows: 1,
-                        goodsOutNotes: 1
-                    }
-                }, {
-                    $project: {
-                        product: 1,
-                        warehouse: 1,
-                        onHand: 1,
-                        allocated: {
-                            $sum: '$filterRows.qty'
-                        },
-
-                        allocatedAll: {
-                            $sum: '$orderRows.qty'
-                        },
-
-                        fulfillAll: {
-                            $sum: '$goodsOutNotes.qty'
                         }
-                    }
-                }, {
-                    $project: {
-                        product: 1,
-                        warehouse: 1,
-                        onHand: 1,
-                        allocated: 1,
-                        inStock: {
-                            $add: ['$onHand', '$allocatedAll', '$fulfillAll']
-                        }
-                    }
-                }, {
-                    $group: {
-                        _id: '$warehouse',
-                        allocated: {
-                            $sum: '$allocated'
-                        },
-
-                        onHand: {
-                            $sum: '$onHand'
-                        },
-
-                        inStock: {
-                            $sum: '$inStock'
-                        },
-
-                        onOrder: {
-                            $sum: '$onOrder'
-                        }
-                    }
-                }], function(err, availability) {
-                    if (err) {
-                        return parallelCb(err);
-                    }
-                    parallelCb(null, availability);
-                });
-            }
-
-            function getNotes(parallelCb) {
-                var Model = forSales ? GoodsOutNote : GoodsInNote;
-
-                Model.aggregate([{
-                    $match: {
-                        'orderRows.orderRowId': elem._id,
-                        _type: forSales ? 'GoodsOutNote' : 'GoodsInNote',
-                        archived: { $ne: true }
-                    }
-                }, {
-                    $lookup: {
-                        from: 'warehouse',
-                        localField: 'warehouse',
-                        foreignField: '_id',
-                        as: 'warehouse'
-                    }
-                }, {
-                    $lookup: {
-                        from: 'productsAvailability',
-                        localField: '_id',
-                        foreignField: 'goodsInNote',
-                        as: 'goodsInNote'
-                    }
-                }, {
-                    $lookup: {
-                        from: 'Users',
-                        localField: 'status.printedById',
-                        foreignField: '_id',
-                        as: 'status.printedById'
-                    }
-                }, {
-                    $lookup: {
-                        from: 'Users',
-                        localField: 'status.pickedById',
-                        foreignField: '_id',
-                        as: 'status.pickedById'
-                    }
-                }, {
-                    $lookup: {
-                        from: 'Users',
-                        localField: 'status.packedById',
-                        foreignField: '_id',
-                        as: 'status.packedById'
-                    }
-                }, {
-                    $lookup: {
-                        from: 'Users',
-                        localField: 'status.shippedById',
-                        foreignField: '_id',
-                        as: 'status.shippedById'
-                    }
-                }, {
-                    $lookup: {
-                        from: 'Order',
-                        localField: 'order',
-                        foreignField: '_id',
-                        as: 'order'
-                    }
-                }, {
-                    $project: {
-                        name: '$name',
-                        orderRow: {
-                            $filter: {
-                                input: '$orderRows',
-                                as: 'elem',
-                                cond: { $eq: ['$$elem.orderRowId', objectId(elem._id)] }
+                    }, {
+                        $project: {
+                            product: 1,
+                            warehouse: 1,
+                            onHand: 1,
+                            allocated: 1,
+                            inStock: {
+                                $add: ['$onHand', '$allocatedAll', '$fulfillAll']
                             }
-                        },
+                        }
+                    }, {
+                        $group: {
+                            _id: '$warehouse',
+                            allocated: {
+                                $sum: '$allocated'
+                            },
 
-                        goodsInNote: { $arrayElemAt: ['$goodsInNote', 0] },
-                        warehouse: { $arrayElemAt: ['$warehouse', 0] },
-                        order: { $arrayElemAt: ['$order', 0] },
-                        'status.printedById': { $arrayElemAt: ['$status.printedById', 0] },
-                        'status.pickedById': { $arrayElemAt: ['$status.pickedById', 0] },
-                        'status.packedById': { $arrayElemAt: ['$status.packedById', 0] },
-                        'status.shippedById': { $arrayElemAt: ['$status.shippedById', 0] },
-                        'status.isShipped': 1,
-                        'status.isPicked': 1,
-                        'status.isPacked': 1,
-                        'status.isPrinted': 1
-                    }
-                }, {
-                    $project: {
-                        name: '$name',
-                        orderRow: { $arrayElemAt: ['$orderRow', 0] },
-                        status: 1,
-                        warehouse: 1,
-                        'goodsInNote._id': 1,
-                        'goodsInNote.onHand': 1,
-                        'order.name': 1
-                    }
-                }, {
-                    $project: {
-                        name: '$name',
-                        orderRow: '$orderRow.orderRowId',
-                        qty: '$orderRow.qty',
-                        status: 1,
-                        warehouse: 1,
-                        goodsInNote: 1,
-                        'order.name': 1
-                    }
-                }], function(err, docs) {
-                    if (err)
-                        return parallelCb(err);
+                            onHand: {
+                                $sum: '$onHand'
+                            },
 
-                    //console.log(docs);
-                    if (docs && docs.length) {
-                        docs = docs.map(function(el) {
-                            el._id = el._id.toJSON();
-                            return el;
-                        });
-                    }
+                            inStock: {
+                                $sum: '$inStock'
+                            },
 
-                    parallelCb(null, docs);
-                });
-            }
-
-            parallelTasks = [getNotes, getAvailabilities];
-
-            async.parallel(parallelTasks, function(err, response) {
-                var availability;
-                var goodsNotes;
-
-                if (err) {
-                    return eachCb(err);
-                }
-
-                availability = response[1];
-                goodsNotes = response[0];
-                allGoodsNotes = allGoodsNotes.concat(goodsNotes);
-
-                availability = availability && availability.length ? availability[0] : null;
-
-                if (availability) {
-                    elem.inStock = availability.inStock;
-                    elem.onHand = availability.onHand;
-                    elem.allocated = availability.allocated;
-                }
-                elem.goodsNotes = goodsNotes;
-                elem.fulfilled = 0;
-
-                if (goodsNotes && goodsNotes.length) {
-                    goodsNotes.forEach(function(el) {
-                        elem.fulfilled += el.qty;
+                            onOrder: {
+                                $sum: '$onOrder'
+                            }
+                        }
+                    }], function(err, availability) {
+                        if (err)
+                            return parallelCb(err);
+                        //console.log("tata");
+                        //return console.log(availability);
+                        parallelCb(null, availability);
                     });
                 }
-                populateDocs.push(elem);
-                eachCb();
+
+                function getNotes(parallelCb) {
+                    var Model = forSales ? GoodsOutNote : GoodsInNote;
+
+                    Model.aggregate([{
+                        $match: {
+                            'orderRows.orderRowId': elem._id,
+                            _type: forSales ? 'GoodsOutNote' : 'GoodsInNote',
+                            archived: { $ne: true }
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'warehouse',
+                            localField: 'warehouse',
+                            foreignField: '_id',
+                            as: 'warehouse'
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'productsAvailability',
+                            localField: '_id',
+                            foreignField: 'goodsInNote',
+                            as: 'goodsInNote'
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'Users',
+                            localField: 'status.printedById',
+                            foreignField: '_id',
+                            as: 'status.printedById'
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'Users',
+                            localField: 'status.pickedById',
+                            foreignField: '_id',
+                            as: 'status.pickedById'
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'Users',
+                            localField: 'status.packedById',
+                            foreignField: '_id',
+                            as: 'status.packedById'
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'Users',
+                            localField: 'status.shippedById',
+                            foreignField: '_id',
+                            as: 'status.shippedById'
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'Order',
+                            localField: 'order',
+                            foreignField: '_id',
+                            as: 'order'
+                        }
+                    }, {
+                        $project: {
+                            name: '$name',
+                            orderRow: {
+                                $filter: {
+                                    input: '$orderRows',
+                                    as: 'elem',
+                                    cond: { $eq: ['$$elem.orderRowId', objectId(elem._id)] }
+                                }
+                            },
+
+                            goodsInNote: { $arrayElemAt: ['$goodsInNote', 0] },
+                            warehouse: { $arrayElemAt: ['$warehouse', 0] },
+                            order: { $arrayElemAt: ['$order', 0] },
+                            'status.printedById': { $arrayElemAt: ['$status.printedById', 0] },
+                            'status.pickedById': { $arrayElemAt: ['$status.pickedById', 0] },
+                            'status.packedById': { $arrayElemAt: ['$status.packedById', 0] },
+                            'status.shippedById': { $arrayElemAt: ['$status.shippedById', 0] },
+                            'status.isShipped': 1,
+                            'status.isPicked': 1,
+                            'status.isPacked': 1,
+                            'status.isPrinted': 1
+                        }
+                    }, {
+                        $project: {
+                            name: '$name',
+                            orderRow: { $arrayElemAt: ['$orderRow', 0] },
+                            status: 1,
+                            warehouse: 1,
+                            'goodsInNote._id': 1,
+                            'goodsInNote.onHand': 1,
+                            'order.name': 1
+                        }
+                    }, {
+                        $project: {
+                            name: '$name',
+                            orderRow: '$orderRow.orderRowId',
+                            qty: '$orderRow.qty',
+                            status: 1,
+                            warehouse: 1,
+                            goodsInNote: 1,
+                            'order.name': 1
+                        }
+                    }], function(err, docs) {
+                        if (err)
+                            return parallelCb(err);
+
+                        //console.log(docs);
+                        if (docs && docs.length) {
+                            docs = docs.map(function(el) {
+                                el._id = el._id.toJSON();
+                                return el;
+                            });
+                        }
+
+                        parallelCb(null, docs);
+                    });
+                }
+
+                parallelTasks = [getNotes, getAvailabilities];
+
+                async.parallel(parallelTasks, function(err, response) {
+                    var availability;
+                    var goodsNotes;
+
+                    if (err)
+                        return eachCb(err);
+
+
+                    availability = response[1];
+                    goodsNotes = response[0];
+                    allGoodsNotes = allGoodsNotes.concat(goodsNotes);
+
+                    availability = availability && availability.length ? availability[0] : null;
+
+                    if (availability) {
+                        elem.inStock = availability.inStock;
+                        elem.onHand = availability.onHand;
+                        elem.allocated = availability.allocated;
+                    }
+                    elem.goodsNotes = goodsNotes;
+                    elem.fulfilled = 0;
+
+                    if (goodsNotes && goodsNotes.length) {
+                        goodsNotes.forEach(function(el) {
+                            elem.fulfilled += el.qty;
+                        });
+                    }
+                    populateDocs.push(elem);
+                    eachCb();
+                });
+
+            },
+            function(err) {
+                if (err)
+                    return cb(err);
+
+
+                allGoodsNotes = _.uniq(allGoodsNotes, '_id');
+
+                cb(null, populateDocs, allGoodsNotes);
+
             });
-
-        }, function(err) {
-            if (err)
-                return cb(err);
-
-
-            allGoodsNotes = _.uniq(allGoodsNotes, '_id');
-
-            cb(null, populateDocs, allGoodsNotes);
-
-        });
     } else
         cb();
 

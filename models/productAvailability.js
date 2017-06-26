@@ -14,19 +14,19 @@ var AvailabilitySchema = new Schema({
     product: { type: ObjectId, ref: 'Product', default: null },
     warehouse: { type: ObjectId, ref: 'warehouse', default: null },
     location: { type: ObjectId, ref: 'location', default: null },
-    goodsInNote: { type: ObjectId, ref: 'goodsInNotes', default: null },
+    goodsInNote: { type: ObjectId, ref: 'goodsInNotes', default: null }, //IN
     cost: { type: Number, default: 0 },
     onHand: { type: Number, default: 0 },
     goodsOutNotes: [{
-        _id: false,
-        goodsNoteId: { type: ObjectId, ref: 'goodsOutNotes', default: null },
+        _id: false, //OUT
+        goodsNoteId: { type: ObjectId, ref: 'goodsOutNotes' },
         qty: { type: Number, default: 0 }
     }],
 
     isJob: { type: Boolean, default: false },
     orderRows: [{
-        _id: false,
-        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        _id: false, //Allocated
+        orderRowId: { type: ObjectId, ref: 'orderRows' }, //allocated all for ever
         qty: { type: Number, default: 0 }
     }],
 
@@ -550,7 +550,7 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
 
                 lastSum = orderRow.qty;
 
-                //console.log(orderRow, doc.warehouse, options);
+                console.log(orderRow, doc.warehouse);
 
                 self.find({
                     warehouse: doc.warehouse,
@@ -570,9 +570,8 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
 
                             if (orderRow.orderRowId)
                                 avalability.orderRows.forEach(function(orderRowEl) {
-                                    if (orderRowEl.orderRowId && (orderRowEl.orderRowId.toJSON() === orderRow.orderRowId.toJSON())) {
+                                    if (orderRowEl.orderRowId && (orderRowEl.orderRowId.toString() === orderRow.orderRowId.toString()))
                                         existedRow = orderRow;
-                                    }
                                 });
 
                             if (isFilled)
@@ -580,8 +579,8 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
 
                             onHand = avalability.onHand + existedRow.qty;
 
-                            if (!onHand || onHand < 0)
-                                return cb();
+                            if (!onHand || onHand <= 0)
+                                return cb(error);
 
                             resultOnHand = onHand - lastSum;
 

@@ -80,7 +80,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             if (type !== 'refresh')
                 return;
 
-            //console.log(data);
+            console.log(data);
             //console.log(type);
 
             if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
@@ -269,6 +269,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 if (callback)
                     return callback(null, response);*/
 
+                $scope.findOne(callback);
+            }, function(err) {
                 $scope.findOne(callback);
             });
         };
@@ -496,6 +498,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     }
                     break;
                 case 'shipped':
+                    if ($scope.object.status.isShipped == null) {
+                        $scope.object.status.isShipped = new Date();
+                        $scope.object.status.shippedById = $rootScope.login._id;
+                    }
                     break;
             }
 
