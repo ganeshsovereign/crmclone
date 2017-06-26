@@ -838,5 +838,6 @@
     "QtyFulfilled": "Qté déjà expédiée",
     "Reminder": "Qté restante à expédier",
     "QtyDelivered": "Qté à livrée",
-    "Move": "Mouvement"
+    "Move": "Mouvement",
+    "To": "Vers"
 }

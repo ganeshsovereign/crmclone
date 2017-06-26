@@ -71,7 +71,7 @@
                             <tbody>
                                 <tr ng-repeat="line in listObject">
                                     <td>
-                                        <button class="btn" ng-click="Movement()" title="'@(products:Movement)'">
+                                        <button class="btn" ng-click="Movement({id:object._id})" title="'@(products:Movement)'">
                                             <i class="fa fa-long-arrow-right"></i>
                                         </button>
                                     </td>
