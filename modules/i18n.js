@@ -39,6 +39,9 @@ Translation.prototype.call = function() {
  */
 Translation.prototype.translate = function(key, language, params) {
     //console.log(key);
+    if (language)
+        i18n.changeLanguage(language);
+
     return i18n.t(key);
 };
 
@@ -60,16 +63,17 @@ Translation.prototype.load = function() {
                 // "allowMultiLoading": false,
                 "crossDomain": false
             },
-            //supportedLngs: ['fr-FR', 'en-US'],
-            load: 'all',
+            //supportedLngs: ['fr-fr', 'en-us'],
+            load: 'languageOnly',
+            lowerCaseLng: true,
             //preload: false,
             useCookie: false,
             detectLngFromHeaders: false,
             saveMissing: false,
-            debug: false,
+            debug: true,
             saveMissingTo: 'fallback',
-            lng: "fr",
-            fallbackLng: ["fr"]
+            lng: CONFIG('default-language') || "en",
+            fallbackLng: "dev"
         }, function(err, t) {
             //F.emit('i18n');
             console.log("traduction ok !");
@@ -78,8 +82,6 @@ Translation.prototype.load = function() {
 
 exports.name = 'i18n';
 exports.version = VERSION;
-
-var allowed = { fr: true, en: true };
 
 exports.install = function(options) {
 
@@ -96,7 +98,7 @@ exports.install = function(options) {
         // Prevention for a manual calling.
         if (typeof(content) === 'undefined') {
             content = language;
-            language = 'fr';
+            language = null;
         }
 
         return translation.translate(content, language);
@@ -106,20 +108,20 @@ exports.install = function(options) {
         var language = req.query.language;
 
         // Set the language according to the querystring and store to the cookie
-        if (language) {
-            if (!allowed[language])
-                return 'fr';
-
+        if (language)
             return language;
-        }
 
         // Sets the language according to user-agent
         language = req.language;
+        //language = language.split('-')[0].toLowerCase();
 
-        if (language.indexOf('en') > -1)
-            return 'en';
+        if (language)
+            return language;
 
-        return 'fr';
+        //if (language.indexOf('en') > -1)
+        //return 'en';
+
+        //return 'fr';
     };
 
     // It will be work when you move /app/views/ --> to --> /public/views/ (the method below is optimized for the performance)
@@ -131,17 +133,17 @@ exports.install = function(options) {
     F.file('/views/*', function(req, res) {
         var filename = F.path.virtual(req.url);
         if (fs.existsSync(filename))
-            res.send(200, F.translator(req.language, fs.readFileSync(filename).toString('utf8')), 'text/html');
-        else
-            res.throw404();
+            return res.send(200, F.translator(req.language, fs.readFileSync(filename).toString('utf8')), 'text/html');
+
+        res.throw404();
     });
 
     F.file('/templates/*', function(req, res) {
         var filename = F.path.virtual(req.url);
         if (fs.existsSync(filename))
-            res.send(200, F.translator(req.language, fs.readFileSync(filename).toString('utf8')), 'text/html');
-        else
-            res.throw404();
+            return res.send(200, F.translator(req.language, fs.readFileSync(filename).toString('utf8')), 'text/html');
+
+        res.throw404();
     });
 };
 

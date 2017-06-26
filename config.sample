@@ -6,6 +6,7 @@ dateformatShort          : DD/MM/YYYY
 dateformatLong           : DD/MM/YYYY HH:mm
 manager-url              : /erp
 phone                    : +33 6 76 76 17 65
+default-language         : fr
 
 // Image convertor for resizing of pictures
 // Default image converter: im = ImageMagick, gm = GraphicsMagick

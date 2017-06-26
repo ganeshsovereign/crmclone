@@ -285,7 +285,7 @@ Object.prototype = {
                             });
                         },
                         function(doc, wCb) {
-                            if (doc.forSales == true && !doc.status.isShipped)
+                            if (doc.forSales == true)
                                 F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: doc.order } });
 
                             //update inventory IN
