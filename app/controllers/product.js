@@ -1865,7 +1865,7 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
 
     };
 
-    $scope.Movement = function(object) {
+    $scope.Movement = function(product) {
 
         var modalInstance = $modal.open({
             templateUrl: '/templates/core/modal/stockdetailmovement.html',
@@ -1874,7 +1874,7 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
             resolve: {
                 options: function() {
                     return {
-                        object: object
+                        product: product
                     };
                 }
             }
@@ -1882,7 +1882,7 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
 
         modalInstance.result.then(function() {
 
-            object.$update(function(response) {
+            product.$update(function(response) {
                 $scope.find();
             });
 
