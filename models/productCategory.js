@@ -44,7 +44,12 @@ var CategorySchema = new Schema({
     sequence: { type: Number, default: 0 },
     main: { type: Boolean, default: false },
     removable: { type: Boolean, default: true },
-    integrationId: { type: String, default: '' },
+    channels: [{
+        _id: false,
+        channel: { type: Schema.Types.ObjectId, ref: 'integrations', default: null },
+        integrationId: String
+    }],
+    groups: [{ type: ObjectId, ref: 'groupCategory', default: null }],
     taxesAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
     debitAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
     creditAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },

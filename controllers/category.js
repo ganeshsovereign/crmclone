@@ -203,6 +203,8 @@ HTTP/1.1 200 OK
     F.route('/erp/api/category/getExpenses', object.getById, ['authorize']);
 
 
+
+    F.route('/erp/api/category/group/select', object.getGroupCategory, ['authorize']);
     /**
          *@api {post} /category/ Request for creating new ProductCategory
          *
@@ -728,6 +730,17 @@ Object.prototype = {
                 self.json(result);
             });
 
+        });
+    },
+    getGroupCategory: function() {
+        var self = this;
+        var GroupCategory = MODEL('groupCategory').Schema;
+
+        GroupCategory.find({}, function(err, docs) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({ data: docs });
         });
     }
 };

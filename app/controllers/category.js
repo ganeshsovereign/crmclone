@@ -155,9 +155,20 @@ MetronicApp.controller('CategoryController', ['$scope', '$rootScope', '$http', '
         }
     };
 
-    var ModalInstanceCtrl = function($scope, $modalInstance, options) {
+    var ModalInstanceCtrl = function($scope, $rootScope, $modalInstance, options) {
 
         $scope.category = options.category;
+
+        if(!$scope.category.groups)
+            $scope.category.groups=[];
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/category/group/select'
+        }).success(function(data, status) {
+            //console.log(data);
+            $scope.groupCategoryList = data.data;
+        });
 
         $scope.ok = function() {
             $modalInstance.close($scope.category);
@@ -169,7 +180,6 @@ MetronicApp.controller('CategoryController', ['$scope', '$rootScope', '$http', '
     };
 
     $scope.addEditCategory = function(node) {
-        console.log(node);
         var modalInstance = $modal.open({
             templateUrl: 'myModalContent.html',
             controller: ModalInstanceCtrl,
@@ -185,7 +195,7 @@ MetronicApp.controller('CategoryController', ['$scope', '$rootScope', '$http', '
         });
 
         modalInstance.result.then(function(category) {
-            console.log("category", category);
+            //console.log("category", category);
             if (!category._id) {
                 category = new Categories(category);
                 category.$save(function(response) {
