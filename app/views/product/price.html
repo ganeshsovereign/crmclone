@@ -16,7 +16,7 @@
                         <span class="caption-subject dark bold uppercase"> @(Price)</span>
                         <span class="caption-helper"> - @(products:ProductServiceCard)</span>
                     </div>
-                    <save mode="product._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+                    <save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
                 </div>
                 <div class="portlet-body">
                     <tabset class="tabbable-line tabbable-full-width">
@@ -286,7 +286,7 @@
                         </tab>
 
 
-                        <tab heading="@(products:Buy)" ng-if="product._id && product.type != 'PACK' && product.isBuy">
+                        <tab heading="@(products:Costs)" ng-if="product._id && !product.isBundle">
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="portlet light bordered">
@@ -299,7 +299,17 @@
                                         <div class="portlet-body">
                                             <div class="form-group form-md-line-input">
 
-                                                <div class="row">
+                                                <div class="form-group form-md-line-input">
+                                                    <input class="form-control text-right" id="directCost" ng-model="product.directCost" type="number" step="any">
+                                                    <label for="directCost">@(products:DirectCost) : </label>
+                                                </div>
+
+                                                <div class="form-group form-md-line-input">
+                                                    <input class="form-control text-right" id="IndirectCost" ng-model="product.IndirectCost" type="number" step="any">
+                                                    <label for="IndirectCost">@(products:IndirectCost) : </label>
+                                                </div>
+
+                                                <!--<div class="row">
                                                     <label class="col-md-6 control-label">@(products:DirectCost) : </label>
                                                     <div class="col-md-6">
                                                         <span class="col-md-1 control-label bold font-dark">{{product.directCost | currency}}</span>
@@ -310,7 +320,7 @@
                                                     <div class="col-md-6">
                                                         <span class="col-md-1 control-label bold font-dark">{{product.indirectCost | currency}}</span>
                                                     </div>
-                                                </div>
+                                                </div>-->
                                                 <hr>
                                                 <div class="row">
                                                     <label class="col-md-6 control-label">@(products:TotalCost) :</label>
@@ -376,7 +386,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row" ng-if="product.isBuy">
                                 <div class="col-md-12">
                                     <div class="portlet light bordered" ng-if="product._id" ng-init="init(product._id, 1)" ng-controller="ProductPriceListController">
                                         <script type="text/ng-template" id="newModalSupplierPrice.html">
@@ -493,7 +503,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row" ng-if="product.isBuy">
                                 <div class="col-md-12">
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">

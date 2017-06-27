@@ -66,7 +66,7 @@ exports.install = function() {
     F.route('/erp/api/delivery/{deliveryId}', object.clone, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/delivery/{deliveryId}', object.update, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/delivery/', object.destroyList, ['delete', 'authorize']);
-    F.route('/erp/api/delivery/{deliveryId}', object.destroy, ['delete', 'authorize']);
+    F.route('/erp/api/delivery/{deliveryId}', object.destroyList, ['delete', 'authorize']);
     F.route('/erp/api/delivery/download/{:id}', object.download);
 };
 
@@ -164,13 +164,15 @@ Object.prototype = {
             if (delivery.entity == null)
                 delivery.entity = self.user.entity;
 
+            for (var i = 0; i < delivery.orderRows.length; i++)
+                delete delivery.orderRows[i].isDeleted; //Undelete orderRow lines
 
             //console.log(delivery);
             delivery.save(function(err, doc) {
                 if (err)
                     return console.log(err);
 
-                if (orderOld) //duplicate lines
+                if (orderOld) //duplicate lines only if pricing Delivery
                     return async.each(rows, function(orderRow, aCb) {
                         orderRow.order = order._id;
 
@@ -432,33 +434,28 @@ Object.prototype = {
             });
         });
     },
-    destroy: function(id) {
-        var DeliveryModel = MODEL('delivery').Schema;
+    destroyList: function(id) {
         var self = this;
 
-        DeliveryModel.findByIdAndUpdate(id, { $set: { isremoved: true, Status: 'CANCELED', total_ht: 0, total_ttc: 0, total_tva: [] } }, function(err, result) {
-            if (err)
-                return self.throw500(err);
+        if (self.body.forSales == false)
+            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+        else
+            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        var Availability = MODEL('productsAvailability').Schema;
 
-            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order } });
-            self.json({});
-        });
-    },
-    destroyList: function() {
-        var DeliveryModel = MODEL('delivery').Schema;
-        var self = this;
-
-        if (!this.query.id)
+        if (!id && !this.query.id)
             return self.throw500("No ids in destroy list");
 
         //var list = JSON.parse(this.query.id);
         var list = this.query.id;
-        if (!list)
+        if (!list && !id)
             return self.throw500("No ids in destroy list");
 
         var ids = [];
 
-        if (typeof list === 'object')
+        if (id)
+            ids.push(id);
+        else if (typeof list === 'object')
             ids = list;
         else
             ids.push(list);
@@ -484,13 +481,12 @@ Object.prototype = {
                                 warehouse: goodsNote.warehouse
                             };
 
-                            AvailabilityService.updateByQuery({
-                                dbName: req.session.lastDb,
+                            Availability.updateByQuery({
                                 query: query,
 
                                 body: {
                                     $inc: {
-                                        onHand: goodsOrderRow.quantity
+                                        onHand: goodsOrderRow.qty
                                     },
 
                                     $pull: {
@@ -508,7 +504,7 @@ Object.prototype = {
                                     }
                                 };
 
-                                JournalEntryService.remove(options);
+                                //JournalEntryService.remove(options);
 
                                 callback();
                             });
@@ -516,9 +512,15 @@ Object.prototype = {
                             if (err)
                                 return cb(err);
 
-                            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order._id } });
+                            DeliveryModel.findByIdAndUpdate(goodsNote._id, { isremoved: true, Status: 'CANCELED', total_ht: 0, total_ttc: 0, total_tva: [], orderRows: [] }, function(err, result) {
+                                if (err)
+                                    return self.throw500(err);
+                                console.log(result);
 
-                            cb();
+                                F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: goodsNote.order._id } });
+
+                                cb();
+                            });
                         });
 
                     } else
@@ -527,13 +529,8 @@ Object.prototype = {
         }, function(err) {
             if (err)
                 return self.throw500(err);
-            DeliveryModel.remove({
-                _id: { $in: ids }
-            }, function(err) {
-                if (err)
-                    return self.throw500(err);
-                self.json({});
-            });
+
+            self.json({});
         });
     },
     readDT: function() {

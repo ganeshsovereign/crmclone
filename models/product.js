@@ -605,21 +605,19 @@ productSchema.pre('save', function(next) {
     }
 
     if (this.sellFamily && this.sellFamily._id) {
-        let indirectCost = round(this.directCost * this.sellFamily.indirectCostRate / 100, 3);
-
-        // Check if modify to do not need this.isModified after
-        if (this.indirectCost != indirectCost)
-            this.indirectCost = indirectCost;
+        if (this.sellFamily.indirectCostRate)
+            this.indirectCost = round(this.directCost * this.sellFamily.indirectCostRate / 100, 3);
     }
 
     if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
-        F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: self._id } });
+        console.log("ghorrereregrglrenglrenglnergnrenglrennlrknglenkgl");
+        F.functions.PubSub.emit('product:updateDirectCost', { product: { _id: self._id } });
     }, 500);
 
     //Emit product update
     setTimeout2('product:' + this._id.toString(), function() {
-        F.functions.PubSub.emit('product:update', { data: { _id: self._id } });
+        F.functions.PubSub.emit('product:update', { product: { _id: self._id } });
     }, 1000);
 
 
@@ -830,14 +828,15 @@ function prepare_subcategories(name) {
 
 F.on('load', function() {
     // Refresh pack prices from directCost
+    return;
     F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
         //console.log(data);
-        console.log("Update emit product", data);
+        console.log("Update emit product", data.product);
 
         switch (channel) {
             case 'product:updateDirectCost':
-                if (data.data._id) {
-                    exports.Schema.find({ 'bundles.id': data.data._id })
+                if (data.product._id) {
+                    exports.Schema.find({ 'bundles.id': data.product._id })
                         //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                         //.populate("priceLists")
                         .populate("pack.id", "info directCost indirectCost")
@@ -866,7 +865,7 @@ F.on('load', function() {
                             });
                         });
 
-                    exports.Schema.find({ 'pack.id': data.data._id })
+                    exports.Schema.find({ 'pack.id': data.product._id })
                         //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                         //.populate("priceLists")
                         .populate("pack.id", "info directCost indirectCost")

@@ -639,15 +639,6 @@ baseSchema.statics.getById = function(id, callback) {
 
             //console.log(order.orderRows);
 
-            /*orderRows: [{
-                    _id: false,
-                    orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
-                    product: { type: ObjectId, ref: 'product', default: null },
-                    locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
-                    cost: { type: Number, default: 0 },
-                    qty: Number
-                }],*/
-
             return callback(err, order);
         });
 };
@@ -1083,7 +1074,7 @@ exports.Status = {
         "SEND": {
             "enable": true,
             "label": "StatusOrderSend",
-            "cssClass": "ribbon-color-primary label-primary"
+            "cssClass": "ribbon-color-success label-success"
         },
         "PROCESSING": {
             "enable": true,

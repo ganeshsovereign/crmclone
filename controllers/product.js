@@ -845,6 +845,10 @@ Object.prototype = {
         product.editedBy = self.user._id;
         product.createdBy = self.user._id;
 
+        product.taxes.push({
+            taxeId: '5901a41135e0150bde8f2b15'
+        }); //default Taxe
+
         if (!product.info || !product.info.productType || !product.sellFamily) {
             let error = ('Product type and Family are required');
 
@@ -2655,16 +2659,20 @@ PricesList.prototype = {
     readForSelect: function() {
         var self = this;
         var PriceListModel = MODEL('priceList').Schema;
-        var query = {
-            cost: false,
-            isGlobalDiscount: false
-        };
+        var query = {};
 
         if (self.query.cost && self.query.cost == 'true')
             query.cost = true;
+        else
+            query = {
+                cost: false,
+                isGlobalDiscount: false,
+                isCoef: false
+            };
+
 
         if (self.query.all)
-            delete query.cost;
+            query = {};
 
         var limit = { sort: { priceListCode: 1 } };
 

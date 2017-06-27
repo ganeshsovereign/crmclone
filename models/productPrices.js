@@ -106,7 +106,7 @@ productPricesSchema.pre('save', function(next) {
                     }
                 }
 
-                if (self.priceLists.defaultPriceList == true && self.isModified('prices'))
+                if (self.priceLists.defaultPriceList == true && self.isModified('prices') && self.prices.length)
                     product.update({ $set: { 'prices.pu_ht': self.prices[0].price } }, function(err, doc) {
                         if (err)
                             return console.log(err);
@@ -256,12 +256,12 @@ F.on('load', function() {
     // data : {data :{_id : product._id, }}
     F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
         //console.log(data);
-        console.log("Update emit productPrice", data, channel);
+        console.log("Update emit productPrice", data.product, channel);
         //return;
         switch (channel) {
             case 'product:updateDirectCost':
-                if (data.data._id)
-                    ProductPricesModel.find({ 'product': data.data._id })
+                if (data.product._id)
+                    ProductPricesModel.find({ 'product': data.product._id })
                     //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                     .populate("priceLists")
                     .exec(function(err, pricesList) {
@@ -276,7 +276,7 @@ F.on('load', function() {
                                 // Emit to all that a productPrice in product list by coef was changed
                                 //setTimeout2('productPrices:updatePrice_' + this._id.toString(), function() {
                                 F.functions.PubSub.emit('productPrices:updatePrice', {
-                                    data: doc
+                                    product: doc
                                 });
                                 aCb();
                                 //}, 5000);
@@ -348,7 +348,7 @@ F.on('load', function() {
                 if (data && data.data && data.priceLists && data.data.priceLists._id)
                     data.data.priceLists = data.data.priceLists._id;
 
-                if (!data.data.priceLists || !data.data.priceLists)
+                if (!data.data || !data.data.priceLists)
                     return;
 
                 PriceListModel.find({ isGlobalDiscount: true, parent: data.data.priceLists }, function(err, docs) {

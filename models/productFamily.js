@@ -117,7 +117,7 @@ F.on('load', function() {
 
                         docs.forEach(function(elem) {
                             setTimeout2('product:updateDirectCost_' + elem._id.toString(), function() {
-                                F.functions.PubSub.emit('product:updateDirectCost', { data: { _id: elem._id } });
+                                F.functions.PubSub.emit('product:updateDirectCost', { product: { _id: elem._id } });
                             }, 500);
 
                             //                elem.save(function(err) {
