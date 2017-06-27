@@ -70,7 +70,7 @@ Translation.prototype.load = function() {
             useCookie: false,
             detectLngFromHeaders: false,
             saveMissing: false,
-            debug: true,
+            debug: false,
             saveMissingTo: 'fallback',
             lng: CONFIG('default-language') || "en",
             fallbackLng: "dev"
