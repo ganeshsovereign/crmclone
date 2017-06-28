@@ -93,11 +93,11 @@
                     "title": "products:FamilyProducts"
                 },
                 "menu:productpricelevel": {
-                    "url": "/erp/#!/product/pricelevel.h",
+                    "url": "/erp/#!/product/pricelevel.html",
                     "position": 10,
                     "usertype": 2,
-                    "perms": "product.read",
-                    "enabled": "$conf->product->enabled",
+                    "perms": "product.readTODO",
+                    "enabled": false,
                     "icon": "fa fa-money",
                     "title": "products:PriceLevel"
                 },

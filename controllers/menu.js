@@ -39,14 +39,20 @@ exports.install = function() {
             /* Load Menu : 3 levels MAX */
 
             for (var i in data.menus) {
+                if (data.menus[i].enabled == false)
+                    continue;
                 if (data.menus[i].title)
                     data.menus[i].title = i18n.t(data.menus[i].title);
                 if (data.menus[i].submenus) {
                     for (var j in data.menus[i].submenus) {
+                        if (data.menus[i].submenus[j].enabled == false)
+                            continue;
                         if (data.menus[i].submenus[j].title)
                             data.menus[i].submenus[j].title = i18n.t(data.menus[i].submenus[j].title);
                         if (data.menus[i].submenus[j].submenus) {
                             for (var k in data.menus[i].submenus[j].submenus) {
+                                if (data.menus[i].submenus[j].submenus[k].enabled == false)
+                                    continue;
                                 if (data.menus[i].submenus[j].submenus[k].title)
                                     data.menus[i].submenus[j].submenus[k].title = i18n.t(data.menus[i].submenus[j].submenus[k].title);
                             }
