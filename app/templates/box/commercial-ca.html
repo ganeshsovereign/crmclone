@@ -1,0 +1,76 @@
+<!-- BEGIN PORTLET-->
+<div class="portlet light " ng-if="login.rights.box.ca">
+    <div class="portlet-title">
+        <div class="caption caption-md">
+            <i class="icon-bar-chart font-green-haze hide"></i>
+            <span class="caption-subject font-green-haze bold uppercase">@(bills:CommercialCA)</span>
+            <span class="caption-helper hide">weekly stats...</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <!--<div class="row number-stats margin-bottom-30">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="stat-left">
+                    <div class="stat-chart">
+                        <div id="sparkline_bar"></div>
+                    </div>
+                    <div class="stat-number">
+                        <div class="title">
+                            Total
+                        </div>
+                        <div class="number">
+                            2460
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="stat-right">
+                    <div class="stat-chart">
+                        <div id="sparkline_bar2"></div>
+                    </div>
+                    <div class="stat-number">
+                        <div class="title">
+                            New
+                        </div>
+                        <div class="number">
+                            719
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+        <div class="table-scrollable table-scrollable-borderless">
+            <table class="table table-hover table-light">
+                <thead>
+                    <tr class="uppercase">
+                        <th colspan="2">
+                            @(companies:Deal)
+                        </th>
+                        <th class="text-align-reverse">
+                            CA HT
+                        </th>
+                        <th class="text-align-reverse">
+                            Repartition
+                        </th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="user in dataCommercialCa">
+                    <td class="fit">
+                        <!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
+                    </td>
+                    <td>
+                        <a href="#" ui-sref="user.show({id:client._id})" class="primary-link">{{user.name}}</a>
+                    </td>
+                    <td class="text-align-reverse">
+                        {{user.total_ht | currency}}
+                    </td>
+                    <td class="text-align-reverse">
+                        <span class="bold font-green-haze">{{user.total_ht / dataCommercialCaTotal * 100 | percent:0}}</span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- END PORTLET-->

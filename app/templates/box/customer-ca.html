@@ -1,0 +1,93 @@
+<!-- BEGIN PORTLET-->
+<div class="portlet light ">
+    <div class="portlet-title">
+        <div class="caption caption-md">
+            <i class="icon-bar-chart font-green-haze hide"></i>
+            <span class="caption-subject font-green-haze bold uppercase">@(bills:CustomerCA)</span>
+            <span class="caption-helper hide">weekly stats...</span>
+        </div>
+        <!--<div class="actions">
+            <div class="btn-group btn-group-devided" data-toggle="buttons">
+                <label class="btn btn-transparent grey-salsa btn-circle btn-sm active" ng-click="loadCaGraph({}, 'MONTH')">
+                    <input type="radio" name="options" class="toggle" id="option2">@(Dates)</label>
+                <label class="btn btn-transparent grey-salsa btn-circle btn-sm">
+                    <input type="radio" name="options" class="toggle" id="option2">@(Previsionnel)</label>
+            </div>
+        </div>-->
+        <div class="inputs">
+            <div class="portlet-input input-inline input-small">
+                <div class="input-icon right">
+                    <i class="icon-magnifier"></i>
+                    <input type="text" ng-model="search" class="form-control input-circle" placeholder="@(Search)..."> </div>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <!--<div class="row number-stats margin-bottom-30">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="stat-left">
+                    <div class="stat-chart">
+                        <div id="sparkline_bar"></div>
+                    </div>
+                    <div class="stat-number">
+                        <div class="title">
+                            Total HT
+                        </div>
+                        <div class="number">
+                            {{dataCustomerCaTotal | number:0}}
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+        <!--<div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="stat-right">
+                <div class="stat-chart">
+                    <div id="sparkline_bar2"></div>
+                </div>
+                <div class="stat-number">
+                    <div class="title">
+                        New
+                    </div>
+                    <div class="number">
+                        719
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+        <div class="table-scrollable table-scrollable-borderless scroller" scroller style="height:318px;">
+            <table class="table table-hover table-light">
+                <thead>
+                    <tr class="uppercase">
+                        <th colspan="2">
+                            @(companies:Company)
+                        </th>
+                        <th class="text-align-reverse">
+                            CA HT
+                        </th>
+                        <th class="text-align-reverse">
+                            Repartition
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="client in dataCustomerCa | filter:search">
+                        <td class="fit">
+                            <!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
+                        </td>
+                        <td>
+                            <a href="#" ui-sref="societe.show({id:client._id})" class="primary-link">{{client.name[0]}}</a>
+                        </td>
+                        <td class="text-align-reverse">
+                            {{client.total_ht| currency}}
+                        </td>
+                        <td class="text-align-reverse">
+                            <span class="bold font-green-haze">{{client.total_ht / dataCustomerCaTotal * 100| percent:0}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- END PORTLET-->

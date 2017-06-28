@@ -1,0 +1,54 @@
+<!-- BEGIN PORTLET-->
+<div class="portlet light tasks-widget" ng-if="login.rights.box.absence">
+    <div class="portlet-title">
+        <div class="caption caption-md">
+            <i class="icon-bar-chart font-green-haze hide"></i>
+            <span class="caption-subject font-green-haze bold uppercase">@(Absences / vacances)</span>
+            <span class="caption-helper">{{absences.length}} absences</span>
+        </div>
+        <div class="inputs">
+            <div class="portlet-input input-small input-inline">
+                <div class="input-icon right">
+                    <i class="icon-magnifier"></i>
+                    <input type="text" class="form-control form-control-solid" ng-model="search.user.name" placeholder="@(Search)">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="task-content">
+            <div class="scroller" scroller style="height: 307px;" data-always-visible="1" data-rail-visible1="0" data-handle-color="#D7DCE2">
+                <!-- START TASK LIST -->
+                <ul class="task-list">
+                    <li ng-repeat='absence in absences | filter:search'>
+                        <div class="task-title">
+                            <span class="task-title-sp">
+                                <strong>{{absence.user.name}}</strong> <span data-ng-class="late(absence.dateEnd)">{{absence.dateStart| date:'dd/MM/yyyy HH:mm'}} - {{absence.dateEnd| date:'dd/MM/yyyy HH:mm'}}</span> </span>
+                            <span class="label label-sm" ng-class='absence.status.css'>{{absence.status.name}}</span>
+                        </div>
+                        <div class="task-config">
+                            <div class="task-config-btn btn-group" ng-show="late(absence.dateEnd)">
+                                <a class="btn btn-xs default" href="javascript:;" data-toggle="dropdown" dropdown-menu-hover data-close-others="true">
+                                    <i class="fa fa-cog"></i><i class="fa fa-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li>
+                                        <a href="javascript:;" ng-click="absenceAddTick(absence)">
+                                            <i class="fa fa-check"></i> Est présent </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <!-- END START TASK LIST -->
+            </div>
+        </div>
+        <div class="task-footer">
+            <div class="btn-arrow-link pull-right">
+                <a href="/#!/module/user/absence.html">Voir toutes les absences</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END PORTLET-->

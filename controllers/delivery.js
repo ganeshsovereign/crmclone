@@ -1203,7 +1203,7 @@ Object.prototype = {
     },
     statistic: function() {
         var self = this;
-        var DeliveryModel = MODEL('delivery').Schema;
+        var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
 
         var ca = {};
 

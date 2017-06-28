@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-md-3">
+        <div class="portlet light" ng-repeat="sa in saEvolution">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-green-haze hide"></i>
+                    <span class="caption-subject font-green-haze bold uppercase">Evolution des salaires {{sa.entity}}</span>
+                    <span class="caption-helper"> Par rapport a N-1</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="mt-element-step">
+                    <div class="row step-default">
+                        <div class="col-md-12 bg-grey mt-step-col">
+                            <div class="mt-step-title uppercase">{{sa.entity}}</div>
+                            <div class="mt-step-content font-grey-cascade">Evolution des salaires</div>
+                            <div class="mt-step-number font-grey" ng-class="{'progress-bar-success' : sa.evolution <= 0, 'bg-red':sa.evolution > 0}">{{sa.evolutionStr}}</div>
+                            <div class="mt-step-title uppercase font-green-haze">Salaires actuels</div>
+                            <progressbar animate="true" value="sa.chNpercent" type="green"><b>{{sa.saN | currency}}</b></progressbar>
+                            <progressbar animate="true" value="sa.chN_1percent" type="warning"><b>{{sa.saN_1 | currency}}</b></progressbar>
+                            <div class="mt-step-title uppercase font-yellow-gold">Salaires N-1</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption caption-md">
+                    <i class="icon-bar-chart font-green-haze hide"></i>
+                    <span class="caption-subject font-green-haze bold uppercase">Salaires</span>
+                    <span class="caption-helper"> {{year| date:'yyyy'}}</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="CSSAnimationChart">
+                    <am-chart id="amchart_3" options="amChartOptions" datas="saData.graph"></am-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+    </div>
+</div>

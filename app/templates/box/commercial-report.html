@@ -1,0 +1,38 @@
+<!-- BEGIN PORTLET-->
+<div class="portlet light">
+    <div class="portlet-title">
+        <div class="caption caption-md">
+            <i class="icon-bar-chart font-green-haze"></i>
+            <span class="caption-subject font-green-haze bold uppercase">Commerciaux</span>
+            <span class="caption-helper">{{reports.length}} comptes-rendus</span>
+        </div>
+        <div class="inputs">
+            <div class="portlet-input input-inline input-small ">
+                <div class="input-icon right">
+                    <i class="icon-magnifier"></i>
+                    <input type="text" class="form-control form-control-solid" ng-model="search.author.name" placeholder="@(Search)">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="scroller" scroller style="height: 329px;" data-always-visible="1" data-rail-visible1="0" data-handle-color="#D7DCE2">
+            <div class="general-item-list">
+                <div class="item" ng-repeat="report in reports | filter:search">
+                    <div class="item-head">
+                        <div class="item-details">
+                            <img class="item-pic" src="/assets/admin/layout/img/avatar4.jpg">
+                            <a href="" class="item-name primary-link">{{report.author.name}} - <i>{{report.societe.name}}</i></a>
+                            <span class="item-label">{{report.dateReport | date : 'dd/MM/yyyy'}}</span>
+                        </div>
+                        <span ng-if="report.lead.name" class="item-status"><span class="badge badge-empty badge-success"></span> {{report.lead.name}}</span>
+                    </div>
+                    <div class="item-body">
+                        {{report.comment}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END PORTLET-->
