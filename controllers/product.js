@@ -3518,6 +3518,11 @@ ProductTypes.prototype = {
     }
 };
 
+/**
+ * FAMILY PROTOTYPE
+ */
+
+
 function ProductFamily() {};
 ProductFamily.prototype = {
     getProductFamilyById: function(id) {

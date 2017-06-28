@@ -850,12 +850,16 @@ Object.prototype = {
     },
     pdf: function(ref, self) {
         // Generation de la facture PDF et download
-
         if (!self)
             self = this;
 
-        Delivery(ref, function(err, doc) {
-            createDelivery2(doc, function(err, tex) {
+        if (self.query.forSales == "false")
+            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+        else
+            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+
+        DeliveryModel.getById(ref, function(err, doc) {
+            createDelivery(doc, function(err, tex) {
                 if (err)
                     return console.log(err);
 
@@ -1801,8 +1805,12 @@ Billing.prototype = {
 
 function createDelivery(doc, callback) {
     var SocieteModel = MODEL('Customers').Schema;
+    const fixedWidthString = require('fixed-width-string');
+    const isbn = MODULE('utils').checksumIsbn;
     // Generation du BL PDF et download
     var fk_livraison;
+
+    //console.log(doc);
 
     Dict.extrafield({ extrafieldName: 'BonLivraison' }, function(err, doc) {
         if (err) {
@@ -1815,7 +1823,7 @@ function createDelivery(doc, callback) {
 
     var model = "delivery.tex";
 
-    SocieteModel.findOne({ _id: doc.client.id }, function(err, societe) {
+    SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
 
         // Array of lines
         var tabLines = [];
@@ -1830,10 +1838,10 @@ function createDelivery(doc, callback) {
         });
 
         for (var i = 0; i < doc.lines.length; i++) {
-            if (doc.lines[i].product.name != 'SUBTOTAL' && doc.lines[i].qty !== 0)
+            if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0)
                 tabLines.push({
-                    ref: doc.lines[i].product.name.substring(0, 12),
-                    description: "\\textbf{" + doc.lines[i].product.label + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                    ref: doc.lines[i].product.info.SKU.substring(0, 12),
+                    description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
                     // qty_order: doc.lines[i].qty_order,
                     qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") }
                 });
@@ -1889,6 +1897,18 @@ function createDelivery(doc, callback) {
                 unit: "kg"
             });
 
+        // 4 -> BL
+        var barcode = "4-000-"; + doc.ref.split('-')[1].replace('_', '-');
+        var split = doc.ref.split('-');
+        if (split.length == 2) //BL1607-02020-32
+            barcode += "00" + fixedWidthString(doc.ID, 6, { padding: '0', align: 'right' });
+        else { // BL1607-120202
+            barcode += fixedWidthString(doc.ID, 6, { padding: '0', align: 'right' });
+            barcode += "-" + fixedWidthString(split[2], 2, { padding: '0', align: 'right' });
+        }
+
+        barcode += '-' + isbn(barcode);
+
         Latex.Template(model, doc.entity)
             .apply({
                 "NUM": {
@@ -1897,19 +1917,19 @@ function createDelivery(doc, callback) {
                 },
                 "DESTINATAIRE.NAME": {
                     "type": "string",
-                    "value": doc.address.name
+                    "value": doc.shippingAddress.name
                 },
                 "DESTINATAIRE.ADDRESS": {
                     "type": "area",
-                    "value": doc.address.street
+                    "value": doc.shippingAddress.street
                 },
                 "DESTINATAIRE.ZIP": {
                     "type": "string",
-                    "value": doc.address.zip
+                    "value": doc.shippingAddress.zip
                 },
                 "DESTINATAIRE.TOWN": {
                     "type": "string",
-                    "value": doc.address.city
+                    "value": doc.shippingAddress.city
                 },
                 "DESTINATAIRE.TVA": {
                     "type": "string",
@@ -1922,6 +1942,7 @@ function createDelivery(doc, callback) {
                 //"TITLE": {"type": "string", "value": doc.title},
                 "REFCLIENT": { "type": "string", "value": doc.ref_client },
                 "DELIVERYMODE": { "type": "string", "value": doc.delivery_mode },
+                "BARCODE": { type: "string", value: barcode },
                 "DATEC": {
                     "type": "date",
                     "value": doc.datec,

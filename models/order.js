@@ -953,7 +953,7 @@ function setNameDelivery(next) {
             SeqModel.incCpt(order._id, function(number) {
                 //console.log(seq);
 
-                self.ref = (self.forSales == true ? "BL" : "RE") + order.ref.substring(2) + '/' + number;
+                self.ref = (self.forSales == true ? "BL" : "RE") + order.ref.substring(2) + '-' + number;
 
                 next();
             });
