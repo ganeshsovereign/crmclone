@@ -5,8 +5,8 @@
 var version = require('../package').version;
 
 exports.name = 'angular.js';
-exports.version = '1.0.3';
-exports.options = {'angular-version': '1.3.20', 'angular-i18n-version': '1.3.20', version: version};
+exports.version = '1.0.4';
+exports.options = { 'angular-version': '1.3.20', 'angular-i18n-version': '1.3.20', version: version };
 
 var fs = require('fs');
 var EXTENSION_JS = '.js';
@@ -16,19 +16,17 @@ var REPOSITORY_ANGULAR_COMMON = '$angular-common';
 var REPOSITORY_ANGULAR_CONTROLLER = '$angular-controller';
 var REPOSITORY_ANGULAR_OTHER = '$angular-other';
 
-exports.install = function () {
+exports.install = function(options) {
 
-    var options = framework.version >= 1900 ? arguments[0] : arguments[1];
-
-    Utils.extend(exports.options, options, true);
+    U.extend(exports.options, options, true);
 
     /*
-     Include: Angular.js CDN into the head
-     @version {String}
-     @name {String or String Array} :: optional, example: route or resource
-     return {String}
-     */
-    framework.helpers.ng = function (name) {
+		Include: Angular.js CDN into the head
+		@version {String}
+		@name {String or String Array} :: optional, example: route or resource
+		return {String}
+	*/
+    framework.helpers.ng = function(name) {
         var self = this;
 
         var length = arguments.length;
@@ -72,7 +70,7 @@ exports.install = function () {
     };
 
 
-    framework.helpers.ngCommon = function (name) {
+    framework.helpers.ngCommon = function(name) {
 
         var self = this;
         var length = arguments.length;
@@ -102,7 +100,8 @@ exports.install = function () {
         return '';
     };
 
-    framework.helpers.ngLocale = function (name) {
+
+    framework.helpers.ngLocale = function(name) {
 
         var self = this;
         var length = arguments.length;
@@ -140,11 +139,11 @@ exports.install = function () {
     };
 
     /*
-     Include: Controller into the head
-     @name {String or String Array}
-     return {String}
-     */
-    framework.helpers.ngController = function (name) {
+		Include: Controller into the head
+		@name {String or String Array}
+		return {String}
+	*/
+    framework.helpers.ngController = function(name) {
 
         var self = this;
 
@@ -179,11 +178,11 @@ exports.install = function () {
     };
 
     /*
-     Include: Content from file into the body
-     @name {String}
-     return {String}
-     */
-    framework.helpers.ngTemplate = function (name, id) {
+    	Include: Content from file into the body
+    	@name {String}
+    	return {String}
+    */
+    framework.helpers.ngTemplate = function(name, id) {
 
         var self = this;
 
@@ -217,11 +216,11 @@ exports.install = function () {
     };
 
     /*
-     Include: Directive into the head
-     @name {String}
-     return {String}
-     */
-    framework.helpers.ngDirective = function (name) {
+		Include: Directive into the head
+		@name {String}
+		return {String}
+	*/
+    framework.helpers.ngDirective = function(name) {
 
         var self = this;
 
@@ -254,11 +253,11 @@ exports.install = function () {
     };
 
     /*
-     Include: CSS into the head
-     @name {String}
-     return {String}
-     */
-    framework.helpers.ngStyle = function (name) {
+    	Include: CSS into the head
+    	@name {String}
+    	return {String}
+    */
+    framework.helpers.ngStyle = function(name) {
 
         var self = this;
         var length = arguments.length;
@@ -284,11 +283,11 @@ exports.install = function () {
     };
 
     /*
-     Include: Service into the head
-     @name {String}
-     return {String}
-     */
-    framework.helpers.ngService = function (name) {
+    	Include: Service into the head
+    	@name {String}
+    	return {String}
+    */
+    framework.helpers.ngService = function(name) {
 
         var self = this;
 
@@ -322,11 +321,11 @@ exports.install = function () {
     };
 
     /*
-     Include: Filter into the head
-     @name {String}
-     return {String}
-     */
-    framework.helpers.ngFilter = function (name) {
+    	Include: Filter into the head
+    	@name {String}
+    	return {String}
+    */
+    framework.helpers.ngFilter = function(name) {
 
         var self = this;
 
@@ -360,11 +359,11 @@ exports.install = function () {
     };
 
     /*
-     Include: Resource into the head
-     @name {String}
-     return {String}
-     */
-    framework.helpers.ngResource = function (name) {
+    	Include: Resource into the head
+    	@name {String}
+    	return {String}
+    */
+    framework.helpers.ngResource = function(name) {
 
         var self = this;
 
@@ -397,19 +396,17 @@ exports.install = function () {
         return '';
     };
 
-    framework.helpers.ngInclude = function (name) {
-        var self = this;
-
+    framework.helpers.ngInclude = function(name) {
         if (name.lastIndexOf(EXTENSION_JS) === -1)
             name += EXTENSION_JS;
-
         return $script_create(name);
     };
 
-    framework.on('controller-render-head', event_render_head);
+
+    framework.on('controller-render-meta', event_render_head);
 };
 
-exports.uninstall = function () {
+exports.uninstall = function() {
     delete framework.helpers.ng;
     delete framework.helpers.ngInclude;
     delete framework.helpers.ngResource;
@@ -420,7 +417,7 @@ exports.uninstall = function () {
     delete framework.helpers.ngController;
     delete framework.helpers.ngLocale;
     delete framework.helpers.ngCommon;
-    framework.removeListener('controller-render-head', event_render_head);
+    framework.removeListener('controller-render-meta', event_render_head);
 };
 
 function event_render_head(controller) {

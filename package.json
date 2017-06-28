@@ -56,7 +56,7 @@
     "redis": "^2.6.3",
     "shortid": "latest",
     "symeos-mqtt": "latest",
-    "total.js": "2.1.x",
+    "total.js": "2.6.x",
     "unzip": "^0.1.11",
     "xml-writer": ">=1.4.1",
     "xml2js": "latest"
