@@ -4351,7 +4351,6 @@ ProductAttributes.prototype = {
     },
     deleteProductAttributes: function(id) {
         var self = this;
-        console.log(id);
         var ProductAttributesModel = MODEL('productAttributes').Schema;
         var ProductAttributesValuesModel = MODEL('productAttibutesValues').Schema;
         var ProductModel = MODEL('product').Schema;
@@ -4381,11 +4380,17 @@ ProductAttributes.prototype = {
                         if (err)
                             return self.throw500(err);
 
-                        ProductAttributesModel.remove({ _id: id }, function(err, doc) {
+                        //remove all attributes values
+                        ProductAttributesValuesModel.remove({ optionId: id }, function(err, doc) {
                             if (err)
                                 return self.throw500(err);
+                            //suppress attribute
+                            ProductAttributesModel.remove({ _id: id }, function(err, doc) {
+                                if (err)
+                                    return self.throw500(err);
 
-                            return self.json(doc);
+                                return self.json(doc);
+                            });
                         });
                     });
                 });

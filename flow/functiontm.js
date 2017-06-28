@@ -32,8 +32,12 @@ exports.install = function(instance) {
     var fn = null;
 
     instance.on('data', function(response) {
+        fn && fn(response.data, function(err, data) {
+            if (err)
+                return instance.error(err);
 
-        fn && fn(response.data, instance.custom.response, response);
+            instance.send(data);
+        });
     });
 
     instance.custom.response = function(err, value, response) {
@@ -46,9 +50,15 @@ exports.install = function(instance) {
     };
 
     instance.custom.reconfigure = function() {
-        console.log(instance.options.code);
         try {
-            instance.options.code && (fn = instance.options.code);
+            if (instance.options.code) {
+                var arg = instance.options.code;
+
+                if (/^function\s*[^\(]*\(/.test(arg))
+                    fn = toFunc(arg);
+                else
+                    throw error(arg);
+            }
         } catch (e) {
             fn = null;
         }
@@ -56,4 +66,52 @@ exports.install = function(instance) {
 
     instance.on('options', instance.custom.reconfigure);
     instance.custom.reconfigure();
+
+    // converting functions stored as strings in the instance
+    function toFunc(arg) {
+        'use strict';
+
+        arg = arg.trim();
+
+        // zero length strings are considered null instead of Error
+        if (0 == arg.length) return null;
+
+        // must start with "function"
+        if (!/^function\s*[^\(]*\(/.test(arg))
+            throw error(arg);
+
+
+        // trim string to function only
+        arg = trim(arg);
+
+        return F.eval('(' + arg + ')');
+    }
+
+    /**
+     * Trim `arg` down to only the function
+     */
+
+    function trim(arg) {
+        var match = arg.match(/^function\s*[^\(]*\([^\)]*\)\s*{/);
+        if (!match) throw error(arg);
+
+        // we included the first "{" in our match
+        var open = 1;
+
+        for (var i = match[0].length; i < arg.length; ++i) {
+            switch (arg[i]) {
+                case '{':
+                    open++;
+                    break;
+                case '}':
+                    open--;
+                    if (open === 0) {
+                        // stop at first valid close of function
+                        return arg.substring(0, i + 1);
+                    }
+            }
+        }
+        throw error(arg);
+    }
+
 };
