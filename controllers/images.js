@@ -301,7 +301,7 @@ var Images = function() {
             var queryNew = queryBuilder();
             var countQuery = queryBuilder();
 
-            getTotal = function(pCb) {
+            var getTotal = function(pCb) {
 
                 countQuery.count(function(err, _res) {
                     if (err) {
@@ -312,8 +312,8 @@ var Images = function() {
                 });
             };
 
-            getData = function(pCb) {
-                query.skip(skip).limit(limit).exec(function(err, _res) {
+            var getData = function(pCb) {
+                queryNew.skip(skip).limit(limit).exec(function(err, _res) {
                     if (err) {
                         return pCb(err);
                     }
@@ -322,9 +322,7 @@ var Images = function() {
                 });
             };
 
-            parallelTasks = [getTotal, getData];
-
-            async.parallel(parallelTasks, function(err, result) {
+            async.parallel([getTotal, getData], function(err, result) {
                 var count;
                 var response = {};
 
