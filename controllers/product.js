@@ -925,7 +925,7 @@ Object.prototype = {
             base = false;
         }
 
-        console.log(query);
+        //console.log(query);
 
         var cost = false;
         if (self.body.supplier || self.query.supplier) {
@@ -1057,7 +1057,7 @@ Object.prototype = {
             if (err)
                 return self.throw500("err : /api/product/autocomplete" + err);
 
-            console.log(docs);
+            //console.log(docs);
             self.json(docs);
         });
     },

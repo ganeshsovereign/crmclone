@@ -275,6 +275,10 @@ var Images = function() {
 
             console.log(self.query);
 
+            var paginationObject = MODULE('helper').page(self.query);
+            var limit = paginationObject.limit;
+            var skip = paginationObject.skip;
+
             var query = {};
             if (self.query.filter)
                 query = {
@@ -287,12 +291,52 @@ var Images = function() {
                     }]
                 };
 
-            console.log(query);
-            ImagesModel.find(query, {}, { sort: { imageSrc: 1 }, limit: 20 }, function(err, docs) {
+            function queryBuilder() {
+                var query1 = ImagesModel.find(query);
+
+                query1.sort({ imageSrc: 1 });
+                return query1;
+            }
+
+            var queryNew = queryBuilder();
+            var countQuery = queryBuilder();
+
+            getTotal = function(pCb) {
+
+                countQuery.count(function(err, _res) {
+                    if (err) {
+                        return pCb(err);
+                    }
+
+                    pCb(null, _res);
+                });
+            };
+
+            getData = function(pCb) {
+                query.skip(skip).limit(limit).exec(function(err, _res) {
+                    if (err) {
+                        return pCb(err);
+                    }
+
+                    pCb(null, _res);
+                });
+            };
+
+            parallelTasks = [getTotal, getData];
+
+            async.parallel(parallelTasks, function(err, result) {
+                var count;
+                var response = {};
+
                 if (err)
                     return self.throw500(err);
 
-                return self.json({ data: docs });
+                count = result[0] || 0;
+
+                response.total = count;
+                response.data = result[1];
+
+                return self.json(response);
             });
         };
 

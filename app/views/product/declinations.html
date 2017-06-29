@@ -1,4 +1,4 @@
-<script type="text/ng-template" id="searchsupplierproduct.html">
+<script type="text/ng-template" id="searchvariantproduct.html">
     <a>
         <span ng-bind-html="match.model.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.info.langs[0].name"></span>
     </a>
@@ -15,7 +15,7 @@
                         <i class="icon-docs"></i>
                         <span class="caption-subject dark bold uppercase"> @(Declinations)</span>
                     </div>
-                    <save mode="product._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+                    <save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
                 </div>
 
 
@@ -26,7 +26,7 @@
                                 <div class="form-group form-md-line-input has-info">
                                     <div class="input-group input-group">
                                         <div class="input-group-control">
-                                            <input type="text" class="form-control" id="addProduct" ng-model="newRefProduct" typeahead="product as product.ref for product in productAutoComplete($viewValue, {sellFamily:product.sellFamily._id})" typeahead-template-url="searchsupplierproduct.html"
+                                            <input type="text" class="form-control" id="addProduct" ng-model="newRefProduct" typeahead="product as product.ref for product in productAutoComplete($viewValue, {sellFamily:product.sellFamily._id})" typeahead-template-url="searchvariantproduct.html"
                                                 placeholder="@(products:ProductRef)" />
                                             <label for="addProduct">@(products:RefProductSameFamily)</label>
                                         </div>
