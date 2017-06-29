@@ -282,11 +282,13 @@ var Images = function() {
                         'langs.description': new RegExp(self.query.filter, "gi")
                     }, {
                         'langs.name': new RegExp(self.query.filter, "gi")
+                    }, {
+                        'imageSrc': new RegExp(self.query.filter, "gi")
                     }]
                 };
 
             console.log(query);
-            ImagesModel.find(query, {}, { sort: { imageSrc: 1 } }, function(err, docs) {
+            ImagesModel.find(query, {}, { sort: { imageSrc: 1 }, limit: 20 }, function(err, docs) {
                 if (err)
                     return self.throw500(err);
 
