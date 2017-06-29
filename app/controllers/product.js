@@ -591,7 +591,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                     //console.log(allCasesOfRest[i]);
                     var res = []
 
-                    res.push(arr[0][j]);// + allCasesOfRest[i]);
+                    res.push(arr[0][j]); // + allCasesOfRest[i]);
                     res.push(allCasesOfRest[i]);
 
                     result.push(res);
@@ -889,6 +889,11 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
         if (!newProductId)
             return;
+
+        if (!$scope.product.isVariant) {
+            $scope.product.isVariant = true;
+            $scope.update();
+        }
 
         //LoadProduct
         Products.get({

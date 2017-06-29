@@ -4051,7 +4051,13 @@ ProductFamily.prototype = {
 
         data.discounts.sort(compare);
 
-        data.discounts[0].count = 0;
+        if (data.discounts.length == 0)
+            data.discounts.push({
+                count: 0,
+                discount: 0
+            });
+        else
+            data.discounts[0].count = 0;
 
         ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, family) {
             if (err) {
