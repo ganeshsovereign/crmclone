@@ -8,8 +8,10 @@ exports.input = true;
 exports.output = 1;
 exports.cloning = false;
 exports.options = {
-    outputs: 1,
-    code: `send('Hello world!');`
+    output: 1,
+    code: `function(data, instance, callback) {
+    callback(err, output, reponse);
+};`
 };
 exports.readme = `# Condition
 
@@ -23,7 +25,7 @@ exports.html = `<div class="padding">
 	</div>
 	<div data-jc="codemirror" data-type="javascript" data-jc-path="code" data-required="true" data-height="500px">@(Code)</div>
 	<div class="help">@(Data will continue when the condition will be validated.)</div>
-</div><script>ON('save.condition', function(component, options) {
+</div><script>ON('save.functiontm', function(component, options) {
 	component.output = options.output || 1;
 });</script>`;
 
@@ -31,17 +33,14 @@ exports.install = function(instance) {
 
     var fn = null;
 
-    instance.on('data', function(response) {
-        fn && fn(response.data, function(err, data) {
-            if (err)
-                return instance.error(err);
-
-            instance.send(data);
-        });
+    instance.on('data', function(flowdata) {
+        fn && fn(flowdata.data, instance, instance.custom.response);
     });
 
     instance.custom.response = function(err, value, response) {
         if (err)
+            return instance.error(err);
+        if (value === false)
             return;
         if (value > -1)
             instance.send(value, response);
@@ -84,7 +83,7 @@ exports.install = function(instance) {
         // trim string to function only
         arg = trim(arg);
 
-        return F.eval('(' + arg + ')');
+        return eval('(' + arg + ')');
     }
 
     /**

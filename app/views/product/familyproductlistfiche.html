@@ -14,10 +14,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span ng-class="{'font-red':!object.isActive}"> @(products:Family)  : {{object.langs[_language].name}} </span>
-        </li>
-        <li>
-            <small ng-hide="!object.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!object.isActive" class="font-red">@(Disabled)</small>
+            <span> @(products:Family)  : {{object.langs[_language].name}} </span>
         </li>
     </ul>
     <div class="page-toolbar">
@@ -64,7 +61,7 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-magic-wand"></i>
-                <span class="caption-subject dark bold uppercase"> @(products:Family) : <span ng-class="{'font-red':!object.isActive}"> {{object.langs[_language].name}}</span></span>
+                <span class="caption-subject dark bold uppercase"> @(products:Family) : {{object.langs[_language].name}}</span>
             </div>
             <save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
         </div>
@@ -86,15 +83,6 @@
                             </div>
                         </div>
                         <div class="portlet light bordered">
-                            <div class="md-checkbox-inline">
-                                <div class="md-checkbox has-success">
-                                    <input type="checkbox" id="isActive" class="md-check" ng-model="object.isActive" ng-checked="object.isActive">
-                                    <label for="isActive">
-                                <span></span>
-                                <span class="check"></span>
-                                <span class="box"></span> @(Activated)</label>
-                                </div>
-                            </div>
                             <!--<div class="md-checkbox-inline">
                                         <div class="md-checkbox">
                                             <input type="checkbox" id="isCoef" class="md-check" ng-model="object.isCoef" ng-checked="object.isCoef">
@@ -160,8 +148,34 @@
                                         <button type="button" ng-click="addNewRange = false" class="btn red btn-sm">@(Cancel)</button>
                                         <button type="button" ng-click="object.discounts.push(newline); addNewRange = false; update(true);" class="btn blue btn-sm">@(Add)</button>
                                     </div>
+                                </div>
                             </form>
+                        </div>
+                        <div class="portlet light bordered" ng-if="object._id" ng-hide="object.isCost">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <span class="caption-subject font-grey-gallery bold uppercase">@(products:FamilyCoef)</span>
+                                </div>
+
+                                <!--<div class="actions btn-set">
+                                <button class="btn green" ng-hide="addNewRange" ng-click="addNewRange = true">+</button>
+                            </div>-->
                             </div>
+
+                            <table class="table table-striped table-bordered no-footer">
+                                <thead>
+                                    <th width="400px">@(products:PriceLevel) (@(products:BasedOnCoef))</th>
+                                    <th>@(products:Coef)</th>
+                                    <th>@(products:Discount)</th>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="line in object.familyCoef">
+                                        <td class="">{{line.priceLists.name}}</td>
+                                        <td><a ng-if="line.priceLists.isCoef" href="#" editable-number="line.coef" e-step="0.001" e-min="0" onaftersave="update(true)">{{line.coef || 1 | number:3}}</a><span ng-if="line.priceLists.isCoef == false">{{line.coef || 0 | number:3}}</span></td>
+                                        <td><span ng-if="line.priceLists.discount">-{{line.priceLists.discount || 0 | number:2}} %</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="col-md-7" ng-if="object._id">

@@ -66,6 +66,9 @@ productPricesSchema.pre('save', function(next) {
                     if (err)
                         return cb(err);
 
+                    if (!self.product || !self.product.sellFamily)
+                        return cb("Product with unknown family " + self.product);
+
                     return cb(null, product);
                 });
         },

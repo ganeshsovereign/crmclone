@@ -906,13 +906,13 @@ Object.prototype = {
 
         /* filter on family product */
         if (self.body.family)
-            query.caFamily = self.body.family;
+            query.sellFamily = self.body.family;
 
         if (self.body.options) {
             var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
 
             let options = _.mapValues(self.body.options, function(elem) {
-                if (checkForHexRegExp.test(id))
+                if (checkForHexRegExp.test(elem))
                     return ObjectId(elem);
 
                 return elem;
@@ -2717,7 +2717,6 @@ PricesList.prototype = {
                 F.functions.PubSub.emit('productPrices:updateDiscountRate', { data: doc });
             }, 500);
 
-
             //console.log(doc);
             doc = doc.toObject();
             doc.successNotify = {
@@ -2754,9 +2753,7 @@ PricesList.prototype = {
                 FamilyCoefModel.remove({ priceLists: id }, cb);
             },
             function(cb) {
-                PriceListModel.remove({
-                    _id: id
-                }, cb)
+                PriceListModel.remove({ _id: id }, cb)
             }
         ], function(err) {
             if (err)
@@ -3570,6 +3567,7 @@ ProductFamily.prototype = {
                 isCost: 1,
                 discounts: 1,
                 variants: 1,
+                familyCoef: 1,
                 opts: {
                     langs: '$options.langs',
                     _id: '$options._id',
@@ -3589,6 +3587,46 @@ ProductFamily.prototype = {
                 isCoef: { $first: '$isCoef' },
                 isCost: { $first: '$isCost' },
                 variants: { $first: '$variants' },
+                familyCoef: { $first: '$familyCoef' },
+                isActive: { $first: '$isActive' }
+            }
+        }, {
+            $lookup: {
+                from: 'ProductFamilyCoef',
+                localField: '_id',
+                foreignField: 'family',
+                as: 'familyCoef'
+            }
+        }, {
+            $unwind: {
+                path: '$familyCoef',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $lookup: {
+                from: 'PriceList',
+                localField: 'familyCoef.priceLists',
+                foreignField: '_id',
+                as: 'familyCoef.priceLists'
+            }
+        }, {
+            $unwind: {
+                path: '$familyCoef.priceLists'
+                    //preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $group: {
+                _id: '$_id',
+                opts: { $first: '$opts' },
+                langs: { $first: '$langs' },
+                sequence: { $first: '$sequence' },
+                indirectCostRate: { $first: '$indirectCostRate' },
+                minMargin: { $first: '$minMargin' },
+                discounts: { $first: '$discounts' },
+                isCoef: { $first: '$isCoef' },
+                isCost: { $first: '$isCost' },
+                variants: { $first: '$variants' },
+                familyCoef: { $push: '$familyCoef' },
                 isActive: { $first: '$isActive' }
             }
         }], function(err, result) {
@@ -3741,6 +3779,8 @@ ProductFamily.prototype = {
         var self = this;
         var body = self.body;
         var ProductFamilyModel = MODEL('productFamily').Schema;
+        var ProductFamilyCoefModel = MODEL('productFamilyCoef').Schema;
+        var PriceListModel = MODEL('priceList').Schema;
         var model;
         var err;
 
@@ -3750,11 +3790,39 @@ ProductFamily.prototype = {
         }
 
         model = new ProductFamilyModel(body);
-        model.save(function(err, result) {
+        model.save(function(err, family) {
             if (err)
                 return self.throw500(err);
 
-            self.json(result);
+            //create default Coef to 1
+            PriceListModel.find({ isCoef: true, cost: false }, "_id", function(err, pricesList) {
+                if (err)
+                    return self.throw500(err);
+
+                async.each(pricesList, function(priceList, aCb) {
+                    var productCoef = new ProductFamilyCoefModel({
+                        "family": family._id,
+                        "priceLists": priceList._id,
+                        "coef": 1
+                    });
+
+                    productCoef.save(function(err, doc) {
+                        if (err)
+                            return aCb(err);
+
+                        setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
+                            F.functions.PubSub.emit('productFamily:coefUpdate', { family: family, productFamilyCoef: doc }); //Ok worflow
+                        }, 500);
+                        aCb();
+
+                    });
+                }, function(err) {
+                    if (err)
+                        return self.throw500(err);
+
+                    self.json(family);
+                });
+            });
         });
     },
     updateProductFamily: function(id) {
@@ -3766,7 +3834,7 @@ ProductFamily.prototype = {
         var currentOptions;
         //console.log(body);
 
-        function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, callback) {
+        function updateOptionsForProdTypes(modelId, currentOpts, newOpts, ProductFamilyModel, family, callback) {
             var deletedOptions;
             var addedOptions;
             var addingOption;
@@ -3894,11 +3962,64 @@ ProductFamily.prototype = {
                 });
             };
 
+            var familyCoef = function(pCb) {
+                var ProductFamilyCoefModel = MODEL('productFamilyCoef').Schema;
+                var PriceListModel = MODEL('priceList').Schema;
+
+                //console.log(self.body.familyCoef);
+
+                PriceListModel.find({ cost: false, isCoef: true }, "_id", function(err, pricesList) {
+                    if (err)
+                        return pCb(err);
+
+                    async.each(pricesList, function(priceList, eCb) {
+                        var elem = _.filter(self.body.familyCoef, function(elem) {
+                            return elem.priceLists._id === priceList._id.toString();
+                        });
+
+                        // priceList unknow form familyCoef : so we create it
+                        if (!elem.length) {
+                            var productCoef = new ProductFamilyCoefModel({
+                                "family": id,
+                                "priceLists": priceList._id,
+                                "coef": 1
+                            });
+
+                            return productCoef.save(function(err, doc) {
+                                if (err)
+                                    return eCb(err);
+
+                                setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
+                                    F.functions.PubSub.emit('productFamily:coefUpdate', { family: family, productFamilyCoef: doc }); //Ok worflow
+                                }, 500);
+
+                                eCb();
+                            });
+                        }
+
+                        elem = elem[0];
+
+                        // update the coef
+                        ProductFamilyCoefModel.findByIdAndUpdate(elem._id, { coef: elem.coef, editedBy: self.user._id }, function(err, doc) {
+                            if (err)
+                                return eCb(err);
+
+                            setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
+                                F.functions.PubSub.emit('productFamily:coefUpdate', { family: family, productFamilyCoef: doc }); //Ok worflow
+                            }, 500);
+
+                            eCb();
+                        });
+                    }, pCb);
+                });
+            };
+
             async.parallel([
                 addingOption,
                 addingVariant,
                 deletingOptions,
-                deletingVariants
+                deletingVariants,
+                familyCoef
             ], function(err) {
                 if (err)
                     return callback(err);
@@ -3932,7 +4053,7 @@ ProductFamily.prototype = {
 
         data.discounts[0].count = 0;
 
-        ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, result) {
+        ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, family) {
             if (err) {
                 console.log(err);
                 return self.json({
@@ -3943,16 +4064,12 @@ ProductFamily.prototype = {
                 });
             }
 
-            setTimeout2('productFamily:updateIndirectCost_' + result._id.toString(), function() {
-                F.functions.PubSub.emit('productFamily:update', { data: result });
-            }, 5000);
-
             currentOptions = {
-                options: result.options,
-                variants: result.variants
+                options: family.options,
+                variants: family.variants
             };
 
-            updateOptionsForProdTypes(_id, currentOptions, { options: body.options, variants: body.variants }, ProductFamilyModel, function(err) {
+            updateOptionsForProdTypes(_id, currentOptions, { options: body.options, variants: body.variants }, ProductFamilyModel, family, function(err) {
                 if (err) {
                     console.log(err);
                     return self.json({
@@ -3963,6 +4080,10 @@ ProductFamily.prototype = {
                     });
                 }
 
+                setTimeout2('productFamily:update_' + family._id.toString(), function() {
+                    F.functions.PubSub.emit('productFamily:update', { family: family }); // Ok in worflow
+                    console.log("emit");
+                }, 500);
 
                 //console.log(doc);
                 //doc = doc.toObject();

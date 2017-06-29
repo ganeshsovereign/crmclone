@@ -1,7 +1,7 @@
 exports.id = 'redissubscribe';
 exports.title = 'REDIS subscribe';
-exports.group = 'TM';
-exports.color = '#f3c200';
+exports.group = 'MQTT';
+exports.color = '#656D78';
 exports.version = '1.0.0';
 exports.icon = 'clock-o';
 exports.output = 1;
@@ -26,9 +26,10 @@ exports.install = function(instance) {
     var subscribed = false;
     var listner;
 
-    var MESSAGE = {};
-
     var REDIS = F.functions.PubSub;
+
+    if (instance.options.channel)
+        REDIS.removeAllListeners(instance.options.channel);
 
     instance.custom.reconfigure = function(o, old_options) {
 
@@ -89,6 +90,8 @@ exports.install = function(instance) {
     };*/
 
     function message(channel, data) {
+        var MESSAGE = {};
+
         MESSAGE.channel = channel;
         MESSAGE.data = data;
         instance.send(MESSAGE);

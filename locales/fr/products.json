@@ -325,6 +325,8 @@
     "Family": "Famille",
     "FamilyProducts": "Familles de produits",
     "SubFamily": "Sous-famille",
+    "FamilyCoef": "Coefficent sur liste de prix",
+    "BasedOnCoef": "Base sur un calcul de ceofficient",
     "Finition": "Finition",
     "DynamicForm": "Formulaire dynamique",
     "Inventory": "Gestion des stocks",
