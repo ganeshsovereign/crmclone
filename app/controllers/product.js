@@ -1610,6 +1610,7 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
 
     $scope.images = [];
     $scope.productImages = [];
+    $scope.search = "";
 
     var uploader = $scope.uploader = new FileUploader({ autoUpload: true });
     uploader.url = '/erp/api/images/bank';
@@ -1638,20 +1639,27 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
         $scope.find();
     });
 
+    $scope.page = {
+        limit: 25,
+        page: 1,
+        total: 0
+    };
+
     $scope.find = function(product) {
         //console.log(product);
-        $scope.product = product;
         var images = new Files.bank();
 
-        images.$query({ filter: $scope.filter }, function(data) {
+        images.$query({ filter: this.search, limit: $scope.page.limit, page: $scope.page.page }, function(data) {
+            $scope.page.total = data.total;
             $scope.images = data.data;
         });
 
         if (product && product._id) {
+            $scope.product = product;
             var imagesProduct = new Files.productImages();
 
             imagesProduct.$get({ Id: product._id }, function(data) {
-                console.log(data);
+                //console.log(data);
                 $scope.productImages = data.id;
             });
         }

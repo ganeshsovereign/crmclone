@@ -11,21 +11,27 @@
         <div class="col-md-7">
             <div class="form-group form-md-line-input ">
                 <div class="input-icon right">
-                    <input type="text" class="form-control" id="Name" ng-model="image.langs[_language].name" required placeholder="" />
+                    <input type="text" class="form-control" id="Name" ng-model="image.imageSrc" required placeholder="" readonly/>
                     <label for="Name">@(Name)</label>
+                </div>
+            </div>
+            <div class="form-group form-md-line-input ">
+                <div class="input-icon right">
+                    <input type="text" class="form-control" id="Name" ng-model="image.langs[_language].name" required placeholder="" />
+                    <label for="Name">@(Legend)</label>
                     <i class="fa fa-flag"></i>
                 </div>
             </div>
 
 
-            <div class="form-group form-md-line-input ">
+            <!--<div class="form-group form-md-line-input ">
                 <div class="input-icon right">
                     <textarea class="form-control ng-pristine ng-valid ng-touched" ng-model="image.langs[_language].description" rows="5"></textarea>
                     <label for="MetaDes">@(Description)</label>
                     <span class="help-block">@(Description)</span>
                     <i class="fa fa-flag"></i>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </div>

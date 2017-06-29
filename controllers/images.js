@@ -304,9 +304,8 @@ var Images = function() {
             var getTotal = function(pCb) {
 
                 countQuery.count(function(err, _res) {
-                    if (err) {
+                    if (err) 
                         return pCb(err);
-                    }
 
                     pCb(null, _res);
                 });
@@ -314,9 +313,8 @@ var Images = function() {
 
             var getData = function(pCb) {
                 queryNew.skip(skip).limit(limit).exec(function(err, _res) {
-                    if (err) {
+                    if (err) 
                         return pCb(err);
-                    }
 
                     pCb(null, _res);
                 });

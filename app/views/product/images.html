@@ -73,8 +73,11 @@
             <i class=" icon-layers font-green"></i>
             <span class="caption-subject font-green bold uppercase">@(Pictures)</span>
         </div>
-        <div id="imagesList_filter" class="dataTables_filter"><label>Rechercher : <input type="text"  ng-model="filter" ng-change="find()" class="form-control input-small input-sm input-inline" placeholder="" ></label></div>
+        <div class="actions">
+            <div id="imagesList_filter" class="dataTables_filter"><label>Rechercher : <input type="text"  ng-model="search" ng-change="find()" class="form-control input-small input-sm input-inline" placeholder="" ></label></div>
 
+            <pagination total-items="page.total" ng-model="page.page" items-per-page="page.limit" max-size="6" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="find()"></pagination>
+        </div>
     </div>
     <div class="portlet-body" style="display: block;">
         <div class="mt-element-card mt-element-overlay">

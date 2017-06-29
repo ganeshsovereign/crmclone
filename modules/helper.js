@@ -11,7 +11,7 @@ var _ = require('lodash'),
 
 exports.page = function(data) {
     "use strict";
-    var count = data.count;
+    var count = data.limit;
     var page = data.page || 1;
     var skip;
 
