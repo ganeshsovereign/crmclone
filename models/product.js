@@ -616,7 +616,7 @@ productSchema.pre('save', function(next) {
 
     //Emit product update
     setTimeout2('product:' + this._id.toString(), function() {
-        F.functions.BusMQ.mit('product:update', self.editedBy, { product: { _id: self._id } });
+        F.functions.BusMQ.emit('product:update', self.editedBy, { product: { _id: self._id } });
     }, 1000);
 
 

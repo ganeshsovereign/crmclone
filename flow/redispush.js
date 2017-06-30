@@ -29,7 +29,7 @@ exports.install = function(instance) {
     instance.custom.reconfigure = function(o, old_options) {
 
         if (instance.options.channel) {
-            listner = F.functions.BusMQ[instance.options.channel];
+            listner = F.functions.BusMQ.getQueue(instance.options.channel);
 
             if (!listner)
                 return instance.status('Channel error', 'red');

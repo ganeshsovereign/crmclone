@@ -3811,7 +3811,7 @@ ProductFamily.prototype = {
                             return aCb(err);
 
                         setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
-                            F.functions.BusMQ['productFamily:coefUpdate'].push({ family: family, productFamilyCoef: doc }); //Ok worflow
+                            F.functions.BusMQ.emit('productFamily:coefUpdate', self.user._id, { family: family, productFamilyCoef: doc }); //Ok worflow
                         }, 500);
                         aCb();
 
@@ -3990,7 +3990,7 @@ ProductFamily.prototype = {
                                     return eCb(err);
 
                                 setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
-                                    F.functions.BusMQ['productFamily:coefUpdate'].push({ family: family, productFamilyCoef: doc });
+                                    F.functions.BusMQ.emit('productFamily:coefUpdate', self.user._id, { family: family, productFamilyCoef: doc });
                                 }, 500);
 
                                 eCb();
@@ -4005,7 +4005,7 @@ ProductFamily.prototype = {
                                 return eCb(err);
 
                             setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
-                                F.functions.BusMQ['productFamily:coefUpdate'].push({ family: family, productFamilyCoef: doc });
+                                F.functions.BusMQ.emit('productFamily:coefUpdate', self.user._id, { family: family, productFamilyCoef: doc });
                             }, 500);
 
                             eCb();
@@ -4087,7 +4087,7 @@ ProductFamily.prototype = {
                 }
 
                 setTimeout2('productFamily:update_' + family._id.toString(), function() {
-                    F.functions.BusMQ['productFamily:update'].push({ family: family }); // Ok in worflow
+                    F.functions.BusMQ.emit('productFamily:update', self.user._id, { family: family }); // Ok in worflow
                 }, 500);
 
                 //console.log(doc);

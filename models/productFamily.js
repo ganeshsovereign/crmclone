@@ -119,7 +119,7 @@ F.on('load', function() {
 
                         docs.forEach(function(elem) {
                             setTimeout2('product:updateDirectCost_' + elem._id.toString(), function() {
-                                F.functions.BusMQ['product:updateDirectCost'].push({ product: elem });
+                                F.functions.BusMQ.emit('product:updateDirectCost', null, { product: elem });
                             }, 500);
 
                             //                elem.save(function(err) {

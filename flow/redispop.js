@@ -31,14 +31,14 @@ exports.install = function(instance) {
 
         if (instance.options.channel) {
             if (!subscribed)
-                listner = F.functions.BusMQ[instance.options.channel];
+                listner = F.functions.BusMQ.getQueue(instance.options.channel);
 
             if (!listner)
                 return instance.status('Channel error', 'red');
 
             if (subscribed && old_options && (instance.options.channel !== old_options.channel)) {
                 listner.stop();
-                listner = F.functions.BusMQ[instance.options.channel];
+                listner = F.functions.BusMQ.getQueue(instance.options.channel);
             }
 
             listner.on('message', message);
