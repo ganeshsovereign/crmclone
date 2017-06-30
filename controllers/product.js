@@ -4431,7 +4431,7 @@ ProductAttributes.prototype = {
         var currentOptions;
 
         setTimeout2('product:' + id.toString(), function() {
-            F.functions.PubSub.emit('product:attributes', { data: { _id: id, user: self.user._id } });
+            F.functions.BusMQ.publish('product:attributes', self.user._id, { productAttribut: { _id: id } });
         }, 1000);
 
         ProductAttributesModel.findByIdAndUpdate(_id, body, { new: true }, function(err, doc) {

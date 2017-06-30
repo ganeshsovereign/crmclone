@@ -153,7 +153,14 @@ var productSchema = new Schema({
         _id: false,
         attribute: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
         value: { type: Schema.Types.Mixed }, // Not for select
-        options: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }]
+        options: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }],
+
+        //product_feacture_value if value != null
+        channels: [{
+            _id: false,
+            channel: { type: Schema.Types.ObjectId, ref: 'integrations' },
+            integrationId: String
+        }]
     }],
 
     packing: { type: Number, defaut: 1 }, //conditonnement

@@ -13,7 +13,12 @@ var AttributesValuesSchema = new Schema({
         value: String
     }],
     sequence: Number,
-    optionId: { type: Schema.Types.ObjectId, ref: 'productAttributes', require: true }
+    optionId: { type: Schema.Types.ObjectId, ref: 'productAttributes', require: true },
+    channels: [{
+        _id: false,
+        channel: { type: Schema.Types.ObjectId, ref: 'integrations' },
+        integrationId: String
+    }]
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true },
