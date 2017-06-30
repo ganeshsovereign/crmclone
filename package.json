@@ -20,6 +20,7 @@
   "dependencies": {
     "accounting": ">=0.3.2",
     "async": "latest",
+    "busmq": "^2.1.0",
     "crypto": "latest",
     "csv": "0.3.6",
     "dateformat": "latest",

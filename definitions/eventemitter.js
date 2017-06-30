@@ -21,8 +21,8 @@ pubsub.on('error', function(err) {
 
 
 var async = require('async');
-
-F.functions.BusMQ = {};
+var Bus = require('busmq');
+var bus = Bus.create({ redis: ['redis://127.0.0.1:6379'] });
 
 var queuesList = [
     'product:update',
@@ -30,21 +30,42 @@ var queuesList = [
     'productFamily:coefUpdate'
 ];
 
-var Bus = require('busmq');
-var bus = Bus.create({ redis: ['redis://127.0.0.1:6379'] });
-bus.on('online', function() {
-    async.each(queuesList, function(queue, aCb) {
-        var q = bus.queue(prefix + queue);
-        q.on('attached', function() {
-            console.log('attached to queue : ' + queue);
-        });
-        q.attach();
-        F.functions.BusMQ[queue] = q;
-        aCb();
-    }, function(err) {});
-});
-bus.connect();
+function BusMQ() {
+    this.queues = {};
+};
 
+BusMQ.prototype = {
+    emit: function(name, userId, message) {
+        if (!this.queues[name])
+            return null;
+
+        this.queues[name].push({ userId: userId, data: message });
+    },
+    getQueue: function(name) {
+        if (!this.queues[name])
+            return null;
+
+        return this.queues[name];
+    },
+    attach: function(queuesList) {
+        var self = this;
+        bus.on('online', function() {
+            async.each(queuesList, function(queue, aCb) {
+                var q = bus.queue(prefix + queue);
+                q.on('attached', function() {
+                    console.log('attached to queue : ' + queue);
+                });
+                q.attach();
+                self.queues[prefix + queue] = q;
+                aCb();
+            }, function(err) {});
+        });
+        bus.connect();
+    }
+};
+
+F.functions.BusMQ = new BusMQ();
+F.functions.BusMQ.attach(queuesList);
 
 
 /*var Bus = require('busmq');
