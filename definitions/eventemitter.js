@@ -22,50 +22,85 @@ pubsub.on('error', function(err) {
 
 var async = require('async');
 var Bus = require('busmq');
-var bus = Bus.create({ redis: ['redis://127.0.0.1:6379'] });
 
 var queuesList = [
     'product:update',
+    'product:attributes',
     'productFamily:update',
     'productFamily:coefUpdate'
 ];
 
-function BusMQ() {
+function BusMQ(bus) {
+    this.bus = bus;
+    var prefix = CONFIG('database').split('/').pop() + ':';
+    this.name = function(name) {
+        return prefix + name;
+    };
     this.queues = {};
+    this.pubsub = {};
 };
 
 BusMQ.prototype = {
     emit: function(name, userId, message) {
-        if (!this.queues[name])
+        if (!this.queues[this.name(name)])
             return null;
 
-        this.queues[name].push({ userId: userId, data: message });
+        message.userId = userId;
+
+        this.queues[this.name(name)].push(message);
     },
     getQueue: function(name) {
-        if (!this.queues[name])
+        if (!this.queues[this.name(name)])
             return null;
 
-        return this.queues[name];
+        return this.queues[this.name(name)];
+    },
+    publish: function(name, userId, message) {
+        if (!this.pubsub[this.name(name)])
+            return null;
+
+        message.userId = userId;
+
+        this.pubsub[this.name(name)].publish(message);
+    },
+    subscribe: function(name, callback) {
+        if (!this.pubsub[this.name(name)])
+            return console.log('PusSub Not found : ' + name);
+
+        this.pubsub[this.name(name)].on('message', function(data) {
+            return callback(JSON.parse(data));
+        });
+        this.pubsub[this.name(name)].subscribe();
+
+        return this.pubsub[this.name(name)];
     },
     attach: function(queuesList) {
         var self = this;
-        bus.on('online', function() {
+        self.bus.on('online', function() {
             async.each(queuesList, function(queue, aCb) {
-                var q = bus.queue(prefix + queue);
+                var q = bus.queue(self.name(queue));
                 q.on('attached', function() {
                     console.log('attached to queue : ' + queue);
                 });
                 q.attach();
-                self.queues[prefix + queue] = q;
+                self.queues[self.name(queue)] = q;
+
+
+                var s = bus.pubsub(self.name(queue));
+                self.pubsub[self.name(queue)] = s;
+
                 aCb();
             }, function(err) {});
         });
-        bus.connect();
+        self.bus.connect();
     }
 };
 
-F.functions.BusMQ = new BusMQ();
+var bus = Bus.create({ redis: ['redis://127.0.0.1:6379'] });
+F.functions.BusMQ = new BusMQ(bus);
 F.functions.BusMQ.attach(queuesList);
+
+F.on('load', function() {});
 
 
 /*var Bus = require('busmq');
