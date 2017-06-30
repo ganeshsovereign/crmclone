@@ -9,7 +9,12 @@ var mongoose = require('mongoose'),
 
 var ProductImagesSchema = new mongoose.Schema({
     image: { type: ObjectId, ref: 'Images', index: true },
-    product: { type: ObjectId, ref: 'product', index: true }
+    product: { type: ObjectId, ref: 'product', index: true },
+    channels: [{
+        _id: false,
+        channel: { type: Schema.Types.ObjectId, ref: 'integrations' },
+        integrationId: String
+    }],
 }, {
     collection: 'ProductImages',
     toObject: { virtuals: true },
