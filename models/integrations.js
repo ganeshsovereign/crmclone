@@ -4,6 +4,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+    _ = require('lodash'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -40,6 +41,19 @@ var integrationsSchema = new Schema({
 });
 
 integrationsSchema.index({ baseUrl: 1, channelName: 1 }, { unique: true });
+
+
+integrationsSchema.methods.getChannel = function(channels) {
+    var self = this;
+    var channel = _.filter(channels, function(elem) {
+        return elem.channel.toString() == self._id.toString();
+    });
+
+    if (channel.length)
+        return channel[0];
+
+    return null;
+};
 
 exports.Schema = mongoose.model('integrations', integrationsSchema, 'integrations');
 exports.name = "integrations";
