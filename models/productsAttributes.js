@@ -23,7 +23,7 @@ var ProductAttributesSchema = new Schema({
     minDate: { type: Date },
     maxNumber: Number,
     minNumber: Number,
-    sequence: Number, // Order idx
+    sequence: { type: Number, default: 1 }, // Order idx
     mode: { type: String, enum: ['text', 'number', 'metric', 'textarea', 'boolean', 'select', 'date', 'file', 'image'] },
     isWysiwyg: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
