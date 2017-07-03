@@ -14,7 +14,7 @@ exports.options = {
 };
 exports.npm = ['symeos-mqtt'];
 
-exports.html = `<div class="padding">
+/*exports.html = `<div class="padding">
 	<section>
 		<label><i class="fa fa-exchange"></i>@(Broker)</label>
 		<div class="padding npb">
@@ -28,7 +28,7 @@ exports.html = `<div class="padding">
 			</div>
 		</div>
 	</section>
-</div>`;
+</div>`;*/
 
 exports.readme = `
 # MQTT DSSI Broker
@@ -45,7 +45,7 @@ exports.install = function(instance) {
 
     instance.custom.reconfigure = function(o, old_options) {
 
-        var options = instance.options;
+        var options = instance.options = CONFIG('symeosnet');
 
         if (!options.uuid || !options.token) {
             instance.status('Not configured', 'red');
