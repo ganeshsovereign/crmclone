@@ -50,6 +50,9 @@ exports.install = function() {
     F.route('/erp/api/delivery/csv/', object.csvAll, ['post', 'json', 'authorize']);
     F.route('/erp/api/delivery/mvt/', object.csvMvt, ['post', 'json', 'authorize']);
     F.route('/erp/api/delivery/pdf/{deliveryId}', object.pdf, ['authorize']);
+    F.route('/erp/api/delivery/pdf/{deliveryId}/{version}', function(ref, version) {
+        object.pdf(ref + '/' + version, this);
+    }, ['authorize']);
 
     // recupere la liste des courses pour verification
     F.route('/erp/api/delivery/billing', billing.read, ['authorize']);
@@ -864,7 +867,7 @@ Object.prototype = {
                     return console.log(err);
 
                 self.res.setHeader('Content-type', 'application/pdf');
-                self.res.setHeader('x-filename', doc.ref + ".pdf");
+                self.res.setHeader('x-filename', doc.ref.replace('/', '_') + ".pdf");
                 Latex.Template(null, doc.entity)
                     .on('error', function(err) {
                         console.log(err);
@@ -1898,8 +1901,8 @@ function createDelivery(doc, callback) {
             });
 
         // 4 -> BL
-        var barcode = "4-000-"; + doc.ref.split('-')[1].replace('_', '-');
-        var split = doc.ref.split('-');
+        var barcode = "4-" + moment(doc.date_livraison).format("YY") + "0-"; + doc.ref.split('-')[1].replace('_', '-');
+        var split = doc.ref.replace('/', '-').split('-');
         if (split.length == 2) //BL1607-02020-32
             barcode += "00" + fixedWidthString(doc.ID, 6, { padding: '0', align: 'right' });
         else { // BL1607-120202

@@ -1,28 +1,28 @@
-exports.id = 'mqttsubscribe';
-exports.title = 'MQTT subscribe';
-exports.group = 'MQTT';
+exports.id = 'dssisubscribe';
+exports.title = 'MQTT DSSI subscribe';
+exports.group = 'MQTT DSSI';
 exports.color = '#656D78';
 exports.version = '1.0.0';
 exports.icon = 'clock-o';
 exports.output = 1;
-exports.author = 'Martin Smola';
+exports.author = 'Herve Prot';
 exports.options = {};
 
 exports.html = `
 	<div class="padding">
 		<div data-jc="dropdown" data-jc-path="broker" data-source="mqttconfig.brokers" class="m" data-required="true">@(Select a broker)</div>		
-		<div data-jc="textbox" data-jc-path="topic" data-placeholder="hello/world" data-required="true" class="m">Topic</div>
-		<div data-jc="dropdown" data-jc-path="qos" data-options=";0;1;2" class="m">@(QoS)</div>
+		<div data-jc="textbox" data-jc-path="uuid" data-placeholder="UUID" data-required="true" class="m">UUID</div>
+		<!--<div data-jc="dropdown" data-jc-path="qos" data-options=";0;1;2" class="m">@(QoS)</div>-->
 	</div>
 	<script>
-		ON('open.mqttsubscribe', function(component, options) {
+		ON('open.dssisubscribe', function(component, options) {
 			TRIGGER('mqtt.brokers', 'mqttconfig.brokers');
 		});
 	</script>
 `;
 
 exports.readme = `
-# MQTT subscribe
+# MQTT DSSI subscribe
 
 
 `;
@@ -38,23 +38,23 @@ exports.install = function(instance) {
         added = false;
         subscribed = false;
 
-        if (!MQTT.broker(instance.options.broker)) {
+        if (!MQTT_DSSI.broker(instance.options.broker)) {
             return instance.status('No broker', 'red');
         }
 
-        if (instance.options.broker && instance.options.topic) {
+        if (instance.options.broker && instance.options.uuid) {
 
-            isWildcard = instance.options.topic.endsWith('#');
+            //isWildcard = instance.options.topic.endsWith('#');
 
             if (!added)
-                MQTT.add(instance.options.broker);
+                MQTT_DSSI.add(instance.options.broker);
 
             if (!subscribed)
-                MQTT.subscribe(instance.options.broker, instance.id, instance.options.topic);
+                MQTT_DSSI.subscribe(instance.options.broker, instance.id, instance.options.uuid);
 
-            if (old_options && (instance.options.topic !== old_options.topic || instance.options.qos !== old_options.qos)) {
-                MQTT.unsubscribe(instance.options.broker, instance.id, old_options.topic);
-                MQTT.subscribe(instance.options.broker, instance.id, instance.options.topic, instance.options.qos);
+            if (old_options && (instance.options.uuid !== old_options.uuid || instance.options.qos !== old_options.qos)) {
+                MQTT_DSSI.unsubscribe(instance.options.broker, instance.id, old_options.uuid);
+                MQTT_DSSI.subscribe(instance.options.broker, instance.id, instance.options.uuid, instance.options.qos);
             }
             added = true;
             subscribed = true;
@@ -67,8 +67,8 @@ exports.install = function(instance) {
     instance.on('options', instance.custom.reconfigure);
 
     instance.on('close', function() {
-        MQTT.unsubscribe(instance.options.broker, instance.id, instance.options.topic);
-        MQTT.remove(instance.options.broker, instance.id);
+        MQTT_DSSI.unsubscribe(instance.options.broker, instance.id, instance.options.uuid);
+        MQTT_DSSI.remove(instance.options.broker, instance.id);
         OFF('mqtt.brokers.message', message);
         OFF('mqtt.brokers.status', brokerstatus);
     });
@@ -86,7 +86,7 @@ exports.install = function(instance) {
                 break;
             case 'connected':
                 // re-subscibe on reconnect
-                MQTT.subscribe(instance.options.broker, instance.id, instance.options.topic);
+                MQTT_DSSI.subscribe(instance.options.broker, instance.id, instance.options.uuid);
                 instance.status('Connected', 'green');
                 break;
             case 'disconnected':
@@ -107,24 +107,22 @@ exports.install = function(instance) {
 
     };
 
-    function message(brokerid, topic, message) {
-        var MESSAGE = {
-            topic: ''
-        };
-
+    function message(brokerid, message, fromUuid, callbackId) {
         if (brokerid !== instance.options.broker)
             return;
 
-        if (isWildcard) {
+        if (instance.options.uuid !== fromUuid)
+            return;
+
+        /*if (isWildcard) {
             if (!topic.startsWith(instance.options.topic.substring(0, instance.options.topic.length - 1)))
                 return;
         } else {
             if (instance.options.topic !== topic)
                 return;
-        }
-        MESSAGE.topic = topic;
-        MESSAGE.data = message;
-        instance.send(MESSAGE);
+        }*/
+
+        instance.send({ data: message, fromUuid: fromUuid, callbackId: callbackId });
     };
 
     instance.custom.reconfigure();

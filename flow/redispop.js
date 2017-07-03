@@ -1,15 +1,18 @@
 exports.id = 'redispop';
-exports.title = 'REDIS BusMQ Read';
-exports.group = 'MQTT';
+exports.title = 'TM BusMQ Read';
+exports.group = 'TM';
 exports.color = '#656D78';
 exports.version = '1.0.0';
 exports.icon = 'clock-o';
 exports.output = 2;
 exports.author = 'Herve Prot';
-exports.options = {};
+exports.options = {
+    method: 'PubSub'
+};
 
 exports.html = `<div class="padding">
 		<div data-jc="textbox" data-jc-path="channel" data-placeholder="module:event" data-required="true" class="m">Channel</div>
+         <div data-jc="dropdown" data-jc-path="method" data-required="true" data-options="PubSub;Queue" class="m">@(Method)</div>
 	</div>
 `;
 

@@ -53,55 +53,59 @@ function websocket() {
         //console.log("task");
         self.send({ type: 'task', message: data });
     });*/
-    F.functions.PubSub.on('notify:*', function(channel, notify) {
-        console.log(notify, channel);
-        switch (channel) {
-            case "update":
-                break;
-            case "notify:controllerAngular":
-                self.send({ type: 'refresh', data: notify }, function(id, client) {
-                    //send to all
-                    console.log("toto");
-                    return true;
-                });
-                break;
-            default: // send text notification
-                self.send({ type: 'notify', message: notify.data, date: new Date() });
-                /*, function(id, client) {
-                                    // send only to users in notify.users Array
-                                    return notify.users.indexOf(client.alias) >= 0;
-                                });*/
-        }
 
 
-        /*var diff = _.difference(notify.users, F.global.USERS);
-         
-         if (diff.length) {
-         //send email if needed notification
-         console.log("Send email to ", diff);
-         
-         var mail = require('total.js/mail');
-         var message = new mail.Message('Scan coupon', 'Scan coupon ');
-         
-         mail.on('error', function (err, message) {
-         console.log(err);
-         });
-         
-         mail.on('success', function(message) { console.log("Really sended!") });
-         
-         // Set email sender
-         message.from('no-reply@logicielentreprise.com', 'Notification de LE&CO');
-         
-         message.to('herve.prot@leandco.fr');
-         
-         message.send(CONFIG('mail.smtp'), CONFIG('mail.smtp.options'), function () {
-         console.log("sended");
-         });
-         
-         }*/
+
+    F.functions.BusMQ.subscribe('notify:controllerAngular', function(notify) {
+        self.send({ type: 'refresh', data: notify }, function(id, client) {
+            //send to all
+            //console.log("toto");
+            return true;
+        });
+
+        if (notify.go) //$rootScope.go
+            self.send({ type: 'go', data: notify }, function(id, client) {
+            //send to all
+            //console.log(client);
+            return (notify.userId.indexOf(client.alias) >= 0);
+        });
+
 
     });
-    /*F.functions.EE.on('symeosnet', function(data) {
-        self.send({ type: 'symeosnet', message: data.data });
-    }); */
+
+    F.functions.BusMQ.subscribe('notify:user', function(notify) {
+        // send text notification
+        self.send({ type: 'notify', message: notify, date: new Date() }, function(id, client) {
+            // send only to users in notify.users Array
+            return (notify.userId.indexOf(client.alias) >= 0);
+        });
+    });
+
+
+    /*var diff = _.difference(notify.users, F.global.USERS);
+     
+     if (diff.length) {
+     //send email if needed notification
+     console.log("Send email to ", diff);
+     
+     var mail = require('total.js/mail');
+     var message = new mail.Message('Scan coupon', 'Scan coupon ');
+     
+     mail.on('error', function (err, message) {
+     console.log(err);
+     });
+     
+     mail.on('success', function(message) { console.log("Really sended!") });
+     
+     // Set email sender
+     message.from('no-reply@logicielentreprise.com', 'Notification de LE&CO');
+     
+     message.to('herve.prot@leandco.fr');
+     
+     message.send(CONFIG('mail.smtp'), CONFIG('mail.smtp.options'), function () {
+     console.log("sended");
+     });
+     
+    }*/
+
 }

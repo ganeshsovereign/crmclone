@@ -49,15 +49,15 @@ MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($roo
                 return;
             }
 
-            if (data.type === 'symeosnet') {
-                //console.log(data);
-                $rootScope.$broadcast('websocket', data.type, data.message);
-                return;
-            }
-
             if (data.type === 'refresh') {
                 $rootScope.$broadcast('websocket', 'refresh', data);
                 console.log('Notify ', data);
+                return;
+            }
+
+            if (data.type === 'go') {
+                console.log('Go ', data);
+                $rootScope.$state.go(data.data.go, { id: data.data._id });
                 return;
             }
 

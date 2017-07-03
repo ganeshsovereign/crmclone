@@ -487,18 +487,19 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 };
 
 exports.checksumIsbn = function(isbn) {
+    // ISBN 13
     isbn = isbn.replace(/[^\dX]/gi, '');
-    console.log(isbn.length);
+    //console.log(isbn.length);
     if (isbn.length != 12)
         return null;
 
     var chars = isbn.split('');
-    if (chars[9].toUpperCase() == 'X')
-        chars[9] = 10;
+    //if (chars[9].toUpperCase() == 'X')
+    //    chars[9] = 10;
 
     var sum = 0;
     for (var i = 0; i < chars.length; i++)
-        sum += ((10 - i) * parseInt(chars[i]));
+        sum += parseInt(chars[i]) * (i % 2 == 0 ? 3 : 1);
 
     return sum % 10;
 };

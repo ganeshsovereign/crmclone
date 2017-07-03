@@ -80,7 +80,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             if (type !== 'refresh')
                 return;
 
-            console.log(data);
+            //console.log(data);
             //console.log(type);
 
             if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
@@ -699,6 +699,19 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
 
         $scope.$dict = {};
 
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
+                return;
+
+            $scope.find();
+        });
+
         // Init
         $scope.$on('$viewContentLoaded', function() {
             // initialize core components
@@ -1061,6 +1074,19 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
 
         $scope.$dict = {};
 
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
+                return;
+
+            $scope.find();
+        });
+
         // Init
         $scope.$on('$viewContentLoaded', function() {
             // initialize core components
@@ -1229,6 +1255,19 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
         $scope.dict = {};
         $scope.status_id = "LIST";
+
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('bill') < 0)
+                return;
+
+            $scope.find();
+        });
 
         // Init
         $scope.$on('$viewContentLoaded', function() {

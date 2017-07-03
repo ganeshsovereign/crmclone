@@ -28,7 +28,9 @@ var queuesList = [
     'product:updateAttributes',
     'product:updateCategory',
     'productFamily:update',
-    'productFamily:coefUpdate'
+    'productFamily:coefUpdate',
+    'notify:user',
+    'notify:controllerAngular'
 ];
 
 function BusMQ(bus) {
@@ -49,6 +51,11 @@ BusMQ.prototype = {
         message.userId = userId;
 
         this.queues[this.name(name)].push(message);
+    },
+    exist: function(name) {
+        if (!this.queues[this.name(name)])
+            return false;
+        return true;
     },
     getQueue: function(name) {
         if (!this.queues[this.name(name)])
