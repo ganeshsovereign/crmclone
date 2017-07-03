@@ -4431,7 +4431,7 @@ ProductAttributes.prototype = {
         var currentOptions;
 
         setTimeout2('product:' + id.toString(), function() {
-            F.functions.BusMQ.publish('product:attributes', self.user._id, { productAttribut: { _id: id } });
+            F.functions.BusMQ.publish('product:updateAttributes', self.user._id, { productAttribut: { _id: id } });
         }, 1000);
 
         ProductAttributesModel.findByIdAndUpdate(_id, body, { new: true }, function(err, doc) {
@@ -4512,11 +4512,11 @@ ProductAttributes.prototype = {
                             return self.throw500(err);
 
                         //remove all attributes values
-                        ProductAttributesValuesModel.remove({ optionId: id }, function(err, doc) {
+                        ProductAttributesValuesModel.update({ optionId: id }, { $set: { isremoved: true } }, function(err, doc) {
                             if (err)
                                 return self.throw500(err);
                             //suppress attribute
-                            ProductAttributesModel.remove({ _id: id }, function(err, doc) {
+                            ProductAttributesModel.update({ _id: id }, { $set: { isremoved: true } }, function(err, doc) {
                                 if (err)
                                     return self.throw500(err);
 

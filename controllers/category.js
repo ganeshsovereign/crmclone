@@ -721,7 +721,7 @@ Object.prototype = {
         var _id = id;
         var parentId;
 
-        ProductCategory.findOneAndRemove({ _id: _id }, function(err, result) {
+        ProductCategory.findByIdAndUpdate(id, { isremoved: true }, { new: true }, function(err, result) {
             if (err)
                 return self.throw500(err);
 

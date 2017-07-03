@@ -12,6 +12,7 @@ var AttributesValuesSchema = new Schema({
         _id: false,
         value: String
     }],
+    isremoved: { type: Boolean, default: false },
     sequence: { type: Number, default: 1 },
     optionId: { type: Schema.Types.ObjectId, ref: 'productAttributes', require: true },
     channels: [{

@@ -21,6 +21,8 @@ var CategorySchema = new Schema({
     createdBy: { type: Schema.Types.ObjectId, ref: 'Users' },
     editedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 
+    isremoved: { type: Boolean, default: false },
+
     enabled: { type: Boolean, default: true },
     entity: [String],
     idx: { type: Number, default: 0 }, //order in array for nodes
