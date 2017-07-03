@@ -12,7 +12,7 @@ exports.options = {
 
 exports.html = `<div class="padding">
 		<div data-jc="textbox" data-jc-path="channel" data-placeholder="module:event" data-required="true" class="m">Channel</div>
-         <div data-jc="dropdown" data-jc-path="method" data-required="true" data-options="PubSub;Queue" class="m">@(Method)</div>
+        <div data-jc="dropdown" data-jc-path="method" data-required="true" data-options="PubSub;Queue" class="m">@(Method)</div>
 	</div>
 `;
 

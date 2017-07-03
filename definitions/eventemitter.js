@@ -27,6 +27,7 @@ var queuesList = [
     'product:update',
     'product:updateAttributes',
     'product:updateCategory',
+    'product:deleteCategory',
     'productFamily:update',
     'productFamily:coefUpdate',
     'notify:user',
