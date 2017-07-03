@@ -47,7 +47,7 @@ exports.install = function(instance) {
 
         var options = instance.options = CONFIG('symeosnet');
 
-        if (!options.uuid || !options.token) {
+        if (!options || !options.uuid || !options.token) {
             instance.status('Not configured', 'red');
             return;
         }
