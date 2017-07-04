@@ -76,22 +76,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         $scope.$dict = {};
 
         var module;
-        $rootScope.$on('websocket', function(e, type, data) {
-            if (type !== 'refresh')
-                return;
-
-            //console.log(data);
-            //console.log(type);
-
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
-                return;
-
-            if ($rootScope.$stateParams.id)
-                if (data.data._id == $rootScope.$stateParams.id) {
-                    $scope.findOne();
-                    toastr.warning(data.data.message, 'Notification serveur', { timeOut: 5000, progressBar: true });
-                }
-        });
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
@@ -205,6 +189,23 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         });
 
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
+                return;
+
+            if ($rootScope.$stateParams.id)
+                if (data.data._id == $rootScope.$stateParams.id) {
+                    $scope.findOne();
+                    toastr.warning(data.data.message, 'Notification serveur', { timeOut: 5000, progressBar: true });
+                }
+        });
+
         $scope.module = function(themodule) {
             if (!themodule)
                 return module;
@@ -271,6 +272,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
                 $scope.findOne(callback);
             }, function(err) {
+                console.log(err);
                 $scope.findOne(callback);
             });
         };
@@ -303,8 +305,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 if (callback)
                     callback(object);
             }, function(err) {
-                if (err.status === 401)
-                    $location.path("401.html");
+                console.log(err);
             });
         };
 

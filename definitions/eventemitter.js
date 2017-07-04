@@ -25,11 +25,14 @@ var Bus = require('busmq');
 
 var queuesList = [
     'product:update',
+    'product:updateDirectCost',
     'product:updateAttributes',
     'product:updateCategory',
     'product:deleteCategory',
     'productFamily:update',
     'productFamily:coefUpdate',
+    'productPrices:updateDiscountRate',
+    'productPrices:updatePrice',
     'notify:user',
     'notify:controllerAngular'
 ];

@@ -1,7 +1,7 @@
 exports.id = 'dssi';
 exports.title = 'MQTT DSSI broker';
 exports.group = 'MQTT DSSI';
-exports.color = '#656D78';
+exports.color = '#E30B5C';
 exports.version = '1.0.0';
 exports.icon = 'clock-o';
 exports.input = false;

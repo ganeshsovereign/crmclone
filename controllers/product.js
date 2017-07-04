@@ -2714,7 +2714,7 @@ PricesList.prototype = {
 
             if (doc.isGlobalDiscount) // Emit to refresh priceList from parent
                 setTimeout2('productPrices:updateDiscountRate_' + doc._id.toString(), function() {
-                F.functions.PubSub.emit('productPrices:updateDiscountRate', { data: doc });
+                F.functions.BusMQ.emit('productPrices:updateDiscountRate', self.user._id, { priceList: doc });
             }, 500);
 
             //console.log(doc);
@@ -2924,8 +2924,8 @@ Prices.prototype = {
 
                 // Emit to refresh priceList from parent
                 setTimeout2('productPrices:updatePrice_' + doc.priceLists.toString(), function() {
-                    F.functions.PubSub.emit('productPrices:updatePrice', {
-                        data: doc
+                    F.functions.BusMQ.emit('productPrices:updatePrice', self.user._id, {
+                        priceList: doc
                     });
                 }, 500);
 

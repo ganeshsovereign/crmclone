@@ -250,7 +250,7 @@ exports.Schema = mongoose.model('productPrices', productPricesSchema, 'ProductPr
 exports.name = "productPrices";
 
 F.on('load', function() {
-
+    return;
     var ProductPricesModel = exports.Schema;
     var PriceListModel = MODEL('priceList').Schema;
     var ProductModel = MODEL('product').Schema;
