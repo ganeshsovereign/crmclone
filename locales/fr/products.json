@@ -399,10 +399,11 @@
     "InStock": "En stock",
     "OnHand": "Disponible",
     "LowStock": "Stock Bas",
-    "MinStock": "Stock minimum",
-    "MaxStock": "Stock maximum",
+    "MinStock": "Stock min.",
+    "MaxStock": "Stock max.",
     "UnitCost": "Coût unitaire",
     "Total": "Coût Total",
     "toTransfer": "Transférer",
-    "QtytoTransfer": "Qté à transférer"
+    "QtytoTransfer": "Qté à transférer",
+    "stockTimeLimit": "Durée Limite stockage"
 }

@@ -1880,7 +1880,7 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
 
     $scope.Movement = function(line) {
 
-        console.log(line);
+        //console.log(line);
         var modalInstance = $modal.open({
             templateUrl: '/templates/core/modal/stockdetailmovement.html',
             controller: 'ProductStockDetailTransfertController',
@@ -1922,8 +1922,18 @@ MetronicApp.controller('ProductStockDetailTransfertController', ['$scope', '$roo
     //console.log(options);
 
     $scope.line = options.line;
+    $scope.$dict = {};
+    
+    $http({
+        method: 'GET',
+        url: '/erp/api/product/warehouse/select'
 
-    $scope.ok = function() {
+        }).success(function(data, status) {
+        $scope.$dict.warehouse = data.data;
+        //console.log(data);
+    });
+
+    $scope.transfert = function() {
         $modalInstance.close();
     };
 

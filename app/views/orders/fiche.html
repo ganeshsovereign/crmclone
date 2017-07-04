@@ -68,17 +68,17 @@
                 </li>
                 <li>
                     <a ng-if="module('offer') && object.Status == 'DRAFT' && login.rights.offer.validate" data-ng-click="changeStatus('VALIDATED')">
-                        <i class="fa fa-thumbs-o-up"></i> @(ValidateQuotation)
+                        <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateQuotation)
                     </a>
                 </li>
                 <li>
                     <a ng-if="module('delivery') && object.Status == 'DRAFT' && login.rights.delivery.validate" data-ng-click="changeStatus('VALIDATED')">
-                        <i class="fa fa-thumbs-o-up"></i> @(ValidateDelivery)
+                        <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateDelivery)
                     </a>
                 </li>
                 <li>
                     <a ng-if="module('order') && object.Status == 'DRAFT' && login.rights.order.validate" data-ng-click="changeStatus('TOVALIDATE')">
-                        <i class="fa fa-thumbs-o-up"></i> @(ValidateOrder)
+                        <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateOrder)
                     </a>
                 </li>
                 <li>

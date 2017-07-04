@@ -25,10 +25,12 @@
                                 <td>{{line.product.info.SKU}}</td>
                                 <td>{{line.product.name}}</td>
                                 <td>{{line.warehouse.name}}</td>
-                                <td>{{line.zone.name}}</td>
+                                <td>{{line.location.name}}</td>
                                 <td class="center">{{line.inStock}}</td>
-                                <td editable-textarea="line.description" class="center">{{line.allocated}}</td>
-                                <td class="center">{{line.warehouse.name}}</td>
+                                <td editable-number="line.onHand" class="center" e-max="line.onHand">{{line.onHand}}</td>
+                                <td>
+                                  <select class=" form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse"></select>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
