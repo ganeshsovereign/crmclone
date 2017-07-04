@@ -1878,16 +1878,17 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
 
     };
 
-    $scope.Movement = function(product) {
+    $scope.Movement = function(line) {
 
+        console.log(line);
         var modalInstance = $modal.open({
             templateUrl: '/templates/core/modal/stockdetailmovement.html',
-            controller: 'ProductBankImagesModalController',
+            controller: 'ProductStockDetailTransfertController',
             size: "lg",
             resolve: {
                 options: function() {
                     return {
-                        product: product
+                        line: line
                     };
                 }
             }
@@ -1913,6 +1914,21 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
         }, function() {
             $scope.find();
         });
+    };
+
+}]);
+
+MetronicApp.controller('ProductStockDetailTransfertController', ['$scope', '$rootScope', '$http', '$modalInstance', 'options', 'Files', function($scope, $rootScope, $http, $modalInstance, options, Files) {
+    //console.log(options);
+
+    $scope.line = options.line;
+
+    $scope.ok = function() {
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
     };
 
 }]);

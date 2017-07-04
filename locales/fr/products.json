@@ -399,6 +399,8 @@
     "InStock": "En stock",
     "OnHand": "Disponible",
     "LowStock": "Stock Bas",
+    "MinStock": "Stock minimum",
+    "MaxStock": "Stock maximum",
     "UnitCost": "Coût unitaire",
     "Total": "Coût Total",
     "toTransfer": "Transférer",

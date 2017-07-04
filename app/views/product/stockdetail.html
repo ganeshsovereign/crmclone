@@ -64,6 +64,7 @@
                                     <th class="center">@(products:InStock)</th>
                                     <th class="center">@(products:OnHand)</th>
                                     <th class="center">@(products:LowStock)</th>
+                                    <th class="center">@(products:LowStock)</th>
                                     <th class="center">@(products:UnitCost)</th>
                                     <th class="center">@(products:Total)</th>
                                 </tr>
@@ -71,11 +72,11 @@
                             <tbody>
                                 <tr ng-repeat="line in listObject">
                                     <td>
-                                        <button class="btn" ng-click="Movement(product)" title="'@(products:Movement)'">
+                                        <button class="btn" ng-click="Movement(line)" title="'@(products:Movement)'">
                                             <i class="fa fa-long-arrow-right"></i>
                                         </button>
                                     </td>
-                                    <td>{{line.product.info.SKU}}</td>
+                                    <td><a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a></td>
                                     <td>{{line.product.name}}</td>
                                     <td>{{line.warehouse.name}}</td>
                                     <td class="center">{{line.order.updatedAt | date : "shortDate"}}</td>
@@ -86,7 +87,8 @@
                                     <td class="center">{{line.allocated}}</td>
                                     <td class="center">{{line.inStock}}</td>
                                     <td class="center">{{line.onHand}}</td>
-                                    <td>{{}}</td>
+                                    <td class="center">{{line.product.inventory.minStockLevel}}</td>
+                                    <td class="center">{{line.product.inventory.maxStockLevel}}</td>
                                     <td class="center">{{line.product.prices.pu_ht | currency}}</td>
                                     <td class="center">{{line.product.prices.pu_ht*line.inStock | currency}} </td>
                                 </tr>

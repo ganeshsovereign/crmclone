@@ -145,7 +145,8 @@ var productSchema = new Schema({
 
     inventory: {
         warehouseMsg: { type: String, default: '' },
-        minStockLevel: { type: Number, default: 0 }
+        minStockLevel: { type: Number, default: 0 },
+        maxStockLevel: { type: Number }
     },
 
     variants: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }],
