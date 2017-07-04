@@ -441,6 +441,9 @@ baseSchema.statics.getById = function(id, callback) {
                     .exec(wCb);
             },
             function(order, wCb) {
+                if (!order)
+                    return wCb("Order not found");
+
                 if (!order.order)
                     order.order = { _id: order._id };
 
