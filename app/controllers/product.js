@@ -1871,6 +1871,102 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
             url: '/erp/api/product/stockInventory',
             params: {}
         }).success(function(data, status) {
+            //console.log(data);
+            $scope.listObject = data.data;
+            //$scope.totalEntries = data.total;
+        });
+
+    };
+
+    $scope.Movement = function(line) {
+
+        //console.log(line);
+        var modalInstance = $modal.open({
+            templateUrl: '/templates/core/modal/stockdetailmovement.html',
+            controller: 'ProductStockDetailTransfertController',
+            size: "lg",
+            resolve: {
+                options: function() {
+                    return {
+                        line: line
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then(function() {
+
+            product.$update(function(response) {
+                $scope.find();
+            });
+
+            /*$http({
+                method: 'PUT',
+                url: '/erp/api/product/upgradeprice',
+                data: {
+                    id: grid.getSelectedRows(),
+                    price_level: "BASE",
+                    coef: coef
+                }
+            }).success(function(data, status) {
+                $scope.find();
+            });*/
+        }, function() {
+            $scope.find();
+        });
+    };
+
+}]);
+
+MetronicApp.controller('ProductStockDetailTransfertController', ['$scope', '$rootScope', '$http', '$modalInstance', 'options', 'Files', function($scope, $rootScope, $http, $modalInstance, options, Files) {
+    //console.log(options);
+
+    $scope.line = options.line;
+    $scope.$dict = {};
+
+    $http({
+        method: 'GET',
+        url: '/erp/api/product/warehouse/select'
+    }).success(function(data, status) {
+        $scope.$dict.warehouse = data.data;
+        //console.log(data);
+    });
+
+    $scope.transfert = function() {
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+    };
+
+}]);
+
+MetronicApp.controller('ProductStockTransfersController', ['$scope', '$rootScope', '$http', '$modal', function($scope, $rootScope, $http, $modal) {
+
+    $scope.dict = {};
+
+    $scope.$on('$viewContentLoaded', function() {
+        // initialize core components
+        Metronic.initAjax();
+
+        $scope.backTo = 'product.stocktransfert.list';
+
+        // set default layout mode
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
+
+        $scope.find();
+
+    });
+
+    $scope.find = function() {
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/product/stockInventory',
+            params: {}
+        }).success(function(data, status) {
             console.log(data);
             $scope.listObject = data.data;
             //$scope.totalEntries = data.total;
@@ -1878,16 +1974,17 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
 
     };
 
-    $scope.Movement = function(product) {
+    $scope.transfers = function(line) {
 
+        //console.log(line);
         var modalInstance = $modal.open({
-            templateUrl: '/templates/core/modal/stockdetailmovement.html',
-            controller: 'ProductBankImagesModalController',
+            templateUrl: '/templates/core/modal/stocktransfers.html',
+            controller: 'ProductStockDetailTransfertController',
             size: "lg",
             resolve: {
                 options: function() {
                     return {
-                        product: product
+                        line: line
                     };
                 }
             }

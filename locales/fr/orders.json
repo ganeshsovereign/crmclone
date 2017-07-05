@@ -80,6 +80,7 @@
     "RefuseOrder": "Refuser la commande",
     "ApproveOrder": "Accepter la commande",
     "ValidateOrder": "Valider la commande",
+    "ValidateDelivery":"Valider la livraison",
     "UnvalidateOrder": "Dévalider la commande",
     "DeleteOrder": "Supprimer la commande",
     "CancelOrder": "Annuler la commande",

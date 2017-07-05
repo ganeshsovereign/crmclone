@@ -408,6 +408,7 @@
     "PriceQtyTTC": "Prix pour la quantité TTC",
     "PriceQtyMinTTC": "Prix quantité min. TTC",
     "Percentage": "Pourcentage",
+    "PercentageOfCA": "Pourcentage du CA",
     "Total": "Total",
     "SubTotal": "Sous-total",
     "AddSubTotal": "Ajouter sous-total",
@@ -839,5 +840,13 @@
     "Reminder": "Qté restante à expédier",
     "QtyDelivered": "Qté à livrée",
     "Move": "Mouvement",
-    "To": "Vers"
+    "Towards": "Vers",
+    "Turnover": "Chiffre d'affaires",
+    "Subcontracting": "Sous-traitance",
+    "EvolutionOfTurnover": "Evolution du CA",
+    "CurrentCA": "CA Actuel",
+    "Sales": "Ventes",
+    "WeeklyStats": "Statistiques hebdomadaires",
+    "Estimated": "Prévisionnel",
+    "BreakdownOfTurnover": "Répartition / CA"
 }

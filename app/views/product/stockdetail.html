@@ -1,4 +1,4 @@
-<div class="page-bar" ng-init="findOne()">
+<div class="page-bar">
     <ul class="page-breadcrumb">
         <li>
             <i class="fa fa-home"></i>
@@ -10,7 +10,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span> @(products:StockDetail) </span>
+            <span> @(products:StockTransfers) </span>
         </li>
 
     </ul>
@@ -34,7 +34,7 @@
     <div class="portlet-title">
         <div class="caption">
             <i class="fa-line-chart"></i>
-            <span class="caption-subject dark sbold uppercase">@(products:StockDetail)</span>
+            <span class="caption-subject dark sbold uppercase"> @(products:StockDetail)</span>
         </div>
         <div class="actions">
             <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
@@ -54,29 +54,33 @@
                                     <th width="100px">@(Move)</th>
                                     <th width="80px">@(Ref)</th>
                                     <th>@(Name)</th>
+                                    <th>@(orders:Orders)</th>
                                     <th>@(products:Warehouse)</th>
-                                    <th class="center">@(DateOfReceipt)</th>
-                                    <th class="center">@(products:Aisle)</th>
-                                    <th class="center">@(products:Bay)</th>
-                                    <th class="center">@(products:Shelf)</th>
-                                    <th class="center">@(products:Bin)</th>
-                                    <th class="center">@(products:Allocated)</th>
-                                    <th class="center">@(products:InStock)</th>
-                                    <th class="center">@(products:OnHand)</th>
-                                    <th class="center">@(products:LowStock)</th>
-                                    <th class="center">@(products:UnitCost)</th>
-                                    <th class="center">@(products:Total)</th>
+                                    <th>@(DateOfReceipt)</th>
+                                    <th width="70px">@(products:Aisle)</th>
+                                    <th width="70px">@(products:Bay)</th>
+                                    <th width="70px">@(products:Shelf)</th>
+                                    <th width="70px">@(products:Bin)</th>
+                                    <th>@(products:Allocated)</th>
+                                    <th>@(products:InStock)</th>
+                                    <th>@(products:OnHand)</th>
+                                    <th>@(products:stockTimeLimit)</th>
+                                    <th>@(products:MinStock)</th>
+                                    <th>@(products:MaxStock)</th>
+                                    <th>@(products:UnitCost)</th>
+                                    <th>@(products:Total)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="line in listObject">
-                                    <td>
-                                        <button class="btn" ng-click="Movement(product)" title="'@(products:Movement)'">
+                                    <td class="center">
+                                        <button class="btn" ng-click="Movement(line)" title="'@(products:Movement)'">
                                             <i class="fa fa-long-arrow-right"></i>
                                         </button>
                                     </td>
-                                    <td>{{line.product.info.SKU}}</td>
+                                    <td><a ui-sref="product.show.informations({id:line.product._id})" target="blank">{{ line.product.info.SKU}}</a></td>
                                     <td>{{line.product.name}}</td>
+                                    <td><a ui-sref="ordersupplier.show.detail({id:line.order._id})" target="blank">{{line.order.ref}}</a></td>
                                     <td>{{line.warehouse.name}}</td>
                                     <td class="center">{{line.order.updatedAt | date : "shortDate"}}</td>
                                     <td class="center">{{line.location.groupingA}}</td>
@@ -86,9 +90,11 @@
                                     <td class="center">{{line.allocated}}</td>
                                     <td class="center">{{line.inStock}}</td>
                                     <td class="center">{{line.onHand}}</td>
-                                    <td>{{}}</td>
-                                    <td class="center">{{line.product.prices.pu_ht | currency}}</td>
-                                    <td class="center">{{line.product.prices.pu_ht*line.inStock | currency}} </td>
+                                    <td class="center">{{line.product.inventory.stockTimeLimit || '--'}} @(products:Day)</td>
+                                    <td class="center">{{line.product.inventory.minStockLevel}}</td>
+                                    <td class="center">{{line.product.inventory.maxStockLevel}}</td>
+                                    <td>{{line.product.prices.pu_ht | currency}}</td>
+                                    <td>{{line.product.prices.pu_ht*line.inStock | currency}} </td>
                                 </tr>
                             </tbody>
                         </table>

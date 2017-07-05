@@ -977,13 +977,29 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductStockDetailController"
         })
-        .state('product.stockdetail.show', {
+        // Stock transfert
+        .state('product.stocktransfers', {
+            parent: "product",
+            url: "/stocktransfers",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.stocktransfers.list', {
             url: "",
-            templateUrl: "/views/product/stockdetailfiche.html",
+            templateUrl: "/views/product/stocktransfers.html",
             data: {
-                pageTitle: 'Mouvement de stock'
+                pageTitle: 'Liste des transferts de stock'
             },
-            controller: "ProductStockDetailController"
+            controller: "ProductStockTransfersController"
+        })
+        .state('product.stocktransfers.create', {
+            parent: "",
+            url: "/create.html",
+            templateUrl: "/views/product/informations.html",
+            data: {
+                pageTitle: 'Nouveau produit / service'
+            },
+            controller: "ProductStockTransfersController"
         })
         // Company
         .state('societe', {

@@ -28,8 +28,8 @@
                     <tr role="row" class="heading">
                         <th style="width: 140px;">@(products:ProductCode)</th>
                         <th style="width: 15%;">@(Name)</th>
-                        <th style="width: 25%;">@(Description)</th>
-                        <th style="width: 80px;">@(Qty)</th>
+                        <th style="width: 23%;">@(Description)</th>
+                        <th style="width: 90px;">@(Qty)</th>
                         <th style="width: 100px;">@(AmountHT)</th>
                         <th style="width: 100px;">@(Discount)</th>
                         <th style="width: 100px;">@(Taxes)</th>
@@ -62,9 +62,9 @@
                         <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="{{-1*line.product.unit}}" e-step="0.001" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
-                        <div>{{line.allocated}} Alloue</div>
-                        <div>{{line.onHand}} Disponible</div>
-                        <div>{{line.fulfilled}} Expedie</div>
+                        <div>{{line.allocated || '0'}} Alloués</div>
+                        <div>{{line.onHand || '0'}} Disponibles</div>
+                        <div>{{line.fulfilled || '0'}} Expediés</div>
                     </td>
                     <td ng-if="line.type != 'SUBTOTAL'" class="align-right">
                         <div class="checkbox-list" ng-show="tableform.$visible">

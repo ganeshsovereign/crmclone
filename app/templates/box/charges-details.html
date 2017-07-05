@@ -4,14 +4,14 @@
         <div class="caption caption-md">
             <i class="icon-bar-chart font-green-haze hide"></i>
             <span class="caption-subject font-green-haze bold uppercase">@(bills:ChargesDetails)</span>
-            <span class="caption-helper hide">weekly stats...</span>
+            <span class="caption-helper hide">@(WeeklyStats)...</span>
         </div>
         <div class="actions">
             <div class="btn-group btn-group-devided" data-toggle="buttons">
                 <label class="btn btn-transparent grey-salsa btn-circle btn-sm active">
                     <input type="radio" name="options" class="toggle" id="option2">@(Dates)</label>
                 <label class="btn btn-transparent grey-salsa btn-circle btn-sm">
-                    <input type="radio" name="options" class="toggle" id="option2">@(Previsionnel)</label>
+                    <input type="radio" name="options" class="toggle" id="option2">@(Estimated)</label>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
                     </div>
                     <div class="stat-number">
                         <div class="title">
-                            @(Percentage) du CA
+                            @(PercentageOfCA)
                         </div>
                         <div class="number">
                             {{ getTotal(dataDebit.charge, 'total_ht') / dataCaTotal * 100 | percent:0}}
@@ -59,7 +59,7 @@
                             CA HT
                         </th>
                         <th class="text-align-reverse">
-                            Repartition/CA
+                            @(BreakdownOfByTurnover)
                         </th>
                     </tr>
                 </thead>

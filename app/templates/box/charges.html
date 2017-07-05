@@ -1,12 +1,10 @@
-
-
 <div class="row">
     <div class="col-md-3">
         <div class="portlet light" ng-repeat="ch in chEvolution">
             <div class="portlet-title">
                 <div class="caption caption-md">
                     <i class="icon-bar-chart font-green-haze hide"></i>
-                    <span class="caption-subject font-green-haze bold uppercase">Evolution des charges {{ch.entity}}</span>
+                    <span class="caption-subject font-green-haze bold uppercase">@(EvolutionOfTurnover) {{ch.entity}}</span>
                     <span class="caption-helper"> Par rapport a N-1</span>
                 </div>
             </div>
@@ -15,7 +13,7 @@
                     <div class="row step-default">
                         <div class="col-md-12 bg-grey mt-step-col">
                             <div class="mt-step-title uppercase">{{ch.entity}}</div>
-                            <div class="mt-step-content font-grey-cascade">Evolution des charges</div>
+                            <div class="mt-step-content font-grey-cascade">@(EvolutionOfTurnover)</div>
                             <div class="mt-step-number font-grey" ng-class="{'progress-bar-success' : ch.evolution <= 0, 'bg-red':ch.evolution > 0}">{{ch.evolutionStr}}</div>
                             <div class="mt-step-title uppercase font-green-haze">Charges Actuelles</div>
                             <progressbar animate="true" value="ch.chNpercent" type="green"><b>{{ch.chN | currency}}</b></progressbar>
@@ -41,7 +39,7 @@
                     <am-chart id="amchart_2" options="amChartOptions" datas="chData.graph"></am-chart>
                 </div>
             </div>
-        </div>  
+        </div>
     </div>
     <div class="col-md-3">
         <div class="portlet light" ng-repeat="(entity, value) in chFamily">

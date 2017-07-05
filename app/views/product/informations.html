@@ -74,6 +74,8 @@ Marketing
                                             </div>
                                         </div>
                                     </div>
+
+
                                 </div>
 
                                 <div class="portlet light bordered">
@@ -114,7 +116,7 @@ Marketing
                                             <div class="form-group form-md-line-input ">
                                                 <!--<label for="Abstract">@(eshop:abstract) <span class="required">
                                         * </span></label>-->
-                                                <summernote height="220" ng-model="product.info.langs[0].shortDescription"></summernote>
+                                                <summernote height="220" ng-model="product.info.langs[_language].shortDescription"><i class="fa fa-flag"></i></summernote>
                                             </div>
                                         </tab>
                                         <tab heading="@(Description)  *">
@@ -129,18 +131,46 @@ Marketing
                                 </div>
 
                                 <div class="portlet light bordered">
-                                    <div class="form-group form-md-line-input">
-                                        <div class="form-group form-md-line-input ">
-                                            <select class="table-group-action-input form-control" id="Units" ng-model="product.units" ng-options="s.id as s.label for s in dict.fk_units.values"></select>
-                                            <label for="Units">@(products:Units)</label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <select class="table-group-action-input form-control" id="Units" ng-model="product.units" ng-options="s.id as s.label for s in dict.fk_units.values"></select>
+                                                <label for="Units">@(products:Units)</label>
+                                            </div>
                                         </div>
 
-                                        <div class="form-group form-md-line-input">
-                                            <input type="number" class="form-control" id="Weight" ng-model="product.weight" min="0" step="0.0001">
-                                            <label for="Weight">@(products:Weight)</label>
-                                            <div class="form-control-focus"> </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="number" class="form-control" id="Weight" ng-model="product.weight" min="0" step="0.0001">
+                                                <label for="Weight">@(products:Weight)</label>
+                                                <div class="form-control-focus"> </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="number" class="form-control" id="stockTimeLimit" ng-model="product.inventory.stockTimeLimit" min="0" step="1">
+                                                <label for="stockTimeLimit">@(products:stockTimeLimit) @(products:Day)</label>
+                                                <div class="form-control-focus"> </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row" ng-if="product.info.productType.inventory == true">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="minstock" ng-model="product.inventory.minStockLevel">
+                                                <label for="minstock">@(products:MinStock)</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="maxstock" ng-model="product.inventory.maxStockLevel">
+                                                <label for="maxstock">@(products:MaxStock)</label>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -148,18 +178,20 @@ Marketing
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
 
-        <div ng-if="product.type == 'DYNAMIC'" class="form-group">
-            <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
+<div ng-if="product.type == 'DYNAMIC'" class="form-group">
+    <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
                                         * </span>
                                 </label>
-            <div class="col-md-4" ng-init="loadDynForms()">
-                <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
-            </div>
-
-        </div>
+    <div class="col-md-4" ng-init="loadDynForms()">
+        <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
     </div>
+
+</div>
+</div>
 </div>
 
 <!-- 
@@ -256,7 +288,7 @@ Ecommerce
                             <div class="col-md-6">
                                 <div class="portlet light bordered">
                                     <div class="form-group form-md-line-input ">
-                                        <textarea class="form-control" ng-model="product.info.langs[0].meta.description" rows="12"></textarea>
+                                        <textarea class="form-control" ng-model="product.info.langs[_language].meta.description" rows="12"></textarea>
                                         <label for="MetaDes">META @(products:Description) <span class="required">
                                         * </span></label>
                                         <span class="help-block">META @(products:Description) : @(eshop:MetaAdvice).</span>

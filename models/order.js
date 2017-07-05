@@ -1089,6 +1089,11 @@ exports.Status = {
             "enable": true,
             "cssClass": "ribbon-color-success label-success"
         },
+        "ADMISSION": {
+            "label": "StatusOrderOnProcess",
+            "enable": true,
+            "cssClass": "ribbon-color-success label-success"
+        },
         "CLOSED": {
             "enable": true,
             "label": "StatusOrderClosed",

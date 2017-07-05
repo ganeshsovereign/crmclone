@@ -136,6 +136,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
 
             var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
+            
             $http({
                 method: 'GET',
                 url: '/erp/api/dict',

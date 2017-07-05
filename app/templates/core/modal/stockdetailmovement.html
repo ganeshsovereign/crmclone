@@ -16,8 +16,8 @@
                                 <th>@(products:Warehouse)</th>
                                 <th>@(products:Zones)</th>
                                 <th>@(Qty)</th>
-                                <th>@(products:QtytoTransfer)</th>
-                                <th>@(To)</th>
+                                <th width="20%">@(products:QtytoTransfer)</th>
+                                <th>@(Towards)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -25,14 +25,14 @@
                                 <td>{{line.product.info.SKU}}</td>
                                 <td>{{line.product.name}}</td>
                                 <td>{{line.warehouse.name}}</td>
-                                <td>
-                                    <ul>
-                                        <li ng-repeat="zone in line.zones">{{zone.name}}</li>
-                                    </ul>
-                                </td>
-                                <td class="center">{{line.location.groupingD}}</td>
-                                <td class="center">{{line.allocated}}</td>
+                                <td>{{line.location.name}}</td>
                                 <td class="center">{{line.inStock}}</td>
+                                <td>
+                                    <input type="number" step="1" class="form-control" max="{{line.onHand}}" id="onHand" ng-model="line.onHand">
+                                </td>
+                                <td>
+                                    <select class=" form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse"></select>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -44,5 +44,5 @@
 
 <div class="modal-footer">
     <button ng-click="cancel()" class="btn btn red" type="button">@(Cancel)</button>
-    <button ng-click="Movement()" class="btn btn green" type="button">@(products:toTransfer) <i class="fa fa-long-arrow-right"></i></button>
+    <button ng-click="transfert()" class="btn btn green" type="button">@(products:toTransfer) <i class="fa fa-long-arrow-right"></i></button>
 </div>
