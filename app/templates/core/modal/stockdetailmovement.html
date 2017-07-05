@@ -16,7 +16,7 @@
                                 <th>@(products:Warehouse)</th>
                                 <th>@(products:Zones)</th>
                                 <th>@(Qty)</th>
-                                <th>@(products:QtytoTransfer)</th>
+                                <th width="20%">@(products:QtytoTransfer)</th>
                                 <th>@(Towards)</th>
                             </tr>
                         </thead>
@@ -27,9 +27,11 @@
                                 <td>{{line.warehouse.name}}</td>
                                 <td>{{line.location.name}}</td>
                                 <td class="center">{{line.inStock}}</td>
-                                <td editable-number="line.onHand" class="center" e-max="line.onHand">{{line.onHand}}</td>
                                 <td>
-                                  <select class=" form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse"></select>
+                                    <input type="number" class="form-control" e-max="line.onHand" id="onHand" ng-model="line.onHand">
+                                </td>
+                                <td>
+                                    <select class=" form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse"></select>
                                 </td>
                             </tr>
                         </tbody>
