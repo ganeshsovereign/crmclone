@@ -2909,9 +2909,52 @@ Prices.prototype = {
 
         //console.log(self.body);
 
-        // Update qtyMin or qtyMax
-        if (self.body.type && self.body.type == 'QTY') {
-            ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
+        async.waterfall([
+                //Ordering prices discount by qty
+                function(wCb) {
+                    // No update price
+                    if (!self.body.prices)
+                        return wCb();
+
+                    self.body.prices = _.filter(self.body.prices, function(price) {
+                        if (price.count == 0)
+                            return true;
+
+                        return (price.price !== 0)
+                    });
+
+                    self.body.prices = _.uniq(self.body.prices, 'count');
+
+                    function compare(a, b) {
+                        if (a.count < b.count)
+                            return -1;
+                        if (a.count > b.count)
+                            return 1;
+                        return 0;
+                    }
+
+                    self.body.prices.sort(compare);
+                    wCb();
+                },
+                function(wCb) {
+
+                    // Update qtyMin or qtyMax
+                    //if (self.body.type && self.body.type == 'QTY') {
+                    // Just update one price in priceList
+
+
+
+                    ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
+                        doc.populate("priceLists", "cost isCoef", function(err, doc) {
+                            if (err)
+                                return wCb(err);
+
+                            wCb(null, doc);
+                        });
+                    });
+                }
+            ],
+            function(err, doc) {
                 if (err) {
                     console.log(err);
                     return self.json({
@@ -2923,9 +2966,9 @@ Prices.prototype = {
                 }
 
                 // Emit to refresh priceList from parent
-                setTimeout2('productPrices:updatePrice_' + doc.priceLists.toString(), function() {
+                setTimeout2('productPrices:updatePrice_' + doc.priceLists._id.toString(), function() {
                     F.functions.BusMQ.emit('productPrices:updatePrice', self.user._id, {
-                        priceList: doc
+                        price: doc
                     });
                 }, 500);
 
@@ -2936,68 +2979,6 @@ Prices.prototype = {
                     message: "Prix enregistré"
                 };
                 self.json(doc);
-            });
-        }
-
-        ProductPricesModel.findOne({ _id: id })
-            //.populate({ path: 'product', select: '_id directCost info', populate: { path: "info.productType", select: "coef" } })
-            .populate("priceLists", "cost")
-            .exec(function(err, doc) {
-                if (err) {
-                    console.log(err);
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
-                        }
-                    });
-                }
-
-                // Just update one price in priceList
-                if (!doc.priceLists.cost || self.body.updateAll)
-                    return ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
-                        if (err) {
-                            console.log(err);
-                            return self.json({
-                                errorNotify: {
-                                    title: 'Erreur',
-                                    message: err
-                                }
-                            });
-                        }
-
-                        //console.log(doc);
-                        doc = doc.toObject();
-                        doc.successNotify = {
-                            title: "Success",
-                            message: "Prix enregistré"
-                        };
-                        self.json(doc);
-                    });
-
-
-                doc = _.extend(doc, self.body);
-                doc.editedBy = self.user._id;
-
-                doc.save(function(err, doc) {
-                    if (err) {
-                        console.log(err);
-                        return self.json({
-                            errorNotify: {
-                                title: 'Erreur',
-                                message: err
-                            }
-                        });
-                    }
-
-                    //console.log(doc);
-                    doc = doc.toObject();
-                    doc.successNotify = {
-                        title: "Success",
-                        message: "Prix enregistré"
-                    };
-                    self.json(doc);
-                });
             });
     },
     add: function() {

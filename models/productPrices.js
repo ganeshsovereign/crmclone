@@ -38,7 +38,7 @@ productPricesSchema.plugin(timestamps);
 
 productPricesSchema.index({ priceLists: 1, product: 1 }, { unique: true });
 
-productPricesSchema.pre('save', function(next) {
+/*productPricesSchema.pre('save', function(next) {
     var self = this;
     var ProductModel = MODEL('product').Schema;
     var ProductFamilyCoefModel = MODEL('productFamilyCoef').Schema;
@@ -92,7 +92,7 @@ productPricesSchema.pre('save', function(next) {
                     });
                 }
 
-                /* coef mode */
+                // coef mode
                 if (coef && self.priceLists.cost != true) {
                     //Recalcul product prices
                     self.prices = [];
@@ -143,7 +143,7 @@ productPricesSchema.pre('save', function(next) {
         //console.log(self.prices);
         next();
     });
-});
+});*/
 
 productPricesSchema.statics.findPrice = function(options, fields, callback) {
     var self = this;
