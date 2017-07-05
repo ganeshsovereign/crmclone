@@ -2414,8 +2414,15 @@ Object.prototype = {
         societe(id, function(societe) {
 
             societe = _.extend(societe, self.body);
-            societe.user_modif = self.user._id;
+            societe.edtitedBy = self.user._id;
             //console.log(self.body);
+
+            // Emit to refresh priceList from parent
+            setTimeout2('customer:update_' + societe._id.toString(), function() {
+                F.functions.BusMQ.publish('customer:update', self.user._id, {
+                    customer: societe
+                });
+            }, 500);
 
             var oldData = {
                 versionId: null,

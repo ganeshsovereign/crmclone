@@ -4,14 +4,8 @@
     </a>
 </script>
 
-<script type="text/ng-template" id="searchvariantproduct.html">
-    <a>
-        <span ng-bind-html="match.model.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.info.langs[0].name"></span>
-    </a>
-</script>
-
 <!--
-Marketing    
+Marketing
 -->
 <div class="row">
     <div class="col-md-12">
@@ -22,7 +16,7 @@ Marketing
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-info"></i>
-                        <span class="caption-subject dark bold uppercase"> @(Marketing) / PIM</span>
+                        <span class="caption-subject dark bold uppercase"> @(Marketing) / PIM <i class="fa fa-trademark"></i> </span>
                     </div>
                     <save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
                 </div>
@@ -168,8 +162,26 @@ Marketing
     </div>
 </div>
 
+<!-- 
+Images
+-->
+<div ng-include="'/views/product/productImages.html'">
+</div>
+
+<!-- 
+Attributes
+-->
+<div ng-include="'/views/product/attributes.html'">
+</div>
+
 <!--
-SEO
+Cateogries
+-->
+<div ng-include="'/views/product/categories.html'" ng-controller="CategoryController">
+</div>
+
+<!--
+Ecommerce
 -->
 <div class="row">
     <div class="col-md-12">
@@ -259,9 +271,8 @@ SEO
     </div>
 </div>
 
-
 <!--
-Categories and declinations    
+Categories & declinations 
 -->
 
 <div ng-include="'/views/product/declinations.html'">

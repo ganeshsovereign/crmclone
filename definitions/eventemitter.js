@@ -24,6 +24,7 @@ var async = require('async');
 var Bus = require('busmq');
 
 var queuesList = [
+    'customer:update',
     'product:update',
     'product:updateDirectCost',
     'product:updateAttributes',
