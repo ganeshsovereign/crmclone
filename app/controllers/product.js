@@ -1967,7 +1967,7 @@ MetronicApp.controller('ProductStockTransfersController', ['$scope', '$rootScope
             url: '/erp/api/product/stockInventory',
             params: {}
         }).success(function(data, status) {
-            //console.log(data);
+            console.log(data);
             $scope.listObject = data.data;
             //$scope.totalEntries = data.total;
         });

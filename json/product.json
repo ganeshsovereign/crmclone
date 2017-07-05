@@ -92,15 +92,6 @@
                     "icon": "fa fa-bars",
                     "title": "products:FamilyProducts"
                 },
-                "menu:productpricelevel": {
-                    "url": "/erp/#!/product/pricelevel.html",
-                    "position": 10,
-                    "usertype": 2,
-                    "perms": "product.readTODO",
-                    "enabled": false,
-                    "icon": "fa fa-money",
-                    "title": "products:PriceLevel"
-                },
                 "menu:productlist": {
                     "url": "/erp/#!/product",
                     "position": 1,
@@ -136,15 +127,6 @@
                     "enabled": "$conf->product->enabled",
                     "icon": "fa fa-line-chart",
                     "title": "products:StockDetail"
-                },
-                "menu:stocktransfers": {
-                    "url": "/erp/#!/product/stocktransfers",
-                    "position": 45,
-                    "usertype": 2,
-                    "perms": "product.read",
-                    "enabled": "$conf->product->enabled",
-                    "icon": "fa fa-refresh",
-                    "title": "products:StockTransfers"
                 }
             }
         }
