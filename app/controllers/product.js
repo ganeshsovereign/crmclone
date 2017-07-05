@@ -1923,12 +1923,11 @@ MetronicApp.controller('ProductStockDetailTransfertController', ['$scope', '$roo
 
     $scope.line = options.line;
     $scope.$dict = {};
-    
+
     $http({
         method: 'GET',
         url: '/erp/api/product/warehouse/select'
-
-        }).success(function(data, status) {
+    }).success(function(data, status) {
         $scope.$dict.warehouse = data.data;
         //console.log(data);
     });
