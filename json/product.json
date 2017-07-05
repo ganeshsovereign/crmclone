@@ -136,6 +136,15 @@
                     "enabled": "$conf->product->enabled",
                     "icon": "fa fa-line-chart",
                     "title": "products:StockDetail"
+                },
+                "menu:stocktransfers": {
+                    "url": "/erp/#!/product/stocktransfers",
+                    "position": 45,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa fa-refresh",
+                    "title": "products:StockTransfers"
                 }
             }
         }

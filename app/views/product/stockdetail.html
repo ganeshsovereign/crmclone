@@ -1,4 +1,4 @@
-<div class="page-bar" ng-init="findOne()">
+<div class="page-bar">
     <ul class="page-breadcrumb">
         <li>
             <i class="fa fa-home"></i>
@@ -10,7 +10,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span> @(products:StockDetail) </span>
+            <span> @(products:StockTransfers) </span>
         </li>
 
     </ul>
@@ -34,7 +34,7 @@
     <div class="portlet-title">
         <div class="caption">
             <i class="fa-line-chart"></i>
-            <span class="caption-subject dark sbold uppercase">@(products:StockDetail)</span>
+            <span class="caption-subject dark sbold uppercase"> @(products:StockDetail)</span>
         </div>
         <div class="actions">
             <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
@@ -54,7 +54,7 @@
                                     <th width="100px">@(Move)</th>
                                     <th width="80px">@(Ref)</th>
                                     <th>@(Name)</th>
-                                    <th>Commandes</th>
+                                    <th>@(orders:Orders)</th>
                                     <th>@(products:Warehouse)</th>
                                     <th>@(DateOfReceipt)</th>
                                     <th width="70px">@(products:Aisle)</th>
@@ -90,7 +90,7 @@
                                     <td class="center">{{line.allocated}}</td>
                                     <td class="center">{{line.inStock}}</td>
                                     <td class="center">{{line.onHand}}</td>
-                                    <td class="center">{{line.product.inventory.stockTimeLimit}}</td>
+                                    <td class="center">{{line.product.inventory.stockTimeLimit || '--'}} @(products:Day)</td>
                                     <td class="center">{{line.product.inventory.minStockLevel}}</td>
                                     <td class="center">{{line.product.inventory.maxStockLevel}}</td>
                                     <td>{{line.product.prices.pu_ht | currency}}</td>

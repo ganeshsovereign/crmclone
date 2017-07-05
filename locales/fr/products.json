@@ -319,7 +319,7 @@
     "SizeUnitfoot": "pied",
     "SizeUnitpoint": "point",
     "Pages": "page(s)",
-    "Day": "jour",
+    "Day": "jour(s)",
     "Hour": "H",
     "Bundle": "Composition / Pack",
     "Family": "Famille",
@@ -405,5 +405,6 @@
     "Total": "Coût Total",
     "toTransfer": "Transférer",
     "QtytoTransfer": "Qté à transférer",
-    "stockTimeLimit": "Durée Limite stockage"
+    "stockTimeLimit": "Durée Limite stockage",
+    "StockTransfers": "Transfert de Stock"
 }

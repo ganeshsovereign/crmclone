@@ -28,7 +28,7 @@
                                 <td>{{line.location.name}}</td>
                                 <td class="center">{{line.inStock}}</td>
                                 <td>
-                                    <input type="number" class="form-control" e-max="line.onHand" id="onHand" ng-model="line.onHand">
+                                    <input type="number" step="1" class="form-control" max="{{line.onHand}}" id="onHand" ng-model="line.onHand">
                                 </td>
                                 <td>
                                     <select class=" form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse"></select>
