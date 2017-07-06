@@ -26,7 +26,7 @@ var productFamiliesSchema = new Schema({
     entity: [String], // NOT Used
     //isCoef: { type: Boolean, default: false }, //Price was calculated from a coefficient
     createdAt: { type: Date, default: Date.now },
-    //isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: true },
     isCost: { type: Boolean, default: false },
     sequence: { type: Number, default: 0 }, // sort list
     indirectCostRate: { type: Number, default: 0 }, // % based on cost Direct Price

@@ -390,7 +390,9 @@ Object.prototype = {
         var self = this;
         var CategoryModel = MODEL('productCategory').Schema;
         var ProductModel = MODEL('product').Schema;
-        var query = {};
+        var query = {
+            isremoved: { $ne: true }
+        };
 
         async.parallel({
             categoriesCount: function(cb) {

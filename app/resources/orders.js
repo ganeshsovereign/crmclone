@@ -121,6 +121,15 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                     clone: 1
                 }
             }
+        }),
+        ordersFab: $resource('/erp/api/ordersfab/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            clone: {
+                method: 'POST',
+                params: {
+                    clone: 1
+                }
+            }
         })
     }
 }]);

@@ -621,7 +621,7 @@ exports.install = function() {
         });
     }, ['post', 'json', 'authorize']);
     //AUTOCOMPLETE ON FAMILY
-    F.route('/erp/api/product/family', function() {
+    /*F.route('/erp/api/product/family', function() {
         //console.log(req.body);
         var self = this;
         var ProductModel = MODEL('product').Schema;
@@ -659,11 +659,11 @@ exports.install = function() {
             }
         });
         return;
-    }, ['post', 'json', 'authorize']);
+    }, ['post', 'json', 'authorize']);*/
     F.route('/erp/api/product/familyCoef/export/', productFamily.exportCoefFamily, ['authorize']);
     F.route('/erp/api/product/family', productFamily.getAllProductFamily, ['authorize']);
     F.route('/erp/api/product/family/{id}', productFamily.getProductFamilyById, ['authorize']);
-    F.route('/erp/api/product/family/', productFamily.createProductFamily, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/family', productFamily.createProductFamily, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/family/{id}', productFamily.updateProductFamily, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/product/family/{id}', productFamily.deleteProductFamily, ['delete', 'authorize']);
     F.route('/erp/api/product/family/{id}', productFamily.cloneProductFamily, ['post', 'json', 'authorize'], 512);

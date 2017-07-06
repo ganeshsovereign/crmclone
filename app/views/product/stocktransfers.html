@@ -1,0 +1,74 @@
+<div class="page-bar" ng-init="findOne()">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(products:ProductsAndServices)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span> @(products:StockTransfers) </span>
+        </li>
+
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group">
+            <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li>
+                    <a href="#" ng-click="refreshDirectory()">
+                        <i class="fa fa-refresh"></i> @(Refresh)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa-refresh"></i>
+            <span class="caption-subject dark sbold uppercase"> @(products:StockTransfers)</span>
+        </div>
+        <div class="actions">
+            <button class="btn blue" ng-click="transfers()">@(Add) <i class="fa fa-plus"></i></button>
+            <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
+            </a>
+        </div>
+
+    </div>
+    <div class="portlet light">
+        <div class="form-body">
+            <div class="table-responsive">
+                <div class="dataTables_wrapper no-footer table-responsive">
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered table-hover no-footer" id="stockTranfersList">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th>@(Date)</th>
+                                    <th>@(from)</th>
+                                    <th>@(Towards)</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

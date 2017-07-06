@@ -894,6 +894,43 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "OrdersController"
         })
+        // Orders Fab
+        .state('ordersfab', {
+            url: "/ordersfab",
+            abstract: true,
+            templateUrl: "/views/ordersfab/index.html"
+        })
+        .state('ordersfab.list', {
+            url: "",
+            templateUrl: "/views/ordersfab/listordersfab.html",
+            data: {
+                pageTitle: 'Liste des Ordres de fabrications'
+            },
+            controller: "OrdersFabListController"
+        })
+        .state('ordersfab.show', {
+            parent: "ordersfab",
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/ordersfab/fiche.html",
+            data: {
+                pageTitle: 'Ordre de fabrication'
+            },
+            controller: "OrdersController"
+        })
+        .state('ordersfab.show.detail', {
+            url: "/ordersfab",
+            templateUrl: "/views/ordersfab/detail.html",
+            data: { pageTitle: 'Ordre de fabrication' }
+        })
+        .state('ordersfab.create', {
+            parent: "ordersfab",
+            url: "/create.html",
+            templateUrl: "/views/ordersfab/detail.html",
+            data: {
+                pageTitle: 'Nouvel ordre de fabrication'
+            },
+            controller: "OrdersController"
+        })
         // Product Return
         .state('stockreturn', {
             url: "/stockreturn",
