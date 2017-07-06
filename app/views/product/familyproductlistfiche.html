@@ -166,13 +166,13 @@
                                 <thead>
                                     <th width="400px">@(products:PriceLevel) (@(products:BasedOnCoef))</th>
                                     <th>@(products:Coef)</th>
-                                    <th>@(products:Discount)</th>
+                                    <!--<th>@(products:Discount)</th>-->
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="line in object.familyCoef">
                                         <td class="">{{line.priceLists.name}}</td>
                                         <td><a ng-if="line.priceLists.isCoef" href="#" editable-number="line.coef" e-step="0.001" e-min="0" onaftersave="update(true)">{{line.coef || 1 | number:3}}</a><span ng-if="line.priceLists.isCoef == false">{{line.coef || 0 | number:3}}</span></td>
-                                        <td><span ng-if="line.priceLists.discount">-{{line.priceLists.discount || 0 | number:2}} %</span></td>
+                                        <!--<td><span ng-if="line.priceLists.discount">-{{line.priceLists.discount || 0 | number:2}} %</span></td>-->
                                     </tr>
                                 </tbody>
                             </table>

@@ -44,6 +44,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         $scope.backTo = 'dashboard';
 
         $scope.object = {
+            forSales: true,
             entity: $rootScope.login.entity,
             billing: {},
             address: {},
@@ -109,25 +110,34 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     Object = Orders.bill;
                     $scope.backTo = 'bill.list';
                     break;
+                case 'stockreturn':
+                    Object = Orders.stockReturn;
+                    $scope.backTo = 'stockreturn.list';
+                    break;
                 case 'offersupplier':
+                    $scope.object.forSales = false;
                     Object = Orders.offerSupplier;
                     $scope.backTo = 'offersupplier.list';
                     break;
                 case 'ordersupplier':
+                    $scope.object.forSales = false;
                     Object = Orders.orderSupplier;
                     $scope.backTo = 'ordersupplier.list';
                     break;
                 case 'deliverysupplier':
+                    $scope.object.forSales = false;
                     Object = Orders.deliverySupplier;
                     $scope.backTo = 'deliverysupplier.list';
                     break;
                 case 'billsupplier':
+                    $scope.object.forSales = false;
                     Object = Orders.billSupplier;
                     $scope.backTo = 'billsupplier.list';
                     break;
-                case 'stockreturn':
-                    Object = Orders.stockReturn;
-                    $scope.backTo = 'stockreturn.list';
+                case 'stockreturnsupplier':
+                    $scope.object.forSales = false;
+                    Object = Orders.stockReturnSupplier;
+                    $scope.backTo = 'stockreturnsupplier.list';
                     break;
             }
 
