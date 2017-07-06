@@ -95,7 +95,5 @@
     "Reminder": "Qté restante",
     "StockReturn": "Retours stock",
     "NewStockReturn": "Nouveau retour stock",
-    "ListStockReturn": "Liste des  retours stock",
-    "Waiting": "En attente de réception",
-    "PutInStock": "Mis en stock"
+    "ListStockReturn": "Liste des  retours stock"
 }

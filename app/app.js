@@ -894,20 +894,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "OrdersController"
         })
-        // Order Fab
-        .state('ordersfab', {
-            url: "/ordersfab",
-            abstract: true,
-            templateUrl: "/views/ordersfab/index.html"
-        })
-        .state('ordersfab.list', {
-            url: "",
-            templateUrl: "/views/ordersfab/ordersfablist.html",
-            data: {
-                pageTitle: 'Liste des Ordres de Fabrication'
-            },
-            controller: "OrdersFabListController"
-        })
         // Product Return
         .state('stockreturn', {
             url: "/stockreturn",

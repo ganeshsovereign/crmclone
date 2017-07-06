@@ -121,15 +121,6 @@
                     "usertype": 2,
                     "icon": "fa-refresh",
                     "title": "deliveries:StockReturn"
-                },
-                "menu:ordersfab": {
-                    "position": 15,
-                    "url": "/erp/#!/ordersfab",
-                    "perms": "delivery.read",
-                    "enabled": "$conf->delivery->enabled",
-                    "usertype": 2,
-                    "icon": "fa-tools",
-                    "title": "deliveries:OrdersFab"
                 }
             }
         }
