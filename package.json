@@ -56,7 +56,7 @@
     "redis-eventemitter": "^2.0.1",
     "shortid": "latest",
     "symeos-mqtt": "latest",
-    "total.js": "~2.6.x",
+    "total.js": "~2.7.x",
     "unzip": "^0.1.11",
     "validator": "4.2.1",
     "xml-writer": ">=1.4.1",

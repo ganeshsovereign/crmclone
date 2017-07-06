@@ -160,12 +160,34 @@ Object.prototype = {
 
         //console.log(order);
 
-        order.save(function(err, doc) {
-            if (err)
-                return self.throw500(err);
+        async.waterfall([
+                function(wCb) {
+                    var Model = MODEL('warehouse').Schema;
+                    //Load default warehouse
+                    if (order.warehouse)
+                        return wCb();
 
-            self.json(doc);
-        });
+                    Model.findOne({ main: true }, "_id", function(err, warehouse) {
+                        if (err)
+                            return wCb(err);
+
+                        if (warehouse)
+                            order.warehouse = warehouse._id;
+
+                        wCb();
+                    });
+
+                },
+                function(wCb) {
+                    order.save(wCb);
+                }
+            ],
+            function(err, doc) {
+                if (err)
+                    return self.throw500(err);
+
+                self.json(doc);
+            });
     },
     /**
      * Clone an order
