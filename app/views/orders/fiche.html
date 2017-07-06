@@ -87,7 +87,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-if="object.Status === 'VALIDATED' && !module('delivery') && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                    <a href="#" ng-if="object.Status === 'VALIDATED' && !module('delivery') && login.rights.order.create" ng-show="!status.allocateStatus == 'ALL'" data-ng-click="changeStatus('DRAFT')">
                         <i class="fa fa-history"></i> @(ReOpen)
                     </a>
                 </li>

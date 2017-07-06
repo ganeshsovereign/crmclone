@@ -44,8 +44,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         $scope.backTo = 'dashboard';
 
         $scope.object = {
+            forSales: true,
             entity: $rootScope.login.entity,
             billing: {},
+            shippingAddress: {},
             address: {},
             lines: []
         };
@@ -113,20 +115,28 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.backTo = 'offersupplier.list';
                     break;
                 case 'ordersupplier':
+                    $scope.object.forSales = false;
                     Object = Orders.orderSupplier;
                     $scope.backTo = 'ordersupplier.list';
                     break;
                 case 'deliverysupplier':
+                    $scope.object.forSales = false;
                     Object = Orders.deliverySupplier;
                     $scope.backTo = 'deliverysupplier.list';
                     break;
                 case 'billsupplier':
+                    $scope.object.forSales = false;
                     Object = Orders.billSupplier;
                     $scope.backTo = 'billsupplier.list';
                     break;
                 case 'stockreturn':
                     Object = Orders.stockReturn;
                     $scope.backTo = 'stockreturn.list';
+                    break;
+                case 'stockreturnsupplier':
+                    $scope.object.forSales = false;
+                    Object = Orders.stockReturnSupplier;
+                    $scope.backTo = 'stockreturnsupplier.list';
                     break;
             }
 
@@ -136,7 +146,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
 
             var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
-            
+
             $http({
                 method: 'GET',
                 url: '/erp/api/dict',
@@ -355,7 +365,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
 
         $scope.updateAddress = function(data) {
-            console.log(data);
+            //console.log(data);
 
             $scope.object.address = data.address;
 
@@ -2563,6 +2573,183 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
 
                     "ajax": {
                         "url": "/erp/api/stockreturn/dt" // ajax source
+                    },
+                    "order": [
+                        [1, "desc"]
+                    ], // set first column as a default sort by asc
+                    "columns": [{
+                        data: 'bool'
+                    }, {
+                        "data": "ID"
+                    }, {
+                        "data": "supplier",
+                        defaultContent: ""
+                    }, {
+                        "data": "ref_client",
+                        defaultContent: ""
+                    }, {
+                        "data": "date_livraison",
+                        defaultContent: ""
+                    }, {
+                        "data": "total_ht",
+                        defaultContent: ""
+                    }, {
+                        "data": "Status"
+                    }, {
+                        "data": "entity",
+                        defaultContent: ""
+                    }, {
+                        "data": "datec",
+                        defaultContent: ""
+                    }, {
+                        data: 'action'
+                    }]
+                }
+            });
+
+            // handle group actionsubmit button click
+            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
+                e.preventDefault();
+                var action = $(".table-group-action-input", grid.getTableWrapper());
+                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                    grid.setAjaxParam("customActionType", "group_action");
+                    grid.setAjaxParam("customActionName", action.val());
+                    grid.setAjaxParam("id", grid.getSelectedRows());
+                    grid.getDataTable().ajax.reload();
+                    grid.clearAjaxParams();
+                } else if (action.val() == "") {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'Please select an action',
+                        container: grid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                } else if (grid.getSelectedRowsCount() === 0) {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'No record selected',
+                        container: grid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                }
+            });
+        }
+
+
+
+        $scope.find = function() {
+            grid.resetFilter();
+        };
+    }
+]);
+
+MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
+    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
+
+        var grid = new Datatable();
+        var user = $rootScope.login;
+
+        $scope.dict = {};
+
+        $scope.types = [{
+            name: "En cours",
+            id: "NOW"
+        }, {
+            name: "Clos",
+            id: "CLOSED"
+        }];
+        $scope.type = {
+            name: "En cours",
+            id: "NOW"
+        };
+
+        $scope.delivery_mode = ["Comptoir", "Livraison"];
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = true;
+        };
+
+        $scope.$dict = {};
+
+        // Init
+        $scope.$on('$viewContentLoaded', function() {
+            // initialize core components
+            Metronic.initAjax();
+
+            // set default layout mode
+            $rootScope.settings.layout.pageSidebarClosed = true;
+            $rootScope.settings.layout.pageBodySolid = false;
+
+            var dict = ["fk_delivery_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
+            $http({
+                method: 'GET',
+                url: '/erp/api/dict',
+                params: {
+                    dictName: dict
+                }
+            }).success(function(data, status) {
+                $scope.dict = data;
+                //console.log(data);
+            });
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/employees/bySalesAccount'
+            }).success(function(data, status) {
+                $scope.$dict.salesPerson = data.data;
+                //console.log(data);
+            });
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/employees/getForDd',
+                params: {
+                    isEmployee: true
+                }
+            }).success(function(data, status) {
+                $scope.$dict.employees = data.data;
+                //console.log(data);
+            });
+
+            initDatatable();
+        });
+
+        $scope.showStatus = function(idx, dict) {
+            if (!($scope.dict[dict] && $scope.delivery[idx]))
+                return;
+            var selected = $filter('filter')($scope.dict[dict].values, {
+                id: $scope.delivery[idx]
+            });
+            return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
+        };
+
+        function initDatatable() {
+
+            grid.init({
+                src: $("#ordersFabList"),
+                onSuccess: function(grid) {
+                    // execute some code after table records loaded
+                },
+                onError: function(grid) {
+                    // execute some code on network or other general error 
+                },
+                loadingMessage: 'Loading...',
+                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+
+                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
+                    // So when dropdowns used the scrollable div should be removed. 
+                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+
+                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+
+                    "ajax": {
+                        "url": "/erp/api/ordersfab/dt" // ajax source
                     },
                     "order": [
                         [1, "desc"]

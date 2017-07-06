@@ -80,7 +80,7 @@
     "RefuseOrder": "Refuser la commande",
     "ApproveOrder": "Accepter la commande",
     "ValidateOrder": "Valider la commande",
-    "ValidateDelivery":"Valider la livraison",
+    "ValidateDelivery": "Valider la livraison",
     "UnvalidateOrder": "Dévalider la commande",
     "DeleteOrder": "Supprimer la commande",
     "CancelOrder": "Annuler la commande",
@@ -182,5 +182,7 @@
     "CreateDelivery": "Créer un nouveau BI / BL",
     "PropalStatusClosed": "Fermé",
     "PropalStatusNotSigned": "Non signé (fermé)",
-    "PropalStatusNew": "Nouveau"
+    "PropalStatusNew": "Nouveau",
+    "PropalStatusWaiting": "En attente de réception",
+    "StatusDeliveryInStock": "Produit(s) réceptionné(s)"
 }

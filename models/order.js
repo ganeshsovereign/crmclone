@@ -1137,6 +1137,12 @@ exports.Status = {
             "label": "PropalStatusNotSigned",
             "cssClass": "ribbon-color-warning label-warning",
             "system": true
+        },
+        "WAITING": {
+            "enable": true,
+            "label": "PropalStatusWaiting",
+            "cssClass": "ribbon-color-warning label-warning",
+            "system": true
         }
     }
 };
