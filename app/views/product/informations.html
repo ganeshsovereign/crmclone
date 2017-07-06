@@ -74,8 +74,6 @@ Marketing
                                             </div>
                                         </div>
                                     </div>
-
-
                                 </div>
 
                                 <div class="portlet light bordered">
@@ -116,7 +114,7 @@ Marketing
                                             <div class="form-group form-md-line-input ">
                                                 <!--<label for="Abstract">@(eshop:abstract) <span class="required">
                                         * </span></label>-->
-                                                <summernote height="220" ng-model="product.info.langs[_language].shortDescription"><i class="fa fa-flag"></i></summernote>
+                                                <summernote height="220" ng-model="product.info.langs[0].shortDescription"></summernote>
                                             </div>
                                         </tab>
                                         <tab heading="@(Description)  *">
@@ -127,7 +125,6 @@ Marketing
                                             </div>
                                         </tab>
                                     </tabset>
-
                                 </div>
 
                                 <div class="portlet light bordered">
@@ -178,20 +175,18 @@ Marketing
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
 
-<div ng-if="product.type == 'DYNAMIC'" class="form-group">
-    <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
+        <div ng-if="product.type == 'DYNAMIC'" class="form-group">
+            <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
                                         * </span>
                                 </label>
-    <div class="col-md-4" ng-init="loadDynForms()">
-        <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
-    </div>
+            <div class="col-md-4" ng-init="loadDynForms()">
+                <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
+            </div>
 
-</div>
-</div>
+        </div>
+    </div>
 </div>
 
 <!-- 
@@ -288,7 +283,7 @@ Ecommerce
                             <div class="col-md-6">
                                 <div class="portlet light bordered">
                                     <div class="form-group form-md-line-input ">
-                                        <textarea class="form-control" ng-model="product.info.langs[_language].meta.description" rows="12"></textarea>
+                                        <textarea class="form-control" ng-model="product.info.langs[0].meta.description" rows="12"></textarea>
                                         <label for="MetaDes">META @(products:Description) <span class="required">
                                         * </span></label>
                                         <span class="help-block">META @(products:Description) : @(eshop:MetaAdvice).</span>
