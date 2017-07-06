@@ -97,7 +97,7 @@
                     "position": 10,
                     "usertype": 2,
                     "perms": "product.readTODO",
-                    "enabled": false,
+                    "enabled": true,
                     "icon": "fa fa-money",
                     "title": "products:PriceLevel"
                 },
