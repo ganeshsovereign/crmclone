@@ -2903,6 +2903,9 @@ Prices.prototype = {
     update: function(id) {
         var self = this;
         var ProductPricesModel = MODEL('productPrices').Schema;
+        var ProductModel = MODEL('product').Schema;
+        var PriceListModel = MODEL('priceList').Schema;
+        var ProductFamilyCoefModel = MODEL('productFamilyCoef').Schema;
 
         self.body.editedBy = self.user._id;
         self.body.updatedAt = new Date();
@@ -2910,6 +2913,75 @@ Prices.prototype = {
         //console.log(self.body);
 
         async.waterfall([
+                /*function(wCb) {
+                    if (!self.body.prices)
+                        return wCb(null, {});
+
+                    // Re-calcul all prices 1/2 get Family
+                    ProductModel.findOne({ _id: self.body.product }, "info directCost indirectCost prices pack createdAt sellFamily")
+                        .populate("sellFamily")
+                        .exec(function(err, product) {
+                            if (err)
+                                return wCb(err);
+
+                            if (!product || !product.sellFamily)
+                                return wCb("Product with unknown family " + product);
+
+                            return wCb(null, product);
+                        });
+                },
+                function(product, wCb) {
+                    // Re-calcul price 2/2 from Family Coef
+                    if (!product._id)
+                        return wCb(null, {});
+
+                    ProductFamilyCoefModel.findOne({ family: product.sellFamily._id, priceLists: self.body.priceLists._id }, "coef", function(err, family) {
+                        if (err)
+                            return wCb(err);
+
+                        if (!family || !family.coef)
+                            family = { coef: 1 };
+
+                        //console.log(family);
+                        //console.log(self.body);
+                        //return;
+                        var coef = self.body.priceLists.isCoef;
+
+                        // coef mode
+                        if (coef && self.body.priceLists.cost != true) {
+                            //Recalcul product prices
+                            self.body.prices = [];
+
+                            if (!product.sellFamily.discounts.length)
+                                console.log('Error family configuration : no discount', product.sellFamily._id);
+
+                            for (var i = 0; i < product.sellFamily.discounts.length; i++) {
+                                let ObjPrice = {};
+                                ObjPrice.count = product.sellFamily.discounts[i].count;
+                                ObjPrice.coef = (family && family.coef || 1) * (1 - product.sellFamily.discounts[i].discount / 100);
+                                ObjPrice.price = round(product.totalCost * ObjPrice.coef, 3);
+                                self.body.prices.push(ObjPrice);
+                            }
+                        }
+
+                        wCb(null, product);
+                    });
+                },
+                function(product, wCb) {
+                    if (!product._id)
+                        return wCb();
+
+                    // Update default price in product
+                    if (self.body.priceLists.defaultPriceList != true || !self.body.prices.length)
+                        return wCb();
+
+                    product.update({ $set: { 'prices.pu_ht': self.body.prices[0].price } }, function(err, doc) {
+                        if (err)
+                            return wCb(err);
+
+                        wCb(null);
+                    });
+                },*/
                 //Ordering prices discount by qty
                 function(wCb) {
                     // No update price
@@ -2941,8 +3013,6 @@ Prices.prototype = {
                     // Update qtyMin or qtyMax
                     //if (self.body.type && self.body.type == 'QTY') {
                     // Just update one price in priceList
-
-
 
                     ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
                         doc.populate("priceLists", "cost isCoef", function(err, doc) {
