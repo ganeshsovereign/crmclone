@@ -129,7 +129,7 @@
                     "enabled": "$conf->delivery->enabled",
                     "usertype": 2,
                     "icon": "fa-refresh",
-                    "title": "ordersfab:OrdersFab"
+                    "title": "orders:OrdersFab"
                 }
             }
         }

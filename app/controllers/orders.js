@@ -47,6 +47,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             entity: $rootScope.login.entity,
             billing: {},
             address: {},
+            shippingAddress: {},
             lines: []
         };
 
