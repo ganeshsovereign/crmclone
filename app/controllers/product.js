@@ -589,10 +589,17 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             for (var i = 0; i < allCasesOfRest.length; i++) {
                 for (var j = 0; j < arr[0].length; j++) {
                     //console.log(allCasesOfRest[i]);
-                    var res = []
+                    var res = [];
 
-                    res.push(arr[0][j]); // + allCasesOfRest[i]);
-                    res.push(allCasesOfRest[i]);
+                    var next = allCasesOfRest[i];
+
+                    if (Array.isArray(next)) {
+                        res = next;
+                        res.unshift(arr[0][j]); // Add element at first
+                    } else {
+                        res.push(arr[0][j]); // + allCasesOfRest[i]);
+                        res.push(allCasesOfRest[i]);
+                    }
 
                     result.push(res);
                 }
@@ -628,7 +635,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             };
         });
 
-        console.log($scope.tabVariants);
+        //console.log($scope.tabVariants);
 
 
         collection = _.filter(collection, function(option) {
