@@ -145,6 +145,75 @@ productPricesSchema.index({ priceLists: 1, product: 1 }, { unique: true });
     });
 });*/
 
+productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callback) {
+    var prices = [];
+    var self = this;
+    var ProductFamilyCoefModel = MODEL('productFamilyCoef').Schema;
+    var round = MODULE('utils').round;
+
+    if (!options.product)
+        return callback("Error product null");
+
+    if (!options.product.sellFamily || !options.product.sellFamily.discounts || !options.product.sellFamily.discounts.length)
+        return callback({
+            error: 'Error family configuration : no discount ' + options.product.sellFamily.langs[0].name,
+            url: {
+                module: 'product.family.show',
+                params: { Id: options.product.sellFamily._id }
+            }
+        });
+
+    async.waterfall([
+            function(wCb) {
+                if (options.familyCoef && options.familyCoef.coef)
+                    return wCb(null, options.familyCoef.coef);
+
+                if (!options.priceList)
+                    return wCb("Empty priceList");
+
+                ProductFamilyCoefModel.findOne({ priceLists: options.priceList._id, family: product.sellFamily._id }, function(err, family) {
+                    if (err)
+                        return wCb(err);
+                    if (!family || !family.coef)
+                        return wCb({
+                            error: 'Error family configuration : no coef ' + options.product.sellFamily.langs[0].name,
+                            url: {
+                                module: 'product.family.show',
+                                params: { Id: options.product.sellFamily._id }
+                            }
+                        });
+
+                    return wCb(null, family.coef);
+                });
+            },
+            function(coef, wCb) {
+                for (var i = 0; i < options.product.sellFamily.discounts.length; i++) {
+                    let ObjPrice = {};
+                    ObjPrice.count = options.product.sellFamily.discounts[i].count;
+                    ObjPrice.coef = coef * (1 - options.product.sellFamily.discounts[i].discount / 100);
+                    ObjPrice.price = round(options.product.totalCost * ObjPrice.coef, 3);
+                    prices.push(ObjPrice);
+                }
+
+                wCb(null, prices);
+            }
+        ],
+        function(err, prices) {
+            if (err) {
+                if (typeof err == 'object')
+                    return callback(err);
+                else return callback({ error: err });
+            }
+
+            self.findByIdAndUpdate(id, { prices: prices }, { new: true }, function(err, doc) {
+                if (err)
+                    return callback({ error: err.toString() });
+
+                callback(null, doc);
+            });
+        });
+};
+
 productPricesSchema.statics.findPrice = function(options, fields, callback) {
     var self = this;
     var ObjectId = MODULE('utils').ObjectId;
