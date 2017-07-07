@@ -804,6 +804,32 @@ var stockReturnSchema = new Schema({
     }]
 });
 
+// OF ordre de fabrication
+var ordersFabSchema = new Schema({
+    status: {
+        isPrinted: { type: Date, default: null }, //Imprime
+        isPicked: { type: Date, default: null }, //Prepare
+        isPacked: { type: Date, default: null }, //Emballe
+        isShipped: { type: Date, default: null }, //Expedier
+        isInventory: { type: Date, default: null }, //Inventory done
+
+        pickedById: { type: ObjectId, ref: 'Users', default: null },
+        packedById: { type: ObjectId, ref: 'Users', default: null },
+        shippedById: { type: ObjectId, ref: 'Users', default: null },
+        printedById: { type: ObjectId, ref: 'Users', default: null }
+    },
+
+    description: { type: String },
+
+    orderRows: [{
+        _id: false,
+        product: { type: ObjectId, ref: 'Product', default: null },
+        cost: { type: Number, default: 0 },
+        qty: Number,
+        warehouse: { type: ObjectId, ref: 'warehouse', default: null }
+    }]
+});
+
 var stockTransactionsSchema = new Schema({
     warehouseTo: { type: ObjectId, ref: 'warehouse', default: null },
     status: {
@@ -1015,6 +1041,36 @@ function setNameReturns(next) {
     });
 }
 
+function setNameOrdersFab(next) {
+    var self = this;
+    var SeqModel = MODEL('Sequence').Schema;
+    var EntityModel = MODEL('entity').Schema;
+
+    if (this.isNew)
+        this.history = [];
+
+    if (self.isNew && !self.ref)
+        return SeqModel.inc("OF", function(seq, number) {
+            //console.log(seq);
+            self.ID = number;
+            EntityModel.findOne({
+                _id: self.entity
+            }, "cptRef", function(err, entity) {
+                if (err)
+                    console.log(err);
+
+                if (entity && entity.cptRef)
+                    self.ref = "OF" + entity.cptRef + seq;
+                else
+                    self.ref = "OF" + seq;
+                next();
+            });
+        });
+
+    self.ref = F.functions.refreshSeq(self.ref, self.datec);
+    next();
+}
+
 orderCustomerSchema.pre('save', saveOrder);
 orderSupplierSchema.pre('save', saveOrder);
 quotationCustomerSchema.pre('save', saveQuotation);
@@ -1024,6 +1080,9 @@ goodsOutNoteSchema.pre('save', setNameDelivery);
 stockTransactionsSchema.pre('save', setNameTransfer);
 goodsInNoteSchema.pre('save', setNameDelivery);
 stockReturnSchema.pre('save', setNameReturns);
+
+ordersFabSchema.pre('save', setNameOrdersFab);
+
 
 //goodsOutNoteSchema.statics.getById = getDeliveryById;
 //goodsInNoteSchema.statics.getById = getDeliveryById;
@@ -1039,6 +1098,8 @@ const stockReturns = Order.discriminator('stockReturns', stockReturnSchema);
 const stockCorrection = Order.discriminator('stockCorrections', stockCorrectionSchema);
 const goodsInNote = Order.discriminator('GoodsInNote', goodsInNoteSchema);
 
+const ordersFab = Order.discriminator('OrdersFab', ordersFabSchema);
+
 exports.Schema = {
     Order: Order, //Only for READING
     OrderCustomer: orderCustomer,
@@ -1050,7 +1111,9 @@ exports.Schema = {
     GoodsInNote: goodsInNote,
     stockCorrections: stockCorrection,
     stockTransactions: stockTransactions,
-    stockReturns: stockReturns
+    stockReturns: stockReturns,
+
+    OrdersFab: ordersFab
 };
 
 exports.Status = {

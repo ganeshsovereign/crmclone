@@ -406,5 +406,6 @@
     "toTransfer": "Transférer",
     "QtytoTransfer": "Qté à transférer",
     "stockTimeLimit": "Durée Limite stockage",
-    "StockTransfers": "Transfert de Stock"
+    "StockTransfers": "Transfert de Stock",
+    "Conditionning": "Conditionnement"
 }

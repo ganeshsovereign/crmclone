@@ -1,7 +1,7 @@
 <div class="portlet portlet light bordered">
     <div class="portlet-title">
         <div class="caption font-yellow-crusta">
-            <i class="fa fa-gears font-yellow-crusta sbold"></i>@(Parameters): @(Add) @(New) @(deliveries:Carrier)
+            <i class="fa fa-gears font-yellow-crusta sbold"></i>@(Parameters): @(Add) @(New) @(ordersCarrier)
         </div>
         <div class="actions btn-set">
             <a class="btn btn-circle btn-outline sbold uppercase red" ui-sref="product.list"><i class="fa fa-angle-left"></i> @(Back)</a>
@@ -33,11 +33,11 @@
                     <div class="col-md-12">
                         <div class="form-group form-md-line-input">
                             <div class="row static-info">
-                                <div class="col-md-4 name">@(deliveries:Carrier) :</div>
+                                <div class="col-md-4 name">@(ordersCarrier) :</div>
                                 <div class="col-md-7 value"></div>
                             </div>
                             <div class="form-group form-md-line-input">
-                                <label class="col-md-4 control-label">@(deliveries:URLtracking)</label>
+                                <label class="col-md-4 control-label">@(ordersURLtracking)</label>
                                 <div class="col-md-8">
                                     <input class="form-control" ng-model="offer.ref_client" placeholder="@(orders:RefCustomerOrder)" type="text">
                                     <div class="form-control-focus"> </div>

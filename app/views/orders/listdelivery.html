@@ -7,7 +7,11 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(deliveries:List)</span>
+                <span>@(orders:Logistics)</span>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(ordersList)</span>
             </li>
         </ul>
         <div class="page-toolbar">
@@ -40,7 +44,7 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-calculator"></i>
-                <span class="caption-subject dark bold uppercase"> @(deliveries:List)</span>
+                <span class="caption-subject dark bold uppercase"> @(ordersList)</span>
             </div>
             <div class="actions">
                 <!-- <button class="btn blue" ui-sref="delivery.create">@(Add) <i class="fa fa-plus"></i></button>-->
@@ -108,10 +112,10 @@
                             <th>@(Status)</th>
                             <th>@(Entity)</th>
                             <th>@(DateCreation)</th>
-                            <th class="text-center">@(deliveries:Printed)</th>
-                            <th class="text-center">@(deliveries:Picked)</th>
-                            <th class="text-center">@(deliveries:Packed)</th>
-                            <th class="text-center">@(deliveries:Shipped)</th>
+                            <th class="text-center">@(orders:Printed)</th>
+                            <th class="text-center">@(orders:Picked)</th>
+                            <th class="text-center">@(orders:Packed)</th>
+                            <th class="text-center">@(orders:Shipped)</th>
                             <th>@(Action)</th>
                         </tr>
                         <!--<tr role="row" class="filter">

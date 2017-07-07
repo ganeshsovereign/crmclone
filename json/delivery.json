@@ -128,7 +128,7 @@
                     "perms": "delivery.read",
                     "enabled": "$conf->delivery->enabled",
                     "usertype": 2,
-                    "icon": "fa-refresh",
+                    "icon": "fa-files-o",
                     "title": "orders:OrdersFab"
                 }
             }
