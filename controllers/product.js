@@ -487,6 +487,7 @@ exports.install = function() {
     var pricesList = new PricesList();
     F.route('/erp/api/product/prices/priceslist', pricesList.getAllPricesLists, ['authorize']);
     F.route('/erp/api/product/prices/priceslist/select', pricesList.readForSelect, ['authorize']);
+    F.route('/erp/api/product/prices/priceslist/refreshCoef', pricesList.refreshCoefPrices, ['put', 'json', 'authorize']);
     F.route('/erp/api/product/prices/priceslist', pricesList.create, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/prices/priceslist/export/{id}', pricesList.export, ['authorize']);
     F.route('/erp/api/product/prices/priceslist/{id}', pricesList.show, ['authorize']);
@@ -2659,17 +2660,31 @@ PricesList.prototype = {
     readForSelect: function() {
         var self = this;
         var PriceListModel = MODEL('priceList').Schema;
-        var query = {};
+        var query = { $or: [] };
 
         if (self.query.cost && self.query.cost == 'true')
-            query.cost = true;
+            query.$or.push({ cost: true });
         else
-            query = {
-                cost: false,
-                isGlobalDiscount: false,
-                isCoef: false
-            };
+            query.cost = false;
 
+        if (self.query.isGlobalDiscount && self.query.isGlobalDiscount == 'true')
+            query.$or.push({ isGlobalDiscount: true });
+        else
+            query.isGlobalDiscount = false;
+
+        if (self.query.isCoef && self.query.isCoef == 'true')
+            query.$or.push({ isCoef: true });
+        else
+            query.isCoef = false;
+
+        if (self.query.isFixed && self.query.isFixed == 'true')
+            query.$or.push({ isFixed: true });
+
+        if (query.$or.length == 0)
+            delete query.$or;
+
+
+        //console.log(query);
 
         if (self.query.all)
             query = {};
@@ -2725,6 +2740,270 @@ PricesList.prototype = {
             };
             self.json(doc);
         });
+    },
+    refreshCoefPrices: function() {
+        var self = this;
+        var ProductPricesModel = MODEL('productPrices').Schema;
+        var ProductModel = MODEL('product').Schema;
+        var PriceListModel = MODEL('priceList').Schema;
+        var ObjectId = MODULE('utils').ObjectId;
+
+        var priceList = self.query.priceList;
+        var product = self.query.product;
+
+        self.json({});
+
+        async.waterfall([
+                function(wCb) {
+                    ProductModel.aggregate([{
+                        $match: { 'isSell': true, 'info.isActive': true, _id: (product ? ObjectId(product) : { $exists: 1 }) }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            sellFamily: 1,
+                            info: 1,
+                            totalCost: { $sum: ["$indirectCost", "$directCost"] },
+                            prices: 1,
+                            pack: 1,
+                            createdAt: 1
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'ProductPrices',
+                            localField: '_id',
+                            foreignField: 'product',
+                            as: 'productPrices'
+                        }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            sellFamily: 1,
+                            info: 1,
+                            totalCost: 1,
+                            prices: 1,
+                            pack: 1,
+                            createdAt: 1,
+                            productPrices: {
+                                $filter: {
+                                    input: "$productPrices",
+                                    as: "price",
+                                    cond: { $eq: ["$$price.priceLists", ObjectId(priceList)] }
+                                }
+                            }
+                        }
+                    }, {
+                        $match: { 'productPrices': { $size: 0 } }
+                    }, {
+                        $lookup: {
+                            from: 'productFamily',
+                            localField: 'sellFamily',
+                            foreignField: '_id',
+                            as: 'sellFamily'
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$sellFamily'
+                        }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            product: "$$ROOT"
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'ProductFamilyCoef',
+                            localField: 'product.sellFamily._id',
+                            foreignField: 'family',
+                            as: 'familyCoef'
+                        }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            product: 1,
+                            familyCoef: {
+                                $filter: {
+                                    input: "$familyCoef",
+                                    as: "coef",
+                                    cond: { $eq: ["$$coef.priceLists", ObjectId(priceList)] }
+                                }
+                            }
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$familyCoef',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    }], function(err, docs) {
+                        wCb(err, (docs ? docs : []));
+                    });
+                },
+                function(products, wCb) {
+                    ProductPricesModel.aggregate([{
+                            $match: { priceLists: ObjectId(priceList), product: (product ? ObjectId(product) : { $exists: 1 }) }
+                        },
+                        {
+                            $lookup: {
+                                from: 'PriceList',
+                                localField: 'priceLists',
+                                foreignField: '_id',
+                                as: 'priceLists'
+                            }
+                        }, {
+                            $unwind: {
+                                path: '$priceLists'
+                            }
+                        },
+                        {
+                            $match: { 'priceLists.isCoef': true }
+                        },
+                        {
+                            $lookup: {
+                                from: 'Product',
+                                localField: 'product',
+                                foreignField: '_id',
+                                as: 'product'
+                            }
+                        }, {
+                            $unwind: {
+                                path: '$product'
+                            }
+                        }, {
+                            $project: {
+                                _id: 1,
+                                priceLists: 1,
+                                'product._id': 1,
+                                'product.info': 1,
+                                'product.totalCost': { $sum: ["$product.indirectCost", "$product.directCost"] },
+                                'product.prices': 1,
+                                'product.pack': 1,
+                                'product.createdAt': 1,
+                                'product.sellFamily': 1,
+                                prices: 1,
+                                discount: 1,
+                                updatedAt: 1,
+                                editedBy: 1,
+                            }
+                        }, {
+                            $lookup: {
+                                from: 'productFamily',
+                                localField: 'product.sellFamily',
+                                foreignField: '_id',
+                                as: 'product.sellFamily'
+                            }
+                        }, {
+                            $unwind: {
+                                path: '$product.sellFamily'
+                            }
+                        }, {
+                            $lookup: {
+                                from: 'ProductFamilyCoef',
+                                localField: 'product.sellFamily._id',
+                                foreignField: 'family',
+                                as: 'familyCoef'
+                            }
+                        }, {
+                            $project: {
+                                _id: 1,
+                                priceLists: 1,
+                                product: 1,
+                                prices: 1,
+                                discount: 1,
+                                updatedAt: 1,
+                                editedBy: 1,
+                                familyCoef: {
+                                    $filter: {
+                                        input: "$familyCoef",
+                                        as: "coef",
+                                        cond: { $eq: ["$$coef.priceLists", "$priceLists._id"] }
+                                    }
+                                }
+                            }
+                        }, {
+                            $unwind: {
+                                path: '$familyCoef',
+                                preserveNullAndEmptyArrays: true
+                            }
+                        }
+                    ], (err, prices) => wCb(err, products, prices));
+                },
+                function(products, prices, wCb) {
+                    //console.log(prices);
+                    if (!prices || !prices.length)
+                        return wCb();
+
+                    async.parallel([
+                        function(pCb) {
+                            //Update prices
+                            async.forEachLimit(prices, 200, function(price, aCb) {
+                                //console.log(price);
+
+                                //Recalcul product prices
+                                ProductPricesModel.refreshByIdCoefPrice(price._id, { product: price.product, familyCoef: price.familyCoef }, function(err, price) {
+                                    if (err)
+                                        F.functions.BusMQ.publish('notify:user', [self.user._id.toString()], {
+                                            title: "Erreur recalcul du prix sur Coef",
+                                            message: {
+                                                body: err.error,
+                                                url: err.url,
+                                                delay: 5000 // in ms
+                                            }
+                                        });
+
+                                    aCb();
+                                });
+
+                            }, pCb);
+                        },
+                        function(pCb) {
+                            //Create new prices
+                            async.forEachLimit(products, 200, function(price, aCb) {
+                                var newprice = new ProductPricesModel({
+                                    priceLists: priceList,
+                                    product: price.product._id,
+                                    prices: [],
+                                    discount: 0,
+                                    editedBy: self.user._id,
+                                    createdBy: self.user._id
+                                });
+
+                                newprice.save(function(err, doc) {
+                                    if (err)
+                                        return aCb(err);
+
+                                    //Recalcul product prices
+                                    ProductPricesModel.refreshByIdCoefPrice(doc._id, { product: price.product, familyCoef: price.familyCoef }, function(err, price) {
+                                        if (err)
+                                            F.functions.BusMQ.publish('notify:user', [self.user._id.toString()], {
+                                                title: "Erreur recalcul du prix sur Coef",
+                                                message: {
+                                                    body: err.error,
+                                                    url: err.url,
+                                                    delay: 5000 // in ms
+                                                }
+                                            });
+
+                                        aCb();
+                                    });
+                                });
+
+                            }, pCb);
+                        }
+                    ], wCb);
+
+                }
+            ],
+            function(err) {
+                if (err)
+                    return console.log(err);
+
+                F.functions.BusMQ.publish('notify:user', [self.user._id.toString()], {
+                    title: "Recalcul du/des prix sur Coef Ok",
+                    message: {
+                        body: "Liste de prix mise a jour",
+                        delay: 2000 // in ms
+                    }
+                });
+            });
     },
     create: function() {
         var self = this;
@@ -2831,19 +3110,26 @@ PricesList.prototype = {
 function Prices() {};
 Prices.prototype = {
     read: function() {
-        //console.log("toto");
         var self = this;
         var query = self.query;
         var ProductPricesModel = MODEL('productPrices').Schema;
+        var TaxesModel = MODEL('taxes').Schema;
         var ObjectId = MODULE('utils').ObjectId;
+
+        var paginationObject = MODULE('helper').page(self.query);
+        var limit = paginationObject.limit;
+        var skip = paginationObject.skip;
 
         var priceList = query.priceList ? ObjectId(query.priceList) : null;
         var product = query.product ? ObjectId(query.product) : null;
 
         var cost = false;
 
+        if (!priceList && !product)
+            return self.json([]);
+
         query = {};
-        var sort = 'product.name';
+        var sort = 'product.info.SKU';
 
         if (priceList)
             query.priceLists = priceList;
@@ -2856,49 +3142,146 @@ Prices.prototype = {
         if (self.query.cost)
             cost = true;
 
-        ProductPricesModel.find(query)
-            .populate({
-                path: "product",
-                select: "weight name taxes info directCost indirectCost",
-                populate: { path: 'taxes.taxeId' }
-            })
-            .populate("priceLists")
-            .lean()
-            .exec(function(err, prices) {
-                if (err)
-                    return self.throw500(err);
+        //console.log(query, cost);
 
-                if (prices == null)
-                    prices = [];
-
-                prices = _.filter(prices, function(price) {
-                    return price.priceLists.cost === cost;
-                });
-
-                for (var j = 0, len = prices.length; j < len; j++) {
-                    var price = prices[j];
-
-                    //console.log(price);
-                    //build TTC price
-                    for (var i = 0; i < price.prices.length; i++) {
-                        price.prices[i].margin = {
-                            value: MODULE('utils').round(price.prices[i].price - price.product.directCost - price.product.indirectCost, 3),
-                            rate: MODULE('utils').round((price.prices[i].price - price.product.directCost - price.product.indirectCost) / price.prices[i].price * 100, 2)
-                        };
-                        if (price.prices[i].specialPrice)
-                            price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].specialPrice * (1 + price.product.taxes[0].taxeId.rate / 100));
-                        else
-                            price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].price * (1 + price.product.taxes[0].taxeId.rate / 100), 3);
-
+        function queryBuilder() {
+            var query1 = [{
+                    $match: query
+                },
+                {
+                    $lookup: {
+                        from: 'Product',
+                        localField: 'product',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                }, {
+                    $unwind: "$product"
+                }, {
+                    $project: {
+                        _id: 1,
+                        'product._id': 1,
+                        'product.weight': 1,
+                        'product.name': 1,
+                        'product.taxes': 1,
+                        'product.info': 1,
+                        'product.directCost': 1,
+                        'product.indirectCost': 1,
+                        'priceLists': 1,
+                        updatedAt: 1,
+                        prices: 1,
+                        discount: 1,
+                        qtyMin: 1,
+                        qtyMax: 1,
+                        editedBy: 1
+                    }
+                }, {
+                    $lookup: {
+                        from: 'PriceList',
+                        localField: 'priceLists',
+                        foreignField: '_id',
+                        as: 'priceLists'
                     }
                 }
+            ];
 
-                //console.log(prices);
+            if (product)
+                query1.push({
+                    $project: {
+                        _id: 1,
+                        product: 1,
+                        priceLists: {
+                            $filter: {
+                                input: "$priceLists",
+                                as: "priceList",
+                                cond: { $eq: ["$$priceList.cost", cost] }
+                            }
+                        },
+                        updatedAt: 1,
+                        prices: 1,
+                        discount: 1
+                    }
+                });
 
-                prices = _.sortBy(prices, sort);
-
-                self.json(prices);
+            query1.push({
+                $unwind: "$priceLists"
             });
+            query1.push({
+                $sort: { 'product.info.SKU': 1 }
+            });
+
+            return query1;
+        }
+
+        var queryNew = queryBuilder();
+        var countQuery = queryBuilder();
+
+        var getTotal = function(pCb) {
+
+            countQuery.push({
+                $group: {
+                    _id: null,
+                    count: { $sum: 1 }
+                }
+            });
+            //console.log(countQuery);
+            ProductPricesModel.aggregate(countQuery, function(err, _res) {
+                if (err)
+                    return pCb(err);
+
+                pCb(null, _res[0].count);
+            });
+        };
+
+        var getData = function(pCb) {
+            queryNew.push({ $skip: skip });
+            queryNew.push({ $limit: limit });
+
+            ProductPricesModel.aggregate(queryNew, function(err, prices) {
+                TaxesModel.populate(prices, { path: "product.taxes.taxeId" }, function(err, prices) {
+                    if (err)
+                        return pCb(err);
+
+                    //console.log(prices);
+
+                    for (var j = 0, len = prices.length; j < len; j++) {
+                        var price = prices[j];
+
+                        //console.log(price);
+                        //build TTC price
+                        for (var i = 0; i < price.prices.length; i++) {
+                            price.prices[i].margin = {
+                                value: MODULE('utils').round(price.prices[i].price - price.product.directCost - price.product.indirectCost, 3),
+                                rate: MODULE('utils').round((price.prices[i].price - price.product.directCost - price.product.indirectCost) / price.prices[i].price * 100, 2)
+                            };
+
+                            if (price.prices[i].specialPrice)
+                                price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].specialPrice * (1 + price.product.taxes[0].taxeId.rate / 100));
+                            else
+                                price.prices[i].priceTTC = MODULE('utils').round(price.prices[i].price * (1 + price.product.taxes[0].taxeId.rate / 100), 3);
+
+                        }
+                    }
+
+                    pCb(null, prices);
+                });
+            });
+        };
+
+        async.parallel([getTotal, getData], function(err, result) {
+            var count;
+            var response = {};
+
+            if (err)
+                return self.throw500(err);
+
+            count = result[0] || 0;
+
+            response.total = count;
+            response.data = result[1];
+
+            return self.json(response);
+        });
     },
     update: function(id) {
         var self = this;
@@ -2910,7 +3293,7 @@ Prices.prototype = {
         self.body.editedBy = self.user._id;
         self.body.updatedAt = new Date();
 
-        //console.log(self.body);
+        console.log(self.body);
 
         async.waterfall([
                 /*function(wCb) {
@@ -3015,6 +3398,9 @@ Prices.prototype = {
                     // Just update one price in priceList
 
                     ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
+                        if (err)
+                            return wCb(err);
+
                         doc.populate("priceLists", "cost isCoef", function(err, doc) {
                             if (err)
                                 return wCb(err);
@@ -3662,8 +4048,8 @@ ProductFamily.prototype = {
             }
         }, {
             $unwind: {
-                path: '$familyCoef.priceLists'
-                    //preserveNullAndEmptyArrays: true
+                path: '$familyCoef.priceLists',
+                preserveNullAndEmptyArrays: true
             }
         }, {
             $group: {
@@ -4025,6 +4411,8 @@ ProductFamily.prototype = {
 
                     async.each(pricesList, function(priceList, eCb) {
                         var elem = _.filter(self.body.familyCoef, function(elem) {
+                            if (!elem.priceLists)
+                                return false;
                             return elem.priceLists._id === priceList._id.toString();
                         });
 
@@ -4193,6 +4581,7 @@ ProductFamily.prototype = {
     exportCoefFamily: function() {
         var self = this;
         var query = {};
+        var FamilyProductModel = MODEL('productFamily').Schema;
         var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
         var PriceListModel = MODEL('priceList').Schema;
 
@@ -4774,7 +5163,7 @@ Warehouse.prototype = {
         var Model = MODEL('warehouse').Schema;
         var data = self.body;
 
-        data.editeddBy = self.user._id;
+        data.editedBy = self.user._id;
 
         if (data.main)
             return Model.update({ _id: { $nin: [id] } }, { $set: { main: false } }, { multi: true }, function(err, result) {
@@ -4804,7 +5193,7 @@ Warehouse.prototype = {
         var self = this;
         var data = this.body;
 
-        data.editeddBy = self.user._id;
+        data.editedBy = self.user._id;
 
         Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
             if (err)
@@ -4824,7 +5213,7 @@ Warehouse.prototype = {
         var self = this;
         var data = self.body;
 
-        data.editeddBy = self.user._id;
+        data.editedBy = self.user._id;
 
         Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
             if (err)

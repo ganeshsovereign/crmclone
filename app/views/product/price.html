@@ -158,6 +158,7 @@
                                                 <span class="caption-subject font-grey-gallery bold uppercase">@(products:PriceLists)</span>
                                             </div>
                                             <div class="actions">
+                                                <pagination total-items="page.total" ng-model="page.page" items-per-page="page.limit" max-size="6" class="pagination-sm " previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="find()"></pagination>
                                                 <a class="btn blue" ng-click="addNewPrice()" href="javascript:;">
                                                     <i class="fa fa-plus"></i> @(Add)
                                                 </a>
@@ -273,7 +274,10 @@
                                                                 </table>
                                                             </td>
                                                             <td>{{line.updatedAt| date:'dd/MM/yyyy HH:mm'}}</td>
-                                                            <td><button ng-if="line.priceLists.isFixed === true" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button></td>
+                                                            <td>
+                                                                <button ng-if="line.priceLists.isFixed === true" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="Supprimer le tarif du produit {{line.product.name}} ?" confirmed-click="remove(line)"></button>
+                                                                <button ng-if="line.priceLists.isCoef === true" class="btn green fa fa-calculator" ng-confirm-click="Recalcul du prix  {{line.priceLists.name}} fonction du coef." confirmed-click="refreshCoefPrices(line.priceLists, product)"></button>
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

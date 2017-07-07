@@ -1268,12 +1268,18 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
         if (!cost)
             $http({
                 method: 'GET',
-                url: '/erp/api/product/prices/priceslist',
-                params: { cost: cost }
+                url: '/erp/api/product/prices/priceslist/select',
+                params: { cost: (cost === false ? false : true), isGlobalDiscount: false, isCoef: true, isFixed: true }
             }).success(function(data, status) {
                 $scope.pricesLists = data.data;
                 //console.log("PriceLists", data);
             });
+    };
+
+    $scope.page = {
+        limit: 25,
+        page: 1,
+        total: 0
     };
 
     $scope.find = function() {
@@ -1285,24 +1291,30 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
         });
         //$scope.init();
 
-        var query = {};
+        var query = { filter: this.search, limit: $scope.page.limit, page: $scope.page.page };
 
         if (productId)
             query.product = productId;
 
-        if ($scope.price_level)
-            query.priceList = $scope.price_level;
+        if ($scope.priceList)
+            if ($scope.priceList._id)
+                query.priceList = $scope.priceList._id;
+            else
+                query.priceList = $scope.priceList;
 
         if (costFind)
             query.cost = 1;
+
+        //console.log(query);
 
         $http({
             method: 'GET',
             url: '/erp/api/product/prices',
             params: query
         }).success(function(data, status) {
-            console.log("prices", data);
-            $scope.prices = data;
+            //console.log("prices", data);
+            $scope.page.total = data.total;
+            $scope.prices = data.data;
 
             Metronic.unblockUI('.waiting');
         });
@@ -1339,6 +1351,17 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
             method: 'PUT',
             url: '/erp/api/product/prices/' + line._id,
             data: line
+        }).success(function(data, status) {
+            $scope.find();
+        });
+    };
+
+    $scope.refreshCoefPrices = function(priceList, product) {
+        $http({
+            method: 'PUT',
+            url: '/erp/api/product/prices/priceslist/refreshCoef',
+            params: { priceList: (priceList ? priceList._id : null), product: (product ? product._id : null) },
+            data: {}
         }).success(function(data, status) {
             $scope.find();
         });
