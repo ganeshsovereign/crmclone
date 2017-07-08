@@ -186,9 +186,9 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
         var login = function(userId) {
             //console.log(userId);
             if ($location.$$protocol == "http")
-                websocketService.login('ws://' + $location.host() + ':' + $location.port() + '/erp/websocket', userId);
+                websocketService.login('ws://' + $location.host() + ':' + $location.port() + '/', 'erp', userId);
             else
-                websocketService.login('wss://' + $location.host() + ':' + $location.port() + '/erp/websocket', userId);
+                websocketService.login('wss://' + $location.host() + ':' + $location.port() + '/', 'erp', userId);
             $rootScope.isLogged = true;
         };
 

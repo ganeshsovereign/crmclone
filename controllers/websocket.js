@@ -2,7 +2,7 @@ var _ = require('lodash'),
     async = require('async');
 
 exports.install = function() {
-    F.websocket('/erp/websocket', websocket, ['json']);
+    F.websocket('/erp/websocket/', websocket, ['json'], ['erp']);
 };
 
 function websocket() {
