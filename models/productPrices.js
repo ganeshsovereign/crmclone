@@ -217,12 +217,11 @@ productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callbac
 productPricesSchema.statics.findPrice = function(options, fields, callback) {
     var self = this;
     var ObjectId = MODULE('utils').ObjectId;
+    var PriceListModel = MODEL('priceList').Schema;
+    var round = MODULE('utils').round;
 
     var Pricebreak = INCLUDE('pricebreak');
     var query = {};
-
-    if (options._id)
-        query.product = ObjectId(options._id);
 
     //if (options.priceList)
     //    query.priceLists = ObjectId(options.priceList);
@@ -235,82 +234,85 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
 
     //console.log(options, query);
 
-    this.aggregate([{
-            $match: query
+    async.waterfall([
+        function(wCb) {
+            self.findOne({ product: options.product, priceLists: options.priceLists })
+                .populate("priceLists")
+                .exec(function(err, doc) {
+                    if (err)
+                        return wCb(err);
+
+                    //Found a price
+                    if (doc && doc.priceLists)
+                        return wCb(null, doc, 0);
+
+                    // No price get priceList to test if it's globalDiscountor Fixed price
+                    PriceListModel.findById(options.priceLists, function(err, priceList) {
+                        if (err)
+                            return wCb(err);
+
+                        if (!priceList.parent)
+                            return wCb("No parent priceList");
+
+                        return self.findOne({ product: options.product, priceLists: priceList.parent }, function(err, doc2) {
+                            if (err)
+                                return wCb(err);
+                            return wCb(null, doc2, priceList.discount || 0);
+                        });
+                    });
+                });
         },
-        /*{
-                   $project: {
-                       _id: 1,
-                       ref: '$info.SKU',
-                       dynForm: 1,
-                       taxes: 1,
-                       units: 1,
-                       directCost: 1,
-                       indirectCost: 1,
-                       info: 1,
-                       size: 1
-                   }
-               }, {
-                   $lookup: {
-                       from: 'ProductPrices',
-                       localField: '_id',
-                       foreignField: 'product',
-                       as: 'prices'
-                   }
-               }, {
-                   $unwind: '$prices'
-               }, */
-        {
-            $lookup: {
-                from: 'PriceList',
-                localField: 'priceLists',
-                foreignField: '_id',
-                as: 'priceLists'
+        function(price, discount, wCb) {
+            //if isFixed price but no price in priceList use parent price
+            if (price)
+                return wCb(null, price, discount);
+
+            wCb("No price Found !!!!");
+        }
+    ], function(err, doc, discount) {
+        /*this.aggregate([{
+                $match: query
+            },
+            {
+                $lookup: {
+                    from: 'PriceList',
+                    localField: 'priceLists',
+                    foreignField: '_id',
+                    as: 'priceLists'
+                }
+            },
+            {
+                        $unwind: '$priceLists'
+                    },
+            {
+                $match: {
+                    //   $or: [{
+                    // 'priceLists.cost': (cost ? cost : { $ne: true }),
+                    //       'priceLists.defaultPriceList': true //(base ? base : { $ne: true })
+                    //   }, {
+                    'priceLists._id': ObjectId(options.priceList)
+                        //   }]
+                }
             }
-        },
-        /*, {
-                           $project: {
-                               _id: 1,
-                               ref: 1,
-                               dynForm: 1,
-                               taxes: { $arrayElemAt: ['$taxes.taxeId', 0] },
-                               units: 1,
-                               directCost: 1,
-                               indirectCost: 1,
-                               info: 1,
-                               size: 1,
-                               prices: { $arrayElemAt: ['$prices.prices', 0] },
-                               discount: '$prices.discount',
-                               priceLists: { $arrayElemAt: ['$priceLists', 0] }
-                           }
-                       }, */
-        {
-            $match: {
-                //   $or: [{
-                // 'priceLists.cost': (cost ? cost : { $ne: true }),
-                //       'priceLists.defaultPriceList': true //(base ? base : { $ne: true })
-                //   }, {
-                'priceLists._id': ObjectId(options.priceList)
-                    //   }]
-            }
-        },
-        /*,{
-                    $group : {
-                        _id:
-                    }
-                }, */
-    ], function(err, docs) {
+        ], function(err, docs) {*/
         if (err)
-            return self.throw500("err : /api/product/autocomplete" + err);
+            console.log(err);
 
-        if (!docs || !docs.length)
-            return callback(null, { ok: false, pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null });
+        //console.log(doc, discount);
+        if (err)
+            return self.throw500(err);
 
-        Pricebreak.set(docs[0].prices);
+        if (!doc)
+            return callback(null, { ok: false, pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null, isFixed: false });
+
+        Pricebreak.set(doc.prices);
 
         //console.log(Pricebreak.humanize(true, 3));
+        var pu_ht = Pricebreak.price(options.qty).price;
+        if (discount)
+            pu_ht = round(pu_ht * (1 - discount / 100), 3);
 
-        callback(null, { ok: true, pu_ht: Pricebreak.price(options.qty).price, discount: docs[0].discount || 0, qtyMin: docs[0].qtyMin, qtyMax: docs[0].qtyMax });
+        callback(null, { ok: true, isFixed: doc.priceLists.isFixed, pu_ht: pu_ht, discount: doc.discount || 0, qtyMin: doc.qtyMin, qtyMax: doc.qtyMax });
     });
 
 };
