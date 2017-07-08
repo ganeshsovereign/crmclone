@@ -7,7 +7,11 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(ordersfab:OrdersFabList)</span>
+                <span>@(ordersLogistics)</span>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(orders:OrdersFabList)</span>
             </li>
         </ul>
         <div class="page-toolbar">
@@ -19,18 +23,6 @@
                         <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
                                         @(PrintList) </a>
                     </li>
-                    <!--    <li>
-                                        <a href="#">
-                                            @(Update) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(Delete) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(BuildPDF) </a>
-                                    </li>-->
                 </ul>
             </div>
         </div>
@@ -39,8 +31,8 @@
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
             <div class="caption">
-                <i class="fa fa-money"></i>
-                <span class="caption-subject dark bold uppercase"> @(ordersfab:OrdersFabList)</span>
+                <i class="fa fa-files-o"></i>
+                <span class="caption-subject dark bold uppercase"> @(orders:OrdersFabList)</span>
             </div>
             <div class="actions">
                 <button class="btn blue" ui-sref="ordersfab.create">@(Add) <i class="fa fa-plus"></i></button>
@@ -101,14 +93,11 @@
                                 <input type="checkbox" class="group-checkable" />
                             </th>
                             <th>Ref.</th>
-                            <th>@(companies:Company)</th>
-                            <th>@(RefCustomer)</th>
-                            <th>@(bills:DateInvoice)</th>
-                            <th>@(bills:DateEcheance)</th>
-                            <th>@(commercial:Commercial)</th>
-                            <th>@(TotalTTC)</th>
-                            <th>@(Status)</th>
-                            <th>@(Action)</th>
+                            <th width="15%">@(bills:DateEcheance)</th>
+                            <th width="15%">@(Entity)</th>
+                            <th width="15%">@(DateModification)</th>
+                            <th width="15%">@(Status)</th>
+                            <th witdh="8%">@(Action)</th>
                         </tr>
                         <!--<tr role="row" class="filter">
                             <td>

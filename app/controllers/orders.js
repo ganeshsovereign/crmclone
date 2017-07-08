@@ -139,6 +139,11 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     Object = Orders.stockReturnSupplier;
                     $scope.backTo = 'stockreturnsupplier.list';
                     break;
+                case 'ordersfab':
+                    $scope.object.forSales = false;
+                    Object = Orders.ordersFab;
+                    $scope.backTo = 'ordersfab.list';
+                    break;
             }
 
 
@@ -2761,25 +2766,16 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
                     }, {
                         "data": "ID"
                     }, {
-                        "data": "supplier",
-                        defaultContent: ""
-                    }, {
-                        "data": "ref_client",
-                        defaultContent: ""
-                    }, {
                         "data": "date_livraison",
                         defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
                     }, {
                         "data": "entity",
                         defaultContent: ""
                     }, {
                         "data": "datec",
                         defaultContent: ""
+                    }, {
+                        "data": "Status"
                     }, {
                         data: 'action'
                     }]

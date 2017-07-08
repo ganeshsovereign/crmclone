@@ -1,0 +1,116 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(ordersLogistics)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a ui-sref="ordersfab.list">@(orders:OrdersFabList)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span ng-hide="!object._id">@(orders:OrderFab) : {{object.ref}}</span>
+            <span ng-show="!object._id">@(orders:NewOrderFab)</span>
+        </li>
+    </ul>
+    <div class="page-toolbar">
+        <div class="btn-group">
+            <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+            </a>
+            <ul class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a ng-if="object.Status == 'DRAFT' && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                        <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateOrdersFab)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="object.Status == 'VALIDATED' && login.rights.order.validate" data-ng-click="changeStatus('PROCESSING')">
+                        <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateOrdersFab)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" ng-if="object.Status == 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                        <i class="fa fa-history"></i> @(ReOpen)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-ng-click="clone()">
+                        <i class="fa fa-copy"></i> @(ToClone)
+                    </a>
+                </li>
+                <li>
+                    <a ng-show='object.Status !="DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.order.delete && order.Status !== 'VALIDATED'" confirmed-click="remove(orders)" ng-confirm-click="Supprimer le document ?" title="Supprimer le document">
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    </a>
+                </li>
+        </div>
+    </div>
+</div>
+
+<!--<h3 class="page-title" ng-class="{'font-red':!product.info.isActive}">
+    <i class="fa fa-cubes font-grey-silver"></i> @(products:ProductServiceCard) : {{product.info.langs[0].name}} <small ng-hide="!product.info.isActive" class="font-green">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
+</h3>-->
+
+<div ng-if="object.isremoved" class="alert alert-danger"><strong> @(BeCareful) !</strong> Cette fiche à été supprimée</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="profile-sidebar mt-element-ribbon portlet-fit bordered">
+            <div ng-hide="!object._id" class="ribbon ribbon-right ribbon-clip ribbon-shadow uppercase" ng-class="object._status.css">
+                <div class="ribbon-sub ribbon-clip ribbon-right"></div> {{object._status.name}}
+            </div>
+            <div class="portlet light profile-sidebar-portlet">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div style="margin-bottom:50px;" class="col-md-offset-1 col-md-10 list-separated profile-stat">
+                            <div class="profile-usertitle">
+                                <div class="profile-userpic">
+                                    <img src="/img/orderfab.jpg" class="img-responsive" alt="Parameters"> </div>
+                                <!-- END SIDEBAR USERPIC -->
+                                <!-- SIDEBAR USER TITLE -->
+                                <div class="profile-usertitle">
+                                    <div class="profile-usertitle-name"> @(orders:OrderFab) </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="portlet">
+                            <div class="row list-separated profile-stat">
+                                <div class="col-md-12">
+                                    <div class=" col-md-6 col-sm-6 col-xs-6">
+                                        <div class="uppercase profile-stat-title"> <i class="icon-calendar font-yellow-crusta"></i> {{object.createdAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <div class="uppercase profile-stat-title"> <i class="icon-refresh font-yellow-crusta"></i> {{object.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                                    </div>
+
+
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{object.createdBy.username}}</a> </div>
+                                        <!--<div class="uppercase profile-stat-text"> @(CreatedBy)</div>-->
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{object.editedBy.username}}</a> </div>
+                                        <!-- <div class="uppercase profile-stat-text"> @(EditedBy) </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ui-view class="profile-content fade-in-up"></div>
+    </div>
+</div>
