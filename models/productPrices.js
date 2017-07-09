@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId,
     _ = require('lodash'),
     async = require('async'),
+    moment = require('moment'),
     timestamps = require('mongoose-timestamp');
 
 var setRound3 = MODULE('utils').setRound3;
@@ -235,85 +236,121 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
     console.log(options, query);
 
     async.waterfall([
-        function(wCb) {
-            self.findOne({ product: options.product, priceLists: options.priceLists })
-                .populate("priceLists")
-                .exec(function(err, doc) {
-                    if (err)
-                        return wCb(err);
+            function(wCb) {
+                PriceListModel.findById(options.priceLists, function(err, priceList) {
+                    if (err || !priceList)
+                        return wCb("No priceList Found !!!! " + err);
 
-                    //Found a price
-                    if (doc && doc.priceLists)
-                        return wCb(null, doc, 0);
+                    if (priceList.isGlobalDiscount)
+                        return wCb(null, priceList.parent, priceList.discount);
 
-                    // No price get priceList to test if it's globalDiscountor Fixed price
-                    PriceListModel.findById(options.priceLists, function(err, priceList) {
+                    //If expired priceList
+                    if (priceList.isFixed) {
+                        if (priceList.dateExpiration && moment(priceList.dateExpiration).isAfter()) //date not expired
+                            return wCb(null, priceList._id, 0);
+                        else
+                            return wCb(null, priceList.parent, 0); //expired use parent
+                    }
+
+                    return wCb(null, priceList._id, 0); // Normal price
+                });
+            },
+            function(priceLists, discount, wCb) {
+                self.findOne({ product: options.product, priceLists: priceLists })
+                    .exec(function(err, doc) {
                         if (err)
                             return wCb(err);
 
-                        if (!priceList.parent)
-                            return wCb("No parent priceList");
+                        //Found a price
+                        if (doc && doc.priceLists)
+                            return wCb(null, doc, discount);
 
-                        return self.findOne({ product: options.product, priceLists: priceList.parent }, function(err, doc2) {
+                        // No price get priceList so fixed price we used parent
+                        PriceListModel.findById(priceLists, function(err, priceList) {
                             if (err)
                                 return wCb(err);
-                            return wCb(null, doc2, priceList.discount || 0);
+
+                            if (!priceList.parent)
+                                return wCb("No parent priceList");
+
+                            return self.findOne({ product: options.product, priceLists: priceList.parent }, function(err, doc2) {
+                                if (err)
+                                    return wCb(err);
+
+                                if (doc2)
+                                    return wCb(null, doc2, priceList.discount || 0);
+
+                                PriceListModel.findById(priceList.parent, function(err, priceList) {
+                                    if (err)
+                                        return wCb(err);
+
+                                    if (!priceList || !priceList.parent)
+                                        return wCb("Error no parent price");
+
+                                    return self.findOne({ product: options.product, priceLists: priceList.parent }, function(err, doc3) {
+                                        if (err)
+                                            return wCb(err);
+
+                                        return wCb(null, doc3, priceList.discount || 0);
+                                    });
+                                });
+                            });
                         });
                     });
-                });
-        },
-        function(price, discount, wCb) {
-            //if isFixed price but no price in priceList use parent price
-            if (price)
-                return wCb(null, price, discount);
+            },
+            function(price, discount, wCb) {
+                //if isFixed price but no price in priceList use parent price
+                if (price)
+                    return wCb(null, price, discount);
 
-            wCb("No price Found !!!!");
-        }
-    ], function(err, doc, discount) {
-        /*this.aggregate([{
-                $match: query
-            },
-            {
-                $lookup: {
-                    from: 'PriceList',
-                    localField: 'priceLists',
-                    foreignField: '_id',
-                    as: 'priceLists'
-                }
-            },
-            {
-                        $unwind: '$priceLists'
-                    },
-            {
-                $match: {
-                    //   $or: [{
-                    // 'priceLists.cost': (cost ? cost : { $ne: true }),
-                    //       'priceLists.defaultPriceList': true //(base ? base : { $ne: true })
-                    //   }, {
-                    'priceLists._id': ObjectId(options.priceList)
-                        //   }]
-                }
+                return wCb("No priceList Found !!!! " + err);
             }
-        ], function(err, docs) {*/
-        if (err)
-            console.log(err);
+        ],
+        function(err, doc, discount) {
+            /*this.aggregate([{
+                    $match: query
+                },
+                {
+                    $lookup: {
+                        from: 'PriceList',
+                        localField: 'priceLists',
+                        foreignField: '_id',
+                        as: 'priceLists'
+                    }
+                },
+                {
+                            $unwind: '$priceLists'
+                        },
+                {
+                    $match: {
+                        //   $or: [{
+                        // 'priceLists.cost': (cost ? cost : { $ne: true }),
+                        //       'priceLists.defaultPriceList': true //(base ? base : { $ne: true })
+                        //   }, {
+                        'priceLists._id': ObjectId(options.priceList)
+                            //   }]
+                    }
+                }
+            ], function(err, docs) {*/
+            if (err)
+                console.log(err);
 
-        //console.log(doc, discount);
-        if (err)
-            return self.throw500(err);
+            //console.log(doc, discount);
+            if (err)
+                return self.throw500(err);
 
-        if (!doc)
-            return callback(null, { ok: false, pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null, isFixed: false });
+            if (!doc)
+                return callback(null, { ok: false, pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null, isFixed: false });
 
-        Pricebreak.set(doc.prices);
+            Pricebreak.set(doc.prices);
 
-        //console.log(Pricebreak.humanize(true, 3));
-        var pu_ht = Pricebreak.price(options.qty).price;
-        if (discount)
-            pu_ht = round(pu_ht * (1 - discount / 100), 3);
+            //console.log(Pricebreak.humanize(true, 3));
+            var pu_ht = Pricebreak.price(options.qty).price;
+            if (discount)
+                pu_ht = round(pu_ht * (1 - discount / 100), 3);
 
-        callback(null, { ok: true, isFixed: doc.priceLists.isFixed, pu_ht: pu_ht, discount: doc.discount || 0, qtyMin: doc.qtyMin, qtyMax: doc.qtyMax });
-    });
+            callback(null, { ok: true, isFixed: doc.priceLists.isFixed, pu_ht: pu_ht, discount: doc.discount || 0, qtyMin: doc.qtyMin, qtyMax: doc.qtyMax });
+        });
 
 };
 
