@@ -61,6 +61,6 @@
 
 <div ng-hide="!object._id" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.lines" title="'@(products:Conditionning)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.lines" title="'@(products:Conditionning)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productOrderFabLine.html" ng-change="update()"></product-lines>
     </div>
 </div>

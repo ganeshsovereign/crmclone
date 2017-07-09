@@ -890,9 +890,12 @@ Object.prototype = {
         var ProductModel = MODEL('product').Schema;
         var ObjectId = MODULE('utils').ObjectId;
 
-        //console.dir(self.body);
+        console.dir(self.body);
 
         if (self.body.filter == null)
+            return self.json([]);
+
+        if (self.body.filter.filters[0].value.length < 3)
             return self.json([]);
 
         var query = {
@@ -922,9 +925,9 @@ Object.prototype = {
         }
 
         var base = true;
-        if (self.body.priceList && self.body.priceList !== null) {
-            base = false;
-        }
+        //if (self.body.priceList && self.body.priceList !== null) {
+        //    base = false;
+        //}
 
         //console.log(query);
 
@@ -997,7 +1000,10 @@ Object.prototype = {
                 as: 'prices'
             }
         }, {
-            $unwind: '$prices'
+            $unwind: {
+                path: '$prices',
+                preserveNullAndEmptyArrays: true
+            }
         }, {
             $lookup: {
                 from: 'PriceList',
@@ -1023,23 +1029,24 @@ Object.prototype = {
             }
         }];
 
-        if (self.body.priceList)
-            request.push({
-                $match: {
-                    //   $or: [{
-                    // 'priceLists.cost': (cost ? cost : { $ne: true }),
-                    //       'priceLists.defaultPriceList': true //(base ? base : { $ne: true })
-                    //   }, {
+        //if (self.body.priceList)
+        request.push({
+            $match: {
+                $or: [{
+                    'priceLists.cost': (cost ? cost : { $ne: true }),
+                    'priceLists.defaultPriceList': true //(base ? base : { $ne: true })
+                }, {
                     'priceLists._id': ObjectId(self.body.priceList)
-                        //   }]
-                }
-            });
-        else request.push({
+                }]
+            }
+        });
+        //else
+        /*request.push({
             $match: {
                 'priceLists.cost': (cost ? cost : { $ne: true }),
                 'priceLists.defaultPriceList': (base ? base : { $ne: true })
             }
-        });
+        });*/
 
         request.push(
             /*,{
@@ -1053,6 +1060,8 @@ Object.prototype = {
         request.push({
             $sort: { 'info.SKU': 1 }
         });
+
+        //console.log(request);
 
         ProductModel.aggregate(request, function(err, docs) {
             if (err)
@@ -2726,11 +2735,6 @@ PricesList.prototype = {
                     }
                 });
             }
-
-            if (doc.isGlobalDiscount) // Emit to refresh priceList from parent
-                setTimeout2('productPrices:updateDiscountRate_' + doc._id.toString(), function() {
-                F.functions.BusMQ.emit('productPrices:updateDiscountRate', self.user._id, { priceList: doc });
-            }, 500);
 
             //console.log(doc);
             doc = doc.toObject();

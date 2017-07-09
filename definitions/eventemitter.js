@@ -32,7 +32,6 @@ var queuesList = [
     'product:deleteCategory',
     'productFamily:update',
     'productFamily:coefUpdate',
-    'productPrices:updateDiscountRate',
     'productPrices:updatePrice',
     'notify:user',
     'notify:controllerAngular'

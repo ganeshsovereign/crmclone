@@ -232,7 +232,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
     } else if (options.ref)
         query.ref = options.ref;
 
-    //console.log(options, query);
+    console.log(options, query);
 
     async.waterfall([
         function(wCb) {

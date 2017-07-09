@@ -1,9 +1,3 @@
-<script type="text/ng-template" id="searchproduct.html">
-    <a ng-class="{'list-group-item bg-green bg-font-green': match.model.priceLists.defaultPriceList == true}">
-        <span bind-html-unsafe="match.model.ref | typeaheadHighlight:query"></span> - <span bind-html-unsafe="match.model.info.langs[0].name"></span> ({{match.model.priceLists.priceListCode}} : {{match.model.prices.price|currency}})
-    </a>
-</script>
-
 <div class="portlet portlet light bordered">
     <div class="portlet-title">
         <div class="caption">

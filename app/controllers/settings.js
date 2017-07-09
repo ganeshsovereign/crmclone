@@ -365,6 +365,16 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
         });
     };
 
+    // filter for selecting isFixed parent priceList for other price
+    $scope.customerFilterIsFixed = function(item) {
+        if (item.isGlobalDiscount)
+            return true;
+        if (item.isCoef)
+            return true;
+
+        return false;
+    };
+
 
 }]);
 

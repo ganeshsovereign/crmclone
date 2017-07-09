@@ -1636,9 +1636,9 @@ MetronicApp.controller('DeliveryCreateController', ['$scope', '$rootScope', '$ht
 
             if (line.qty && line.product && line.product._id && !line.priceSpecific)
                 $http.post('/erp/api/product/price', {
-                    priceList: object.priceList._id,
+                    priceLists: object.priceList._id,
                     qty: line.qty,
-                    _id: line.product._id
+                    product: line.product._id
                 }).then(function(res) {
                     console.log(res.data);
                     line.pu_ht = res.data.pu_ht;

@@ -114,9 +114,9 @@ MetronicApp.directive('productLines', ['$http',
 
                     if (line.qty && line.product && line.product._id && !line.priceSpecific)
                         return $http.post('/erp/api/product/price', {
-                            priceList: scope.priceList,
+                            priceLists: scope.priceList,
                             qty: line.qty,
-                            _id: line.product._id
+                            product: line.product._id
                         }).then(function(res) {
                             //console.log(res.data);
                             line.pu_ht = res.data.pu_ht;

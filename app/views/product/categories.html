@@ -1,9 +1,3 @@
-<script type="text/ng-template" id="searchproduct.html">
-    <a ng-class="{'list-group-item font-green': match.model.price_level != 'BASE'}">
-        <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.price_level}} : {{match.model.pu_ht|currency}})
-    </a>
-</script>
-
 <div class="row">
     <div class="col-md-12">
         <div ng-if="product.type == 'PACK' && product.prices.pu_ht < product.total_pack" class="alert alert-warning"><strong>@(Warning) !</strong> @(products:LowerPrice)</div>

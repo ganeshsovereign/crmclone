@@ -569,9 +569,9 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
 
                                 if (!line.priceSpecific)
                                     return $http.post('/erp/api/product/price', {
-                                        price_level: object.price_level,
+                                        priceLists: object.price_level,
                                         qty: line.qty,
-                                        _id: line.product.id
+                                        product: line.product.id
                                     }).then(function(res) {
                                         console.log("TATA");
                                         console.log(res.data);
