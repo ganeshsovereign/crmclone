@@ -63,6 +63,7 @@ exports.install = function() {
     F.route('/erp/api/order/file/{Id}/{fileName}', object.getFile, ['authorize']);
     F.route('/erp/api/order/file/{Id}/{fileName}', object.deleteFile, ['delete', 'authorize']);
     F.route('/erp/api/order/pdf/{orderId}', object.pdf, ['authorize']);
+    F.route('/erp/api/offer/pdf/{orderId}', object.pdf, ['authorize']);
     F.route('/erp/api/order/download/{:id}', object.download);
 };
 
@@ -307,6 +308,8 @@ Object.prototype = {
         if (!self.body.createdBy)
             self.body.createdBy = self.user._id;
 
+        //console.log(self.body);
+
         async.waterfall([
             function(wCb) {
                 MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, wCb);
@@ -316,6 +319,8 @@ Object.prototype = {
                 self.body.total_taxes = result.total_taxes;
                 self.body.total_ttc = result.total_ttc;
                 self.body.weight = result.weight;
+
+                //return console.log(self.body);
 
                 OrderModel.findByIdAndUpdate(id, self.body, { new: true }, wCb);
             },

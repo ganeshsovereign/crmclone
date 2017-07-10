@@ -253,7 +253,7 @@
 
                         <div class="row static-info align-reverse">
                             <div class="col-md-5 name">@(deliveries:ShippingCost) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
-                            <div class="col-md-7 value"><span editable-text="object.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
+                            <div class="col-md-7 value"><span editable-number="object.shipping.total_ht" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
                                                 {{object.shipping.total_ht| currency}}
                                             </span></div>
                         </div>
