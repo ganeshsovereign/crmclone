@@ -42,7 +42,7 @@
                         <i class="icon-pencil"></i>
                         <span class="caption-subject dark bold uppercase"> @(products:StockCorrection)</span>
                     </div>
-                    <save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+                    <save mode="!object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
@@ -55,9 +55,9 @@
                                         <label for="warehouse">@(products:Warehouse)</label>
                                     </div>
                                     <div class="form-group form-md-line-input">
-                                        <select class="form-control" id="warehouse" ng-model="object.location" ng-options="s._id as s.name for s in $dict.location">
+                                        <select class="form-control" id="location" ng-model="object.location" ng-options="s._id as s.name for s in $dict.location">
                                                         </select>
-                                        <label for="warehouse">@(products:Location)</label>
+                                        <label for="location">@(products:Location)</label>
                                     </div>
                                 </div>
                             </div>
