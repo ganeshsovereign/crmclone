@@ -291,7 +291,7 @@ Object.prototype = {
                         },
                         function(doc, wCb) {
                             if (doc.forSales == true)
-                                F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: doc.order } });
+                                F.functions.PubSub.emit('order:recalculateStatus', { data: doc });
 
                             //update inventory IN
 
@@ -369,7 +369,7 @@ Object.prototype = {
                                                 return wCb(err);
 
                                             if (result && result.order)
-                                                F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order._id } });
+                                                F.functions.PubSub.emit('order:recalculateStatus', { data: order });
 
                                             doc.status.isInventory = new Date();
                                             //doc.status.isShipped = new Date();

@@ -1321,6 +1321,8 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     email: "L.FOLLEZOU@ARTHURG.FR",
                     token: "67d4dc5c26188aaf679cf955959449c0bc76be2d"
                 }
+            }).success(function(data, status) {
+                console.log(data, status);
             });
         };
     }

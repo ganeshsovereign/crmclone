@@ -1019,8 +1019,6 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
                     }, {
                         "data": "datec",
                         defaultContent: ""
-                    }, {
-                        data: 'action'
                     }]
                 }
             });

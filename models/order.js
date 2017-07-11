@@ -1231,7 +1231,7 @@ F.on('load', function() {
 
                     var stockStatus = {};
 
-                    if (docs && docs.length) {
+                    if (docs && docs.length && docs[0].order.Status != "DRAFT") {
                         async.each(docs, function(elem, eahcCb) {
                                 var product;
 
@@ -1408,6 +1408,7 @@ F.on('load', function() {
                         product: { $ne: null }
                     })
                     .populate('product', 'directCost info')
+                    .populate('order', 'Status')
                     .exec(function(err, docs) {
                         if (err)
                             return console(err);
