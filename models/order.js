@@ -1109,7 +1109,7 @@ exports.Schema = {
 
     GoodsOutNote: goodsOutNote,
     GoodsInNote: goodsInNote,
-    stockCorrections: stockCorrection,
+    StockCorrections: stockCorrection,
     stockTransactions: stockTransactions,
     stockReturns: stockReturns,
 

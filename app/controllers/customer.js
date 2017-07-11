@@ -1312,6 +1312,17 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             };
         };
 
+        $scope.openLogin = function() {
+            $http({
+                method: 'POST',
+                url: 'https://atlankit.extene.com/inputERP',
+                params: {
+                    __method: "autoLogin",
+                    email: "L.FOLLEZOU@ARTHURG.FR",
+                    token: "67d4dc5c26188aaf679cf955959449c0bc76be2d"
+                }
+            });
+        };
     }
 ]);
 

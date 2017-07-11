@@ -119,15 +119,6 @@
                     "icon": "fa fa-picture-o",
                     "title": "products:Images"
                 },
-                "menu:stockcorrestion": {
-                    "url": "/erp/#!/product/stockcorrectionlist",
-                    "position": 35,
-                    "usertype": 2,
-                    "perms": "product.read",
-                    "enabled": "$conf->product->enabled",
-                    "icon": "fa fa-pencil",
-                    "title": "products:StockCorrection"
-                },
                 "menu:stockdetail": {
                     "url": "/erp/#!/product/stockdetail",
                     "position": 40,

@@ -70,11 +70,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="line in listObject">
-                                    <td>{{line.date}}</td>
+                                <tr ng-repeat="line in corrections">
+                                    <td>{{line.createdAt| date : "shortDate"}}</td>
                                     <td>{{line.reason}}</td>
                                     <td>{{line.warehouse.name}}</td>
-                                    <td>{{line.createdBy | date : "shortDate"}}</td>
+                                    <td>{{line.createdBy.username}}</td>
                                     <td>
                                         <a class="btn green fa fa-pencil" ui-sref="product.stockcorrection.show({id:line._id})" title="Editer"></a>
                                         <button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>

@@ -113,6 +113,15 @@
                     "icon": "fa-truck",
                     "title": "deliveries:SuppliersDeliveries"
                 },
+                "menu:stockcorrestion": {
+                    "url": "/erp/#!/product/stockcorrectionlist",
+                    "position": 7,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa fa-pencil",
+                    "title": "products:StockCorrection"
+                },
                 "menu:stockreturn": {
                     "position": 10,
                     "url": "/erp/#!/stockreturn",

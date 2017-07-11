@@ -5622,13 +5622,14 @@ StockCorrection.prototype = {
     },
 
     getCorrections: function() {
-        var sefl = this;
+        var self = this;
         var data = self.query;
-        var limit = parseInt(data.count, 10);
+        console.log(data);
+        var limit = parseInt(data.limit, 10);
         var skip = (parseInt(data.page || 1, 10) - 1) * limit;
         var obj = {};
         var addObj = {};
-        var StockCorrection = MODEL('orders').Schema.StockCorrections;
+        var StockCorrection = MODEL('order').Schema.StockCorrections;
         /* var filterMapper = new FilterMapper();*/
 
         var keys;
@@ -5647,7 +5648,7 @@ StockCorrection.prototype = {
             data.sort[keys] = parseInt(data.sort[keys], 10);
             sort = data.sort;
         } else
-            sort = { 'dueDate': -1 };
+            sort = { 'createdAt': -1 };
 
         StockCorrection.aggregate([{
                 $match: obj
@@ -5671,9 +5672,9 @@ StockCorrection.prototype = {
             {
                 $lookup: {
                     from: 'Users',
-                    localField: 'createdBy.user',
+                    localField: 'createdBy',
                     foreignField: '_id',
-                    as: 'createdBy.user'
+                    as: 'createdBy'
                 }
             },
             {
@@ -5681,8 +5682,8 @@ StockCorrection.prototype = {
                     _id: 1,
                     location: { $arrayElemAt: ['$location', 0] },
                     warehouse: { $arrayElemAt: ['$warehouse', 0] },
-                    'createdBy.user': { $arrayElemAt: ['$createdBy.user', 0] },
-                    'createdBy.date': 1,
+                    'createdBy': { $arrayElemAt: ['$createdBy', 0] },
+                    'createdAt': 1,
                     description: 1
                 }
             },
@@ -5702,6 +5703,7 @@ StockCorrection.prototype = {
                     location: '$root.location',
                     warehouse: '$root.warehouse',
                     createdBy: '$root.createdBy',
+                    createdAt: '$root.createdAt',
                     description: '$root.description',
                     total: 1
                 }

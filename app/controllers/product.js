@@ -1858,9 +1858,12 @@ MetronicApp.controller('ProductBankImagesModalController', ['$scope', '$rootScop
 
 }]);
 
-MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http) {
+MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScope', '$http', 'Orders', function($scope, $rootScope, $http, Orders) {
+
+    var Object = new Orders.stockCorrection;
 
     $scope.dict = {};
+    $scope.corrections = [];
 
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
@@ -1872,7 +1875,78 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
+        $scope.find();
+
     });
+
+    $scope.page = {
+        limit: 25,
+        page: 1,
+        total: 0
+    };
+
+    $scope.find = function() {
+        Metronic.blockUI({
+            target: '.waiting',
+            animate: true,
+            overlayColor: 'none'
+        });
+
+        var query = { filter: this.search, limit: $scope.page.limit, page: $scope.page.page };
+
+        Object.$query(query, function(data) {
+            $scope.page.total = data.total;
+            $scope.corrections = data.data;
+
+            Metronic.unblockUI('.waiting');
+        });
+    };
+
+    $scope.create = function() {
+        var object = new Object(this.object);
+        object.$save(function(response) {
+            $rootScope.$state.go(current[0] + '.show.detail', {
+                id: response._id
+            });
+        });
+    };
+
+    $scope.remove = function(object) {
+        $scope.object.$remove();
+        $rootScope.$state.go($scope.backTo);
+    };
+
+
+    $scope.update = function(callback) {
+        var object = $scope.object;
+
+        object.$update(function(response) {
+
+            $scope.findOne(callback);
+        }, function(err) {
+            console.log(err);
+            $scope.findOne(callback);
+        });
+    };
+
+    $scope.findOne = function(callback) {
+        if (!$rootScope.$stateParams.id) {
+            $scope.editable = true;
+            return;
+        }
+
+        Object.get({
+            Id: $rootScope.$stateParams.id
+        }, function(object) {
+            $scope.object = object;
+            console.log(object);
+
+            if (callback)
+                callback(object);
+        }, function(err) {
+            console.log(err);
+        });
+    };
 
 }]);
 

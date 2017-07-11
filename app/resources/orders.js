@@ -113,7 +113,7 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        stockReturn: $resource('/erp/api/stockreturn/:Id', { Id: '@_id' }, {
+        ordersFab: $resource('/erp/api/ordersfab/:Id', { Id: '@_id' }, {
             update: { method: 'PUT' },
             clone: {
                 method: 'POST',
@@ -122,7 +122,17 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        ordersFab: $resource('/erp/api/ordersfab/:Id', { Id: '@_id' }, {
+        stockCorrection: $resource('/erp/api/product/warehouse/stockCorrection/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
+            clone: {
+                method: 'POST',
+                params: {
+                    clone: 1
+                }
+            }
+        }),
+        stockReturn: $resource('/erp/api/stockreturn/:Id', { Id: '@_id' }, {
             update: { method: 'PUT' },
             clone: {
                 method: 'POST',
