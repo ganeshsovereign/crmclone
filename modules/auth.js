@@ -23,10 +23,16 @@ Users.prototype.usage = function() {
 };
 
 Users.prototype.authorize = function(req, res, flags, callback) {
-
     var self = this;
     var options = self.options;
     var cookie = req.cookie(options.cookie) || '';
+
+    if (req.query && req.query.token && CONFIG('token')) {
+        if (req.query.token == CONFIG('token')) {
+            req.user = {};
+            return callback(true);
+        }
+    }
 
     if (cookie === '' || cookie.length < 10)
         return callback(false);
