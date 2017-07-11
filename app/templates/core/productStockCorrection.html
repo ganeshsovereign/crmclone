@@ -1,0 +1,82 @@
+<script type="text/ng-template" id="searchproduct.html">
+    <a ng-class="{'list-group-item bg-green bg-font-green': match.model.priceLists.isFixed == true}">
+        <span bind-html-unsafe="match.model.ref | typeaheadHighlight:query"></span> - <span bind-html-unsafe="match.model.info.langs[0].name"></span> ({{match.model.priceLists.priceListCode}} : {{match.model.prices.price|currency}})
+    </a>
+</script>
+
+<div class="portlet portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-opencart"></i>
+            <span class="caption-subject dark bold uppercase"> {{title}}</span>
+        </div>
+        <div class="actions">
+            <a href="javascript:;" ng-click="tableform.$show()" ng-show="!tableform.$visible && editable" class="btn yellow-crusta">
+                <i class="fa fa-pencil"></i> @(Edit) </a>
+        </div>
+        <div class="actions">
+            <div class="btn-form" ng-show="tableform.$visible">
+                <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(linesModel)" class="btn blue"> @(Add) <i class="fa fa-plus"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet-body">
+        <form editable-form name="tableform" onaftersave="update()" oncancel="findOne()">
+            <!-- table -->
+            <table class="table table-fixed table-striped table-bordered table-hover no-footer">
+                <thead>
+                    <tr role="row" class="heading">
+                        <th style="width: 50px;">@(products:ProductCode)</th>
+                        <th style="width: 80px;">@(Name)</th>
+                        <th style="width: 17px;">@(products:InStock)</th>
+                        <th style="width: 25px;">@(Nouvelle valeur)</th>
+                        <th style="width: 20px;">@(Ajustation)</th>
+                        <th style="width: 10px;"><span ng-show="tableform.$visible"> </span></th>
+                    </tr>
+                </thead>
+                <tr ng-repeat="line in linesModel| filter:filterLine">
+                    <td>
+                        <div class="input-icon right">
+                            <i class="fa fa-warning font-red pull-right" ng-show="!line.product._id" title="@(products:ErrorProductBadRefOrLabel)"></i>
+                            <span ng-class="{'has-error':$error, 'has-success': !$error}" editable-text="line.product.info.SKU" e-typeahead="product as product.ref for product in productAutoComplete($viewValue, 'ref')" e-typeahead-template-url="searchproduct.html" e-typeahead-on-select="addProduct($item, line.idLine, linesModel)"
+                                onbeforesave="checkLine(line.product)">
+                                <a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <!--<span editable-text="line.info.langs[0].name" e-form="tableform">-->
+                        {{ line.product.info.langs[0].name || 'empty' }}
+                        <!--</span>-->
+                    </td>
+                    <td class="center">
+                        {{ line.onHand || 0 }}
+                    </td>
+                    <td class="center">
+                        <span e-name="qty" editable-number="line.qty" e-step="0.001" e-form="tableform">
+                        {{ line.qty || '--' }}
+                        </span>
+                    </td>
+                    <td class="center">
+                        {{ line.onHand + line.qty || '--' }}
+                    </td>
+                    <td>
+                        <div class="btn-toolbar" role="toolbar">
+                            <div class="btn-group btn-group">
+                                <button type="button" ng-show="tableform.$visible" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <!-- buttons -->
+
+            <div class="btn-form" ng-show="tableform.$visible">
+                <button type="button" ng-disabled="tableform.$waiting" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
+                <button type="submit" ng-disabled="tableform.$waiting" class="btn green pull-right"> @(Save) <i class="fa fa-check"></i></button>
+                <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel) </button>
+            </div>
+        </form>
+    </div>
+</div>

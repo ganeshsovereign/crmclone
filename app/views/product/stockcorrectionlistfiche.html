@@ -16,7 +16,6 @@
         <li>
             <span>@(products:StockCorrection)</span>
         </li>
-
     </ul>
     <div class="page-toolbar">
         <div class="btn-group">
@@ -34,14 +33,14 @@
     </div>
 </div>
 
-<div class="form-horizontal form-row-seperated">
-    <div class="row">
-        <div class="col-md-offset-2 col-md-8">
+<div class="row">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="form-horizontal form-row-seperated">
             <div class="portlet light bordered">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-pencil"></i>
-                        <span class="caption-subject dark bold uppercase"> @(products:StockCorrection)</span></span>
+                        <span class="caption-subject dark bold uppercase"> @(products:StockCorrection)</span>
                     </div>
                     <save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
                 </div>
@@ -56,7 +55,7 @@
                                         <label for="warehouse">@(products:Warehouse)</label>
                                     </div>
                                     <div class="form-group form-md-line-input">
-                                        <select class="form-control" id="warehouse" ng-model="object.warehouse" ng-options="s._id as s.name for s in $dict.warehouse">
+                                        <select class="form-control" id="warehouse" ng-model="object.location" ng-options="s._id as s.name for s in $dict.location">
                                                         </select>
                                         <label for="warehouse">@(products:Location)</label>
                                     </div>
@@ -76,61 +75,14 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="portlet light">
-                                    <div class="portlet-title">
-                                        <button ng-hide="openLocation" ng-click="openLocation = 1;location = {};" class="btn btn-info"><i class="glyphicon glyphicon-plus"></i> @(products:AddLocation) </button>
-                                        <div class="bootbox-body" ng-show="openLocation">
-                                            <form class="bootbox-form">
-
-                                                <button class="btn red" ng-click="openLocation = 0" type="button"><i class="fa fa-times"></i>@(Cancel)</button>
-                                                <button class="btn green" ng-click="addLocation(location)" type="button"><i class="fa fa-check-circle"></i> @(Add)</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="portlet boby">
-                                        <div class="form-body">
-                                            <div class="table-responsive">
-                                                <div class="dataTables_wrapper no-footer table-responsive">
-                                                    <div class="col-md-12">
-                                                        <table class="table dataTable no-footer table-hover" id="Locations">
-                                                            <thead>
-                                                                <tr role="row" class="heading">
-                                                                    <th>@(products:Zone)</th>
-                                                                    <th>@(products:Location)</th>
-                                                                    <th width="120px"></th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr ng-repeat="location in object.locations">
-                                                                    <td ng-if="line.type != 'SUBTOTAL'">
-                                                                        <div class="input-icon right">
-                                                                            <i class="fa fa-warning font-red pull-right" ng-show="!line.product._id" title="@(products:ErrorProductBadRefOrLabel)"></i>
-                                                                            <span ng-class="{'has-error':$error, 'has-success': !$error}" editable-text="line.product.info.SKU" e-typeahead="product as product.ref for product in productAutoComplete($viewValue, 'ref')" e-typeahead-template-url="searchproduct.html" e-typeahead-on-select="addProduct($item, line.idLine, linesModel)"
-                                                                                onbeforesave="checkLine(line.product)">
-                                                                                  <a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
-                                                                            </span>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>{{location.name}}</td>
-                                                                    <td>
-                                                                        <a class="btn green fa fa-pencil" ng-click="editLocation(location)" title="Editer"></a>
-                                                                        <button class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteLocation)" confirmed-click="removeLocation(location)"></button>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div ng-hide="object._id" class="row">
+            <div class="col-md-12">
+                <product-lines ng-model="object.lines" title="'@(products:Products)'" ng-disabled="editable" ng-template="/templates/core/productStockCorrection.html"></product-lines>
+            </div>
+        </div>
     </div>
+</div>

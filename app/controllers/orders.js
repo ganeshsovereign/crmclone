@@ -2810,7 +2810,7 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
                     });
                 }
             });
-        }
+        };
 
 
 

@@ -1863,7 +1863,11 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
     var Object = new Orders.stockCorrection;
 
     $scope.dict = {};
+    $scope.$dict = {};
     $scope.corrections = [];
+    $scope.object = {
+        lines: []
+    };
 
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
@@ -1875,6 +1879,24 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
+        $http({
+            method: 'GET',
+            url: '/erp/api/product/warehouse/select'
+
+        }).success(function(data, status) {
+            $scope.$dict.warehouse = data.data;
+            //console.log(data);
+        });
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/product/warehouse/location/select'
+
+        }).success(function(data, status) {
+            $scope.$dict.location = data.data;
+            //console.log(data);
+        });
+
         $scope.find();
 
     });
@@ -1884,6 +1906,7 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
         page: 1,
         total: 0
     };
+
 
     $scope.find = function() {
         Metronic.blockUI({
@@ -1917,7 +1940,7 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
     };
 
 
-    $scope.update = function(callback) {
+    /*$scope.update = function(callback) {
         var object = $scope.object;
 
         object.$update(function(response) {
@@ -1927,7 +1950,7 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
             console.log(err);
             $scope.findOne(callback);
         });
-    };
+    };*/
 
     $scope.findOne = function(callback) {
         if (!$rootScope.$stateParams.id) {
