@@ -44,7 +44,7 @@
                                                     </span>
                     </td>
                     <td ng-if="true">
-                        <span editable-select="line.locationsReceived[0].location._id" e-form="tableform" e-ng-options="s._id as s.name for s in locations">
+                        <span editable-select="line.locationsReceived[0].location._id" e-ng-change="line.locationsReceived[0].qty = line.qty" e-form="tableform" e-ng-options="s._id as s.name for s in locations">
                             <span ng-repeat="location in line.locationsReceived">
                                 <span>{{ location.location.name }}</span>
                         </span>

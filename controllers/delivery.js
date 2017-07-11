@@ -369,7 +369,7 @@ Object.prototype = {
                                                 return wCb(err);
 
                                             if (result && result.order)
-                                                F.functions.PubSub.emit('order:recalculateStatus', { data: order });
+                                                F.functions.PubSub.emit('order:recalculateStatus', { data: result.order });
 
                                             doc.status.isInventory = new Date();
                                             //doc.status.isShipped = new Date();

@@ -5378,11 +5378,18 @@ StockCorrection.prototype = {
     create: function() {
         var self = this;
         var body = self.body;
-        var StockCorrectionModel = MODEL('orders').Schema.stockCorrections;
+        var StockCorrectionModel = MODEL('order').Schema.StockCorrections;
+        var Availability = MODEL('productsAvailability').Schema;
 
         body.createdBy = self.user._id;
 
-        stockCorrection = new StockCorrectionModel(body);
+        body.status = {
+            "receivedById": self.user._id,
+            "isInventory": new Date(),
+            "isReceived": new Date(),
+        };
+
+        var stockCorrection = new StockCorrectionModel(body);
 
         stockCorrection.save(function(err, doc) {
             if (err)
@@ -5398,19 +5405,15 @@ StockCorrection.prototype = {
             async.each(body.orderRows, function(elem, eachCb) {
                 var options;
 
-                if (elem.quantity <= 0) {
+                if (elem.qty <= 0) {
                     options = {
-                        query: {
-                            location: body.location,
-                            product: elem.product
-                        },
-
-                        dbName: dbName
+                        location: body.location,
+                        product: elem.product
                     };
 
-                    AvailabilityService.find(options, function(err, docs) {
+                    Availability.find(options, function(err, docs) {
 
-                        var lastQuantity = elem.quantity;
+                        var lastQuantity = elem.qty;
 
                         if (err)
                             return eachCb(err);
@@ -5434,10 +5437,8 @@ StockCorrection.prototype = {
                                         },
 
                                         body: { $set: { archived: true } },
-
-                                        dbName: dbName
                                     };
-                                    AvailabilityService.updateByQuery(optionsEach, function(err, doc) {
+                                    Availability.updateByQuery(optionsEach, function(err, doc) {
                                         if (err)
                                             return eachChildCb(err);
 
@@ -5451,11 +5452,9 @@ StockCorrection.prototype = {
 
                                         query: {
                                             _id: doc._id
-                                        },
-
-                                        dbName: dbName
+                                        }
                                     };
-                                    AvailabilityService.updateByQuery(optionsEach, function(err, doc) {
+                                    Availability.updateByQuery(optionsEach, function(err, doc) {
                                         if (err)
                                             return eachChildCb(err);
 
@@ -5471,22 +5470,19 @@ StockCorrection.prototype = {
                             });
                         } else
                             eachCb();
-
                     });
                 } else {
-                    options = {
-                        dbName: dbName,
-                        body: {
-                            location: body.location,
-                            warehouse: body.warehouse,
-                            goodsInNote: doc._id,
-                            product: elem.product,
-                            onHand: elem.quantity,
-                            cost: elem.cost
-                        }
-                    };
+                    var availability = new Availability({
+                        location: body.location,
+                        warehouse: body.warehouse,
+                        goodsInNote: doc._id,
+                        product: elem.product,
+                        onHand: elem.qty,
+                        cost: elem.cost,
 
-                    AvailabilityService.create(options, function(err, doc) {
+                    });
+
+                    availability.save(function(err, doc) {
                         if (err)
                             return eachCb(err);
 
@@ -5738,7 +5734,7 @@ StockCorrection.prototype = {
             .populate('warehouse', ' name')
             .populate('location', ' name')
             .populate('orderRows.product', ' name')
-            .populate('createdBy.user', 'login')
+            .populate('createdBy', 'username')
             .exec(function(err, correction) {
                 if (err)
                     return self.throw500(err);
@@ -5759,6 +5755,8 @@ StockCorrection.prototype = {
         var queryFrom;
         var queryTo;
         var objectId = MODULE('utils').ObjectId;
+
+        console.log(self.query);
 
         queryFrom = {
             warehouse: objectId(warehouseFrom),
@@ -5783,7 +5781,7 @@ StockCorrection.prototype = {
                 $match: queryFrom
             }, {
                 $lookup: {
-                    from: 'Products',
+                    from: 'Product',
                     localField: 'product',
                     foreignField: '_id',
                     as: 'product'
@@ -5814,7 +5812,7 @@ StockCorrection.prototype = {
                 $match: queryTo
             }, {
                 $lookup: {
-                    from: 'Products',
+                    from: 'Product',
                     localField: 'product',
                     foreignField: '_id',
                     as: 'product'
@@ -5911,7 +5909,7 @@ StockInventory.prototype = {
             data.sort[keys] = parseInt(data.sort[keys], 10);
             sort = data.sort;
         } else
-            sort = { 'dueDate': -1 };
+            sort = { 'createdAt': -1 };
 
         options = {
             sort: sort,

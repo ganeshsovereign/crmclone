@@ -1860,13 +1860,13 @@ MetronicApp.controller('ProductBankImagesModalController', ['$scope', '$rootScop
 
 MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScope', '$http', 'Orders', function($scope, $rootScope, $http, Orders) {
 
-    var Object = new Orders.stockCorrection;
+    var Object = Orders.stockCorrection;
 
     $scope.dict = {};
     $scope.$dict = {};
     $scope.corrections = [];
     $scope.object = {
-        lines: []
+        orderRows: []
     };
 
     $scope.$on('$viewContentLoaded', function() {
@@ -1888,18 +1888,24 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
             //console.log(data);
         });
 
+        $scope.find();
+
+    });
+
+    $scope.LoadLocation = function() {
+        var self = this;
+        this.object.location = {};
+
         $http({
             method: 'GET',
-            url: '/erp/api/product/warehouse/location/select'
+            url: '/erp/api/product/warehouse/location/select',
+            params: { warehouse: self.object.warehouse._id }
 
         }).success(function(data, status) {
             $scope.$dict.location = data.data;
             //console.log(data);
         });
-
-        $scope.find();
-
-    });
+    };
 
     $scope.page = {
         limit: 25,
@@ -1917,7 +1923,8 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
 
         var query = { filter: this.search, limit: $scope.page.limit, page: $scope.page.page };
 
-        Object.$query(query, function(data) {
+        var obj = new Object();
+        obj.$query(query, function(data) {
             $scope.page.total = data.total;
             $scope.corrections = data.data;
 
@@ -1926,11 +1933,10 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
     };
 
     $scope.create = function() {
+        console.log(this.object);
         var object = new Object(this.object);
         object.$save(function(response) {
-            $rootScope.$state.go(current[0] + '.show.detail', {
-                id: response._id
-            });
+            $rootScope.$state.go($scope.backTo);
         });
     };
 

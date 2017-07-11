@@ -41,7 +41,7 @@ MetronicApp.directive('productLines', ['$http',
                     $http({
                         method: 'GET',
                         url: '/erp/api/product/warehouse/location/select',
-                        params: { warehouse: warehouse._id }
+                        params: { warehouse: scope.warehouse._id }
                     }).success(function(data, status) {
                         //console.log(data);
                         scope.locations = data.data;
@@ -244,6 +244,132 @@ MetronicApp.directive('productLines', ['$http',
                     scope.ngChange();
 
                     return true;
+                };
+            }
+        };
+    }
+]);
+
+MetronicApp.directive('productStockLines', ['$http',
+    function($http) {
+        return {
+            restrict: 'E',
+            require: 'ngModel',
+            scope: {
+                linesModel: '=ngModel',
+                title: '=',
+                warehouse: "=",
+                location: "=",
+                ngTemplate: "@",
+                editable: '=ngDisabled',
+                ngChange: '&'
+            },
+            templateUrl: function(el, attr) {
+                console.log(attr);
+
+                if (attr.ngTemplate)
+                    return attr.ngTemplate;
+
+                return '/templates/core/productStockCorrection.html';
+            },
+            link: function(scope, elem, attrs, ngModel) {
+
+                console.log(scope);
+
+                scope.checkLine = function(data) {
+                    //console.log(data);
+                    if (!data)
+                        return "La ligne produit ne peut pas être vide";
+                    if (!data._id)
+                        return "Le produit n'existe pas";
+                };
+
+                scope.addProduct = function(data, index, lines) {
+                    console.log("addProduct ", data);
+                    for (var i = 0; i < lines.length; i++) {
+                        if (lines[i].idLine === index) {
+                            lines[i] = {
+                                locationsReceived: [],
+                                cost: data.directCost,
+                                orderRowId: null,
+                                newOnHand: 0,
+
+                                //type: 'product',
+                                product: {
+                                    _id: data._id,
+                                    info: data.info,
+                                    unit: data.units,
+                                },
+                                isNew: true,
+                                qty: lines[i].qty || 0,
+                                idLine: index
+                            };
+
+                            //console.log(lines[i]);
+                            scope.getAvailable(lines, i);
+                        }
+                    }
+                };
+
+                scope.getAvailable = function(lines, i) {
+                    $http({
+                        method: 'GET',
+                        url: '/erp/api/product/warehouse/getAvailability',
+                        params: { location: scope.location._id, product: lines[i].product._id }
+                    }).success(function(data, status) {
+                        console.log(data);
+
+                        lines[i] = angular.extend(lines[i], { onHand: data.onHand || 0, newOnHand: data.onHand || 0 });
+                    });
+                };
+
+                scope.updateQty = function(line, field) {
+                    if (field == 'qty')
+                        line.newOnHand = line.onHand + line.qty;
+                    else
+                        line.qty = line.newOnHand - line.onHand;
+                };
+
+                scope.productAutoComplete = function(val) {
+                    return $http.post('/erp/api/product/autocomplete', {
+                        take: 20,
+                        skip: 0,
+                        page: 1,
+                        pageSize: 5,
+                        priceList: scope.priceList,
+                        forSales: scope.forSales,
+                        supplier: scope.supplier,
+                        filter: {
+                            logic: 'and',
+                            filters: [{
+                                value: val
+                            }]
+                        }
+                    }).then(function(res) {
+                        console.log(res.data);
+                        return res.data;
+                    });
+                };
+
+
+                // filter lines to show
+                scope.filterLine = function(line) {
+                    return line.isDeleted !== true;
+                };
+
+                // add line
+                scope.addLine = function(lines) {
+                    if (!scope.location || !scope.location._id)
+                        return;
+
+                    lines.push({
+                        isNew: true,
+                        idLine: lines.length
+                    });
+                };
+                // mark line as deleted
+                scope.deleteLine = function(line) {
+                    line.isDeleted = true;
                 };
             }
         };

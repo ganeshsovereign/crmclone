@@ -14,6 +14,11 @@
                         <span ng-if="module('offersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(propal:PurchaseRequests) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('offersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(propal:NewQuotation) </span>
                         <span ng-if="module('ordersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <!--/Puces-->
+                        <span ng-if="module('ordersupplier')" ng-hide="!object._id" class="large fa fa-check-circle" ng-class="{ 'font-grey': object.status.allocateStatus=='NOR','font-green-jungle': object.status.allocateStatus=='ALL' , 'font-yellow-lemon': object.status.allocateStatus=='NOA', 'font-red' : object.status.allocateStatus=='NOT' }"></span>
+                        <span ng-if="module('ordersupplier')" ng-hide="!object._id" class="large fa fa-inbox" ng-class="{ 'font-grey': object.status.fulfillStatus=='NOR', 'font-green-jungle': object.status.fulfillStatus=='ALL', 'font-yellow-lemon': object.status.fulfillStatus=='NOA', 'font-red' : object.status.fulfillStatus=='NOT' }"></span>
+                        <span ng-if="module('ordersupplier')" ng-hide="!object._id" class="large fa fa-truck" ng-class="{ 'font-grey': object.status.shippingStatus=='NOR','font-green-jungle': object.status.shippingStatus=='ALL', 'font-yellow-lemon': object.status.shippingStatus=='NOA', 'font-red' : object.status.shippingStatus=='NOT' }"></span>
+                        <!--Puces/-->
                         <span ng-if="module('ordersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewSupplierOrder) </span>
                         <span ng-if="module('deliverysupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(ordersDeliveryNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('deliverysupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(ordersNewDelivery) </span>

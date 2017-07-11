@@ -832,8 +832,6 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
                     }, {
                         "data": "datec",
                         defaultContent: ""
-                    }, {
-                        data: 'action'
                     }]
                 }
             });
@@ -1217,8 +1215,6 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
                     }, {
                         "data": "status.isShipped",
                         defaultContent: ""
-                    }, {
-                        data: 'action'
                     }]
                 }
             });
@@ -1465,8 +1461,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                     }, {
                         data: "updatedAt",
                         defaultContent: ""
-                    }, {
-                        data: 'action'
                     }]
                 }
             });
@@ -1805,8 +1799,6 @@ MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '
                     }, {
                         "data": "datec",
                         defaultContent: ""
-                    }, {
-                        data: 'action'
                     }]
                 }
             });
@@ -1979,8 +1971,6 @@ MetronicApp.controller('OrderSupplierListController', ['$scope', '$rootScope', '
                     }, {
                         "data": "datec",
                         defaultContent: ""
-                    }, {
-                        data: 'action'
                     }]
                 }
             });
@@ -2154,8 +2144,6 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
                     }, {
                         "data": "datec",
                         defaultContent: ""
-                    }, {
-                        data: 'action'
                     }]
                 }
             });
@@ -2387,8 +2375,6 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
                     }, {
                         data: "updatedAt",
                         defaultContent: ""
-                    }, {
-                        data: 'action'
                     }]
                 }
             });
@@ -2605,8 +2591,6 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
                     }, {
                         "data": "datec",
                         defaultContent: ""
-                    }, {
-                        data: 'action'
                     }]
                 }
             });
@@ -2774,8 +2758,6 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
                         defaultContent: ""
                     }, {
                         "data": "Status"
-                    }, {
-                        data: 'action'
                     }]
                 }
             });

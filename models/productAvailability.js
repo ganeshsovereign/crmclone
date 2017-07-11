@@ -30,7 +30,6 @@ var AvailabilitySchema = new Schema({
         qty: { type: Number, default: 0 }
     }],
 
-    creationDate: { type: Date, default: Date.now },
     archived: { type: Boolean, default: false }
 }, { collection: 'productsAvailability' });
 
@@ -365,6 +364,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 product: { $arrayElemAt: ['$product', 0] },
                 goodsInNote: { $arrayElemAt: ['$goodsInNote', 0] },
                 'createdBy': { $arrayElemAt: ['$createdBy', 0] },
+                createdAt: 1,
                 description: 1,
                 cost: 1,
                 onHand: 1,
@@ -407,6 +407,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 product: 1,
                 variants: { $arrayElemAt: ['$variants', 0] },
                 description: 1,
+                createdAt: 1,
                 cost: 1,
                 onHand: 1,
                 allocated: 1,
@@ -421,7 +422,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 product: { $first: '$product' },
                 goodsInNote: { $first: '$goodsInNote' },
                 warehouse: { $first: '$warehouse' },
-                createdBy: { $first: '$createdBy' },
+                createdAt: { $first: '$createdAt' },
                 description: { $first: '$description' },
                 cost: { $first: '$cost' },
                 variants: { $push: '$variants.value' },
@@ -445,6 +446,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 warehouse: 1,
                 product: 1,
                 createdBy: '$goodsInNote.createdBy',
+                createdAt: 1,
                 description: 1,
                 variants: 1,
                 cost: 1,
@@ -475,6 +477,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 goodsInNote: '$root.goodsInNote',
                 warehouse: '$root.warehouse',
                 createdBy: '$root.createdBy',
+                createdAt: '$root.createdAt',
                 description: '$root.description',
                 order: '$root.order',
                 cost: '$root.cost',
@@ -856,7 +859,6 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
         var locations = elem.locationsReceived;
         var batches = elem.batchesDeliver;
         var cost = elem.cost * elem.qty;
-
         options.availabilities = [];
         if (locations.length) {
 
@@ -903,6 +905,7 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
             } else {
                 locations.forEach(function(el) {
                     options.availabilities.push({
+                        createdAt: new Date(),
                         location: el.location,
                         onHand: el.qty,
                         goodsInNote: goodsInNote._id,

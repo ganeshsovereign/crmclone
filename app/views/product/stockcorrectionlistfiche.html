@@ -42,7 +42,7 @@
                         <i class="icon-pencil"></i>
                         <span class="caption-subject dark bold uppercase"> @(products:StockCorrection)</span>
                     </div>
-                    <save mode="!object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+                    <save mode="object._id" ng-create="create()" ng-disabled="object._id" back-to="backTo" class="actions btn-set"></save>
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
@@ -50,12 +50,12 @@
                             <div class="col-md-6">
                                 <div class="portlet light bordered">
                                     <div class="form-group form-md-line-input">
-                                        <select class="form-control" id="warehouse" ng-model="object.warehouse.name" ng-options="s._id as s.name for s in $dict.warehouse">
+                                        <select class="form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse" ng-change="LoadLocation()">
                                                         </select>
                                         <label for="warehouse">@(products:Warehouse)</label>
                                     </div>
                                     <div class="form-group form-md-line-input">
-                                        <select class="form-control" id="location" ng-model="object.location" ng-options="s._id as s.name for s in $dict.location">
+                                        <select ng-disabled="!object.warehouse._id" class="form-control" id="location" ng-model="object.location._id" ng-options="s._id as s.name for s in $dict.location">
                                                         </select>
                                         <label for="location">@(products:Location)</label>
                                     </div>
@@ -66,7 +66,7 @@
                                 <div class="form-horizontal form-row-seperated">
                                     <div class="portlet light bordered">
                                         <div class="form-group form-md-line-input ">
-                                            <textarea class="form-control" ng-model="product.info.langs[0].meta.description" rows="8"></textarea>
+                                            <textarea class="form-control" ng-model="object.description" rows="8"></textarea>
                                             <label for="MetaDes">@(Reason)</label>
                                             <span class="help-block">@(Reason)</span>
                                         </div>
@@ -81,8 +81,8 @@
         </div>
         <div ng-hide="object._id" class="row">
             <div class="col-md-12">
-                <product-lines ng-model="object.lines" title="'@(products:Products)'" ng-disabled="editable" ng-template="/templates/core/productStockCorrection.html"></product-lines>
-            </div>
+                <product-stock-lines ng-model="object.orderRows" title="'@(products:Products)'" ng-disabled="editable" location="object.location"></product-stock-lines>
+            </div>-
         </div>
     </div>
 </div>

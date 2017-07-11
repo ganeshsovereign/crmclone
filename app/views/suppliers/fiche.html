@@ -59,13 +59,13 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="object.Status == 'DRAFT'&& object.supplier._id && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                    <a ng-if="!module('deliverysupplier') && object.Status == 'DRAFT'&& object.supplier._id && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(Validate)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('deliverysupplier')" href="#" ng-show="object.Status == 'VALIDATED'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('INSTOCK')">
-                        <i class="fa fa-check"></i> @(ordersPutInStock)
+                    <a ng-if="module('deliverysupplier')" href="#" ng-show="object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('INSTOCK')">
+                        <i class="fa fa-check"></i> @(orders:PutInStock)
                     </a>
                 </li>
                 <li>
