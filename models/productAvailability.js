@@ -350,7 +350,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
         },
         {
             $lookup: {
-                from: 'users',
+                from: 'Users',
                 localField: 'createdBy',
                 foreignField: '_id',
                 as: 'createdBy'
@@ -453,6 +453,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 onHand: 1,
                 allocated: 1,
                 inStock: 1,
+                goodsInNote: 1,
                 order: { $arrayElemAt: ['$order', 0] }
             }
         },

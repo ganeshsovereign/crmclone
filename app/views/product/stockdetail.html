@@ -82,7 +82,7 @@
                                     <td>{{line.product.name}}</td>
                                     <td><a ui-sref="ordersupplier.show.detail({id:line.order._id})" target="blank">{{line.order.ref}}</a></td>
                                     <td>{{line.warehouse.name}}</td>
-                                    <td class="center">{{line.createdAt | date : "shortDate"}}</td>
+                                    <td class="center">{{line.goodsInNote.status.isReceived | date : "shortDate"}}</td>
                                     <td class="center">{{line.location.groupingA}}</td>
                                     <td class="center">{{line.location.groupingB}}</td>
                                     <td class="center">{{line.location.groupingC}}</td>
