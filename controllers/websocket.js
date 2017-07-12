@@ -59,7 +59,6 @@ function websocket() {
     F.functions.BusMQ.subscribe('notify:controllerAngular', function(notify) {
         self.send({ type: 'refresh', data: notify }, function(id, client) {
             //send to all
-            //console.log("toto");
             return true;
         });
 

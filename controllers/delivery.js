@@ -425,6 +425,12 @@ Object.prototype = {
                                 });
                             }
 
+                            F.functions.BusMQ.publish('notify:controllerAngular', null, {
+                                route: 'delivery',
+                                _id: doc._id,
+                                message: "Livraison " + doc.ref + ' modifie.'
+                            });
+
                             //console.log(doc);
                             doc = doc.toObject();
                             doc.successNotify = {

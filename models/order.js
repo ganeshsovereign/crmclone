@@ -1425,7 +1425,9 @@ F.on('load', function() {
 
                                 console.log('Status updated');
                                 //Force reload order
-                                F.functions.PubSub.emit('notify:controllerAngular', {
+                                //Force reload product
+
+                                F.functions.BusMQ.publish('notify:controllerAngular', null, {
                                     route: 'order',
                                     _id: el._id,
                                     message: "Commande " + el.ref + ' modifie.'

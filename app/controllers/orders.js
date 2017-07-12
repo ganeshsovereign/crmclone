@@ -213,7 +213,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             //console.log(data);
             //console.log(type);
 
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
+            if (!data || !data.data || !data.data.route)
                 return;
 
             if ($rootScope.$stateParams.id)
@@ -724,7 +724,7 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
             //console.log(data);
             //console.log(type);
 
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('offer') < 0)
                 return;
 
             $scope.find();
@@ -1095,7 +1095,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
             //console.log(data);
             //console.log(type);
 
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('order') < 0)
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('delivery') < 0)
                 return;
 
             $scope.find();
@@ -1697,6 +1697,19 @@ MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '
 
         $scope.$dict = {};
 
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('offerSupplier') < 0)
+                return;
+
+            $scope.find();
+        });
+
         // Init
         $scope.$on('$viewContentLoaded', function() {
             // initialize core components
@@ -1868,6 +1881,19 @@ MetronicApp.controller('OrderSupplierListController', ['$scope', '$rootScope', '
         };
 
         $scope.$dict = {};
+
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('orderSupplier') < 0)
+                return;
+
+            $scope.find();
+        });
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
@@ -2042,6 +2068,19 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
 
         $scope.$dict = {};
 
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('deliverySupplier') < 0)
+                return;
+
+            $scope.find();
+        });
+
         // Init
         $scope.$on('$viewContentLoaded', function() {
             // initialize core components
@@ -2194,6 +2233,19 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
 
         $scope.dict = {};
         $scope.status_id = "LIST";
+
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('billSupplier') < 0)
+                return;
+
+            $scope.find();
+        });
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
@@ -2633,7 +2685,6 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
     }
 ]);
 
-
 MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
     function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
 
@@ -2664,6 +2715,19 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
         };
 
         $scope.$dict = {};
+
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('orderFab') < 0)
+                return;
+
+            $scope.find();
+        });
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
