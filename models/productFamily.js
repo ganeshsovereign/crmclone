@@ -72,7 +72,7 @@ F.on('load', function() {
 
     return;
 
-    var PriceListModel = MODEL('priceList').Schema;
+    /*var PriceListModel = MODEL('priceList').Schema;
     var ProductModel = MODEL('product').Schema;
     var round = MODULE('utils').round;
 
@@ -106,9 +106,7 @@ F.on('load', function() {
 
                 break;
 
-                /**
-                 * Refresh all priceList if a coef changed in productFamilyCoef
-                 */
+               
             case 'productFamily:coef':
                 if (!data.data._id)
                     return;
@@ -132,5 +130,5 @@ F.on('load', function() {
 
                 break;
         }
-    });
+    });*/
 });

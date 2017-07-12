@@ -649,9 +649,15 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
 
         $scope.checkDeliveryLocation = function() {
+            if (!$scope.module('deliverysupplier'))
+                return false;
+
             if (!$scope.object.orderRows || !$scope.object.orderRows.length)
                 return false;
+
             for (var i = 0; i < $scope.object.orderRows.length; i++) {
+                if (!$scope.object.orderRows[i].locationsReceived.length)
+                    return false;
                 if (!$scope.object.orderRows[i].locationsReceived[0].location || !$scope.object.orderRows[i].locationsReceived[0].location._id)
                     return false;
             }

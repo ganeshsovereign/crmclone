@@ -268,7 +268,7 @@ Object.prototype = {
                             });
                         }
 
-                        F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: order._id } });
+                        F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: order._id } });
 
                         self.json(order);
                     });
@@ -539,7 +539,7 @@ Object.prototype = {
                 }
 
                 if (rows.length)
-                    F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: doc._id } });
+                    F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: doc._id } });
 
                 //console.log(doc);
                 doc = doc.toObject();

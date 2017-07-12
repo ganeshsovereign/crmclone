@@ -838,7 +838,7 @@ function prepare_subcategories(name) {
 F.on('load', function() {
     // Refresh pack prices from directCost
     return;
-    F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
+    /*F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
         //console.log(data);
         console.log("Update emit product", data.product);
 
@@ -912,5 +912,5 @@ F.on('load', function() {
                 }
                 break;
         }
-    });
+    });*/
 });

@@ -291,7 +291,7 @@ Object.prototype = {
                         },
                         function(doc, wCb) {
                             if (doc.forSales == true)
-                                F.functions.PubSub.emit('order:recalculateStatus', { data: doc });
+                                F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: doc });
 
                             //update inventory IN
 
@@ -315,7 +315,7 @@ Object.prototype = {
                                             return wCb(err);
 
                                         if (result && result.order)
-                                            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: result.order._id } });
+                                            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: result.order._id } });
 
                                         doc.status.isInventory = new Date();
                                         doc.save(function(err, doc) {
@@ -369,7 +369,7 @@ Object.prototype = {
                                                 return wCb(err);
 
                                             if (result && result.order)
-                                                F.functions.PubSub.emit('order:recalculateStatus', { data: result.order });
+                                                F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: result.order });
 
                                             doc.status.isInventory = new Date();
                                             //doc.status.isShipped = new Date();
@@ -526,7 +526,7 @@ Object.prototype = {
                                     return self.throw500(err);
                                 console.log(result);
 
-                                F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: goodsNote.order._id } });
+                                F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: goodsNote.order._id } });
 
                                 cb();
                             });

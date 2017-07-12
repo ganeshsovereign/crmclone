@@ -1209,7 +1209,7 @@ exports.name = "order";
 
 F.on('load', function() {
     // Refresh pack prices from directCost
-    F.functions.PubSub.on('order:*', function(channel, data) {
+    F.functions.BusMQ.subscribe('order:recalculateStatus', function(data) {
         const Order = exports.Schema.Order;
         const OrderRows = MODEL('orderRows').Schema;
         var ObjectId = MODULE('utils').ObjectId;
@@ -1217,226 +1217,222 @@ F.on('load', function() {
         //console.log(data);
         console.log("Update emit order", data);
 
-        switch (channel) {
-            case 'order:recalculateStatus':
-                if (!data.data || !data.data._id)
-                    return;
+        if (!data.order || !data.order._id)
+            return;
 
-                function getAvailableForRows(docs, cb) {
-                    var Availability;
-                    var GoodsOutNote;
+        function getAvailableForRows(docs, cb) {
+            var Availability;
+            var GoodsOutNote;
 
-                    Availability = MODEL('productsAvailability').Schema;
-                    GoodsOutNote = exports.Schema.Order;
+            Availability = MODEL('productsAvailability').Schema;
+            GoodsOutNote = exports.Schema.Order;
 
-                    var stockStatus = {};
+            var stockStatus = {};
 
-                    if (docs && docs.length && docs[0].order.Status != "DRAFT") {
-                        async.each(docs, function(elem, eahcCb) {
-                                var product;
+            if (docs && docs.length && docs[0].order.Status != "DRAFT") {
+                async.each(docs, function(elem, eahcCb) {
+                        var product;
 
-                                elem = elem.toJSON();
-                                product = elem.product ? elem.product._id : null;
+                        elem = elem.toJSON();
+                        product = elem.product ? elem.product._id : null;
 
-                                Availability.aggregate([{
-                                    $match: {
-                                        product: ObjectId(product),
-                                        warehouse: elem.warehouse
+                        Availability.aggregate([{
+                            $match: {
+                                product: ObjectId(product),
+                                warehouse: elem.warehouse
+                            }
+                        }, {
+                            $project: {
+                                product: 1,
+                                warehouse: 1,
+                                onHand: 1,
+                                filterRows: {
+                                    $filter: {
+                                        input: '$orderRows',
+                                        as: 'elem',
+                                        cond: { $eq: ['$$elem.orderRowId', elem._id] }
                                     }
-                                }, {
-                                    $project: {
-                                        product: 1,
-                                        warehouse: 1,
-                                        onHand: 1,
-                                        filterRows: {
-                                            $filter: {
-                                                input: '$orderRows',
-                                                as: 'elem',
-                                                cond: { $eq: ['$$elem.orderRowId', elem._id] }
-                                            }
-                                        },
-                                        orderRows: 1
-                                    }
-                                }, {
-                                    $project: {
-                                        product: 1,
-                                        warehouse: 1,
-                                        onHand: 1,
-                                        allocated: {
-                                            $sum: '$filterRows.qty'
-                                        }
-                                    }
-                                }, {
-                                    $project: {
-                                        product: 1,
-                                        warehouse: 1,
-                                        onHand: 1,
-                                        allocated: 1
-                                    }
-                                }, {
-                                    $group: {
-                                        _id: '$warehouse',
-                                        allocated: {
-                                            $sum: '$allocated'
-                                        }
-                                    }
-                                }], function(err, availability) {
-                                    if (err)
-                                        return eahcCb(err);
-
-                                    //return console.log(availability);
-
-                                    GoodsOutNote.aggregate([{
-                                        $match: {
-                                            'orderRows.orderRowId': elem._id,
-                                            _type: { $ne: 'stockReturns' }
-                                        }
-                                    }, {
-                                        $project: {
-                                            ref: '$ref',
-                                            orderRow: {
-                                                $filter: {
-                                                    input: '$orderRows',
-                                                    as: 'elem',
-                                                    cond: { $eq: ['$$elem.orderRowId', elem._id] }
-                                                }
-                                            },
-
-                                            status: 1
-                                        }
-                                    }, {
-                                        $project: {
-                                            ref: '$ref',
-                                            orderRow: { $arrayElemAt: ['$orderRow', 0] },
-                                            status: 1
-                                        }
-                                    }, {
-                                        $project: {
-                                            ref: '$ref',
-                                            orderRow: '$orderRow.orderRowId',
-                                            qty: '$orderRow.qty',
-                                            status: 1
-                                        }
-                                    }], function(err, docs) {
-                                        var fullfillOnRow = 0;
-                                        var shippedOnRow = 0;
-                                        var allocatedOnRow;
-                                        var shippedDocs;
-
-                                        //console.log(docs);
-
-                                        if (err)
-                                            return eahcCb(err);
-
-                                        availability = availability && availability.length ? availability[0].allocated : 0;
-
-                                        if (!docs || !docs.length) {
-
-                                            /*if (!stockStatus.fulfillStatus) {
-                                             stockStatus.fulfillStatus = 'NOA';
-                                             }*/
-
-                                            stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
-                                            stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
-                                        } else {
-                                            shippedDocs = _.filter(docs, function(el) {
-                                                if (el.status && (el.status.isShipped || el.status.isReceived))
-                                                    return el;
-                                            });
-
-                                            if (shippedDocs.length) {
-                                                shippedDocs.forEach(function(el) {
-                                                    shippedOnRow += el.qty;
-                                                });
-
-                                                if (shippedOnRow !== elem.qty)
-                                                    stockStatus.shippingStatus = 'NOA';
-                                                else
-                                                    stockStatus.shippingStatus = stockStatus.shippingStatus && (stockStatus.shippingStatus === 'NOA') ? 'NOA' : 'ALL';
-
-                                            } else
-                                                stockStatus.shippingStatus = ((stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL')) ? 'NOA' : 'NOT';
-
-
-                                            docs.forEach(function(el) {
-                                                fullfillOnRow += el.qty;
-                                            });
-
-                                            if (fullfillOnRow !== elem.qty)
-                                                stockStatus.fulfillStatus = 'NOA';
-                                            else
-                                                stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'ALL';
-
-                                            console.log(stockStatus);
-                                        }
-
-                                        allocatedOnRow = fullfillOnRow + availability;
-
-                                        if (!allocatedOnRow) {
-                                            // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
-                                            stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'ALL')) ? 'NOA' : 'NOT';
-                                        } else if (allocatedOnRow !== elem.qty)
-                                            stockStatus.allocateStatus = 'NOA';
-                                        else
-                                            stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
-
-                                        eahcCb();
-
-                                    });
-                                });
-
-                            },
-                            function(err) {
-                                if (err)
-                                    return cb(err);
-
-                                cb(null, stockStatus);
-
-                            });
-                    } else {
-                        stockStatus.fulfillStatus = 'NOR';
-                        stockStatus.allocateStatus = 'NOR';
-                        stockStatus.shippingStatus = 'NOR';
-
-                        cb(null, stockStatus);
-                    }
-
-                }
-
-                OrderRows.find({
-                        order: data.data._id, //orderId
-                        product: { $ne: null }
-                    })
-                    .populate('product', 'directCost info')
-                    .populate('order', 'Status')
-                    .exec(function(err, docs) {
-                        if (err)
-                            return console(err);
-
-                        getAvailableForRows(docs, function(err, status) {
+                                },
+                                orderRows: 1
+                            }
+                        }, {
+                            $project: {
+                                product: 1,
+                                warehouse: 1,
+                                onHand: 1,
+                                allocated: {
+                                    $sum: '$filterRows.qty'
+                                }
+                            }
+                        }, {
+                            $project: {
+                                product: 1,
+                                warehouse: 1,
+                                onHand: 1,
+                                allocated: 1
+                            }
+                        }, {
+                            $group: {
+                                _id: '$warehouse',
+                                allocated: {
+                                    $sum: '$allocated'
+                                }
+                            }
+                        }], function(err, availability) {
                             if (err)
-                                return console.log(err);
+                                return eahcCb(err);
 
-                            Order.findByIdAndUpdate(data.data._id, { status: status }, { new: true }, function(err, el) {
+                            //return console.log(availability);
+
+                            GoodsOutNote.aggregate([{
+                                $match: {
+                                    'orderRows.orderRowId': elem._id,
+                                    _type: { $ne: 'stockReturns' }
+                                }
+                            }, {
+                                $project: {
+                                    ref: '$ref',
+                                    orderRow: {
+                                        $filter: {
+                                            input: '$orderRows',
+                                            as: 'elem',
+                                            cond: { $eq: ['$$elem.orderRowId', elem._id] }
+                                        }
+                                    },
+
+                                    status: 1
+                                }
+                            }, {
+                                $project: {
+                                    ref: '$ref',
+                                    orderRow: { $arrayElemAt: ['$orderRow', 0] },
+                                    status: 1
+                                }
+                            }, {
+                                $project: {
+                                    ref: '$ref',
+                                    orderRow: '$orderRow.orderRowId',
+                                    qty: '$orderRow.qty',
+                                    status: 1
+                                }
+                            }], function(err, docs) {
+                                var fullfillOnRow = 0;
+                                var shippedOnRow = 0;
+                                var allocatedOnRow;
+                                var shippedDocs;
+
+                                //console.log(docs);
+
                                 if (err)
-                                    return console.log(err);
+                                    return eahcCb(err);
 
-                                //console.log(status, el.status);
+                                availability = availability && availability.length ? availability[0].allocated : 0;
 
-                                console.log('Status updated');
-                                //Force reload order
-                                //Force reload product
+                                if (!docs || !docs.length) {
 
-                                F.functions.BusMQ.publish('notify:controllerAngular', null, {
-                                    route: 'order',
-                                    _id: el._id,
-                                    message: "Commande " + el.ref + ' modifie.'
-                                });
+                                    /*if (!stockStatus.fulfillStatus) {
+                                     stockStatus.fulfillStatus = 'NOA';
+                                     }*/
+
+                                    stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
+                                    stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
+                                } else {
+                                    shippedDocs = _.filter(docs, function(el) {
+                                        if (el.status && (el.status.isShipped || el.status.isReceived))
+                                            return el;
+                                    });
+
+                                    if (shippedDocs.length) {
+                                        shippedDocs.forEach(function(el) {
+                                            shippedOnRow += el.qty;
+                                        });
+
+                                        if (shippedOnRow !== elem.qty)
+                                            stockStatus.shippingStatus = 'NOA';
+                                        else
+                                            stockStatus.shippingStatus = stockStatus.shippingStatus && (stockStatus.shippingStatus === 'NOA') ? 'NOA' : 'ALL';
+
+                                    } else
+                                        stockStatus.shippingStatus = ((stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL')) ? 'NOA' : 'NOT';
+
+
+                                    docs.forEach(function(el) {
+                                        fullfillOnRow += el.qty;
+                                    });
+
+                                    if (fullfillOnRow !== elem.qty)
+                                        stockStatus.fulfillStatus = 'NOA';
+                                    else
+                                        stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'ALL';
+
+                                    console.log(stockStatus);
+                                }
+
+                                allocatedOnRow = fullfillOnRow + availability;
+
+                                if (!allocatedOnRow) {
+                                    // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
+                                    stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'ALL')) ? 'NOA' : 'NOT';
+                                } else if (allocatedOnRow !== elem.qty)
+                                    stockStatus.allocateStatus = 'NOA';
+                                else
+                                    stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
+
+                                eahcCb();
+
                             });
                         });
 
+                    },
+                    function(err) {
+                        if (err)
+                            return cb(err);
+
+                        cb(null, stockStatus);
+
                     });
-                break;
+            } else {
+                stockStatus.fulfillStatus = 'NOR';
+                stockStatus.allocateStatus = 'NOR';
+                stockStatus.shippingStatus = 'NOR';
+
+                cb(null, stockStatus);
+            }
+
         }
+
+        OrderRows.find({
+                order: data.order._id, //orderId
+                product: { $ne: null }
+            })
+            .populate('product', 'directCost info')
+            .populate('order', 'Status')
+            .exec(function(err, docs) {
+                if (err)
+                    return console(err);
+
+                getAvailableForRows(docs, function(err, status) {
+                    if (err)
+                        return console.log(err);
+
+                    Order.findByIdAndUpdate(data.order._id, { status: status }, { new: true }, function(err, el) {
+                        if (err)
+                            return console.log(err);
+
+                        //console.log(status, el.status);
+
+                        console.log('Status updated');
+                        //Force reload order
+                        //Force reload product
+
+                        F.functions.BusMQ.publish('notify:controllerAngular', null, {
+                            route: 'order',
+                            _id: el._id,
+                            message: "Commande " + el.ref + ' modifie.'
+                        });
+                    });
+                });
+
+            });
     });
 });

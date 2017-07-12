@@ -2,21 +2,21 @@
 
 var prefix = CONFIG('database').split('/').pop() + ':';
 
-var redis = require('redis-eventemitter');
+/*var redis = require('redis-eventemitter');
 var pubsub = redis({
     prefix: prefix,
     scope: prefix,
     host: '127.0.0.1',
     port: 6379
-});
+});*/
 
 //var EE = new EventEmitter();
 
-F.functions.PubSub = pubsub;
+//F.functions.PubSub = pubsub;
 
-pubsub.on('error', function(err) {
-    console.log(err);
-});
+//pubsub.on('error', function(err) {
+//    console.log(err);
+//});
 
 
 
@@ -25,6 +25,7 @@ var Bus = require('busmq');
 
 var queuesList = [
     'customer:update',
+    'order:recalculateStatus',
     'product:update',
     'product:updateDirectCost',
     'product:updateAttributes',
@@ -77,7 +78,7 @@ BusMQ.prototype = {
     },
     subscribe: function(name, callback) {
         if (!this.pubsub[this.name(name)])
-            return console.log('PusSub Not found : ' + name);
+            return console.log('PubSub Not found : ' + name);
 
         this.pubsub[this.name(name)].on('message', function(data) {
             return callback(JSON.parse(data));

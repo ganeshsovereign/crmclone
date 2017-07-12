@@ -2497,7 +2497,7 @@ Object.prototype = {
 
                 }
 
-                F.functions.PubSub.emit('employee:recollectVacationDash', {});
+                F.functions.BusMQ.publish('employee:recollectVacationDash', self.user._id, {});
 
                 result = result.toObject();
                 result.successNotify = {
@@ -2523,7 +2523,7 @@ Object.prototype = {
                 }
 
                 // TODO add check if salary report need update
-                F.functions.PubSub.emit('payroll:composeSalaryReport', { data: id });
+                F.functions.BusMQ.publish('payroll:composeSalaryReport', self.user._id, { data: id });
                 //payrollHandler.composeSalaryReport(self);
             });
         }

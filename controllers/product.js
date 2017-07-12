@@ -5611,7 +5611,7 @@ StockCorrection.prototype = {
                 return self.throw500(err);
 
             //event.emit('recalculateStatus', req, orderId, next);
-            F.functions.PubSub.emit('order:recalculateStatus', { data: { _id: orderId } });
+            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: orderId } });
             self.json({ success: 'Products updated' });
         });
 
