@@ -1038,6 +1038,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductStockTransfersController"
         })
+        // Stock Inventory
+        .state('product.inventory', {
+            parent: "product",
+            url: "/inventory",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.inventory.list', {
+            url: "",
+            templateUrl: "/views/product/inventory.html",
+            data: {
+                pageTitle: 'Gestion des stock'
+            },
+            controller: "ProductInventoryController"
+        })
         // Company
         .state('societe', {
             url: "/societe",

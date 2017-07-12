@@ -5,6 +5,10 @@
             <a ui-sref="home">@(Home)</a>
             <i class="fa fa-angle-right"></i>
         </li>
+        <li ng-if="module('ordersupplier') || module('offersupplier')">
+            <span>@(propal:Purchases)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
         <li ng-if="module('offersupplier')">
             <a ui-sref="{{backTo}}">@(propal:ListOfPurchases)</a>
             <i class="fa fa-angle-right"></i>
@@ -14,7 +18,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('deliverysupplier')">
-            <a ui-sref="{{backTo}}">@(ordersListOfDeliveriesSupplier)</a>
+            <a ui-sref="{{backTo}}">@(orders:ListOfDeliveriesSupplier)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('billsupplier')" )>
@@ -30,8 +34,8 @@
             <span ng-show="!object._id">@(orders:NewOrder)</span>
         </li>
         <li ng-if="module('deliverysupplier')">
-            <span ng-hide="!object._id">@(ordersDeliveryNote) : {{object.ref}} - {{object.supplier.fullName}}</span>
-            <span ng-show="!object._id">@(ordersNewDelivery)</span>
+            <span ng-hide="!object._id">@(orders:DeliveryNote) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(orders:NewDelivery)</span>
         </li>
         <li ng-if="module('billsupplier')">
             <span ng-hide="!object._id">@(bills:BillSuppliers) : {{object.ref}} - {{object.supplier.fullName}}</span>
@@ -64,7 +68,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('deliverysupplier')" href="#" ng-show="object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('INSTOCK')">
+                    <a ng-if="module('deliverysupplier') && allowValidate" href="#" ng-show="object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('INSTOCK')">
                         <i class="fa fa-check"></i> @(orders:PutInStock)
                     </a>
                 </li>
@@ -148,7 +152,7 @@
                                     <div class="col-md-12">
                                         <div ng-if="module('offersupplier')" class="uppercase profile-stat-text"> @(propal:PurchaseRequests) </div>
                                         <div ng-if="module('ordersupplier')" class="uppercase profile-stat-text"> @(orders:Order) </div>
-                                        <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(ordersDeliveryNote) </div>
+                                        <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(orders:DeliveryNote) </div>
                                         <div ng-if="module('billsupplier')" class="uppercase profile-stat-text"> @(bills:Bill) </div>
                                         <div class="uppercase profile-stat-title"> {{object.ref}} </div>
                                     </div>
@@ -188,9 +192,9 @@
                             <a ng-if="module('offersupplier')" ui-sref="offersupplier.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(propal:Details) </a>
                             <a ng-if="module('ordersupplier')" ui-sref="ordersupplier.show.detail({id:object._id}) ">
-                                <i class="icon-info "></i> @(orders:Details) </a>
+                                <i class="icon-info "></i> @(orders:OrdersDetails) </a>
                             <a ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show.detail({id:object._id}) ">
-                                <i class="icon-info "></i> @(ordersDetails) </a>
+                                <i class="icon-info "></i> @(orders:DeliveryDetails) </a>
                             <a ng-if="module('billsupplier')" ui-sref="billsupplier.show.detail({id:object._id}) ">
                                 <i class="icon-info "></i> @(bill:Details) </a>
                         </li>
