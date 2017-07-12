@@ -32,13 +32,13 @@
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
-                <li>
-                    <a href="https://atlankit.extene.com/inputERP?__method=autoLogin&email=L.FOLLEZOU@ARTHURG.FR&token=67d4dc5c26188aaf679cf955959449c0bc76be2d" target="_blank">
+                <li ng-if="societe.sha1">
+                    <a ng-href="https://atlankit.extene.com/inputERP?__method=autoLogin&email={{societe.emails[0].email.toUpperCase()}}&token={{societe.sha1}}" target="_blank">
                         <i class="fa fa-key"></i> @(Prestashop)
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                    <a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove(societe)" ng-confirm-click="Supprimer la societe ?" title="Supprimer la societe">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
                 </li>

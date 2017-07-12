@@ -531,6 +531,24 @@ customerSchema.virtual('errors')
         return errors;
     });
 
+customerSchema.virtual('sha1')
+    .get(function() {
+        var CryptoJS = require("crypto-js");
+
+        if (!this.emails || !this.emails.length)
+            return "";
+
+        var email = this.emails[0].email;
+
+        if (!email)
+            return "";
+
+        if (!CONFIG('sha1-secret'))
+            return "";
+
+        return CryptoJS.SHA1(CONFIG('sha1-secret') + email.toUpperCase()).toString();
+    });
+
 customerSchema.index({ name: 'text', zip: 'text', Tag: 'text' });
 
 customerSchema.plugin(timestamps);

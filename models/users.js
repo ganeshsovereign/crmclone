@@ -7,7 +7,6 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId,
     timestamps = require('mongoose-timestamp'),
-    crypto = require('crypto'),
     authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var setFirstname = MODULE('utils').setFirstUpperCase
@@ -258,11 +257,11 @@ UserSchema.methods.makeSalt = function() {
  * @return {String}
  * @api public
  */
-UserSchema.methods.encryptPassword = function(password) {
+/*UserSchema.methods.encryptPassword = function(password) {
     if (!password)
         return '';
     return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
-};
+};*/
 UserSchema.methods.generatePassword = function(length) {
     var charset = "abcdefghijklnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
         retVal = "";
