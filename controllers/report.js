@@ -51,17 +51,18 @@ function dateParser(data) {
 
 Object.prototype = {
     getInfoBySalesProducts: function() {
-        var dbName = req.session.lastDb;
-        var Product = models.get(dbName, 'Product', ProductSchema);
-        var Invoice = models.get(dbName, 'Invoices', InvoiceSchema);
-        var Order = models.get(dbName, 'Order', OrderSchema);
-        var data = req.query;
+        var self = this;
+        var Product = MODEL('product').Schema;
+        var Invoice = MODEL('bill').Schema;
+        var Order = MODEL('order').Schema.Order;
+        var data = self.query;
         var startDate = data.startDate;
         var endDate = data.endDate;
         var isVariant = false;
         var dateRange = {};
         var aggregation;
         var pipeLine;
+
         if (data.isVariant) {
             isVariant = true;
         }
@@ -117,7 +118,7 @@ Object.prototype = {
                 _id: '$product',
                 taxes: { $sum: '$taxes' },
                 total: { $sum: '$total' },
-                units: { $sum: '$orderRows.quantity' }
+                units: { $sum: '$orderRows.qty' }
             }
         }, {
             $group: {
@@ -150,7 +151,7 @@ Object.prototype = {
             }
         }, {
             $lookup: {
-                from: 'Products',
+                from: 'Product',
                 localField: '_id',
                 foreignField: '_id',
                 as: 'product'
@@ -195,9 +196,9 @@ Object.prototype = {
             var topProductPercentUnits;
             var topProductUnits;
 
-            if (err) {
-                return next(err);
-            }
+            if (err)
+                return self.throw500(err);
+
 
             topProductPercentSales = _.max(result, 'productPercentSales');
             topProductSales = _.max(result, 'total');
@@ -211,7 +212,7 @@ Object.prototype = {
                 reportData.topProductPercentUnits = {};
                 reportData.topProductUnits = {};
 
-                return res.status(200).send({ data: reportData });
+                return self.json({ data: reportData });
             }
 
             reportData.topProductPercentSales = {
@@ -240,14 +241,14 @@ Object.prototype = {
 
             reportData.products = result;
 
-            res.status(200).send({ data: reportData });
+            self.json({ data: reportData });
         });
     },
 
     getIncomingStockReport: function() {
-        var dbName = req.session.lastDb;
-        var Order = models.get(dbName, 'Order', OrderSchema);
-        var data = req.query;
+        var self = this;
+        var Order = MODEL('order').Schema.Order;
+        var data = self.query;
         var startDate = data.startDate;
         var endDate = data.endDate;
         var dateRange = {};
@@ -283,7 +284,7 @@ Object.prototype = {
                 $and: [
                     dateRange,
                     {
-                        _type: 'purchaseOrders'
+                        _type: 'orderSupplier'
                     }, {
                         'status.fulfillStatus': 'NOT'
                     }
@@ -324,7 +325,7 @@ Object.prototype = {
             }
         }, {
             $lookup: {
-                from: 'Products',
+                from: 'Product',
                 localField: 'orderRows.product',
                 foreignField: '_id',
                 as: 'products'
@@ -347,9 +348,9 @@ Object.prototype = {
                 variants: '$products.variants',
                 sku: '$products.info.SKU',
                 supplier: '$customer.name',
-                purchaseOrder: '$name',
+                purchaseOrder: '$ref',
                 onHand: { $sum: '$productsAvailability.onHand' },
-                incomingStock: '$orderRows.quantity',
+                incomingStock: '$orderRows.qty',
                 total: { $divide: [{ $add: ['$orderRows.unitPrice', { $sum: '$orderRows.taxes.tax' }] }, '$currency.rate'] }
             }
         }, {
@@ -421,16 +422,16 @@ Object.prototype = {
         };
 
         aggregation.exec(function(err, result) {
-            if (err) {
-                return next(err);
-            }
+            if (err)
+                return self.throw500(err);
+
 
             result = _.map(result, function(elem) {
                 elem.incomingStock = elem.incomingStock.reduce(add, 0);
                 return elem;
             });
 
-            res.status(200).send({ data: result });
+            self.json({ data: result });
         });
     },
 
@@ -522,7 +523,7 @@ Object.prototype = {
                         as: 'order',
                         cond: {
                             $and: [
-                                { $eq: ['$$order._type', 'purchaseOrders'] },
+                                { $eq: ['$$order._type', 'orderSupplier'] },
                                 { $eq: ['$$order.status.shippingStatus', 'NOR'] },
                                 { $eq: ['$$order.status.fulfillStatus', 'NOT'] },
                                 { $eq: ['$$order.status.allocateStatus', 'NOR'] }
@@ -555,7 +556,7 @@ Object.prototype = {
                 name: { $first: '$product.name' },
                 onHand: { $first: '$onHand' },
                 minStockLevel: { $first: '$product.minStockLevel' },
-                awaiting: { $sum: '$orderRows.quantity' }
+                awaiting: { $sum: '$orderRows.qty' }
             }
         }, {
             $project: {
@@ -585,9 +586,9 @@ Object.prototype = {
     },
 
     getProductListingReport: function() {
-        var query = req.query;
-        var dbName = req.session.lastDb;
-        var Product = models.get(dbName, 'Product', ProductSchema);
+        var self = this;
+        var query = self.query;
+        var Product = MODEL('product').Schema;
         var sort = {
             name: 1
         };
@@ -657,7 +658,7 @@ Object.prototype = {
             }
         }, {
             $lookup: {
-                from: 'Order',
+                from: 'Orders',
                 localField: 'orderRows.order',
                 foreignField: '_id',
                 as: 'orders'
@@ -711,11 +712,11 @@ Object.prototype = {
         }, {
             $sort: sort
         }], function(err, result) {
-            if (err) {
-                return next(err);
-            }
+            if (err)
+                return self.throw500(err);
 
-            res.status(200).send({ data: result });
+
+            self.json({ data: result });
         });
     },
 
@@ -773,7 +774,7 @@ Object.prototype = {
                         }
                     },
 
-                    gross_sales: { $multiply: [{ $sum: '$orderRow.quantity' }, { $sum: '$orderRow.unitPrice' }] }
+                    gross_sales: { $multiply: [{ $sum: '$orderRow.qty' }, { $sum: '$orderRow.unitPrice' }] }
                 }
             }
         }, {
@@ -906,7 +907,7 @@ Object.prototype = {
                 discount: '$paymentInfo.discount',
                 currency_rate: '$currency.rate',
                 data: {
-                    quantity: { $sum: '$orderRow.quantity' },
+                    qty: { $sum: '$orderRow.qty' },
                     order: '$_id',
                     orderRow: '$orderRow',
                     creation_date: '$creationDate',
@@ -919,7 +920,7 @@ Object.prototype = {
                             }
                         }
                     },
-                    gross_sales: { $multiply: [{ $sum: '$orderRow.quantity' }, { $sum: '$orderRow.unitPrice' }] }
+                    gross_sales: { $multiply: [{ $sum: '$orderRow.qty' }, { $sum: '$orderRow.unitPrice' }] }
                 }
             }
         }, {
@@ -936,7 +937,7 @@ Object.prototype = {
                 channel: { $first: '$channel' },
                 taxes: { $first: '$taxes' },
                 discount: { $first: '$discount' },
-                quantity: { $push: '$data.quantity' },
+                qty: { $push: '$data.qty' },
                 currency_rate: { $first: '$currency_rate' },
                 creation_date: { $first: '$creation_date' }
             }
@@ -958,7 +959,7 @@ Object.prototype = {
                 gross_sales: { $divide: [{ $sum: '$data.gross_sales' }, '$currency_rate'] },
                 channel: '$channel',
                 data: '$data',
-                quantity: { $sum: '$quantity' }
+                qty: { $sum: '$qty' }
             }
         }, {
             $project: {
@@ -971,7 +972,7 @@ Object.prototype = {
                 gross_sales: '$gross_sales',
                 total_sales: { $subtract: [{ $add: ['$shipping', '$taxes', '$gross_sales'] }, '$discount'] },
                 data: '$data',
-                quantity: '$quantity'
+                qty: '$qty'
             }
         }, {
             $group: {
@@ -982,7 +983,7 @@ Object.prototype = {
                 taxes: { $push: '$taxes' },
                 gross_sales: { $push: '$gross_sales' },
                 total_sales: { $push: '$total_sales' },
-                quantity: { $push: '$quantity' }
+                qty: { $push: '$qty' }
             }
         }, {
             $project: {
@@ -993,7 +994,7 @@ Object.prototype = {
                 taxes: { $sum: '$taxes' },
                 gross_sales: { $sum: '$gross_sales' },
                 total_sales: { $sum: '$total_sales' },
-                quantity: { $sum: '$quantity' }
+                qty: { $sum: '$qty' }
             }
         }], function(err, result) {
             if (err) {
