@@ -200,13 +200,13 @@
                     <ul class="nav" ng-if="module('order')">
                         <li ng-class="{active: $state.includes(module() + '.show.detail')}">
                             <a ui-sref="order.show.detail({id:object._id})">
-                                <i class="icon-info"></i> @(orders:Details) </a>
+                                <i class="icon-info"></i> @(orders:OrdersDetails) </a>
                         </li>
                     </ul>
                     <ul class="nav" ng-if="module('delivery')">
                         <li ng-class="{active: $state.includes(module() + '.show.detail')}">
                             <a ui-sref="delivery.show.detail({id:object._id})">
-                                <i class="icon-info"></i> @(deliveries:Details) </a>
+                                <i class="icon-info"></i> @(orders:DeliveryDetails) </a>
                         </li>
                     </ul>
                     <ul class="nav" ng-if="module('bill')">

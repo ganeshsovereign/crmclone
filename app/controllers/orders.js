@@ -52,6 +52,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             lines: []
         };
 
+        $scope.allowValidate = false;
+
         $scope.dict = {};
         var iconsFilesList = {};
         $scope.types = [{
@@ -318,6 +320,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.editable = true;
                 else
                     $scope.editable = false;
+
+                $scope.allowValidate = $scope.checkDeliveryLocation();
 
                 if (callback)
                     callback(object);
@@ -643,6 +647,17 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 });
             });
         };
+
+        $scope.checkDeliveryLocation = function() {
+            if (!$scope.object.orderRows || !$scope.object.orderRows.length)
+                return false;
+            for (var i = 0; i < $scope.object.orderRows.length; i++) {
+                if (!$scope.object.orderRows[i].locationsReceived[0].location || !$scope.object.orderRows[i].locationsReceived[0].location._id)
+                    return false;
+            }
+            return true;
+
+        };
         /*var modalInstance = $modal.open({
             templateUrl: '/templates/delivery/modal/create.html',
             controller: "DeliveryCreateController",
@@ -869,6 +884,7 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
         $scope.find = function() {
             grid.resetFilter();
         };
+
     }
 ]);
 

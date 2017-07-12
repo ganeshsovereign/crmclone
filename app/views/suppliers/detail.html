@@ -20,8 +20,8 @@
                         <span ng-if="module('ordersupplier')" ng-hide="!object._id" class="large fa fa-truck" ng-class="{ 'font-grey': object.status.shippingStatus=='NOR','font-green-jungle': object.status.shippingStatus=='ALL', 'font-yellow-lemon': object.status.shippingStatus=='NOA', 'font-red' : object.status.shippingStatus=='NOT' }"></span>
                         <!--Puces/-->
                         <span ng-if="module('ordersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewSupplierOrder) </span>
-                        <span ng-if="module('deliverysupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(ordersDeliveryNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('deliverysupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(ordersNewDelivery) </span>
+                        <span ng-if="module('deliverysupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:DeliveryNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('deliverysupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewDelivery) </span>
                         <span ng-if="module('billsupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillsCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('billsupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
@@ -102,7 +102,7 @@
                                             <div class="form-group form-md-line-input">
                                                 <select class="form-control" id="cond_reglement_code" ng-model="object.cond_reglement_code" ng-options="s.id as s.label for s in dict.fk_payment_term.values">
                                                         </select>
-                                                <label for="cond_reglement_code">@(ordersPaymentConditions)</label>
+                                                <label for="cond_reglement_code">@(orders:PaymentConditions)</label>
                                             </div>
                                             <div class="form-group form-md-line-input">
                                                 <select class="form-control" id="mode_reglement_code" ng-model="object.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
@@ -153,7 +153,7 @@
                                     <div class="portlet-title">
                                         <div class="caption">
                                             <i class="fa fa-truck"></i>
-                                            <span class="caption-subject uppercase"> @(ordersDeliveryAddress)</span>
+                                            <span class="caption-subject uppercase"> @(orders:DeliveryAddress)</span>
                                         </div>
                                         <div ng-if="!module('delivery')" class="tools">
                                             <a href="" class="expand" data-original-title="" title=""> </a>
@@ -191,7 +191,7 @@
 
 <div ng-if="object._id && module('deliverysupplier')" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.orderRows" warehouse="object.warehouse" title="'@(ordersProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliverySupplierLine.html" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.orderRows" warehouse="object.warehouse" title="'@(orders:ExpectedItems)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliverySupplierLine.html" ng-change="update()"></product-lines>
     </div>
 </div>
 
@@ -221,7 +221,7 @@
                         </div>
 
                         <div class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(ordersShippingCost) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
+                            <div class="col-md-5 name">@(orders:ShippingCost) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
                             <div class="col-md-7 value"><span editable-text="object.shipping.total_ht" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
                                                 {{object.shipping.total_ht| currency}}
                                             </span></div>
@@ -250,7 +250,7 @@
                     <div class="portlet-title ">
                         <div class="caption ">
                             <i class="fa fa-calculator "></i>
-                            <span class="caption-subject dark bold uppercase "> @(ordersListBL) - {{object.ref}}</span>
+                            <span class="caption-subject dark bold uppercase "> @(orders:ListBL) - {{object.ref}}</span>
                         </div>
                     </div>
                     <div class="portlet-body ">
@@ -259,10 +259,10 @@
                                 <thead>
                                     <tr role="row " class="heading ">
                                         <th>@(Ref)</th>
-                                        <th>@(ordersOrderQty)</th>
-                                        <th>@(ordersReserved)</th>
-                                        <th>@(ordersShippedQty)</th>
-                                        <th>@(ordersReminder)</th>
+                                        <th>@(orders:OrderQty)</th>
+                                        <th>@(orders:Reserved)</th>
+                                        <th>@(orders:ShippedQty)</th>
+                                        <th>@(orders:Reminder)</th>
                                     </tr>
                                 </thead>
                                 <tbody ng-repeat="line in object.orderRows ">

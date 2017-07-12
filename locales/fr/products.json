@@ -398,6 +398,7 @@
     "Allocated": "Attribué",
     "InStock": "En stock",
     "OnHand": "Disponible",
+    "LowAlertLevel": "Alerte Stock Bas",
     "LowStock": "Stock Bas",
     "MinStock": "Stock min.",
     "MaxStock": "Stock max.",
@@ -407,5 +408,6 @@
     "QtytoTransfer": "Qté à transférer",
     "stockTimeLimit": "Durée Limite stockage",
     "StockTransfers": "Transfert de Stock",
-    "Conditionning": "Conditionnement"
+    "Conditionning": "Conditionnement",
+    "IncomingStock": "Stock Entrant"
 }

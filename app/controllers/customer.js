@@ -1287,6 +1287,37 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             }, function() {});
         };
 
+        $scope.addContact = function(data) {
+            var contact = {
+                Status: 'ENABLE'
+            };
+            if (data)
+                contact = data;
+            else
+                contact.name = $scope.societe.fullName;
+
+            var modalInstance = $modal.open({
+                templateUrl: 'addContact.html',
+                controller: ModalAddressCtrl,
+                //windowClass: "steps",
+                resolve: {
+                    options: function() {
+                        return {
+                            contact: contact,
+                            dict: $scope.dict
+                        };
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(contact) {
+                if (!data) // Is new contact
+                    $scope.societe.shippingAddress.push(contact);
+
+                $scope.update();
+            }, function() {});
+        };
+
         $scope.removeAddress = function(id) {
             $scope.societe.shippingAddress.splice(id, 1);
             $scope.update();

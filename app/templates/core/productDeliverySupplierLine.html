@@ -18,11 +18,11 @@
                         <th style="width: 140px;">@(products:ProductCode)</th>
                         <th style="width: 15%;">@(Name)</th>
                         <th style="width: 80px;">@(QtyOrder)</th>
-                        <th style="width: 100px;">@(QtyFulfilled)</th>
-                        <th style="width: 50px;">@(Qty)</th>
+                        <!--<th style="width: 100px;">@(QtyFulfilled)</th>
+                        <th style="width: 50px;">@(Qty)</th>-->
                         <th style="width: 50px;">@(Location)</th>
-                        <th style="width: 120px;">@(Reminder)</th>
-                        <th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th>
+                        <!--<th style="width: 120px;">@(Reminder)</th>-->
+                        <!--<th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th>-->
                     </tr>
                 </thead>
                 <tr ng-repeat="line in linesModel| filter:filterLine" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL'}">
@@ -35,14 +35,14 @@
                     <td>
                         {{ line.orderQty || '0' }}
                     </td>
-                    <td>
+                    <!--<td>
                         {{ line.deliveryQty || '0' }}
                     </td>
                     <td class="align-right">
                         <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty'); line.locationsReceived[0].qty = line.qty;" e-min="0" e-max="{{line.orderQty - line.deliveryQty}}" e-step="any" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
-                    </td>
+                    </td>-->
                     <td ng-if="true">
                         <span editable-select="line.locationsReceived[0].location._id" e-ng-change="line.locationsReceived[0].qty = line.qty" e-form="tableform" e-ng-options="s._id as s.name for s in locations">
                             <span ng-repeat="location in line.locationsReceived">
@@ -50,14 +50,16 @@
                         </span>
                         </span>
                     </td>
-                    <td class="center"> {{line.orderQty - line.deliveryQty - line.qty }} </td>
+                    <!--<td class="center"> 
+                        {{line.orderQty - line.deliveryQty - line.qty }} 
+                    </td>
                     <td>
                         <div class="btn-toolbar" role="toolbar">
                             <div class="btn-group btn-group">
                                 <button type="button" ng-show="tableform.$visible" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
                             </div>
                         </div>
-                    </td>
+                    </td>-->
                 </tr>
             </table>
             <!-- buttons -->

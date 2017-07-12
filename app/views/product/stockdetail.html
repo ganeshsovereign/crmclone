@@ -10,7 +10,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span> @(products:StockTransfers) </span>
+            <span> @(products:StockDetail) </span>
         </li>
 
     </ul>
@@ -40,7 +40,7 @@
             <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
             </a>
         </div>
-        <div id="movementList_filter" class="dataTables_filter"><label>Rechercher : <input type="text"  ng-model="filter" ng-change="find()" class="form-control input-small input-sm input-inline" placeholder="" ></label></div>
+        <!--<div id="movementList_filter" class="dataTables_filter"><label>Rechercher : <input type="text"  ng-model="filter" ng-change="find()" class="form-control input-small input-sm input-inline" placeholder="" ></label></div>-->
 
     </div>
     <div class="portlet light">
@@ -78,9 +78,9 @@
                                             <i class="fa fa-long-arrow-right"></i>
                                         </button>
                                     </td>
-                                    <td><a ui-sref="product.show.informations({id:line.product._id})" target="blank">{{ line.product.info.SKU}}</a></td>
+                                    <td><a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU}}</a></td>
                                     <td>{{line.product.name}}</td>
-                                    <td><a ui-sref="ordersupplier.show.detail({id:line.order._id})" target="blank">{{line.order.ref}}</a></td>
+                                    <td><a ui-sref="ordersupplier.show.detail({id:line.order._id})">{{line.order.ref}}</a></td>
                                     <td>{{line.warehouse.name}}</td>
                                     <td class="center">{{line.goodsInNote.status.isReceived | date : "shortDate"}}</td>
                                     <td class="center">{{line.location.groupingA}}</td>

@@ -127,6 +127,15 @@
                     "enabled": "$conf->product->enabled",
                     "icon": "fa fa-line-chart",
                     "title": "products:StockDetail"
+                },
+                "menu:inventory": {
+                    "url": "/erp/#!/product/inventory",
+                    "position": 40,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa fa-line-chart",
+                    "title": "products:Inventory"
                 }
             }
         }
