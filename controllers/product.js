@@ -5467,7 +5467,7 @@ StockCorrection.prototype = {
                                     return eachCb(err);
 
                                 eachCb();
-                                F.functions.BusMQ.publish('inventory:update', null, { product: { _id: elem.product } });
+                                F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
                             });
                         } else
                             eachCb();
@@ -5488,7 +5488,7 @@ StockCorrection.prototype = {
                             return eachCb(err);
 
                         eachCb();
-                        F.functions.BusMQ.publish('inventory:update', null, { product: { _id: elem.product } });
+                        F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
                     });
                 }
 
