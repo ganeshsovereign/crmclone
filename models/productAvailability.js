@@ -701,7 +701,7 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
                                 return eachCb(error);
 
                             eachCb();
-                            F.functions.BusMQ.publish('inventory:update', null, { product: orderRow.product });
+                            F.functions.BusMQ.publish('inventory:update', null, { product: { _id: orderRow.product } });
 
                         });
                     } else
@@ -990,7 +990,7 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
             if (err)
                 return eachCb(err);
 
-            F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+            F.functions.BusMQ.publish('inventory:update', null, { product: { _id: elem.product } });
 
             eachCb();
         });

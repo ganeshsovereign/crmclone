@@ -469,7 +469,7 @@ Object.prototype = {
                                 }
 
                                 setTimeout2('productInventory:' + availability.product.toString(), function() {
-                                    F.functions.BusMQ.publish('inventory:update', null, { product: availability.product });
+                                    F.functions.BusMQ.publish('inventory:update', null, { product: { _id: availability.product } });
                                 }, 5000);
 
 
