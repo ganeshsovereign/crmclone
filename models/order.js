@@ -1192,13 +1192,13 @@ exports.Status = {
         "SIGNED": {
             "enable": true,
             "label": "PropalStatusClosed",
-            "cssClass": "ribbon-color-danger label-danger",
+            "cssClass": "ribbon-color-info label-info",
             "system": true
         },
         "NOTSIGNED": {
             "enable": true,
             "label": "PropalStatusNotSigned",
-            "cssClass": "ribbon-color-warning label-warning",
+            "cssClass": "ribbon-color-danger label-danger",
             "system": true
         }
     }
