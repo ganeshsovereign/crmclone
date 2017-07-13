@@ -301,6 +301,8 @@ Object.prototype = {
             rows[i].sequence = i;
 
 
+
+
         //delete self.body.rows;
 
         self.body.editedBy = self.user._id;
@@ -361,38 +363,6 @@ Object.prototype = {
                     });
             },
             function(order, newRows, wCb) {
-                return wCb(null, order, newRows);
-
-                if (self.user.societe && self.user.societe.id && order.Status == "NEW") { // It's an external order
-                    return console.log("Mail order NOT");
-
-                    // Send an email
-                    var mailOptions = {
-                        from: "ERP Speedealing<no-reply@speedealing.com>",
-                        to: "Plan 92 Chaumeil<plan92@imprimeriechaumeil.fr>",
-                        cc: "herve.prot@symeos.com",
-                        subject: "Nouvelle commande " + order.supplier.name + " - " + order.ref + " dans l'ERP"
-                    };
-
-                    mailOptions.text = "La commande " + order.ref + " vient d'etre crée \n";
-                    mailOptions.text += "Pour consulter la commande cliquer sur ce lien : ";
-                    mailOptions.text += '<a href="http://erp.chaumeil.net/commande/fiche.php?id=' + order._id + '">' + order.ref + '</a>';
-                    mailOptions.text += "\n\n";
-
-                    // send mail with defined transport object
-                    smtpTransporter.sendMail(mailOptions, function(error, info) {
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            console.log("Message sent: " + info.response);
-                        }
-
-                        // if you don't want to use this transport object anymore, uncomment following line
-                        smtpTransporter.close(); // shut down the connection pool, no more messages
-                    });
-                }
-            },
-            function(order, newRows, wCb) {
 
                 //Allocated product order
                 if (order.Status !== "TOVALIDATE")
@@ -403,7 +373,7 @@ Object.prototype = {
                     var lastSum = elem.qty;
                     var isFilled;
 
-                    console.log(elem);
+                    //console.log(elem);
 
                     Availability.find({
                         warehouse: elem.warehouse,
@@ -497,6 +467,12 @@ Object.prototype = {
                                 } else {
                                     cb();
                                 }
+
+                                setTimeout2('productInventory:' + availability.product.toString(), function() {
+                                    F.functions.BusMQ.publish('inventory:update', null, { product: { _id: availability.product } });
+                                }, 5000);
+
+
                             }, function(err) {
                                 if (err)
                                     return eachCb(err);

@@ -330,11 +330,11 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     //Add VAT
                     for (var i = 0, length = lines.length; i < length; i++) {
                         if (!lines[i].product)
-                            return;
+                            continue;
                         if (lines[i].isDeleted)
-                            return;
+                            continue;
                         if (lines[i].type === 'SUBTOTAL')
-                            return;
+                            continue;
 
                         //Update TAXES
                         if (lines[i].product.taxes.length)
@@ -353,7 +353,6 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
                             }
                     }
-
                     cb(null, VATIsUsed);
 
                 });
