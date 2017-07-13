@@ -144,7 +144,9 @@ var productSchema = new Schema({
     compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true }, //TODO Remove
 
     inventory: {
-        warehouseMsg: { type: String, default: '' },
+        langs: [{
+            availableLater: { type: String, default: '' }
+        }],
         minStockLevel: { type: Number, default: 0 },
         maxStockLevel: { type: Number },
         stockTimeLimit: { type: Number }

@@ -409,5 +409,6 @@
     "stockTimeLimit": "Durée Limite stockage",
     "StockTransfers": "Transfert de Stock",
     "Conditionning": "Conditionnement",
-    "IncomingStock": "Stock Entrant"
+    "IncomingStock": "Stock Entrant",
+    "WarehouseMsgProductNotAvailable": "Message quand le produit n'est plus disponible"
 }

@@ -136,11 +136,11 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     Object = Orders.billSupplier;
                     $scope.backTo = 'billsupplier.list';
                     break;
-                case 'stockreturnsupplier':
-                    $scope.object.forSales = false;
-                    Object = Orders.stockReturnSupplier;
-                    $scope.backTo = 'stockreturnsupplier.list';
-                    break;
+                    /*case 'stockreturnsupplier':
+                        $scope.object.forSales = false;
+                        Object = Orders.stockReturnSupplier;
+                        $scope.backTo = 'stockreturnsupplier.list';
+                        break;*/
                 case 'ordersfab':
                     $scope.object.forSales = false;
                     Object = Orders.ordersFab;
@@ -663,6 +663,34 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             }
             return true;
 
+        };
+
+        $scope.createProductReturn = function() {
+            var object = angular.copy($scope.object);
+
+            var id = object._id;
+            object.order = object._id;
+            delete object._id;
+            delete object.Status;
+            delete object.latex;
+            delete object.datec;
+            delete object.datel;
+            delete object.createdAt;
+            delete object.updatedAt;
+            delete object.ref;
+            delete object.history;
+            delete object._type;
+
+            var stockReturn = new Orders.stockReturn(object);
+            var go = "stockreturn.show";
+
+            //create new stockreturn
+            stockReturn.$save(function(response) {
+                $scope.object.Status = 'PROCESSING';
+                $scope.object.$update(function(object) {
+                    $rootScope.$state.go(go, { id: response._id });
+                });
+            });
         };
         /*var modalInstance = $modal.open({
             templateUrl: '/templates/delivery/modal/create.html',
@@ -2603,7 +2631,6 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
                 //console.log(data);
             });
 
-            initDatatable();
         });
 
         $scope.showStatus = function(idx, dict) {
@@ -2614,92 +2641,6 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
             });
             return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
-
-        function initDatatable() {
-
-            grid.init({
-                src: $("#stockreturnList"),
-                onSuccess: function(grid) {
-                    // execute some code after table records loaded
-                },
-                onError: function(grid) {
-                    // execute some code on network or other general error 
-                },
-                loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
-                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-
-                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-                    "ajax": {
-                        "url": "/erp/api/stockreturn/dt" // ajax source
-                    },
-                    "order": [
-                        [1, "desc"]
-                    ], // set first column as a default sort by asc
-                    "columns": [{
-                        data: 'bool'
-                    }, {
-                        "data": "ID"
-                    }, {
-                        "data": "supplier",
-                        defaultContent: ""
-                    }, {
-                        "data": "ref_client",
-                        defaultContent: ""
-                    }, {
-                        "data": "date_livraison",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
-                    }, {
-                        "data": "entity",
-                        defaultContent: ""
-                    }, {
-                        "data": "datec",
-                        defaultContent: ""
-                    }]
-                }
-            });
-
-            // handle group actionsubmit button click
-            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
-                e.preventDefault();
-                var action = $(".table-group-action-input", grid.getTableWrapper());
-                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                    grid.setAjaxParam("customActionType", "group_action");
-                    grid.setAjaxParam("customActionName", action.val());
-                    grid.setAjaxParam("id", grid.getSelectedRows());
-                    grid.getDataTable().ajax.reload();
-                    grid.clearAjaxParams();
-                } else if (action.val() == "") {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Please select an action',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                } else if (grid.getSelectedRowsCount() === 0) {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'No record selected',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                }
-            });
-        }
-
-
 
         $scope.find = function() {
             grid.resetFilter();

@@ -191,7 +191,7 @@
 
 <div ng-if="object._id && module('deliverysupplier')" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.orderRows" warehouse="object.warehouse" title="'@(orders:ExpectedItems)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliverySupplierLine.html" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.orderRows" warehouse="object.warehouse" title="'@(products:Products)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliverySupplierLine.html" ng-change="update()"></product-lines>
     </div>
 </div>
 
