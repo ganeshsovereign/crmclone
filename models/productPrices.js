@@ -233,7 +233,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
     } else if (options.ref)
         query.ref = options.ref;
 
-    console.log(options, query);
+    //console.log(options, query);
 
     async.waterfall([
             function(wCb) {
@@ -257,6 +257,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
             },
             function(priceLists, discount, wCb) {
                 self.findOne({ product: options.product, priceLists: priceLists })
+                    .populate("priceLists")
                     .exec(function(err, doc) {
                         if (err)
                             return wCb(err);
@@ -273,28 +274,32 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
                             if (!priceList.parent)
                                 return wCb("No parent priceList");
 
-                            return self.findOne({ product: options.product, priceLists: priceList.parent }, function(err, doc2) {
-                                if (err)
-                                    return wCb(err);
-
-                                if (doc2)
-                                    return wCb(null, doc2, priceList.discount || 0);
-
-                                PriceListModel.findById(priceList.parent, function(err, priceList) {
+                            return self.findOne({ product: options.product, priceLists: priceList.parent })
+                                .populate("priceLists")
+                                .exec(function(err, doc2) {
                                     if (err)
                                         return wCb(err);
 
-                                    if (!priceList || !priceList.parent)
-                                        return wCb("Error no parent price");
+                                    if (doc2)
+                                        return wCb(null, doc2, priceList.discount || 0);
 
-                                    return self.findOne({ product: options.product, priceLists: priceList.parent }, function(err, doc3) {
+                                    PriceListModel.findById(priceList.parent, function(err, priceList) {
                                         if (err)
                                             return wCb(err);
 
-                                        return wCb(null, doc3, priceList.discount || 0);
+                                        if (!priceList || !priceList.parent)
+                                            return wCb("Error no parent price");
+
+                                        return self.findOne({ product: options.product, priceLists: priceList.parent })
+                                            .populate("priceLists")
+                                            .exec(function(err, doc3) {
+                                                if (err)
+                                                    return wCb(err);
+
+                                                return wCb(null, doc3, priceList.discount || 0);
+                                            });
                                     });
                                 });
-                            });
                         });
                     });
             },
@@ -349,7 +354,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
             if (discount)
                 pu_ht = round(pu_ht * (1 - discount / 100), 3);
 
-            callback(null, { ok: true, isFixed: doc.priceLists.isFixed, pu_ht: pu_ht, discount: doc.discount || 0, qtyMin: doc.qtyMin, qtyMax: doc.qtyMax });
+            callback(null, { priceList: doc.priceLists.priceListCode, ok: true, isFixed: doc.priceLists.isFixed, pu_ht: pu_ht, discount: doc.discount || 0, qtyMin: doc.qtyMin, qtyMax: doc.qtyMax });
         });
 
 };
