@@ -225,9 +225,16 @@
     </div>
 </div>
 
+
 <div ng-if="object._id && module('delivery')" class="row">
     <div class="col-md-12">
         <product-lines ng-model="object.orderRows" title="'@(deliveries:ProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
+    </div>
+</div>
+<!-- __STOCKRETURN__ -->
+<div ng-if="object._id && module('stockreturn')" class="row">
+    <div class="col-md-12">
+        <product-lines ng-model="object.orderRows" title="'@(products:Product) @(orders:StockReturn)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productStockreturnLine.html" ng-change="update()"></product-lines>
     </div>
 </div>
 

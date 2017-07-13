@@ -1,0 +1,53 @@
+<div class="portlet portlet light bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-opencart"></i>
+            <span class="caption-subject dark bold uppercase"> {{title}}</span>
+        </div>
+        <div class="actions">
+            <a href="javascript:;" ng-click="tableform.$show()" ng-show="!tableform.$visible && editable" class="btn yellow-crusta">
+                <i class="fa fa-pencil"></i> @(Edit) </a>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <form editable-form name="tableform" onaftersave="update()" oncancel="findOne()">
+            <!-- table -->
+            <table class="table table-fixed table-striped table-bordered table-hover no-footer">
+                <thead>
+                    <tr role="row" class="heading">
+                        <th style="width: 140px;">@(products:ProductCode)</th>
+                        <th style="width: 15%;">@(Name)</th>
+                        <th class="center" style="width: 80px;">@(QtyOrder)</th>
+                        <th class="center" style="width: 100px;">@(QtyFulfilled)</th>
+                        <th class="center" style="width: 100px;">@(QtyToBeReturned)</th>
+                        <th style="width: 50px;">@(products:Warehouses)</th>
+                </thead>
+                <tr ng-repeat="line in linesModel| filter:filterLine" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL'}">
+                    <td><a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a></td>
+                    <td class="center">{{ line.product.info.langs[0].name || 'empty' }}</td>
+                    <td class="center">{{ line.orderQty || '0' }}</td>
+                    <td class="center">{{ line.deliveryQty || '0' }}</td>
+                    <td class="center">
+                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-max="{{line.orderQty}}" e-step="any" e-form="tableform">
+                        {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
+                        </span>
+                    </td>
+                    <td ng-if="true">
+                        <span editable-select="line.warehouse.name._id" e-form="tableform" e-ng-options="s._id as s.name for s in $dict.warehouse">
+                            <span ng-repeat="location in line.locationsReceived">
+                                <span>{{ line.warehouse.name }}</span>
+                        </span>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+            <!-- buttons -->
+
+            <div class="btn-form" ng-show="tableform.$visible">
+                <button type="button" ng-disabled="tableform.$waiting || true" ng-click="addLine(linesModel)" class="btn blue "><i class="fa fa-plus"></i> @(AddNewLine)</button>
+                <button type="submit" ng-disabled="tableform.$waiting" class="btn green pull-right"> @(Save) <i class="fa fa-check"></i></button>
+                <button type="button" ng-disabled="tableform.$waiting" ng-click="tableform.$cancel()" class="btn red pull-right"><i class="fa fa-angle-left"></i> @(Cancel)</button>
+            </div>
+        </form>
+    </div>
+</div>

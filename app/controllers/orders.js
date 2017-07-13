@@ -2631,6 +2631,16 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
                 //console.log(data);
             });
 
+            $http({
+                method: 'GET',
+                url: '/erp/api/product/warehouse/select'
+
+            }).success(function(data, status) {
+                $scope.$dict.warehouse = data.data;
+                //console.log(data);
+            });
+
+
         });
 
         $scope.showStatus = function(idx, dict) {
@@ -2644,6 +2654,81 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
 
         $scope.find = function() {
             grid.resetFilter();
+        };
+
+        function initDatatable() {
+
+            grid.init({
+                src: $("#stockreturnList"),
+                onSuccess: function(grid) {
+                    // execute some code after table records loaded
+                },
+                onError: function(grid) {
+                    // execute some code on network or other general error 
+                },
+                loadingMessage: 'Loading...',
+                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+
+                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
+                    // So when dropdowns used the scrollable div should be removed. 
+                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+
+                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+
+                    "ajax": {
+                        "url": "/erp/api/stockreturn/dt" // ajax source
+                    },
+                    "order": [
+                        [1, "desc"]
+                    ], // set first column as a default sort by asc
+                    "columns": [{
+                        data: 'bool'
+                    }, {
+                        "data": "ID"
+                    }, {
+                        "data": "orders",
+                        defaultContent: ""
+                    }, {
+                        "data": "receivedAt",
+                        defaultContent: ""
+                    }, {
+                        "data": "receivedBy",
+                        defaultContent: ""
+                    }, {
+                        "data": "Status"
+                    }]
+                }
+            });
+
+            // handle group actionsubmit button click
+            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
+                e.preventDefault();
+                var action = $(".table-group-action-input", grid.getTableWrapper());
+                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                    grid.setAjaxParam("customActionType", "group_action");
+                    grid.setAjaxParam("customActionName", action.val());
+                    grid.setAjaxParam("id", grid.getSelectedRows());
+                    grid.getDataTable().ajax.reload();
+                    grid.clearAjaxParams();
+                } else if (action.val() == "") {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'Please select an action',
+                        container: grid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                } else if (grid.getSelectedRowsCount() === 0) {
+                    Metronic.alert({
+                        type: 'danger',
+                        icon: 'warning',
+                        message: 'No record selected',
+                        container: grid.getTableWrapper(),
+                        place: 'prepend'
+                    });
+                }
+            });
         };
     }
 ]);
@@ -2677,8 +2762,6 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
             $scope.opened = true;
         };
 
-        $scope.$dict = {};
-
         $rootScope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
@@ -2691,6 +2774,8 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
 
             $scope.find();
         });
+
+        $scope.$dict = {};
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
