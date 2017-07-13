@@ -931,7 +931,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "OrdersController"
         })
-        // Product Return
+        // Stock Return
         .state('stockreturn', {
             url: "/stockreturn",
             abstract: true,
@@ -945,6 +945,15 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "StockReturnListController"
         })
+        .state('stockreturn.create', {
+            parent: "stockreturn",
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/orders/detail.html",
+            data: {
+                pageTitle: 'Nouveau retour produit'
+            },
+            controller: "OrdersController"
+        })
         .state('stockreturn.show', {
             parent: 'stockreturn',
             url: "/{id:[0-9a-z]{24}}",
@@ -957,15 +966,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('stockreturn.show.detail', {
             url: "/detail",
             templateUrl: "/views/orders/detail.html",
-            data: { pageTitle: 'Bon de retour' }
-        })
-        .state('stockreturn.create', {
-            parent: "stockreturn",
-            url: "/create.html",
-            templateUrl: "/views/orders/detail.html",
-            data: {
-                pageTitle: 'Nouveau retour'
-            },
+            data: { pageTitle: 'Bon de retour' },
             controller: "OrdersController"
         })
         // Stock Correction

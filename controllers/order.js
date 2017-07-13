@@ -49,7 +49,6 @@ exports.install = function() {
         object.fk_extrafields = doc;
     });
 
-
     F.route('/erp/api/order/lines/list', object.listLines, ['authorize']);
     F.route('/erp/api/order/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/order', object.all, ['authorize']);
@@ -63,8 +62,9 @@ exports.install = function() {
     F.route('/erp/api/order/file/{Id}/{fileName}', object.getFile, ['authorize']);
     F.route('/erp/api/order/file/{Id}/{fileName}', object.deleteFile, ['delete', 'authorize']);
     F.route('/erp/api/order/pdf/{orderId}', object.pdf, ['authorize']);
-    F.route('/erp/api/offer/pdf/{orderId}', object.pdf, ['authorize']);
     F.route('/erp/api/order/download/{:id}', object.download);
+
+    F.route('/erp/api/offer/pdf/{orderId}', object.pdf, ['authorize']);
 };
 
 function Object() {}
@@ -655,8 +655,8 @@ Object.prototype = {
                     // Add id
                     res.datatable.data[i].DT_RowId = row._id.toString();
 
-                    if (res.datatable.data[i].Status === 'VALIDATED')
                     // Add color line 
+                    if (res.datatable.data[i].Status === 'VALIDATED')
                         res.datatable.data[i].DT_RowClass = "bg-yellow";
 
                     if (row.supplier && row.supplier._id)

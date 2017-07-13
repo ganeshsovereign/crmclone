@@ -53,7 +53,7 @@
                         <i class="fa fa-shopping-cart"></i> @(propal:CreateOrder)
                     </a>
 
-                    <a ng-if="module('ordersupplier')" ng-show="(object.Status == 'VALIDATED' || object.Status == 'PROCESSING' || object.Status == 'SHIPPING') && login.rights.order.createDelivery" ng-click="createDelivery()">
+                    <a ng-if="module('ordersupplier') && object.status.shippingStatus('ALL')" ng-show="(object.Status == 'VALIDATED' || object.Status == 'PROCESSING' || object.Status == 'SHIPPING') && login.rights.order.createDelivery" ng-click="createDelivery()">
                         <i class="fa fa-plane"></i> @(orders:CreateDelivery)
                     </a>
                 </li>

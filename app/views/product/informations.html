@@ -159,9 +159,8 @@ Marketing
                                                 <div class="form-control-focus"> </div>
                                             </div>
                                         </div>
-
                                     </div>
-
+                                    <hr>
                                     <div class="row" ng-if="product.info.productType.inventory == true">
                                         <div class="col-md-6">
                                             <div class="form-group form-md-line-input">
@@ -175,8 +174,16 @@ Marketing
                                                 <label for="maxstock">@(products:MaxStock)</label>
                                             </div>
                                         </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group form-md-line-input">
+                                                <div class="input-icon right">
+                                                    <input type="text" class="form-control" id="msgstock" ng-model="product.inventory.langs[_language].availableLater">
+                                                    <label for="msgstock">@(products:WarehouseMsgProductNotAvailable)</label>
+                                                    <i class="fa fa-flag"></i>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

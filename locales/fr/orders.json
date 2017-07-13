@@ -288,5 +288,8 @@
     "Reminder": "Qté restante",
     "StockReturn": "Retours stock",
     "NewStockReturn": "Nouveau retour stock",
-    "ListStockReturn": "Liste des  retours stock"
+    "ListStockReturn": "Liste des  retours stock",
+    "ReceivedAt": "Reçu le",
+    "ReceivedBy": "Reçu par",
+    "CreateProductReturn":"Créer un retour produit"
 }
