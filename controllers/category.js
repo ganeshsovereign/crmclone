@@ -705,7 +705,7 @@ Object.prototype = {
 
                 setTimeout2('category:' + id.toString(), function() {
                     F.functions.BusMQ.publish('product:updateCategory', self.user._id, { productCategory: { _id: id } });
-                }, 1000);
+                }, 300000);
 
                 //console.log(doc);
                 var doc = {};
