@@ -632,8 +632,8 @@ Object.prototype = {
                     res.datatable.data[i].DT_RowId = row._id.toString();
 
                     // Add color line 
-                    if (res.datatable.data[i].Status === 'VALIDATED')
-                        res.datatable.data[i].DT_RowClass = "bg-yellow";
+                    /* if (res.datatable.data[i].Status === 'VALIDATED')
+                        res.datatable.data[i].DT_RowClass = "bg-yellow";*/
 
                     if (row.supplier && row.supplier._id)
                         res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
