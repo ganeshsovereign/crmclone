@@ -132,7 +132,7 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        stockReturn: $resource('/erp/api/stockreturn/:Id', { Id: '@_id' }, {
+        stockReturn: $resource('/erp/api/delivery/:Id?&stockReturn=true', { Id: '@_id' }, {
             update: { method: 'PUT' },
             clone: {
                 method: 'POST',

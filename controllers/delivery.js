@@ -78,10 +78,19 @@ Object.prototype = {
     show: function(id) {
         var self = this;
 
-        if (self.query.forSales == "false")
-            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
-        else
-            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        if (self.query.stockReturn === 'true') {
+            if (self.query.forSales == "false")
+                return;
+            //var DeliveryModel = MODEL('order').Schema.stockReturns;
+            else
+                var DeliveryModel = MODEL('order').Schema.stockReturns;
+        } else {
+            if (self.query.forSales == "false")
+                var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+            else
+                var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        }
+
 
         DeliveryModel.getById(id, function(err, delivery) {
             if (err)
@@ -93,10 +102,18 @@ Object.prototype = {
     create: function() {
         var self = this;
 
-        if (self.query.forSales == "false")
-            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
-        else
-            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        if (self.query.stockReturn === 'true') {
+            if (self.query.forSales == "false")
+                return;
+            //var DeliveryModel = MODEL('order').Schema.stockReturns;
+            else
+                var DeliveryModel = MODEL('order').Schema.stockReturns;
+        } else {
+            if (self.query.forSales == "false")
+                var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+            else
+                var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        }
 
         delete self.body.status;
 
@@ -124,10 +141,19 @@ Object.prototype = {
         var self = this;
         var OrderRowsModel = MODEL('orderRows').Schema;
 
-        if (self.body.forSales == false)
-            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
-        else
-            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        if (self.query.stockReturn === 'true') {
+            if (self.query.forSales == "false")
+                return;
+            //var DeliveryModel = MODEL('order').Schema.stockReturns;
+            else
+                var DeliveryModel = MODEL('order').Schema.stockReturns;
+        } else {
+            if (self.query.forSales == "false")
+                var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+            else
+                var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        }
+
 
         var rows = self.body.lines;
 
@@ -212,10 +238,18 @@ Object.prototype = {
         var Availability = MODEL('productsAvailability').Schema;
         var isInventory = false;
 
-        if (self.body.forSales == false)
-            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
-        else
-            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        if (self.query.stockReturn === 'true') {
+            if (self.query.forSales == "false")
+                return;
+            //var DeliveryModel = MODEL('order').Schema.stockReturns;
+            else
+                var DeliveryModel = MODEL('order').Schema.stockReturns;
+        } else {
+            if (self.query.forSales == "false")
+                var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+            else
+                var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        }
 
         self.body.editedBy = self.user._id;
 
@@ -289,8 +323,8 @@ Object.prototype = {
                             });
                         },
                         function(doc, wCb) {
-                            if (doc.forSales == true)
-                                F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: doc });
+                            //if (doc.forSales == true)
+                            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: doc });
 
                             //update inventory IN
 
@@ -445,10 +479,19 @@ Object.prototype = {
     destroyList: function(id) {
         var self = this;
 
-        if (self.body.forSales == false)
-            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
-        else
-            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        if (self.query.stockReturn === 'true') {
+            if (self.query.forSales == "false")
+                return;
+            //var DeliveryModel = MODEL('order').Schema.stockReturns;
+            else
+                var DeliveryModel = MODEL('order').Schema.stockReturns;
+        } else {
+            if (self.query.forSales == "false")
+                var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+            else
+                var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        }
+
         var Availability = MODEL('productsAvailability').Schema;
 
         if (!id && !this.query.id)
@@ -544,10 +587,19 @@ Object.prototype = {
     readDT: function() {
         var self = this;
 
-        if (self.query.forSales == "false")
-            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
-        else
-            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        if (self.query.stockReturn === 'true') {
+            if (self.query.forSales == "false")
+                return;
+            //var DeliveryModel = MODEL('order').Schema.stockReturns;
+            else
+                var DeliveryModel = MODEL('order').Schema.stockReturns;
+        } else {
+            if (self.query.forSales == "false")
+                var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+            else
+                var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        }
+
 
         var SocieteModel = MODEL('Customers').Schema;
 
@@ -763,10 +815,19 @@ Object.prototype = {
         if (!self)
             self = this;
 
-        if (self.query.forSales == "false")
-            var DeliveryModel = MODEL('order').Schema.GoodsInNote;
-        else
-            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        if (self.query.stockReturn === 'true') {
+            if (self.query.forSales == "false")
+                return;
+            //var DeliveryModel = MODEL('order').Schema.stockReturns;
+            else
+                var DeliveryModel = MODEL('order').Schema.stockReturns;
+        } else {
+            if (self.query.forSales == "false")
+                var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+            else
+                var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+        }
+
 
         DeliveryModel.getById(ref, function(err, doc) {
             createDelivery(doc, function(err, tex) {

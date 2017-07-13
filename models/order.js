@@ -795,12 +795,26 @@ var stockReturnSchema = new Schema({
 
     orderRows: [{
         _id: false,
-        goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
-        goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
-        product: { type: ObjectId, ref: 'Product', default: null },
+        orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
+        product: { type: ObjectId, ref: 'product', default: null },
         cost: { type: Number, default: 0 },
-        qty: Number,
-        warehouse: { type: ObjectId, ref: 'warehouse', default: null }
+        locationsReceived: [{
+            _id: false,
+            location: { type: ObjectId, ref: 'location', default: null },
+            qty: Number
+        }],
+
+        isDeleted: { type: Boolean, default: false },
+
+        qty: Number
+            /*
+                    _id: false,
+                    goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
+                    goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
+                    product: { type: ObjectId, ref: 'product', default: null },
+                    cost: { type: Number, default: 0 },
+                    qty: Number,
+                    warehouse: { type: ObjectId, ref: 'warehouse', default: null }*/
     }]
 });
 
@@ -1018,27 +1032,25 @@ function setNameTransfer(next) {
 }
 
 function setNameReturns(next) {
-    var transaction = this;
-    var db = transaction.db.db;
-    var prefix = 'RT';
+    var self = this;
+    var SeqModel = MODEL('Sequence').Schema;
+    var EntityModel = MODEL('entity').Schema;
+    var OrderModel = MODEL('order').Schema.Order;
 
-    db.collection('settings').findOneAndUpdate({
-        dbName: db.databaseName,
-        name: prefix
-    }, {
-        $inc: { seq: 1 }
-    }, {
-        returnOriginal: false,
-        upsert: true
-    }, function(err, rate) {
-        if (err) {
-            return next(err);
-        }
+    if (self.isNew && !self.ref)
+        return OrderModel.findById(self.order, "ref ID", function(err, order) {
+            SeqModel.incCpt(order._id, function(number) {
+                //console.log(seq);
 
-        transaction.name = prefix + '-' + rate.value.seq;
+                self.ref = "RT" + order.ref.substring(2) + '/' + number;
 
-        next();
-    });
+                next();
+            });
+        });
+
+    if (self.date_livraison)
+        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+    next();
 }
 
 function setNameOrdersFab(next) {
