@@ -51,6 +51,7 @@ exports.install = function() {
 
     F.route('/erp/api/order/lines/list', object.listLines, ['authorize']);
     F.route('/erp/api/order/dt', object.readDT, ['post', 'authorize']);
+    F.route('/erp/api/order/dt_stockreturn', object.readDT_stockreturn, ['post', 'authorize']);
     F.route('/erp/api/order', object.all, ['authorize']);
     F.route('/erp/api/order', object.create, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/order/{orderId}', object.clone, ['post', 'json', 'authorize'], 512);
@@ -628,6 +629,116 @@ Object.prototype = {
 
                     // Add checkbox
                     res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                    // Add id
+                    res.datatable.data[i].DT_RowId = row._id.toString();
+
+                    // Add color line 
+                    /* if (res.datatable.data[i].Status === 'VALIDATED')
+                        res.datatable.data[i].DT_RowClass = "bg-yellow";*/
+
+                    if (row.supplier && row.supplier._id)
+                        res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
+                    else {
+                        if (!row.supplier)
+                            res.datatable.data[i].supplier = {};
+                        res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                    }
+
+                    // Action
+                    //res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                    // Add url on name
+                    if (row.forSales)
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + '/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                    else
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + 'supplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                    // Convert Date
+                    res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
+                    res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+                    // Convert Status
+                    res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+                    if (row.status && link == 'order') {
+                        res.datatable.data[i].Status += '<span class="pull-right">';
+                        res.datatable.data[i].Status += '<span class="fa large fa-check-circle ' + (row.status.allocateStatus == 'NOR' ? 'font-grey' : '') + (row.status.allocateStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.allocateStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.allocateStatus == 'NOT' ? 'font-red' : '') + '"></span>';
+                        res.datatable.data[i].Status += '<span class="fa large fa-inbox ' + (row.status.fulfillStatus == 'NOR' ? 'font-grey' : '') + (row.status.fulfillStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.fulfillStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.fulfillStatus == 'NOT' ? 'font-red' : '') + '"></span>';
+                        res.datatable.data[i].Status += '<span class="fa large fa-truck ' + (row.status.shippingStatus == 'NOR' ? 'font-grey' : '') + (row.status.shippingStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.shippingStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.shippingStatus == 'NOT' ? 'font-red' : '') + '"></span>';
+                        res.datatable.data[i].Status += '</span>';
+                    }
+                }
+
+                //console.log(res.datatable);
+
+                self.json(res.datatable);
+            });
+        });
+    },
+
+    readDT_stockreturn: function() {
+        var self = this;
+
+        var link = 'order';
+
+        if (self.query.quotation === 'true') {
+            var link = 'offer';
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.QuotationSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.QuotationCustomer;
+        } else {
+            if (self.query.forSales == "false")
+                var OrderModel = MODEL('order').Schema.OrderSupplier;
+            else
+                var OrderModel = MODEL('order').Schema.OrderCustomer;
+        }
+
+        var SocieteModel = MODEL('Customers').Schema;
+
+        var query = JSON.parse(self.body.query);
+
+        var conditions = {
+            // Status: { $ne: "CLOSED" },
+            isremoved: { $ne: true }
+            //  forSales: true
+        };
+
+        //console.log(self.query);
+
+        if (!query.search.value) {
+            if (self.query.status_id && self.query.status_id !== 'null')
+                conditions.Status = self.query.status_id;
+        } else
+            delete conditions.Status;
+
+        if (!self.user.multiEntities)
+            conditions.entity = self.user.entity;
+
+        var options = {
+            conditions: conditions,
+            select: "supplier ref forSales status"
+        };
+
+        //console.log(options);
+
+        async.parallel({
+            status: function(cb) {
+                /*Dict.dict({
+                    dictName: "fk_order_status",
+                    object: true
+                }, cb);*/
+                cb(null, MODEL('order').Status);
+            },
+            datatable: function(cb) {
+                OrderModel.dataTable(query, options, cb);
+            }
+        }, function(err, res) {
+            if (err)
+                console.log(err);
+
+            SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
+
+                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                    var row = res.datatable.data[i];
+
+
                     // Add id
                     res.datatable.data[i].DT_RowId = row._id.toString();
 

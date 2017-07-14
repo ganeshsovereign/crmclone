@@ -839,6 +839,7 @@
     "QtyFulfilled": "Qté déjà expédiée",
     "Reminder": "Qté restante à expédier",
     "QtyDelivered": "Qté à livrée",
+    "QtyToBeReturned": "Qté à retournée",
     "Move": "Mouvement",
     "Towards": "Vers",
     "Turnover": "Chiffre d'affaires",
@@ -848,5 +849,6 @@
     "Sales": "Ventes",
     "WeeklyStats": "Statistiques hebdomadaires",
     "Estimated": "Prévisionnel",
-    "BreakdownOfTurnover": "Répartition / CA"
+    "BreakdownOfTurnover": "Répartition / CA",
+    "Adjustment": "Ajustement"
 }
