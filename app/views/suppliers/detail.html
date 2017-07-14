@@ -1,9 +1,3 @@
-<!--<script type="text/ng-template" id="searchcompany.html">
-    <a>
-        <span ng-bind-html="match.model.code_client | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.name"></span>
-    </a>
-</script>-->
-
 <div class="row">
     <div class="col-md-12">
         <div class="form-horizontal form-row-seperated">
@@ -15,7 +9,6 @@
                         <span ng-if="module('offersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(propal:NewQuotation) </span>
                         <span ng-if="module('ordersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <!--/Puces-->
-                        <span ng-if="module('ordersupplier')" ng-hide="!object._id" class="large fa fa-check-circle" ng-class="{ 'font-grey': object.status.allocateStatus=='NOR','font-green-jungle': object.status.allocateStatus=='ALL' , 'font-yellow-lemon': object.status.allocateStatus=='NOA', 'font-red' : object.status.allocateStatus=='NOT' }"></span>
                         <span ng-if="module('ordersupplier')" ng-hide="!object._id" class="large fa fa-inbox" ng-class="{ 'font-grey': object.status.fulfillStatus=='NOR', 'font-green-jungle': object.status.fulfillStatus=='ALL', 'font-yellow-lemon': object.status.fulfillStatus=='NOA', 'font-red' : object.status.fulfillStatus=='NOT' }"></span>
                         <span ng-if="module('ordersupplier')" ng-hide="!object._id" class="large fa fa-truck" ng-class="{ 'font-grey': object.status.shippingStatus=='NOR','font-green-jungle': object.status.shippingStatus=='ALL', 'font-yellow-lemon': object.status.shippingStatus=='NOA', 'font-red' : object.status.shippingStatus=='NOT' }"></span>
                         <!--Puces/-->
@@ -64,10 +57,6 @@
                                                 <label for="ref_client">@(orders:RefOrderShort)</label>
                                             </div>
 
-                                            <!--<div ng-hide="!object._id" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static"> {{object.supplier.salesPurchases.priceList.priceListCode}} </div>
-                                                <label for="price_level">@(products:PriceLevel)</label>
-                                            </div>-->
 
                                             <div ng-hide="!object._id" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> {{object.total_ht| currency}} @(HT) </div>
@@ -276,7 +265,7 @@
                                     </tr>
                                     <tr ng-repeat="delivery in line.deliveries">
                                         <td class="text-right">
-                                            <a ui-sref="delivery.show({id:delivery._id})">{{delivery.ref}}</a> {{delivery.date_livraison|date:'dd/MM/yyyy'}}</td>
+                                            <a ui-sref="deliverysupplier.show({id:delivery._id})">{{delivery.ref}}</a> {{delivery.date_livraison|date:'dd/MM/yyyy'}}</td>
                                         <td></td>
                                         <td> </td>
                                         <td class="text-center">{{delivery.qty}}</td>

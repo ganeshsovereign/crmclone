@@ -47,34 +47,16 @@
             <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
             </a>
-            <ul class="dropdown-menu pull-right" role="menu">
+            <!-- offersupplier -->
+            <ul ng-if="module('offersupplier')" class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a ng-if="module('offersupplier')" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createOrder" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusSigned)" confirmed-click="createOrder()">
+                    <a ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createOrder" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusSigned)" confirmed-click="createOrder()">
                         <i class="fa fa-shopping-cart"></i> @(propal:CreateOrder)
                     </a>
-
-                    <a ng-if="module('ordersupplier') && object.status.shippingStatus('ALL')" ng-show="(object.Status == 'VALIDATED' || object.Status == 'PROCESSING' || object.Status == 'SHIPPING') && login.rights.order.createDelivery" ng-click="createDelivery()">
-                        <i class="fa fa-plane"></i> @(orders:CreateDelivery)
-                    </a>
                 </li>
                 <li>
-                    <a ng-if="module('ordersupplier')" ng-show="object.Status == 'CLOSED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()">
-                        <i class="fa fa-money"></i> @(bills:CreateBill)
-                    </a>
-                </li>
-                <li>
-                    <a ng-if="!module('deliverysupplier') && object.Status == 'DRAFT'&& object.supplier._id && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                    <a ng-if="object.Status == 'DRAFT'&& object.supplier._id && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(Validate)
-                    </a>
-                </li>
-                <li>
-                    <a ng-if="module('deliverysupplier') && allowValidate" href="#" ng-show="object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('INSTOCK')">
-                        <i class="fa fa-check"></i> @(orders:PutInStock)
-                    </a>
-                </li>
-                <li>
-                    <a ng-if="module('billsupplier')" href="#" ng-show="(object.Status == 'NOT_PAID' || object.Status == 'VALIDATED') && object.journalId.length == 0 && login.rights.bill.validate" data-ng-click="exportAccounting(object._id)">
-                        <i class="fa fa-mail-forward"></i> @(bills:SendAccounting)
                     </a>
                 </li>
                 <li>
@@ -83,7 +65,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('offersupplier')" ng-hide="object.Status == 'NOTSIGNED' || object.Status == 'SIGNED' " ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)"
+                    <a ng-hide="object.Status == 'NOTSIGNED' || object.Status == 'SIGNED' " ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)"
                         confirmed-click="changeStatus('NOTSIGNED')">
                         <i class="fa fa-thumbs-o-down"></i> @(propal:CloseOfferOrder)
                     </a>
@@ -99,17 +81,47 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('offersupplier')" ng-show='object.Status == "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
-                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail()">
+                        <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="module('ordersupplier')" ng-show='object.Status != "DRAFT"' ng-href="/erp/api/order/pdf/{{object.ref}}?proforma=1" target="_blank">
-                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF) Proforma</a>
+                    <a href="#" class="font-red" ng-show="login.rights.order.delete && order.Status !== 'SIGNED'" confirmed-click="remove(orders)" ng-confirm-click="Supprimer le document ?" title="Supprimer le document">
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    </a>
+                </li>
+            </ul>
+
+            <!-- ordersupplier -->
+            <ul ng-if="module('ordersupplier')" class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a ng-if="!object.status.shippingStatus('ALL')" ng-show="(object.Status == 'VALIDATED' || object.Status == 'PROCESSING' || object.Status == 'SHIPPING') && login.rights.order.createDelivery" ng-click="createDelivery()">
+                        <i class="fa fa-plane"></i> @(orders:DeliveryOrder)
+                    </a>
                 </li>
                 <li>
-                    <a ng-if="module('deliverysupplier')" ng-show="object.Status == 'SEND'" ng-href="#" ng-click="sendFTP()">
-                        <i class="fa fa-file-pdf-o"></i> @(SendToFtp)
+                    <a ng-show="object.Status == 'CLOSED'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()">
+                        <i class="fa fa-money"></i> @(bills:CreateBill)
+                    </a>
+                </li>
+                <li>
+                    <a ng-if="object.Status == 'DRAFT'&& object.supplier._id && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                        <i class="fa fa-thumbs-o-up"></i> @(Validate)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" ng-if="object.Status === 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                        <i class="fa fa-history"></i> @(ReOpen)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-ng-click="clone()">
+                        <i class="fa fa-copy"></i> @(ToClone)
+                    </a>
+                </li>
+                <li>
+                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
                     </a>
                 </li>
                 <li>
@@ -122,6 +134,70 @@
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
                 </li>
+            </ul>
+
+            <!-- deliverysupplier -->
+            <ul ng-if="module('deliverysupplier')" class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a ng-if=" allowValidate" href="#" ng-show="object.Status == 'DRAFT'" ng-show="login.rights.delivery.validate" data-ng-click="changeStatus('INSTOCK')">
+                        <i class="fa fa-check"></i> @(orders:PutInStock)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" ng-click="clone()">
+                        <i class="fa fa-copy"></i> @(ToClone)
+                    </a>
+                </li>
+                <li>
+                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    </a>
+                </li>
+                <li>
+                    <a ng-show="object.Status == 'SEND'" ng-href="#" ng-click="sendFTP()">
+                        <i class="fa fa-file-pdf-o"></i> @(SendToFtp)
+                    </a>
+                </li>
+                <li>
+                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail()">
+                        <i class="fa  fa-envelope"></i> @(mails:SendMail)
+                    </a>
+                </li>
+            </ul>
+
+            <!-- billsupplier -->
+            <ul ng-if="module('billsupplier')" class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a ng-if="object.Status == 'DRAFT'&& object.supplier._id && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                        <i class="fa fa-thumbs-o-up"></i> @(Validate)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" ng-show="(object.Status == 'NOT_PAID' || object.Status == 'VALIDATED') && object.journalId.length == 0 && login.rights.bill.validate" data-ng-click="exportAccounting(object._id)">
+                        <i class="fa fa-mail-forward"></i> @(bills:SendAccounting)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" ng-if="object.Status === 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                        <i class="fa fa-history"></i> @(ReOpen)
+                    </a>
+                </li>
+                <li>
+                    <a href="#" data-ng-click="clone()">
+                        <i class="fa fa-copy"></i> @(ToClone)
+                    </a>
+                </li>
+                <li>
+                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    </a>
+                </li>
+                <li>
+                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail()">
+                        <i class="fa  fa-envelope"></i> @(mails:SendMail)
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </div>

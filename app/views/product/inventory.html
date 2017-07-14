@@ -21,27 +21,6 @@
                                                     <i class="fa fa-angle-down"></i>
                                                 </a>
                 <ul class="dropdown-menu pull-right">
-                    <li>
-                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
-                                        @(PrintList) </a>
-                    </li>
-                    <li>
-                        <a href="#" ng-click="refreshAllProducts()"><i class="fa fa-refresh"></i> 
-                                        Force @(Refresh) </a>
-                    </li>
-                    <li>
-                        <a href="#" ng-show="login.rights.product.create" data-ng-click="updatePrices()">
-                            <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
-                        </a>
-                    </li>
-                    <!--    <li>
-                                        <a href="#">
-                                            @(Delete) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(BuildPDF) </a>
-                                    </li>-->
                 </ul>
             </div>
         </div>
@@ -77,9 +56,11 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="line in listObjectLowLevel">
-                                    <td>{{line.sku}}</td>
+                                    <td>
+                                        <a ui-sref="product.show({id:line._id})">{{line.sku}}</a>
+                                    </td>
                                     <td>{{line.name}}</td>
-                                    <td>{{line.onHand || '--'}}</td>
+                                    <td>{{line.onHand || 0}}</td>
                                     <td>{{line.minStockLevel || '--'}} </td>
                                     <td>{{line.minStockLevel - line.onHand}}</td>
                                     <td>{{line.awaiting || '--'}} </td>
@@ -87,8 +68,6 @@
                             </tbody>
                         </table>
                     </div>
-
-
                 </tab>
                 <!--
             Incoming Stock
@@ -103,17 +82,15 @@
                                     <th>@(orders:Orders)</th>
                                     <th>@(products:OnHand)</th>
                                     <th>@(orders:Expected) @(sendings:Receivings)</th>
-                                    <th>@(products:Total)</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr ng-repeat="line in listObjectInComing">
-                                    <td>{{line.sku}}</td>
+                                    <td><a ui-sref="product.show({id:line._id})">{{line.sku}}</a></td>
                                     <td>{{line.products}}</td>
-                                    <td>{{line.purchaseOrder}}</td>
+                                    <td><a ui-sref="ordersupplier.show({id:line.purchaseOrder._id})">{{line.purchaseOrder.ref}}</a></td>
                                     <td>{{line.onHand}}</td>
                                     <td>{{line.incomingStock}}</td>
-                                    <td>{{line.product.prices.pu_ht*line.onHand | currency}} </td>
                                 </tr>
                             </tbody>
                         </table>

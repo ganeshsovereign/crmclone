@@ -348,7 +348,8 @@ Object.prototype = {
                 variants: '$products.variants',
                 sku: '$products.info.SKU',
                 supplier: '$customer.name',
-                purchaseOrder: '$ref',
+                'purchaseOrder.ref': '$ref',
+                'purchaseOrder._id': '$_id',
                 onHand: { $sum: '$productsAvailability.onHand' },
                 incomingStock: '$orderRows.qty',
                 total: { $divide: [{ $add: ['$orderRows.unitPrice', { $sum: '$orderRows.taxes.tax' }] }, '$currency.rate'] }
@@ -452,8 +453,22 @@ Object.prototype = {
 
         Product.aggregate([{
             $match: {
-                job: null
+                job: null,
+                'info.isActive': true
             }
+        }, {
+            $lookup: {
+                from: 'productTypes',
+                localField: 'info.productType',
+                foreignField: '_id',
+                as: 'productType'
+            }
+        }, {
+            $unwind: {
+                path: '$productType'
+            }
+        }, {
+            $match: { "productType.inventory": true }
         }, {
             $lookup: {
                 from: 'productsAvailability',
@@ -524,9 +539,9 @@ Object.prototype = {
                         cond: {
                             $and: [
                                 { $eq: ['$$order._type', 'orderSupplier'] },
-                                { $eq: ['$$order.status.shippingStatus', 'NOR'] },
-                                { $eq: ['$$order.status.fulfillStatus', 'NOT'] },
-                                { $eq: ['$$order.status.allocateStatus', 'NOR'] }
+                                //{ $eq: ['$$order.status.shippingStatus', 'NOR'] },
+                                { $eq: ['$$order.status.fulfillStatus', 'NOT'] }
+                                // { $eq: ['$$order.status.allocateStatus', 'NOR'] }
                             ]
                         }
                     }

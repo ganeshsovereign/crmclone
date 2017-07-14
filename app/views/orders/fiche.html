@@ -148,7 +148,7 @@
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF) Proforma</a>
                 </li>
                 <li>
-                    <a ng-if="object.Status != 'DRAFT' && object.contacts.length'" ng-href="#" ng-click="sendEmail()">
+                    <a ng-if="object.Status != 'DRAFT' && object.contacts.length" ng-href="#" ng-click="sendEmail()">
                         <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>
@@ -181,7 +181,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="object.Status != 'DRAFT' && object.contacts.length'" ng-href="#" ng-click="sendEmail()">
+                    <a ng-if="object.Status != 'DRAFT' && object.contacts.length" ng-href="#" ng-click="sendEmail()">
                         <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>
