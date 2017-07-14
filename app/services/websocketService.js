@@ -36,6 +36,7 @@ MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($roo
 
     function onMessage(e) {
         var data = JSON.parse(decodeURIComponent(e.data));
+
         $rootScope.$apply(function() {
 
             if (data.type === 'users') {
