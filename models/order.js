@@ -112,6 +112,7 @@ const baseSchema = new Schema({
         default: 0,
         set: setPrice
     },
+    total_paid: { type: Number, default: 0, set: setPrice },
     shipping: {
         total_ht: {
             type: Number,
