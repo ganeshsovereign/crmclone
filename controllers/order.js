@@ -22,9 +22,10 @@
  @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  International Registered Trademark & Property of ToManage SAS
  */
-
-
 "use strict";
+
+exports.id = 'order';
+exports.version = '1.01';
 
 var mongoose = require('mongoose'),
     _ = require('lodash'),
@@ -34,7 +35,7 @@ var mongoose = require('mongoose'),
 var Dict = INCLUDE('dict');
 var Latex = INCLUDE('latex');
 
-exports.install = function() {
+exports.install = function(options) {
 
     var object = new Object();
 
@@ -1567,3 +1568,5 @@ Object.prototype = {
         });
     }
 };
+
+exports.Order = Object;
