@@ -703,9 +703,7 @@ Object.prototype = {
                     });
                 }
 
-                setTimeout2('category:' + id.toString(), function() {
-                    F.functions.BusMQ.publish('product:updateCategory', self.user._id, { productCategory: { _id: id } });
-                }, 300000);
+                F.functions.BusMQ.publish('product:updateCategory', self.user._id, { productCategory: { _id: id } });
 
                 //console.log(doc);
                 var doc = {};

@@ -228,13 +228,17 @@ CategorySchema.statics.updateFullName = function(id, cb) {
                     async.each(docs, function(doc, done) {
                         var newUrl = category.langs[0].linker + doc.langs[0].linker.substr(previousUrl.length);
                         Model.findByIdAndUpdate(doc._id, { $set: { 'langs.0.linker': newUrl } }, done);
+                        F.functions.BusMQ.publish('product:updateCategory', self.user._id, { productCategory: doc });
                     }, function() {
                         Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
+                        F.functions.BusMQ.publish('product:updateCategory', self.user._id, { productCategory: doc });
                     });
                 });
 
             if (!err)
                 Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
+
+            F.functions.BusMQ.publish('product:updateCategory', self.user._id, { productCategory: { _id: id } });
 
         });
 };
