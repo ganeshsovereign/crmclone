@@ -59,12 +59,15 @@
                                                     </span>
                     </td>
                     <td ng-if="line.type != 'SUBTOTAL'" class="align-right">
-                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="{{-1*line.product.unit}}" e-step="0.001" e-form="tableform">
+                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="{{-1*line.product.unit}}" e-step="any" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
-                        <div>{{line.allocated || '0'}} Alloués</div>
-                        <div>{{line.onHand || '0'}} Disponibles</div>
-                        <div>{{line.fulfilled || '0'}} Expediés</div>
+                        <div ng-if="line.product.info.productType.inventory">
+                            <hr>
+                            <div>{{line.allocated || '0'}} Alloués</div>
+                            <div>{{line.onHand || '0'}} Disponibles</div>
+                            <div>{{line.fulfilled || '0'}} Expediés</div>
+                        </div>
                     </td>
                     <td ng-if="line.type != 'SUBTOTAL'" class="align-right">
                         <div class="checkbox-list" ng-show="tableform.$visible">

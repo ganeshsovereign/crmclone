@@ -15,7 +15,7 @@ MetronicApp.directive('productLines', ['$http',
                 ngChange: '&'
             },
             templateUrl: function(el, attr) {
-                console.log(attr);
+                //console.log(attr);
 
                 if (attr.ngTemplate)
                     return attr.ngTemplate;
@@ -26,8 +26,7 @@ MetronicApp.directive('productLines', ['$http',
             },
             link: function(scope, elem, attrs, ngModel) {
 
-                console.log(scope);
-
+                //console.log(scope);
 
                 $http({
                     method: 'GET',
@@ -110,6 +109,18 @@ MetronicApp.directive('productLines', ['$http',
                             line.total_ht = 0;
                             //line.total_tva = 0;
                         }
+
+                        //Refresh inventory
+                        if (!line.product.info.productType.inventory)
+                            return;
+
+                        $http({
+                            method: 'GET',
+                            url: '/erp/api/product/warehouse/getAvailability',
+                            params: { warehouse: scope.warehouse, product: line.product._id }
+                        }).success(function(data, status) {
+                            line.onHand = data.onHand;
+                        });
                     }
 
                     if (line.qty && line.product && line.product._id && !line.priceSpecific)

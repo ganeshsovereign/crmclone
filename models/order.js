@@ -431,7 +431,11 @@ baseSchema.statics.getById = function(id, callback) {
                     .populate("offer", "ref total_ht forSales")
                     .populate("order", "ref total_ht forSales")
                     .populate("orders", "ref total_ht forSales")
-                    .populate("orderRows.product", "taxes info weight units")
+                    .populate({
+                        path: "orderRows.product",
+                        select: "taxes info weight units",
+                        //populate: { path: "info.productType" }
+                    })
                     .populate("orderRows.locationsReceived.location", "_id name")
                     .populate('warehouse', 'name')
                     .populate('invoiceControl')
@@ -451,7 +455,7 @@ baseSchema.statics.getById = function(id, callback) {
                     .populate({
                         path: "product",
                         select: "taxes info weight units",
-                        //populate: { path: "taxes.taxeId" }
+                        populate: { path: "info.productType" }
                     })
                     .populate({
                         path: "total_taxes.taxeId"

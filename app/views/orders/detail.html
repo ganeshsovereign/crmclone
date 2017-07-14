@@ -221,7 +221,7 @@
 
 <div ng-hide="!object._id  || object._id !== object.order._id " class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" warehouse="object.warehouse._id" ng-change="update()"></product-lines>
     </div>
 </div>
 
