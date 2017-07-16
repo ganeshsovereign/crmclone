@@ -39,7 +39,7 @@ Need :
  - install MongoDB > 3.2
 
 ```shell
-git clone git@github.com:ToManage/framework.git
+git clone https://github.com/ToManage/framework.git
 ```
 
 ```shell
