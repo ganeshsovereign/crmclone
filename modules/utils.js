@@ -336,12 +336,16 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                         if (lines[i].type === 'SUBTOTAL')
                             continue;
 
+                        lines[i].total_taxes = []; // RESET All taxes
+
                         //Update TAXES
                         if (lines[i].product.taxes.length)
                             for (var j = 0; j < lines[i].product.taxes.length; j++) {
                                 //}
 
                                 let idTaxe = taxesId[lines[i].product.taxes[j].taxeId._id.toString()];
+
+                                lines[i].total_taxes[idTaxe] = {}; //Create new taxe
 
                                 if (lines[i].product.taxes[j].taxeId.isFixValue) //ecotax
                                     lines[i].total_taxes[idTaxe].value = lines[i].qty * lines[i].product.taxes[j].value;
