@@ -356,6 +356,15 @@
                             <div class="col-md-5 name bold ">@(AmountTTC) :</div>
                             <div class="col-md-7 value bold ">{{object.total_ttc| currency}}</div>
                         </div>
+                        <hr>
+                        <div class="row static-info align-reverse ">
+                            <div class="col-md-5 name">@(AmountPaid) :</div>
+                            <div class="col-md-7 value">{{object.total_paid| currency}}</div>
+                        </div>
+                        <div class="row static-info align-reverse ">
+                            <div class="col-md-5 name bold ">@(AmountToPaid) :</div>
+                            <div class="col-md-7 value bold ">{{object.total_ttc - object.total_paid| currency}}</div>
+                        </div>
                     </div>
                 </div>
             </div>
