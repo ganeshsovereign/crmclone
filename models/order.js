@@ -1204,7 +1204,7 @@ exports.Status = {
         "NEW": {
             "enable": true,
             "label": "PropalStatusNew",
-            "cssClass": "ribbon-color-info label-info"
+            "cssClass": "ribbon-color-warning label-warning"
         },
         "SIGNED": {
             "enable": true,
