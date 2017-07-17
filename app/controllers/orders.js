@@ -1060,6 +1060,12 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
                         "data": "total_ht",
                         defaultContent: ""
                     }, {
+                        "data": "total_ttc",
+                        defaultContent: ""
+                    }, {
+                        "data": "total_paid",
+                        defaultContent: ""
+                    }, {
                         "data": "Status"
                     }, {
                         "data": "entity",
