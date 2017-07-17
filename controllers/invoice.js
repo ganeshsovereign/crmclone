@@ -59,7 +59,7 @@ exports.install = function() {
 /*	// list for autocomplete
  app.post('/api/bill/autocomplete', function (req, res) {
  
- var BillModel = MODEL('bill').Schema;
+ var BillModel = MODEL('invoice').Schema;
  
  console.dir(req.body.filter);
  if (req.body.filter == null)
@@ -117,55 +117,9 @@ exports.install = function() {
 
 function Object() {}
 
-// Read an offer
-function Bill(id, cb) {
-    var BillModel = MODEL('bill').Schema;
-
-    var self = this;
-
-    //TODO Check ACL here
-    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
-    var query = {};
-
-    if (checkForHexRegExp.test(id))
-        query = {
-            _id: id
-        };
-    else
-        query = {
-            ref: id
-        };
-
-    //console.log(query);
-
-    BillModel.findOne(query, "-latex")
-        .populate("orders", "ref total_ht")
-        .populate("order", "ref lines total_ht")
-        .populate("contacts", "name phone email")
-        .populate({
-            path: "supplier",
-            select: "name salesPurchases",
-            populate: { path: "salesPurchases.priceList" }
-        })
-        .populate({
-            path: "lines.product",
-            select: "taxes info weight units",
-            //populate: { path: "taxes.taxeId" }
-        })
-        .populate({
-            path: "lines.total_taxes.taxeId"
-        })
-        .populate({
-            path: "total_taxes.taxeId"
-        })
-        .populate("createdBy", "username")
-        .populate("editedBy", "username")
-        .exec(cb);
-}
-
 Object.prototype = {
     read: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var self = this;
 
         var query = {};
@@ -210,42 +164,46 @@ Object.prototype = {
         });
     },
     show: function(id) {
+        var InvoiceModel = MODEL('invoice').Schema;
+
         var self = this;
-        Bill(id, function(err, bill) {
+        InvoiceModel.getById(id, function(err, bill) {
             if (err)
-                console.log(err);
+                return self.throw500(err);
 
             self.json(bill);
         });
     },
     create: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var self = this;
 
         if (self.query.forSales == "false")
             self.body.forSales = false;
 
+        delete self.body.status;
+
+        console.log(self.body);
+        //return;
+
         var bill = {};
         bill = new BillModel(self.body);
 
-        bill.author = {};
-        bill.author.id = self.user._id;
-        bill.author.name = self.user.name;
+        bill.createdBy = self.user._id;
+        bill.editedBy = self.user._id;
 
-        //console.log(delivery);
         bill.save(function(err, doc) {
-            if (err) {
-                return console.log(err);
-            }
+            if (err)
+                return self.throw500(err);
 
             self.json(doc);
         });
     },
     clone: function(id) {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
 
-        Bill(id, function(err, doc) {
+        BillModel.getById(id, function(err, doc) {
             var bill = doc.toObject();
 
             //console.log(doc);
@@ -283,33 +241,42 @@ Object.prototype = {
         });
     },
     update: function(id) {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         //console.log("update");
         var self = this;
 
-        //console.log(self.query);
+        if (!self.body.createdBy)
+            self.body.createdBy = self.user._id;
 
-        BillModel.findOne({ _id: id }, "-latex")
-            .populate("client.id", "name code_compta")
-            .populate("orders", "ref ref_client total_ht client")
-            .populate("deliveries", "ref ref_client total_ht client")
-            .populate("contacts", "firstname lastname phone email")
-            .exec(function(err, bill) {
-                //console.log(bill);
-                //console.log(req.body);
-                if (err) {
-                    console.log(err);
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
-                        }
-                    });
-                }
+        var rows = self.body.lines;
+        for (var i = 0; i < rows.length; i++)
+            rows[i].sequence = i;
 
-                bill = _.extend(bill, self.body);
+        self.body.dater = MODULE('utils').calculate_date_lim_reglement(self.body.datec, self.body.cond_reglement_code);
 
-                bill.save(function(err, doc) {
+        MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
+
+            self.body.total_ht = result.total_ht;
+            self.body.total_taxes = result.total_taxes;
+            self.body.total_ttc = result.total_ttc;
+            self.body.weight = result.weight;
+
+            if (self.body.total_ttc === 0)
+                self.body.Status = 'DRAFT';
+
+            self.body.ref = F.functions.refreshSeq(self.body.ref, self.body.datec);
+
+            BillModel.setInvoiceNumber(self.body, function(err, invoice) {
+                BillModel.findByIdAndUpdate(id, invoice, { new: true }, function(err, doc) {
                     if (err) {
                         console.log(err);
                         return self.json({
@@ -329,9 +296,10 @@ Object.prototype = {
                     self.json(doc);
                 });
             });
+        });
     },
     destroy: function(id) {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var self = this;
 
         BillModel.update({
@@ -345,7 +313,7 @@ Object.prototype = {
         });
     },
     destroyList: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var self = this;
 
         if (!this.query.id)
@@ -373,7 +341,7 @@ Object.prototype = {
         });
     },
     exportAccounting: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
         //console.log("update");
         var self = this;
@@ -606,7 +574,7 @@ Object.prototype = {
     },
     readDT: function() {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var SocieteModel = MODEL('Customers').Schema;
 
         var query = JSON.parse(self.req.body.query);
@@ -669,7 +637,7 @@ Object.prototype = {
                      dictName: "fk_bill_status",
                      object: true
                  }, cb);*/
-                cb(null, MODEL('bill').Status);
+                cb(null, MODEL('invoice').Status);
             },
             datatable: function(cb) {
                 BillModel.dataTable(query, options, cb);
@@ -725,6 +693,7 @@ Object.prototype = {
     },
     pdf: function(ref, self) {
         // Generation de la facture PDF et download
+        const InvoiceModel = MODEL('invoice').Schema;
 
         if (!self)
             self = this;
@@ -739,7 +708,7 @@ Object.prototype = {
          mode_reglement_code = docs;
          });*/
 
-        Bill(ref, function(err, doc) {
+        InvoiceModel.getById(ref, function(err, doc) {
             createBill(doc, true, function(err, tex) {
                 if (err)
                     return console.log(err);
@@ -763,7 +732,7 @@ Object.prototype = {
         var entity = this.body.entity;
 
         // Generation de la facture PDF et download
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
 
         var cond_reglement_code = {};
         Dict.dict({ dictName: "fk_payment_term", object: true }, function(err, docs) {
@@ -840,7 +809,7 @@ Object.prototype = {
     },
     releve_facture: function(id) {
         // Generation de la facture PDF et download
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var BankModel = MODEL('bank').Schema;
         var SocieteModel = MODEL('Customers').Schema;
         var self = this;
@@ -972,7 +941,7 @@ Object.prototype = {
         });
     },
     ca: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var self = this;
 
         var dateStart = moment(self.query.start).startOf('day').toDate();
@@ -1005,7 +974,7 @@ Object.prototype = {
     },
     download: function(id) {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
 
         var object = new Object();
 
@@ -1041,7 +1010,7 @@ Object.prototype = {
         if (!self.body.id)
             return self.json({});
 
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
 
         async.each(self.body.id, function(id, cb) {
             BillModel.findOne({ _id: id, Status: 'DRAFT' }, function(err, bill) {
@@ -1151,18 +1120,28 @@ function createBill(doc, cgv, callback) {
                     }]
                 });
             for (var i = 0; i < doc.lines.length; i++) {
-                //if (doc.lines[i].qty)
-                tabLines.push({
-                    ref: (doc.lines[i].product.name != 'SUBTOTAL' ? doc.lines[i].product.info.SKU.substring(0, 12) : ""),
-                    description: "\\textbf{" + doc.lines[i].product.label + "}\\\\" + doc.lines[i].description,
-                    tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
-                    pu_ht: doc.lines[i].pu_ht,
-                    discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
-                    qty: doc.lines[i].qty,
-                    total_ht: doc.lines[i].total_ht
-                });
+                if (doc.lines[i].type == 'SUBTOTAL')
+                    tabLines.push({
+                        ref: "",
+                        description: "\\textbf{Sous-total}",
+                        tva_tx: null,
+                        pu_ht: "",
+                        discount: "",
+                        qty: "",
+                        total_ht: doc.lines[i].total_ht
+                    });
+                else
+                    tabLines.push({
+                        ref: doc.lines[i].product.info.SKU.substring(0, 12),
+                        description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                        tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
+                        pu_ht: doc.lines[i].pu_ht,
+                        discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
+                        qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
+                        total_ht: doc.lines[i].total_ht
+                    });
 
-                if (doc.lines[i].product.name == 'SUBTOTAL') {
+                if (doc.lines[i].type == 'SUBTOTAL') {
                     tabLines[tabLines.length - 1].italic = true;
                     tabLines.push({ hline: 1 });
                 }

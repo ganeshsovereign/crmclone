@@ -263,11 +263,6 @@ Object.prototype = {
             self.body.Status = "DRAFT";
         }
 
-
-        var rows = self.body.lines;
-        for (var i = 0; i < rows.length; i++)
-            rows[i].sequence = i;
-
         if (!self.body.createdBy)
             self.body.createdBy = self.user._id;
 
@@ -1270,7 +1265,7 @@ Billing.prototype = {
     },
     create: function(id, self) {
         var DeliveryModel = MODEL('delivery').Schema;
-        var FactureModel = MODEL('bill').Schema;
+        var FactureModel = MODEL('invoice').Schema;
         var FactureSupplierModel = MODEL('billSupplier').Schema;
 
         if (!self)
@@ -1407,7 +1402,7 @@ Billing.prototype = {
     createAll: function() {
         var self = this;
         var DeliveryModel = MODEL('delivery').Schema;
-        var FactureModel = MODEL('bill').Schema;
+        var FactureModel = MODEL('invoice').Schema;
         var FactureSupplierModel = MODEL('billSupplier').Schema;
         var SocieteModel = MODEL('Customers').Schema;
         //console.log(req.body.dateEnd);

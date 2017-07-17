@@ -31,7 +31,7 @@ function Object() {}
 Object.prototype = {
     caFamily: function() {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
         var queryCA = {
             Status: { '$ne': 'DRAFT' },
@@ -229,7 +229,7 @@ Object.prototype = {
     },
     caEvolution: function() {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var queryCA = {
             Status: { '$ne': 'DRAFT' },
             datec: {
@@ -311,7 +311,7 @@ Object.prototype = {
         });
     },
     caGraph: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var SocieteModel = MODEL('Customers').Schema;
 
         var self = this;
@@ -599,7 +599,7 @@ Object.prototype = {
         });
     },
     caCustomer: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
 
         var self = this;
 
@@ -634,7 +634,7 @@ Object.prototype = {
         });
     },
     caCommercial: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var self = this;
 
         var dateStart = moment(self.query.start).startOf('day').toDate();
@@ -683,7 +683,7 @@ Object.prototype = {
     },
     detailsClient: function() {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
 
         //var dateStart = moment().startOf('year').subtract(1, 'year').startOf('day').toDate();
@@ -916,7 +916,7 @@ Object.prototype = {
     },
     detailsClientCsv: function() {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
 
         var Stream = require('stream');
@@ -1225,7 +1225,7 @@ function(err) {
     },
     billPenality: function() {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
 
         var query = {
             Status: 'NOT_PAID',
@@ -1253,7 +1253,7 @@ function(err) {
 
     },
     result: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var SocieteModel = MODEL('societe').Schema;
 
         var self = this;
@@ -1385,7 +1385,7 @@ function(err) {
     },
     chFamily: function() {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
         var queryCH = {
             Status: { '$ne': 'DRAFT' },
@@ -1583,7 +1583,7 @@ function(err) {
     },
     chEvolution: function() {
         var self = this;
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var queryCH = {
             Status: { '$ne': 'DRAFT' },
             datec: {
@@ -1665,7 +1665,7 @@ function(err) {
         });
     },
     chGraph: function() {
-        var BillModel = MODEL('bill').Schema;
+        var BillModel = MODEL('invoice').Schema;
         var SocieteModel = MODEL('societe').Schema;
 
         var self = this;

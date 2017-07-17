@@ -204,6 +204,11 @@
                     </a>
                 </li>
                 <li>
+                    <a ng-if="object.Status == 'DRAFT' && login.rights.bill.validate" data-ng-click="changeStatus('VALIDATED')">
+                        <i class="fa fa-thumbs-o-up"></i> @(bills:ValidateBill)
+                    </a>
+                </li>
+                <li>
                     <a href="#" data-ng-click="clone()">
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>

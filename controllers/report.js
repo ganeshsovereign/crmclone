@@ -53,7 +53,7 @@ Object.prototype = {
     getInfoBySalesProducts: function() {
         var self = this;
         var Product = MODEL('product').Schema;
-        var Invoice = MODEL('bill').Schema;
+        var Invoice = MODEL('invoice').Schema;
         var Order = MODEL('order').Schema.Order;
         var data = self.query;
         var startDate = data.startDate;

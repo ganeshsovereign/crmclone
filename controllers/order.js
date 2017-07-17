@@ -793,7 +793,7 @@ Object.prototype = {
 
         var Prepayments = MODEL('payment').Schema.prepayment;
         var OrderRows = MODEL('orderRows').Schema;
-        var Invoice = MODEL('bill').Schema;
+        var Invoice = MODEL('invoice').Schema;
         var departmentSearcher;
         var contentIdsSearcher;
         var orderRowsSearcher;
@@ -1273,7 +1273,7 @@ Object.prototype = {
             // check if discount
             for (var i = 0; i < doc.lines.length; i++) {
                 if (doc.lines[i].discount > 0) {
-                    model += "_discount";
+                    model += "discount";
                     discount = true;
                     break;
                 }
@@ -1357,7 +1357,7 @@ Object.prototype = {
                                 tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
                                 pu_ht: doc.lines[i].pu_ht,
                                 discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
-                                qty: doc.lines[i].qty,
+                                qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
                                 total_ht: doc.lines[i].total_ht
                             });
 

@@ -152,7 +152,7 @@ bankSchema.virtual('acc_country').get(function() {
 bankSchema.methods.addPayment = function(options, user, callback) {
     var self = this;
     //var SocieteModel = MODEL('Customers').Schema;
-    var BillModel = MODEL('bill').Schema;
+    var BillModel = MODEL('invoice').Schema;
     var BillSupplierModel = MODEL('billSupplier').Schema;
 
     //console.log(options);

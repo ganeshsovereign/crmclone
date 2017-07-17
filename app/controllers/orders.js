@@ -1506,7 +1506,13 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                         data: "commercial_id.name",
                         defaultContent: ""
                     }, {
-                        data: "total_ttc",
+                        "data": "total_ht",
+                        defaultContent: ""
+                    }, {
+                        "data": "total_ttc",
+                        defaultContent: ""
+                    }, {
+                        "data": "total_paid",
                         defaultContent: ""
                     }, {
                         data: "Status"

@@ -5,6 +5,7 @@
  */
 var mongoose = require('mongoose'),
     moment = require('moment'),
+    async = require('async'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId,
     timestamps = require('mongoose-timestamp');
@@ -285,6 +286,112 @@ billSchema.statics.query = function(options, callback) {
         });
 };
 
+billSchema.statics.getById = function(id, callback) {
+    var self = this;
+    var ObjectId = MODULE('utils').ObjectId;
+
+    //TODO Check ACL here
+    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    var query = {};
+
+    if (checkForHexRegExp.test(id))
+        query = {
+            _id: id
+        };
+    else
+        query = {
+            ref: id
+        };
+
+    //console.log(query);
+
+    async.waterfall([
+            function(wCb) {
+                self.findOne(query, "-latex")
+                    .populate("contacts", "name phone email")
+                    .populate({
+                        path: "supplier",
+                        select: "name salesPurchases",
+                        populate: { path: "salesPurchases.priceList" }
+                    })
+                    .populate({
+                        path: "lines.product",
+                        select: "taxes info weight units",
+                        //populate: { path: "taxes.taxeId" }
+                    })
+                    .populate({
+                        path: "lines.total_taxes.taxeId"
+                    })
+                    .populate({
+                        path: "total_taxes.taxeId"
+                    })
+                    .populate("createdBy", "username")
+                    .populate("editedBy", "username")
+                    .populate("offer", "ref total_ht forSales")
+                    .populate("order", "ref total_ht forSales")
+                    .populate("orders", "ref total_ht forSales")
+                    .populate('invoiceControl')
+                    .populate('project', '_id name')
+                    .populate('shippingMethod', '_id name')
+                    .populate('workflow', '_id name status')
+                    .exec(wCb);
+            }
+        ],
+        function(err, invoice) {
+            if (err)
+                return callback(err);
+
+            return callback(err, invoice);
+        });
+};
+
+billSchema.statics.setInvoiceNumber = function(invoice, callback) {
+    var SeqModel = MODEL('Sequence').Schema;
+    var EntityModel = MODEL('entity').Schema;
+
+    if (!invoice || invoice.Status == 'DRAFT' || invoice.total_ttc === 0)
+        return callback(null, invoice);
+
+    if (invoice.ref.substr(0, 4) !== "PROV")
+        return callback(null, invoice);
+
+    if (invoice.forSales == true)
+        return SeqModel.inc("INVOICE", function(seq, number) {
+            //console.log(seq);
+            invoice.ID = number;
+            EntityModel.findOne({
+                _id: invoice.entity
+            }, "cptRef", function(err, entity) {
+                if (err)
+                    console.log(err);
+
+                if (entity && entity.cptRef)
+                    invoice.ref = (invoice.total_ttc < 0 ? "AV" : "FA") + entity.cptRef + seq;
+                else
+                    invoice.ref = (invoice.total_ttc < 0 ? "AV" : "FA") + seq;
+                callback(null, invoice);
+            });
+        });
+
+    //supplier invoice
+    return SeqModel.inc("SUPPLIER_INVOICE", function(seq, number) {
+        //console.log(seq);
+        invoice.ID = number;
+        EntityModel.findOne({
+            _id: invoice.entity
+        }, "cptRef", function(err, entity) {
+            if (err)
+                console.log(err);
+
+            if (entity && entity.cptRef)
+                invoice.ref = "FF" + entity.cptRef + seq;
+            else
+                invoice.ref = "FF" + seq;
+            callback(null, invoice);
+        });
+    });
+};
+
 /**
  * Pre-save hook
  */
@@ -299,67 +406,19 @@ billSchema.pre('save', function(next) {
     if (this.isNew)
         this.history = [];
 
-    MODULE('utils').sumTotal(this.lines, this.shipping, this.discount, this.supplier, function(err, result) {
-        if (err)
-            return next(err);
+    if (self.total_ttc === 0)
+        self.Status = 'DRAFT';
 
-        self.total_ht = result.total_ht;
-        self.total_taxes = result.total_taxes;
-        self.total_ttc = result.total_ttc;
-        self.weight = result.weight;
+    if (!self.ref && self.isNew)
+        return SeqModel.inc("PROV", function(seq, number) {
+            //console.log(seq);
+            self.ID = number;
+            self.ref = "PROV" + seq;
+            next();
+        });
 
-        if (self.total_ttc === 0)
-            self.Status = 'DRAFT';
-
-        if (!self.ref && self.isNew)
-            return SeqModel.inc("PROV", function(seq, number) {
-                //console.log(seq);
-                self.ID = number;
-                self.ref = "PROV" + seq;
-                next();
-            });
-
-        if (self.Status != "DRAFT" && self.total_ttc != 0 && self.ref.substr(0, 4) == "PROV") {
-            if (self.forSales == true)
-                return SeqModel.inc("INVOICE", function(seq, number) {
-                    //console.log(seq);
-                    self.ID = number;
-                    EntityModel.findOne({
-                        _id: self.entity
-                    }, "cptRef", function(err, entity) {
-                        if (err)
-                            console.log(err);
-
-                        if (entity && entity.cptRef)
-                            self.ref = (self.total_ttc < 0 ? "AV" : "FA") + entity.cptRef + seq;
-                        else
-                            self.ref = (self.total_ttc < 0 ? "AV" : "FA") + seq;
-                        next();
-                    });
-                });
-
-            //supplier invoice
-            return SeqModel.inc("SUPPLIER_INVOICE", function(seq, number) {
-                //console.log(seq);
-                self.ID = number;
-                EntityModel.findOne({
-                    _id: self.entity
-                }, "cptRef", function(err, entity) {
-                    if (err)
-                        console.log(err);
-
-                    if (entity && entity.cptRef)
-                        self.ref = "FF" + entity.cptRef + seq;
-                    else
-                        self.ref = "FF" + seq;
-                    next();
-                });
-            });
-        }
-
-        self.ref = F.functions.refreshSeq(self.ref, self.datec);
-        next();
-    });
+    self.ref = F.functions.refreshSeq(self.ref, self.datec);
+    next();
 });
 
 /*var statusList = {};
@@ -485,5 +544,5 @@ billSchema.virtual('amount').get(function() {
 });
 
 
-exports.Schema = mongoose.model('bill', billSchema, 'Invoices');
-exports.name = 'bill';
+exports.Schema = mongoose.model('invoice', billSchema, 'Invoices');
+exports.name = 'invoice';

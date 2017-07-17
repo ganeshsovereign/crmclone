@@ -67,7 +67,7 @@
     "PaymentBack": "Remboursement",
     "Payments": "Règlements",
     "PaymentsBack": "Remboursements",
-    "DatePayment": "Date paiement",
+    "DatePayment": "Date de paiement",
     "DeletePayment": "Supprimer le paiement",
     "ConfirmDeletePayment": "Êtes-vous sûr de vouloir supprimer ce paiement ?",
     "ConfirmConvertToReduc": "Voulez-vous convertir cet avoir ou acompte en réduction future ?<br>Le montant sera alors stocké en réduction fixe en attente pour le client. Cette dernière pourra être utilisée pour réduire le montant d'une facture en cours ou prochaine de ce client.",
@@ -441,5 +441,5 @@
     "PaymentPeriod": "Délai de paiement",
     "AccountParameters": "Paramètres Comptables",
     "DiscountGlobal": "Remise Globale",
-    "BillSupplierAddress":"Adr. fournisseur"
+    "BillSupplierAddress": "Adr. fournisseur"
 }

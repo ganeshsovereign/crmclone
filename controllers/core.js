@@ -814,7 +814,7 @@ function convert(type) {
             return self.plain("Type is order");
             break;
         case 'date_bill':
-            var BillModel = MODEL('bill').Schema;
+            var BillModel = MODEL('invoice').Schema;
             var BillSupplierModel = MODEL('billSupplier').Schema;
             var setDate = MODULE('utils').setDate;
             var moment = require('moment');
@@ -1014,7 +1014,7 @@ function convert(type) {
             return self.plain("Type is paymentTransaction");
             break;
         case 'commercial_id':
-            var BillModel = MODEL('bill').Schema;
+            var BillModel = MODEL('invoice').Schema;
             var SocieteModel = MODEL('Customers').Schema;
             var UserModel = MODEL('Users').Schema;
             var OfferModel = MODEL('offer').Schema;
@@ -1064,7 +1064,7 @@ function convert(type) {
             return self.plain("Type is commercial_id");
             break;
         case 'bill_reset_commercial':
-            var BillModel = MODEL('bill').Schema;
+            var BillModel = MODEL('invoice').Schema;
 
             BillModel.find({})
                 .populate("client.id", "_id name commercial_id")

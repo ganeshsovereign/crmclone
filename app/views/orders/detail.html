@@ -107,7 +107,7 @@
                                                 <label for="TrackingNumber">@(deliveries:TrackingNumber)</label>
                                             </div>
 
-                                            <div class="form-group form-md-line-input">
+                                            <div ng-hide="module('bill')" class="form-group form-md-line-input">
                                                 <select class="form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse">
                                                         </select>
                                                 <label for="warehouse">@(products:Warehouse)</label>
@@ -132,7 +132,13 @@
                                             </div>
 
                                             <div ng-if="module('bill')" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="datereglement" date-input ng-model="object.dater">
+                                                <input type="text" class="form-control" id="dateInvoice" date-input ng-model="object.datec">
+                                                <label for="dateInvoice">@(bills:DateInvoice)</label>
+                                            </div>
+
+                                            <div ng-if="module('bill')" class="form-group form-md-line-input">
+                                                <!--<input type="text" class="form-control" id="datereglement" date-input ng-model="object.dater">-->
+                                                <div class="form-control form-control-static" id="datereglement"> {{object.dater | date:'shortDate'}} </div>
                                                 <label for="datereglement">@(bills:DatePayment)</label>
                                             </div>
 
@@ -222,6 +228,12 @@
 <div ng-hide="!object._id  || object._id !== object.order._id " class="row">
     <div class="col-md-12">
         <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" warehouse="object.warehouse._id" ng-change="update()"></product-lines>
+    </div>
+</div>
+
+<div ng-show="object._id && module('bill')" class="row">
+    <div class="col-md-12">
+        <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
     </div>
 </div>
 
