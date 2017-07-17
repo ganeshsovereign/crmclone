@@ -268,6 +268,7 @@ Object.prototype = {
             self.body.total_ht = result.total_ht;
             self.body.total_taxes = result.total_taxes;
             self.body.total_ttc = result.total_ttc;
+            self.body.total_ttc += self.body.correction;
             self.body.weight = result.weight;
 
             if (self.body.total_ttc === 0)
@@ -343,7 +344,7 @@ Object.prototype = {
     exportAccounting: function() {
         var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
-        //console.log("update");
+        console.log("update");
         var self = this;
 
         //console.log(self.query);
@@ -364,11 +365,24 @@ Object.prototype = {
         async.each(ids, function(id, callback) {
 
             BillModel.findOne({ _id: id, isremoved: { $ne: true } }, "-latex")
-                .populate("client.id", "name code_compta importExport")
-                .populate("orders", "ref ref_client total_ht client")
-                .populate("deliveries", "ref ref_client total_ht client")
+                .populate({
+                    path: "supplier",
+                    select: "name salesPurchases",
+                    populate: { path: "salesPurchases.priceList" }
+                })
+                .populate({
+                    path: "lines.product",
+                    select: "taxes info weight units",
+                    //populate: { path: "taxes.taxeId" }
+                })
+                .populate({
+                    path: "lines.total_taxes.taxeId"
+                })
+                .populate({
+                    path: "total_taxes.taxeId"
+                })
                 .exec(function(err, bill) {
-                    //console.log(bill);
+                    console.log(bill.total_taxes);
                     //console.log(req.body);
 
                     if (err)
@@ -378,23 +392,7 @@ Object.prototype = {
                     if ((bill.Status !== 'NOT_PAID' && bill.Status !== 'VALIDATED') || bill.journalId.length > 0)
                         return callback(null);
 
-                    var tva_code_collec = {};
-                    var tva_code_deduc = {};
-
                     async.waterfall([
-                        function(cb) {
-
-                            Dict.dict({ dictName: "fk_tva", object: true }, function(err, docs) {
-                                for (var i = 0; i < docs.values.length; i++) {
-                                    if (docs.values[i].pays_code === 'FR' && docs.values[i].enable) {
-                                        tva_code_collec[docs.values[i].value] = docs.values[i].code_compta_colle;
-                                        tva_code_deduc[docs.values[i].value] = docs.values[i].code_compta_deduc;
-                                        //console.log(docs.values[i]);
-                                    }
-                                }
-                                cb(err);
-                            });
-                        },
                         function(cb) {
 
                             // TODO Notify

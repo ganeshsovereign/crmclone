@@ -94,6 +94,11 @@ var billSchema = new Schema({
         default: 0,
         set: setPrice
     },
+    correction: {
+        type: Number,
+        default: 0,
+        set: setPrice
+    },
     total_taxes: [{
         _id: false,
         taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },

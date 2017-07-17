@@ -732,6 +732,21 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             }, function() {});
         });*/
 
+        $scope.exportAccounting = function(id) {
+            $http({
+                method: 'PUT',
+                url: '/erp/api/bill/accounting',
+                data: {
+                    id: id
+                }
+            }).success(function(data, status) {
+                if (status === 200 && id)
+                    $scope.findOne();
+                else
+                    $scope.find();
+            });
+        };
+
     }
 ]);
 
@@ -1588,7 +1603,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 method: 'PUT',
                 url: '/erp/api/bill/accounting',
                 data: {
-                    id: id //grid.getSelectedRows()
+                    id: id
                 }
             }).success(function(data, status) {
                 if (status === 200 && id)

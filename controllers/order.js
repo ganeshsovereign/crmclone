@@ -222,6 +222,7 @@ Object.prototype = {
             delete order.updatedAt;
             delete order.history;
             delete order.orderRows;
+            order.total_paid = 0;
             order.status = {};
             order.Status = "DRAFT";
             order.notes = [];

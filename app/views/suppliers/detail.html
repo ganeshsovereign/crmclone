@@ -15,7 +15,7 @@
                         <span ng-if="module('ordersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewSupplierOrder) </span>
                         <span ng-if="module('deliverysupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:DeliveryNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('deliverysupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewDelivery) </span>
-                        <span ng-if="module('billsupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillsCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('billsupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillSupplier) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('billsupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
                     <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'BILLED' ||object.Status == 'SIGNED' || object.Status == 'INSTOCK' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED' || object.Status == 'PROCESSING'" mode="object._id" ng-create="create()"
@@ -37,10 +37,16 @@
                                                 <label for="entity">@(Entity)</label>
                                             </div>
 
-                                            <div class="form-group form-md-line-input">
+                                            <div class="form-group form-md-line-input" ng-hide="module('billsupplier')">
                                                 <input type="text" class="form-control" id="ref_client" ng-model="object.ref_client">
                                                 <label for="ref_client">@(orders:RefOfSupplier)</label>
                                             </div>
+
+                                            <div class="form-group form-md-line-input" ng-show="module('billsupplier')">
+                                                <input type="text" class="form-control" id="ref_client" ng-model="object.ref_client">
+                                                <label for="ref_client">@(bills:InvoiceRefSupplier)</label>
+                                            </div>
+
 
                                             <div ng-hide="!object._id" ng-if="module('ordersupplier')" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> <a ui-sref="offersupplier.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
@@ -63,7 +69,7 @@
                                                 <label for="form_control_1">@(Amount) @(propal:PurchaseRequests)</label>
                                             </div>
 
-                                            <div class="form-group form-md-line-input">
+                                            <div ng-hide="module('billsupplier')" class="form-group form-md-line-input">
                                                 <select class="form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse">
                                                         </select>
                                                 <label for="warehouse">@(products:Warehouse)</label>
@@ -78,13 +84,19 @@
                                                         </select>
                                                 <label for="delivery_mode">@(orders:RemovingOrder)</label>
                                             </div>
-                                            <div ng-if="!module('bill')" class="form-group form-md-line-input">
+                                            <div ng-if="!module('billsupplier')" class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="dateLivraison" date-input ng-model="object.date_livraison">
                                                 <label for="dateLivraison">@(DeliveryDate)</label>
                                             </div>
 
-                                            <div ng-if="module('bill')" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="datereglement" date-input ng-model="object.dater">
+                                            <div ng-if="module('billsupplier')" class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="dateInvoice" date-input ng-model="object.datec">
+                                                <label for="dateInvoice">@(bills:DateInvoice)</label>
+                                            </div>
+
+                                            <div ng-if="module('billsupplier')" class="form-group form-md-line-input">
+                                                <!--<input type="text" class="form-control" id="datereglement" date-input ng-model="object.dater">-->
+                                                <div class="form-control form-control-static" id="datereglement"> {{object.dater | date:'shortDate'}} </div>
                                                 <label for="datereglement">@(bills:DatePayment)</label>
                                             </div>
 
@@ -173,6 +185,12 @@
 
 
 <div ng-hide="!object._id  || object._id !== object.order._id " class="row">
+    <div class="col-md-12">
+        <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" for-sales="false" supplier="object.supplier._id" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
+    </div>
+</div>
+
+<div ng-show="object._id && module('billsupplier')" class="row">
     <div class="col-md-12">
         <product-lines ng-model="object.lines" title=" '@(ShoppingCard)'" ng-disabled="editable" for-sales="false" supplier="object.supplier._id" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
     </div>
@@ -304,6 +322,14 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row static-info align-reverse" ng-if="module('billsupplier')">
+                            <div class="col-md-5 name">@(bills:CorrectionInvoice) : <span class="icon-pencil grey" ng-click="correction.$show()" ng-hide="correction.$visible || !editable"></span></div>
+                            <div class="col-md-7 value"><span editable-number="object.correction" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="correction">
+                                                {{object.correction| currency}}
+                                            </span></div>
+                        </div>
+
                         <div class="row static-info align-reverse ">
                             <div class="col-md-5 name bold ">@(AmountTTC) :</div>
                             <div class="col-md-7 value bold ">{{object.total_ttc| currency}}</div>
