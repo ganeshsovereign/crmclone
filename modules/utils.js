@@ -345,7 +345,9 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
                                 let idTaxe = taxesId[lines[i].product.taxes[j].taxeId._id.toString()];
 
-                                lines[i].total_taxes[idTaxe] = {}; //Create new taxe
+                                lines[i].total_taxes[idTaxe] = {
+                                    taxeId: lines[i].product.taxes[j].taxeId._id
+                                }; //Create new taxe
 
                                 if (lines[i].product.taxes[j].taxeId.isFixValue) //ecotax
                                     lines[i].total_taxes[idTaxe].value = lines[i].qty * lines[i].product.taxes[j].value;
