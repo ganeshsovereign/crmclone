@@ -1,17 +1,5 @@
-<script type="text/ng-template" id="searchproduct.html">
-    <a ng-class="{'list-group-item font-green': match.model.price_level != 'BASE'}">
-        <span ng-bind-html="match.model.product.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.product.label"></span> ({{match.model.price_level}} : {{match.model.pu_ht|currency}})
-    </a>
-</script>
-
-<script type="text/ng-template" id="searchvariantproduct.html">
-    <a>
-        <span ng-bind-html="match.model.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.info.langs[0].name"></span>
-    </a>
-</script>
-
 <!--
-Marketing    
+Marketing
 -->
 <div class="row">
     <div class="col-md-12">
@@ -22,7 +10,7 @@ Marketing
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-info"></i>
-                        <span class="caption-subject dark bold uppercase"> @(Marketing) / PIM</span>
+                        <span class="caption-subject dark bold uppercase"> @(Marketing) / PIM <i class="fa fa-trademark"></i> </span>
                     </div>
                     <save mode="product._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
                 </div>
@@ -80,8 +68,6 @@ Marketing
                                             </div>
                                         </div>
                                     </div>
-
-
                                 </div>
 
                                 <div class="portlet light bordered">
@@ -122,7 +108,7 @@ Marketing
                                             <div class="form-group form-md-line-input ">
                                                 <!--<label for="Abstract">@(eshop:abstract) <span class="required">
                                         * </span></label>-->
-                                                <summernote height="220" ng-model="product.info.langs[_language].shortDescription"><i class="fa fa-flag"></i></summernote>
+                                                <summernote height="220" ng-model="product.info.langs[0].shortDescription"></summernote>
                                             </div>
                                         </tab>
                                         <tab heading="@(Description)  *">
@@ -133,7 +119,6 @@ Marketing
                                             </div>
                                         </tab>
                                     </tabset>
-
                                 </div>
 
                                 <div class="portlet light bordered">
@@ -159,8 +144,9 @@ Marketing
                                                 <div class="form-control-focus"> </div>
                                             </div>
                                         </div>
+
                                     </div>
-                                    <hr>
+
                                     <div class="row" ng-if="product.info.productType.inventory == true">
                                         <div class="col-md-6">
                                             <div class="form-group form-md-line-input">
@@ -191,22 +177,40 @@ Marketing
                 </div>
             </div>
         </div>
+
+
+        <div ng-if="product.type == 'DYNAMIC'" class="form-group">
+            <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
+                                        * </span>
+                                </label>
+            <div class="col-md-4" ng-init="loadDynForms()">
+                <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
+            </div>
+
+        </div>
     </div>
 </div>
 
+<!-- 
+Images
+-->
+<div ng-include="'/views/product/productImages.html'">
+</div>
 
-<div ng-if="product.type == 'DYNAMIC'" class="form-group">
-    <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
-                                        * </span>
-                                </label>
-    <div class="col-md-4" ng-init="loadDynForms()">
-        <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
-    </div>
-
+<!-- 
+Attributes
+-->
+<div ng-include="'/views/product/attributes.html'">
 </div>
 
 <!--
-SEO
+Cateogries
+-->
+<div ng-include="'/views/product/categories.html'" ng-controller="CategoryController">
+</div>
+
+<!--
+Ecommerce
 -->
 <div class="row">
     <div class="col-md-12">
@@ -281,7 +285,7 @@ SEO
                             <div class="col-md-6">
                                 <div class="portlet light bordered">
                                     <div class="form-group form-md-line-input ">
-                                        <textarea class="form-control" ng-model="product.info.langs[_language].meta.description" rows="12"></textarea>
+                                        <textarea class="form-control" ng-model="product.info.langs[0].meta.description" rows="12"></textarea>
                                         <label for="MetaDes">META @(products:Description) <span class="required">
                                         * </span></label>
                                         <span class="help-block">META @(products:Description) : @(eshop:MetaAdvice).</span>
@@ -296,10 +300,9 @@ SEO
     </div>
 </div>
 
-
 <!--
-Categories and declinations    
+Categories & declinations 
 -->
 
 <div ng-include="'/views/product/declinations.html'">
-    </div
+</div>

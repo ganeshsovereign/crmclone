@@ -1,0 +1,48 @@
+{
+    "name": "task",
+    "version": "0.1.000",
+    "author": {
+        "name": "TM - ToManage"
+    },
+    "description": "Gestion des taches",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TM-js/bill.git"
+    },
+    "engines": {
+        "node": "4.6.x",
+        "TM": "0.5.x"
+    },
+    "contributors": [
+        "Herve Prot <herve.prot@tomanage.fr>"
+    ],
+    "license": "OSL v3",
+    "rights": {
+        "task": [
+            {
+                "desc": "Lire les taches",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Creer/modifier des taches",
+                "perm": {
+                    "create": false
+                }
+            },
+            {
+                "desc": "Supprimer des taches",
+                "perm": {
+                    "delete": false
+                }
+            },
+            {
+                "desc": "Voir les taches des autres utilisateurs",
+                "perm": {
+                    "readAll": false
+                }
+            }
+        ]
+    }
+}

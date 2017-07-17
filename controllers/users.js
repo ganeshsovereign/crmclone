@@ -83,10 +83,10 @@ exports.install = function() {
 
         if (self.body.filter)
             query = {
-                '$or': [
-                    { firstname: new RegExp(filter, "i") },
-                    { lastname: new RegExp(filter, "i") }
-                ]
+                //'$or': [
+                //    { firstname: new RegExp(filter, "i") },
+                username: new RegExp(filter, "i")
+
             };
 
         if (self.query.status) {
@@ -109,17 +109,17 @@ exports.install = function() {
                     //console.log(docs[i]);
 
                     result[i] = {};
-                    if (self.query.lastname) {
+                    /*if (self.query.lastname) {
                         result[i] = {};
                         result[i].name = docs[i].lastname;
                         result[i].id = docs[i]._id;
                         result[i].entity = docs[i].entity;
-                    } else {
-                        //result[i].name = docs[i].name;
-                        result[i].name = docs[i].firstname + " " + docs[i].lastname;
-                        result[i].id = docs[i]._id;
-                        result[i].entity = docs[i].entity;
-                    }
+                    } else {*/
+                    //result[i].name = docs[i].name;
+                    result[i].name = docs[i].username;
+                    result[i].id = docs[i]._id;
+                    result[i].entity = docs[i].entity;
+
                 }
 
             return self.json(result);
