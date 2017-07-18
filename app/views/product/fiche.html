@@ -241,7 +241,7 @@
                             <tr ng-repeat="channel in product.channels.data">
                                 <td>{{channel.channelName}}</td>
                                 <!--<td>{{channel.baseUrl}}</td>-->
-                                <td><span ng-if="channel.channels.length" class="fa fa-check font-green"></span></td>
+                                <td><span ng-if="channel.channels.length" class="fa fa-check font-green">{{channel.channels[0].linkId}}</span></td>
                                 <td>
                                     <button ng-hide="channel.channels.length" ng-click="addProductToChannel(product._id, channel)" type="button" class="btn btn-xs btn-info glyphicon glyphicon-plus" title="@(Add)"></button>
                                     <button ng-hide="!channel.channels.length" ng-click="deleteProductToChannel(product._id, channel)" type="button" class="btn btn-xs btn-info glyphicon glyphicon-minus" title="@(Delete)"></button>
