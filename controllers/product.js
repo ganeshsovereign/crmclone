@@ -3080,7 +3080,7 @@ PricesList.prototype = {
                     prices = [];
 
                 //entete
-                var out = "_id;REF;DESCRIPTION;COEF;PU HT;DATEMAJ\n";
+                var out = "_id;REF;DESCRIPTION;QTYMIN;QTYMAX;PU HT;DATEMAJ\n";
                 stream.emit('data', out);
 
                 for (var i = 0, len = prices.length; i < len; i++) {
@@ -3092,7 +3092,9 @@ PricesList.prototype = {
                     out += ";";
                     out += prices[i].product.info.langs[0].name;
                     out += ";";
-                    out += prices[i].prices[0].coef;
+                    out += prices[i].qtyMin;
+                    out += ";";
+                    out += prices[i].qtyMax;
                     out += ";";
                     out += prices[i].prices[0].price;
                     out += ";";

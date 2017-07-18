@@ -17,8 +17,8 @@ var priceSchema = new Schema({
     _id: false,
     count: { type: Number, default: 0 },
     price: { type: Number, default: 0, set: setRound3 }, // pu_ht
-    coef: { type: Number, default: 1, set: setRound3 },
-    coefTotal: { type: Number, default: 1 } //Sum coef * familyCoef
+    coef: { type: Number, default: 1, set: setRound3 }, //TODO REMOVE ???
+    coefTotal: { type: Number, default: 1 } //Sum coef * familyCoef //TODO REMOVE ???
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
