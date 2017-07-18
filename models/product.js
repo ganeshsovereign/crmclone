@@ -50,6 +50,8 @@ var supplierPriceSchema = new Schema({
     });*/
 
 
+var maxlength = [255, 'The value of path `{PATH}` (`{VALUE}`) exceeds the maximum allowed length ({MAXLENGTH}).'];
+
 var LangSchema = new Schema({
     _id: false,
     description: { type: String, default: '' },
@@ -58,7 +60,7 @@ var LangSchema = new Schema({
     name: { type: String, default: '' },
     meta: {
         title: { type: String, default: '', trim: true },
-        description: { type: String, default: '', trim: true }
+        description: { type: String, default: '', trim: true, maxlength: maxlength }
     },
     linker: { type: String, sparse: true, set: MODULE('utils').setLink }, // SEO URL
     Tag: { type: [], set: MODULE('utils').setTags }
