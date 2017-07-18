@@ -3070,9 +3070,12 @@ PricesList.prototype = {
                     console.log(err);
 
                 //remove deleted product
-                _.each(prices, function(elem) {
-                    if (elem.product == null)
-                        elem.remove(function(err, doc) {});
+                prices = _.filter(prices, function(elem) {
+                    if (elem.product && elem.product._id)
+                        return true;
+
+                    elem.remove(function(err, doc) {});
+                    return false;
                 });
 
                 //console.log(prices);
