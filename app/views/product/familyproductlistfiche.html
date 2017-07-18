@@ -94,7 +94,7 @@
                                     </div>-->
                             <div class="md-checkbox-inline">
                                 <div class="md-checkbox">
-                                    <input type="checkbox" ng-disabled="object.indirectCostRate != 0 || object.discounts.length" id="isCost" class="md-check" ng-model="object.isCost" ng-checked="object.isCost">
+                                    <input type="checkbox" ng-disabled="object._id" id="isCost" class="md-check" ng-model="object.isCost" ng-checked="object.isCost">
                                     <label for="isCost">
                                 <span></span>
                                 <span class="check"></span>
@@ -110,6 +110,39 @@
                                 <label for="minMargin">@(products:MinMargin)</label>
                             </div>
                         </div>
+
+                        <div class="portlet light bordered" ng-if="object._id" ng-hide="object.isCost">
+                            <div class="form-group form-md-line-input ">
+                                <input class="form-control" ng-model="object.accounts[0].account" placeholder="Normal" type="text">
+                                <label for="ProductAccountancySellCode">@(products:ProductAccountancySellCode)</label>
+                            </div>
+                            <div class="form-group form-md-line-input ">
+                                <input class="form-control" ng-model="object.accounts[1].account" placeholder="Export EU" type="text">
+                                <label for="ProductAccountancySellCodeEU">@(products:ProductAccountancySellCode) EU</label>
+                            </div>
+
+                            <div class="form-group form-md-line-input ">
+                                <input class="form-control" ng-model="object.accounts[2].account" placeholder="Export" type="text">
+                                <label for="ProductAccountancySellCodeEX">@(products:ProductAccountancySellCode) Export</label>
+                            </div>
+                        </div>
+
+                        <div class="portlet light bordered" ng-if="object._id" ng-show="object.isCost">
+                            <div class="form-group form-md-line-input ">
+                                <input class="form-control" ng-model="object.accounts[0].account" placeholder="Normal" type="text">
+                                <label for="ProductAccountancySellCode">@(products:ProductAccountancyBuyCode)</label>
+                            </div>
+                            <div class="form-group form-md-line-input ">
+                                <input class="form-control" ng-model="object.accounts[1].account" placeholder="Export EU" type="text">
+                                <label for="ProductAccountancySellCodeEU">@(products:ProductAccountancyBuyCode) EU</label>
+                            </div>
+
+                            <div class="form-group form-md-line-input ">
+                                <input class="form-control" ng-model="object.accounts[2].account" placeholder="Export" type="text">
+                                <label for="ProductAccountancySellCodeEX">@(products:ProductAccountancyBuyCode) Export</label>
+                            </div>
+                        </div>
+
                         <div class="portlet light bordered" ng-if="object._id" ng-hide="object.isCost">
                             <div class="portlet-title">
                                 <div class="caption">
@@ -178,7 +211,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-md-7" ng-if="object._id">
+                    <div class="col-md-7" ng-if="object._id" ng-hide="object.isCost">
                         <div class="form-horizontal form-row-seperated">
                             <div class="portlet light bordered">
                                 <div class="portlet-title">

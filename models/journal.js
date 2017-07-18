@@ -4,8 +4,9 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-        Schema = mongoose.Schema,
-        Q = require('q');
+    Schema = mongoose.Schema,
+    ObjectId = mongoose.Schema.Types.ObjectId,
+    Q = require('q');
 
 var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
@@ -14,20 +15,18 @@ var setDate = MODULE('utils').setDate;
  * Article Schema
  */
 var JournalSchema = new Schema({
-    datetime: {type: Date,set:setDate},
+    datetime: { type: Date, set: setDate },
     memo: {
         type: String,
         "default": '',
         uppercase: true
     },
-    _transactions: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'transaction'
-        }
-    ],
+    _transactions: [{
+        type: Schema.Types.ObjectId,
+        ref: 'transaction'
+    }],
     book: String,
-    //entity: {type: String, required: true},
+    entity: { type: String },
     voided: {
         type: Boolean,
         "default": false
@@ -38,17 +37,17 @@ var JournalSchema = new Schema({
         "default": true
     },
     exported: Date, // Date of export
-    seq: {type: String}, // Numero de piece comptable
+    seq: { type: String }, // Numero de piece comptable
     reconcilliation: Date, // Dte of rapprochement bank (date de valeur)
-    author: {id: String, name: String}
+    author: { type: ObjectId, ref: 'Users', default: null }
 }, {
-    toObject: {virtuals: true},
-    toJSON: {virtuals: true}
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
-JournalSchema.methods["void"] = function (book, reason) {
+JournalSchema.methods["void"] = function(book, reason) {
     var deferred, trans_id, voidTransaction, voids, _i, _len, _ref,
-            _this = this;
+        _this = this;
     deferred = Q.defer();
     if (this.voided === true) {
         deferred.reject(new Error('Journal already voided'));
@@ -59,14 +58,14 @@ JournalSchema.methods["void"] = function (book, reason) {
     } else {
         this.void_reason = reason;
     }
-    voidTransaction = function (trans_id) {
+    voidTransaction = function(trans_id) {
         var d;
         var TransactionModel = MODEL('transaction').Schema;
         d = Q.defer();
         TransactionModel.findByIdAndUpdate(trans_id, {
             voided: true,
             void_reason: _this.void_reason
-        }, function (err, trans) {
+        }, function(err, trans) {
             if (err) {
                 console.error('Failed to void transaction:', err);
                 return d.reject(err);
@@ -82,7 +81,7 @@ JournalSchema.methods["void"] = function (book, reason) {
         trans_id = _ref[_i];
         voids.push(voidTransaction(trans_id));
     }
-    Q.all(voids).then(function (transactions) {
+    Q.all(voids).then(function(transactions) {
         var key, meta, newMemo, trans, val, valid_fields, _j, _len1;
         if (_this.void_reason) {
             newMemo = _this.void_reason;
@@ -127,22 +126,22 @@ JournalSchema.methods["void"] = function (book, reason) {
          return deferred.reject(err);
          });*/
 
-        return _this.save(function (err, entry) {
+        return _this.save(function(err, entry) {
             if (err)
                 return deferred.reject(err);
             return deferred.resolve(entry);
         });
 
 
-    }, function (err) {
+    }, function(err) {
         return deferred.reject(err);
     });
     return deferred.promise;
 };
 
-JournalSchema.methods.setExported = function (book, date) {
+JournalSchema.methods.setExported = function(book, date) {
     var deferred, trans_id, voidTransaction, voids, _i, _len, _ref,
-            _this = this;
+        _this = this;
     deferred = Q.defer();
     if (this.exported != null) {
         deferred.reject(new Error('JournalId already exported'));
@@ -154,13 +153,13 @@ JournalSchema.methods.setExported = function (book, date) {
         this.exported = date;
     }
 
-    voidTransaction = function (trans_id) {
+    voidTransaction = function(trans_id) {
         var d;
         var TransactionModel = MODEL('transaction').Schema;
         d = Q.defer();
         TransactionModel.findByIdAndUpdate(trans_id, {
             exported: _this.exported
-        }, function (err, trans) {
+        }, function(err, trans) {
             if (err) {
                 console.error('Failed to export transaction:', err);
                 return d.reject(err);
@@ -177,35 +176,35 @@ JournalSchema.methods.setExported = function (book, date) {
         voids.push(voidTransaction(trans_id));
     }
 
-    Q.all(voids).then(function (transactions) {
+    Q.all(voids).then(function(transactions) {
         var key, meta, newMemo, trans, val, valid_fields, _j, _len1;
 
-        return _this.save(function (err, entry) {
+        return _this.save(function(err, entry) {
             if (err)
                 return deferred.reject(err);
             return deferred.resolve(entry);
         });
-    }, function (err) {
+    }, function(err) {
         return deferred.reject(err);
     });
     return deferred.promise;
 };
 
 
-JournalSchema.methods.setReconcilliation = function (book, date) {
+JournalSchema.methods.setReconcilliation = function(book, date) {
     var deferred, trans_id, voidTransaction, voids, _i, _len, _ref,
-            _this = this;
+        _this = this;
     deferred = Q.defer();
 
     this.reconcilliation = date;
 
-    voidTransaction = function (trans_id) {
+    voidTransaction = function(trans_id) {
         var d;
         var TransactionModel = MODEL('transaction').Schema;
         d = Q.defer();
         TransactionModel.findByIdAndUpdate(trans_id, {
             reconcilliation: _this.reconcilliation
-        }, function (err, trans) {
+        }, function(err, trans) {
             if (err) {
                 console.error('Failed to export transaction:', err);
                 return d.reject(err);
@@ -222,35 +221,35 @@ JournalSchema.methods.setReconcilliation = function (book, date) {
         voids.push(voidTransaction(trans_id));
     }
 
-    Q.all(voids).then(function (transactions) {
+    Q.all(voids).then(function(transactions) {
         var key, meta, newMemo, trans, val, valid_fields, _j, _len1;
 
-        return _this.save(function (err, entry) {
+        return _this.save(function(err, entry) {
             if (err)
                 return deferred.reject(err);
             return deferred.resolve(entry);
         });
-    }, function (err) {
+    }, function(err) {
         return deferred.reject(err);
     });
     return deferred.promise;
 };
 
-JournalSchema.pre('save', function (next) {
+JournalSchema.pre('save', function(next) {
     var promises;
     var TransactionModel = MODEL('transaction').Schema;
     if (this.isModified('approved') && this.approved === true) {
         promises = [];
         return TransactionModel.find({
             _journal: this._id
-        }, function (err, transactions) {
+        }, function(err, transactions) {
             var transaction, _i, _len;
             for (_i = 0, _len = transactions.length; _i < _len; _i++) {
                 transaction = transactions[_i];
                 transaction.approved = true;
                 promises.push(transaction.save());
             }
-            return Q.all(promises).then(function () {
+            return Q.all(promises).then(function() {
                 return next();
             });
         });

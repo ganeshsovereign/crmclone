@@ -1,0 +1,131 @@
+<div class="row">
+    <div class="col-md-3">
+        <div class="portlet sale-summary">
+            <div class="portlet-title">
+                <div class="caption">
+                    @(Summary)
+                </div>
+                <div class="tools">
+                    <a class="reload" href="javascript:;" data-original-title="" title="">
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <ul class="list-unstyled">
+                    <li>
+                        <span class="sale-info">
+                            @(compta:DateLastPayment)
+                        </span>
+                        <span class="sale-num">
+                            {{ societe.updatedAt | date:'@(main:date.format.java.dayhour)' }} </span>
+                    </li>
+                    <li>
+                        <span class="sale-info">
+                            @(compta:RemainingAmountPayment) </span>
+                        <span class="sale-num">
+                        </span>
+                    </li>
+                    <li>
+                        <span class="sale-info">
+                            @(compta:AmountToBeCharged)
+                        </span>
+                        <span class="sale-num">
+                            {{societe.status.name}} </span>
+                    </li>
+                    <li>
+                        <span class="sale-info">
+                            @(compta:DateLastPayment)
+                        </span>
+                        <span class="sale-num">
+                            {{societe.commercial_id.name}} </span>
+                    </li>
+                    <li>
+                        <span class="sale-info">
+                            @(compta:AverageTime) </span>
+                        <span class="sale-num">
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+
+        <div class="portlet box green">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-money"></i>@(compta:ListOfCustomerPayments)
+                </div>
+            </div>
+            <div class="tools">
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="btn-group">
+                                <button class="btn blue" ui-sref="payment.create({societe:bill.client.id || bill.supplier.id , entity:bill.entity})">@(Add) <i class="fa fa-plus"></i></button>
+                                <!--<button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-scrollable">
+                    <table class="table table-condensed table-striped table-hover">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th>@(Date)</th>
+                                <th class="text-right">@(compta:Piece)</th>
+                                <th class="text-right">@(compta:Account)</th>
+                                <th>@(Ref)</th>
+                                <th>@(Libelle)</th>
+                                <th class="text-right">@(compta:Debit)</th>
+                                <th class="text-right">@(compta:Credit)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="entry in entries| orderBy:'datetime'">
+                                <td>
+                                    {{entry.datetime| date:"dd/MM/yyyy"}}
+                                </td>
+                                <td class="text-right">
+                                    <div ng-hide="entry.meta.billId">{{entry.seq}}</div>
+                                    <a ng-show="entry.meta.billId" ui-sref="bill.show({id:entry.meta.billId})"><i class="fa fa-money"></i> {{entry.seq}}</a>
+                                </td>
+                                <td>
+                                    <div class="text-right">{{entry.book}}</div>
+                                </td>
+                                <td>
+                                    <span ng-if="entry.meta.productId" ui-sref="product.show({id:entry.meta.productId})">{{entry.meta.productRef}}</span>
+                                    <a ng-if="entry.meta.societeId" ui-sref="societe.show({id:entry.meta.societeId})"><i class="fa fa-institution"></i> {{entry.meta.societeName}}</a>
+                                    <div ng-if="entry.meta.tva_tx"> TVA {{entry.meta.tva_tx}} %</div>
+                                </td>
+                                <td>
+                                    <div>{{entry.memo}}</div>
+                                    <div ng-repeat="line in entry.meta.bills">
+                                        <a ui-sref="bill.show({id:line.billId})">{{line.billRef}}</a> : {{line.amount| currency}}
+                                    </div>
+                                    <div ng-repeat="line in entry.meta.billsSupplier">
+                                        <a ui-sref="billSupplier.show({id:line.billSupplierId})">{{line.billSupplierRef}}</a> : {{line.amount| currency}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div ng-if="entry.credit" class="text-right">{{entry.credit| currency}}</div> <!-- inverse debit/credit car compta-->
+                                </td>
+                                <td>
+                                    <div ng-if="entry.debit" class="text-right">{{entry.debit| currency}}</div> <!-- inverse debit/credit car compta-->
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot ng-if="account"> 
+                            <tr>
+                                <td colspan="7" class="text-right h5">@(compta:Balance)</td>
+                                <td class="h5">{{(balance * -1)| currency}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

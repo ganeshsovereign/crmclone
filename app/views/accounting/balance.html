@@ -1,0 +1,124 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i></li>
+        <li>
+            <a ui-sref="societe.list">@(companies:Companies)</a>
+            <i class="fa fa-angle-right"></i></li>
+        <li>
+            <li>
+                <span>@(Dashboard)</span>
+            </li>
+    </ul>
+    <div class="page-toolbar">
+        <div report-date-range ng-model="date" class="pull-right tooltips btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
+    </div>
+</div>
+<h3 class="page-title">
+    @(compta:Accountancy) @(compta:AccountingBalance)
+</h3>
+
+<div>
+    <div class="portlet box green">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-random"></i>@(compta:Accountancy) @(compta:AccountingBalance)
+            </div>
+        </div>
+        <div class="tools">
+        </div>
+        <div class="portlet-body">
+            <div class="table-toolbar">
+                <div class="row">
+                    <div class="col-md-3">
+                        <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="col-md-4">
+                            <!--<select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
+                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
+                            </select>-->
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="btn-group pull-right">
+                            <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+                            </button>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+                                        @(PrintList) </a>
+                                </li>
+                                <li>
+                                    <a ng-href="/erp/api/accounting/balance?export=csv&groupByAccounts=1&start_date={{date.start.toISOString()}}&end_date={{date.end.toISOString()}}">
+                                        <i class="fa fa-download"></i> @(Download) CSV
+                                    </a>
+                                </li>
+                                <li>
+                                    <a ng-href="#" confirmed-click="createAN()" ng-confirm-click="Voulez-vous cloturer l'exercice du {{date.start | date:'dd/MM/yyyy'}} au {{date.end | date:'dd/MM/yyyy'}} et passer les ecritures a nouveaux AN ?">
+                                        <i class="fa fa-close"></i> @(Close) exercice
+                                    </a>
+                                </li>
+                                <li>
+                                    <a ng-href="/erp/api/accounting/download/list?csv=1&journal={{journal}}">
+                                        <i class="fa fa-download"></i> @(bills:AccountingCode)
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-scrollable">
+                <table class="table table-condensed table-striped table-hover table-advance">
+                    <thead>
+                        <tr role="row" class="heading">
+                            <th>@(compta:AccountNumber)</th>
+                            <th class="text-right">@(compta:Debit)</th>
+                            <th class="text-right">@(compta:Credit)</th>
+                            <th class="text-right">@(compta:Balance)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="entry in dataBalance.data | filterAmount:search">
+
+                            <td>
+                                <span>
+                                    {{entry._id}}
+                                </span>
+                            </td>
+                            <td class="text-right">
+                                <div>{{entry.debit | currency}}</div>
+                            </td>
+                            <td class="text-right">
+                                <div>{{entry.credit | currency}}</div>
+                            </td>
+                            <td class="bg-warning text-right">
+                                <div>{{entry.balance | currency}}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="h5">@(compta:Balance)</td>
+                            <td class="text-right h5">{{dataBalance.debit | currency}}</td>
+                            <td class="text-right h5">{{dataBalance.credit | currency}}</td>
+                            <td class="text-right h5">{{dataBalance.balance| currency}}</td>
+                        </tr>
+                        <tr>
+                            <td class="h5">@(compta:Result)</td>
+                            <td class="text-right h5"></td>
+                            <td class="text-right h5"></td>
+                            <td class="text-right h5">{{dataBalance.result| currency}}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

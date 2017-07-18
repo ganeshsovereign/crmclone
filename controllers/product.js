@@ -4009,6 +4009,7 @@ ProductFamily.prototype = {
                 discounts: 1,
                 variants: 1,
                 familyCoef: 1,
+                accounts: 1,
                 opts: {
                     langs: '$options.langs',
                     _id: '$options._id',
@@ -4029,7 +4030,8 @@ ProductFamily.prototype = {
                 isCost: { $first: '$isCost' },
                 variants: { $first: '$variants' },
                 familyCoef: { $first: '$familyCoef' },
-                isActive: { $first: '$isActive' }
+                isActive: { $first: '$isActive' },
+                accounts: { $first: '$accounts' },
             }
         }, {
             $lookup: {
@@ -4068,7 +4070,8 @@ ProductFamily.prototype = {
                 isCost: { $first: '$isCost' },
                 variants: { $first: '$variants' },
                 familyCoef: { $push: '$familyCoef' },
-                isActive: { $first: '$isActive' }
+                isActive: { $first: '$isActive' },
+                accounts: { $first: '$accounts' },
             }
         }], function(err, result) {
             if (err)
@@ -4095,7 +4098,10 @@ ProductFamily.prototype = {
         var sortObj;
         var key;
 
-        var isCost = (self.query.isCost == 'true' ? true : false);
+        var isCost = null;
+
+        if (self.query.isCost)
+            isCost = (self.query.isCost == 'true' ? true : false);
 
         var lang = 0;
 
@@ -4110,14 +4116,28 @@ ProductFamily.prototype = {
             };
         }
 
+        var match = {
+            isActive: true
+        };
+
+        if (isCost !== null)
+            match.isCost = isCost;
+
         ProductFamilyModel.aggregate([{
-                $match: { isActive: true, isCost: isCost }
+                $match: match
             }, {
                 $lookup: {
                     from: 'Product',
                     localField: '_id',
                     foreignField: 'sellFamily',
                     as: 'Products'
+                }
+            }, {
+                $lookup: {
+                    from: 'Product',
+                    localField: '_id',
+                    foreignField: 'costFamily',
+                    as: 'costProducts'
                 }
             }, {
                 $unwind: {
@@ -4134,10 +4154,12 @@ ProductFamily.prototype = {
             }, {
                 $project: {
                     countProducts: { $size: '$Products' },
+                    countCostProducts: { $size: '$costProducts' },
                     name: '$langs',
                     sequence: 1,
                     createdAt: '$createdAt',
                     indirectCostRate: 1,
+                    isCost: 1,
                     opts: { $arrayElemAt: ['$productOptions', 0] }
                 }
             }, {
@@ -4156,8 +4178,10 @@ ProductFamily.prototype = {
                     name: { $first: '$name.name' },
                     sequence: { $first: '$sequence' },
                     indirectCostRate: { $first: '$indirectCostRate' },
+                    isCost: { $first: '$isCost' },
                     createdAt: { $first: '$createdAt' },
-                    countProducts: { $first: '$countProducts' }
+                    countProducts: { $first: '$countProducts' },
+                    countCostProducts: { $first: '$countCostProducts' }
                 }
             }, {
                 $group: {
@@ -4177,7 +4201,9 @@ ProductFamily.prototype = {
                         options: '$root.options',
                         sequence: '$root.sequence',
                         indirectCostRate: '$root.indirectCostRate',
+                        isCost: '$root.isCost',
                         countProducts: '$root.countProducts',
+                        countCostProducts: '$root.countCostProducts',
                         createdAt: '$root.createdAt'
                     }
                 }

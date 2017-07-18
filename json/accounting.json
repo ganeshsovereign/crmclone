@@ -1,0 +1,93 @@
+{
+    "name": "accounting",
+    "version": "0.1.000",
+    "author": {
+        "name": "TM - ToManage"
+    },
+    "description": "Gestion de la comptabilite",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TM-js/accounting.git"
+    },
+    "engines": {
+        "node": "4.6.x",
+        "TM": "0.5.x"
+    },
+    "contributors": [
+        "Herve Prot <herve.prot@tomanage.fr>"
+    ],
+    "license": "OSL v3",
+    "rights": {
+        "accounting": [
+            {
+                "desc": "Lire les ecritures comptables",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Exporter les ecritures comptables",
+                "perm": {
+                    "export": false
+                }
+            }
+        ]
+    },
+    "menus": {
+        "menu:accounting": {
+            "position": 45,
+            "perms": "bill.read",
+            "enabled": "$conf->facture->enabled",
+            "usertype": 2,
+            "icon": "fa-random",
+            "title": "compta:MenuFinancial",
+            "submenus": {
+                "menu:accountingClient": {
+                    "position": 10,
+                    "url": "/erp/#!/accounting/journal?journal=VTE",
+                    "perms": "accounting.read",
+                    "enabled": "$conf->accounting->enabled",
+                    "icon": "fa-random",
+                    "usertype": 2,
+                    "title": "compta:SellsJournal"
+                },
+                "menu:accountingSupplier": {
+                    "position": 11,
+                    "url": "/erp/#!/accounting/journal?journal=ACH",
+                    "perms": "accounting.read",
+                    "enabled": "$conf->accounting->enabled",
+                    "icon": "fa-random",
+                    "usertype": 2,
+                    "title": "compta:PurchasesJournal"
+                },
+                "menu:accountingOD": {
+                    "position": 12,
+                    "url": "/erp/#!/accounting/journal?journal=OD",
+                    "perms": "accounting.read",
+                    "enabled": "$conf->accounting->enabled",
+                    "icon": "fa-random",
+                    "usertype": 2,
+                    "title": "compta:ODJournal"
+                },
+                "menu:accountingBank": {
+                    "position": 13,
+                    "url": "/erp/#!/accounting/bank",
+                    "perms": "accounting.read",
+                    "enabled": "$conf->accounting->enabled",
+                    "icon": "fa-random",
+                    "usertype": 2,
+                    "title": "compta:BankAccounts"
+                },
+                "menu:accountingBalance": {
+                    "position": 15,
+                    "url": "/erp/#!/accounting/balance",
+                    "perms": "accounting.read",
+                    "enabled": "$conf->accounting->enabled",
+                    "icon": "fa-random",
+                    "usertype": 2,
+                    "title": "compta:AccountingBalance"
+                }
+            }
+        }
+    }
+}

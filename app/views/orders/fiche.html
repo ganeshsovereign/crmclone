@@ -58,7 +58,7 @@
             <span ng-show="!object._id">@(deliveries:NewStockReturn)</span>
         </li>
         <li ng-if="module('bill')">
-            <span ng-hide="!object._id">@(bills:BillsCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-hide="!object._id">@(bills:BillCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(bills:NewBill)</span>
         </li>
     </ul>
@@ -199,7 +199,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-if="object.Status == 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                    <a href="#" ng-if="object.Status == 'VALIDATED' && login.rights.order.create && !object.journalId.length" data-ng-click="changeStatus('DRAFT')">
                         <i class="fa fa-history"></i> @(ReOpen)
                     </a>
                 </li>

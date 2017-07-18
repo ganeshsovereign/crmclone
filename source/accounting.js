@@ -41,8 +41,9 @@ Entry.prototype.setSeq = function(seq) {
     return this;
 };
 
-Entry.prototype.credit = function(account_path, amount, extra) {
+Entry.prototype.credit = function(account_path, amount, memo, extra) {
     var key, keys, meta, transaction, val;
+
     if (extra == null) {
         extra = null;
     }
@@ -67,7 +68,7 @@ Entry.prototype.credit = function(account_path, amount, extra) {
         debit: 0.0,
         book: this.book.name,
         //entity: this.book.entity,
-        memo: this.journal.memo,
+        memo: memo || this.journal.memo,
         _journal: this.journal._id,
         datetime: this.journal.datetime,
         _original_journal: this.journal._original_journal,
@@ -88,7 +89,7 @@ Entry.prototype.credit = function(account_path, amount, extra) {
     return this;
 };
 
-Entry.prototype.debit = function(account_path, amount, extra) {
+Entry.prototype.debit = function(account_path, amount, memo, extra) {
     var key, keys, meta, transaction, val;
     if (extra == null) {
         extra = null;
@@ -115,7 +116,7 @@ Entry.prototype.debit = function(account_path, amount, extra) {
         _journal: this.journal._id,
         book: this.book.name,
         //entity: this.book.entity,
-        memo: this.journal.memo,
+        memo: memo || this.journal.memo,
         datetime: this.journal.datetime,
         _original_journal: this.journal._original_journal
     };

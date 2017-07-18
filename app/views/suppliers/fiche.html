@@ -178,7 +178,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-if="object.Status === 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                    <a href="#" ng-if="object.Status === 'VALIDATED' && login.rights.order.create && !object.journalId.length" data-ng-click="changeStatus('DRAFT')">
                         <i class="fa fa-history"></i> @(ReOpen)
                     </a>
                 </li>

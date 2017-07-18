@@ -69,34 +69,68 @@
     </div>
     <div class="portlet light">
         <div class="form-body">
-            <div class="table-responsive">
-                <div class="dataTables_wrapper no-footer table-responsive">
-                    <div class="col-md-12">
-                        <table class="table table-striped table-bordered table-hover no-footer" id="familyProductList">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>@(products:Sequence)</th>
-                                    <th>@(Name)</th>
-                                    <th>@(products:QtyOfProductOnThisFamily)</th>
-                                    <th>@(CreatedAt)</th>
-                                    <th class="center" width="120px">@(Action)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in listObject">
-                                    <td>{{line.sequence}}</td>
-                                    <td>{{line.name}}</td>
-                                    <td>{{line.countProducts}}</td>
-                                    <td>{{line.createdAt | date : "shortDate"}}</td>
-                                    <td>
-                                        <a class="btn green fa fa-pencil" ui-sref="product.family.show({id:line._id})" title="Editer"></a>
-                                        <button ng-if="line.countProducts == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <tabset class="tabbable-line tabbable-full-width">
+                <tab heading="@(products:Sell)">
+                    <div class="table-responsive">
+                        <div class="dataTables_wrapper no-footer table-responsive">
+                            <div class="col-md-12">
+                                <table class="table table-striped table-bordered table-hover no-footer" id="familyProductList">
+                                    <thead>
+                                        <tr role="row" class="heading">
+                                            <th>@(products:Sequence)</th>
+                                            <th>@(Name)</th>
+                                            <th>@(products:QtyOfProductOnThisFamily)</th>
+                                            <th>@(CreatedAt)</th>
+                                            <th class="center" width="120px">@(Action)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="line in listObject | filter:{isCost:false}">
+                                            <td>{{line.sequence}}</td>
+                                            <td>{{line.name}}</td>
+                                            <td>{{line.countProducts}}</td>
+                                            <td>{{line.createdAt | date : "shortDate"}}</td>
+                                            <td>
+                                                <a class="btn green fa fa-pencil" ui-sref="product.family.show({id:line._id})" title="Editer"></a>
+                                                <button ng-if="line.countProducts == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </tab>
+                <tab heading="@(products:Buy)">
+                    <div class="table-responsive">
+                        <div class="dataTables_wrapper no-footer table-responsive">
+                            <div class="col-md-12">
+                                <table class="table table-striped table-bordered table-hover no-footer" id="familyProductList">
+                                    <thead>
+                                        <tr role="row" class="heading">
+                                            <th>@(products:Sequence)</th>
+                                            <th>@(Name)</th>
+                                            <th>@(products:QtyOfProductOnThisFamily)</th>
+                                            <th>@(CreatedAt)</th>
+                                            <th class="center" width="120px">@(Action)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="line in listObject | filter:{isCost:true}">
+                                            <td>{{line.sequence}}</td>
+                                            <td>{{line.name}}</td>
+                                            <td>{{line.countCostProducts}}</td>
+                                            <td>{{line.createdAt | date : "shortDate"}}</td>
+                                            <td>
+                                                <a class="btn green fa fa-pencil" ui-sref="product.family.show({id:line._id})" title="Editer"></a>
+                                                <button ng-if="line.countProducts == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </tab>
         </div>
     </div>

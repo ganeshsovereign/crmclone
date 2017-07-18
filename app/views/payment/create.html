@@ -1,0 +1,290 @@
+<h3 class="page-title">
+    <i class="fa fa-money font-green"></i> @(compta:NewPayment)
+</h3>
+
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a ui-sref="payment.list">@(compta:ListOfPayments)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(compta:NewPayment)</span>
+        </li>
+    </ul>
+</div>
+
+
+
+<form ng-submit="create()" name="form" role="form">
+    <div class="row">
+        <div class="col-md-5 col-sm-12">
+            <div class="portlet green box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-shopping-cart"></i> @(compta:NewPayment)
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+                            <div ng-if="login.multiEntities" class="form-group">
+                                <label class="col-md-4 control-label">@(Entity)</label>
+                                <div class="col-md-8">
+                                    <!--<select class="form-control" ng-model="payment.entity" ng-options="s.id as s.name for s in entityList" ng-change="loadBank()"></select>-->
+                                    <p class="form-control-static"> {{payment.entity}} </p>
+                                </div>
+                            </div>
+                            <div crm-id label="@(companies:Company)" name="societeId" ng-model="payment.societe" entity="payment.entity" url="/erp/api/societe/autocomplete?all=1" required="true" on-select="find" placeholder="@(companies:CompanyName)"></div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(compta:DatePayment)</label>
+                                <div class="col-md-8">
+                                    <input date-input ng-model="payment.datec" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(bills:PaymentMode)</label>
+                                <div class="col-md-8">
+                                    <select class="form-control" required data-ng-model="payment.mode_reglement_code" data-ng-options="s.id as s.label for s in dict.fk_paiement.values" ng-change="updateLabel()"></select>
+                                </div>
+                            </div>
+
+                            <!--<div class="form-group">
+                                <label class="col-md-4 control-label">@(compta:Piece)</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" ng-model="payment.pieceAccounting" placeholder="Numero de Cheque,..." type="text">
+                                </div>
+                            </div>-->
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(compta:Libelle)</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" ng-model="payment.libelleAccounting" type="text">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(bank:Bank)</label>
+                                <div class="col-md-8">
+                                    <select class="form-control" required data-ng-model="payment.bank" data-ng-options="s as s.name for s in banks"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(Type)</label>
+                                <div class="col-md-8">
+                                    <div class="radio-list">
+                                        <label class="radio-inline"><input type="radio" name="paymentMode" required ng-model="payment.mode" value="Receipt" ng-change="updateBalance()" class=""/> @(compta:Receipt) </label>
+                                        <label class="radio-inline"><input type="radio" name="paymentMode" required ng-model="payment.mode" value="Payment" ng-change="updateBalance()" class=""/> @(compta:Payment) </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(compta:Amount)</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" min="0" step="0.01" ng-model="payment.amount" ng-change="updateBalance()" placeholder="@(compta:Amount)" type="number">
+                                </div>
+                            </div>
+
+                            <div class="alert alert-success" ng-show="balance == 0">
+                                <strong>Success !</strong> Balance equilibree
+                            </div>
+
+                            <div class="alert alert-danger" ng-hide="balance == 0">
+                                <strong>Erreur !</strong> Balance non nulle. Solde {{balance| number:2}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-7 col-sm-12">
+            <div class="portlet light" ng-if="payment.bills.length">
+                <div class="portlet-title">
+                    <div class="caption font-green">
+                        <i class="fa fa-money font-green"></i> @(bills:BillsCustomers)
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Ref
+                                    </th>
+                                    <th>
+                                        @(bills:DateEcheance)
+                                    </th>
+                                    <th>
+                                        @(Status)
+                                    </th>
+                                    <th>
+                                        @(compta:AlreadyPaid)
+                                    </th>
+                                    <th>
+                                        @(compta:AmountPayment)
+                                    </th>
+                                    <th width="200px">
+                                        @(compta:Amount)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="bill in payment.bills| orderBy : 'dater'" ng-class="{active: bill.journalId.length}">
+                                    <td>
+                                        <a ui-sref="bill.show({id:bill._id})">{{bill.ref}}</a>
+                                    </td>
+                                    <td>
+                                        {{bill.dater| date:'dd/MM/yyyy'}}
+                                    </td>
+                                    <td>
+                                        <span class="label label-sm" ng-class="bill.status.css">{{bill.status.name}}</span>
+                                    </td>
+                                    <td>
+                                        {{bill.total_paid| currency}}
+                                    </td>
+                                    <td>
+                                        {{bill.total_ttc - bill.total_paid| currency}}
+                                    </td>
+                                    <td>
+                                        <div class="input-group" ng-show="bill.journalId.length">
+                                            <a class="input-group-addon" ng-click="bill.payment = bill.total_ttc - bill.total_paid;
+                                                    updateBalance();">
+                                                <i class="fa fa-arrow-circle-right font-green"></i>
+                                            </a>
+                                            <input type="number" step="0.01" ng-change="updateBalance()" ng-model="bill.payment" class="form-control input-sm">
+                                        </div>
+                                        <span ng-hide="bill.journalId.length" class="font-red">Ecriture non passee</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portlet light" ng-if="payment.bills_supplier.length">
+                <div class="portlet-title">
+                    <div class="caption font-blue-hoki">
+                        <i class="fa fa-group font-blue-hoki"></i> @(bills:BillsSuppliers)
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Ref
+                                    </th>
+                                    <th>
+                                        @(bills:DateEcheance)
+                                    </th>
+                                    <th>
+                                        @(Status)
+                                    </th>
+                                    <th>
+                                        @(compta:AlreadyPaid)
+                                    </th>
+                                    <th>
+                                        @(compta:AmountPayment)
+                                    </th>
+                                    <th width="200px">
+                                        @(compta:Amount)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="bill in payment.bills_supplier| orderBy : 'dater'" ng-class="{active: bill.journalId.length}">
+                                    <td>
+                                        <a ui-sref="billSupplier.show({id:bill._id})">{{bill.ref}}</a>
+                                    </td>
+                                    <td>
+                                        {{bill.dater| date:'dd/MM/yyyy'}}
+                                    </td>
+                                    <td>
+                                        <span class="label label-sm" ng-class="bill.status.css">{{bill.status.name}}</span>
+                                    </td>
+                                    <td>
+                                        {{bill.total_paid| currency}}
+                                    </td>
+                                    <td>
+                                        {{bill.total_ttc - bill.total_paid| currency}}
+                                    </td>
+                                    <td>
+                                        <div class="input-group" ng-show="bill.journalId.length">
+                                            <a class="input-group-addon" ng-click="bill.payment = bill.total_ttc - bill.total_paid;
+                                                    updateBalance();">
+                                                <i class="fa fa-arrow-circle-right font-green"></i>
+                                            </a>
+                                            <input type="number" step="0.01" ng-change="updateBalance()" ng-model="bill.payment" class="form-control input-sm">
+                                        </div>
+                                        <span ng-hide="bill.journalId.length" class="font-red">Ecriture non passee</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7 col-sm-12">
+            <div class="portlet green box">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-shopping-cart"></i> @(Options)
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(compta:Penality)</label>
+                                <div class="col-md-8">
+                                    <input ng-disabled="payment.mode !== 'Receipt'" class=" form-control" min="0" step="0.01" ng-model="payment.penality " ng-change="updateBalance() " placeholder="@(compta:Penality) " type="number" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(compta:Differential)</label>
+                                <div class="col-md-8">
+                                    <input class=" form-control" step="0.01" ng-model="payment.differential " ng-change="updateBalance() " placeholder="@(compta:Differential) " type="number" />
+                                </div>
+                            </div>
+
+                            <div class="alert alert-success " ng-show="balance==0 ">
+                                <strong>Success !</strong> Balance equilibree
+                            </div>
+
+                            <div class="alert alert-danger " ng-hide="balance==0 ">
+                                <strong>Erreur !</strong> Balance non nulle. Solde {{balance| number:2}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="form-actions ">
+        <div class="row ">
+            <div class="col-md-offset-5 col-md-7 ">
+                <button type="submit " ng-disabled="balance !==0 " class="btn blue ">@(Add)</button>
+                <a ui-sref="bill.list " class="btn default ">@(Cancel)</a>
+            </div>
+        </div>
+    </div>
+</form>
