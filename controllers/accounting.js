@@ -496,6 +496,12 @@ Object.prototype = {
                 stream.emit('data', out);
             }
 
+            if (mode === 'kpmg') {
+                //entete
+                out += "Journal;Date;Numero;Libelle;Compte comptable;Client;Debit;Credit;Date echeance;Famille de produit\n";
+                stream.emit('data', out);
+            }
+
             var debit = 0;
             var credit = 0;
 
@@ -584,6 +590,81 @@ Object.prototype = {
                             else
                                 out += ";";
 
+
+                            debit += round(entry.debit, 2);
+                            credit += round(entry.credit, 2);
+                        }
+
+                        if (mode === 'kpmg') {
+                            if (!entry.meta.type)
+                                out += (CONFIG('accounting.' + entry.book) || entry.book);
+                            else
+                                out += "RG_C";
+
+                            out += ";" + moment(entry.datetime).format("DD/MM/YYYY");
+
+                            if (journal == 'VTE' || journal == 'ACH') {
+                                if (entry.meta.invoice) {
+                                    out += ";" + entry.meta.invoice.ref;
+                                    //if (entry.reconcilliation)
+                                    //    out += "-R" + moment(entry.reconcilliation).format("MMYY");
+                                } else
+                                    out += ";";
+                            } else {
+                                if (entry.seq) {
+                                    out += ";" + entry.seq;
+                                    //if (entry.reconcilliation)
+                                    //    out += "-R" + moment(entry.reconcilliation).format("MMYY");
+                                } else
+                                    out += ";";
+                            }
+
+                            if (entry.memo)
+                                out += ";" + entry.memo;
+                            else
+                                out += ";";
+
+                            if (!entry.meta.bank)
+                                out += ";" + entry.accounts;
+                            else
+                                switch (entry.meta.type) {
+                                    case 'CHQ':
+                                        out += ";582500";
+                                        break;
+                                    case 'VIR':
+                                        out += ";582200";
+                                        break;
+                                    case 'CB':
+                                        out += ";582100";
+                                        break;
+                                    case 'PRELV':
+                                        out += ";582300";
+                                        break;
+                                    case 'AFF': //Affacturage
+                                        out += ";582400";
+                                        break;
+                                    default:
+                                        return cb("Mode de reglement inconnu {0} : code comptable manquant".format(entry.meta.type));
+                                }
+
+                            if (entry.meta.supplier)
+                                out += ";" + entry.meta.supplier.fullName;
+                            else
+                                out += ";";
+
+                            out += ";" + round(entry.debit, 2).toString().replace(".", ",");
+                            out += ";" + round(entry.credit, 2).toString().replace(".", ",");
+
+                            if (journal == 'VTE' || journal == 'ACH')
+                                out += ";" + (result.dater ? moment(result.dater).format("DD/MM/YYYY") : ""); //date echeance
+                            out += ";" + "";
+
+                            if (entry.meta.product) {
+                                if (journal == 'VTE')
+                                    out += entry.meta.product.sellFamily.name;
+                                if (journal == 'ACH')
+                                    out += entry.meta.product.costFamily.name;
+                            }
 
                             debit += round(entry.debit, 2);
                             credit += round(entry.credit, 2);

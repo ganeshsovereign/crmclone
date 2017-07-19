@@ -148,12 +148,14 @@ Payment.prototype = {
             if (body.mode === "Receipt")
                 entry.debit(body.bank.compta_bank, body.amount, null, {
                     type: body.mode_reglement_code,
+                    bank: body.bank._id,
                     pieceAccounting: body.pieceAccounting,
                     supplier: body.supplier,
                     bills: bills // Liste des factures
                 });
             else
                 entry.credit(body.bank.compta_bank, body.amount, null, {
+                    bank: body.bank._id,
                     type: body.mode_reglement_code,
                     pieceAccounting: body.pieceAccounting,
                     supplier: body.supplier,
@@ -181,13 +183,22 @@ Payment.prototype = {
 
                         //Options
                         if (body.penality !== 0)
-                            entry.credit('763100', Math.abs(body.penality), "PENALITY", {});
+                            entry.credit('763100', Math.abs(body.penality), "PENALITY", {
+                                type: body.mode_reglement_code,
+                                supplier: body.supplier
+                            });
 
                         if (body.differential !== 0) {
                             if (body.differential > 0)
-                                entry.credit('758000', Math.abs(body.differential), "CORRECTION", {});
+                                entry.credit('758000', Math.abs(body.differential), "CORRECTION", {
+                                    type: body.mode_reglement_code,
+                                    supplier: body.supplier
+                                });
                             else
-                                entry.debit('658000', Math.abs(body.differential), "CORRECTION", {});
+                                entry.debit('658000', Math.abs(body.differential), "CORRECTION", {
+                                    type: body.mode_reglement_code,
+                                    supplier: body.supplier
+                                });
                         }
 
                         // client
@@ -201,11 +212,13 @@ Payment.prototype = {
 
                             if (bill.payment > 0)
                                 entry.credit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
+                                    type: body.mode_reglement_code,
                                     invoice: bill._id,
                                     supplier: bill.supplier._id
                                 });
                             else
                                 entry.debit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
+                                    type: body.mode_reglement_code,
                                     invoice: bill._id,
                                     supplier: bill.supplier._id
                                 });
@@ -224,20 +237,28 @@ Payment.prototype = {
 
                                 if (bill.total_taxes[j].value > 0) {
                                     entryOD.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: bill.supplier._id,
                                         invoice: bill._id,
                                         tax: bill.total_taxes[j].taxeId._id
                                     });
                                     entryOD.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: bill.supplier._id,
                                         invoice: bill._id,
                                         tax: bill.total_taxes[j].taxeId._id
                                     });
                                 } else {
                                     // Si avoir
                                     entryOD.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: bill.supplier._id,
                                         invoice: bill._id,
                                         tax: bill.total_taxes[j].taxeId._id
                                     });
                                     entryOD.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: bill.supplier._id,
                                         invoice: bill._id,
                                         tax: bill.total_taxes[j].taxeId._id
                                     });
@@ -253,11 +274,13 @@ Payment.prototype = {
 
                             if (bill.payment > 0)
                                 entry.debit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
+                                    type: body.mode_reglement_code,
                                     invoice: bill._id,
                                     supplier: bill.supplier._id
                                 });
                             else
                                 entry.credit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
+                                    type: body.mode_reglement_code,
                                     invoice: bill._id,
                                     supplier: bill.supplier._id
                                 });
@@ -278,20 +301,28 @@ Payment.prototype = {
                                 // TVA on payment
                                 if (bill.total_taxes[j].value > 0) {
                                     entryOD.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: bill.supplier._id,
                                         invoice: bill._id,
                                         tax: bill.total_taxes[j].taxeId._id
                                     });
                                     entryOD.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: bill.supplier._id,
                                         invoice: bill._id,
                                         tax: bill.total_taxes[j].taxeId._id
                                     });
                                 } else {
                                     // Si avoir
                                     entryOD.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: bill.supplier._id,
                                         invoice: bill._id,
                                         tax: bill.total_taxes[j].taxeId._id
                                     });
                                     entryOD.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: bill.supplier._id,
                                         invoice: bill._id,
                                         tax: bill.total_taxes[j].taxeId._id
                                     });

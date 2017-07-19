@@ -25,32 +25,19 @@ var TransationSchema = new Schema({
     credit: Number,
     debit: Number,
     meta: Schema.Types.Mixed,
-    /*
-     meta : {
-        billsSupplier: [
-            {
-                amount: Number,
-                billSupplierRef: String,
-                billSupplierId: String
-            }
-        ],
-        bills: [
-            {
-                amount: Number,
-                billRef: String,
-                billId: String
-            }
-        ],
-        productRef : String,
-        productId:String,
-        societeName: String,
-        societeId: String,
-        pieceAccounting : String,
-        type: String,
-        tva_tx : Number
-    }
-     */
 
+    /*meta: {
+        bills: [{
+            amount: Number,
+            invoice: { type: Schema.Types.ObjectId, ref: 'invoice' }
+        }],
+        product: { type: Schema.Types.ObjectId, ref: 'product' },
+        bank: { type: Schema.Types.ObjectId, ref: 'bank' },
+        supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
+        invoice: { type: Schema.Types.ObjectId, ref: 'invoice' },
+        type: String,
+        tax: { type: Schema.Types.ObjectId, ref: 'taxes' },
+    },*/
 
     datetime: { type: Date, set: setDate },
     account_path: [String],

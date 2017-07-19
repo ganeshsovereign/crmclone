@@ -368,7 +368,7 @@ Object.prototype = {
         //console.log(ids);
 
         var billCustomer = function(bill, callback) {
-            if (!bill.isForSales)
+            if (!bill.forSales)
                 return callback(); // Not a customer invoice
 
             async.waterfall([
@@ -399,21 +399,45 @@ Object.prototype = {
 
                     //Add transport
                     if (bill.shipping.total_ht > 0)
-                        entry.credit('624200', bill.shipping.total_ht, null, { label: 'TRANSPORT' });
+                        entry.credit('624200', bill.shipping.total_ht, null, {
+                            label: 'TRANSPORT',
+                            supplier: bill.supplier._id,
+                            invoice: bill._id
+                        });
                     else if (bill.shipping.total_ht < 0)
-                        entry.credit('624200', Math.abs(bill.shipping.total_ht), null, { label: 'TRANSPORT' });
+                        entry.credit('624200', Math.abs(bill.shipping.total_ht), null, {
+                            label: 'TRANSPORT',
+                            supplier: bill.supplier._id,
+                            invoice: bill._id
+                        });
 
                     //Add global discount
                     if (bill.discount.discount.value > 0)
-                        entry.debit('709000', bill.discount.discount.value, "REMISE", { label: 'DISCOUNT' });
+                        entry.debit('709000', bill.discount.discount.value, "REMISE", {
+                            label: 'DISCOUNT',
+                            supplier: bill.supplier._id,
+                            invoice: bill._id
+                        });
                     else if (bill.discount.discount.value < 0)
-                        entry.credit('709000', Math.abs(bill.discount.discount.value), null, { label: 'DISCOUNT' });
+                        entry.credit('709000', Math.abs(bill.discount.discount.value), null, {
+                            label: 'DISCOUNT',
+                            supplier: bill.supplier._id,
+                            invoice: bill._id
+                        });
 
                     //Add escompte
                     if (bill.discount.escompte.value > 0)
-                        entry.debit('665000', bill.discount.escompte.value, "ESCOMPTE", { label: 'ESCOMPTE' });
+                        entry.debit('665000', bill.discount.escompte.value, "ESCOMPTE", {
+                            label: 'ESCOMPTE',
+                            supplier: bill.supplier._id,
+                            invoice: bill._id
+                        });
                     else if (bill.discount.discount.value < 0)
-                        entry.credit('665000', Math.abs(bill.discount.escompte.value), null, { label: 'ESCOMPTE' });
+                        entry.credit('665000', Math.abs(bill.discount.escompte.value), null, {
+                            label: 'ESCOMPTE',
+                            supplier: bill.supplier._id,
+                            invoice: bill._id
+                        });
 
 
                     cb(null, entry);
@@ -478,11 +502,15 @@ Object.prototype = {
 
                         if (lineBill.total_ht > 0)
                             entry.credit(compta_sell, lineBill.total_ht, null, {
-                                product: lineBill.product._id
+                                product: lineBill.product._id,
+                                supplier: bill.supplier._id,
+                                invoice: bill._id
                             });
                         else
                             entry.debit(compta_sell, Math.abs(lineBill.total_ht), null, {
-                                product: lineBill.product._id
+                                product: lineBill.product._id,
+                                supplier: bill.supplier._id,
+                                invoice: bill._id
                             });
 
                         callback();
@@ -509,11 +537,15 @@ Object.prototype = {
 
                             if (bill.total_taxes[i].value > 0)
                                 entry.credit(sellAccount, bill.total_taxes[i].value, bill.total_taxes[i].taxeId.code, {
-                                    tax: bill.total_taxes[i].taxeId._id
+                                    tax: bill.total_taxes[i].taxeId._id,
+                                    supplier: bill.supplier._id,
+                                    invoice: bill._id
                                 });
                             else
                                 entry.debit(sellAccount, Math.abs(bill.total_taxes[i].value), bill.total_taxes[i].taxeId.code, {
-                                    tax: bill.total_taxes[i].taxeId._id
+                                    tax: bill.total_taxes[i].taxeId._id,
+                                    supplier: bill.supplier._id,
+                                    invoice: bill._id
                                 });
 
                         }
@@ -537,7 +569,7 @@ Object.prototype = {
         };
 
         var billSupplier = function(bill, callback) {
-            if (bill.isForSales)
+            if (bill.forSales)
                 return callback(); // Not a supplier invoice
 
             async.waterfall([
@@ -617,11 +649,15 @@ Object.prototype = {
 
                         if (lineBill.total_ht > 0)
                             entry.debit(compta_buy, lineBill.total_ht, null, {
-                                product: lineBill.product._id
+                                product: lineBill.product._id,
+                                supplier: bill.supplier._id,
+                                invoice: bill._id
                             });
                         else
                             entry.credit(compta_buy, Math.abs(lineBill.total_ht), null, {
-                                product: lineBill.product._id
+                                product: lineBill.product._id,
+                                supplier: bill.supplier._id,
+                                invoice: bill._id
                             });
 
                         callback();
@@ -648,11 +684,15 @@ Object.prototype = {
 
                             if (bill.total_taxes[i].value >= 0)
                                 entry.debit(buyAccount, bill.total_taxes[i].value, bill.total_taxes[i].taxeId.code, {
-                                    tax: bill.total_taxes[i].taxeId._id
+                                    tax: bill.total_taxes[i].taxeId._id,
+                                    supplier: bill.supplier._id,
+                                    invoice: bill._id
                                 });
                             else
                                 entry.credit(buyAccount, Math.abs(bill.total_taxes[i].value), bill.total_taxes[i].taxeId.code, {
-                                    tax: bill.total_taxes[i].taxeId._id
+                                    tax: bill.total_taxes[i].taxeId._id,
+                                    supplier: bill.supplier._id,
+                                    invoice: bill._id
                                 });
 
                         }
@@ -667,11 +707,13 @@ Object.prototype = {
                         if (bill.correction >= 0)
                             entry.debit("658000", bill.correction, "CORRECTION", {
                                 label: "CORRECTION",
+                                supplier: bill.supplier._id,
                                 invoice: bill._id
                             });
                         else
                             entry.credit("658000", Math.abs(bill.correction), "CORRECTION", {
                                 label: "CORRECTION",
+                                supplier: bill.supplier._id,
                                 invoice: bill._id
                             });
                     }

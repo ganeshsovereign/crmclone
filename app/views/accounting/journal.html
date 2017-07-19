@@ -73,6 +73,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a ng-href="/erp/api/accounting/download/{{journal}}?mode=kpmg&start_date={{date.start.toISOString()}}&end_date={{date.end.toISOString()}}" ng-class="{disabled:editable}" confirmed-click="classImported()" ng-confirm-click="Voulez-vous cloturer l'import et passer les ecritures comme etant importees ? <br> Montant {{totalExportAmount | currency}} ">
+                                        <i class="fa fa-download"></i> @(Download) KPMG
+                                    </a>
+                                </li>
+                                <li>
                                     <a ng-href="/erp/api/accounting/download/list?csv=1&journal={{journal}}">
                                         <i class="fa fa-download"></i> @(bills:AccountingCode)
                                     </a>

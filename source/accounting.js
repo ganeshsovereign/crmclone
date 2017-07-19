@@ -603,7 +603,7 @@ exports.Book.prototype.ledger = function(query, populate) {
         .populate({ path: "meta.supplier", select: "name", model: "Customers" })
         .populate({ path: "meta.invoice", select: "ref forSales", model: "invoice" })
         .populate({ path: "meta.bills.invoice", select: "ref forSales", model: "invoice" })
-        .populate({ path: "meta.product", select: "info", model: "product" })
+        .populate({ path: "meta.product", select: "info sellFamily costFamily", model: "product", populate: { path: "sellFamily costFamily" } })
         .populate({ path: "meta.tax", select: "code", model: "taxes" });
 
     //console.log(query);
