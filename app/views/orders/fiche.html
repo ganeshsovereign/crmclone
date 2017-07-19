@@ -345,6 +345,11 @@
                             <a ui-sref="bill.show.detail({id:object._id})">
                                 <i class="icon-info"></i> @(bill:Details) </a>
                         </li>
+
+                        <li ng-class="{active: $state.includes(module() + '.show.payment')}" ng-show="object.journalId.length > 0">
+                            <a ui-sref="bill.show.payment({id:object._id})">
+                                <i class="icon-info"></i> @(compta:ListOfPayments) </a>
+                        </li>
                     </ul>
                 </div>
             </div>

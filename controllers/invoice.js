@@ -128,7 +128,7 @@ Object.prototype = {
                 switch (i) {
                     case "query":
                         if (self.query.query == "WAIT") // For payment
-                            query.Status = { "$nin": ["PAID", "CANCELLED"] };
+                            query.Status = { "$nin": ["PAID", "CANCELLED", "DRAFT"] };
                         break;
                     case "dater":
                         query.dater = JSON.parse(self.query.dater);
@@ -146,22 +146,28 @@ Object.prototype = {
         // console.log(self.query);
         //console.log(query);
 
-        BillModel.find(query, "-history -files -latex", { sort: { ref: 1 } }, function(err, doc) {
-            if (err) {
-                console.log(err);
-                self.json({
-                    notify: {
-                        type: "error",
-                        message: err
-                    }
-                });
-                return;
-            }
+        BillModel.find(query, "-history -files -latex")
+            .populate("supplier", "name")
+            .populate({
+                path: "total_taxes.taxeId"
+            })
+            .sort({ ID: 1 })
+            .exec(function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    self.json({
+                        notify: {
+                            type: "error",
+                            message: err
+                        }
+                    });
+                    return;
+                }
 
-            //console.log(doc);
+                //console.log(doc);
 
-            self.json(doc);
-        });
+                self.json(doc);
+            });
     },
     show: function(id) {
         var InvoiceModel = MODEL('invoice').Schema;

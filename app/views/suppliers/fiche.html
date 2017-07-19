@@ -243,16 +243,34 @@
 
                 <div class="profile-usermenu ">
                     <ul class="nav ">
-                        <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
-                            <a ng-if="module('offersupplier')" ui-sref="offersupplier.show.detail({id:object._id}) ">
-                                <i class="icon-info "></i> @(propal:Details) </a>
-                            <a ng-if="module('ordersupplier')" ui-sref="ordersupplier.show.detail({id:object._id}) ">
-                                <i class="icon-info "></i> @(orders:OrdersDetails) </a>
-                            <a ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show.detail({id:object._id}) ">
-                                <i class="icon-info "></i> @(orders:DeliveryDetails) </a>
-                            <a ng-if="module('billsupplier')" ui-sref="billsupplier.show.detail({id:object._id}) ">
-                                <i class="icon-info "></i> @(bill:Details) </a>
-                        </li>
+                        <ul class="nav" ng-if="module('offersupplier')">
+                            <li ng-class="{active: $state.includes(module() + '.show.detail')}">
+                                <a ui-sref="offersupplier.show.detail({id:object._id}) ">
+                                    <i class="icon-info "></i> @(propal:Details) </a>
+                            </li>
+                        </ul>
+                        <ul class="nav" ng-if="module('ordersupplier')">
+                            <li ng-class="{active: $state.includes(module() + '.show.detail')}">
+                                <a ui-sref="ordersupplier.show.detail({id:object._id}) ">
+                                    <i class="icon-info "></i> @(orders:OrdersDetails) </a>
+                            </li>
+                        </ul>
+                        <ul class="nav" ng-if="module('deliverysupplier')">
+                            <li ng-class="{active: $state.includes(module() + '.show.detail')}">
+                                <a ui-sref="deliverysupplier.show.detail({id:object._id}) ">
+                                    <i class="icon-info "></i> @(orders:DeliveryDetails) </a>
+                            </li>
+                        </ul>
+                        <ul class="nav" ng-if="module('billsupplier')">
+                            <li ng-class="{active: $state.includes(module() + '.show.detail')}">
+                                <a ui-sref="billsupplier.show.detail({id:object._id}) ">
+                                    <i class="icon-info "></i> @(bill:Details) </a>
+                            </li>
+                            <li ng-class="{active: $state.includes(module() + '.show.payment')}" ng-show="object.journalId.length > 0">
+                                <a ui-sref="billsupplier.show.payment({id:object._id})">
+                                    <i class="icon-info"></i> @(compta:ListOfPayments) </a>
+                            </li>
+                        </ul>
                     </ul>
                 </div>
             </div>

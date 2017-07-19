@@ -141,7 +141,7 @@ MetronicApp.controller('AccountingController', ['$scope', '$rootScope', '$http',
                 url: '/erp/api/accounting/entries/' + $scope.journal,
                 params: query
             }).success(function(data, status) {
-                console.log(data);
+                //console.log(data);
                 $scope.entries = data.results;
                 $scope.totalEntries = data.total;
                 //$scope.balance = data.balance; // TODO A verifier

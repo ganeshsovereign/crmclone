@@ -739,6 +739,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/orders/detail.html",
             data: { pageTitle: 'Facture client' }
         })
+        .state('bill.show.payment', {
+            url: "/payment",
+            templateUrl: "/views/bank/paymentList.html",
+            data: { pageTitle: 'Reglement client' },
+            controller: "PaymentController"
+        })
+        .state('bill.show.payment.create', {
+            //parent: "payment",
+            url: "?societe&entity",
+            templateUrl: "/views/bank/createPayment.html",
+            data: {
+                pageTitle: 'Nouveau règlement'
+            },
+            controller: "PaymentController"
+        })
         .state('bill.create', {
             parent: "bill",
             url: "/create.html",
@@ -810,6 +825,21 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/detail",
             templateUrl: "/views/suppliers/detail.html",
             data: { pageTitle: 'Facture' }
+        })
+        .state('billsupplier.show.payment', {
+            url: "/payment",
+            templateUrl: "/views/bank/paymentList.html",
+            data: { pageTitle: 'Reglement client' },
+            controller: "PaymentController"
+        })
+        .state('billsupplier.show.payment.create', {
+            //parent: "payment",
+            url: "?societe&entity",
+            templateUrl: "/views/bank/createPayment.html",
+            data: {
+                pageTitle: 'Nouveau règlement'
+            },
+            controller: "PaymentController"
         })
         .state('billsupplier.create', {
             parent: "billsupplier",
@@ -1431,20 +1461,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/bank",
             abstract: true,
             templateUrl: "/views/bank/index.html"
-        })
-        .state('payment', {
-            url: "/payment",
-            abstract: true,
-            templateUrl: "/views/payment/index.html"
-        })
-        .state('payment.create', {
-            parent: "payment",
-            url: "?societe&entity",
-            templateUrl: "/views/payment/create.html",
-            data: {
-                pageTitle: 'Nouveau règlement'
-            },
-            controller: "PaymentController"
         })
         .state('task', {
             url: "/task",

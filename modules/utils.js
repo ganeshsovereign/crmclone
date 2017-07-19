@@ -266,6 +266,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
     var SocieteModel = MODEL('Customers').Schema;
     var TaxesModel = MODEL('taxes').Schema;
+    var round = exports.round;
 
     var count = 0,
         total_ht = 0,
@@ -482,9 +483,9 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
             total_taxes = _.sortBy(total_taxes, 'sequence');
 
             callback(null, {
-                total_ht: total_ht,
+                total_ht: round(total_ht, 2),
                 total_taxes: total_taxes,
-                total_ttc: total_ttc,
+                total_ttc: round(total_ttc, 2),
                 weight: weight,
                 count: count
             });

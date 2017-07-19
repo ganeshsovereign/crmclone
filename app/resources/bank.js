@@ -25,15 +25,23 @@ International Registered Trademark & Property of ToManage SAS
 
 
 "use strict";
-/* global angular: true */
 
 //Bank service
-MetronicApp.factory("Payments", ['$resource', function($resource) {
-    return $resource('/erp/api/payment/:Id', {
-        Id: '@_id'
-    }, {
-        update: {
-            method: 'PUT'
-        }
-    });
+MetronicApp.factory("Banks", ['$resource', function($resource) {
+    return {
+        payment: $resource('/erp/api/bank/payment/:Id', {
+            Id: '@_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        }),
+        bank: $resource('/erp/api/bank/:Id', {
+            Id: '@_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        })
+    };
 }]);

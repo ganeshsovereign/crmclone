@@ -156,7 +156,7 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(Date)</label>
                                 <div class="col-md-4">
-                                    <input date-input ng-model="entry.datec"/>
+                                    <input date-input ng-model="entry.datec" />
                                 </div>
                             </div>
                         </div>
@@ -214,46 +214,47 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="entry in entries| filterAmount:search" ng-class='{success:entry.reconcilliation}'>
-                                <td><!-- uniform -->
+                                <td>
+                                    <!-- uniform -->
                                     <input ng-model="entry.exported" type="checkbox" ng-checked="entry.exported" disabled/>
                                 </td>
                                 <td>
                                     {{entry.datetime| date:"dd/MM/yyyy"}}
                                 </td>
                                 <td class="text-right">
-                                    <div ng-hide="entry.meta.billId || entry.meta.billsSupplierId">{{entry.seq}}</div>
-                                    <a ng-show="entry.meta.billId" ui-sref="bill.show({id:entry.meta.billId})"><i class="fa fa-money"></i> FA-{{entry.seq}}</a>
-                                    <a ng-show="entry.meta.billSupplierId" ui-sref="billSupplier.show({id:entry.meta.billSupplierId})"><i class="fa fa-money"></i> FF-{{entry.seq}}</a>
+                                    <div ng-hide="entry.meta.invoice._id">{{entry.seq}}</div>
+                                    <!--<a ng-show="entry.meta.invoice.forSales" ui-sref="bill.show({id:entry.meta.invoice._id})"><i class="fa fa-money"></i> FA-{{entry.seq}}</a>
+                                    <a ng-hide="entry.meta.invoice.forSales" ui-sref="billsupplier.show({id:entry.meta.invoice._id})"><i class="fa fa-money"></i> FF-{{entry.seq}}</a>-->
                                 </td>
                                 <td>
-                                    <a href="#" editable-bsdate="entry.reconcilliation"  e-datepicker-popup="dd/MM/yyyy" eb-min-date="{{minDate}}" eb-max-date="{{maxDate}}" eb-onbeforesave="checkReconcilliation($data)" onaftersave="addReconcilliation(entry._journal, $data)">{{entry.reconcilliation|| 'En attente' | date:'@(main:date.format.java.day)'}}</a>
+                                    <a href="#" editable-bsdate="entry.reconcilliation" e-datepicker-popup="dd/MM/yyyy" eb-min-date="{{minDate}}" eb-max-date="{{maxDate}}" eb-onbeforesave="checkReconcilliation($data)" onaftersave="addReconcilliation(entry._journal, $data)">{{entry.reconcilliation|| 'En attente' | date:'@(main:date.format.java.day)'}}</a>
                                 </td>
                                 <td>
-                                    <span ng-if="entry.meta.productId" ui-sref="product.show({id:entry.meta.productId})">{{entry.meta.productRef}}</span>
-                                    <a ng-if="entry.meta.societeId" ui-sref="societe.show({id:entry.meta.societeId})"><i class="fa fa-institution"></i> {{entry.meta.societeName}}</a>
-                                    <div ng-if="entry.meta.tva_tx"> TVA {{entry.meta.tva_tx}} %</div>
+                                    <span ng-if="entry.meta.product" ui-sref="product.show({id:entry.meta.product._id})">{{entry.meta.product.info.SKU}}</span>
+                                    <a ng-if="entry.meta.supplier" ui-sref="societe.show({id:entry.meta.supplier._id})"><i class="fa fa-institution"></i> {{entry.meta.supplier.fullName}}</a>
+                                    <div ng-if="entry.meta.tax"> {{entry.meta.tax.code}} </div>
                                 </td>
                                 <td>
                                     <div>{{entry.memo}}</div>
                                     <div ng-repeat="line in entry.meta.bills">
-                                        <a ui-sref="bill.show({id:line.billId})">{{line.billRef}}</a> : {{line.amount| currency}}
-                                    </div>
-                                    <div ng-repeat="line in entry.meta.billsSupplier">
-                                        <a ui-sref="billSupplier.show({id:line.billSupplierId})">{{line.billSupplierRef}}</a> : {{line.amount| currency}}
+                                        <a ng-show="line.invoice.forSales" ui-sref="bill.show({id:line.invoice._id})">{{line.invoice.ref}} : {{line.amount| currency}}</a>
+                                        <a ng-hide="line.invoice.forSales" ui-sref="billsupplier.show({id:line.invoice._id})">{{line.invoice.ref}} : {{line.amount| currency}}</a>
                                     </div>
                                 </td>
                                 <td>
-                                    <div ng-if="entry.credit" class="text-right">{{entry.credit| currency}}</div> <!-- inverse debit/credit car compta-->
+                                    <div ng-if="entry.credit" class="text-right">{{entry.credit| currency}}</div>
+                                    <!-- inverse debit/credit car compta-->
                                 </td>
                                 <td>
-                                    <div ng-if="entry.debit" class="text-right">{{entry.debit| currency}}</div> <!-- inverse debit/credit car compta-->
+                                    <div ng-if="entry.debit" class="text-right">{{entry.debit| currency}}</div>
+                                    <!-- inverse debit/credit car compta-->
                                 </td>
                                 <td>
                                     <div class="text-right">{{entry.timestamp| date:'@(main:date.format.java.dayhour)'}}</div>
                                 </td>
                             </tr>
                         </tbody>
-                        <tfoot> 
+                        <tfoot>
                             <tr>
                                 <td colspan="6" class="text-right h5">@(Total)</td>
                                 <td class="text-right h5">{{credit| currency}}</td>

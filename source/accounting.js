@@ -599,7 +599,13 @@ exports.Book.prototype.ledger = function(query, populate) {
         delete query.page;
     }
     query = this.parseQuery(query);
-    q = this.transactionModel.find(query);
+    q = this.transactionModel.find(query)
+        .populate({ path: "meta.supplier", select: "name", model: "Customers" })
+        .populate({ path: "meta.invoice", select: "ref forSales", model: "invoice" })
+        .populate({ path: "meta.bills.invoice", select: "ref forSales", model: "invoice" })
+        .populate({ path: "meta.product", select: "info", model: "product" })
+        .populate({ path: "meta.tax", select: "code", model: "taxes" });
+
     //console.log(query);
     if (pagination) {
         this.transactionModel.count(query, function(err, count) {

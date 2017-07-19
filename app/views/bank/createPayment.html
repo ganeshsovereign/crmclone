@@ -1,26 +1,3 @@
-<h3 class="page-title">
-    <i class="fa fa-money font-green"></i> @(compta:NewPayment)
-</h3>
-
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="home">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <a ui-sref="payment.list">@(compta:ListOfPayments)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(compta:NewPayment)</span>
-        </li>
-    </ul>
-</div>
-
-
-
 <form ng-submit="create()" name="form" role="form">
     <div class="row">
         <div class="col-md-5 col-sm-12">
@@ -50,9 +27,19 @@
                             </div>
 
                             <div class="form-group">
+                                <label class="col-md-4 control-label">@(Type)</label>
+                                <div class="col-md-8">
+                                    <div class="radio-list">
+                                        <label class="radio"><input type="radio" name="paymentMode" required ng-model="payment.mode" value="Receipt" ng-change="updateBalance()" class=""/> @(compta:Receipt) </label>
+                                        <label class="radio"><input type="radio" name="paymentMode" required ng-model="payment.mode" value="Payment" ng-change="updateBalance()" class=""/> @(compta:Payment) </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
                                 <label class="col-md-4 control-label">@(bills:PaymentMode)</label>
                                 <div class="col-md-8">
-                                    <select class="form-control" required data-ng-model="payment.mode_reglement_code" data-ng-options="s.id as s.label for s in dict.fk_paiement.values" ng-change="updateLabel()"></select>
+                                    <select class="form-control" ng-disabled="!payment.mode" required data-ng-model="payment.mode_reglement_code" data-ng-options="s.id as s.label for s in dict.fk_paiement.values" ng-change="updateLabel()"></select>
                                 </div>
                             </div>
 
@@ -73,24 +60,14 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(bank:Bank)</label>
                                 <div class="col-md-8">
-                                    <select class="form-control" required data-ng-model="payment.bank" data-ng-options="s as s.name for s in banks"></select>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-4 control-label">@(Type)</label>
-                                <div class="col-md-8">
-                                    <div class="radio-list">
-                                        <label class="radio-inline"><input type="radio" name="paymentMode" required ng-model="payment.mode" value="Receipt" ng-change="updateBalance()" class=""/> @(compta:Receipt) </label>
-                                        <label class="radio-inline"><input type="radio" name="paymentMode" required ng-model="payment.mode" value="Payment" ng-change="updateBalance()" class=""/> @(compta:Payment) </label>
-                                    </div>
+                                    <select class="form-control" ng-disabled="!payment.mode" required data-ng-model="payment.bank" data-ng-options="s as s.name for s in banks"></select>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(compta:Amount)</label>
                                 <div class="col-md-8">
-                                    <input class="form-control" min="0" step="0.01" ng-model="payment.amount" ng-change="updateBalance()" placeholder="@(compta:Amount)" type="number">
+                                    <input class="form-control" ng-disabled="!payment.mode" min="0" step="0.01" ng-model="payment.amount" ng-change="updateBalance()" placeholder="@(compta:Amount)" type="number">
                                 </div>
                             </div>
 
@@ -208,7 +185,7 @@
                             <tbody>
                                 <tr ng-repeat="bill in payment.bills_supplier| orderBy : 'dater'" ng-class="{active: bill.journalId.length}">
                                     <td>
-                                        <a ui-sref="billSupplier.show({id:bill._id})">{{bill.ref}}</a>
+                                        <a ui-sref="billsupplier.show({id:bill._id})">{{bill.ref}}</a>
                                     </td>
                                     <td>
                                         {{bill.dater| date:'dd/MM/yyyy'}}
@@ -283,7 +260,7 @@
         <div class="row ">
             <div class="col-md-offset-5 col-md-7 ">
                 <button type="submit " ng-disabled="balance !==0 " class="btn blue ">@(Add)</button>
-                <a ui-sref="bill.list " class="btn default ">@(Cancel)</a>
+                <a ui-sref="bill.show.payment" class="btn default ">@(Cancel)</a>
             </div>
         </div>
     </div>
