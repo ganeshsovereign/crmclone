@@ -1030,23 +1030,24 @@ Object.prototype = {
         }];
 
         //if (self.body.priceList)
-        request.push({
-            $match: {
-                $or: [{
-                    'priceLists.cost': (cost ? cost : { $ne: true }),
-                    'priceLists.defaultPriceList': true //(base ? base : { $ne: true })
-                }, {
-                    'priceLists._id': ObjectId(self.body.priceList)
-                }]
-            }
-        });
-        //else
-        /*request.push({
-            $match: {
-                'priceLists.cost': (cost ? cost : { $ne: true }),
-                'priceLists.defaultPriceList': (base ? base : { $ne: true })
-            }
-        });*/
+
+        if (cost)
+            request.push({
+                $match: {
+                    'priceLists.cost': true
+                }
+            });
+        else
+            request.push({
+                $match: {
+                    $or: [{
+                        'priceLists.defaultPriceList': true
+                    }, {
+                        'priceLists._id': ObjectId(self.body.priceList)
+                    }]
+                }
+            });
+
 
         request.push(
             /*,{
