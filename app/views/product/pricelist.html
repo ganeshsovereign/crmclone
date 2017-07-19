@@ -32,10 +32,10 @@
                         <a ng-confirm-click="Tous les tarifs de la liste de prix  {{priceList.name}} vont etre recalcules." confirmed-click="refreshCoefPrices(priceList, null)">
                             <i class="fa fa-refresh"></i> @(Recalculer la liste de prix)</a>
                     </li>
-                    <li ng-if="priceList.isFixed">
+                    <!--<li ng-if="priceList.isFixed">
                         <a href="#" ng-click="clone()">
                             <i class="fa fa-copy"></i> @(Clone) </a>
-                    </li>
+                    </li>-->
                     <li ng-if="priceList.isFixed">
                         <a href="#" ng-show="login.rights.product.create" ng-click="updatePrices()">
                             <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
@@ -46,7 +46,7 @@
         </div>
     </div>
 
-    <script type="text/ng-template" id="myModalContent.html">
+    <script type="text/ng-template" id="newModalPrice.html">
         <div class="modal-header">
             <h3 class="no-margin-bottom">@(products:NewPriceLevelProductService)</h3>
         </div>
@@ -54,23 +54,19 @@
 
             <p class="button-height inline-medium-label">
                 <label for="product">@(products:RefProductService)</label>
-                <input id="product" required data-ng-model="price.product" typeahead="product as product.name for product in productAutoComplete($viewValue) | filter:{name:$viewValue}" class="input">
+                <input id="product" required data-ng-model="price.product" typeahead="product as product.ref for product in productAutoComplete($viewValue) | filter:{name:$viewValue}" class="input">
             </p>
             <p class="button-height inline-medium-label">
-                <label>Libellé</label> {{price.product.label}}
-            </p>
-            <p class="button-height inline-medium-label">
-                <label for="price_level">@(products:GridPrice)</label>
-                <input id="price_level" required data-ng-model="price.price_level" typeahead="price_level.name as price_level.name for price_level in priceLevelAutoComplete($viewValue)" class="input">
+                <label>Libellé</label> {{price.product.info.langs[0].name}}
             </p>
             <p class="button-height inline-medium-label">
                 <label for="pu_ht">@(products:RateHT)</label>
-                <input type="number" min="0" step="any" id="pu_ht" data-ng-model="price.prices.pu_ht" class="input">
+                <input type="number" min="0" step="any" id="pu_ht" data-ng-model="price.prices[0].price" class="input">
             </p>
-            <p class="button-height inline-medium-label">
+            <!--<p class="button-height inline-medium-label">
                 <label for="discount">@(products:Discount)</label>
                 <input type="number" min="0" step="any" id="discount" data-ng-model="price.discount" class="input">
-            </p>
+            </p>-->
 
         </div>
         <div class="modal-footer">

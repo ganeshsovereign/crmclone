@@ -3451,6 +3451,8 @@ Prices.prototype = {
         var ProductPricesModel = MODEL('productPrices').Schema;
         var price = new ProductPricesModel(self.body);
 
+        console.log(self.body);
+
         price.editedBy = self.user._id;
         price.createdBy = self.user._id;
 

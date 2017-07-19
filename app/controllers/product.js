@@ -1417,7 +1417,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
             resolve: {
                 options: function() {
                     return {
-                        price_list: $scope.price_list,
+                        priceList: $scope.priceList,
                         product: $scope.product
                     };
                 }
@@ -1439,12 +1439,12 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
         $scope.product = options.product;
 
         $scope.price = {
-            product: options.product._id,
-            priceLists: options.price_list,
-            basePrice: options.product.directCost || 0,
+            product: (options.product ? options.product._id : null),
+            priceLists: options.priceList,
+            basePrice: (options.product ? options.product.directCost : 0),
             prices: [{
                 count: 0,
-                coef: 1,
+                //coef: 1,
                 price: 0,
                 discount: 0
             }]
@@ -1461,13 +1461,6 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
                     filters: [{ value: val }]
                 }
             }).then(function(res) {
-                console.log(res.data);
-
-                for (var i in res.data) {
-                    res.data[i] = res.data[i].product.id;
-                    res.data[i].name = res.data[i].ref;
-                    //console.log(res.data[i]);
-                }
                 return res.data;
             });
         };
