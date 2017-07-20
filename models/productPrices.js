@@ -233,7 +233,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
     } else if (options.ref)
         query.ref = options.ref;
 
-    //console.log(options, query);
+    console.log(options, query);
 
     async.waterfall([
             function(wCb) {
@@ -337,12 +337,10 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
                     }
                 }
             ], function(err, docs) {*/
-            if (err)
-                console.log(err);
 
             //console.log(doc, discount);
             if (err)
-                return self.throw500(err);
+                return callback(err);
 
             if (!doc)
                 return callback(null, { ok: false, pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null, isFixed: false });
