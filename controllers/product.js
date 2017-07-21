@@ -2761,7 +2761,7 @@ PricesList.prototype = {
         async.waterfall([
                 function(wCb) {
                     ProductModel.aggregate([{
-                        $match: { 'isSell': true, 'info.isActive': true, _id: (product ? ObjectId(product) : { $exists: 1 }) }
+                        $match: { 'isSell': true, /*'info.isActive': true,*/ _id: (product ? ObjectId(product) : { $exists: 1 }) }
                     }, {
                         $project: {
                             _id: 1,
@@ -3064,7 +3064,7 @@ PricesList.prototype = {
         var date = new Date();
 
         PriceModel.find(query)
-            .populate("product", "info")
+            .populate("product", "info directCost indirectCost inventory")
             //.sort({ 'product.ref': 1 })
             .exec(function(err, prices) {
                 if (err)
@@ -3084,7 +3084,7 @@ PricesList.prototype = {
                     prices = [];
 
                 //entete
-                var out = "_id;REF;DESCRIPTION;QTYMIN;QTYMAX;PU HT;DATEMAJ\n";
+                var out = "_id;REF;DESCRIPTION;QTYMIN;QTYMAX;PR;PR+TRANSPORT;PU HT;ACTIF;minStock;maxStock;TimeLimitStock;MessageRuptureStock;DATEMAJ\n";
                 stream.emit('data', out);
 
                 for (var i = 0, len = prices.length; i < len; i++) {
@@ -3100,7 +3100,21 @@ PricesList.prototype = {
                     out += ";";
                     out += prices[i].qtyMax;
                     out += ";";
+                    out += prices[i].product.directCost;
+                    out += ";";
+                    out += prices[i].product.totalCost;
+                    out += ";";
                     out += prices[i].prices[0].price;
+                    out += ";";
+                    out += prices[i].product.info.isActive;
+                    out += ";";
+                    out += prices[i].product.inventory.minStockLevel;
+                    out += ";";
+                    out += prices[i].product.inventory.maxStockLevel;
+                    out += ";";
+                    out += prices[i].product.inventory.stockTimeLimit;
+                    out += ";";
+                    out += (prices[i].product.inventory.langs.length ? prices[i].product.inventory.langs[0].availableLater : "");
                     out += ";";
                     out += moment(prices[i].updatedAt).format(CONFIG('dateformatLong'));
                     out += "\n";

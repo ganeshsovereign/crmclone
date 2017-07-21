@@ -147,6 +147,7 @@ var productSchema = new Schema({
 
     inventory: {
         langs: [{
+            _id: false,
             availableLater: { type: String, default: '' }
         }],
         minStockLevel: { type: Number, default: 0 },

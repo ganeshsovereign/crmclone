@@ -600,7 +600,7 @@ exports.Book.prototype.ledger = function(query, populate) {
     }
     query = this.parseQuery(query);
     q = this.transactionModel.find(query)
-        .populate({ path: "meta.supplier", select: "name", model: "Customers" })
+        .populate({ path: "meta.supplier", select: "name ID", model: "Customers" })
         .populate({ path: "meta.invoice", select: "ref forSales", model: "invoice" })
         .populate({ path: "meta.bills.invoice", select: "ref forSales", model: "invoice" })
         .populate({ path: "meta.product", select: "info sellFamily costFamily", model: "product", populate: { path: "sellFamily costFamily" } })

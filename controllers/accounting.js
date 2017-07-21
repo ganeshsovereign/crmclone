@@ -625,7 +625,10 @@ Object.prototype = {
                                 out += ";";
 
                             if (!entry.meta.bank)
-                                out += ";" + entry.accounts;
+                                if (entry.accounts.substr(0, 3) == '401' || entry.accounts.substr(0, 3) == '411')
+                                    out += ";" + entry.accounts.substr(0, 3) + "00000";
+                                else
+                                    out += ";" + entry.accounts;
                             else
                                 switch (entry.meta.type) {
                                     case 'CHQ':
@@ -648,7 +651,7 @@ Object.prototype = {
                                 }
 
                             if (entry.meta.supplier)
-                                out += ";" + entry.meta.supplier.fullName;
+                                out += ";" + entry.meta.supplier.ID;
                             else
                                 out += ";";
 
