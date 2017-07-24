@@ -3084,7 +3084,7 @@ PricesList.prototype = {
                     prices = [];
 
                 //entete
-                var out = "_id;REF;DESCRIPTION;QTYMIN;QTYMAX;PR;PR+TRANSPORT;PU HT;ACTIF;minStock;maxStock;TimeLimitStock;MessageRuptureStock;DATEMAJ\n";
+                var out = "_id;REF;DESCRIPTION;QTYMINPanier;QTYMAXPanier;PRevient;PRevient+Distribution;PVente;ACTIF;minStock;maxStock;TimeLimitStock;MessageRuptureStock;DATEMAJ\n";
                 stream.emit('data', out);
 
                 for (var i = 0, len = prices.length; i < len; i++) {

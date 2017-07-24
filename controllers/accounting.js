@@ -625,11 +625,12 @@ Object.prototype = {
                                 out += ";";
 
                             if (!entry.meta.bank)
-                                if (entry.accounts.substr(0, 3) == '401' || entry.accounts.substr(0, 3) == '411')
+                                if (entry.accounts.substr(0, 3) == '401' || entry.accounts.substr(0, 3) == '411') {
                                     out += ";" + entry.accounts.substr(0, 3) + "00000";
-                                else
-                                    out += ";" + entry.accounts;
-                            else
+                                    out += ";" + entry.meta.supplier.ID;
+                                } else
+                                    out += ";" + entry.accounts + ";";
+                            else {
                                 switch (entry.meta.type) {
                                     case 'CHQ':
                                         out += ";582500";
@@ -649,11 +650,10 @@ Object.prototype = {
                                     default:
                                         return cb("Mode de reglement inconnu {0} : code comptable manquant".format(entry.meta.type));
                                 }
-
-                            if (entry.meta.supplier)
-                                out += ";" + entry.meta.supplier.ID;
-                            else
                                 out += ";";
+                            }
+
+
 
                             out += ";" + round(entry.debit, 2).toString().replace(".", ",");
                             out += ";" + round(entry.credit, 2).toString().replace(".", ",");

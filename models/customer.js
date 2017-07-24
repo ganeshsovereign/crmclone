@@ -77,7 +77,7 @@ addressSchema.virtual('status')
  * @module Customer
  * @class Customer
  *
- * @property {String} type - Type of __Customer__, proper values are: _'Person'_, _'Company'_
+ * @property {String} type - Type of __Customer__, proper values are: 'Person', 'Company'
  *
  * @property {Boolean} isOwn - Determine is a ___Person___ or ___Company___ our own. Actually now is not needed
  *

@@ -103,7 +103,10 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         }
 
         $scope.changeType = function() {
-            return $rootScope.$state.go('societe.list', { type: $scope.type });
+            if ($rootScope.$state.current.name == 'societe.list')
+                return $rootScope.$state.go('societe.list', { type: $scope.type });
+
+            return $rootScope.$state.go('societe.list_supplier', { type: $scope.type });
         }
 
         if (typeof superCache.get("SocieteController.type") == "undefined")

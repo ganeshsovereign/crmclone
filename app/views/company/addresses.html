@@ -8,41 +8,46 @@
     </div>
 
     <div class="portlet-body">
-        <tabset class="tabbable-line tabbable-full-width">
-            <!--
-            Contact
-            -->
-            <tab heading="@(Contacts)">
-                <!-- <div class="portlet-body" ng-include="'/templates/contact/list.html'" ng-controller="ContactController" onload="loadDatatable({'societe': $stateParams.id})">
-                </div>-->
-                <div class="portlet-body">
-                    <div class="table-toolbar">
-                        <div class="btn-group pull-right">
-                            <button class="btn blue" data-ng-click="addContact()">@(Add) <i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
+
+        <div class="portlet light bordered" ng-controller="ContactController" ng-init="find($stateParams.id)">
+            <div class=" portlet-title ">
+                <div class="caption ">
+                    <i class="fa fa-user "></i>
+                    <span class="caption-subject dark bold uppercase ">@(companies:ListOfContacts) <span ng-if="societe.addresses.length " class="badge badge-info ng-binding ng-scope ">{{societe.addresses.length}}</span></span>
                 </div>
+                <div class="actions ">
+                    <button class="btn blue " data-ng-click="addContact() ">@(Add) <i class="fa fa-plus "></i></button>
+                    <button title="@(Refresh) " class="btn btn-icon-only btn-default " ng-click="find($stateParams.id) "><i class="fa fa-refresh "></i></button>
+                </div>
+            </div>
+            <div class="tools ">
+            </div>
 
+            <!-- <div class="portlet-body " ng-include=" '/templates/contact/list.html'  ">
+        </div>-->
+            <div class="portlet-body">
                 <div class="row">
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-if="societe.type == 'Company'" ng-repeat="name in societe.name">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" ng-if="societe.type == 'Company'" ng-repeat="contact in contacts">
                         <div class="portlet light bordered">
-                            <div class="form-group form-md-line-input">
-                                {{societe.name.civilite}} {{societe.name.last}} {{societe.name.first}}
+                            <div class=" portlet-title ">
+                                <div class="caption ">
+                                    <i class="fa fa-user "></i>
+                                    <a ui-sref="societe.show({id:contact._id})">{{contact.name.civilite}} {{contact.fullName}}</a>
+                                </div>
                             </div>
-
-                            <div>
-                                {{societe.emails.email || '--'}}
-                            </div>
-
-                            <div>
-                                {{societe.phones.phone}}
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-offset-5 col-md-6">
-                                    <button class="btn btn-icon-only red" confirmed-click="delete()">
+                            <div class="tools">
+                                <!--<button class="btn btn-icon-only red" confirmed-click="delete()">
                                     <i class="fa fa-trash"></i>
-                                    </button>
+                                    </button>-->
+                            </div>
+                            <div class="portlet-body">
+                                <div class="form-group form-md-line-input">
+                                    <div class="form-control form-control-static" id="phone"> {{contact.phones.phone}} </div>
+                                    <label for="phone">@(companies:Phone)</label>
+                                </div>
+                                <div class="form-group form-md-line-input">
+                                    <div class="form-control form-control-static" id="email"> <a ng-href="mailto:{{contact.emails[0].email}}">{{contact.emails[0].email || '--'}}</a> </div>
+                                    <label for="email">@(companies:Email) </label>
                                 </div>
                             </div>
                         </div>
@@ -66,21 +71,27 @@
                     <div class="modal-footer">
                     </div>
                 </script>
-            </tab>
-            <!--
+            </div>
+        </div>
+        <!--
             Shipping Address
             -->
-            <tab>
-                <tab-heading>
-                    @(companies:DeliveriesAddress) <span ng-if="societe.addresses.length" class="badge badge-info ng-binding ng-scope">{{societe.addresses.length}}</span>
-                </tab-heading>
-                <div class="portlet-body">
-                    <div class="table-toolbar">
-                        <div class="btn-group pull-right">
-                            <button class="btn blue" data-ng-click="editAddress()">@(Add) <i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-industry"></i>
+                    <span class="caption-subject dark bold uppercase">@(companies:DeliveriesAddress) <span ng-if="societe.addresses.length" class="badge badge-info ng-binding ng-scope">{{societe.addresses.length}}</span></span>
                 </div>
+                <div class="actions">
+                    <button class="btn blue" data-ng-click="editAddress()">@(Add) <i class="fa fa-plus"></i></button>
+                    <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="tools">
+            </div>
+
+
+            <div class="portlet-body">
                 <script type="text/ng-template" id="addModalAddress.html">
                     <div class="modal-header">
                         <h3 class="no-margin-bottom"><i class="fa fa-truck"></i> Edition d'une adresse de livraison</h3>
@@ -146,8 +157,7 @@
                         </table>
                     </div>
                 </div>
-
-            </tab>
-        </tabset>
+            </div>
+        </div>
     </div>
 </div>

@@ -2057,14 +2057,25 @@ Object.prototype = {
     read: function() {
         var SocieteModel = MODEL('Customers').Schema;
         var self = this;
+        var query = {};
 
-        var query = {
-            entity: {
-                $in: ["ALL", self.user.entity]
-            }
-        };
+        var paginationObject = MODULE('helper').page(self.query);
+        var limit = paginationObject.limit;
+        var skip = paginationObject.skip;
 
-        if (self.query.query) {
+        /*var query = {
+            //entity: {
+            //    $in: ["ALL", self.user.entity]
+            //}
+        };*/
+
+        if (self.query.type)
+            query.type = self.query.type;
+
+        if (self.query.company)
+            query.company = self.query.company;
+
+        /*if (self.query.query) {
             switch (self.query.query) {
                 case "CUSTOMER":
                     query.Status = {
@@ -2085,7 +2096,7 @@ Object.prototype = {
                 default: //ALL
                     break;
             }
-        }
+        }*/
 
         if (self.req.query.Status)
             query.Status = self.query.Status;
@@ -2095,8 +2106,8 @@ Object.prototype = {
 
         var fields = "-history -files";
 
-        if (self.req.query.fields)
-            fields = self.query.fields;
+        if (self.query.field)
+            fields = self.query.field;
 
         if (self.req.query.filter) {
             query.$or = [{
@@ -2114,17 +2125,17 @@ Object.prototype = {
         if (!self.user.rights.societe.seeAll && !self.user.admin)
             query["commercial_id.id"] = self.user._id;
 
-        /*console.log(query);
-         
-         if (req.query.filter)
+        console.log(query);
+
+        /* if (req.query.filter)
          SocieteModel.search({query: req.query.filter}, function (err, result) {
          console.log(err);
          });*/
 
         SocieteModel.find(query, fields, {
-            skip: parseInt(self.query.skip, 10) * parseInt(self.query.limit, 10) || 0,
-            limit: self.query.limit || 100,
-            sort: JSON.parse(self.query.sort || {})
+            skip: skip,
+            limit: limit,
+            sort: 'fullName'
         }, function(err, doc) {
             if (err) {
                 console.log(err);
@@ -2134,7 +2145,7 @@ Object.prototype = {
 
             //console.log(doc);
 
-            self.json(doc);
+            self.json({ data: doc });
         });
     },
     readDT: function() {
@@ -2142,7 +2153,7 @@ Object.prototype = {
         var SocieteModel = MODEL('Customers').Schema;
         var EmployeeModel = MODEL('Employees').Schema;
 
-        var query = JSON.parse(self.req.body.query);
+        var query = JSON.parse(self.body.query);
 
         //console.log(self.query);
 
@@ -2152,13 +2163,16 @@ Object.prototype = {
             company: null
         };
 
-        if (self.query.entity != 'null')
+        if (self.query.entity && self.query.entity != 'null')
             conditions.entity = self.query.entity;
         //                $in: [self.query.entity]
         //}
 
         //if (!self.user.multiEntities)
         //    conditions.entity = { $in: ["ALL", self.user.entity] };
+
+        if (!query.search.value)
+            conditions["salesPurchases.isActive"] = true;
 
         //if (!query.search.value)
         switch (self.query.type) {
@@ -2186,13 +2200,18 @@ Object.prototype = {
                     { 'salesPurchases.isSubcontractor': true }
                 ];
                 break;
+            case "Person":
+                conditions.type = "Person";
+                conditions.company = { $ne: null };
+                delete conditions["salesPurchases.isActive"];
+
+                break;
             default: //ALL
                 break;
         }
 
         //console.log(query);
-        if (!query.search.value)
-            conditions["salesPurchases.isActive"] = true;
+
 
         /*} else
             delete conditions.Status;
@@ -2200,7 +2219,7 @@ Object.prototype = {
         if (self.query.prospectlevel !== 'null')
             conditions.prospectlevel = self.query.prospectlevel;
         */
-        if (self.req.query.commercial_id !== 'null')
+        if (self.req.query.commercial_id && self.req.query.commercial_id !== 'null')
             conditions["salesPurchases.salesPerson"] = self.query.commercial_id;
 
         if (!self.user.rights.societe.seeAll && !self.user.admin)
@@ -2234,43 +2253,49 @@ Object.prototype = {
             if (err)
                 console.log(err);
 
-            //console.log(res);
+            SocieteModel.populate(res, { path: "datatable.data.company", select: "name" }, function(err, res) {
+                EmployeeModel.populate(res, { path: "datatable.data.salesPurchases.salesPerson" }, function(err, res) {
+                    //console.log(res);
+                    for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                        var row = res.datatable.data[i];
 
-            EmployeeModel.populate(res, { path: "datatable.data.salesPurchases.salesPerson" }, function(err, res) {
+                        // Add checkbox
+                        res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                        // Add id
+                        res.datatable.data[i].DT_RowId = row._id.toString();
 
-                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                    var row = res.datatable.data[i];
+                        if (row.Tag)
+                            res.datatable.data[i].Tag = row.Tag.toString();
+                        // Add url on name
 
-                    // Add checkbox
-                    res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                    // Add id
-                    res.datatable.data[i].DT_RowId = row._id.toString();
+                        res.datatable.data[i].name.last = '<a class="with-tooltip" href="#!/societe/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.last + '"><span class="' + (row.type == 'Person' ? 'icon-user' : 'icon-home') + '"></span> ' + row.name.last + '</a>';
+                        if (res.datatable.data[i].company)
+                            res.datatable.data[i].company = '<a class="with-tooltip" href="#!/societe/' + row.company._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.company.name.last + '"><span class="icon-home"></span> ' + row.company.name.last + '</a>';
 
-                    if (row.Tag)
-                        res.datatable.data[i].Tag = row.Tag.toString();
-                    // Add url on name
-                    res.datatable.data[i].name.last = '<a class="with-tooltip" href="#!/societe/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name.last + '"><span class="' + (row.type == 'Person' ? 'icon-user' : 'icon-home') + '"></span> ' + row.name.last + '</a>';
-                    // Convert Date
-                    res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                    // Convert Status
-                    //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + res.status.values[row.Status].label + '</span>' : row.Status);
-                    res.datatable.data[i].Status = (row.salesPurchases.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
-                    // Convert Potentiel
-                    if (res.level.values[row.prospectlevel])
-                        if (res.level.values[row.prospectlevel].label)
-                            res.datatable.data[i].prospectlevel = res.level.values[row.prospectlevel].label;
-                        else
-                            res.datatable.data[i].prospectlevel = i18n.t("companies:" + row.prospectlevel);
-                    else
-                        res.datatable.data[i].prospectlevel = row.prospectlevel;
+                        if (res.datatable.data[i].emails && res.datatable.data[i].emails.length)
+                            res.datatable.data[i].emails = '<a class="with-tooltip" href="mailto:' + row.emails[0].email + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.emails[0].email + '">' + row.emails[0].email + '</a>';
 
-                    if (row.salesPurchases.salesPerson)
-                        res.datatable.data[i].salesPurchases.salesPerson = row.salesPurchases.salesPerson.fullName;
-                }
+                        // Convert Date
+                        res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                        // Convert Status
+                        res.datatable.data[i].Status = (row.salesPurchases.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
+                        // Convert Potentiel
+                        //          if (res.level.values[row.prospectlevel])
+                        //              if (res.level.values[row.prospectlevel].label)
+                        //                  res.datatable.data[i].prospectlevel = res.level.values[row.prospectlevel].label;
+                        //              else
+                        //                  res.datatable.data[i].prospectlevel = i18n.t("companies:" + row.prospectlevel);
+                        ///          else
+                        //              res.datatable.data[i].prospectlevel = row.prospectlevel;
 
-                //console.log(res.datatable);
+                        if (row.salesPurchases.salesPerson)
+                            res.datatable.data[i].salesPurchases.salesPerson = row.salesPurchases.salesPerson.fullName;
+                    }
 
-                self.json(res.datatable);
+                    //console.log(res.datatable);
+
+                    self.json(res.datatable);
+                });
             });
         });
     },
