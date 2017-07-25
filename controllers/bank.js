@@ -681,7 +681,7 @@ Payment.prototype = {
         var self = this;
         var PaymentModel = MODEL('payment').Schema;
 
-        //console.log(self.body);
+        return console.log(self.body);
         if (!id)
             return self.json({
                 errorNotify: {

@@ -1386,13 +1386,6 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
         //console.log(group);
         group.$update(function(response) {
             return $scope.findOne();
-
-            $scope.group = response;
-
-            if (response.Status == "DRAFT")
-                $scope.editable = true;
-            else
-                $scope.editable = false;
         }, function(err) {
             console.log(err);
         });
