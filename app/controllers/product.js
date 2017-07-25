@@ -1468,7 +1468,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
         $http({
             method: 'GET',
             url: '/erp/api/product/prices/priceslist/select',
-            params: { cost: costFind }
+            params: { cost: costFind, isCoef: true, isFixed: true }
         }).success(function(data) {
             console.log(data);
             $scope.pricesLists = data.data;
