@@ -216,26 +216,26 @@ Object.prototype = {
         var self = this;
         var UserGroupModel = MODEL('group').Schema;
 
-        UserGroupModel.findOne({ _id: id }, function(err, group) {
-            group = _.extend(group, self.body);
+        console.log(self.body);
+        self.body.updatedAt = new Date();
+        self.body.editedBy = self.user._id;
 
-            group.save(function(err, doc) {
+        UserGroupModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
 
-                if (err)
-                    return self.json({
-                        errorNotify: {
-                            title: 'Erreur',
-                            message: err
-                        }
-                    });
+            if (err)
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
 
-                doc = doc.toObject();
-                doc.successNotify = {
-                    title: "Success",
-                    message: "groupe enregistré"
-                };
-                self.json(doc);
-            });
+            doc = doc.toObject();
+            doc.successNotify = {
+                title: "Success",
+                message: "groupe enregistré"
+            };
+            self.json(doc);
         });
     },
     list: function() {

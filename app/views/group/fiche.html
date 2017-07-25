@@ -1,5 +1,5 @@
 <h3 class="page-title" ng-init="findOne()">
-    <i class="fa fa-user font-blue-madison"></i> @(users:GroupCard) {{group.name}} <small> @(From) {{group.createdAt| date:'@(main:date.format.java.dayhour)'}}</small> 
+    <i class="fa fa-user font-blue-madison"></i> @(users:GroupCard) {{group.name}} <small> @(From) {{group.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>
 </h3>
 
 <div ng-if="group.isremoved" class="alert alert-danger"><strong>@(users:BeCareful)</strong>&nbsp;@(users:GroupHasBeenDeleted)</div>
@@ -12,7 +12,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="group.list" >@(users:GroupManagement)</a>
+            <a ui-sref="group.list">@(users:GroupManagement)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
@@ -27,8 +27,7 @@
             <ul class="dropdown-menu pull-right" role="menu">
                 <li>
                     <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove(group)" ng-confirm-click="@(Delete)" title="Delete Group ?">
-                        <i class="fa fa-trash-o font-red"></i>
-                        @(Delete)
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
                 </li>
             </ul>
@@ -48,7 +47,7 @@
                         <i class="fa fa-user"></i>@(users:GroupCard)
                     </div>
                     <div class="actions">
-                        <a href="javascript:;" ng-click="editableNameGroup.$show()"ng-hide="user.isremoved" ng-show="!editableNameGroup.$visible && editable" class="btn btn-default btn-sm">
+                        <a href="javascript:;" ng-click="editableNameGroup.$show()" ng-hide="user.isremoved" ng-show="!editableNameGroup.$visible && editable" class="btn btn-default btn-sm">
                             <i class="fa fa-pencil"></i> @(Edit) </a>
                     </div>
                     <div class="actions" ng-show="editableNameGroup.$visible">
@@ -69,15 +68,15 @@
 
                     <div class="row static-info">
                         <div class="col-md-4 name">@(NumberOfEmployeesAssigned) :</div>
-                        <div class="col-md-8 value"> 
-                            <span class="blue h5" > ... </span>
+                        <div class="col-md-8 value">
+                            <span class="blue h5"> ... </span>
                         </div>
                     </div>
 
                     <div class="row static-info">
-                        <div class="col-md-4 name">@(users:CreatedAt) :</div>
-                        <div class="col-md-8 value"> 
-                            <span class="blue h5" > {{(group.createdAt| date:"dd/MM/yyyy")}} </span>
+                        <div class="col-md-4 name">@(DateModification) :</div>
+                        <div class="col-md-8 value">
+                            <span class="blue h5"> {{(group.updatedAt| date:"dd/MM/yyyy")}} </span>
                         </div>
                     </div>
 
