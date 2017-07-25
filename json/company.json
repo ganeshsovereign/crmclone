@@ -72,6 +72,31 @@
                     "entity": false
                 }
             }
+        ],
+        "contact": [{
+                "desc": "Lire les contacts",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Creer modifier les contacts",
+                "perm": {
+                    "write": false
+                }
+            },
+            {
+                "desc": "Supprimer les contacts",
+                "perm": {
+                    "delete": false
+                }
+            },
+            {
+                "desc": "Exporter les contacts",
+                "perm": {
+                    "export": false
+                }
+            }
         ]
     },
     "menus": {
@@ -112,6 +137,16 @@
                     "title": "bills:BillsStatistics",
                     "fk_menu": "menu:companies",
                     "icon": "fa-institution"
+                },
+                "menu:contacts": {
+                    "position": 4,
+                    "url": "/erp/#!/contact",
+                    "perms": "contact.read",
+                    "enabled": "$conf->societe->enabled",
+                    "usertype": 2,
+                    "title": "companies:ListOfContacts",
+                    "fk_menu": "menu:companies",
+                    "icon": "fa-users"
                 }
             }
         }
