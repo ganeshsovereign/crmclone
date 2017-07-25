@@ -73,6 +73,7 @@
     "ListOfCustomerPayments": "Liste des règlements clients",
     "ListOfSupplierPayments": "Liste des règlements fournisseurs",
     "DatePayment": "Date du règlement",
+    "DateValuePayment": "Date de valeur",
     "DateLastPayment": "Date du dernier règlement",
     "DateReconcilliation": "Rapprochement",
     "NewVATPayment": "Nouveau règlement de TVA",

@@ -60,7 +60,7 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(bank:Bank)</label>
                                 <div class="col-md-8">
-                                    <select class="form-control" ng-disabled="!payment.mode" required data-ng-model="payment.bank" data-ng-options="s as s.name for s in banks"></select>
+                                    <select class="form-control" ng-disabled="!payment.mode || (payment.mode == 'Receipt' && payment.mode_reglement_code=='CHQ')" required data-ng-model="payment.bank" data-ng-options="s as s.name for s in banks"></select>
                                 </div>
                             </div>
 

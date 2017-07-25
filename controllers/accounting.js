@@ -648,7 +648,7 @@ Object.prototype = {
                                         out += ";582400";
                                         break;
                                     default:
-                                        return cb("Mode de reglement inconnu {0} : code comptable manquant".format(entry.meta.type));
+                                        return cb("Mode de reglement inconnu {0} : code comptable manquant".format(entry));
                                 }
                                 out += ";";
                             }

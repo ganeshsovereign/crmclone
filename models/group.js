@@ -11,8 +11,8 @@ var mongoose = require('mongoose'),
  * UserGroup Schema
  */
 var userGroupSchema = new Schema({
-    name: { type: String, unique: true },
-    _id: { type: String, lowercase: true, set: MODULE('utils').setLink },
+    name: { type: String, unique: true, trim: true },
+    _id: { type: String, lowercase: true, trim: true, set: MODULE('utils').setLink },
     _createdAt: { type: Date },
     updatedAt: Date,
     notes: String,

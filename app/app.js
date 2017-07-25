@@ -1948,13 +1948,49 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "GroupController"
         })
+        // Gestion des Paiements grouped
+        .state('payment', {
+            parent: "bank",
+            url: "/payment",
+            abstract: true,
+            templateUrl: "/views/bank/index.html"
+        })
+        .state('payment.chq', {
+            url: "/chq",
+            abstract: true,
+            templateUrl: "/views/bank/index.html"
+        })
+        .state('payment.chq.list', {
+            url: "?Status",
+            templateUrl: "/views/bank/listGroupChq.html",
+            data: {
+                pageTitle: 'Liste des remises de cheques'
+            },
+            controller: "PaymentGroupController"
+        })
+        .state('payment.chq.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/bank/ficheGroupChq.html",
+            data: {
+                pageTitle: 'Remise de cheque'
+            },
+            controller: "PaymentGroupController"
+        })
+        .state('payment.chq.create', {
+            url: "/create.html",
+            templateUrl: "/views/bank/createGroupChq.html",
+            data: {
+                pageTitle: 'Nouvelle remise de cheque'
+            },
+            controller: "PaymentGroupController"
+        })
         // Gestion des LCR
-        .state('lcr', {
+        .state('payment.lcr', {
             url: "/lcr",
             abstract: true,
             templateUrl: "/views/_lcr/index.html"
         })
-        .state('lcr.list', {
+        .state('payment.lcr.list', {
             url: "?Status",
             templateUrl: "/views/_lcr/list.html",
             data: {
@@ -1962,8 +1998,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "LcrController"
         })
-        .state('lcr.show', {
-            parent: "lcr",
+        .state('payment.lcr.show', {
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/_lcr/fiche.html",
             data: {
@@ -1971,8 +2006,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "LcrController"
         })
-        .state('lcr.create', {
-            parent: "lcr",
+        .state('payment.lcr.create', {
             url: "/create.html",
             templateUrl: "/views/_lcr/create.html",
             data: {

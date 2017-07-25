@@ -423,7 +423,7 @@ MetronicApp.controller('BankController', ['$rootScope', '$scope', '$http', '$fil
     };
 
 }]);
-MetronicApp.controller('BankCreateController', ['$scope', '$http', '$modalInstance', '$route', 'Global', '$location', 'Bank', function($scope, $http, $modalInstance, $route, Global, $location, Bank) {
+MetronicApp.controller('BankCreateController', ['$scope', '$http', '$modalInstance', '$route', 'Global', '$location', 'Banks', function($scope, $http, $modalInstance, $route, Global, $location, Banks) {
 
     $scope.global = Global;
 
@@ -1078,6 +1078,379 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
         }
 
         return true;
+    };
+
+}]);
+
+MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http', '$window', '$filter', '$timeout', 'Banks', function($scope, $rootScope, $http, $window, $filter, $timeout, Banks) {
+
+    var grid = new Datatable();
+    var user = $rootScope.login;
+
+    $scope.editable = false;
+
+    $scope.minDate = moment().add(5, 'day').toDate();
+
+    $scope.group = {
+        entity: $rootScope.login.entity,
+        datec: new Date(),
+        dater: moment().add(5, 'day').toDate(),
+        lines: [],
+        notes: []
+    };
+
+
+    $scope.dict = {};
+    $scope.groups = [];
+    $scope.status_id = null;
+    $scope.banks = [];
+    $scope.lines = [];
+
+    // Init
+    $scope.$on('$viewContentLoaded', function() {
+        // initialize core components
+        Metronic.initAjax();
+
+        // set default layout mode
+        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageBodySolid = false;
+
+        var dict = ["fk_status", "fk_bill_status"];
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/dict',
+            params: {
+                dictName: dict
+            }
+        }).success(function(data, status) {
+            $scope.dict = data;
+            //console.log(data);
+        });
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/bank',
+            params: {
+                //entity: Global.user.entity
+            }
+        }).success(function(data, status) {
+            $scope.banks = data;
+            //console.log(data);
+        });
+
+        if ($rootScope.$stateParams.Status) {
+            $scope.status_id = $rootScope.$stateParams.Status;
+            initDatatable({ status_id: $scope.status_id });
+        } else
+            initDatatable();
+
+        if ($rootScope.$state.current.name == 'payment.chq.create')
+            $scope.filterBills();
+
+    });
+
+    $scope.create = function() {
+        var group = new Banks.paymentGroupChq(this.group);
+        group.lines = [];
+
+        for (var i = 0, len = $scope.lines.items.length; i < len; i++) {
+            group.lines.push({
+                bills: $scope.lines.items[i].meta.bills,
+                supplier: $scope.lines.items[i].meta.supplier._id,
+                dater: $scope.lines.items[i].datetime,
+                amount: $scope.lines.items[i].debit,
+                journalId: $scope.lines.items[i]._journal
+            });
+        }
+
+        //return console.log(group);
+
+        group.$save(function(response) {
+            $rootScope.$state.go("payment.chq.show", { id: response._id });
+        });
+    };
+
+
+    var round = function(value, decimals) {
+        if (value > Math.pow(10, (decimals + 2) * -1) * -1 && value < Math.pow(10, (decimals + 2) * -1)) // Fix error little number
+            return 0;
+        return Number(Math.round(value + 'e' + (decimals)) + 'e-' + (decimals));
+    };
+
+
+
+    $scope.showStatus = function(val, dict) {
+        if (!($scope.dict[dict] && $scope.group[val]))
+            return;
+        var selected = $filter('filter')($scope.dict[dict].values, { id: $scope.group[val] });
+
+        return ($scope.group[val] && selected && selected.length) ? selected[0].label : 'Non défini';
+    };
+
+    $scope.remove = function(group) {
+        if (!group && grid) {
+            return $http({
+                method: 'DELETE',
+                url: '/erp/api/payment/chq/',
+                params: {
+                    id: grid.getSelectedRows()
+                }
+            }).success(function(data, status) {
+                if (status === 200)
+                    $scope.find();
+            });
+        }
+
+        group.$remove(function() {
+            $rootScope.$state.go("payment.chq.list");
+        });
+    };
+
+    $scope.openUrl = function(url, param) {
+        if (!grid)
+            return;
+
+        var params = {};
+
+        if (!params.entity)
+            params.entity = $rootScope.entity;
+
+        params.id = grid.getSelectedRows();
+
+        //$window.open($rootScope.buildUrl(url, params), '_blank');
+        $http({
+            method: 'POST',
+            url: url,
+            data: params,
+            responseType: 'arraybuffer'
+        }).success(function(data, status, headers) {
+            headers = headers();
+
+            var filename = headers['x-filename'];
+            var contentType = headers['content-type'];
+
+            var linkElement = document.createElement('a');
+            try {
+                var blob = new Blob([data], { type: contentType });
+                var url = window.URL.createObjectURL(blob);
+
+                linkElement.setAttribute('href', url);
+                linkElement.setAttribute("download", filename);
+
+                var clickEvent = new MouseEvent("click", {
+                    "view": window,
+                    "bubbles": true,
+                    "cancelable": false
+                });
+                linkElement.dispatchEvent(clickEvent);
+            } catch (ex) {
+                console.log(ex);
+            }
+        }).error(function(data) {
+            console.log(data);
+        });
+    };
+
+    $scope.findOne = function() {
+        Banks.paymentGroupChq.get({
+            Id: $rootScope.$stateParams.id
+        }, function(group) {
+            console.log(group);
+            $scope.group = group;
+
+            if (group.Status == "DRAFT")
+                $scope.editable = true;
+            else
+                $scope.editable = false;
+
+            $scope.total_bills = 0;
+
+            for (var i = 0, len = group.lines.length; i < len; i++)
+                $scope.total_bills += group.lines[i].amount;
+
+        }, function(err) {
+            if (err.status == 401)
+                $location.path("401.html");
+        });
+    };
+
+
+    function getUrl(params) {
+
+        if (!params)
+            params = {};
+
+        if (!params.entity)
+            params.entity = $rootScope.entity;
+
+        var url = $rootScope.buildUrl('/erp/api/bank/payment/chq/dt', params); // Build URL with json parameter
+        //console.log(url);
+        return url;
+    }
+
+    function initDatatable(params, length) {
+
+        grid.init({
+            src: $("#groupList"),
+            onSuccess: function(grid) {
+                // execute some code after table records loaded
+            },
+            onError: function(grid) {
+                // execute some code on network or other general error 
+            },
+            loadingMessage: 'Loading...',
+            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+
+                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
+                // So when dropdowns used the scrollable div should be removed. 
+                //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+
+                "bStateSave": (params ? false : true), // save datatable state(pagination, sort, etc) in cookie.
+                "pageLength": length || 25, // default record count per page
+                "ajax": {
+                    "url": getUrl(params) // ajax source
+                },
+                "order": [
+                    [1, "desc"]
+                ], // set first column as a default sort by asc
+                "columns": [{
+                    data: 'bool'
+                }, {
+                    data: "ref"
+                }, {
+                    data: "bank_reglement",
+                    defaultContent: ""
+                }, {
+                    data: "total_amount",
+                    defaultContent: ""
+                }, {
+                    data: "datec",
+                    defaultContent: ""
+                }, {
+                    data: "Status"
+                }, {
+                    data: 'action'
+                }]
+            }
+        });
+
+        // handle group actionsubmit button click
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
+            e.preventDefault();
+            var action = $(".table-group-action-input", grid.getTableWrapper());
+            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
+                grid.setAjaxParam("customActionType", "group_action");
+                grid.setAjaxParam("customActionName", action.val());
+                grid.setAjaxParam("id", grid.getSelectedRows());
+                grid.getDataTable().ajax.reload();
+                grid.clearAjaxParams();
+            } else if (action.val() == "") {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'Please select an action',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            } else if (grid.getSelectedRowsCount() === 0) {
+                Metronic.alert({
+                    type: 'danger',
+                    icon: 'warning',
+                    message: 'No record selected',
+                    container: grid.getTableWrapper(),
+                    place: 'prepend'
+                });
+            }
+        });
+    }
+
+    $scope.filterBills = function() {
+        $http({
+            method: 'GET',
+            url: '/erp/api/bank/payment/chq/bills',
+            params: {
+                dater: $scope.group.dater
+            }
+        }).success(function(data, status) {
+            $scope.lines = data;
+            //console.log(data);
+
+            $scope.total_bills = data.total;
+        });
+    };
+
+    $scope.update = function() {
+        var group = $scope.group;
+        //console.log(group);
+        group.$update(function(response) {
+            return $scope.findOne();
+
+            $scope.group = response;
+
+            if (response.Status == "DRAFT")
+                $scope.editable = true;
+            else
+                $scope.editable = false;
+        }, function(err) {
+            console.log(err);
+        });
+    };
+
+    $scope.find = function() {
+        var url;
+        //console.log(this.status_id);
+
+        if ($scope.params) { // For ng-include in societe fiche
+            $scope.params.status_id = this.status_id;
+            url = getUrl($scope.params);
+        } else
+            url = getUrl({ status_id: this.status_id });
+
+        grid.resetFilter(url);
+    };
+
+    $scope.changeStatus = function(Status) {
+        $scope.group.Status = Status;
+        $scope.update({ Status: Status });
+    };
+
+    // Classify PAID and closed bills
+    $scope.closed = function() {
+        return $http({
+            method: 'PUT',
+            url: '/erp/api/bank/payment/chq/accounting',
+            data: {
+                id: $scope.group._id,
+                closed: true
+            }
+        }).success(function(data, status) {
+            if (status === 200)
+                $scope.findOne();
+        });
+    };
+
+    $scope.deleteEntry = function(idx) {
+        $scope.group.lines.splice(idx, 1);
+        $scope.update();
+    };
+
+    $scope.rejectEntry = function(idx, reason) {
+
+        return $http({
+            method: 'POST',
+            url: '/erp/api/bank/payment/chq/reject/' + $scope.group._id,
+            data: {
+                id: $scope.group.lines[idx].bill._id,
+                idx: idx,
+                reason: reason
+            }
+        }).success(function(data, status) {
+            if (status === 200)
+                $scope.findOne();
+        });
+
     };
 
 }]);

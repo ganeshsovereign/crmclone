@@ -41,5 +41,10 @@
     "Banks": "Banques",
     "Transmitter": "Emetteur",
     "Amount": "montant",
-    "Statement": "Relevé"
+    "Statement": "Relevé",
+    "StatusDraft": "Brouillon (à valider)",
+    "StatusWaiting": "En attente",
+    "StatusCredited": "Crédité",
+    "StatusRejected": "Rejeté",
+    "BankCheck": "Cheque(s)"
 }

@@ -42,6 +42,13 @@ MetronicApp.factory("Banks", ['$resource', function($resource) {
             update: {
                 method: 'PUT'
             }
+        }),
+        paymentGroupChq: $resource('/erp/api/bank/payment/chq/:Id', {
+            Id: '@_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
         })
     };
 }]);

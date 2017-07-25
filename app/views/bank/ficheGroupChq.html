@@ -1,0 +1,190 @@
+<div ng-init="findOne()">
+
+    <h3 class="page-title">
+        <i class="fa fa-money font-green"></i> @(compta:CheckReceipt) {{group.ref}}<small> @(From) {{group.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>
+    </h3>
+
+    <div ng-if="group.isremoved" class="alert alert-danger"><strong>Attention !</strong> Cette remise est supprimee. </div>
+
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a ui-sref="home">@(Home)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a ui-sref="payment.chq.list">@(compta:CheckReceipt)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>{{group.ref}}</span>
+            </li>
+        </ul>
+        <div class="page-toolbar" ng-hide="group.isremoved">
+            <div class="btn-group pull-right">
+                <button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                    @(Tools) <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li>
+                        <a ng-show="group.Status == 'DRAFT' && group.dater && login.rights.payment.validate" data-ng-click="closed()">
+                            <i class="fa fa-thumbs-o-up"></i> @(Validate)
+                        </a>
+                    </li>
+                    <!--<li>
+                        <a ng-show='group.Status == "VALIDATE" || group.Status == "PAID"' ng-href="/erp/api/payment/chq/download/{{group._id}}" target="_blank">
+                            <i class="fa fa-file-excel-o"></i> @(Download)
+                        </a>
+                    </li>-->
+
+                    <li class="divider">
+                    </li>
+                    <li>
+                        <a href="#" class="font-red" ng-show="login.rights.payment.delete && group.Status == 'DRAFT'" confirmed-click="remove(group)" ng-confirm-click="Supprimer la remise ?" title="Supprimer la remise">
+                            <i class="fa fa-trash-o font-red"></i> @(Delete)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <tabset class="tabbable-line tabbable-full-width">
+                <tab heading="@(compta:CheckReceipt)">
+                    <div class="row">
+                        <div class="col-md-5 col-sm-12">
+                            <form editable-form name="editableCHQ" onaftersave="update()">
+                                <div class="portlet green box">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-money"></i>@(compta:CheckReceipt)
+                                        </div>
+                                        <div class="actions">
+                                            <a href="javascript:;" ng-click="editableCHQ.$show()" ng-show="!editableCHQ.$visible && editable" class="btn btn-default btn-sm">
+                                                <i class="fa fa-pencil"></i> @(Edit) </a>
+                                        </div>
+                                        <div class="actions" ng-show="editableCHQ.$visible">
+                                            <button type="submit" ng-disabled="editableCHQ.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                                            <button type="button" ng-disabled="editableCHQ.$waiting" ng-click="editableCHQ.$cancel();
+                                                findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(Ref) :</div>
+                                            <div class="col-md-8 value">{{group.ref}}</div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(Status) : </div>
+                                            <div class="col-md-8 value">
+                                                <span class="label label-sm" data-ng-class="group.status.css"> {{group.status.name}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(compta:DateValuePayment) : </div>
+                                            <div class="col-md-8 value">
+                                                <span>{{ (group.dater | date:"dd/MM/yyyy") || 'empty'}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(@(bank:Bank) d'encaissement) : </div>
+                                            <div class="col-md-8 value">
+                                                <span editable-select="group.bank_reglement" e-ng-options="s as s.name for s in banks track by s._id">
+                                                    {{group.bank_reglement.name}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">
+                                                @(Amounts) :
+                                            </div>
+                                            <div class="col-md-8 value">
+                                                {{group.total_amount| currency}} ({{group.lines.length}} @(bank:BankCheck))
+                                            </div>
+
+                                        </div>
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(DateLastModification) :</div>
+                                            <div class="col-md-8 value">{{group.updatedAt|date:'dd/MM/yyyy HH:mm'}}</div>
+                                        </div>
+
+                                        <div class="row static-info">
+                                            <div class="col-md-4 name">@(Logs):</div>
+                                            <div class="col-md-8 value">
+                                                <div ng-repeat="history in group.history">
+                                                    {{history.date| date:'dd/MM/yyyy HH:mm'}} {{history.msg}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-md-7 col-sm-12">
+                            <div class="portlet light">
+
+                                <div class="portlet-title">
+                                    <div class="caption font-green">
+                                        <i class="fa fa-money font-green"></i> @(bills:List)
+                                    </div>
+                                    <div class="actions">
+                                        <a class="btn btn-circle btn-icon-only btn-default" title="@(Refresh)" href="javascript:;" ng-click="findOne()">
+                                            <i class="icon-refresh"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <table class="table table-striped table-bordered table-hover no-footer">
+                                    <thead>
+                                        <tr role="row" class="heading">
+                                            <!--<th width="2%">
+                                                <input type="checkbox" class="group-checkable"/>
+                                            </th>-->
+                                            <th>@(Company)</th>
+                                            <th>@(bills:Ref)</th>
+                                            <th>@(bills:DateEcheance)</th>
+                                            <th>@(bills:Amount)</th>
+                                            <th width='100px'>@(Actions)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="line in group.lines">
+                                            <!--<td><input type="checkbox" name="id[]" value="{{bill._id}}"/></td>-->
+                                            <td><a class="with-tooltip" ui-sref="societe.show({id: line.supplier._id })" data-tooltip-options='{"position":"top"}' title="{{line.supplier.fullName}}"><span class="fa fa-institution"></span> {{line.supplier.fullName}}</a>
+                                            </td>
+                                            <td>
+                                                <div ng-repeat="bill in line.bills">
+                                                    <a class="with-tooltip" ui-sref="bill.show({id: bill.invoice._id})" data-tooltip-options='{"position":"top"}' title="{{ bill.invoice.ref}}"><span class="fa fa-money"></span> {{bill.invoice.ref}} {{bill.amount | currency}}</a>
+                                                </div>
+                                            </td>
+                                            <td>{{line.dater| date:"dd/MM/yyyy"}}</td>
+                                            <td class="text-right">{{(line.amount) | currency}}</td>
+                                            <td>
+                                                <div class="btn-group btn-group-xs" ng-hide='line.isRejected'>
+                                                    <button type="button" ng-show="group.Status == 'PAID'" class="btn btn-xs btn-danger fa fa-exclamation-circle" confirmed-click="rejectEntry($index, '@(lcr:InsufficientFunds)')" ng-confirm-click="Rejet du paiement pour motif :<b>@(lcr:InsufficientFunds)</b>"
+                                                        title="@(lcr:InsufficientFunds)"></button>
+                                                    <button type="button" ng-hide="group.Status != 'DRAFT'" confirmed-click="deleteEntry($index)" ng-confirm-click="Retirer la facture ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="@(Delete)"></button>
+                                                </div>
+                                                <span ng-show='line.isRejected' class="label label-sm label-danger"> @(lcr:LcrStatusRejected) </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <td colspan="3" class="text-right">@(Total)</td>
+                                        <td class="text-right">{{total_bills| currency}}</td>
+                                        <td></td>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
