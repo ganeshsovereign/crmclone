@@ -166,7 +166,7 @@ Object.prototype = {
         var userGroup = new UserGroupModel(self.body);
         var name = self.body.name;
 
-        userGroup._id = 'group' + name;
+        userGroup._id = name;
         userGroup.save(function(err, doc) {
             if (err)
                 return self.throw500(err);

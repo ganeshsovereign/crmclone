@@ -7,13 +7,12 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     timestamps = require('mongoose-timestamp');
 
-
 /**
  * UserGroup Schema
  */
 var userGroupSchema = new Schema({
-    name: { type: String, unique: true, index: true, lowercase: true },
-    _id: String,
+    name: { type: String, unique: true },
+    _id: { type: String, lowercase: true, set: MODULE('utils').setLink },
     _createdAt: { type: Date },
     updatedAt: Date,
     notes: String,
