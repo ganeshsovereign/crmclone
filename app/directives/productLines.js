@@ -69,14 +69,14 @@ MetronicApp.directive('productLines', ['$http',
                                     info: data.info,
                                     taxes: data.taxes,
                                     unit: data.units,
-                                    dynForm: data.dynForm
+                                    dynForm: data.dynForm,
+                                    weight: data.weight
                                         //family: data.product.id.caFamily
                                 },
                                 description: (lines[i].description ? lines[i].description : data.info.langs[0].description),
                                 isNew: true,
                                 qty: lines[i].qty,
                                 //qty_order: lines[i].qty_order, // qty from order
-                                //weight: data.info.weight,
                                 idLine: index
                             };
 

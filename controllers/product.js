@@ -952,6 +952,7 @@ Object.prototype = {
                 indirectCost: 1,
                 info: 1,
                 size: 1,
+                weight: 1,
                 suppliers: {
                     $filter: {
                         input: "$suppliers",
@@ -990,6 +991,7 @@ Object.prototype = {
                 indirectCost: { $first: "$indirectCost" },
                 info: { $first: "$info" },
                 size: { $first: "$size" },
+                weight: { $first: "$weight" },
                 suppliers: { $first: "$suppliers" }
             }
         }, {
@@ -1022,6 +1024,7 @@ Object.prototype = {
                 indirectCost: 1,
                 info: 1,
                 size: 1,
+                weight: 1,
                 suppliers: 1,
                 prices: { $arrayElemAt: ['$prices.prices', 0] },
                 discount: '$prices.discount',

@@ -320,6 +320,7 @@ Object.prototype = {
                 MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, wCb);
             },
             function(result, wCb) {
+                //console.log(result);
                 self.body.total_ht = result.total_ht;
                 self.body.total_taxes = result.total_taxes;
                 self.body.total_ttc = result.total_ttc;
