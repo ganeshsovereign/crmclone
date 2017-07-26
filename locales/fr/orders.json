@@ -285,6 +285,7 @@
     "Expected": "En attentes",
     "OrderQty": "Qté commandée",
     "ShippedQty": "Qté Expédiée",
+    "RecievedQty": "Qté recue",
     "Reminder": "Qté restante",
     "StockReturn": "Retours stock",
     "NewStockReturn": "Nouveau retour stock",

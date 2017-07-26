@@ -267,8 +267,7 @@
                                     <tr role="row " class="heading ">
                                         <th>@(Ref)</th>
                                         <th>@(orders:OrderQty)</th>
-                                        <th>@(orders:Reserved)</th>
-                                        <th>@(orders:ShippedQty)</th>
+                                        <th>@(orders:RecievedQty)</th>
                                         <th>@(orders:Reminder)</th>
                                     </tr>
                                 </thead>
@@ -276,7 +275,6 @@
                                     <tr class="text-center ">
                                         <td class="text-left ">{{line.product.info.SKU}} </td>
                                         <td>{{line.orderQty}}</td>
-                                        <td> </td>
                                         <td>{{line.deliveryQty}}</td>
                                         <td> <span ng-class="{ 'label label-warning':line.orderQty - line.deliveryQty> 0}">{{line.orderQty - line.deliveryQty}}</span>
                                         </td>
@@ -285,7 +283,6 @@
                                         <td class="text-right">
                                             <a ui-sref="deliverysupplier.show({id:delivery._id})">{{delivery.ref}}</a> {{delivery.date_livraison|date:'dd/MM/yyyy'}}</td>
                                         <td></td>
-                                        <td> </td>
                                         <td class="text-center">{{delivery.qty}}</td>
                                         <td></td>
                                     </tr>

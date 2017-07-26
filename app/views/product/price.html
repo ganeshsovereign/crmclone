@@ -135,10 +135,10 @@
                                                     <label for="price">@(products:RateHT)</label>
                                                     <input type="number" min="0" step="any" id="price" data-ng-model="price.prices[0].price" class="input">
                                                 </p>
-                                                <p ng-show="price.priceLists.isCoef" class="button-height inline-medium-label">
+                                                <!--<p ng-show="price.priceLists.isCoef" class="button-height inline-medium-label">
                                                     <label for="coef">Coeff.</label>
                                                     <input type="number" min="0" step="any" id="coef" data-ng-model="price.prices[0].coef" class="input">
-                                                </p>
+                                                </p>-->
                                             </div>
                                             <div class="modal-footer">
 
@@ -396,10 +396,10 @@
                                                     <label for="price_list">Grille de tarifs</label>
                                                     <select class="table-group-action-input form-control" ng-model="price.priceLists" ng-options="p._id as p.priceListCode for p in pricesLists"></select>
                                                 </p>
-                                                <p class="button-height inline-medium-label">
+                                                <!--<p class="button-height inline-medium-label">
                                                     <label for="price">Tarif HT</label>
                                                     <input type="number" min="0" step="any" id="price" data-ng-model="price.prices[0].price" class="input">
-                                                </p>
+                                                </p>-->
                                             </div>
                                             <div class="modal-footer">
 
@@ -414,7 +414,7 @@
                                                 <span class="caption-subject font-grey-gallery bold uppercase">Prix de revient</span>
                                             </div>
                                             <div class="actions">
-                                                <a class="btn blue" ng-if="!prices" ng-click="addNewPrice()" href="javascript:;">
+                                                <a class="btn blue" ng-if="!prices || !prices.length" ng-click="addNewPrice()" href="javascript:;">
                                                     <i class="fa fa-plus"></i> @(Add)
                                                 </a>
                                                 <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;">
@@ -436,7 +436,7 @@
                                                             <th>@(Liste de prix)</th>
                                                             <!--<th>@(products:Promo)</th>-->
                                                             <th>@(products:CostPriceHT)</th>
-                                                            <th>@(products:CostPrice)</th>
+                                                            <th>@(products:CostPriceTTC)</th>
                                                             <th>Date MAJ</th>
                                                             <th>@(Action)</th>
                                                         </tr>

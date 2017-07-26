@@ -3253,6 +3253,9 @@ Prices.prototype = {
                 if (err)
                     return pCb(err);
 
+                if (!_res.length)
+                    return pCb(null, 0);
+
                 pCb(null, _res[0].count);
             });
         };
