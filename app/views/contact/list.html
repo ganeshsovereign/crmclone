@@ -8,12 +8,16 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
+                <span>@(companies:ThirdParties)</span>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
                 <span>@(companies:ListOfContacts)</span>
             </li>
         </ul>
         <div class="page-toolbar">
             <div class="btn-group pull-right">
-                <button class="btn yellow-crusta dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
+                <button class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
                             </button>
                 <ul class="dropdown-menu pull-right">
                     <li>
@@ -35,9 +39,6 @@
             </div>
         </div>
     </div>
-    <h3 class="page-title">
-        <i class="fa fa-users font-yellow-crusta"></i> @(companies:ListOfContacts)
-    </h3>
 
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">
@@ -95,7 +96,7 @@
                                     <input type="checkbox" class="group-checkable" />
                                 </th>
                                 <th>@(companies:Lastname)</th>
-                                <th>@(companies:Fistname)</th>
+                                <th>@(companies:Firstname)</th>
                                 <th>@(companies:PostOrFunction)</th>
                                 <th>@(companies:Company)</th>
                                 <th>@(companies:Phone)</th>
