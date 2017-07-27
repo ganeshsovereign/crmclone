@@ -324,7 +324,7 @@ Object.prototype = {
                         },
                         function(doc, wCb) {
                             //if (doc.forSales == true)
-                            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: doc });
+                            //F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: doc });
 
                             //update inventory IN
 
@@ -461,6 +461,9 @@ Object.prototype = {
                                     }
                                 });
                             }
+
+                            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: {_id: doc.order} });
+
 
                             F.functions.BusMQ.publish('notify:controllerAngular', null, {
                                 route: 'delivery',

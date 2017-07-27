@@ -447,7 +447,7 @@ baseSchema.statics.getById = function(id, callback) {
             },
             function(order, wCb) {
                 if (!order)
-                    return wCb("Order not found");
+                    return wCb(null, null);
 
                 if (!order.order)
                     order.order = { _id: order._id };
@@ -485,6 +485,9 @@ baseSchema.statics.getById = function(id, callback) {
                     });
             },
             function(order, wCb) {
+                if (!order)
+                    return wCb(null, null, null);
+
                 OrderRowModel.aggregate([{
                             $match: { order: ObjectId(order.order._id), isDeleted: { $ne: true }, type: 'product' }
                         },
@@ -639,6 +642,9 @@ baseSchema.statics.getById = function(id, callback) {
             if (err)
                 return callback(err);
 
+            if (!order)
+                return callback(null, null);
+
             //return console.log(orderRows);
 
             order.orderRows = _.map(orderRows, function(item) {
@@ -651,6 +657,9 @@ baseSchema.statics.getById = function(id, callback) {
 
                 if (!data || !data.onHand)
                     data = { onHand: 0 };
+
+                if (item.qty > data.onHand)
+                    item.qty = data.onHand;
 
                 return _.extend(item, { onHand: data.onHand });
             });
@@ -1319,7 +1328,8 @@ F.on('load', function() {
                             GoodsOutNote.aggregate([{
                                 $match: {
                                     'orderRows.orderRowId': elem._id,
-                                    _type: { $ne: 'stockReturns' }
+                                    _type: { $ne: 'stockReturns' },
+                                    Status: { $ne: 'DRAFT' }
                                 }
                             }, {
                                 $project: {

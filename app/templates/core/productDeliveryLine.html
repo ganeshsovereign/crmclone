@@ -43,7 +43,7 @@
                     <td class="center" ng-class="{bold:line.orderQty - line.deliveryQty - line.qty}"> {{line.orderQty - line.deliveryQty - line.qty }} </td>
                     <td class=" center ">
                         <i class="fa fa-warning font-red " tooltip="@(deliveries:NoStockAvailable) " ng-if="line.qty> line.onHand && editable"></i>
-                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-max="{{min(line.orderQty, line.onHand) - line.deliveryQty}}" e-step="any" e-form="tableform">
+                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-max="{{min(line.orderQty-line.deliveryQty, line.onHand) }}" e-step="any" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
                     </td>

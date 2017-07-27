@@ -369,7 +369,7 @@ Object.prototype = {
             function(order, newRows, wCb) {
 
                 //Allocated product order
-                if (order.Status !== "TOVALIDATE")
+                if (order.Status !== "INVENTORY")
                     return wCb(null, order);
 
                 async.eachSeries(newRows, function(elem, eachCb) {
@@ -491,7 +491,7 @@ Object.prototype = {
                 }, function(err) {
                     if (err)
                         return wCb(err);
-                    order.Status = "VALIDATED";
+                    order.Status = "PROCESSING";
                     wCb(null, order);
                 });
             }
@@ -1138,6 +1138,9 @@ Object.prototype = {
             function(err, result) {
                 if (err)
                     return self.throw500(err);
+
+                if(!result.order)
+                    return self.throw404();
 
                 //result.order = result.order.toObject();
                 result.order.deliveries = result.deliveries;

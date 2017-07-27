@@ -191,7 +191,7 @@
     "ValidateOrdersFab": "Valider l'ordre de Fabrication",
     "ValidateQuotation": "Valider le devis",
     "StatusDeliveryInStock": "Livraison en stock",
-
+    "Processing" :"Préparer la commande",
     "NewDelivery": "Nouveau bon de livraison",
     "Delivery": "Livraison",
     "DeliveriesShort": "Livraisons",

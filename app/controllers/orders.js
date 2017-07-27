@@ -733,6 +733,17 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             }, function() {});
         });*/
 
+        $scope.isQty = function(lines){
+            if(!lines || !lines.length)
+                return false;
+            
+            for(var i=0; i<lines.length;i++)
+                if(lines[i].qty > 0)
+                    return true;
+            
+            return false;
+        }
+
         $scope.exportAccounting = function(id) {
             $http({
                 method: 'PUT',
