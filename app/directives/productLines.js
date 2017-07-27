@@ -28,6 +28,11 @@ MetronicApp.directive('productLines', ['$http',
 
                 //console.log(scope);
 
+                //Used in delivery
+                scope.min = function(val1, val2) {
+                    return Math.min(val1, val2);
+                };
+
                 $http({
                     method: 'GET',
                     url: '/erp/api/product/taxes'

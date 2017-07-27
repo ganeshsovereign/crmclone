@@ -554,7 +554,7 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
 
                 lastSum = orderRow.qty;
 
-                console.log(orderRow, doc.warehouse);
+                //console.log(orderRow, doc.warehouse);
 
                 self.find({
                     warehouse: doc.warehouse,
@@ -562,6 +562,8 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
                 }, function(err, avalabilities) {
                     if (err)
                         return eachCb(err);
+
+                    //console.log(avalabilities);
 
                     if (avalabilities.length) {
                         async.each(avalabilities, function(avalability, cb) {
@@ -584,7 +586,7 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
                             onHand = avalability.onHand + existedRow.qty;
 
                             if (!onHand || onHand <= 0)
-                                return cb(error);
+                                return cb();
 
                             resultOnHand = onHand - lastSum;
 
@@ -603,7 +605,7 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
                                 if (err)
                                     return cb(err);
 
-                                if (orderRow.locationsDeliver && avalability.location) {
+                                if (orderRow.locationsDeliver && orderRow.locationsDeliver.length && avalability.location) {
                                     locationsDeliverIds = orderRow.locationsDeliver.map(function(elem) {
                                         return elem.toString();
                                     });
@@ -628,6 +630,7 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
                                 }
 
                                 orderRow.cost += avalability.cost * qtyDeliver;
+                                orderRow.qty = qtyDeliver;
                                 cb();
                             }
 
@@ -697,8 +700,8 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
                             if (err)
                                 return eachCb(err);
 
-                            if (!orderRow.qty)
-                                return eachCb(error);
+                            //if (!orderRow.qty)
+                            //    return eachCb(error);
 
                             eachCb();
                             F.functions.BusMQ.publish('inventory:update', null, { product: { _id: orderRow.product } });

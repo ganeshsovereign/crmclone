@@ -21,6 +21,7 @@
     "QtyOrdered": "Qté cmdée",
     "QtyDelivered": "Qté livrée",
     "QtyToDelivered": "Qté à livrer",
+    "QtyOnHand": "Qté en stock",
     "URLtracking": "URL de suivi",
     "SetDeliveryDate": "Définir la date de livraison",
     "ValidateDeliveryReceipt": "Valider le bon de livraison",
@@ -95,5 +96,6 @@
     "Reminder": "Qté restante",
     "StockReturn": "Retours stock",
     "NewStockReturn": "Nouveau retour stock",
-    "ListStockReturn": "Liste des  retours stock"
+    "ListStockReturn": "Liste des  retours stock",
+    "NoStockAvailable": "Pas assez de stock"
 }

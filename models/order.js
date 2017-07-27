@@ -645,6 +645,16 @@ baseSchema.statics.getById = function(id, callback) {
                 return _.extend(item, _.findWhere(order.orderRows, { orderRowId: item.orderRowId }));
             });
 
+            //Add onHand in delivery lines
+            order.orderRows = _.map(order.orderRows, function(item) {
+                var data = _.findWhere(order.lines, { _id: item.orderRowId });
+
+                if (!data || !data.onHand)
+                    data = { onHand: 0 };
+
+                return _.extend(item, { onHand: data.onHand });
+            });
+
             //console.log(order.orderRows);
 
             return callback(err, order);
@@ -700,7 +710,7 @@ var goodsOutNoteSchema = new Schema({
         _id: false,
         orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
         product: { type: ObjectId, ref: 'product', default: null },
-        locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
+        locationsDeliver: [{ type: ObjectId, ref: 'location' }],
         cost: { type: Number, default: 0 },
         qty: Number,
 
@@ -870,8 +880,9 @@ var stockTransactionsSchema = new Schema({
         _id: false,
         orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
         product: { type: ObjectId, ref: 'Product', default: null },
-        locationsDeliver: [{ type: ObjectId, ref: 'location', default: null }],
+        locationsDeliver: [{ type: ObjectId, ref: 'location' }],
         batchesDeliver: [{
+            _id: false,
             goodsNote: { type: ObjectId, ref: 'goodsInNotes', default: null },
             qty: Number,
             cost: Number
@@ -1227,7 +1238,6 @@ exports.name = "order";
 F.on('load', function() {
     // Refresh pack prices from directCost
     F.functions.BusMQ.subscribe('order:recalculateStatus', function(data) {
-        const Order = exports.Schema.Order;
         const OrderRows = MODEL('orderRows').Schema;
         var ObjectId = MODULE('utils').ObjectId;
 
@@ -1246,12 +1256,17 @@ F.on('load', function() {
 
             var stockStatus = {};
 
-            if (docs && docs.length && docs[0].order.Status != "DRAFT") {
+            if (docs && docs.length && docs[0].order.Status != "DRAFT" && docs[0].order.Status != "NEW") {
                 async.each(docs, function(elem, eahcCb) {
                         var product;
 
                         elem = elem.toJSON();
                         product = elem.product ? elem.product._id : null;
+
+                        //console.log(elem);
+
+                        if (!elem.qty || elem.isDeleted)
+                            return eahcCb();
 
                         Availability.aggregate([{
                             $match: {
@@ -1418,38 +1433,71 @@ F.on('load', function() {
 
         }
 
-        OrderRows.find({
-                order: data.order._id, //orderId
-                product: { $ne: null }
-            })
-            .populate('product', 'directCost info')
-            .populate('order', 'Status')
-            .exec(function(err, docs) {
-                if (err)
-                    return console(err);
+        async.waterfall([
+            function(wCb) {
+                const Order = exports.Schema.Order;
+                // Get Type ONLY CustomerOrder AND SupplierOrder type
 
-                getAvailableForRows(docs, function(err, status) {
+                Order.findById(data.order._id, "_type", function(err, doc) {
                     if (err)
-                        return console.log(err);
+                        return wCb(err);
 
-                    Order.findByIdAndUpdate(data.order._id, { status: status }, { new: true }, function(err, el) {
-                        if (err)
-                            return console.log(err);
+                    if (!doc)
+                        return wCb(null, null);
 
-                        //console.log(status, el.status);
+                    if (doc._type == 'orderCustomer')
+                        return wCb(null, exports.Schema.OrderCustomer);
 
-                        console.log('Status updated');
-                        //Force reload order
-                        //Force reload product
+                    if (doc._type == 'orderSupplier')
+                        return wCb(null, exports.Schema.OrderSupplier);
 
-                        F.functions.BusMQ.publish('notify:controllerAngular', null, {
-                            route: 'order',
-                            _id: el._id,
-                            message: "Commande " + el.ref + ' modifie.'
-                        });
-                    });
+                    return wCb(null, null);
+
                 });
+            },
+            function(OrderModel, wCb) {
+                if (!OrderModel)
+                    return wCb();
 
-            });
+                OrderRows.find({
+                        order: data.order._id, //orderId
+                        product: { $ne: null }
+                    })
+                    .populate('product', 'directCost info')
+                    .populate('order', 'Status')
+                    .exec(function(err, docs) {
+                        if (err)
+                            return wCb(err);
+
+                        getAvailableForRows(docs, function(err, status) {
+                            if (err)
+                                return wCb(err);
+
+                            OrderModel.findByIdAndUpdate(data.order._id, { status: status }, { new: true }, function(err, el) {
+                                if (err)
+                                    return wCb(err);
+
+                                //console.log(status, el.status);
+
+                                console.log('Status updated');
+                                //Force reload order
+                                //Force reload product
+
+                                F.functions.BusMQ.publish('notify:controllerAngular', null, {
+                                    route: 'order',
+                                    _id: el._id,
+                                    //message: "Commande " + el.ref + ' modifie.'
+                                });
+
+                                wCb();
+                            });
+                        });
+
+                    });
+            }
+        ], function(err) {
+            if (err)
+                return console.log(err);
+        });
     });
 });

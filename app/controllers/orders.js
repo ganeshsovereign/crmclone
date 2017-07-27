@@ -221,7 +221,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             if ($rootScope.$stateParams.id)
                 if (data.data._id == $rootScope.$stateParams.id) {
                     $scope.findOne();
-                    toastr.warning(data.data.message, 'Notification serveur', { timeOut: 5000, progressBar: true });
+                    if (data.data.message)
+                        toastr.warning(data.data.message, 'Notification serveur', { timeOut: 500, progressBar: true });
                 }
         });
 

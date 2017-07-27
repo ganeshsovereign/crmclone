@@ -119,7 +119,7 @@
                                 <button type="button" ng-show="tableform.$visible && line.product.dynForm" ng-click="editLine(line, line.idLine, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-pencil" title="@(Edit)"></button>
                                 <button type="button" ng-show="tableform.$visible  && line.type != 'SUBTOTAL'" ng-click="copyLine(line, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-copy" title="@(TocLone)"></button>
                                 <button type="button" ng-show="tableform.$visible && line.type != 'SUBTOTAL'" ng-click="AddSubTotal($index)" class="btn btn-default btn-icon-only btn-sm fa fa-bars" title="@(AddSubtotal)"></button>
-                                <button type="button" ng-show="tableform.$visible" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
+                                <button type="button" ng-show="tableform.$visible" ng-disabled="line.allocated" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
                             </div>
                         </div>
                     </td>

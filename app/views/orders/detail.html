@@ -36,7 +36,7 @@
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
-                        <div class="row" ng-if="module('delivery') && object._id">
+                        <div class="row" ng-if="module('delivery') && object._id && object.Status != 'DRAFT'">
                             <div class="col-md-12">
                                 <div class="portlet light bordered">
                                     <div class="row">

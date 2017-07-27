@@ -332,10 +332,14 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     for (var i = 0, length = lines.length; i < length; i++) {
                         if (!lines[i].product)
                             continue;
-                        if (lines[i].isDeleted)
-                            continue;
                         if (lines[i].type === 'SUBTOTAL')
                             continue;
+                        if (lines[i].isDeleted) {
+                            lines[i].qty = 0;
+                            lines[i].total_ht = 0;
+                            lines[i].discount = 0;
+                            continue;
+                        }
 
                         lines[i].total_taxes = []; // RESET All taxes
 

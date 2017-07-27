@@ -18,6 +18,7 @@
                         <th style="width: 140px;">@(products:ProductCode)</th>
                         <th style="width: 15%;">@(Name)</th>
                         <th class="center" style="width: 80px;">@(QtyOrder)</th>
+                        <th class="center" style="width: 80px;">@(deliveries:QtyOnHand)</th>
                         <th class="center" style="width: 100px;">@(QtyFulfilled)</th>
                         <th class="center" style="width: 120px;">@(Reminder)</th>
                         <th class="center" style="width: 100px;">@(QtyDelivered)</th>
@@ -33,12 +34,16 @@
                     <td class="center">
                         {{ line.orderQty || '0' }}
                     </td>
+                    <td class="center" ng-class="{'font-red bold': (editable && line.orderQty > line.onHand)}">
+                        {{ line.onHand || '0' }}
+                    </td>
                     <td class="center">
                         {{ line.deliveryQty || '0' }}
                     </td>
-                    <td class="center"> {{line.orderQty - line.deliveryQty - line.qty }} </td>
-                    <td class="center">
-                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-max="{{line.orderQty - line.deliveryQty}}" e-step="any" e-form="tableform">
+                    <td class="center" ng-class="{bold:line.orderQty - line.deliveryQty - line.qty}"> {{line.orderQty - line.deliveryQty - line.qty }} </td>
+                    <td class=" center ">
+                        <i class="fa fa-warning font-red " tooltip="@(deliveries:NoStockAvailable) " ng-if="line.qty> line.onHand && editable"></i>
+                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-max="{{min(line.orderQty, line.onHand) - line.deliveryQty}}" e-step="any" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
                     </td>

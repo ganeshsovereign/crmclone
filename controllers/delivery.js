@@ -129,7 +129,7 @@ Object.prototype = {
         if (!delivery.entity)
             delivery.entity = self.user.entity;
 
-        //console.log(delivery);
+        //return console.log(delivery);
         delivery.save(function(err, doc) {
             if (err)
                 return self.throw500(err);
@@ -266,9 +266,11 @@ Object.prototype = {
         if (!self.body.createdBy)
             self.body.createdBy = self.user._id;
 
-        var rows = self.body.lines;
+        var rows = self.body;
         for (var i = 0; i < rows.length; i++)
             rows[i].sequence = i;
+
+
         MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
             if (err) {
                 console.log(err);
@@ -283,13 +285,16 @@ Object.prototype = {
             self.body.total_ht = result.total_ht;
             self.body.total_taxes = result.total_taxes;
             self.body.total_ttc = result.total_ttc;
-            self.body.weight = result.weight;
+            self.body.weight = 0;
+            //refresh weight only on qty sended
+            for (let i = 0, len = self.body.orderRows.length; i < len; i++)
+                self.body.weight += self.body.orderRows[i].qty * self.body.orderRows[i].product.weight;
+            //console.log(self.body.orderRows[i].qty);
 
             DeliveryModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, delivery) {
                 if (err)
                     return self.throw500(err);
 
-                //console.log(delivery);
                 //delivery = _.extend(delivery, self.body);
 
                 //delivery.editedBy = self.user._id;
@@ -366,6 +371,8 @@ Object.prototype = {
                             if (doc.status.isInventory)
                                 return wCb(null, doc);
 
+                            // return console.log(doc.status);
+
                             if (!isInventory)
                                 return wCb(null, doc);
 
@@ -386,7 +393,7 @@ Object.prototype = {
                                     }, function(err, rows) {
                                         if (err)
                                             return wCb(err);
-
+                                        //console.log(rows);
                                         result.orderRows = rows;
 
                                         return Availability.deliverProducts({
@@ -398,6 +405,8 @@ Object.prototype = {
 
                                             if (result && result.order)
                                                 F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: result.order });
+
+                                            doc.orderRows = rows;
 
                                             doc.status.isInventory = new Date();
                                             //doc.status.isShipped = new Date();
@@ -1798,8 +1807,8 @@ function createDelivery(doc, callback) {
             keys: [
                 { key: "ref", type: "string" },
                 { key: "description", type: "area" },
-                //{key: "qty_order", type: "number", precision: 3},
-                { key: "qty", type: "number", precision: 3 }
+                { key: "qty_order", type: "number", precision: 0 },
+                { key: "qty", type: "number", precision: 0 }
             ]
         });
 
@@ -1808,8 +1817,8 @@ function createDelivery(doc, callback) {
                 tabLines.push({
                     ref: doc.lines[i].product.info.SKU.substring(0, 12),
                     description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
-                    // qty_order: doc.lines[i].qty_order,
-                    qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") }
+                    qty_order: doc.lines[i].qty,
+                    qty: { value: doc.orderRows[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") }
                 });
 
             /*if (doc.lines[i].product.id.pack && doc.lines[i].product.id.pack.length) {
@@ -1849,7 +1858,7 @@ function createDelivery(doc, callback) {
         //Total HT
         tabTotal.push({
             label: "Quantité totale : ",
-            total: _.sum(doc.lines, function(line) {
+            total: _.sum(doc.orderRows, function(line) {
                 return line.qty;
             }),
             unit: "pièce(s)"
