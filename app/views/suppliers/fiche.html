@@ -75,6 +75,7 @@
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
+                <hr>
                 <li>
                     <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
@@ -119,6 +120,7 @@
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
+                <hr>
                 <li>
                     <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/order/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
@@ -148,6 +150,7 @@
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
+                <hr>
                 <li>
                     <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
@@ -168,7 +171,7 @@
             <!-- billsupplier -->
             <ul ng-if="module('billsupplier')" class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a ng-if="object.Status == 'DRAFT'&& object.supplier._id && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
+                    <a ng-if="object.Status == 'DRAFT' && object.supplier._id && login.rights.order.validate" data-ng-click="changeStatus('VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(Validate)
                     </a>
                 </li>
@@ -187,6 +190,7 @@
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
+                <hr>
                 <li>
                     <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
