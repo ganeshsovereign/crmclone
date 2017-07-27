@@ -54,7 +54,7 @@ var maxlength = [255, 'The value of path `{PATH}` (`{VALUE}`) exceeds the maximu
 
 var LangSchema = new Schema({
     _id: false,
-    description: { type: String, default: '' },
+    description: { type: String, default: '' }, //Bill Offer Delivery Order
     shortDescription: { type: String, default: '' }, // Resume ecommerce
     body: { type: String, default: '' }, // HTML ecommerce
     name: { type: String, default: '' },

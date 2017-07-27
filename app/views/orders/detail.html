@@ -270,7 +270,7 @@
                             <div class="col-md-7 value">{{object.weight| number : 2}} kg</div>
                         </div>
 
-                        <div class="row static-info align-reverse">
+                        <div ng-hide="module('delivery')" class="row static-info align-reverse">
                             <div class="col-md-5 name">@(deliveries:ShippingCost) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
                             <div class="col-md-7 value"><span editable-number="object.shipping.total_ht" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
                                                 {{object.shipping.total_ht| currency}}
@@ -282,7 +282,7 @@
                                                 {{object.discount.discount.percent | percent:2}}  (-{{object.discount.discount.value | currency}})
                                             </span></div>
                         </div>
-                        <div class="row static-info align-reverse">
+                        <div ng-hide="module('delivery')" class="row static-info align-reverse">
                             <div class="col-md-5 name">@(bills:EscompteOffered) : <span class="icon-pencil grey" ng-click="escompte.$show()" ng-hide="escompte.$visible || !editable"></span></div>
                             <div class="col-md-7 value"><span editable-number="object.discount.escompte.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="escompte">
                                                 {{object.discount.escompte.percent | percent:2}} (-{{object.discount.escompte.value | currency}})

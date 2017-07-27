@@ -6,7 +6,7 @@
 
 <script type="text/ng-template" id="searchvariantproduct.html">
     <a>
-        <span ng-bind-html="match.model.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.info.langs[0].name"></span>
+        <span ng-bind-html="match.model.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.info.langs[_language].name"></span>
     </a>
 </script>
 
@@ -118,18 +118,25 @@ Marketing
                             <div class="col-md-6 col-sm-12">
                                 <div class="portlet light bordered">
                                     <tabset class="tabbable-line tabbable-full-width">
-                                        <tab heading="@(eshop:abstract)  *">
+                                        <tab heading="@(Description)">
+                                            <div class="form-group form-md-line-input ">
+                                                <textarea class="form-control" ng-model="product.info.langs[_language].description" rows="4"></textarea>
+                                                <label for="description">@(products:Description) : Devis, Commandes, factures</label>
+                                            </div>
+                                        </tab>
+
+                                        <tab heading="@(eshop:abstract) Internet">
                                             <div class="form-group form-md-line-input ">
                                                 <!--<label for="Abstract">@(eshop:abstract) <span class="required">
                                         * </span></label>-->
                                                 <summernote height="220" ng-model="product.info.langs[_language].shortDescription"><i class="fa fa-flag"></i></summernote>
                                             </div>
                                         </tab>
-                                        <tab heading="@(Description)  *">
+                                        <tab heading="@(Description) Longue Internet">
                                             <div class="form-group form-md-line-input ">
                                                 <!--<label for="Des">@(Description) <span class="required">
                                         * </span></label>-->
-                                                <summernote height="220" ng-model="product.info.langs[0].body"></summernote>
+                                                <summernote height="220" ng-model="product.info.langs[_language].body"></summernote>
                                             </div>
                                         </tab>
                                     </tabset>
