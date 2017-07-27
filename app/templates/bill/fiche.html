@@ -19,7 +19,7 @@
                 <div class="portlet-body">
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(companies:ThirdPartyBilling) : 
+                            @(companies:ThirdPartyBilling) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-text="societe.cptBilling" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete') | filter:{name:$viewValue}" e-placeholder="@(companies:ThirdPartyBillingDesc)">
@@ -27,21 +27,21 @@
                             </span>
                         </div>
                     </div>
-                    
+
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(companies:ImportExport) : 
+                            @(companies:ImportExport) :
                         </div>
                         <div class="col-md-7 value">
-                            <span editable-select = "societe.importExport" e-ng-options = "s.id as s.name for s in importExport">
+                            <span editable-select="societe.importExport" e-ng-options="s.id as s.name for s in importExport">
                                 {{ societe.importExport }}
                             </span>
                         </div>
                     </div>
-                    
+
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(compta:CustomerAccountancyCode) : 
+                            @(compta:CustomerAccountancyCode) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-text="societe.code_compta">
@@ -51,7 +51,7 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(compta:SupplierAccountancyCode) : 
+                            @(compta:SupplierAccountancyCode) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-text="societe.code_compta_fournisseur">
@@ -61,7 +61,7 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(companies:VATIsUsed) : 
+                            @(companies:VATIsUsed) :
                         </div>
                         <div class="col-md-7 value">
                             <input uniform type="checkbox" ng-model="societe.VATIsUsed" ng-checked="societe.VATIsUsed" ng-disabled="!editableCommercial.$visible" />
@@ -69,7 +69,7 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(companies:VATIntra) : 
+                            @(companies:VATIntra) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-text="societe.idprof6">
@@ -79,7 +79,7 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(bills:PaymentConditions) : 
+                            @(bills:PaymentConditions) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-select="societe.cond_reglement" e-ng-options="s.id as s.label for s in dict.fk_payment_term.values">
@@ -89,37 +89,37 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(bills:PaymentMode) : 
+                            @(bills:PaymentMode) :
                         </div>
                         <div class="col-md-7 value">
-                            <span editable-select = "societe.mode_reglement" e-ng-options = "s.id as s.label for s in dict.fk_paiement.values">
+                            <span editable-select="societe.mode_reglement" e-ng-options="s.id as s.label for s in dict.fk_paiement.values">
                                 {{ showStatus('mode_reglement', 'fk_paiement')}}
                             </span>
                         </div>
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(bills:PaymentBank) : 
+                            @(bills:PaymentBank) :
                         </div>
                         <div class="col-md-7 value">
-                            <span editable-select = "societe.bank_reglement" e-ng-options = "s.ref as s.ref for s in banks">
+                            <span editable-select="societe.bank_reglement" e-ng-options="s.ref as s.ref for s in banks">
                                 {{societe.bank_reglement|| '@(main:Undefined)'}}
                             </span>
                         </div>
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(products:PriceLevel) : 
+                            @(products:PriceLevel) :
                         </div>
                         <div class="col-md-7 value">
-                            <span editable-text="societe.price_level" e-typeahead="price_level.name for price_level in priceLevelAutoComplete($viewValue, 'name') | filter:{name:$viewValue}" >
+                            <span editable-text="societe.price_level" e-typeahead="price_level.name for price_level in priceLevelAutoComplete($viewValue, 'name') | filter:{name:$viewValue}">
                                 {{ societe.price_level || '@(main:Undefined)' }}
                             </span>
                         </div>
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(companies:CustomerRelativeDiscountShort) : 
+                            @(companies:CustomerRelativeDiscountShort) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-number="societe.remise_client">
@@ -130,7 +130,7 @@
                     <hr>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(bank:BankName) : 
+                            @(bank:BankName) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-text="societe.iban.bank">
@@ -140,7 +140,7 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(bank:IBAN) : 
+                            @(bank:IBAN) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-text="societe.iban.id">
@@ -150,18 +150,18 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(bank:BIC/SWIFT) : 
+                            @(bank:BIC/SWIFT) :
                         </div>
                         <div class="col-md-7 value">
-                            <span editable-text="societe.iban.swift">
-                                {{ societe.iban.swift || '@(main:Undefined)' }}
+                            <span editable-text="societe.iban.bic">
+                                {{ societe.iban.bic || '@(main:Undefined)' }}
                             </span>
                         </div>
                     </div>
                     <hr>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(companies:GroupDeliveries) : 
+                            @(companies:GroupDeliveries) :
                         </div>
                         <div class="col-md-7 value">
                             <input uniform type="checkbox" ng-model="societe.groupDelivery" ng-checked="societe.groupDelivery" ng-disabled="!editableCommercial.$visible" />
@@ -315,7 +315,7 @@
                 <div class="portlet-body">
                     <div class="table-toolbar">
                         <div class="row">
-                            <div class="col-md-6"ng-show="!global.user.rights.bill.read">
+                            <div class="col-md-6" ng-show="!global.user.rights.bill.read">
                                 <div class="btn-group pull-left">
                                     <button class="btn blue" disabled data-ng-click="paymentBills()">@(Add) <i class="fa fa-plus"></i></button>
                                     <button title="@(Refresh)" class="btn" data-ng-click="

@@ -6,7 +6,8 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     async = require('async'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    ObjectId = mongoose.Schema.Types.ObjectId;
 
 var Dict = INCLUDE('dict');
 var round = MODULE('utils').round;
@@ -17,36 +18,33 @@ var round = MODULE('utils').round;
 var bankSchema = new Schema({
     ref: { type: String, unique: true },
     account_type: String,
-    country: String,
     name_bank: String,
     code_bank: Number,
     number_bank: Number,
     code_counter: String,
     account_number: String,
-    iban: String,
-    bic: String,
-    rib: String,
+    iban: {
+        bank: { type: String, uppercase: true, trim: true },
+        id: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true }, //FR76........
+        bic: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true } //BIC / SWIFT TODO old swift
+    },
     currency: String,
     status: String,
     reconciled: Boolean,
     min_balance_allowed: Number,
     min_balance_required: Number,
     web: String,
-    address: String,
-    zip: String,
-    town: String,
     comment: String,
-    entity: { type: String, trim: true },
-    owner: {
-        name: String,
-        address: String,
-        zip: String,
-        town: String
+    entity: [{ type: String, trim: true }],
+    address: {
+        street: { type: String, default: '' },
+        city: { type: String, default: '' },
+        state: { type: String, default: '' },
+        zip: { type: String, default: '' },
+        country: { type: String, ref: 'countries', default: 'FR' }
     },
-    author: {
-        id: { type: String, ref: 'User' },
-        name: String
-    },
+    createdBy: { type: ObjectId, ref: 'Users' },
+    editedBy: { type: ObjectId, ref: 'Users' },
     journalId: { type: String, unique: true }, // BQ1
     compta_bank: { type: String, unique: true } // 512xxxx
 }, {

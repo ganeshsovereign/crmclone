@@ -24,7 +24,7 @@
                             </tr>
                             <tr>
                                 <th scope="row">@(companies:VATIsUsed)</th>
-                                <td ><input type="checkbox" data-ng-model="societe.VATIsUsed" data-ng-checked="societe.VATIsUsed" data-ng-change="update()" />
+                                <td><input type="checkbox" data-ng-model="societe.VATIsUsed" data-ng-checked="societe.VATIsUsed" data-ng-change="update()" />
                                 </td>
                             </tr>
                             <tr>
@@ -42,17 +42,17 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th scope = "row" > @(bills:PaymentMode) </th>
-                                <td >
-                                    <a href = "#" editable-select = "societe.mode_reglement" buttons = "no" e-ng-options = "s.id as s.label for s in dict.fk_paiement.values" onaftersave = "update()" >
+                                <th scope="row"> @(bills:PaymentMode) </th>
+                                <td>
+                                    <a href="#" editable-select="societe.mode_reglement" buttons="no" e-ng-options="s.id as s.label for s in dict.fk_paiement.values" onaftersave="update()">
                                         {{ showStatus('mode_reglement', 'fk_paiement')}}
                                     </a>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope = "row" > @(bills:PaymentBank) </th>
-                                <td >
-                                    <a href = "#" editable-select = "societe.bank_reglement" buttons = "no" e-ng-options = "s.ref as s.ref for s in banks" onaftersave = "update()" >
+                                <th scope="row"> @(bills:PaymentBank) </th>
+                                <td>
+                                    <a href="#" editable-select="societe.bank_reglement" buttons="no" e-ng-options="s.ref as s.ref for s in banks" onaftersave="update()">
                                         {{societe.bank_reglement|| '@(main:Undefined)'}}
                                     </a>
                                 </td>
@@ -75,7 +75,7 @@
                             </tr>
                             <tr>
                                 <th scope="row">@(bank:BIC)</th>
-                                <td>{{societe.iban.swift}}</td>
+                                <td>{{societe.iban.bic}}</td>
                             </tr>
                             <tr>
                                 <th scope="row">@(companies:ThirdPartyBilling)</th>

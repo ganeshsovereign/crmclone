@@ -260,7 +260,7 @@ var customerSchema = new Schema({
     iban: {
         bank: { type: String, uppercase: true, trim: true },
         id: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true }, //FR76........
-        swift: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true } //BIC / SWIFT
+        bic: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true } //BIC / SWIFT TODO old swift
     },
 
     entity: [{ type: String, trim: true }],

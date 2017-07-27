@@ -1270,7 +1270,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('product.pricelist', {
             parent: "product",
-            url: "/pricelevel.html",
+            url: "/pricelevel.html?priceListId",
             templateUrl: "/views/product/pricelist.html",
             data: {
                 pageTitle: 'Liste de prix'

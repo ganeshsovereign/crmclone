@@ -280,8 +280,8 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
             $http({
                 method: 'GET',
-                url: '/erp/api/product/prices/priceslist',
-                params: { cost: false }
+                url: '/erp/api/product/prices/priceslist/select',
+                params: { isCoef: true }
             }).success(function(data) {
                 $scope.pricesLists = data.data;
 
@@ -356,6 +356,16 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
             return $scope.findOne();
         });
+    };
+
+    //Radio button in pricelist
+    $scope.setChoice = function(tab, idx) {
+        tab.isFixed = false;
+        tab.isCost = false;
+        tab.isCoef = false;
+        tab.isGlobalDiscount = false;
+
+        tab[idx] = true;
     };
 
     $scope.remove = function(line) {

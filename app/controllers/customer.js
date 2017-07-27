@@ -304,16 +304,14 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             });
         };
 
-        $scope.update = function() {
+        $scope.update = function(callback) {
             var societe = $scope.societe;
 
             societe.$update(function(response) {
-                //tle.setTitle('Fiche ' + societe.name);
+                if (callback)
+                    return callback(response);
+
                 return $scope.findOne();
-                $scope.checklist = 0;
-                for (var i in response.checklist)
-                    if (response.checklist[i])
-                        $scope.checklist++;
             });
         };
 
@@ -1346,18 +1344,81 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             };
         };
 
-        $scope.openLogin = function() {
-            $http({
-                method: 'POST',
-                url: 'https://atlankit.extene.com/inputERP',
-                params: {
-                    __method: "autoLogin",
-                    email: "L.FOLLEZOU@ARTHURG.FR",
-                    token: "67d4dc5c26188aaf679cf955959449c0bc76be2d"
+        $scope.addNewPriceList = function() {
+            var modalInstance = $modal.open({
+                templateUrl: 'newModalPriceList.html',
+                controller: ModalInstanceCtrl,
+                //windowClass: "steps",
+                resolve: {
+                    options: function() {
+                        return {
+                            supplier: $scope.societe
+                        };
+                    }
                 }
-            }).success(function(data, status) {
-                console.log(data, status);
             });
+
+            modalInstance.result.then(function(priceList) {
+                console.log(priceList);
+                if (priceList) {
+                    $scope.societe.salesPurchases.priceList = priceList
+                    $scope.update(function(doc) {
+                        return $rootScope.$state.go('product.pricelist', { priceListId: priceList._id });
+                    });
+                }
+                //Save
+            }, function() {});
+        };
+
+        var ModalInstanceCtrl = function($scope, $http, $modalInstance, Settings, options) {
+
+            var Resource = Settings.priceList;
+            $scope.$dict = {};
+            $scope.object = {
+                isFixed: true,
+                priceListCode: options.supplier.salesPurchases.ref,
+                name: options.supplier.fullName
+            };
+
+            //Radio button in pricelist
+            $scope.setChoice = function(tab, idx) {
+                tab.isFixed = false;
+                tab.isCost = false;
+                tab.isCoef = false;
+                tab.isGlobalDiscount = false;
+
+                tab[idx] = true;
+            };
+
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/product/prices/priceslist/select',
+                params: { isCoef: true }
+            }).success(function(data) {
+                $scope.pricesLists = data.data;
+
+
+                $http({
+                    method: 'GET',
+                    url: '/erp/api/currencies'
+                }).success(function(data, status) {
+                    $scope.$dict.currency = data.data;
+                    //console.log(data);
+
+                });
+            });
+
+            $scope.ok = function() {
+                var object = new Resource(this.object);
+                object.$save(function(response) {
+                    $modalInstance.close(response);
+                });
+            };
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+            };
         };
     }
 ]);

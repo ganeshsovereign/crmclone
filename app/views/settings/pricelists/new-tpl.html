@@ -1,0 +1,92 @@
+<div class="form-body">
+    <div class="row">
+        <div class="col-md-8">
+
+            <div ng-hide="object._id" class="form-group form-md-line-input">
+                <input type="text" class="form-control" id="Code" ng-model="object.priceListCode">
+                <label for="Code">@(Code)</label>
+            </div>
+
+            <div ng-hide="!object._id" class="form-group form-md-line-input">
+                <div class="form-control form-control-static"> {{object.priceListCode}} </div>
+                <label for="price_level">@(Code)</label>
+            </div>
+
+            <div class="form-group form-md-line-input">
+                <input type="text" class="form-control" id="Name" ng-model="object.name">
+                <label for="Name">@(Name)</label>
+            </div>
+
+            <div class="form-group form-md-line-input">
+                <select class="table-group-action-input form-control" id="Currency" ng-model="object.currency" ng-options="s._id as s.name for s in $dict.currency"></select>
+                <label for="Currency">@(Currency)</label>
+            </div>
+
+            <div class="form-group form-md-line-input" ng-if="object.isGlobalDiscount">
+                <select class="table-group-action-input form-control" ng-model="object.parent" ng-options="p._id as p.name for p in pricesLists | filter:{isCoef:true}"></select>
+                <label for="Currency">@(products:BasePriceList)</label>
+            </div>
+
+            <div class="form-group form-md-line-input" ng-if="object.isFixed">
+                <select class="table-group-action-input form-control" ng-model="object.parent" ng-options="p._id as p.name for p in pricesLists | filter:customerFilterIsFixed"></select>
+                <label for="Currency">@(products:BasePriceList)</label>
+                <span class="help-block">Liste de prix utilisee pour les autres prix</span>
+            </div>
+
+            <div class="form-group form-md-line-input" ng-if="object.isGlobalDiscount">
+                <input type="number" class="form-control" id="discount" min="0" step="0.01" max="100" ng-model="object.discount">
+                <label for="Name">@(Discount) %</label>
+            </div>
+
+            <div class="form-group form-md-line-input" ng-if="object.isFixed">
+                <input type="text" class="form-control" id="Expiration" date-input ng-model="object.dateExpiration">
+                <label for="Expiration">@(Expiration)</label>
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div class="portlet light">
+                <div class="form-group form-md-radios">
+                    <label>Checkboxes</label>
+                    <div class="md-radio-list">
+                        <div class="md-radio">
+                            <input type="radio" ng-disabled="object._id" id="isFixed" ng-value="true" name="radio1" ng-click="setChoice(object,'isFixed')" ng-checked="object.isFixed" class="md-radiobtn">
+                            <label for="isFixed">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>  @(products:FixedPrices) </label>
+                        </div>
+                        <div class="md-radio has-warning">
+                            <input type="radio" ng-disabled="object._id" id="isCost" ng-value="true" name="radio1" ng-click="setChoice(object,'isCost')" ng-checked="object.isCost" class="md-radiobtn">
+                            <label for="isCost">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> @(products:SupplierCost) </label>
+                        </div>
+                        <div class="md-radio">
+                            <input type="radio" ng-disabled="object._id" id="isCoef" ng-value="true" name="radio1" ng-click="setChoice(object,'isCoef')" ng-checked="object.isCoef" class="md-radiobtn">
+                            <label for="isCoef">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> @(products:SellByCoef) </label>
+                        </div>
+                        <div class="md-radio">
+                            <input type="radio" ng-disabled="object._id" id="isGlobalDiscount" ng-value="true" name="radio1" ng-click="setChoice(object,'isGlobalDiscount')" ng-checked="object.isGlobalDiscount" class="md-radiobtn">
+                            <label for="isGlobalDiscount">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> @(products:GlobalDiscount) </label>
+                        </div>
+                        <div class="md-radio">
+                            <input type="radio" id="defaultPriceList" ng-value="true" name="radio1" ng-disabled="true" class="md-radiobtn">
+                            <label for="defaultPriceList">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> @(Default) </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -59,9 +59,16 @@ var entitySchema = new Schema({
     url: { type: String, get: getUrl }, //website
 
     iban: {
-        bank: { type: String, uppercase: true, trim: true },
+        bank: { type: String, uppercase: true, trim: true }, //Bank name
         id: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true }, //FR76........
-        swift: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true } //BIC / SWIFT
+        bic: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true }, //BIC / SWIFT
+        address: {
+            street: { type: String, default: '' },
+            city: { type: String, default: '' },
+            state: { type: String, default: '' },
+            zip: { type: String, default: '' },
+            country: { type: String, ref: 'countries', default: 'FR' }
+        }
     },
 
     companyInfo: {

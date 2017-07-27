@@ -1273,7 +1273,18 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
                 params: { cost: (cost === false ? false : true), isGlobalDiscount: false, isCoef: true, isFixed: true }
             }).success(function(data, status) {
                 $scope.pricesLists = data.data;
-                //console.log("PriceLists", data);
+                console.log("PriceLists", data);
+
+                if ($rootScope.$stateParams.priceListId) {
+
+                    angular.forEach(data.data, function(elem) {
+                        if (elem._id == $rootScope.$stateParams.priceListId) {
+                            $scope.priceList = elem;
+                            $scope.find();
+                        }
+                    });
+                }
+
             });
     };
 
