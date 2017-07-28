@@ -468,7 +468,6 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 if (lines[i].isDeleted)
                     continue;
 
-                console.log(lines[i]);
                 total_ht += lines[i].total_ht;
                 subtotal += lines[i].total_ht;
 
@@ -520,7 +519,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
             //Add ecotax to total_ht after ALL DISCOUNT
             total_ht += ecotax.value;
 
-            if (VATIsUsed) {
+            if (VATIsUsed && ecotax && ecotax.value) {
                 //Add ECOTAX in VTA
                 var found = false;
                 for (var j = 0; j < total_taxes.length; j++)

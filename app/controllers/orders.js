@@ -45,6 +45,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         $scope.object = {
             forSales: true,
+            delivery_mode: "SHIP_STANDARD",
             entity: $rootScope.login.entity,
             billing: {},
             address: {},
@@ -67,8 +68,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             name: "En cours",
             id: "NOW"
         };
-
-        $scope.delivery_mode = ["Comptoir", "Livraison"];
 
         $scope.open = function($event) {
             $event.preventDefault();
@@ -153,7 +152,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 return $rootScope.$state.go(current[0] + '.show.detail');
 
 
-            var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
+            var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva", "fk_delivery_mode"];
 
             $http({
                 method: 'GET',
@@ -203,6 +202,17 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 $scope.$dict.warehouse = data.data;
                 //console.log(data);
             });
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/product/warehouse/select'
+
+            }).success(function(data, status) {
+                $scope.$dict.shippingMethod = data.data;
+                //console.log(data);
+            });
+
+
 
             $scope.findOne();
 

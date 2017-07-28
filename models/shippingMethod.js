@@ -9,6 +9,7 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var shippingMethodSchema = new Schema({
+    isremoved: { type: Boolean, default: false },
     name: { type: String, default: '' },
     code: { type: String, default: '' },
     price: { type: Number, default: 0 },

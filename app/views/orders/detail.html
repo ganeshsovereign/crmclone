@@ -30,8 +30,8 @@
                         <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
-                    <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'BILLED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED' || object.Status == 'PROCESSING'" mode="object._id" ng-create="create()" ng-update="update()"
-                        back-to="backTo" class="actions btn-set"></save>
+                    <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'BILLED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED' || object.Status == 'PROCESSING'" mode="object._id" ng-create="create()"
+                        ng-update="update()" back-to="backTo" class="actions btn-set"></save>
 
                 </div>
                 <div class="portlet-body">
@@ -121,7 +121,7 @@
                                                 <label for="type">@(orders:OrderMode)</label>
                                             </div>
                                             <div class="form-group form-md-line-input">
-                                                <select class="form-control" id="delivery_mode" ng-model="object.delivery_mode" ng-options="s as s for s in delivery_mode">
+                                                <select class="form-control" id="delivery_mode" ng-model="object.delivery_mode" ng-options="s.id as s.label for s in dict.fk_delivery_mode.values">
                                                         </select>
                                                 <label for="delivery_mode">@(orders:RemovingOrder)</label>
                                             </div>
@@ -271,11 +271,28 @@
                         </div>
 
                         <div ng-hide="module('delivery')" class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(deliveries:ShippingCost) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
-                            <div class="col-md-7 value"><span editable-number="object.shipping.total_ht" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
+                            <div class="col-md-5 name">@(orders:ShippingHT) : <span class="icon-pencil grey" ng-click="shippingCost.$show()" ng-hide="shippingCost.$visible || !editable"></span></div>
+                            <div class="col-md-7 value"><span editable-number="object.shipping.total_ht" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shippingCost">
                                                 {{object.shipping.total_ht| currency}}
                                             </span></div>
                         </div>
+
+                        <div class="row static-info align-reverse">
+                            <div class="col-md-5 name">@(deliveries:Carrier) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
+                            <div class="col-md-7 value"><span editable-select="object.shippingMethod" e-options="s._id as s.name for s in $dict.shippingMethod" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
+                                                {{object.shippingMethod.name}}
+                                            </span></div>
+                        </div>
+
+                        <div ng-show="module('delivery')" class="row static-info align-reverse">
+                            <div class="col-md-5 name">@(deliveries:ShippingCost) : <span class="icon-pencil grey" ng-click="shippingCostS.$show()" ng-hide="shippingCostS.$visible || !editable"></span></div>
+                            <div class="col-md-7 value"><span editable-number="object.shippingCost" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shippingCostS">
+                                                {{object.shippingCost | currency}}
+                                            </span></div>
+                        </div>
+
+                        <hr>
+
                         <div ng-hide="module('delivery')" class="row static-info align-reverse">
                             <div class="col-md-5 name">@(bills:DiscountGlobal) : <span class="icon-pencil grey" ng-click="discount.$show()" ng-hide="discount.$visible || !editable"></span></div>
                             <div class="col-md-7 value"><span editable-number="object.discount.discount.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="discount">
