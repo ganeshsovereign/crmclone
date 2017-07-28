@@ -1282,6 +1282,8 @@ Object.prototype = {
                 }
             }
 
+            return console.log(model);
+
             SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
                 BankModel.findOne({ ref: doc.bank_reglement }, function(err, bank) {
                     if (bank)

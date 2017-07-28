@@ -1,5 +1,5 @@
 \newcommand{\FOOT}{--FOOT--\\
-P\'enlit\'e pour paiement tardif : inter\^et l\'egal x3 et une indemnit\'e forfaitaire pour frais de recouvrement de 40 euros. R\`eglement anticip\'e, pas d'escompte.}
+P\'enalit\'e pour paiement tardif : inter\^et l\'egal x3 et une indemnit\'e forfaitaire pour frais de recouvrement de 40 euros. R\`eglement anticip\'e, pas d'escompte.}
 \renewcommand{\HEAD}{--TITLE-- --NUM--}
 
 %%ligne de tableau avec \\
@@ -8,19 +8,18 @@ P\'enlit\'e pour paiement tardif : inter\^et l\'egal x3 et une indemnit\'e forfa
 
 \begin{tabular}{p{9cm} p{8cm}}
     \vspace{0pt} 
-    \includegraphics[width=8cm]{--LOGO--}
+    \includegraphics[width=7.5cm]{--LOGO--}
     & 
     \vspace{0pt}
    \raggedleft
 	%\begin{flushright}
 	\textcolor{violet}{\textsc{\Large --TITLE-- --NUM--}}\\
 	Date de facture : --DATEC--\\--PERIOD--
-	{\small Date d'échéance : \textbf{--DATEECH--}\\
 	Ref. commande client : --REFCLIENT--\\
-	TVA Intra. du  client : --DESTINATAIRE.TVA--\\}~\\
+	TVA Intra. du  client : --DESTINATAIRE.TVA--\\%}~\\
 \end{tabular}
 
-%\vspace{1cm}
+%\vspace{-1em}
 
 \begin{minipage}[t]{0.40\textwidth}
 {\small Emetteur :}\\
@@ -43,10 +42,18 @@ P\'enlit\'e pour paiement tardif : inter\^et l\'egal x3 et une indemnit\'e forfa
 \end{fminipage}
 \end{minipage}
 
-\begin{minipage}{\textwidth}
-\flushright 
+\begin{minipage}[t]{0.60\textwidth}
+{\small \it Informations :}\\
+--NOTES-- \\
+\end{minipage}
+\hspace{1cm}
+\begin{minipage}[t]{0.32\textwidth}
+\begin{flushright}
+\textit{Date d'échéance : \textbf{--DATEECH--}}\\
+\vspace{1em}
 {\footnotesize \textit{Montants exprimés en €}}
-\end{minipage}\\
+\end{flushright}
+\end{minipage}
 \setlength\LTleft{0pt}
 \setlength\LTright{0pt}
 \setlength\LTpre{5pt}
@@ -113,4 +120,3 @@ Total HT &
 %\end{flushright}
 \end{minipage}
 
---NOTES--
