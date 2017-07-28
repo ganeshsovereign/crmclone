@@ -89,7 +89,7 @@ Shipping.prototype = {
             if (err)
                 return self.throw500(err);
 
-            self.json(result);
+            self.json({ data: result });
         });
     },
 

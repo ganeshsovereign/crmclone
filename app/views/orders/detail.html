@@ -277,15 +277,17 @@
                                             </span></div>
                         </div>
 
+                        <hr>
+
                         <div class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(deliveries:Carrier) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible || !editable"></span></div>
-                            <div class="col-md-7 value"><span editable-select="object.shippingMethod" e-options="s._id as s.name for s in $dict.shippingMethod" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
+                            <div class="col-md-5 name">@(deliveries:Carrier) : <span class="icon-pencil grey" ng-click="shipping.$show()" ng-hide="shipping.$visible"></span></div>
+                            <div class="col-md-7 value"><span editable-select="object.shippingMethod" e-ng-options="s._id as s.name for s in $dict.shippingMethod" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shipping">
                                                 {{object.shippingMethod.name}}
                                             </span></div>
                         </div>
 
-                        <div ng-show="module('delivery')" class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(deliveries:ShippingCost) : <span class="icon-pencil grey" ng-click="shippingCostS.$show()" ng-hide="shippingCostS.$visible || !editable"></span></div>
+                        <div class="row static-info align-reverse">
+                            <div class="col-md-5 name">@(deliveries:ShippingCost) : <span class="icon-pencil grey" ng-click="shippingCostS.$show()" ng-hide="shippingCostS.$visible"></span></div>
                             <div class="col-md-7 value"><span editable-number="object.shippingCost" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shippingCostS">
                                                 {{object.shippingCost | currency}}
                                             </span></div>

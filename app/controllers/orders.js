@@ -205,11 +205,11 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
             $http({
                 method: 'GET',
-                url: '/erp/api/product/warehouse/select'
+                url: '/erp/api/shippingMethod/select'
 
             }).success(function(data, status) {
                 $scope.$dict.shippingMethod = data.data;
-                //console.log(data);
+                console.log(data);
             });
 
 
