@@ -1299,8 +1299,9 @@ Object.prototype = {
                                 key: "description",
                                 type: "area"
                             }, {
-                                key: "tva_tx",
-                                type: "string"
+                                key: "qty",
+                                type: "number",
+                                precision: 3
                             }, {
                                 key: "pu_ht",
                                 type: "number",
@@ -1309,12 +1310,11 @@ Object.prototype = {
                                 key: "discount",
                                 type: "string"
                             }, {
-                                key: "qty",
-                                type: "number",
-                                precision: 3
-                            }, {
                                 key: "total_ht",
                                 type: "euro"
+                            }, {
+                                key: "tva_tx",
+                                type: "string"
                             }]
                         });
                     else
@@ -1326,19 +1326,19 @@ Object.prototype = {
                                 key: "description",
                                 type: "area"
                             }, {
-                                key: "tva_tx",
-                                type: "string"
+                                key: "qty",
+                                type: "number",
+                                precision: 0
                             }, {
                                 key: "pu_ht",
                                 type: "number",
                                 precision: 3
                             }, {
-                                key: "qty",
-                                type: "number",
-                                precision: 3
-                            }, {
                                 key: "total_ht",
                                 type: "euro"
+                            }, {
+                                key: "tva_tx",
+                                type: "string"
                             }]
                         });
 
@@ -1353,16 +1353,33 @@ Object.prototype = {
                                 qty: "",
                                 total_ht: doc.lines[i].total_ht
                             });
-                        else
+                        else {
                             tabLines.push({
                                 ref: doc.lines[i].product.info.SKU.substring(0, 12),
-                                description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                                description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
                                 tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
                                 pu_ht: doc.lines[i].pu_ht,
                                 discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
                                 qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
                                 total_ht: doc.lines[i].total_ht
                             });
+
+                            /*if (doc.lines[i].total_taxes.length > 1) // Add ecotaxe
+                                tabLines.push({
+                                italic: true,
+                                ref: "",
+                                description: "\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].total_taxes[1].value + " \\euro}",
+                                //tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
+                                tva_tx: "",
+                                //pu_ht: doc.lines[i].product.taxes[1].value,
+                                pu_ht: "",
+                                discount: "",
+                                qty: "",
+                                //qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
+                                //total_ht: doc.lines[i].total_taxes[1].value
+                                total_ht: ""
+                            });*/
+                        }
 
                         if (doc.lines[i].type == 'SUBTOTAL') {
                             tabLines[tabLines.length - 1].italic = true;

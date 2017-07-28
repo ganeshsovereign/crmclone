@@ -77,7 +77,7 @@
                 </li>
                 <hr>
                 <li>
-                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/offer/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
                     </a>
                 </li>
@@ -152,7 +152,7 @@
                 </li>
                 <hr>
                 <li>
-                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/delivery/pdf/{{object.ref}}?forSales=false" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
                     </a>
                 </li>
@@ -192,7 +192,7 @@
                 </li>
                 <hr>
                 <li>
-                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
+                    <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/bill/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
                     </a>
                 </li>

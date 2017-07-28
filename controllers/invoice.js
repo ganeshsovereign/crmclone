@@ -1284,8 +1284,12 @@ function createBill(doc, cgv, callback) {
 
 
     var model = "bill.tex";
+
+    if (doc.forSales == false)
+        model = "bill_supplier.tex";
+    else
     // check if discount
-    for (var i = 0; i < doc.lines.length; i++) {
+        for (var i = 0; i < doc.lines.length; i++) {
         if (doc.lines[i].discount > 0) {
             model = "bill_discount.tex";
             discount = true;
@@ -1310,8 +1314,9 @@ function createBill(doc, cgv, callback) {
                         key: "description",
                         type: "area"
                     }, {
-                        key: "tva_tx",
-                        type: "string"
+                        key: "qty",
+                        type: "number",
+                        precision: 3
                     }, {
                         key: "pu_ht",
                         type: "number",
@@ -1320,12 +1325,11 @@ function createBill(doc, cgv, callback) {
                         key: "discount",
                         type: "string"
                     }, {
-                        key: "qty",
-                        type: "number",
-                        precision: 3
-                    }, {
                         key: "total_ht",
                         type: "euro"
+                    }, {
+                        key: "tva_tx",
+                        type: "string"
                     }]
                 });
             else
@@ -1337,19 +1341,19 @@ function createBill(doc, cgv, callback) {
                         key: "description",
                         type: "area"
                     }, {
-                        key: "tva_tx",
-                        type: "string"
+                        key: "qty",
+                        type: "number",
+                        precision: 0
                     }, {
                         key: "pu_ht",
                         type: "number",
                         precision: 3
                     }, {
-                        key: "qty",
-                        type: "number",
-                        precision: 3
-                    }, {
                         key: "total_ht",
                         type: "euro"
+                    }, {
+                        key: "tva_tx",
+                        type: "string"
                     }]
                 });
             for (var i = 0; i < doc.lines.length; i++) {
@@ -1366,7 +1370,7 @@ function createBill(doc, cgv, callback) {
                 else
                     tabLines.push({
                         ref: doc.lines[i].product.info.SKU.substring(0, 12),
-                        description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                        description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
                         tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
                         pu_ht: doc.lines[i].pu_ht,
                         discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),

@@ -1803,6 +1803,10 @@ function createDelivery(doc, callback) {
 
     var model = "delivery.tex";
 
+    if (doc.forSales == false)
+        model = "delivery_supplier.tex";
+
+
     SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
 
         // Array of lines
@@ -2039,7 +2043,7 @@ function createDelivery2(doc, callback) {
                 else
                     tabLines.push({
                         ref: doc.lines[i].product.info.SKU.substring(0, 12),
-                        description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                        description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
                         tva_tx: (doc.lines[i].total_taxes.length ? doc.lines[i].total_taxes[0].taxeId.rate : null),
                         pu_ht: doc.lines[i].pu_ht,
                         discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),

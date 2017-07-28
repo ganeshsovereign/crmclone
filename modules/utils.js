@@ -473,12 +473,12 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 subtotal += lines[i].total_ht;
 
                 //Add ecotax
-                let ecotax = _.sum(_.filter(lines[i].total_taxes, function(tax) {
+                /*let ecotax = _.sum(_.filter(lines[i].total_taxes, function(tax) {
                     return total_taxes[taxesId[tax.taxeId.toString()]].isFixValue; // Get Only EcoTax isFixValue 
                 }), 'value');
 
                 if (ecotax)
-                    subtotal += ecotax;
+                    subtotal += ecotax;*/
 
                 //this.total_ttc += this.lines[i].total_ttc;
 
