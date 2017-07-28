@@ -582,6 +582,8 @@ Object.prototype = {
                 var OrderModel = MODEL('order').Schema.OrderCustomer;
         }
 
+        var round = MODULE('utils').round;
+
         var SocieteModel = MODEL('Customers').Schema;
 
         var query = JSON.parse(self.body.query);
@@ -667,6 +669,8 @@ Object.prototype = {
                         res.datatable.data[i].Status += '<span class="fa large fa-truck ' + (row.status.shippingStatus == 'NOR' ? 'font-grey' : '') + (row.status.shippingStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.shippingStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.shippingStatus == 'NOT' ? 'font-red' : '') + '"></span>';
                         res.datatable.data[i].Status += '</span>';
                     }
+
+                    res.datatable.data[i].total_ttc = round(row.total_ttc, 2);
                 }
 
                 //console.log(res.datatable);
@@ -768,6 +772,7 @@ Object.prototype = {
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+
                     // Convert Status
                     res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
                     if (row.status && link == 'order') {
@@ -1139,7 +1144,7 @@ Object.prototype = {
                 if (err)
                     return self.throw500(err);
 
-                if(!result.order)
+                if (!result.order)
                     return self.throw404();
 
                 //result.order = result.order.toObject();
@@ -1268,17 +1273,10 @@ Object.prototype = {
                         break;
                 }
 
-
-
-            if (doc.Status == "DRAFT") {
-                return self.plain("Impossible de générer le PDF, le document n'est pas validée");
-            }
-
-
             // check if discount
             for (var i = 0; i < doc.lines.length; i++) {
                 if (doc.lines[i].discount > 0) {
-                    model += "discount";
+                    model += "_discount";
                     discount = true;
                     break;
                 }

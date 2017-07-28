@@ -462,7 +462,7 @@ Object.prototype = {
                                 });
                             }
 
-                            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: {_id: doc.order} });
+                            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: doc.order } });
 
 
                             F.functions.BusMQ.publish('notify:controllerAngular', null, {
@@ -634,7 +634,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions,
-            select: "ref forSales"
+            select: "ref forSales orderRows"
         };
 
 
@@ -711,6 +711,8 @@ Object.prototype = {
 
                     // Convert Status
                     res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+
+                    res.datatable.data[i].qty = _.sum(row.orderRows, 'qty');
                 }
 
                 //console.log(res.datatable);
@@ -1816,6 +1818,7 @@ function createDelivery(doc, callback) {
         });
 
         for (var i = 0; i < doc.lines.length; i++) {
+            //console.log(doc.orderRows, i);
             if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0)
                 tabLines.push({
                     ref: doc.lines[i].product.info.SKU.substring(0, 12),

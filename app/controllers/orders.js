@@ -733,14 +733,14 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             }, function() {});
         });*/
 
-        $scope.isQty = function(lines){
-            if(!lines || !lines.length)
+        $scope.isQty = function(lines) {
+            if (!lines || !lines.length)
                 return false;
-            
-            for(var i=0; i<lines.length;i++)
-                if(lines[i].qty > 0)
+
+            for (var i = 0; i < lines.length; i++)
+                if (lines[i].qty > 0)
                     return true;
-            
+
             return false;
         }
 
@@ -1276,7 +1276,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
                         "data": "date_livraison",
                         defaultContent: ""
                     }, {
-                        "data": "total_ht",
+                        "data": "qty",
                         defaultContent: ""
                     }, {
                         "data": "Status"

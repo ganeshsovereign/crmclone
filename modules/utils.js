@@ -411,9 +411,45 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     cb(null, VATIsUsed);
 
                 });
+            },
+            function(VATIsUsed, cb) {
+                // EcoTax
+
+                //return console.log(total_taxes);
+
+                var ecotax = {
+                    value: 0, //ecotax Value
+                    total_tax: 0, // Add 20% on ecotax
+                    taxeId: null // Id tax 20% VTA
+                };
+
+                async.each(total_taxes, function(tax, eCb) {
+                    if (tax.isFixValue == false) //classic VTA
+                        return eCb();
+
+                    ecotax.value = tax.total; // Add ecoTax in Total HT ADD NEXT FOR SUBTOTAL
+
+                    if (!VATIsUsed)
+                        return eCb();
+
+                    TaxesModel.findOne({ isDefault: true }, function(err, taxe) {
+                        if (err)
+                            return eCb(err);
+
+                        if (taxe == null)
+                            return eCb("No default taxe");
+
+                        ecotax.taxeId = taxe._id;
+                        ecotax.total_tax = tax.total * taxe.rate / 100;
+
+                        eCb();
+                    });
+                }, function(err) {
+                    return cb(err, VATIsUsed, ecotax);
+                });
             }
         ],
-        function(err, VATIsUsed) {
+        function(err, VATIsUsed, ecotax) {
 
             if (err)
                 return callback(err);
@@ -432,9 +468,18 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 if (lines[i].isDeleted)
                     continue;
 
-                //console.log(object.lines[i].total_ht);
+                console.log(lines[i]);
                 total_ht += lines[i].total_ht;
                 subtotal += lines[i].total_ht;
+
+                //Add ecotax
+                let ecotax = _.sum(_.filter(lines[i].total_taxes, function(tax) {
+                    return total_taxes[taxesId[tax.taxeId.toString()]].isFixValue; // Get Only EcoTax isFixValue 
+                }), 'value');
+
+                if (ecotax)
+                    subtotal += ecotax;
+
                 //this.total_ttc += this.lines[i].total_ttc;
 
                 if (lines[i].product && lines[i].product._id)
@@ -472,14 +517,37 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 }
             }
 
+            //Add ecotax to total_ht after ALL DISCOUNT
+            total_ht += ecotax.value;
+
+            if (VATIsUsed) {
+                //Add ECOTAX in VTA
+                var found = false;
+                for (var j = 0; j < total_taxes.length; j++)
+                    if (total_taxes[j].taxeId.toString() === ecotax.taxeId.toString()) {
+                        total_taxes[j].total += ecotax.total_tax;
+                        found = true;
+                        break;
+                    }
+
+                if (!found) {
+                    total_taxes.push({
+                        taxeId: ecotax.taxeId,
+                        isFixValue: true,
+                        value: ecotax.total_tax
+                    });
+                }
+            }
+
+
             total_ht = exports.round(total_ht, 2);
             total_ttc = total_ht;
 
             if (VATIsUsed)
                 for (j = 0; j < total_taxes.length; j++) {
                     total_taxes[j].value = exports.round(total_taxes[j].total, 2);
-                    //if (total_taxes[j].isFixValue)
-                    //    continue;
+                    if (total_taxes[j].isFixValue)
+                        continue;
 
                     total_ttc += total_taxes[j].total;
                 }
