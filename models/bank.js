@@ -46,7 +46,8 @@ var bankSchema = new Schema({
     createdBy: { type: ObjectId, ref: 'Users' },
     editedBy: { type: ObjectId, ref: 'Users' },
     journalId: { type: String, unique: true }, // BQ1
-    compta_bank: { type: String, unique: true } // 512xxxx
+    compta_bank: { type: String, unique: true }, // 512xxxx
+    invoice: String // Text on invoice for payment
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
