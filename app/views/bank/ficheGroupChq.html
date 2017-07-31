@@ -1,9 +1,4 @@
 <div ng-init="findOne()">
-
-    <h3 class="page-title">
-        <i class="fa fa-money font-green"></i> @(compta:CheckReceipt) {{group.ref}}<small> @(From) {{group.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>
-    </h3>
-
     <div ng-if="group.isremoved" class="alert alert-danger"><strong>Attention !</strong> Cette remise est supprimee. </div>
 
     <div class="page-bar">
