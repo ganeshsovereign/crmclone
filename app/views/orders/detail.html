@@ -112,6 +112,12 @@
                                                         </select>
                                                 <label for="warehouse">@(products:Warehouse)</label>
                                             </div>
+
+                                            <div ng-hide="module('stockreturn')" class="form-group form-md-line-input">
+                                                <select class="form-control" id="commercial_id" ng-model="object.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees">
+                                                        </select>
+                                                <label for="commercial_id">@(commercial:Commercial)</label>
+                                            </div>
                                         </div>
 
                                         <div class="col-md-6 col-sm-12">
@@ -154,9 +160,8 @@
                                             </div>
 
                                             <div ng-hide="module('stockreturn')" class="form-group form-md-line-input">
-                                                <select class="form-control" id="commercial_id" ng-model="object.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees">
-                                                        </select>
-                                                <label for="commercial_id">@(commercial:Commercial)</label>
+                                                <select class="table-group-action-input form-control" id="bank_reglement" ng-model="object.bank_reglement" ng-options="s._id as s.ref for s in banks"></select>
+                                                <label for="bank_reglement">@(bills:PaymentBank)</label>
                                             </div>
                                         </div>
                                     </div>

@@ -805,8 +805,8 @@ function Product(id, cb) {
 
     ProductModel.findOne(query)
         .populate("suppliers.societe", "_id name")
-        .populate("pack.id", "info directCost indirectCost")
-        .populate("bundles.id", "info directCost indirectCost")
+        .populate("pack.id", "info directCost indirectCost taxes")
+        .populate("bundles.id", "info directCost indirectCost taxes")
         .populate({
             path: 'info.productType'
                 //    populate: { path: "options" }
@@ -2092,7 +2092,7 @@ Object.prototype = {
             //console.log(product);
             product.save(function(err, doc) {
                 if (err) {
-                    console.log("error save", err.errors);
+                    console.log("error save", err);
                     return self.json({
                         errorNotify: {
                             title: 'Erreur',

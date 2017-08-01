@@ -599,10 +599,22 @@ productSchema.pre('save', function(next) {
 
     if (this.isBundle) {
         let directCost = 0;
-
+        if (this.taxes[1] && this.taxes[1].value) // reset ecotaxe
+            this.taxes[1].value = 0;
         for (var i = 0; i < this.bundles.length; i++)
-            if (this.bundles[i].id && this.bundles[i].id.directCost)
-                this.directCost += this.bundles[i].id.directCost * this.bundles[i].qty;
+            if (this.bundles[i].id && this.bundles[i].id.directCost) {
+                directCost += this.bundles[i].id.directCost * this.bundles[i].qty;
+                if (this.bundles[i].id.taxes[1] && this.bundles[i].id.taxes[1].value) // Add ecotaxe
+                    if (this.taxes[1] && this.taxes[1].value >= 0)
+                        this.taxes[1].value += this.bundles[i].id.taxes[1].value * this.bundles[i].qty;
+                    else
+                        this.taxes.push({
+                            taxeId: this.bundles[i].id.taxes[1].taxeId,
+                            value: this.bundles[i].id.taxes[1].value * this.bundles[i].qty
+                        });
+            }
+
+            //console.log(this);
 
         if (this.directCost != directCost)
             this.directCost = directCost;
@@ -610,9 +622,20 @@ productSchema.pre('save', function(next) {
 
     if (this.isPackaging) {
         let directCost = 0;
+        if (this.taxes[1] && this.taxes[1].value) // reset ecotaxe
+            this.taxes[1].value = 0;
         for (var i = 0; i < this.pack.length; i++)
-            if (this.pack[i].id && this.pack[i].id.directCost)
+            if (this.pack[i].id && this.pack[i].id.directCost) {
                 directCost += this.pack[i].id.directCost * this.pack[i].qty;
+                if (this.pack[i].id.taxes[1] && this.pack[i].id.taxes[1].value) // Add ecotaxe
+                    if (this.taxes[1] && this.taxes[1].value >= 0)
+                        this.taxes[1].value += this.pack[i].id.taxes[1].value * this.pack[i].qty;
+                    else
+                        this.taxes.push({
+                            taxeId: this.pack[i].id.taxes[1].taxeId,
+                            value: this.pack[i].id.taxes[1].value * this.pack[i].qty
+                        });
+            }
 
         if (this.directCost != directCost)
             this.directCost = directCost;

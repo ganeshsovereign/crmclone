@@ -49,15 +49,9 @@ const baseSchema = new Schema({
     },
 
     Status: { type: String, default: 'DRAFT' },
-    cond_reglement_code: {
-        type: String,
-        default: 'RECEP'
-    },
-    mode_reglement_code: {
-        type: String,
-        default: 'TIP'
-    },
-    //bank_reglement: {type: String},
+    cond_reglement_code: { type: String, default: 'RECEP' },
+    mode_reglement_code: { type: String, default: 'TIP' },
+    bank_reglement: { type: ObjectId, ref: 'bank' },
     //availability_code: {type: String, default: 'AV_NOW'},
     type: {
         type: String,

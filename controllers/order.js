@@ -1283,7 +1283,7 @@ Object.prototype = {
             }
 
             SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
-                BankModel.findOne({ ref: doc.bank_reglement }, function(err, bank) {
+                BankModel.findOne({ _id: doc.bank_reglement }, function(err, bank) {
                     if (bank)
                         var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
@@ -1446,13 +1446,16 @@ Object.prototype = {
                     var reglement = "";
                     switch (doc.mode_reglement_code) {
                         case "VIR":
-                            if (doc.bank_reglement) { // Bank specific for payment
-                                reglement = "\n" + iban;
-                            } else // Default IBAN
+                            if (doc.bank_reglement) // Bank specific for payment
+                                reglement = "\n" + (bank.invoice ? bank.invoice : bank.iban.id);
+                            else // Default IBAN
                                 reglement = "\n --IBAN--";
                             break;
                         case "CHQ":
-                            reglement = "A l'ordre de --ENTITY--";
+                            if (doc.bank_reglement) // Bank specific for payment
+                                reglement = "\n" + (bank.invoice ? bank.invoice : "");
+                            else
+                                reglement = "A l'ordre de --ENTITY--";
                             break;
                     }
 

@@ -81,7 +81,7 @@
                                                     </div>
 
                                                     <div class="form-group form-md-line-input">
-                                                        <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.bank_reglement" ng-options="s.ref as s.ref for s in banks"></select>
+                                                        <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.bank_reglement" ng-options="s._id as s.ref for s in banks"></select>
                                                         <label for="form_control_1">@(bills:PaymentBank)</label>
                                                     </div>
 

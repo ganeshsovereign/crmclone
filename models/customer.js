@@ -245,7 +245,7 @@ var customerSchema = new Schema({
 
         cond_reglement: { type: String, default: 'RECEP' },
         mode_reglement: { type: String, default: 'CHQ' },
-        bank_reglement: { type: String },
+        bank_reglement: { type: ObjectId, ref: 'bank' },
         VATIsUsed: { type: Boolean, default: true },
 
         groupOrder: { type: Boolean, default: false }, // 1 bill for many order
