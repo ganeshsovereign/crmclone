@@ -48,7 +48,7 @@ var billSchema = new Schema({
         type: String,
         default: 'TIP'
     },
-    //bank_reglement: {type: String},
+    bank_reglement: { type: ObjectId, ref: 'bank' },
     //availability_code: {type: String, default: 'AV_NOW'},
     type: {
         type: String,

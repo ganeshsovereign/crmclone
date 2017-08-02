@@ -195,6 +195,9 @@ function logout() {
 function session() {
     var self = this;
 
+    if (!self.user)
+        return self.throw401();
+
     var user = self.user.toObject();
 
     delete user.password;
