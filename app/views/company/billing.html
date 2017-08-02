@@ -44,19 +44,12 @@
 
                                                     <div class="form-group form-md-line-input"></div>
 
-                                                    <div class="form-group form-md-line-input">
+                                                    <!--<div class="form-group form-md-line-input">
                                                         <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.cptBilling">
                                                         <label for="form_control_1">@(commercial:ThirdPartyBilling) </label>
-                                                    </div>
+                                                    </div>-->
 
                                                     <div class="md-checkbox">
-                                                        <div class="md-checkbox">
-                                                            <input type="checkbox" id="checkbox6" class="md-check" ng-model="societe.salesPurchases.groupDelivery">
-                                                            <label for="checkbox6">
-                                                            <span class="inc"></span>
-                                                            <span class="check"></span>
-                                                            <span class="box"></span> @(companies:GroupDeliveries) </label>
-                                                        </div>
                                                         <div class="md-checkbox">
                                                             <input type="checkbox" id="checkbox7" class="md-check" ng-model="societe.salesPurchases.VATIsUsed">
                                                             <label for="checkbox7">
@@ -164,7 +157,7 @@
                         <!--INVOICE TABLE-->
                         <tabset class="tabbable-line tabbable-full-width">
                             <tab heading="@(bills:BillsCustomer)" ng-if="societe.salesPurchases.isCustomer">
-                                <div ng-include="'/templates/_bill/list.html'" ng-controller="BillController" onload="ngIncludeInit({'client.id': societe._id}, 5)"></div>
+                                <div ng-include="'/templates/bill/list.html'" ng-controller="OrdersController" onload="ngIncludeInit({'client.id': societe._id}, 5)"></div>
                             </tab>
 
                             <tab heading="@(bills:BillsSupplier)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor">

@@ -67,8 +67,9 @@
                                     </div>
 
                                     <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="form_control_1" onbeforesave="checkCodeClient($data)" ng-model="societe.salesPurchases.ref">
-                                        <label for="form_control_1">@(companies:IdThirdParty) </label>
+                                        <input type="text" class="form-control" maxlength="7" id="form_control_1" onbeforesave="checkCodeClient($data)" ng-model="societe.salesPurchases.ref">
+                                        <label for="form_control_1">@(companies:IdThirdParty) <span class="required">
+                                        * </span> </label>
                                     </div>
 
                                     <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
