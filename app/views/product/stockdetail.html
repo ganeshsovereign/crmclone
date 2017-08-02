@@ -90,7 +90,7 @@
                                     <td class="center">{{line.inStock}}</td>
                                     <td class="center">{{line.allocated}}</td>
                                     <td class="center">{{line.onHand}}</td>
-                                    <td class="center">{{line.product.inventory.stockTimeLimit || '--'}} @(products:Day)</td>
+                                    <td class="center">{{line.product.inventory.stockTimeLimit|| '--'}} @(products:Day)</td>
                                     <td class="center">{{line.product.inventory.minStockLevel}}</td>
                                     <td class="center">{{line.product.inventory.maxStockLevel}}</td>
                                     <td>{{line.product.prices.pu_ht | currency}}</td>

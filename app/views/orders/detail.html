@@ -23,8 +23,8 @@
                         <span ng-if="module('order')" ng-hide="!object._id" class="large fa fa-truck" ng-class="{ 'font-grey': object.status.shippingStatus=='NOR','font-green-jungle': object.status.shippingStatus=='ALL', 'font-yellow-lemon': object.status.shippingStatus=='NOA', 'font-red' : object.status.shippingStatus=='NOT' }"></span>
                         <!--Puces/-->
                         <span ng-if="module('order')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewOrder) </span>
-                        <span ng-if="module('delivery')" ng-show="object._id" class="caption-subject dark bold uppercase">@(deliveries:DeliveryNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('delivery')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(deliveries:NewDelivery) </span>
+                        <span ng-if="module('delivery')" ng-show="object._id" class="caption-subject dark bold uppercase">@(deliveries:PreparationNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('delivery')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(deliveries:NewPreparation) </span>
                         <span ng-if="module('stockreturn')" ng-show="object._id" class="caption-subject dark bold uppercase">@(deliveries:StockReturn) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('stockreturn')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(deliveries:NewStockReturn) </span>
                         <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
