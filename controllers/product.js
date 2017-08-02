@@ -6069,6 +6069,20 @@ StockInventory.prototype = {
 
             count = result[0] && result[0].total ? result[0].total : 0;
 
+            result = _.map(result, function(line) {
+                if (!line.product.inventory.stockTimeLimit)
+                    return line;
+
+                let now = moment();
+                let origin = moment(line.goodsInNote.status.isReceived);
+
+                let ms = now.diff(origin);
+                let d = moment.duration(ms);
+                let day = Math.round(d / 1000 / 3600 / 24);
+                line.stockTimeLimit = line.product.inventory.stockTimeLimit - day;
+                return line;
+            });
+
             response.total = count;
             response.data = result;
             self.json(response);
