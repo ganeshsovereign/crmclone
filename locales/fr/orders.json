@@ -251,7 +251,7 @@
     "CreateDelivery": "Créer bon livraison",
     "CreatePreparation": "Créer bon de préparation",
     "DeliveryDetails": "Détails du bon de livraison",
-    "PraparationDetails": "Détails du bon de préparation",
+    "PreparationDetails": "Détails du bon de préparation",
     "NoPackage": "Nombre de colis",
     "DeliveryStatus": "État du bon de livraison",
     "DeliveryStatusDraft": "Brouillon (à valider)",
