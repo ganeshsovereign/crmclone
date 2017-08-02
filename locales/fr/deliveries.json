@@ -46,6 +46,7 @@
     "DateMaxPayment": "Date limite règlement",
     "DeliveryTo": "Expédié à",
     "DeliveryAddress": "Adr. livraison",
+    "WareHouseAddress": "Adr. Entrepôt",
     "ChoiseDeliveryAddress": "Choisir l'adresse de livraison",
     "Date": "Date",
     "PaymentConditions": "Conditions de règlement",

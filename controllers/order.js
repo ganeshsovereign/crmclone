@@ -750,10 +750,6 @@ Object.prototype = {
                     // Add id
                     res.datatable.data[i].DT_RowId = row._id.toString();
 
-                    // Add color line 
-                    /* if (res.datatable.data[i].Status === 'VALIDATED')
-                        res.datatable.data[i].DT_RowClass = "bg-yellow";*/
-
                     if (row.supplier && row.supplier._id)
                         res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
                     else {
@@ -762,8 +758,6 @@ Object.prototype = {
                         res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
                     }
 
-                    // Action
-                    //res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
                     if (row.forSales)
                         res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + '/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
