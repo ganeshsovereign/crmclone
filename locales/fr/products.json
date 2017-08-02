@@ -57,6 +57,7 @@
     "ProductOrService": "Produit ou Service",
     "ProductsAndServices": "Produits et Services",
     "ListProductsAndServices": "Liste des produits et Services",
+    "ListProducts": "Liste des produits",
     "ProductsOrServices": "Produits ou Services",
     "ProductsAndServicesOnSell": "Produits et Services en vente",
     "ProductsAndServicesNotOnSell": "Produits et Services hors vente",
@@ -412,5 +413,7 @@
     "StockTransfers": "Transfert de Stock",
     "Conditionning": "Conditionnement",
     "IncomingStock": "Stock Entrant",
-    "WarehouseMsgProductNotAvailable": "Message quand le produit n'est plus disponible"
+    "WarehouseMsgProductNotAvailable": "Message quand le produit n'est plus disponible",
+    "CreateNewPackaging": "Créer un nouveau conditionnemnt",
+    "ProductQty": "Quantité de produit"
 }
