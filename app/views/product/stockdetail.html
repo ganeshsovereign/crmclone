@@ -61,8 +61,8 @@
                                     <th width="70px">@(products:Bay)</th>
                                     <th width="70px">@(products:Shelf)</th>
                                     <th width="70px">@(products:Bin)</th>
-                                    <th>@(products:Allocated)</th>
                                     <th>@(products:InStock)</th>
+                                    <th>@(products:Allocated)</th>
                                     <th>@(products:OnHand)</th>
                                     <th>@(products:stockTimeLimit)</th>
                                     <th>@(products:MinStock)</th>
@@ -87,10 +87,10 @@
                                     <td class="center">{{line.location.groupingB}}</td>
                                     <td class="center">{{line.location.groupingC}}</td>
                                     <td class="center">{{line.location.groupingD}}</td>
-                                    <td class="center">{{line.allocated}}</td>
                                     <td class="center">{{line.inStock}}</td>
+                                    <td class="center">{{line.allocated}}</td>
                                     <td class="center">{{line.onHand}}</td>
-                                    <td class="center">{{line.product.inventory.stockTimeLimit || '--'}} @(products:Day)</td>
+                                    <td class="center">{{line.product.inventory.stockTimeLimit|| '--'}} @(products:Day)</td>
                                     <td class="center">{{line.product.inventory.minStockLevel}}</td>
                                     <td class="center">{{line.product.inventory.maxStockLevel}}</td>
                                     <td>{{line.product.prices.pu_ht | currency}}</td>

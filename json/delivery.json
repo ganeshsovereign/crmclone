@@ -102,7 +102,7 @@
                     "enabled": "$conf->delivery->enabled",
                     "usertype": 2,
                     "icon": "fa-truck",
-                    "title": "deliveries:DeliveriesShort"
+                    "title": "deliveries:PreparationReceipt"
                 },
                 "menu:deliverysuppliers": {
                     "position": 5,
@@ -115,7 +115,7 @@
                 },
                 "menu:stockcorrestion": {
                     "url": "/erp/#!/product/stockcorrectionlist",
-                    "position": 7,
+                    "position": 10,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
@@ -123,22 +123,13 @@
                     "title": "products:StockCorrection"
                 },
                 "menu:stockreturn": {
-                    "position": 10,
+                    "position": 15,
                     "url": "/erp/#!/stockreturn",
                     "perms": "delivery.read",
                     "enabled": "$conf->delivery->enabled",
                     "usertype": 2,
                     "icon": "fa-refresh",
                     "title": "deliveries:StockReturn"
-                },
-                "menu:ordersfab": {
-                    "position": 10,
-                    "url": "/erp/#!/ordersfab",
-                    "perms": "delivery.read",
-                    "enabled": "$conf->delivery->enabled",
-                    "usertype": 2,
-                    "icon": "fa-files-o",
-                    "title": "orders:OrdersFab"
                 }
             }
         }
