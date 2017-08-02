@@ -410,6 +410,7 @@
     "toTransfer": "Transférer",
     "QtytoTransfer": "Qté à transférer",
     "stockTimeLimit": "Durée Limite stockage",
+    "stockDayLimit": "Jours restants dans stock",
     "StockTransfers": "Transfert de Stock",
     "Conditionning": "Conditionnement",
     "IncomingStock": "Stock Entrant",
