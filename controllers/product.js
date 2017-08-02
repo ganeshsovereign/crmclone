@@ -5712,12 +5712,12 @@ StockCorrection.prototype = {
         var tab = [];
         var body = {
             orderRows: [],
-            warehouse: { _id: '5945a123907df220805d4df0' },
-            location: { _id: '5945a123907df220805d4df1' },
+            warehouse: { _id: '594a6a57730ae4138162f72f' },
+            location: { _id: '594a6a57730ae4138162f730' },
             description: 'Inventaire juillet 2017',
-            createdBy: null,
+            createdBy: "58eb845e40f8750913b2c087",
             status: {
-                receivedById: null,
+                receivedById: "58eb845e40f8750913b2c087",
                 isInventory: new Date(),
                 isReceived: new Date()
             }
