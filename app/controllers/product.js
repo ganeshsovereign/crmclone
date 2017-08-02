@@ -88,8 +88,6 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 if (data.data.message)
                     toastr.warning(data.data.message, 'Notification serveur', { timeOut: 500, progressBar: true });
             }
-
-        $scope.find();
     });
 
     $scope.isValidRef = function() {

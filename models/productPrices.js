@@ -206,11 +206,32 @@ productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callbac
                 else return callback({ error: err });
             }
 
-            self.findByIdAndUpdate(id, { prices: prices }, { new: true }, function(err, doc) {
+            self.findByIdAndUpdate(id, { prices: prices }, { new: true }, function(err, productPrice) {
                 if (err)
                     return callback({ error: err.toString() });
 
-                callback(null, doc);
+                if (!productPrice || !productPrice._id)
+                    return callback('No pricing create!');
+
+                productPrice.populate("priceLists", function(err, productPrice) {
+                    var ProductModel = MODEL('product').Schema;
+                    // Update default price in product
+                    if (productPrice.priceLists.defaultPriceList != true || !productPrice.prices.length)
+                        return callback(null, productPrice);
+
+                    ProductModel.findByIdAndUpdate(productPrice.product, { 'prices.pu_ht': productPrice.prices[0].price }, { new: true }, function(err, doc) {
+                        if (err)
+                            return callback(err);
+
+                        //Emit product update
+                        setTimeout2('product:' + doc._id.toString(), function() {
+                            F.functions.BusMQ.emit('product:update', null, { product: { _id: doc._id } });
+                            F.functions.BusMQ.publish('product:update', null, { product: { _id: doc._id } });
+                        }, 1000);
+
+                        callback(null, productPrice);
+                    });
+                });
             });
         });
 };

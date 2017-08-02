@@ -2020,7 +2020,7 @@ Object.prototype = {
             product.isVariant = false;
             product.createdBy = self.user._id;
             product.editedBy = self.user._id;
-            product.Status = "DRAFT";
+            product.Status = "PREPARED";
 
             if (self.query.qty) { //newPacking product
                 product.info.SKU += "-L" + fixedWidthString(parseInt(self.query.qty), 3, { padding: '0', align: 'right' });
@@ -3387,7 +3387,7 @@ Prices.prototype = {
         self.body.editedBy = self.user._id;
         self.body.updatedAt = new Date();
 
-        console.log(self.body);
+        //console.log(self.body);
 
         async.waterfall([
                 /*function(wCb) {
@@ -3501,6 +3501,27 @@ Prices.prototype = {
 
                             wCb(null, doc);
                         });
+                    });
+                },
+                function(productPrice, wCb) {
+                    if (!productPrice || !productPrice._id)
+                        return wCb('No pricing create!');
+
+                    // Update default price in product
+                    if (self.body.priceLists.defaultPriceList != true || !self.body.prices.length)
+                        return wCb(null, productPrice);
+
+                    ProductModel.findByIdAndUpdate(productPrice.product, { 'prices.pu_ht': productPrice.prices[0].price }, { new: true }, function(err, doc) {
+                        if (err)
+                            return wCb(err);
+
+                        //Emit product update
+                        setTimeout2('product:' + doc._id.toString(), function() {
+                            F.functions.BusMQ.emit('product:update', self.user._id, { product: { _id: doc._id } });
+                            F.functions.BusMQ.publish('product:update', self.user._id, { product: { _id: doc._id } });
+                        }, 1000);
+
+                        wCb(null, productPrice);
                     });
                 }
             ],
