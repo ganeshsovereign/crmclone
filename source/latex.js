@@ -348,6 +348,9 @@ Template.prototype.applyHeadFoot = function() {
                 foot += " - " + doc.address.street + " " + doc.address.zip + " " + doc.address.city;
                 foot += " - " + dict.values[doc.companyInfo.forme_juridique_code].label + " - capital " + doc.companyInfo.capital + " euros";
 
+                if (doc.langs.length && doc.langs[0].invoiceFoot)
+                    foot += "\\\\" + doc.langs[0].invoiceFoot;
+
                 tex = tex.replace(/--FOOT--/g, foot);
                 tex = tex.replace(/--VATMODE--/g, i18n.t("bills:VATmode." + doc.tva_mode));
                 tex = tex.replace(/--ENTITY--/g, "\\textbf{" + doc.name + "}");
