@@ -45,6 +45,17 @@
     </div>
     <div class="portlet light">
         <div class="form-body">
+            <div class="form-group form-md-line-input">
+                <div class="row hidden-print">
+                    <div class="col-md-12">
+                        <div class="col-md-8">
+                        </div>
+                        <div class="col-md-4">
+                            <pagination total-items="page.total" ng-model="page.page" items-per-page="page.limit" max-size="6" class="pagination-sm " previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="find()"></pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
                 <div class="dataTables_wrapper no-footer table-responsive">
                     <div class="col-md-12">

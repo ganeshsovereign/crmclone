@@ -2040,15 +2040,23 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
 
     });
 
+    $scope.page = {
+        limit: 25,
+        page: 1,
+        total: 0
+    };
+
     $scope.find = function() {
 
+        var query = { limit: $scope.page.limit, page: $scope.page.page };
         $http({
             method: 'GET',
             url: '/erp/api/product/stockInventory',
-            params: {}
+            params: query
         }).success(function(data, status) {
             //console.log(data);
             $scope.listObject = data.data;
+            $scope.page.total = data.total;
             //$scope.totalEntries = data.total;
         });
 
