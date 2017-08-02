@@ -601,9 +601,13 @@ productSchema.pre('save', function(next) {
         let directCost = 0;
         if (this.taxes[1] && this.taxes[1].value) // reset ecotaxe
             this.taxes[1].value = 0;
+
+        this.weight = 0; //reset weight
+
         for (var i = 0; i < this.bundles.length; i++)
             if (this.bundles[i].id && this.bundles[i].id.directCost) {
                 directCost += this.bundles[i].id.directCost * this.bundles[i].qty;
+                this.weight += this.bundles[i].id.weight * this.bundles[i].qty;
                 if (this.bundles[i].id.taxes[1] && this.bundles[i].id.taxes[1].value) // Add ecotaxe
                     if (this.taxes[1] && this.taxes[1].value >= 0)
                         this.taxes[1].value += this.bundles[i].id.taxes[1].value * this.bundles[i].qty;
@@ -624,9 +628,13 @@ productSchema.pre('save', function(next) {
         let directCost = 0;
         if (this.taxes[1] && this.taxes[1].value) // reset ecotaxe
             this.taxes[1].value = 0;
+
+        this.weight = 0; //reset weight
+
         for (var i = 0; i < this.pack.length; i++)
             if (this.pack[i].id && this.pack[i].id.directCost) {
                 directCost += this.pack[i].id.directCost * this.pack[i].qty;
+                this.weight += this.pack[i].id.weight * this.pack[i].qty;
                 if (this.pack[i].id.taxes[1] && this.pack[i].id.taxes[1].value) // Add ecotaxe
                     if (this.taxes[1] && this.taxes[1].value >= 0)
                         this.taxes[1].value += this.pack[i].id.taxes[1].value * this.pack[i].qty;

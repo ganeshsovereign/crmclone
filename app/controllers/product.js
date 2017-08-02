@@ -27,7 +27,7 @@
 "use strict";
 /* global angular: true */
 
-MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout', '$http', '$modal', '$filter', 'toastr', 'Products', function($scope, $rootScope, $timeout, $http, $modal, $filter, toastr, Products) {
+MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout', '$http', '$modal', '$filter', 'dialogs', 'toastr', 'Products', function($scope, $rootScope, $timeout, $http, $modal, $filter, dialogs, toastr, Products) {
 
     $scope.backTo = 'product.list';
     $scope.newPack = {};
@@ -269,8 +269,8 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         });
     };*/
 
-    $scope.clone = function() {
-        $scope.product.$clone(function(response) {
+    $scope.clone = function(qty) {
+        $scope.product.$clone({ qty: qty }, function(response) {
             $rootScope.$state.go('product.show', {
                 id: response._id
             });
@@ -883,13 +883,44 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
          },
          qty : $scope.newPack.qty
          });*/
-        $scope.update(true);
+        $scope.update();
         $scope.newPack = {};
     };
 
     $scope.deletePack = function(idx, type) {
         $scope.product[type].splice(idx, 1);
-        $scope.update(true);
+        $scope.update();
+    };
+
+    $scope.createNewPackaging = function() {
+        var dlg = null;
+
+        var controllerPackaging = function($scope, $modalInstance, data) {
+            $scope.data = data;
+            $scope.qty = 1;
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('canceled');
+            }; // end cancel
+
+            $scope.save = function() {
+                //console.log($scope.data.id);
+                $modalInstance.close({ _id: $scope.data, qty: $scope.qty });
+            }; // end save
+
+            $scope.hitEnter = function(evt) {
+                if (angular.equals(evt.keyCode, 13))
+                    $scope.save();
+            }; // end hitEnter
+        };
+
+        dlg = dialogs.create('rename.html', controllerPackaging, $scope.product, {
+            key: false,
+            back: 'static'
+        });
+        dlg.result.then(function(newval) {
+            $scope.clone(newval.qty);
+        }, function() {});
     };
 
     $scope.addProductToVariant = function(newProductId) {
