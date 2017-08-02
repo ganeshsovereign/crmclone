@@ -758,7 +758,38 @@ exports.install = function() {
     F.route('/erp/api/product/warehouse/', warehouse.create, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/warehouse/location', warehouse.createLocation, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/warehouse/zone', warehouse.createZone, ['post', 'json', 'authorize']);
+
+    /*{ orderRows: 
+   [ { locationsReceived: [],
+       cost: 7,
+       orderRowId: null,
+       newOnHand: 50,
+       product: [Object],
+       isNew: true,
+       qty: 50,
+       idLine: 0,
+       onHand: 0 },
+     { locationsReceived: [],
+       cost: 20.384,
+       orderRowId: null,
+       newOnHand: 60,
+       product: [Object],
+       isNew: true,
+       qty: 60,
+       idLine: 1,
+       onHand: 0 } ],
+  warehouse: { _id: '5945a123907df220805d4df0' },
+  location: { _id: '5945a123907df220805d4df1' },
+  description: 'test',
+  createdBy: 58e7b03389217fbd13820c76,
+  status: 
+   { receivedById: 58e7b03389217fbd13820c76,
+     isInventory: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST),
+     isReceived: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST) } }
+*/
     F.route('/erp/api/product/warehouse/stockCorrection', stock.create, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/warehouse/stockCorrection/inventory', stock.updateInventoryAll, ['upload'], 1024); //1MB
+
     F.route('/erp/api/product/warehouse/allocate', stock.allocate, ['post', 'json', 'authorize']);
 
     // router.delete('/', authStackMiddleware, handler.bulkRemove);
@@ -5515,6 +5546,34 @@ Warehouse.prototype = {
 
 function StockCorrection() {}
 StockCorrection.prototype = {
+    /*{ orderRows: 
+   [ { locationsReceived: [],
+       cost: 7,
+       orderRowId: null,
+       newOnHand: 50,
+       product: [Object],
+       isNew: true,
+       qty: 50,
+       idLine: 0,
+       onHand: 0 },
+     { locationsReceived: [],
+       cost: 20.384,
+       orderRowId: null,
+       newOnHand: 60,
+       product: [Object],
+       isNew: true,
+       qty: 60,
+       idLine: 1,
+       onHand: 0 } ],
+  warehouse: { _id: '5945a123907df220805d4df0' },
+  location: { _id: '5945a123907df220805d4df1' },
+  description: 'test',
+  createdBy: 58e7b03389217fbd13820c76,
+  status: 
+   { receivedById: 58e7b03389217fbd13820c76,
+     isInventory: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST),
+     isReceived: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST) } }
+*/
     create: function() {
         var self = this;
         var body = self.body;
@@ -5637,6 +5696,179 @@ StockCorrection.prototype = {
         });
     },
 
+    updateInventoryAll: function() {
+        var self = this;
+        var ProductModel = MODEL('product').Schema;
+        var StockCorrectionModel = MODEL('order').Schema.StockCorrections;
+        var Availability = MODEL('productsAvailability').Schema;
+
+        if (self.query.key !== "COvy9NRXD2FEYjSQU6q3LM7HcdKesflGTB")
+            return self.throw401("Error key");
+
+        if (self.files.length <= 0)
+            return;
+        //console.log(self.files[0].filename);
+
+        var tab = [];
+        var body = {
+            orderRows: [],
+            warehouse: { _id: '5945a123907df220805d4df0' },
+            location: { _id: '5945a123907df220805d4df1' },
+            description: 'Inventaire juillet 2017',
+            createdBy: null,
+            status: {
+                receivedById: null,
+                isInventory: new Date(),
+                isReceived: new Date()
+            }
+        };
+
+        csv()
+            .from.path(self.files[0].path, {
+                delimiter: ';',
+                escape: '"'
+            })
+            .transform(function(row, index, callback) {
+                if (index === 0) {
+                    tab = row; // Save header line
+                    return callback();
+                }
+
+                console.log(row);
+
+                let line = {
+                    locationsReceived: [],
+                    cost: 0,
+                    orderRowId: null,
+                    product: null,
+                    qty: 0 // The difference of the stock positive or negative
+                };
+
+                ProductModel.findOne({ 'info.SKU': row[0].trim() }, "_id directCost", function(err, product) {
+                    if (err || !product)
+                        return callback();
+
+                    line.cost = product.directCost;
+                    line.product = product._id;
+                    line.qty = parseFloat(row[3].replace(',', '.'));
+
+                    body.orderRows.push(line);
+                    callback();
+                });
+            })
+            .on("end", function(count) {
+                console.log(body);
+                console.log('Number of lines: ' + count);
+
+
+                var stockCorrection = new StockCorrectionModel(body);
+
+                stockCorrection.save(function(err, doc) {
+                    if (err)
+                        return self.throw500(err);
+
+                    function callback(err) {
+                        if (err)
+                            return self.throw500(err);
+
+                        self.json({ lines: count });
+                    }
+
+                    async.each(body.orderRows, function(elem, eachCb) {
+                        var options;
+
+                        if (elem.qty <= 0) {
+                            options = {
+                                location: body.location,
+                                product: elem.product
+                            };
+
+                            Availability.find(options, function(err, docs) {
+
+                                var lastQuantity = elem.qty;
+
+                                if (err)
+                                    return eachCb(err);
+
+
+                                if (docs.length) {
+
+                                    async.each(docs, function(doc, eachChildCb) {
+                                        var optionsEach;
+
+                                        if (lastQuantity > 0)
+                                            return eachChildCb();
+
+
+                                        lastQuantity += doc.onHand;
+
+                                        if ((!lastQuantity || lastQuantity < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
+                                            optionsEach = {
+                                                query: {
+                                                    _id: doc._id
+                                                },
+
+                                                body: { $set: { archived: true } },
+                                            };
+                                            Availability.updateByQuery(optionsEach, function(err, doc) {
+                                                if (err)
+                                                    return eachChildCb(err);
+
+                                                eachChildCb();
+                                            });
+                                        } else {
+                                            optionsEach = {
+                                                body: {
+                                                    onHand: lastQuantity
+                                                },
+
+                                                query: {
+                                                    _id: doc._id
+                                                }
+                                            };
+                                            Availability.updateByQuery(optionsEach, function(err, doc) {
+                                                if (err)
+                                                    return eachChildCb(err);
+
+                                                eachChildCb();
+                                            });
+                                        }
+
+                                    }, function(err) {
+                                        if (err)
+                                            return eachCb(err);
+
+                                        eachCb();
+                                        F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                                    });
+                                } else
+                                    eachCb();
+                            });
+                        } else {
+                            var availability = new Availability({
+                                location: body.location,
+                                warehouse: body.warehouse,
+                                goodsInNote: doc._id,
+                                product: elem.product,
+                                onHand: elem.qty,
+                                cost: elem.cost,
+
+                            });
+
+                            availability.save(function(err, doc) {
+                                if (err)
+                                    return eachCb(err);
+
+                                eachCb();
+                                F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                            });
+                        }
+
+                    }, callback);
+
+                });
+            });
+    },
     allocate: function() {
         var self = this;
         var body = self.body;
@@ -5870,7 +6102,8 @@ StockCorrection.prototype = {
     },
 
     getById: function(id) {
-        var StockCorrection = MODEL('orders').Schema.StockCorrections;
+        var self = this;
+        var StockCorrection = MODEL('order').Schema.StockCorrections;
 
         StockCorrection.findById(id)
             .populate('warehouse', ' name')

@@ -785,7 +785,7 @@ var stockCorrectionSchema = new Schema({
     orderRows: [{
         _id: false,
         orderRowId: { type: ObjectId, ref: 'orderRows', default: null },
-        product: { type: ObjectId, ref: 'Product', default: null },
+        product: { type: ObjectId, ref: 'product', default: null },
         cost: { type: Number, default: 0 },
         locationsReceived: [{
             _id: false,
