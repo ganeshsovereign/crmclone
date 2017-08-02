@@ -167,27 +167,18 @@
                                             <div class="col-md-6">
                                                 <div class="btn-group pull-left">
                                                     <button class="btn blue" data-ng-click="addNew()">@(Add) <i class="fa fa-plus"></i></button>
-                                                    <button title="@(Refresh)" class="btn" data-ng-click="
-                                        commercialList = [];
-                                        commercial_id = '';
-                                        status_id = null;
-                                        filterOptionsSociete.filterText = '';
-                                        clearCache();
-                                        find();"><i class="fa fa-refresh"></i></button>
+                                                    <button title="@(Refresh)" class="btn" data-ng-click="commercialList = []; commercial_id = ''; status_id = null; filterOptionsSociete.filterText = ''; clearCache(); find();"><i class="fa fa-refresh"></i></button>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="btn-group pull-right">
-                                                    <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
-                                    </button>
+                                                    <a class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i></a>
                                                     <ul class="dropdown-menu pull-right">
                                                         <li>
-                                                            <a href="#">
-                                                @(Update) </a>
+                                                            <a href="#">@(Update) </a>
                                                         </li>
                                                         <li>
-                                                            <a href="#">
-                                                @(Delete) </a>
+                                                            <a href="#">@(Delete) </a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -222,27 +213,18 @@
                                             <div class="col-md-6" ng-show="!global.user.rights.bill.read">
                                                 <div class="btn-group pull-left">
                                                     <button class="btn blue" disabled data-ng-click="paymentBills()">@(Add) <i class="fa fa-plus"></i></button>
-                                                    <button title="@(Refresh)" class="btn" data-ng-click="
-                                        commercialList = [];
-                                        commercial_id = '';
-                                        status_id = null;
-                                        filterOptionsSociete.filterText = '';
-                                        clearCache();
-                                        find();"><i class="fa fa-refresh"></i></button>
+                                                    <button title="@(Refresh)" class="btn" data-ng-click="commercialList = [];commercial_id = ''status_id = null;filterOptionsSociete.filterText = '';clearCache();find();"><i class="fa fa-refresh"></i></button>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="btn-group pull-right">
-                                                    <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
-                                    </button>
+                                                    <a class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i></a>
                                                     <ul class="dropdown-menu pull-right">
                                                         <li>
-                                                            <a href="#">
-                                                @(Update) </a>
+                                                            <a href="#">@(Update) </a>
                                                         </li>
                                                         <li>
-                                                            <a href="#">
-                                                @(Delete) </a>
+                                                            <a href="#">@(Delete) </a>
                                                         </li>
                                                     </ul>
                                                 </div>
