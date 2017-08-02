@@ -97,6 +97,11 @@ var entitySchema = new Schema({
     currency: { type: String, ref: 'currency', default: '' },
     cgv: String,
 
+    langs: [{
+        _id: false,
+        invoiceFoot: { type: String, default: '' }
+    }],
+
     tva_mode: { type: String, enum: ["payment", "invoice"], default: 'invoice' }
 }, {
     toObject: { virtuals: true },
