@@ -412,5 +412,7 @@
     "StockTransfers": "Transfert de Stock",
     "Conditionning": "Conditionnement",
     "IncomingStock": "Stock Entrant",
-    "WarehouseMsgProductNotAvailable": "Message quand le produit n'est plus disponible"
+    "WarehouseMsgProductNotAvailable": "Message quand le produit n'est plus disponible",
+    "CreateNewPackaging": "Créer un nouveau conditionnemnt",
+    "ProductQty": "Quantité de produit"
 }
