@@ -2098,6 +2098,7 @@ Object.prototype = {
                                 delete newImage.__v;
                                 delete newImage.createdAt;
                                 delete newImage.updatedAt;
+                                newImage.channels = [];
                                 newImage.createdBy = self.user._id;
                                 newImage.editedBy = self.user._id;
 
