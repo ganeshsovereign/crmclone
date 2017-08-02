@@ -2031,13 +2031,13 @@ Object.prototype = {
                 product.info.langs[0].meta.description = "Lot de " + self.query.qty + " " + product.info.langs[0].meta.description;
                 product.info.langs[0].meta.title = "Lot de " + self.query.qty + " " + product.info.langs[0].meta.title;
 
-                product.info.langs[0].name += " (Lot de " + self.query.qty + ")";
+                product.info.langs[0].name += " - Lot de " + self.query.qty;
                 if (product.info.langs[0].body)
-                    product.info.langs[0].body += " (Lot de " + self.query.qty + ")";
+                    product.info.langs[0].body += " - Lot de " + self.query.qty;
                 if (product.info.langs[0].shortDescription)
-                    product.info.langs[0].shortDescription += " (Lot de " + self.query.qty + ")";
+                    product.info.langs[0].shortDescription += " - Lot de " + self.query.qty;
                 if (product.info.langs[0].description)
-                    product.info.langs[0].description += " (Lot de " + self.query.qty + ")";
+                    product.info.langs[0].description += " - Lot de " + self.query.qty;
 
                 product.pack = [];
                 product.pack.push({
