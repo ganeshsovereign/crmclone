@@ -323,7 +323,6 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 as: 'warehouse'
             }
         },
-
         {
             $lookup: {
                 from: 'Product',
@@ -340,14 +339,14 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 as: 'location'
             }
         },
-        /*{
+        {
             $lookup: {
                 from: 'Orders',
                 localField: 'goodsInNote',
                 foreignField: '_id',
                 as: 'goodsInNote'
             }
-        },*/ //TODO a corriger car cela casse les prformances de la requete !!!!!!!!!!!!!!!!!!
+        }, //TODO a corriger car cela casse les prformances de la requete !!!!!!!!!!!!!!!!!!
         {
             $lookup: {
                 from: 'Users',
@@ -362,7 +361,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 location: { $arrayElemAt: ['$location', 0] },
                 warehouse: { $arrayElemAt: ['$warehouse', 0] },
                 product: { $arrayElemAt: ['$product', 0] },
-                goodsInNote: 1, //{ $arrayElemAt: ['$goodsInNote', 0] },
+                goodsInNote: { $arrayElemAt: ['$goodsInNote', 0] },
                 'createdBy': { $arrayElemAt: ['$createdBy', 0] },
                 createdAt: 1,
                 description: 1,

@@ -6285,7 +6285,8 @@ StockInventory.prototype = {
             data.sort[keys] = parseInt(data.sort[keys], 10);
             sort = data.sort;
         } else
-            sort = { 'createdAt': -1 };
+        //sort = { 'createdAt': -1 };
+            sort = { 'product.info.SKU': 1 };
 
         options = {
             sort: sort,
@@ -6319,7 +6320,7 @@ StockInventory.prototype = {
 
             response.total = count;
             response.data = result;
-            console.log(response);
+            //console.log(response);
             self.json(response);
         });
 
