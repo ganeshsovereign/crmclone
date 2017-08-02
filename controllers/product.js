@@ -805,8 +805,8 @@ function Product(id, cb) {
 
     ProductModel.findOne(query)
         .populate("suppliers.societe", "_id name")
-        .populate("pack.id", "info directCost indirectCost taxes")
-        .populate("bundles.id", "info directCost indirectCost taxes")
+        .populate("pack.id", "info directCost indirectCost taxes weight")
+        .populate("bundles.id", "info directCost indirectCost taxes weight")
         .populate({
             path: 'info.productType'
                 //    populate: { path: "options" }
@@ -1999,7 +1999,7 @@ Object.prototype = {
     clone: function(id) {
         var self = this;
         var ProductModel = MODEL('product').Schema;
-        var PriceModel = MODEL('productPrices').Schema;
+        var fixedWidthString = require('fixed-width-string');
 
 
         Product(id, function(err, doc) {
@@ -2013,14 +2013,40 @@ Object.prototype = {
             delete product.updatedAt;
             delete product.history;
             delete product.ID;
-            product.info.SKU += "-copy";
             delete product.oldId;
             product.files = [];
+            product.suppliers = [];
             product.variants = [];
-            product.imageSrc = null;
-
+            product.isVariant = false;
             product.createdBy = self.user._id;
             product.editedBy = self.user._id;
+            product.Status = "DRAFT";
+
+            if (self.query.qty) { //newPacking product
+                product.info.SKU += "-L" + fixedWidthString(parseInt(self.query.qty), 3, { padding: '0', align: 'right' });
+
+                product.info.productType = "592c16b6270aa67a2793430f"; //mode conditonnement
+
+                product.info.langs[0].linker += "lot" + self.query.qty;
+                product.info.langs[0].meta.description = "Lot de " + self.query.qty + " " + product.info.langs[0].meta.description;
+                product.info.langs[0].meta.title = "Lot de " + self.query.qty + " " + product.info.langs[0].meta.title;
+
+                product.info.langs[0].name += " (Lot de " + self.query.qty + ")";
+                if (product.info.langs[0].body)
+                    product.info.langs[0].body += " (Lot de " + self.query.qty + ")";
+                if (product.info.langs[0].shortDescription)
+                    product.info.langs[0].shortDescription += " (Lot de " + self.query.qty + ")";
+                if (product.info.langs[0].description)
+                    product.info.langs[0].description += " (Lot de " + self.query.qty + ")";
+
+                product.pack = [];
+                product.pack.push({
+                    "id": doc._id,
+                    "qty": parseInt(self.query.qty)
+                });
+
+            } else
+                product.info.SKU += "-copy";
 
             product = new ProductModel(product);
 
@@ -2028,29 +2054,67 @@ Object.prototype = {
                 if (err)
                     return self.throw500(err);
 
-                //clone prices
-                PriceModel.find({ product: doc._id }, function(err, prices) {
+                async.parallel([
+                    function(pCb) {
+                        var PriceModel = MODEL('productPrices').Schema;
+                        //clone prices
+                        PriceModel.find({ product: doc._id })
+                            .populate("priceLists")
+                            .exec(function(err, prices) {
 
-                    async.each(prices, function(price, aCb) {
-                            var newPrice = price.toObject();
+                                async.each(prices, function(price, aCb) {
 
-                            newPrice.product = newProduct._id;
-                            delete newPrice._id;
-                            delete newPrice.__v;
-                            delete newPrice.createdAt;
-                            delete newPrice.updatedAt;
-                            newPrice.createdBy = self.user._id;
-                            newPrice.editedBy = self.user._id;
+                                    if (!price.priceLists.isCoef) //Only isCoef
+                                        return aCb();
 
-                            newPrice = new PriceModel(newPrice);
-                            newPrice.save(aCb);
-                        },
-                        function(err) {
-                            if (err)
-                                return self.throw500(err);
+                                    var newPrice = price.toObject();
 
-                            self.json(newProduct);
+                                    newPrice.product = newProduct._id;
+                                    delete newPrice._id;
+                                    delete newPrice.__v;
+                                    delete newPrice.createdAt;
+                                    delete newPrice.updatedAt;
+                                    newPrice.createdBy = self.user._id;
+                                    newPrice.editedBy = self.user._id;
+
+                                    newPrice = new PriceModel(newPrice);
+                                    newPrice.save(aCb);
+                                }, pCb);
+                            });
+                    },
+                    function(pCb) {
+                        //clone pictures
+                        var ProductImagesModel = MODEL('productImages').Schema;
+
+                        ProductImagesModel.find({ product: doc._id }, function(err, images) {
+                            if (!images || !images.length)
+                                return pCb();
+
+                            async.each(images, function(image, aCb) {
+                                var newImage = image.toObject();
+
+                                newImage.product = newProduct._id;
+                                delete newImage._id;
+                                delete newImage.__v;
+                                delete newImage.createdAt;
+                                delete newImage.updatedAt;
+                                newImage.createdBy = self.user._id;
+                                newImage.editedBy = self.user._id;
+
+                                newImage = new ProductImagesModel(newImage);
+                                newImage.save(aCb);
+                            }, pCb);
                         });
+                    }
+                ], function(err, docs) {
+                    if (err)
+                        return self.throw500(err);
+
+                    Product(newProduct._id, function(err, doc) {
+                        doc.save(function(err, doc) { //re-save for refresh packaging and ecotax
+                            self.json(doc);
+                        });
+                    });
                 });
             });
         });

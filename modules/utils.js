@@ -322,7 +322,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                             total_taxes.push({
                                 taxeId: line.product.taxes[i].taxeId._id,
                                 isFixValue: line.product.taxes[i].taxeId.isFixValue,
-                                seuqence: line.product.taxes[i].taxeId.sequence,
+                                sequence: line.product.taxes[i].taxeId.sequence,
                                 total: 0
                             });
                         }
@@ -402,6 +402,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
                     if (!found) {
                         total_taxes.push({
+                            sequence: taxe.sequence,
                             taxeId: taxe._id,
                             isFixValue: taxe.isFixValue,
                             value: shipping.total_ht * taxe.rate / 100

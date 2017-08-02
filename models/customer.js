@@ -236,7 +236,7 @@ var customerSchema = new Schema({
         salesTeam: { type: ObjectId, ref: 'Department' },
         implementedBy: { type: ObjectId, ref: 'Customers' },
         isActive: { type: Boolean, default: true },
-        ref: { type: String, trim: true, uppercase: true, sparse: true, default: '' }, //code_client or code_fournisseur
+        ref: { type: String, trim: true, uppercase: true, require: true, unique: true, default: '' }, //code_client or code_fournisseur
         language: { type: Number, default: 0 },
         receiveMessages: { type: Number, default: 0 },
         cptBilling: { type: Schema.Types.ObjectId, ref: 'Customers' },
@@ -253,8 +253,8 @@ var customerSchema = new Schema({
         //zonegeo: String,
         rival: [String], //concurrent
 
-        customerAccount: { type: String, set: MODULE('utils').setAccount, trim: true }, //code_compta
-        supplierAccount: { type: String, set: MODULE('utils').setAccount, trim: true } //code_compta_fournisseur
+        customerAccount: { type: String, set: MODULE('utils').setAccount, trim: true, uppercase: true }, //code_compta
+        supplierAccount: { type: String, set: MODULE('utils').setAccount, trim: true, uppercase: true } //code_compta_fournisseur
     },
 
     iban: {
@@ -332,6 +332,10 @@ var customerSchema = new Schema({
     toJSON: { virtuals: true }
 });
 
+customerSchema.path('salesPurchases.ref').validate(function(v) {
+    return v.length <= 7;
+}, 'The maximum length is 7.');
+
 customerSchema.virtual('fullName').get(function() {
     if (this.name.first)
         return this.name.first + ' ' + this.name.last;
@@ -343,6 +347,11 @@ customerSchema.pre('save', function(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
     var self = this;
+
+    if (this.new) { // Add default account
+        this.salesPurchases.customerAccount = "411" + this.salesPurchases.ref;
+        this.salesPurchases.supplierAccount = "401" + this.salesPurchases.ref;
+    }
 
     // Update first address delivery copy main address
     if (self.shippingAddress && self.shippingAddress.length != 0) {
