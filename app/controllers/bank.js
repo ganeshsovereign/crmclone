@@ -1112,7 +1112,7 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         var dict = ["fk_status", "fk_bill_status"];
