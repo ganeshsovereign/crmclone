@@ -190,6 +190,7 @@
     "StatusDeliveryInStock": "Livraison en stock",
     "Processing": "Préparer la commande",
     "NewDelivery": "Nouveau bon de livraison",
+    "NewReception": "Nouveau bon de réception",
     "Delivery": "Livraison",
     "DeliveriesShort": "Livraisons",
     "DeliveriesReceipt": "Bons de livraisons",
@@ -228,7 +229,8 @@
     "Sender": "Expéditeur",
     "Recipient": "Destinataire",
     "List": "Liste des bons de préparations",
-    "ListOfDeliveriesSupplier": "Liste des bons de livraisons Fournisseurs",
+    "ListOfDeliveriesSupplier": "Liste des bons de livraisons fournisseurs",
+    "ListOfReceptionSupplier": "Liste des bons de réceptions fournisseurs",
     "DateMaxPayment": "Date limite règlement",
     "DeliveryTo": "Expédié à",
     "DeliveryAddress": "Adr. livraison",
@@ -251,6 +253,7 @@
     "CreateDelivery": "Créer bon livraison",
     "CreatePreparation": "Créer bon de préparation",
     "DeliveryDetails": "Détails du bon de livraison",
+    "ReceptionDetails": "Détails du bon de réception",
     "PreparationDetails": "Détails du bon de préparation",
     "NoPackage": "Nombre de colis",
     "DeliveryStatus": "État du bon de livraison",
@@ -261,6 +264,8 @@
     "DeliveryStatusCanceled": "Abandonné",
     "DeliveryNotes": "Bons livraisons",
     "DeliveryNote": "Bon livraison",
+    "ReceptionNotes": "Bon réceptions",
+    "ReceptionNote": "Bon réception",
     "ConfirmCloseDelivery": "Etes-vous sur de vouloir générer la facture ? Une fois généré le bon de livraison ne sera plus modifiable et sera classé facturé.",
     "CloseDelivery": "Facturation du bon de livraison",
     "DeliveriesParameters": "Paramètres de logistique",
@@ -292,5 +297,6 @@
     "ReceivedAt": "Reçu le",
     "ReceivedBy": "Reçu par",
     "CreateProductReturn": "Créer un retour produit",
-    "ValidateStockReturn": "Valider le retour produit(s)"
+    "ValidateStockReturn": "Valider le retour produit(s)",
+    "PutInStock": "Mettre en stock"
 }

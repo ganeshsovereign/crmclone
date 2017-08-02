@@ -13,7 +13,8 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="societe.list">@(companies:CustomerList)</a>
+            <a ng-hide="societe.type == 'Person'" ui-sref="societe.list">@(companies:CustomerList)</a>
+            <a ng-hide="societe.type == 'Company'" ui-sref="contact.list">@(companies:ListOfContacts)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>

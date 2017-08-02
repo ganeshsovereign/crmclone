@@ -6414,3 +6414,140 @@ StockInventory.prototype = {
         });
     }
 };
+
+function StockReturn() {}
+StockCorrection.prototype = {
+    create: function() {
+        var self = this;
+        var body = self.body;
+        var StockReturnModel = MODEL('order').Schema.StockReturn;
+        var Availability = MODEL('productsAvailability').Schema;
+
+        body.createdBy = self.user._id;
+
+        body.status = {
+            "receivedById": self.user._id,
+            "isInventory": new Date(),
+            "isReceived": new Date(),
+        };
+
+        var StockReturn = new StockReturnModel(body);
+
+        StockReturn.save(function(err, doc) {
+            if (err)
+                return self.throw500(err);
+
+            function callback(err) {
+                if (err)
+                    return self.throw500(err);
+
+                self.json(doc);
+            }
+
+            async.each(body.orderRows, function(elem, eachCb) {
+                var options;
+
+                if (elem.qty <= 0) {
+                    options = {
+                        location: body.location,
+                        product: elem.product
+                    };
+
+                    Availability.find(options, function(err, docs) {
+
+                        var lastQuantity = elem.qty;
+
+                        if (err)
+                            return eachCb(err);
+
+
+                        if (docs.length) {
+
+                            async.each(docs, function(doc, eachChildCb) {
+                                var optionsEach;
+
+                                if (lastQuantity > 0)
+                                    return eachChildCb();
+
+
+                                lastQuantity += doc.onHand;
+
+                                if ((!lastQuantity || lastQuantity < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
+                                    optionsEach = {
+                                        query: {
+                                            _id: doc._id
+                                        },
+
+                                        body: { $set: { archived: true } },
+                                    };
+                                    Availability.updateByQuery(optionsEach, function(err, doc) {
+                                        if (err)
+                                            return eachChildCb(err);
+
+                                        eachChildCb();
+                                    });
+                                } else {
+                                    optionsEach = {
+                                        body: {
+                                            onHand: lastQuantity
+                                        },
+
+                                        query: {
+                                            _id: doc._id
+                                        }
+                                    };
+                                    Availability.updateByQuery(optionsEach, function(err, doc) {
+                                        if (err)
+                                            return eachChildCb(err);
+
+                                        eachChildCb();
+                                    });
+                                }
+
+                            }, function(err) {
+                                if (err)
+                                    return eachCb(err);
+
+                                eachCb();
+                                F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                            });
+                        } else
+                            eachCb();
+                    });
+                } else {
+                    var availability = new Availability({
+                        location: body.location,
+                        warehouse: body.warehouse,
+                        goodsInNote: doc._id,
+                        product: elem.product,
+                        onHand: elem.qty,
+                        cost: elem.cost,
+
+                    });
+
+                    availability.save(function(err, doc) {
+                        if (err)
+                            return eachCb(err);
+
+                        eachCb();
+                        F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                    });
+                }
+
+            }, callback);
+
+        });
+    },
+
+    remove: function(id) {
+        var self = this;
+        var StockCorrection = MODEL('orders').Schema.stockCorrections;
+
+        StockCorrection.findOneAndRemove({ _id: id }, function(err, correction) {
+            if (err)
+                return self.throw500(err);
+
+            self.json({ success: correction });
+        });
+    }
+};

@@ -18,7 +18,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('deliverysupplier')">
-            <a ui-sref="{{backTo}}">@(orders:ListOfDeliveriesSupplier)</a>
+            <a ui-sref="{{backTo}}">@(orders:ListOfReceptionSupplier)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('billsupplier')" )>
@@ -34,8 +34,8 @@
             <span ng-show="!object._id">@(orders:NewOrder)</span>
         </li>
         <li ng-if="module('deliverysupplier')">
-            <span ng-hide="!object._id">@(orders:DeliveryNote) : {{object.ref}} - {{object.supplier.fullName}}</span>
-            <span ng-show="!object._id">@(orders:NewDelivery)</span>
+            <span ng-hide="!object._id">@(orders:ReceptionNote) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(orders:NewReception)</span>
         </li>
         <li ng-if="module('billsupplier')">
             <span ng-hide="!object._id">@(bills:BillSuppliers) : {{object.ref}} - {{object.supplier.fullName}}</span>
@@ -228,7 +228,7 @@
                                     <div class="col-md-12">
                                         <div ng-if="module('offersupplier')" class="uppercase profile-stat-text"> @(propal:PurchaseRequests) </div>
                                         <div ng-if="module('ordersupplier')" class="uppercase profile-stat-text"> @(orders:Order) </div>
-                                        <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(orders:DeliveryNote) </div>
+                                        <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(orders:ReceptionNote) </div>
                                         <div ng-if="module('billsupplier')" class="uppercase profile-stat-text"> @(bills:Bill) </div>
                                         <div class="uppercase profile-stat-title"> {{object.ref}} </div>
                                     </div>
@@ -262,7 +262,7 @@
                         <ul class="nav" ng-if="module('deliverysupplier')">
                             <li ng-class="{active: $state.includes(module() + '.show.detail')}">
                                 <a ui-sref="deliverysupplier.show.detail({id:object._id}) ">
-                                    <i class="icon-info "></i> @(orders:DeliveryDetails) </a>
+                                    <i class="icon-info "></i> @(orders:ReceptionDetails) </a>
                             </li>
                         </ul>
                         <ul class="nav" ng-if="module('billsupplier')">
