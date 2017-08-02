@@ -5712,8 +5712,8 @@ StockCorrection.prototype = {
         var tab = [];
         var body = {
             orderRows: [],
-            warehouse: { _id: '594a6a57730ae4138162f72f' },
-            location: { _id: '594a6a57730ae4138162f730' },
+            warehouse: '594a6a57730ae4138162f72f',
+            location: '594a6a57730ae4138162f730',
             description: 'Inventaire juillet 2017',
             createdBy: "58eb845e40f8750913b2c087",
             status: {
