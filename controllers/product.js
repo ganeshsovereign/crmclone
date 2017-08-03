@@ -3333,7 +3333,9 @@ Prices.prototype = {
                         },
                         updatedAt: 1,
                         prices: 1,
-                        discount: 1
+                        discount: 1,
+                        qtyMin: 1,
+                        qtyMax: 1
                     }
                 });
 
@@ -3551,7 +3553,7 @@ Prices.prototype = {
                         return wCb('No pricing create!');
 
                     // Update default price in product
-                    if (self.body.priceLists.defaultPriceList != true || !self.body.prices.length)
+                    if (!self.body.priceLists || self.body.priceLists.defaultPriceList != true || !self.body.prices.length)
                         return wCb(null, productPrice);
 
                     ProductModel.findByIdAndUpdate(productPrice.product, { 'prices.pu_ht': productPrice.prices[0].price }, { new: true }, function(err, doc) {
