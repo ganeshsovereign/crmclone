@@ -384,52 +384,52 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 }
             }
         },
-        {
-            $unwind: {
-                path: '$product.variants',
-                preserveNullAndEmptyArrays: true
-            }
-        },
-        {
-            $lookup: {
-                from: 'ProductOptionsValues',
-                localField: 'product.variants',
-                foreignField: '_id',
-                as: 'variants'
-            }
-        },
-        {
-            $project: {
-                _id: 1,
-                location: 1,
-                warehouse: 1,
-                product: 1,
-                variants: { $arrayElemAt: ['$variants', 0] },
-                description: 1,
-                createdAt: 1,
-                cost: 1,
-                onHand: 1,
-                allocated: 1,
-                inStock: 1,
-                goodsInNote: 1
-            }
-        },
-        {
-            $group: {
-                _id: '$_id',
-                location: { $first: '$location' },
-                product: { $first: '$product' },
-                goodsInNote: { $first: '$goodsInNote' },
-                warehouse: { $first: '$warehouse' },
-                createdAt: { $first: '$createdAt' },
-                description: { $first: '$description' },
-                cost: { $first: '$cost' },
-                variants: { $push: '$variants.value' },
-                inStock: { $first: '$inStock' },
-                allocated: { $first: '$allocated' },
-                onHand: { $first: '$onHand' }
-            }
-        },
+        /* {
+             $unwind: {
+                 path: '$product.variants',
+                 preserveNullAndEmptyArrays: true
+             }
+         },
+         {
+             $lookup: {
+                 from: 'ProductOptionsValues',
+                 localField: 'product.variants',
+                 foreignField: '_id',
+                 as: 'variants'
+             }
+         },
+         {
+             $project: {
+                 _id: 1,
+                 location: 1,
+                 warehouse: 1,
+                 product: 1,
+                 variants: { $arrayElemAt: ['$variants', 0] },
+                 description: 1,
+                 createdAt: 1,
+                 cost: 1,
+                 onHand: 1,
+                 allocated: 1,
+                 inStock: 1,
+                 goodsInNote: 1
+             }
+         },
+         {
+             $group: {
+                 _id: '$_id',
+                 location: { $first: '$location' },
+                 product: { $first: '$product' },
+                 goodsInNote: { $first: '$goodsInNote' },
+                 warehouse: { $first: '$warehouse' },
+                 createdAt: { $first: '$createdAt' },
+                 description: { $first: '$description' },
+                 cost: { $first: '$cost' },
+                 variants: { $push: '$variants.value' },
+                 inStock: { $first: '$inStock' },
+                 allocated: { $first: '$allocated' },
+                 onHand: { $first: '$onHand' }
+             }
+         },*/
         {
             $lookup: {
                 from: 'Orders',
