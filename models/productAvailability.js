@@ -496,7 +496,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
         }, {
             $limit: limit
         }
-    ]).allowDiskUse(true).exec(function(err, result) {
+    ]).exec(function(err, result) {
         if (err)
             return callback(err);
 

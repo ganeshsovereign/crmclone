@@ -5695,182 +5695,6 @@ StockCorrection.prototype = {
 
         });
     },
-
-    updateInventoryAll: function() {
-        var self = this;
-        var ProductModel = MODEL('product').Schema;
-        var StockCorrectionModel = MODEL('order').Schema.StockCorrections;
-        var Availability = MODEL('productsAvailability').Schema;
-
-        if (self.query.key !== "COvy9NRXD2FEYjSQU6q3LM7HcdKesflGTB")
-            return self.throw401("Error key");
-
-        if (self.files.length <= 0)
-            return;
-        //console.log(self.files[0].filename);
-
-        var tab = [];
-        var orderRows = [];
-
-        csv()
-            .from.path(self.files[0].path, {
-                delimiter: ';',
-                escape: '"'
-            })
-            .transform(function(row, index, callback) {
-                if (index === 0) {
-                    tab = row; // Save header line
-                    return callback();
-                }
-
-                console.log(row);
-
-                let line = {
-                    locationsReceived: [],
-                    cost: 0,
-                    orderRowId: null,
-                    product: null,
-                    qty: 0 // The difference of the stock positive or negative
-                };
-
-                ProductModel.findOne({ 'info.SKU': row[0].trim() }, "_id directCost", function(err, product) {
-                    if (err || !product)
-                        return callback();
-
-                    line.cost = product.directCost;
-                    line.product = product._id;
-                    line.qty = parseFloat(row[3].replace(',', '.'));
-
-                    orderRows.push(line);
-                    callback();
-                });
-            })
-            .on("end", function(count) {
-                console.log(body);
-                console.log('Number of lines: ' + count);
-
-                var lots = _.chunk(orderRows, 100);
-
-                async.eachSeries(lots, function(lot, callback) {
-                    var body = {
-                        orderRows: lot,
-                        warehouse: '594a6a57730ae4138162f72f',
-                        location: '594a6a57730ae4138162f730',
-                        description: 'Inventaire juillet 2017',
-                        createdBy: "58eb845e40f8750913b2c087",
-                        status: {
-                            receivedById: "58eb845e40f8750913b2c087",
-                            isInventory: new Date(),
-                            isReceived: new Date()
-                        }
-                    };
-
-                    var stockCorrection = new StockCorrectionModel(body);
-
-                    stockCorrection.save(function(err, doc) {
-                        if (err)
-                            return callback(err);
-
-                        async.each(body.orderRows, function(elem, eachCb) {
-                            var options;
-
-                            if (elem.qty <= 0) {
-                                options = {
-                                    location: body.location,
-                                    product: elem.product
-                                };
-
-                                Availability.find(options, function(err, docs) {
-
-                                    var lastQuantity = elem.qty;
-
-                                    if (err)
-                                        return eachCb(err);
-
-
-                                    if (docs.length) {
-
-                                        async.each(docs, function(doc, eachChildCb) {
-                                            var optionsEach;
-
-                                            if (lastQuantity > 0)
-                                                return eachChildCb();
-
-
-                                            lastQuantity += doc.onHand;
-
-                                            if ((!lastQuantity || lastQuantity < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
-                                                optionsEach = {
-                                                    query: {
-                                                        _id: doc._id
-                                                    },
-
-                                                    body: { $set: { archived: true } },
-                                                };
-                                                Availability.updateByQuery(optionsEach, function(err, doc) {
-                                                    if (err)
-                                                        return eachChildCb(err);
-
-                                                    eachChildCb();
-                                                });
-                                            } else {
-                                                optionsEach = {
-                                                    body: {
-                                                        onHand: lastQuantity
-                                                    },
-
-                                                    query: {
-                                                        _id: doc._id
-                                                    }
-                                                };
-                                                Availability.updateByQuery(optionsEach, function(err, doc) {
-                                                    if (err)
-                                                        return eachChildCb(err);
-
-                                                    eachChildCb();
-                                                });
-                                            }
-
-                                        }, function(err) {
-                                            if (err)
-                                                return eachCb(err);
-
-                                            eachCb();
-                                            F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
-                                        });
-                                    } else
-                                        eachCb();
-                                });
-                            } else {
-                                var availability = new Availability({
-                                    location: body.location,
-                                    warehouse: body.warehouse,
-                                    goodsInNote: doc._id,
-                                    product: elem.product,
-                                    onHand: elem.qty,
-                                    cost: elem.cost,
-
-                                });
-
-                                availability.save(function(err, doc) {
-                                    if (err)
-                                        return eachCb(err);
-
-                                    eachCb();
-                                    F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
-                                });
-                            }
-
-                        }, callback);
-                    }, function(err) {
-                        if (err)
-                            return self.throw500(err);
-
-                        self.json({ lines: count });
-                    });
-                });
-            });
-    },
     allocate: function() {
         var self = this;
         var body = self.body;
@@ -6583,18 +6407,7 @@ StockCorrection.prototype = {
         //console.log(self.files[0].filename);
 
         var tab = [];
-        var body = {
-            orderRows: [],
-            warehouse: { _id: '5945a123907df220805d4df0' },
-            location: { _id: '5945a123907df220805d4df1' },
-            description: 'Inventaire juillet 2017',
-            createdBy: null,
-            status: {
-                receivedById: null,
-                isInventory: new Date(),
-                isReceived: new Date()
-            }
-        };
+        var orderRows = [];
 
         csv()
             .from.path(self.files[0].path, {
@@ -6607,7 +6420,7 @@ StockCorrection.prototype = {
                     return callback();
                 }
 
-                console.log(row);
+                //console.log(row);
 
                 let line = {
                     locationsReceived: [],
@@ -6625,119 +6438,132 @@ StockCorrection.prototype = {
                     line.product = product._id;
                     line.qty = parseFloat(row[3].replace(',', '.'));
 
-                    body.orderRows.push(line);
+                    orderRows.push(line);
                     callback();
                 });
             })
             .on("end", function(count) {
-                console.log(body);
                 console.log('Number of lines: ' + count);
 
+                var lots = _.chunk(orderRows, 100);
 
-                var stockCorrection = new StockCorrectionModel(body);
+                async.eachSeries(lots, function(lot, callback) {
+                    var body = {
+                        orderRows: lot,
+                        warehouse: '594a6a57730ae4138162f72f',
+                        location: '594a6a57730ae4138162f730',
+                        description: 'Inventaire juillet 2017',
+                        createdBy: "58eb845e40f8750913b2c087",
+                        status: {
+                            receivedById: "58eb845e40f8750913b2c087",
+                            isInventory: new Date(),
+                            isReceived: new Date()
+                        }
+                    };
 
-                stockCorrection.save(function(err, doc) {
-                    if (err)
-                        return self.throw500(err);
+                    var stockCorrection = new StockCorrectionModel(body);
 
-                    function callback(err) {
+                    stockCorrection.save(function(err, doc) {
+                        if (err)
+                            return callback(err);
+
+                        async.each(body.orderRows, function(elem, eachCb) {
+                            var options;
+
+                            if (elem.qty <= 0) {
+                                options = {
+                                    location: body.location,
+                                    product: elem.product
+                                };
+
+                                Availability.find(options, function(err, docs) {
+
+                                    var lastQuantity = elem.qty;
+
+                                    if (err)
+                                        return eachCb(err);
+
+
+                                    if (docs.length) {
+
+                                        async.each(docs, function(doc, eachChildCb) {
+                                            var optionsEach;
+
+                                            if (lastQuantity > 0)
+                                                return eachChildCb();
+
+
+                                            lastQuantity += doc.onHand;
+
+                                            if ((!lastQuantity || lastQuantity < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
+                                                optionsEach = {
+                                                    query: {
+                                                        _id: doc._id
+                                                    },
+
+                                                    body: { $set: { archived: true } },
+                                                };
+                                                Availability.updateByQuery(optionsEach, function(err, doc) {
+                                                    if (err)
+                                                        return eachChildCb(err);
+
+                                                    eachChildCb();
+                                                });
+                                            } else {
+                                                optionsEach = {
+                                                    body: {
+                                                        onHand: lastQuantity
+                                                    },
+
+                                                    query: {
+                                                        _id: doc._id
+                                                    }
+                                                };
+                                                Availability.updateByQuery(optionsEach, function(err, doc) {
+                                                    if (err)
+                                                        return eachChildCb(err);
+
+                                                    eachChildCb();
+                                                });
+                                            }
+
+                                        }, function(err) {
+                                            if (err)
+                                                return eachCb(err);
+
+                                            eachCb();
+                                            F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                                        });
+                                    } else
+                                        eachCb();
+                                });
+                            } else {
+                                var availability = new Availability({
+                                    location: body.location,
+                                    warehouse: body.warehouse,
+                                    goodsInNote: doc._id,
+                                    product: elem.product,
+                                    onHand: elem.qty,
+                                    cost: elem.cost,
+
+                                });
+
+                                availability.save(function(err, doc) {
+                                    if (err)
+                                        return eachCb(err);
+
+                                    eachCb();
+                                    F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                                });
+                            }
+
+                        }, callback);
+                    }, function(err) {
                         if (err)
                             return self.throw500(err);
 
                         self.json({ lines: count });
-                    }
-
-                    async.each(body.orderRows, function(elem, eachCb) {
-                        var options;
-
-                        if (elem.qty <= 0) {
-                            options = {
-                                location: body.location,
-                                product: elem.product
-                            };
-
-                            Availability.find(options, function(err, docs) {
-
-                                var lastQuantity = elem.qty;
-
-                                if (err)
-                                    return eachCb(err);
-
-
-                                if (docs.length) {
-
-                                    async.each(docs, function(doc, eachChildCb) {
-                                        var optionsEach;
-
-                                        if (lastQuantity > 0)
-                                            return eachChildCb();
-
-
-                                        lastQuantity += doc.onHand;
-
-                                        if ((!lastQuantity || lastQuantity < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
-                                            optionsEach = {
-                                                query: {
-                                                    _id: doc._id
-                                                },
-
-                                                body: { $set: { archived: true } },
-                                            };
-                                            Availability.updateByQuery(optionsEach, function(err, doc) {
-                                                if (err)
-                                                    return eachChildCb(err);
-
-                                                eachChildCb();
-                                            });
-                                        } else {
-                                            optionsEach = {
-                                                body: {
-                                                    onHand: lastQuantity
-                                                },
-
-                                                query: {
-                                                    _id: doc._id
-                                                }
-                                            };
-                                            Availability.updateByQuery(optionsEach, function(err, doc) {
-                                                if (err)
-                                                    return eachChildCb(err);
-
-                                                eachChildCb();
-                                            });
-                                        }
-
-                                    }, function(err) {
-                                        if (err)
-                                            return eachCb(err);
-
-                                        eachCb();
-                                        F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
-                                    });
-                                } else
-                                    eachCb();
-                            });
-                        } else {
-                            var availability = new Availability({
-                                location: body.location,
-                                warehouse: body.warehouse,
-                                goodsInNote: doc._id,
-                                product: elem.product,
-                                onHand: elem.qty,
-                                cost: elem.cost,
-
-                            });
-
-                            availability.save(function(err, doc) {
-                                if (err)
-                                    return eachCb(err);
-
-                                eachCb();
-                                F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
-                            });
-                        }
-                    }, callback);
-
+                    });
                 });
             });
     },
