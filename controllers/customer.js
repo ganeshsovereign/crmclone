@@ -229,8 +229,14 @@ exports.install = function() {
             } else // customer Only
                 query.$and.push({ $or: [{ 'salesPurchases.isProspect': true }, { 'salesPurchases.isCustomer': true }] });
 
-            //"$nin": ["ST_NO", "ST_NEVER"]
-            //};
+        if (self.query.type)
+            query.type = self.query.type;
+
+        if (self.query.company)
+            query.company = (self.query.company == 'null' ? null : self.query.company);
+
+        //"$nin": ["ST_NO", "ST_NEVER"]
+        //};
 
         console.log(query);
         SocieteModel.find(query, {

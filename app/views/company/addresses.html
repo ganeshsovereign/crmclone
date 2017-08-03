@@ -61,14 +61,113 @@
                     </div>
                     <div class="modal-body">
                         <div class="col-md-12">
-                            <div class="form-horizontal">
-                                <div id="contactList" class="dataTables_filter"><label>@(Search) @(companies:Contact) :  <input type="text"  ng-model="search" ng-change="find()" class="form-control input-small input-sm input-inline" placeholder="" ></label></div>
-                                <button class="btn blue center right" data-ng-click="createContact()">@(Create) @(companies:Contact)</button>
-
+                            <div class="form-horizontal" ng-if="!create">
+                                <crm-id label="@(Search) @(companies:Contact)" name="contactId" on-select="addContactToCustomer" ng-model="contact._id" url="/erp/api/societe/autocomplete?all=1&type=Person&company=null" required="true" placeholder="@(Search) @(companies:Contact)" class="form-group form-md-line-input"></crm-id>
+                                <button class="btn blue center right" data-ng-click="createNewContact()">@(Create) @(companies:Contact)</button>
                             </div>
+
+                            <form ng-if="create" role="form">
+                                <div class="form-group">
+                                    <label>@(companies:Lastname)</label>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <select class="form-control" required data-ng-model="contact.name.civilite" id="poste" data-ng-options="c.label as c.label for c in dict.fk_civilite.values"></select>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                            <i class="fa fa-user"></i>
+                        </span>
+                                                <input required type="text" placeholder="@(companies:Lastname)" id="nom" ng-model="contact.name.last" class="form-control" autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>@(companies:Firstname)</label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                    <i class="fa fa-user"></i>
+                </span>
+                                        <input required type="text" placeholder="@(companies:Firstname)" id="firstName" ng-model="contact.name.first" class="form-control" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>@(companies:birthday)</label>
+
+                                    <div class="input-group">
+                                        <input date-input ng-model="contact.dateBirth">
+                                    </div>
+                                </div>
+
+                                <div class="caption">
+                                    <span class="caption-subject font-yellow-crusta uppercase"> @(companies:Address) </span>
+                                    <hr>
+                                    <address ng-model=contact.address mode="simple"></address>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>@(companies:Tel-Mobile)</label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                    <i class="fa fa-phone"></i>
+                </span>
+                                        <input type="text" ng-model="contact.phones.mobile" class="form-control" autocomplete="off">
+                                    </div>
+                                    <p ng-show="!(contact.phones.mobile || contact.phones.phone || contact.emails[0].email)" class="help-block"> Au moins l'email ou un numéro de téléphone est obligatoire pour la création d'un contact. </p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>@(companies:Tel-Fixe)</label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                    <i class="fa fa-phone"></i>
+                </span>
+                                        <input type="text" ng-model="contact.phones.phone" class="form-control" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>@(Email)</label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                    <i class="fa fa-envelope"></i>
+                </span>
+                                        <input type="text" ng-model="contact.emails[0].email" class="form-control" autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>@(companies:PostOrFunction)</label>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                    <i class="fa fa-user"></i>
+                </span>
+                                        <select class="form-control" required data-ng-model="contact.jobPosition" id="poste" data-ng-options="c.label as c.label for c in dict.fk_job.values"></select>
+                                    </div>
+                                </div>
+
+                                <!--<div class="form-group">
+                                    <label>@(companies:Soncas)</label>
+
+                                    <div class="checkbox-list">
+                                        <label ng-repeat="Soncas in soncas">
+                    <span><input uniform type="checkbox" checklist-model="contact.soncas" checklist-value="Soncas" ></span> {{Soncas}} </label>
+                                    </div>
+                                </div>-->
+                            </form>
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" ng-disabled="!create || !(contact.phones.phone_mobile || contact.phones.phone || contact.emails[0].email)" ng-click="ok()">@(Create)</button>
+                        <button class="btn btn" type="button" ng-click="cancel()">@(Cancel)</button>
                     </div>
                 </script>
             </div>
@@ -132,6 +231,9 @@
                                     <th>@(Zip)</th>
                                     <th>@(Town)</th>
                                     <th>@(Status)</th>
+                                    <th>@(Contact)</th>
+                                    <th>@(Phone)</th>
+                                    <th>@(Email)</th>
                                     <th>@(Action)</th>
                                 </tr>
                             </thead>
@@ -145,11 +247,14 @@
                                     <td>
                                         <span class="label label-sm {{address.status.css}}"> {{address.status.name}} </span>
                                     </td>
+                                    <td> {{address.contact.name}}</td>
+                                    <td> {{address.contact.phone}}</td>
+                                    <td> {{address.contact.email}}</td>
                                     <td style="white-space: nowrap">
                                         <!-- form -->
-                                        <div class="btn-group buttons" ng-if="$index != 0">
+                                        <div class="btn-group buttons">
                                             <button type="button" class="btn btn-xs btn-primary" ng-click="editAddress(address)"><i class="fa fa-pencil"></i></button>
-                                            <button type="button" class="btn btn-xs btn-danger" confirmed-click="removeAddress($index)" ng-confirm-click="Supprimer l'adresse ?"><i class="fa fa-trash-o"></i></button>
+                                            <button type="button" ng-disabled="$index == 0" class="btn btn-xs btn-danger" confirmed-click="removeAddress($index)" ng-confirm-click="Supprimer l'adresse ?"><i class="fa fa-trash-o"></i></button>
                                         </div>
                                     </td>
                                 </tr>

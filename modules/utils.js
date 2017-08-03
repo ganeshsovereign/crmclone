@@ -101,8 +101,8 @@ exports.set_Space = function(text) {
 };
 
 exports.setPhone = function(phone) {
-    if (phone == '')
-        return '';
+    if (!phone)
+        return phone;
 
     let PNF = require('google-libphonenumber').PhoneNumberFormat;
     let phoneUtil = require('google-libphonenumber').PhoneNumberUtil.getInstance();
@@ -111,8 +111,14 @@ exports.setPhone = function(phone) {
     if (phone[0] == '0')
         phone.substr(1);
 
-    let phoneNumber = phoneUtil.parse(phone, this.address.country || 'FR');
+    let country = 'FR';
+    if (this.address && this.address.country)
+        country = this.address.country;
+    else if (this.country)
+        country = this.country;
 
+
+    let phoneNumber = phoneUtil.parse(phone, country || 'FR');
 
     phone = phoneUtil.format(phoneNumber, PNF.INTERNATIONAL);
 

@@ -140,7 +140,14 @@ const baseSchema = new Schema({
         city: { type: String, default: '' },
         state: { type: String, default: '' },
         zip: { type: String, default: '' },
-        country: { type: String, ref: 'countries', default: 'FR' }
+        country: { type: String, ref: 'countries', default: 'FR' },
+        contact: {
+            name: { type: String, default: '' },
+            phone: { type: String, set: MODULE('utils').setPhone, default: '' },
+            mobile: { type: String, set: MODULE('utils').setPhone, default: '' },
+            fax: { type: String, set: MODULE('utils').setPhone, default: '' },
+            email: { type: String, lowercase: true, trim: true, index: true }
+        }
     },
     shippingAddress: {
         _id: { type: ObjectId, default: null },
@@ -149,7 +156,14 @@ const baseSchema = new Schema({
         city: { type: String, default: '' },
         state: { type: String, default: '' },
         zip: { type: String, default: '' },
-        country: { type: String, ref: 'countries', default: 'FR' }
+        country: { type: String, ref: 'countries', default: 'FR' },
+        contact: {
+            name: { type: String, default: '' },
+            phone: { type: String, set: MODULE('utils').setPhone, default: '' },
+            mobile: { type: String, set: MODULE('utils').setPhone, default: '' },
+            fax: { type: String, set: MODULE('utils').setPhone, default: '' },
+            email: { type: String, lowercase: true, trim: true, index: true }
+        }
     },
     /*bl: [{
         label: String,

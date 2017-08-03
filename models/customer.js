@@ -35,8 +35,15 @@ var addressSchema = new Schema({
     city: { type: String, default: '' },
     state: { type: String, default: '' },
     zip: { type: String, default: '' },
-    country: { type: String, ref: 'countries', default: null },
+    country: { type: String, ref: 'countries', default: 'FR' },
     name: { type: String, trim: true, uppercase: true, default: '' },
+    contact: {
+        name: { type: String, default: '' },
+        phone: { type: String, set: MODULE('utils').setPhone, default: "" },
+        mobile: { type: String, set: MODULE('utils').setPhone, default: "" },
+        fax: { type: String, set: MODULE('utils').setPhone, default: "" },
+        email: { type: String, lowercase: true, trim: true, index: true }
+    },
     Status: { type: String, default: 'ENABLE' }
 }, {
     toObject: { virtuals: true },
@@ -200,7 +207,14 @@ var customerSchema = new Schema({
         city: { type: String, default: '' },
         state: { type: String, default: '' },
         zip: { type: String, default: '' },
-        country: { type: String, ref: 'countries', default: 'FR' }
+        country: { type: String, ref: 'countries', default: 'FR' },
+        contact: {
+            name: { type: String, default: '' },
+            phone: { type: String, set: MODULE('utils').setPhone, default: '' },
+            mobile: { type: String, set: MODULE('utils').setPhone, default: '' },
+            fax: { type: String, set: MODULE('utils').setPhone, default: '' },
+            email: { type: String, lowercase: true, trim: true, index: true }
+        }
     },
 
     shippingAddress: [addressSchema], // list of deliveries address
@@ -360,15 +374,16 @@ customerSchema.pre('save', function(next) {
         self.shippingAddress[0].zip = self.address.zip;
         self.shippingAddress[0].city = self.address.city;
         self.shippingAddress[0].country = self.address.country;
-    } else
-        self.shippingAddress.push({
-            name: self.fullName,
-            street: self.address.street,
-            zip: self.address.zip,
-            city: self.address.city,
-            country: self.address.country,
-            Status: 'ENABLE'
-        });
+    }
+    /*else
+                       self.shippingAddress.push({
+                           name: self.fullName,
+                           street: self.address.street,
+                           zip: self.address.zip,
+                           city: self.address.city,
+                           country: self.address.country,
+                           Status: 'ENABLE'
+                       });*/
 
     //if (this.code_client == null && this.entity !== "ALL" && this.Status !== 'ST_NEVER') {
     //console.log("Save societe");

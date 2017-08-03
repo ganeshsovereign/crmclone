@@ -185,12 +185,12 @@
                                     </div>
                                     <div ng-if="!module('delivery')" class="portlet-body" style="display: block;">
                                         <div class="form-group form-md-line-input">
-                                            <address ng-model="object.address" ng-disabled="!editable"></address>
+                                            <address ng-model="object.address" mode="simple" ng-disabled="!editable"></address>
                                         </div>
                                     </div>
                                     <div ng-if="module('delivery')" class="portlet-body" style="display: none;">
                                         <div class="form-group form-md-line-input">
-                                            <address ng-model="object.address" ng-disabled="!editable"></address>
+                                            <address ng-model="object.address" mode="simple" ng-disabled="!editable"></address>
                                         </div>
                                     </div>
                                 </div>

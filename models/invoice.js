@@ -139,42 +139,15 @@ var billSchema = new Schema({
         city: { type: String, default: '' },
         state: { type: String, default: '' },
         zip: { type: String, default: '' },
-        country: { type: String, ref: 'countries', default: 'FR' }
-    },
-    shippingAddress: {
-        _id: { type: ObjectId, default: null },
-        name: { type: String, default: '' },
-        street: { type: String, default: '' },
-        city: { type: String, default: '' },
-        state: { type: String, default: '' },
-        zip: { type: String, default: '' },
-        country: { type: String, ref: 'countries', default: 'FR' }
-    },
-    /*bl: [{
-        label: String,
-        name: String,
-        contact: String,
-        address: String,
-        zip: String,
-        town: String,
-        products: [{
-            id: Schema.Types.ObjectId,
-            name: String,
-            qty: {
-                type: Number,
-                default: 0
-            } // QTY Order
-        }],
-        shipping: {
-            id: String,
-            label: String,
-            address: Boolean,
-            total_ht: {
-                type: Number,
-                default: 0
-            }
+        country: { type: String, ref: 'countries', default: 'FR' },
+        contact: {
+            name: { type: String, default: '' },
+            phone: { type: String, set: MODULE('utils').setPhone, default: '' },
+            mobile: { type: String, set: MODULE('utils').setPhone, default: '' },
+            fax: { type: String, set: MODULE('utils').setPhone, default: '' },
+            email: { type: String, lowercase: true, trim: true, index: true }
         }
-    }],*/
+    },
     weight: { type: Number, default: 0 }, // Poids total
     lines: [{
         _id: false,

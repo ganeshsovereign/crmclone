@@ -278,11 +278,14 @@ MetronicApp.directive('address', ['$http',
                     if (attr.mode === 'edit')
                         return '/templates/core/address2.html';
 
+                    if (attr.mode === 'simple')
+                        return '/templates/core/address2.html';
+
                     if (attr.mode === 'show')
                         return '/templates/core/address_show.html';
 
                 } else
-                    return '/templates/core/address2.html';
+                    return '/templates/core/addressWithContact.html';
             },
             link: function(scope) {
                 //console.log(scope);
@@ -306,6 +309,7 @@ MetronicApp.directive('address', ['$http',
                     state: null,
                     zip: null,
                     country: null,
+                    contact: {},
                     societe: {}
                 };
 
@@ -316,7 +320,8 @@ MetronicApp.directive('address', ['$http',
                         city: scope.addressModel.city,
                         state: scope.addressModel.state,
                         zip: scope.addressModel.zip,
-                        country: scope.addressModel.country
+                        country: scope.addressModel.country,
+                        contact: scope.addressModel.contact
                     };
 
                     scope.updateAddressDir = !scope.updateAddressDir;
@@ -329,6 +334,7 @@ MetronicApp.directive('address', ['$http',
                     scope.addressModel.state = scope.deletedAddress.state;
                     scope.addressModel.zip = scope.deletedAddress.zip;
                     scope.addressModel.country = scope.deletedAddress.country;
+                    scope.addressModel.contact = scope.deletedAddress.contact;
                     scope.updateAddressDir = !scope.updateAddressDir;
                 };
                 scope.getLocation = function(val) {
