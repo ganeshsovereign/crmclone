@@ -121,7 +121,7 @@ var productSchema = new Schema({
         autoBarCode: { type: Boolean, default: false },
         //barCode: { type: String, index: true, uppercase: true, sparse: true },
         aclCode: { type: String, uppercase: true },
-        SKU: { type: String, index: true, unique: true, default: null },
+        SKU: { type: String, unique: true, require: true },
         UPC: { type: String, default: null },
         ISBN: { type: String, default: null },
         EAN: { type: String, default: null, index: true, uppercase: true, sparse: true },
