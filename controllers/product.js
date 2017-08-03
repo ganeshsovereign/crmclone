@@ -1164,6 +1164,7 @@ Object.prototype = {
     },
     refreshAllProduct: function() {
         var ProductModel = MODEL('product').Schema;
+        var ChannelLinkModel = MODEL('channelLinks').Schema;
 
         ProductModel.find({ isremoved: { $ne: true }, 'info.isActive': true }, function(err, products) {
             if (err) {
@@ -1177,7 +1178,17 @@ Object.prototype = {
             }
 
             async.each(products, function(product, aCb) {
-                product.save(aCb);
+                async.waterfall([
+                    function(wCb) {
+                        wCb(null, product._id);
+                    },
+                    Product
+                ], function(err, product) {
+                    if (err)
+                        return self.throw500(err);
+
+                    return product.save(aCb);
+                });
             }, function(err) {
                 //console.log(doc);
                 if (err) {
