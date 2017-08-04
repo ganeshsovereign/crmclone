@@ -336,6 +336,8 @@ Object.prototype = {
                 async.eachSeries(lines, function(line, eCb) {
                     newLines.push(line);
 
+                    console.log(line);
+
                     if (!line.product.info.productType.isBundle)
                         return eCb();
 

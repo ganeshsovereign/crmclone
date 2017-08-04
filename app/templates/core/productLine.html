@@ -38,7 +38,7 @@
                     </tr>
                 </thead>
                 <tr ng-repeat="line in linesModel| filter:filterLine" ng-class="{success:line.type == 'SUBTOTAL',bold:line.type == 'SUBTOTAL', info:line.type == 'kit'}">
-                    <td ng-if="line.type == 'product'">
+                    <td ng-if="!line.type || line.type == 'product'">
                         <div class="input-icon right">
                             <i class="fa fa-warning font-red pull-right" ng-show="!line.product._id" title="@(products:ErrorProductBadRefOrLabel)"></i>
                             <span ng-class="{'has-error':$error, 'has-success': !$error}" editable-text="line.product.info.SKU" e-typeahead="product as product.ref for product in productAutoComplete($viewValue, 'ref')" e-typeahead-template-url="searchproduct.html" e-typeahead-on-select="addProduct($item, line.idLine, linesModel)"
