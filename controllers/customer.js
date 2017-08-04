@@ -238,7 +238,7 @@ exports.install = function() {
         //"$nin": ["ST_NO", "ST_NEVER"]
         //};
 
-        console.log(query);
+        //console.log(query);
         SocieteModel.find(query, {
                 name: 1,
                 salesPurchases: 1,
@@ -256,55 +256,9 @@ exports.install = function() {
                 if (err)
                     return console.log("err : /erp/api/societe/autocomplete", err);
 
-                self.json(docs || []);
+                return self.json(docs || []);
 
-                console.log(docs);
-
-                /*var result = [];
-
-                if (docs !== null)
-                    for (var i = 0, len = docs.length; i < len; i++) {
-                        //console.log(docs[i].ref);
-                        result[i] = {};
-                        result[i].name = docs[i].name;
-                        result[i].id = docs[i]._id;
-                        result[i].code_client = docs[i].code_client;
-
-                        if (docs[i].cptBilling.id == null) {
-                            result[i].cptBilling = {};
-                            result[i].cptBilling.name = docs[i].name;
-                            result[i].cptBilling.id = docs[i]._id;
-                            result[i].cptBilling.address = docs[i].address;
-                            result[i].cptBilling.zip = docs[i].zip;
-                            result[i].cptBilling.town = docs[i].town;
-                        } else {
-                            result[i].cptBilling = {};
-                            result[i].cptBilling.name = docs[i].cptBilling.id.name;
-                            result[i].cptBilling.id = docs[i].cptBilling.id._id;
-                            result[i].cptBilling.address = docs[i].cptBilling.id.address;
-                            result[i].cptBilling.zip = docs[i].cptBilling.id.zip;
-                            result[i].cptBilling.town = docs[i].cptBilling.id.town;
-                        }
-
-                        result[i].price_level = docs[i].price_level;
-
-                        // add address
-                        result[i].address = {};
-                        result[i].address.name = docs[i].name;
-                        result[i].address.address = docs[i].address;
-                        result[i].address.zip = docs[i].zip;
-                        result[i].address.town = docs[i].town;
-                        result[i].address.country = docs[i].country;
-                        result[i].addresses = docs[i].addresses;
-                        result[i].deliveryAddressId = docs[i].deliveryAddressId;
-
-                        result[i].mode_reglement_code = docs[i].mode_reglement;
-                        result[i].cond_reglement_code = docs[i].cond_reglement;
-                        result[i].bank_reglement = docs[i].bank_reglement;
-                        result[i].commercial_id = docs[i].commercial_id;
-                    }
-
-                return self.json(result);*/
+                //console.log(docs);
             });
     }, ['post', 'json', 'authorize']);
 

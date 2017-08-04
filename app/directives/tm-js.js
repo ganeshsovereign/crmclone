@@ -264,14 +264,15 @@ MetronicApp.directive('save', function() {
     };
 });
 
-MetronicApp.directive('address', ['$http',
-    function($http) {
+MetronicApp.directive('address', ['$http', 'Societes',
+    function($http, Societes) {
         return {
             restrict: 'E',
             scope: {
                 addressModel: '=ngModel',
                 editable: '=ngDisabled',
-                mode: '=?'
+                mode: '=?',
+                supplier: '='
             },
             templateUrl: function(el, attr) {
                 if (attr.mode) {
@@ -280,6 +281,9 @@ MetronicApp.directive('address', ['$http',
 
                     if (attr.mode === 'simple')
                         return '/templates/core/address2.html';
+
+                    if (attr.mode === 'shipping')
+                        return '/templates/core/addressShipping.html';
 
                     if (attr.mode === 'show')
                         return '/templates/core/address_show.html';
@@ -300,9 +304,27 @@ MetronicApp.directive('address', ['$http',
                     scope.countries = data.data;
                 });
 
+                scope.addressShipping = []; //List for select of delivery Address
+
+                if (scope.supplier)
+                    Societes.get({ Id: scope.supplier }, function(response) {
+                        scope.addressShipping = response.shippingAddress;
+                    });
+
+                scope.reloadAddress = function() {
+                    for (let i = 0; i < scope.addressShipping.length; i++) {
+                        if (scope.addressShipping[i]._id == scope.addressModel._id) {
+                            scope.addressModel = angular.copy(scope.addressShipping[i]);
+                            break;
+                        }
+                    }
+
+                };
+
                 scope.updateAddressDir = true;
 
                 scope.deletedAddress = {
+                    _id: null,
                     name: null,
                     street: null,
                     city: null,
@@ -315,6 +337,7 @@ MetronicApp.directive('address', ['$http',
 
                 scope.enableUpdateAddress = function() {
                     scope.deletedAddress = {
+                        _id: scope.addressModel._id,
                         name: scope.addressModel.name,
                         street: scope.addressModel.street,
                         city: scope.addressModel.city,
@@ -328,6 +351,7 @@ MetronicApp.directive('address', ['$http',
                 };
 
                 scope.cancelUpdateAddress = function() {
+                    scope.addressModel._id = scope.deletedAddress._id;
                     scope.addressModel.name = scope.deletedAddress.name;
                     scope.addressModel.street = scope.deletedAddress.street;
                     scope.addressModel.city = scope.deletedAddress.city;
