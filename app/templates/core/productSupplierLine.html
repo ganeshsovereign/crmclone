@@ -93,12 +93,15 @@
                                                     </span>-->
                     </td>
                     <td ng-if="line.type != 'SUBTOTAL'" class="align-right">
-                        <span editable-select="line.total_taxes[0].taxeId._id" e-ng-change="calculMontantHT(line, $data)" e-form="tableform" e-ng-options="s._id as s.name for s in taxes | filter : {isFixValue:false}">
-                                        <span ng-repeat="tax in line.total_taxes">
-                                            <span ng-if="tax.taxeId.rate">{{ tax.value | currency}} ({{tax.taxeId.rate | percent:1}})</span>
-                        <span ng-if="tax.taxeId.isFixValue">{{ tax.value | currency}} ({{tax.taxeId.code}})</span>
-                        </span>
-                        </span>
+                        <div class="row" ng-repeat="tax in line.total_taxes">
+                            <div class="col-md-12" ng-if="tax.taxeId.rate">
+                                <span editable-select="tax.taxeId._id" e-ng-change="calculMontantHT(line, $data)" e-form="tableform" e-ng-options="s._id as s.name for s in taxes | filter : {isFixValue:false}">
+                                {{ tax.value | currency}} ({{tax.taxeId.rate | percent:1}})</span>
+                            </div>
+                            <div class="col-md-12" ng-if="tax.taxeId.isFixValue">
+                                <span>{{ tax.value | currency}} ({{tax.taxeId.code}})</span>
+                            </div>
+                        </div>
                     </td>
                     <td ng-if="line.type != 'SUBTOTAL'" class="align-right">
                         <span ng-model="montantHT[$index]" form="tableform">

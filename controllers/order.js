@@ -299,12 +299,7 @@ Object.prototype = {
                 var OrderModel = MODEL('order').Schema.OrderCustomer;
         }
 
-        var rows = self.body.lines;
-        for (var i = 0; i < rows.length; i++)
-            rows[i].sequence = i;
-
-
-
+        var rows = [];
 
         //delete self.body.rows;
 
@@ -316,6 +311,97 @@ Object.prototype = {
         //console.log(self.body);
 
         async.waterfall([
+            function(wCb) {
+                var ProductModel = MODEL('product').Schema;
+
+                //First refresh KIT
+                var lines = self.body.lines;
+                rows = lines;
+
+                if (self.body.Status != 'DRAFT')
+                    return wCb();
+
+                lines = _.filter(lines, function(elem) {
+                    //Suppress old kit lines
+                    if (elem.type != 'kit')
+                        return true;
+
+                    OrderRowsModel.remove({ _id: elem._id }, function(err, doc) {});
+                    return false;
+
+                });
+
+                var newLines = [];
+
+                async.eachSeries(lines, function(line, eCb) {
+                    newLines.push(line);
+
+                    if (!line.product.info.productType.isBundle)
+                        return eCb();
+
+                    console.log(line);
+                    ProductModel.findById(line.product._id, "bundles info")
+                        .populate("bundles.id", "info directCost indirectCost taxes weight")
+                        .exec(function(err, product) {
+                            if (err)
+                                return eCb(err);
+
+                            async.each(product.bundles, function(elem, aCb) {
+                                /*
+                                { _id: '59841dba3377071369cf4745',
+  createdAt: '2017-08-04T07:09:46.788Z',
+  updatedAt: '2017-08-04T07:14:17.115Z',
+  product:'59841283c7445d7df772222c',
+  description: 'Kit en test',
+  sequence: 3,
+  order: '59787c95f2ed40442b6a6110',
+  warehouse: { _id: '5945a123907df220805d4df0', name: 'Main entrepot' },
+  total_ht: 26284.13,
+  discount: 0,
+  costPrice: 0,
+  pu_ht: 2190.344,
+  priceSpecific: false,
+  total_taxes: 
+   [ { value: 5256.826, taxeId: [Object] },
+     { value: 2280, taxeId: [Object] } ],
+  qty: 12,
+  type: 'product',
+  __v: 0,
+  goodsNotes: [],
+  fulfilled: 0,
+  idLine: 3 }
+*/
+                                let newLine = _.clone(line);
+                                newLine.type = 'kit';
+                                delete newLine._id;
+                                newLine.product = elem.id;
+                                newLine.description = "Quantite dans le kit : {0}".format(elem.qty);
+                                newLine.total_ht = 0;
+                                newLine.discount = 0;
+                                newLines.costPrice = elem.id.directCost;
+                                newLine.pu_ht = 0;
+                                newLine.priceSpecific = false;
+                                newLine.total_taxes = [];
+                                newLine.qty = line.qty * elem.qty;
+
+                                newLines.push(newLine);
+                                return aCb();
+                            }, eCb);
+                        });
+                }, function(err) {
+                    if (err)
+                        return wCb(err);
+
+                    rows = newLines;
+                    wCb();
+                });
+            },
+            function(wCb) {
+                for (var i = 0; i < rows.length; i++)
+                    rows[i].sequence = i;
+
+                wCb();
+            },
             function(wCb) {
                 MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, wCb);
             },
@@ -1351,7 +1437,7 @@ Object.prototype = {
                             tabLines.push({
                                 ref: doc.lines[i].product.info.SKU.substring(0, 12),
                                 description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
-                                tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
+                                tva_tx: (doc.lines[i].total_taxes.length ? doc.lines[i].total_taxes[0].taxeId.rate : 0),
                                 pu_ht: doc.lines[i].pu_ht,
                                 discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
                                 qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
@@ -1373,6 +1459,12 @@ Object.prototype = {
                                 //total_ht: doc.lines[i].total_taxes[1].value
                                 total_ht: ""
                             });*/
+                        }
+
+                        if (doc.lines[i].type == 'kit') {
+                            tabLines[tabLines.length - 1].italic = true;
+                            if (doc.lines[i + 1] && doc.lines[i + 1].type != 'kit')
+                                tabLines.push({ hline: 1 });
                         }
 
                         if (doc.lines[i].type == 'SUBTOTAL') {

@@ -91,6 +91,9 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     });
 
     $scope.isValidRef = function() {
+        if (!this.product || !this.product.info || !this.product.info.SKU)
+            return false;
+
         var ref = this.product.info.SKU.trim().toUpperCase();
         $scope.refFound = false;
 
@@ -460,7 +463,8 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                     defaultContent: ""
                 }, {
                     "data": "name",
-                    defaultContent: ""
+                    defaultContent: "",
+                    searchable: false
                 }, {
                     "data": "prices.pu_ht",
                     defaultContent: ""
@@ -825,6 +829,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             page: 1,
             pageSize: 5,
             //                supplier: options.supplier,
+            inventory: true,
             options: options,
             filter: {
                 logic: 'and',

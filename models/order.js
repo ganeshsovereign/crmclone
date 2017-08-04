@@ -497,7 +497,11 @@ baseSchema.statics.getById = function(id, callback) {
                     return wCb(null, null, null);
 
                 OrderRowModel.aggregate([{
-                            $match: { order: ObjectId(order.order._id), isDeleted: { $ne: true }, type: 'product' }
+                            $match: {
+                                order: ObjectId(order.order._id),
+                                isDeleted: { $ne: true },
+                                type: { $in: ['product', 'kit'] }
+                            }
                         },
                         {
                             $lookup: {
@@ -506,7 +510,8 @@ baseSchema.statics.getById = function(id, callback) {
                                 foreignField: '_id',
                                 as: 'product'
                             }
-                        }, {
+                        },
+                        {
                             $unwind: {
                                 path: '$product'
                             }
@@ -518,7 +523,8 @@ baseSchema.statics.getById = function(id, callback) {
                                 foreignField: '_id',
                                 as: 'productType'
                             }
-                        }, {
+                        },
+                        {
                             $unwind: {
                                 path: '$productType'
                             }
@@ -553,9 +559,11 @@ baseSchema.statics.getById = function(id, callback) {
                                 refProductSupplier: 1,
                                 description: 1
                             }
-                        }, {
+                        },
+                        {
                             $match: { inventory: true }
-                        }, {
+                        },
+                        {
                             $project: {
                                 _id: 1,
                                 inventory: 1,

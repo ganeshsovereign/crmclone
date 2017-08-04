@@ -169,7 +169,7 @@ Template.prototype.applyHandlers = function() {
                 break;
             case "number":
                 // null value -> not 0
-                if (handler.value === null) {
+                if (!handler.value) {
                     value = "";
                     break;
                 }
@@ -190,6 +190,10 @@ Template.prototype.applyHandlers = function() {
                     });
                 break;
             case "euro":
+                if (!handler.value) {
+                    value = "";
+                    break;
+                }
                 value = accounting.formatMoney(handler.value, {
                     symbol: "€",
                     format: "%v %s",

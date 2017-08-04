@@ -260,6 +260,11 @@ Object.prototype = {
 
         self.body.dater = MODULE('utils').calculate_date_lim_reglement(self.body.datec, self.body.cond_reglement_code);
 
+        rows = _.filter(rows, function(elem) {
+            console.log(elem);
+            return elem.type != 'kit';
+        });
+
         MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
             if (err) {
                 console.log(err);
@@ -276,6 +281,8 @@ Object.prototype = {
             self.body.total_ttc = result.total_ttc;
             self.body.total_ttc += self.body.correction;
             self.body.weight = result.weight;
+
+            self.body.lines = rows;
 
             if (self.body.total_ttc === 0)
                 self.body.Status = 'DRAFT';

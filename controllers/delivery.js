@@ -1822,13 +1822,17 @@ function createDelivery(doc, callback) {
         });
 
         for (var i = 0; i < doc.lines.length; i++) {
-            //console.log(doc.orderRows, i);
-            if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0)
+            //console.log(doc.orderRows[i]);
+
+            //console.log(doc.lines[i]);
+            let orderRow = _.findWhere(doc.orderRows, { orderRowId: doc.lines[i]._id })
+
+            if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0 && orderRow)
                 tabLines.push({
                     ref: doc.lines[i].product.info.SKU.substring(0, 12),
                     description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
                     qty_order: doc.lines[i].qty,
-                    qty: { value: doc.orderRows[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") }
+                    qty: { value: orderRow.qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") }
                 });
 
             /*if (doc.lines[i].product.id.pack && doc.lines[i].product.id.pack.length) {

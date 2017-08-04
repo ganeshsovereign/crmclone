@@ -926,16 +926,16 @@ Object.prototype = {
         if (self.body.filter == null)
             return self.json([]);
 
-        if (self.body.filter.filters[0].value.length < 3)
+        if (self.body.filter.filters[0].value.length < 1)
             return self.json([]);
 
         var query = {
             isremoved: { $ne: true },
             'info.isActive': true,
             "$or": [{
-                'info.SKU': new RegExp("^" + self.body.filter.filters[0].value, "i")
+                'info.SKU': { $regex: new RegExp("^" + self.body.filter.filters[0].value), $options: "xgi" }
             }, {
-                'info.langs.name': new RegExp(self.body.filter.filters[0].value, "gi")
+                'info.langs.name': { $regex: new RegExp(self.body.filter.filters[0].value), $options: "xgi" }
             }]
         };
 
@@ -954,6 +954,10 @@ Object.prototype = {
             });
             query = _.extend(query, options);
         }
+
+        var inventoryProductOnly = false;
+        if (self.body.inventory)
+            inventoryProductOnly = true
 
         var base = true;
         //if (self.body.priceList && self.body.priceList !== null) {
@@ -1027,6 +1031,17 @@ Object.prototype = {
             }
         }, {
             $lookup: {
+                from: 'productTypes',
+                localField: 'info.productType',
+                foreignField: '_id',
+                as: 'info.productType'
+            }
+        }, {
+            $unwind: {
+                path: '$info.productType'
+            }
+        }, {
+            $lookup: {
                 from: 'ProductPrices',
                 localField: '_id',
                 foreignField: 'product',
@@ -1079,6 +1094,13 @@ Object.prototype = {
                     }, {
                         'priceLists._id': ObjectId(self.body.priceList)
                     }]
+                }
+            });
+
+        if (inventoryProductOnly)
+            request.push({
+                $match: {
+                    'info.productType.inventory': true
                 }
             });
 
@@ -1363,7 +1385,10 @@ Object.prototype = {
             Product
         ], function(err, product) {
             if (err)
-                return self.throw500(err);
+                return elf.throw500(err);
+
+            if (!product)
+                return self.json({});
 
             ChannelLinkModel.getChannelListFromId({ type: 'product', id: product._id }, function(err, channels) {
                 if (err)

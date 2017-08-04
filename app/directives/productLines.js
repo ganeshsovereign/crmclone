@@ -244,11 +244,29 @@ MetronicApp.directive('productLines', ['$http',
                     //id = parseInt(id);
                     var elem = lines[id];
                     if (mode == 'UP') {
-                        lines[id] = lines[id - 1];
-                        lines[id - 1] = elem;
+                        //search the next Id (not a kit !)
+                        let newId = 0;
+                        for (let i = id - 1; i > 0; i--) {
+                            if (lines[i].type != 'kit') {
+                                newId = i;
+                                break;
+                            }
+                        }
+
+                        lines[id] = lines[newId];
+                        lines[newId] = elem;
                     } else {
-                        lines[id] = lines[id + 1];
-                        lines[id + 1] = elem;
+                        //search the previous Id (not a kit !)
+                        let newId = 0;
+                        for (let i = id + 1; i < lines.length; i++) {
+                            if (lines[i].type != 'kit') {
+                                newId = i;
+                                break;
+                            }
+                        }
+
+                        lines[id] = lines[newId];
+                        lines[newId] = elem;
                     }
                     scope.update();
                 };

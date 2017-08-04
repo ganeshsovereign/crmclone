@@ -338,7 +338,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     for (var i = 0, length = lines.length; i < length; i++) {
                         if (!lines[i].product)
                             continue;
-                        if (lines[i].type === 'SUBTOTAL')
+                        if (lines[i].type !== 'product')
                             continue;
                         if (lines[i].isDeleted) {
                             lines[i].qty = 0;
