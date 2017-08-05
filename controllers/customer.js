@@ -2495,12 +2495,13 @@ Object.prototype = {
         societe(id, function(societe) {
 
             societe = _.extend(societe, self.body);
-            societe.edtitedBy = self.user._id;
+            if (self.user)
+                societe.edtitedBy = self.user._id;
             //console.log(self.body);
 
             // Emit to refresh priceList from parent
             setTimeout2('customer:update_' + societe._id.toString(), function() {
-                F.functions.BusMQ.publish('customer:update', self.user._id, {
+                F.functions.BusMQ.publish('customer:update', (self.user ? self.user._id : null), {
                     customer: societe
                 });
             }, 500);
