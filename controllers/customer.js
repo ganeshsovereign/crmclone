@@ -2070,7 +2070,7 @@ Object.prototype = {
         //query["commercial_id.id"] = self.user._id;
 
         if (self.query.query)
-            query = JSON.parse(self.json.query);
+            query = JSON.parse(self.query.query);
 
         console.log(query);
 
