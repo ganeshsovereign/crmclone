@@ -1966,22 +1966,6 @@ exports.install = function() {
     //other routes..
 };
 
-function view_index() {
-    var self = this;
-    //console.log(self.session);
-
-    self.layout(CONFIG('theme') || 'layout3');
-    self.view('index');
-}
-
-/*function view_fiche(id) {
- var self = this;
- //console.log(self.session);
- 
- self.layout(CONFIG('theme') || 'layout3');
- self.view('fiche', {id: id});
- }*/
-
 function Object() {}
 
 function societe(id, cb) {
@@ -2058,10 +2042,10 @@ Object.prototype = {
             }
         }*/
 
-        if (self.req.query.Status)
+        if (self.query.Status)
             query.Status = self.query.Status;
 
-        if (self.req.query.commercial_id)
+        if (self.query.commercial_id)
             query["commercial_id.id"] = self.query.commercial_id;
 
         var fields = "-history -files";
@@ -2071,19 +2055,22 @@ Object.prototype = {
 
         if (self.req.query.filter) {
             query.$or = [{
-                name: new RegExp(req.query.filter, "gi")
+                name: new RegExp(self.query.filter, "gi")
             }, {
-                code_client: new RegExp(req.query.filter, "gi")
+                code_client: new RegExp(self.query.filter, "gi")
             }, {
-                Tag: new RegExp(req.query.filter, "gi")
+                Tag: new RegExp(self.query.filter, "gi")
             }, {
-                "segmentation.label": new RegExp(req.query.filter, "g")
+                "segmentation.label": new RegExp(self.query.filter, "g")
             }];
             //query.$text = {$search: req.query.filter, $language: "fr"};
         }
 
         if (!self.user.rights.societe.seeAll && !self.user.admin)
             query["commercial_id.id"] = self.user._id;
+
+        if (self.query.query)
+            query = JSON.parse(self.json.query);
 
         console.log(query);
 
@@ -2097,11 +2084,8 @@ Object.prototype = {
             limit: limit,
             sort: 'fullName'
         }, function(err, doc) {
-            if (err) {
-                console.log(err);
-                self.send(500, doc);
-                return;
-            }
+            if (err)
+                return self.throw500(err);
 
             //console.log(doc);
 
