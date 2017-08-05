@@ -2069,8 +2069,8 @@ Object.prototype = {
         //if (!self.user || !self.user.rights.societe.seeAll || !self.user.admin)
         //query["commercial_id.id"] = self.user._id;
 
-        if (self.query.query)
-            query = JSON.parse(self.query.query);
+        if (self.query.oldId)
+            query = { oldId: self.query.oldId };
 
         console.log(query);
 
