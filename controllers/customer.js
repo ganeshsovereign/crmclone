@@ -2066,8 +2066,8 @@ Object.prototype = {
             //query.$text = {$search: req.query.filter, $language: "fr"};
         }
 
-        if (!self.user.rights.societe.seeAll && !self.user.admin)
-            query["commercial_id.id"] = self.user._id;
+        //if (!self.user || !self.user.rights.societe.seeAll || !self.user.admin)
+        //query["commercial_id.id"] = self.user._id;
 
         if (self.query.query)
             query = JSON.parse(self.json.query);
