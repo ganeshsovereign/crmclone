@@ -1082,6 +1082,21 @@ function convert(type) {
                 });
             return self.plain("Type is bill_reset_commercial_id");
             break;
+        case 'customerRef':
+            var CustomerModel = MODEL('Customers').Schema;
+
+            CustomerModel.find({ $where: 'this.salesPurchases.ref.length > 7' })
+                .exec(function(err, docs) {
+                    docs.forEach(function(elem) {
+                        //console.log(elem);
+
+                        elem.salesPurchases.ref = elem.salesPurchases.ref.substring(1, 8);
+                        elem.save();
+                    });
+                });
+            return self.plain("Type is customerRef Ok");
+            break;
+
     }
 
     /**
