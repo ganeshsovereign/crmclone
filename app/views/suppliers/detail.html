@@ -29,7 +29,7 @@
                                 <div class="portlet light bordered">
                                     <div class="row">
                                         <div class=" col-md-6 col-sm-12">
-                                            <crm-id label="@(companies:Customer)" ng-if="!object._id" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete?fournisseur=SUPPLIER&fournisseur=SUBCONTRACTOR" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)"
+                                            <crm-id label="@(companies:Supplier)" ng-if="!object._id" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete?fournisseur=SUPPLIER&fournisseur=SUBCONTRACTOR" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)"
                                                 class="form-group form-md-line-input"></crm-id>
 
                                             <div class="form-group form-md-line-input" ng-if="!object._id">

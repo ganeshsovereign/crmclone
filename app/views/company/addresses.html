@@ -8,7 +8,6 @@
     </div>
 
     <div class="portlet-body">
-
         <div class="portlet light bordered" ng-controller="ContactController" ng-init="find($stateParams.id)">
             <div class=" portlet-title ">
                 <div class="caption ">
@@ -19,8 +18,6 @@
                     <button class="btn blue " data-ng-click="addContact() ">@(Add) <i class="fa fa-plus "></i></button>
                     <button title="@(Refresh) " class="btn btn-icon-only btn-default " ng-click="find($stateParams.id) "><i class="fa fa-refresh "></i></button>
                 </div>
-            </div>
-            <div class="tools ">
             </div>
 
             <!--<div class="portlet-body " ng-include=" '/templates/contact/list.html'  ">
@@ -35,15 +32,14 @@
                                     <a ui-sref="societe.show({id:contact._id})">{{contact.name.civilite}} {{contact.fullName}}</a>
                                 </div>
                             </div>
-                            <div class="tools">
-                                <!--<button class="btn btn-icon-only red" confirmed-click="delete()">
-                                    <i class="fa fa-trash"></i>
-                                    </button>-->
-                            </div>
                             <div class="portlet-body">
                                 <div class="form-group form-md-line-input">
-                                    <div class="form-control form-control-static" id="phone"> {{contact.phones.phone}} </div>
-                                    <label for="phone">@(companies:Phone)</label>
+                                    <div class="form-control form-control-static" id="Tel-Fixe"> {{contact.phones.phone}} </div>
+                                    <label for="Tel-Fixe">@(companies:Tel-Fixe)</label>
+                                </div>
+                                <div class="form-group form-md-line-input">
+                                    <div class="form-control form-control-static" id="Tel-Mobile"> {{contact.phones.mobile}} </div>
+                                    <label for="Tel-Mobile">@(companies:Tel-Mobile)</label>
                                 </div>
                                 <div class="form-group form-md-line-input">
                                     <div class="form-control form-control-static" id="email"> <a ng-href="mailto:{{contact.emails[0].email}}">{{contact.emails[0].email || '--'}}</a> </div>
@@ -63,96 +59,81 @@
                         <div class="col-md-12">
                             <div class="form-horizontal" ng-if="!create">
                                 <crm-id label="@(Search) @(companies:Contact)" name="contactId" on-select="addContactToCustomer" ng-model="contact._id" url="/erp/api/societe/autocomplete?all=1&type=Person&company=null" required="true" placeholder="@(Search) @(companies:Contact)" class="form-group form-md-line-input"></crm-id>
-                                <button class="btn blue center right" data-ng-click="createNewContact()">@(Create) @(companies:Contact)</button>
                             </div>
 
                             <form ng-if="create" role="form">
-                                <div class="form-group">
-                                    <label>@(companies:Lastname)</label>
+                                <div class="portlet light">
                                     <div class="row">
-                                        <div class="col-md-3">
-                                            <select class="form-control" required data-ng-model="contact.name.civilite" id="poste" data-ng-options="c.label as c.label for c in dict.fk_civilite.values"></select>
+                                        <div class="col-md-2">
+                                            <div class="form-group form-md-line-input">
+                                                <select class="table-group-action-input form-control" id="civility" ng-model="contact.name.civilite" ng-options="c.label as c.label for c in dict.fk_civilite.values"></select>
+                                                <label for="civility">@(Civilité)</label>
+                                            </div>
                                         </div>
-                                        <div class="col-md-9">
-                                            <div class="input-group">
-                                                <span class="input-group-addon">
-                            <i class="fa fa-user"></i>
-                        </span>
-                                                <input required type="text" placeholder="@(companies:Lastname)" id="nom" ng-model="contact.name.last" class="form-control" autocomplete="off">
+
+                                        <div class="col-md-5">
+                                            <div class="form-group form-md-line-input">
+                                                <input class="table-group-action-input form-control" id="lastname" ng-model="contact.name.last"></input>
+                                                <label for="last">@(companies:Lastname)</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <div class="form-group form-md-line-input">
+                                                <input class="table-group-action-input form-control" id="firstname" ng-model="contact.name.first"></input>
+                                                <label for="first">@(companies:Firstname)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--<div class="form-group form-md-line-input">
+                                        <input type="text" class="form-control" id="birthday" date-input ng-model="contact.dateBirth">
+                                        <label for="birthday">@(companies:birthday)</label>
+                                    </div>-->
+
+                                    <div>
+                                        <address ng-model=contact.address mode="simple"></address>
+                                    </div>
+                                </div>
+
+                                <div class="portlet light">
+                                    <div class="form-group">
+                                        <p ng-show="!(contact.phones.mobile || contact.phones.phone || contact.emails[0].email)" class="help-block"> Un email ou un numéro de téléphone est obligatoire pour la création d'un contact. </p>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" placeholder="" id="Tel-Fixe" ng-change="isValidRef()" ng-model="contact.phones.phone">
+                                                <label for="Tel-Fixe">@(companies:Tel-Fixe)</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" placeholder="" id="Tel-Mobile" ng-change="isValidRef()" ng-model="contact.phones.mobile">
+                                                <label for="Tel-Mobile">@(companies:Tel-Mobile)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" placeholder="" id="Email" ng-change="isValidRef()" ng-model="contact.emails[0].email">
+                                                <label for="Email">@(Email)</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group form-md-line-input">
+                                                <select class="table-group-action-input form-control" id="poste" ng-model="contact.jobPosition" ng-options="c.label as c.label for c in dict.fk_job.values"></select>
+                                                <label for="poste">@(companies:PostOrFunction)</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label>@(companies:Firstname)</label>
-
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                    <i class="fa fa-user"></i>
-                </span>
-                                        <input required type="text" placeholder="@(companies:Firstname)" id="firstName" ng-model="contact.name.first" class="form-control" autocomplete="off">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>@(companies:birthday)</label>
-
-                                    <div class="input-group">
-                                        <input date-input ng-model="contact.dateBirth">
-                                    </div>
-                                </div>
-
-                                <div class="caption">
-                                    <span class="caption-subject font-yellow-crusta uppercase"> @(companies:Address) </span>
-                                    <hr>
-                                    <address ng-model=contact.address mode="simple"></address>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>@(companies:Tel-Mobile)</label>
-
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                    <i class="fa fa-phone"></i>
-                </span>
-                                        <input type="text" ng-model="contact.phones.mobile" class="form-control" autocomplete="off">
-                                    </div>
-                                    <p ng-show="!(contact.phones.mobile || contact.phones.phone || contact.emails[0].email)" class="help-block"> Au moins l'email ou un numéro de téléphone est obligatoire pour la création d'un contact. </p>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>@(companies:Tel-Fixe)</label>
-
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                    <i class="fa fa-phone"></i>
-                </span>
-                                        <input type="text" ng-model="contact.phones.phone" class="form-control" autocomplete="off">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>@(Email)</label>
-
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                    <i class="fa fa-envelope"></i>
-                </span>
-                                        <input type="text" ng-model="contact.emails[0].email" class="form-control" autocomplete="off">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>@(companies:PostOrFunction)</label>
-
-                                    <div class="input-group">
-                                        <span class="input-group-addon">
-                    <i class="fa fa-user"></i>
-                </span>
-                                        <select class="form-control" required data-ng-model="contact.jobPosition" id="poste" data-ng-options="c.label as c.label for c in dict.fk_job.values"></select>
-                                    </div>
-                                </div>
 
                                 <!--<div class="form-group">
                                     <label>@(companies:Soncas)</label>
@@ -166,8 +147,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" ng-disabled="!create || !(contact.phones.phone_mobile || contact.phones.phone || contact.emails[0].email)" ng-click="ok()">@(Create)</button>
-                        <button class="btn btn" type="button" ng-click="cancel()">@(Cancel)</button>
+                        <button class="btn green center right" ng-hide="create" data-ng-click="createNewContact()">@(Add) @(companies:Contact)<i class="fa fa-check"></i></button>
+                        <button class="btn green" type="button" ng-hide="!create || !(contact.phones.phone_mobile || contact.phones.phone || contact.emails[0].email)" ng-click="ok()">@(Create) @(companies:Contact)<i class="fa fa-check"></i></button>
+                        <button class="btn red" type="button" ng-click="cancel()">@(Cancel)<i class="fa fa-times"></i></button>
                     </div>
                 </script>
             </div>
