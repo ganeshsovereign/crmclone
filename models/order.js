@@ -950,7 +950,7 @@ function saveOrder(next) {
             if (!self.isNew || self.ref)
                 return wCb();
 
-            return SeqModel.inc("ORDER", function(seq, number) {
+            return SeqModel.inc((self.forSales == true ? "CO" : "CF"), function(seq, number) {
                 //console.log(seq);
                 self.ID = number;
                 EntityModel.findOne({
@@ -987,7 +987,7 @@ function saveQuotation(next) {
         this.history = [];
 
     if (self.isNew && !self.ref)
-        return SeqModel.inc("ORDER", function(seq, number) {
+        return SeqModel.inc((self.forSales == true ? "PC" : "DA"), function(seq, number) {
             //console.log(seq);
             self.ID = number;
             EntityModel.findOne({
@@ -1015,7 +1015,7 @@ function setNameDelivery(next) {
     var OrderModel = MODEL('order').Schema.Order;
 
     if (self.isNew && self.order === self._id)
-        return SeqModel.inc("ORDER", function(seq, number) {
+        return SeqModel.inc((self.forSales == true ? "CO" : "CF"), function(seq, number) {
             //console.log(seq);
             self.ID = number;
             EntityModel.findOne({
