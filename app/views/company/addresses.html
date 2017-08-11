@@ -149,118 +149,104 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn blue" type="button" ng-click="createNewContact()">@(Create) @(companies:Contact)<i class="fa fa-check"></i></button>
+                            <button class="btn blue" type="button" ng-hide="" ng-click="createNewContact()">@(Create) @(companies:Contact)<i class="fa fa-check"></i></button>
                             <button class="btn red" type="button" ng-click="cancel()">@(Cancel)<i class="fa fa-times"></i></button>
                         </div>
                     </script>
                 </div>
             </div>
-            <!--
+        </div>
+        <!--
             Shipping Address
             -->
-            <div class="portlet light bordered">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="fa fa-industry"></i>
-                        <span class="caption-subject dark bold uppercase">@(companies:DeliveriesAddress) <span ng-if="societe.addresses.length" class="badge badge-info ng-binding ng-scope">{{societe.addresses.length}}</span></span>
-                    </div>
-                    <div class="actions">
-                        <button class="btn blue" data-ng-click="editAddress()">@(Add) <i class="fa fa-plus"></i></button>
-                        <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
-                    </div>
+        <div class="portlet light bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-industry"></i>
+                    <span class="caption-subject dark bold uppercase">@(companies:DeliveriesAddress) <span ng-if="societe.addresses.length" class="badge badge-info ng-binding ng-scope">{{societe.addresses.length}}</span></span>
                 </div>
-                <div class="tools">
+                <div class="actions">
+                    <button class="btn blue" data-ng-click="editAddress()">@(Add) <i class="fa fa-plus"></i></button>
+                    <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
                 </div>
+            </div>
+            <div class="tools">
+            </div>
 
 
-                <div class="portlet-body">
-                    <script type="text/ng-template" id="addModalAddress.html">
-                        <div class="modal-header">
-                            <h3 class="no-margin-bottom"><i class="fa fa-truck"></i> Edition d'une adresse de livraison</h3>
-                        </div>
-                        <div class="modal-body">
-                            <div class="col-md-12">
-                                <div class="form-horizontal">
+            <div class="portlet-body">
+                <script type="text/ng-template" id="addModalAddress.html">
+                    <div class="modal-header">
+                        <h3 class="no-margin-bottom"><i class="fa fa-truck"></i> Edition d'une adresse de livraison</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="form-horizontal">
 
-                                    <address ng-model="address"></address>
+                                <address ng-model="address"></address>
 
-                                    <div class="form-group form-md-line-input">
-                                        <label class="col-md-3 control-label">@(Status)</label>
-                                        <div class="col-md-9">
-                                            <select class="form-control" ng-model="address.Status" ng-options="c.id as c.label for c in dict.fk_user_status.values">
+                                <div class="form-group form-md-line-input">
+                                    <label class="col-md-3 control-label">@(Status)</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" ng-model="address.Status" ng-options="c.id as c.label for c in dict.fk_user_status.values">
                                                     </select>
-                                        </div>
                                     </div>
-
                                 </div>
+
                             </div>
                         </div>
-                        <div class="modal-footer">
+                    </div>
+                    <div class="modal-footer">
 
-                            <button type="button" ng-click="ok()" class="btn btn-circle btn-success">@(Save)</button>
-                        </div>
-                    </script>
+                        <button type="button" ng-click="ok()" class="btn btn-circle btn-success">@(Save)</button>
+                    </div>
+                </script>
 
-                    <div class="dataTables_wrapper table-responsive">
-                        <div class="col-md-12">
-                            <table class="table dataTable table-hover">
-                                <thead>
-                                    <tr role="row" class="heading">
-                                        <th width="2%">
-                                            @(Default)
-                                        </th>
-                                        <th>@(Name)</th>
-                                        <th>@(Address)</th>
-                                        <th>@(Zip)</th>
-                                        <th>@(Town)</th>
-                                        <th>@(Status)</th>
-                                        <th>@(Contact)</th>
-                                        <th>@(Phone)</th>
-                                        <th>@(Email)</th>
-                                        <th>@(Action)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="address in societe.shippingAddress">
-                                        <td><input uniform ng-model="_idAddress" type="checkbox" name="id[]" ng-checked="societe.deliveryAddressId == address.id" ng-click="setDefaultDelivery(address.id)" /></td>
-                                        <td> {{address.name}} </td>
-                                        <td><pre>{{ address.street ||  "Non defini" }}</pre></td>
-                                        <td> {{address.zip}} </td>
-                                        <td> {{address.city}} </td>
-                                        <td>
-                                            <span class="label label-sm {{address.status.css}}"> {{address.status.name}} </span>
-                                        </td>
-                                        <td> {{address.contact.name}}</td>
-                                        <td> {{address.contact.phone}}</td>
-                                        <td> {{address.contact.email}}</td>
-                                        <td style="white-space: nowrap">
-                                            <!-- form -->
-                                            <div class="btn-group buttons">
-                                                <button type="button" class="btn btn-xs btn-primary" ng-click="editAddress(address)"><i class="fa fa-pencil"></i></button>
-                                                <button type="button" ng-disabled="$index == 0" class="btn btn-xs btn-danger" confirmed-click="removeAddress($index)" ng-confirm-click="Supprimer l'adresse ?"><i class="fa fa-trash-o"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="dataTables_wrapper table-responsive">
+                    <div class="col-md-12">
+                        <table class="table dataTable table-hover">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th width="2%">
+                                        @(Default)
+                                    </th>
+                                    <th>@(Name)</th>
+                                    <th>@(Address)</th>
+                                    <th>@(Zip)</th>
+                                    <th>@(Town)</th>
+                                    <th>@(Status)</th>
+                                    <th>@(Contact)</th>
+                                    <th>@(Phone)</th>
+                                    <th>@(Email)</th>
+                                    <th>@(Action)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="address in societe.shippingAddress">
+                                    <td><input uniform ng-model="_idAddress" type="checkbox" name="id[]" ng-checked="societe.deliveryAddressId == address.id" ng-click="setDefaultDelivery(address.id)" /></td>
+                                    <td> {{address.name}} </td>
+                                    <td><pre>{{ address.street ||  "Non defini" }}</pre></td>
+                                    <td> {{address.zip}} </td>
+                                    <td> {{address.city}} </td>
+                                    <td>
+                                        <span class="label label-sm {{address.status.css}}"> {{address.status.name}} </span>
+                                    </td>
+                                    <td> {{address.contact.name}}</td>
+                                    <td> {{address.contact.phone}}</td>
+                                    <td> {{address.contact.email}}</td>
+                                    <td style="white-space: nowrap">
+                                        <!-- form -->
+                                        <div class="btn-group buttons">
+                                            <button type="button" class="btn btn-xs btn-primary" ng-click="editAddress(address)"><i class="fa fa-pencil"></i></button>
+                                            <button type="button" ng-disabled="$index == 0" class="btn btn-xs btn-danger" confirmed-click="removeAddress($index)" ng-confirm-click="Supprimer l'adresse ?"><i class="fa fa-trash-o"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- form -->
-    <div class="btn-group buttons">
-        <button type="button" class="btn btn-xs btn-primary" ng-click="editAddress(address)"><i class="fa fa-pencil"></i></button>
-        <button type="button" ng-disabled="$index == 0" class="btn btn-xs btn-danger" confirmed-click="removeAddress($index)" ng-confirm-click="Supprimer l'adresse ?"><i class="fa fa-trash-o"></i></button>
-    </div>
-    </td>
-    </tr>
-    </tbody>
-    </table>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
