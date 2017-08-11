@@ -60,7 +60,7 @@
                             <div class="col-md-12">
                                 <div class="form-horizontal" ng-if="!create">
                                     <crm-id label="@(Search) @(companies:Contact)" name="contactId" on-select="addContactToCustomer" ng-model="contact._id" url="/erp/api/societe/autocomplete?all=1&type=Person&company=null" required="true" placeholder="@(Search) @(companies:Contact)" class="form-group form-md-line-input"></crm-id>
-                                    <button class="btn yellow-crusta center right" ng-hide="create" ng-click="ok()">@(Add) @(companies:Contact)<i class="fa fa-check"></i></button>
+                                    <!--<button class="btn yellow-crusta center right" ng-hide="create" ng-click="ok()">@(Add) @(companies:Contact)<i class="fa fa-check"></i></button>-->
                                 </div>
 
                                 <form ng-if="create" role="form">
