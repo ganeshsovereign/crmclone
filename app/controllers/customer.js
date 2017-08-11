@@ -1917,6 +1917,15 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
             $scope.create = true;
         }
 
+        $scope.delete = function(contact) {
+            $http({
+                method: 'DELETE',
+                url: '/erp/api/societe/' + contact._id
+            }).success(function(data, status) {
+                $scope.contact.splice(index, 1);
+            });
+        };
+
         $scope.ok = function() {
             var contact = new Societes($scope.contact);
             contact.$save(function(response) {
