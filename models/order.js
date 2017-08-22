@@ -674,10 +674,12 @@ baseSchema.statics.getById = function(id, callback) {
                 if (!data || !data.onHand)
                     data = { onHand: 0 };
 
-                if (item.qty > data.onHand)
-                    item.qty = data.onHand;
+                //console.log(data);
 
-                return _.extend(item, { onHand: data.onHand });
+                if (order.Status == 'DRAFT' && item.qty > (data.onHand + data.allocated))
+                    item.qty = data.onHand + data.allocated;
+
+                return _.extend(item, { onHand: data.onHand, fulfilled: data.fulfilled });
             });
 
             //console.log(order.orderRows);
