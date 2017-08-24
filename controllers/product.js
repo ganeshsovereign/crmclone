@@ -2244,26 +2244,27 @@ Object.prototype = {
         });
 
     },
-    /*destroy: function(id) {
+    destroy: function(id) {
         var ProductModel = MODEL('product').Schema;
-        var PriceLevelModel = MODEL('pricelevel').Schema;
+        var PriceModel = MODEL('productPrices').Schema;
         var self = this;
 
-        PriceLevelModel.remove({ 'product': id }, function(err) {
+        PriceModel.remove({ 'product': id }, function(err) {
             if (err)
-                console.log(err);
+                return console.log(err);
+
+
+            ProductModel.update({
+                _id: id
+            }, { $set: { isremoved: true } }, function(err) {
+                if (err)
+                    return self.throw500(err);
+
+                self.json({});
+
+            });
         });
-
-        ProductModel.update({
-            _id: id
-        }, { $set: { isremoved: true } }, function(err) {
-            if (err)
-                return self.throw500(err);
-
-            self.json({});
-
-        });
-    },*/
+    },
     consumption: function() {
         var self = this;
         var DeliveryModel = MODEL('delivery').Schema;
