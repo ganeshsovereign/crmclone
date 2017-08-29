@@ -53,7 +53,7 @@ MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUpload
                     model: $scope.model,
                     id: $scope.id
                 }
-            }).success(function (data, status) {
+            }).success(function(data, status) {
                 //$scope.files = data;
                 console.log(data);
             });*/
@@ -71,11 +71,8 @@ MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUpload
                 //console.log(data);
                 if ($scope.object) {
                     $scope.object.files = data.files;
-                    $scope.object.__v = data.__v;
+                    //$scope.object.__v = data.__v;
                 }
-
-                $scope.find();
-
             });
         };
 
@@ -109,10 +106,11 @@ MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUpload
         };
 
         uploader.onCompleteItem = function(item, response, status, headers) {
-            //console.log(response);
+            console.log(response);
             if ($scope.object) {
                 $scope.object.files = response.files;
-                $scope.object.__v = response.__v;
+                if (response.__v)
+                    $scope.object.__v = response.__v;
             }
         };
 

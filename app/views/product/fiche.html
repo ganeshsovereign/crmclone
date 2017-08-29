@@ -153,10 +153,10 @@
                 </div>
                 <hr>
 
-                <div class="profile-userbuttons">
+                <!--<div class="profile-userbuttons">
                     <button type="button" class="btn btn-circle default btn-sm"> ← @(Previous)</button>
                     <button type="button" class="btn btn-circle default btn-sm">@(Next) →</button>
-                </div>
+                </div>-->
 
                 <div class="profile-usermenu">
                     <ul class="nav">
@@ -275,6 +275,7 @@
                     </table>
                 </div>
             </div>
+            <div ng-if="product._id" ng-include="'/templates/gridfs/fileAll.html'" ng-controller="FileCtrl" onload="init('product', product)"></div>
         </div>
         <div ui-view class="profile-content fade-in-up"></div>
     </div>

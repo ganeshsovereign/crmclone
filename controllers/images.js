@@ -51,7 +51,7 @@ exports.install = function() {
 
         var saveFile = function() {
 
-            self.module('gridfs').addFile(Model, id, self.files[0], function(err, doc, file) {
+            self.module('files').addFile(Model, id, self.files[0], function(err, doc, file) {
                 //console.log(file);
 
                 if (body && body.varname) {
@@ -304,7 +304,7 @@ var Images = function() {
             var getTotal = function(pCb) {
 
                 countQuery.count(function(err, _res) {
-                    if (err) 
+                    if (err)
                         return pCb(err);
 
                     pCb(null, _res);
@@ -313,7 +313,7 @@ var Images = function() {
 
             var getData = function(pCb) {
                 queryNew.skip(skip).limit(limit).exec(function(err, _res) {
-                    if (err) 
+                    if (err)
                         return pCb(err);
 
                     pCb(null, _res);

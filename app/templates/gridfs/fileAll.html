@@ -1,0 +1,136 @@
+<div class="portlet light">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-picture"></i>
+            <span class="caption-subject dark bold uppercase"> @(AttachedFiles)</span>
+        </div>
+        <!--<save mode="product._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>-->
+    </div>
+    <div class="portlet-body">
+
+        <div class="row" nv-file-drop="" uploader="uploader" filters="queueLimit, customFilter">
+            <div class="col-md-12">
+                <div class="form-body" ng-show="uploader.queue.length">
+                    <div class="portlet-title">
+                        <div class="caption font-green-sharp">
+                            <i class="fa fa-download font-yellow-crusta"></i>
+                            <span class="caption-subject bold font-yellow-crusta ">@(Upload)</span>
+                            <span class="caption-helper">@(QueueLength): {{ uploader.queue.length}}</span>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
+                                <thead>
+                                    <tr class="uppercase">
+                                        <th width="50%">@(Name)</th>
+                                        <th ng-show="uploader.isHTML5">@(Size)</th>
+                                        <th ng-show="uploader.isHTML5">@(Progress)</th>
+                                        <th>@(Status)</th>
+                                        <th>@(Actions)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in uploader.queue">
+                                        <td><strong>{{ item.file.name}}</strong></td>
+                                        <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size / 1024 / 1024|number:2 }} MB</td>
+                                        <td ng-show="uploader.isHTML5">
+                                            <div class="progress progress-sm" style="margin-bottom: 0;">
+                                                <div class="progress-bar progress-bar-info" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span ng-show="item.isSuccess" class="text-success"><i class="glyphicon glyphicon-ok"></i></span>
+                                            <span ng-show="item.isCancel" class="text-info"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                                            <span ng-show="item.isError" class="text-danger"><i class="glyphicon glyphicon-remove"></i></span>
+                                        </td>
+                                        <td nowrap>
+                                            <button type="button" class="btn btn-success btn-sm" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                                <span class="glyphicon glyphicon-upload"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-warning btn-sm" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                                <span class="glyphicon glyphicon-ban-circle"></span>
+                                            </button>
+                                            <button type="button" class="btn red btn-sm" ng-click="item.remove()">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div>
+                            <p>@(Progress) @(QueueLength)</p>
+                            <div class="progress progress-sm" style="">
+                                <div class="progress-bar progress-bar-info" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-success btn-md" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+                            <span class="glyphicon glyphicon-upload"></span>
+                        </button>
+                        <button type="button" class="btn btn-warning btn-md" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+                            <span class="glyphicon glyphicon-ban-circle"></span> 
+                        </button>
+                        <button type="button" class="btn red btn-md" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                            <span class="glyphicon glyphicon-trash"></span> 
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-body">
+                    <div ng-show="uploader.isHTML5">
+                        <!-- 3. nv-file-over uploader="link" over-class="className" -->
+                        <div class="file-drop-zone margin-bottom-20" nv-file-over="" uploader="uploader" over-class="file-drop-zone-over">
+                            @(DragAndDrop)
+                        </div>
+                        <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
+                    </div>
+                    <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+
+                </div>
+            </div>
+        </div>
+
+        <div class="form-body">
+            <div class="tab-pane" id="tab_images">
+                <div id="tab_images_uploader_container" class="text-align-reverse margin-bottom-10">
+                    <label>
+                                <input type="file" nv-file-select="" uploader="uploader" multiple style="display: none;" />
+                                    <span class="btn btn-default btn-info">
+                                        @(SelectFiles)
+                                    </span>
+                                </label>
+                    <!--<a id="tab_images_uploader_pickfiles" ng-click="find()" href="javascript:;" class="btn default">
+                        <i class="fa fa-refresh"></i> </a>-->
+                </div>
+                <div class="row">
+                    <div id="tab_images_uploader_filelist" class="col-md-6 col-sm-12"></div>
+                </div>
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr role="row" class="heading">
+                            <th width="25%">
+                                @(Filename)
+                            </th>
+                            <th width="5%">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="file in object.files">
+                            <td>
+                                <a ng-href="/erp/api/file/{{model}}/{{file._id}}?download=1" target="_blank">{{file.originalFilename}}</a>
+                            </td>
+                            <td>
+                                <a href="javascript:;" ng-confirm-click="Supprimer le fichier {{file.originalFilename}} ?" confirmed-click="delete(file._id)" class="btn red btn-sm">
+                                    <i class="glyphicon glyphicon-trash"></i> </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

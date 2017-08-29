@@ -28,3 +28,4 @@ debug.pid
 dump/
 dump_old/
 productImages/*.*
+uploads/

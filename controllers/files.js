@@ -37,7 +37,13 @@ exports.install = function() {
 
     F.route('/erp/api/file/{Model}/{Id}', function(model, id) {
         var self = this;
-        var Model = MODEL(model).Schema;
+
+        var Model;
+
+        if (model == 'order')
+            Model = MODEL('order').Schema.Order;
+        else
+            Model = MODEL(model).Schema;
 
         if (self.body.data)
             var body = JSON.parse(self.body.data);
@@ -46,18 +52,32 @@ exports.install = function() {
 
         var saveFile = function() {
 
-            self.module('gridfs').addFile(Model, id, self.files[0], function(err, doc, file) {
-                //console.log(file);
+            self.module('files').addFiles(Model, id, self.files, function(err, files) {
+                //console.log(files);
 
                 if (body && body.varname) {
-                    doc[body.varname] = file._id;
-                    doc.save(function(err, doc) {});
+                    var doc = {};
+                    doc[body.varname] = files[files.length - 1]._id;
+                    return Model.findByIdAndUpdate(id, doc, { new: true }, function(err, doc) {
+                        return self.json(doc);
+                    });
                 }
 
                 if (err)
-                    return self.throw500(err);
+                    return self.json({
+                        errorNotify: {
+                            title: 'Erreur',
+                            message: err
+                        }
+                    });
 
-                self.json(doc);
+                self.json({
+                    successNotify: {
+                        title: "Success",
+                        message: "Fichier enregistré"
+                    },
+                    files: files
+                });
             });
         };
 
@@ -85,7 +105,12 @@ exports.install = function() {
 
     F.route('/erp/api/file/{Model}/{fileId}', function(model, fileId) {
         var self = this;
-        var Model = MODEL(model).Schema;
+        var Model;
+        if (model == 'order')
+            Model = MODEL('order').Schema.Order;
+        else
+            Model = MODEL(model).Schema;
+
 
         Model.getFile(fileId, function(err, store) {
             if (err)
@@ -94,14 +119,9 @@ exports.install = function() {
             if (self.query.download)
                 return self.stream(store.contentType, store.stream(true), store.metadata.originalFilename); // for downloading 
 
-            //store.stream(true).pipe(self.res);
             self.stream(store.contentType, store.stream(true));
 
         });
-        /*var filestorage = self.filestorage('societe');
-         
-         filestorage.pipe(2, self.req, self.res, 0);*/
-
     }, ['authorize']);
 
     F.route('/erp/api/file', function() {
@@ -161,7 +181,13 @@ exports.install = function() {
 
     F.route('/erp/api/file/{Model}/{Id}', function(model, id) {
         var self = this;
-        var Model = MODEL(model).Schema;
+        var Model;
+
+        if (model == 'order')
+            Model = MODEL('order').Schema.Order;
+        else
+            Model = MODEL(model).Schema;
+
 
         Model.findOne({
             _id: id
@@ -174,25 +200,8 @@ exports.install = function() {
                 if (err)
                     return self.throw500(err);
 
-                return self.json( /*{status: "ok"}*/ result);
+                return self.json(result);
             });
         });
     }, ['delete', 'authorize']);
-    /*app.delete('/api/tickets/file/:Id/:fileName', auth.requiresLogin, function (req, res) {
-     
-     var id = req.params.Id;
-     var fileName = req.params.fileName;
-     //console.log(id);
-     
-     if (fileName && id) {
-     self.module('gridfs').delFile(TicketModel, id, fileName, function (err) {
-     if (err)
-     res.send(500, err);
-     else
-     res.send(200, {status: "ok"});
-     });
-     } else
-     res.send(500, "File not found");
-     });
-     */
 };

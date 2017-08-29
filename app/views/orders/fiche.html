@@ -405,6 +405,7 @@
                     </div>
                 </div>
             </div>
+            <div ng-if="object._id" ng-include="'/templates/gridfs/fileAll.html'" ng-controller="FileCtrl" onload="init('order', object)"></div>
         </div>
         <div ui-view class="profile-content fade-in-up"></div>
     </div>

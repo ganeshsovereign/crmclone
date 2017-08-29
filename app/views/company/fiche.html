@@ -176,10 +176,10 @@
                             <a ui-sref="societe.show.feeds({id:societe._id})">
                                 <i class="icon-bell"></i> @(tasks:Actions) </a>
                         </li>-->
-                        <li ng-class="{active: $state.includes('societe.show.files')}">
+                        <!--<li ng-class="{active: $state.includes('societe.show.files')}">
                             <a ui-sref="societe.show.files({id:societe._id})">
                                 <i class="icon-picture"></i> @(products:Images/documents) </a>
-                        </li>
+                        </li>-->
                         <!--<li ng-class="{active: $state.includes('societe.show.stats')}">
                             <a ui-sref="societe.show.stats({id:societe._id})">
                                 <i class="icon-bar-chart"></i> @(Statistics) </a>
@@ -214,6 +214,7 @@
                     </div>
                 </div>
             </div>
+            <div ng-if="societe._id" ng-include="'/templates/gridfs/fileAll.html'" ng-controller="FileCtrl" onload="init('Customers', societe)"></div>
         </div>
         <div ui-view class="profile-content fade-in-up"></div>
     </div>
