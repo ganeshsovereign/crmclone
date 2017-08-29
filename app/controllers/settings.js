@@ -104,6 +104,10 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             name: 'Valeur metrique',
             isActive: true
         }, {
+            id: 'min-max',
+            name: 'Minimun et maximum',
+            isActive: true
+        }, {
             id: 'textarea',
             name: 'Texte long',
             isActive: true
@@ -288,16 +292,24 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
                 $http({
                     method: 'GET',
-                    url: '/erp/api/currencies'
+                    url: '/erp/api/product/attributes/group/select'
                 }).success(function(data, status) {
-                    $scope.$dict.currency = data.data;
+                    $scope.$dict.attributesGroups = data.data;
                     //console.log(data);
 
-                    if (current[current.length - 1] == 'show')
-                        $scope.findOne();
+                    $http({
+                        method: 'GET',
+                        url: '/erp/api/currencies'
+                    }).success(function(data, status) {
+                        $scope.$dict.currency = data.data;
+                        //console.log(data);
 
-                    $scope.find();
+                        if (current[current.length - 1] == 'show')
+                            $scope.findOne();
 
+                        $scope.find();
+
+                    });
                 });
             });
         });

@@ -671,10 +671,12 @@ exports.install = function() {
 
     var productAttributes = new ProductAttributes();
     F.route('/erp/api/product/attributes', productAttributes.getAllProductAttributes, ['authorize']);
+    F.route('/erp/api/product/attributes/group/select', productAttributes.readGroupForSelect, ['authorize']);
     F.route('/erp/api/product/attributes/{id}', productAttributes.getProductAttributesById, ['authorize']);
     F.route('/erp/api/product/attributes/', productAttributes.createProductAttributes, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/attributes/{id}', productAttributes.updateProductAttributes, ['put', 'json', 'authorize'], 512);
     F.route('/erp/api/product/attributes/{id}', productAttributes.deleteProductAttributes, ['delete', 'authorize']);
+
 
     // list for autocomplete
     F.route('/erp/api/product/ref/autocomplete', function() {
@@ -5051,6 +5053,7 @@ ProductAttributes.prototype = {
         }
 
         ProductAttributesModel.find({})
+            .populate("group")
             .exec(function(err, result) {
                 if (err)
                     return self.throw500(err);
@@ -5183,6 +5186,22 @@ ProductAttributes.prototype = {
                     });
                 });
             });
+        });
+    },
+    readGroupForSelect: function() {
+        var self = this;
+        var GroupAttributes = MODEL('groupAttributes').Schema;
+
+        var limit = { sort: { code: 1 } };
+
+        GroupAttributes.find({}, '', limit, function(err, docs) {
+            if (err)
+                return console.log("err : /api/product/attributes/group ", err);
+
+            return self.json({
+                data: docs || []
+            });
+
         });
     }
 };

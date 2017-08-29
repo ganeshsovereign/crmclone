@@ -230,7 +230,7 @@
                                     <div class="form-group form-md-line-input ">
                                         <div class="input-group">
                                             <div class="input-group-control">
-                                                <select class="table-group-action-input form-control" required ng-model="familyId" ng-options="s._id as s.langs[_language].name for s in attributes"></select>
+                                                <select class="table-group-action-input form-control" required ng-model="familyId" ng-options="s._id as (s.langs[_language].name + ' ('+s.group.langs[_language].name+')')  for s in attributes"></select>
                                                 <label for="FamilyProducts">@(products:AddAttributesToFamily)</label>
                                             </div>
                                             <span class="input-group-btn btn-right"><button ng-click="object.options.push(familyId);update(true);" class="btn yellow" type="button">@(Add)</button></span>

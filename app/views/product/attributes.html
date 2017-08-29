@@ -100,6 +100,30 @@
                                                             </div>
                                                         </div>
 
+                                                        <!-- Min-Max -->
+                                                        <div ng-if-start="attribute.mode =='min-max'" class="task-icon ">
+                                                            <a href="javascript:; ">
+                                                                <i class="fa fa-calculator "></i>
+                                                            </a>
+                                                        </div>
+
+                                                        <div ng-if-end class="task-content ">
+                                                            <h4 class="uppercase bold ">
+                                                                <a href="javascript:; ">{{attribute.langs[0].name}}</a> <small>(Min/Max)</small>
+                                                            </h4>
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <input type="number" placeholder="Min" class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value.min" ng-change="product.attributes[attributeMap[attribute._id]].value.max = product.attributes[attributeMap[attribute._id]].value.min"/>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <input type="number" placeholder="Max" class="form-control" min="{{product.attributes[attributeMap[attribute._id]].value.min}}" ng-model="product.attributes[attributeMap[attribute._id]].value.max"/>
+                                                                </div>
+                                                                <div class="col-md-4" ng-show="attribute.metricUnit">
+                                                                    <select class="form-control" ng-model="attribute.metricUnit" disabled ng-options="s.id as s.label for s in dict.fk_units.values"></select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
 
                                                         <!-- Text -->
                                                         <div ng-if-start="attribute.mode =='text'" class="task-icon ">
