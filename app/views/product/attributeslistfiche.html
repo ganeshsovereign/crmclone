@@ -64,7 +64,7 @@
                 <i class="icon-magic-wand"></i>
                 <span class="caption-subject dark bold uppercase"> @(products:Attribute) : {{object.langs[_language].name}}</span>
             </div>
-            <save mode="object._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+            <save mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
         </div>
         <div class="portlet-body">
             <div class="form-body">
@@ -84,7 +84,7 @@
                                 <label for="Code">@(Code)</label>
                             </div>
 
-                            <div class="form-group form-md-line-input" ng-show="object.mode == 'metric' || object.mode =='min-max'">
+                            <div class="form-group form-md-line-input">
                                 <select class="table-group-action-input form-control" ng-model="object.group" ng-options="s._id as s.langs[_language].name for s in $dict.attributesGroups"></select>
                                 <label for="group">@(products:GroupAttributes)</label>
                             </div>

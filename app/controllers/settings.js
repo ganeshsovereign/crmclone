@@ -259,6 +259,7 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
                     break;
                 case 'attributes':
                     var Resource = Settings.productAttributes;
+                    $scope.object.mode = 'text';
                     $scope.backTo = 'product.attributes.list';
                     var goShow = 'product.attributes.show';
                     break;
