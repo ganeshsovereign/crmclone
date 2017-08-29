@@ -4496,7 +4496,6 @@ ProductFamily.prototype = {
             var addingVariant;
             var deletingVariants;
 
-
             currentOpts.options = currentOpts.options.toStringObjectIds();
             deletedOptions = _.difference(currentOpts.options, newOpts.options);
             addedOptions = _.difference(newOpts.options, currentOpts.options);
@@ -4711,6 +4710,10 @@ ProductFamily.prototype = {
             });
         else
             data.discounts[0].count = 0;
+
+        //cleaning empty value
+        body.options = _.compact(body.options);
+        body.variants = _.compact(body.variants);
 
         ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, family) {
             if (err) {
