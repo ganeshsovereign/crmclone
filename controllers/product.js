@@ -5048,11 +5048,13 @@ ProductAttributes.prototype = {
             sortObj = query.sort;
         } else {
             sortObj = {
-                'data.sequence': 1
+                'group':1,
+                'sequence': 1
             };
         }
 
         ProductAttributesModel.find({})
+            .sort(sortObj)
             .populate("group")
             .exec(function(err, result) {
                 if (err)
