@@ -5048,7 +5048,7 @@ ProductAttributes.prototype = {
             sortObj = query.sort;
         } else {
             sortObj = {
-                'group':1,
+                'group': 1,
                 'sequence': 1
             };
         }
