@@ -152,7 +152,7 @@ var productSchema = new Schema({
         }],
         minStockLevel: { type: Number, default: 0 },
         maxStockLevel: { type: Number },
-        stockTimeLimit: { type: Number }
+        stockTimeLimit: { type: Number, default: 360 }
     },
 
     variants: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }],

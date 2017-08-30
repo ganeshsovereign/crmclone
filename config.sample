@@ -35,4 +35,5 @@ mail-address-bcc                :
 //offer.emailNotify				: herve.prot@tomanage.fr
 accounting.VTE			: BLO
 accounting.ACH			: BLU
- 
+
+storing-files		  : localfs 
