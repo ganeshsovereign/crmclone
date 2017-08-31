@@ -12,7 +12,7 @@ var ProductAttributesSchema = new Schema({
         _id: false,
         name: String
     }],
-    isremoved: { type: Boolean, default: false },
+    //isremoved: { type: Boolean, default: false },
     //isVariant: { type: Boolean, default: false }, //TODO remove
     allowedExtension: [String], //png,pdf...
     step: { type: Number, default: 1 }, // steps for number 0.01

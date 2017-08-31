@@ -5174,11 +5174,11 @@ ProductAttributes.prototype = {
                             return self.throw500(err);
 
                         //remove all attributes values
-                        ProductAttributesValuesModel.update({ optionId: id }, { $set: { isremoved: true } }, function(err, doc) {
+                        ProductAttributesValuesModel.remove({ optionId: id }, function(err, doc) {
                             if (err)
                                 return self.throw500(err);
                             //suppress attribute
-                            ProductAttributesModel.update({ _id: id }, { $set: { isremoved: true } }, function(err, doc) {
+                            ProductAttributesModel.remove({ _id: id }, function(err, doc) {
                                 if (err)
                                     return self.throw500(err);
 

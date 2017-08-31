@@ -7,12 +7,12 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var AttributesValuesSchema = new Schema({
-    code: String,
+    code: { type: String, unique: true },
     langs: [{
         _id: false,
         value: String
     }],
-    isremoved: { type: Boolean, default: false },
+    //isremoved: { type: Boolean, default: false },
     sequence: { type: Number, default: 1 },
     optionId: { type: Schema.Types.ObjectId, ref: 'productAttributes', require: true },
     channels: [{
