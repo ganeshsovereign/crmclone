@@ -40,7 +40,7 @@
                                         * </span></label>
                                             </div>
 
-                                            <address ng-model=employee.homeaAddress></address>
+                                            <address ng-model=employee.homeaAddress mode="simple"></address>
                                         </div>
 
                                         <div class="col-md-6 col-sm-12">
@@ -56,7 +56,7 @@
                                                         <label for="form_control_1">@(Email)</label>
                                                     </div>
                                                     <span class="input-group-btn btn-right">
-                                                            <a ng-href="mailto:{{employee.emails.work}}"  class="btn yellow" type="button">Go!</a>
+                                                            <a ng-href="mailto:{{employee.emails.work}}"  class="btn yellow" type="button"><i class="fa fa-envelope"></i></a>
                                                         </span>
                                                 </div>
                                             </div>
@@ -73,7 +73,7 @@
                                                         <label for="form_control_1">@(users:LinkedIn)</label>
                                                     </div>
                                                     <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{employee.social.LI}}"  class="btn yellow" type="button">Go!</a>
+                                                            <a ng-href="{{employee.social.LI}}"  class="btn yellow" type="button"><i class="fa fa-linkedin"></i></a>
                                                         </span>
                                                 </div>
                                             </div>
@@ -84,7 +84,7 @@
                                                         <label for="form_control_1">@(users:Facebook)</label>
                                                     </div>
                                                     <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{employee.social.FB}}"  target="_blank" class="btn yellow" type="button">Go!</a>
+                                                            <a ng-href="{{employee.social.FB}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-facebook"></i></a>
                                                         </span>
                                                 </div>
                                             </div>
