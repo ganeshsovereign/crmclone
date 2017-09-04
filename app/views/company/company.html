@@ -111,33 +111,33 @@
                             <div class="col-md-6 col-sm-12">
                                 <div class="portlet light bordered">
                                     <div class="form-group form-md-line-input">
-                                        <select class="table-group-action-input form-control" required ng-model="societe.salesPurchases.language" ng-options="s.idx as s.name for s in $dict.language"></select>
-                                        <label for="form_control_1">@(Language)</label>
+                                        <select class="table-group-action-input form-control" id="Language" required ng-model="societe.salesPurchases.language" ng-options="s.idx as s.name for s in $dict.language"></select>
+                                        <label for="Language">@(Language)</label>
                                     </div>
 
                                     <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.phones.phone">
-                                        <label for="form_control_1">@(companies:Phone) </label>
+                                        <input type="text" class="form-control" id="Phone" ng-model="societe.phones.phone">
+                                        <label for="Phone">@(companies:Phone) </label>
                                     </div>
 
                                     <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.phones.mobile">
-                                        <label for="form_control_1">@(companies:PhoneMobile) </label>
+                                        <input type="text" class="form-control" id="PhoneMobile" ng-model="societe.phones.mobile">
+                                        <label for="PhoneMobile">@(companies:PhoneMobile) </label>
                                     </div>
 
                                     <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.phones.fax">
-                                        <label for="form_control_1">@(companies:Fax) </label>
+                                        <input type="text" class="form-control" id="Fax" ng-model="societe.phones.fax">
+                                        <label for="Fax">@(companies:Fax) </label>
                                     </div>
 
                                     <div class="form-group form-md-line-input">
                                         <div class="input-group">
                                             <div class="input-group-control">
-                                                <input type="text" class="form-control" id="form_control_1" ng-model="societe.emails[0].email">
-                                                <label for="form_control_1">@(Email) </label>
+                                                <input type="text" class="form-control" id="Email" ng-model="societe.emails[0].email">
+                                                <label for="Email">@(Email) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="mailto:{{societe.emails[0].email}}" class="btn yellow" type="button">Go!</a>
+                                                            <a ng-href="mailto:{{societe.emails[0].email}}" class="btn yellow" type="button"><i class="fa fa-envelope"></i></a>
                                                         </span>
                                         </div>
                                     </div>
@@ -149,7 +149,7 @@
                                                 <label for="societe.url">@(Web) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{societe.url}}"  target="_blank" class="btn yellow" type="button">Go!</a>
+                                                            <a ng-href="{{societe.url}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-globe"></i></a>
                                                         </span>
                                         </div>
                                     </div>
@@ -161,7 +161,7 @@
                                                 <label for="form_control_1">@(companies:Twitter) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{societe.social.TW}}"  target="_blank" class="btn yellow" type="button">Go!</a>
+                                                            <a ng-href="{{societe.social.TW}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-twitter"></i></a>
                                                         </span>
                                         </div>
                                     </div>
@@ -172,7 +172,7 @@
                                                 <label for="form_control_1">@(companies:LinkedIn) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{societe.social.LI}}"  target="_blank" class="btn yellow" type="button">Go!</a>
+                                                            <a ng-href="{{societe.social.LI}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-linkedin"></i></a>
                                                         </span>
                                         </div>
                                     </div>
@@ -183,7 +183,7 @@
                                                 <label for="form_control_1">@(companies:FaceBook) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{societe.social.FB}}"  target="_blank" class="btn yellow" type="button">Go!</a>
+                                                            <a ng-href="{{societe.social.FB}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-facebook"></i></a>
                                                         </span>
                                         </div>
                                     </div>

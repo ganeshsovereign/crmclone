@@ -197,6 +197,7 @@
     "ConfirmDeleteFamily": "Êtes-vous sûr de vouloir supprimer cette Famille de produits ?",
     "ProductDeleted": "Le produit/service \"%s\" à été supprimé de la base.",
     "DeletePicture": "Supprimer une photo",
+    "AddImages": "Ajouter des images",
     "ConfirmDeletePicture": "Êtes-vous sûr de vouloir supprimer cette photo ?",
     "ExportDataset_produit_1": "Produits",
     "ExportDataset_service_1": "Services",

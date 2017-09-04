@@ -177,7 +177,7 @@
             <div class="portlet-body">
                 <script type="text/ng-template" id="addModalAddress.html">
                     <div class="modal-header">
-                        <h3 class="no-margin-bottom"><i class="fa fa-truck"></i> Edition d'une adresse de livraison</h3>
+                        <h3 class="no-margin-bottom"><i class="fa fa-truck"></i> @(companies:EditDeliveryAddress)</h3>
                     </div>
                     <div class="modal-body">
                         <div class="col-md-12">
@@ -207,9 +207,7 @@
                         <table class="table dataTable table-hover">
                             <thead>
                                 <tr role="row" class="heading">
-                                    <th width="2%">
-                                        @(Default)
-                                    </th>
+                                    <th width="2%">@(Default)</th>
                                     <th>@(Name)</th>
                                     <th>@(Address)</th>
                                     <th>@(Zip)</th>

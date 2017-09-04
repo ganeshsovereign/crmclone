@@ -60,15 +60,15 @@
             "enabled": "$conf->payment->enabled",
             "usertype": 2,
             "title": "Banque",
-            "icon": "fa-plug",
+            "icon": "fa-eur",
             "submenus": {
                 "menu:groupchq": {
                     "position": 20,
                     "url": "/erp/#!/bank/payment/chq",
-                    "perms": "paymenr.read",
+                    "perms": "payment.read",
                     "enabled": "$conf->payment->enabled",
                     "usertype": 2,
-                    "icon": "fa-plug",
+                    "icon": "fa-credit-card",
                     "title": "Remises de cheques"
                 }
             }
