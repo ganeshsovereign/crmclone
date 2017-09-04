@@ -99,7 +99,7 @@
                                 <label for="Sequence">@(Sequence)</label>
                             </div>
 
-                            <div class="form-group form-md-line-input" ng-show="object.mode == 'metric' || object.mode =='min-max'">
+                            <div class="form-group form-md-line-input" ng-show="object.mode == 'metric' || object.mode =='min-max'" ng-if="dict.fk_units.values.length">
                                 <select class="table-group-action-input form-control" ng-model="object.metricUnit" ng-options="s.id as s.label for s in dict.fk_units.values"></select>
                                 <label for="MetricUnit">@(products:Unit)</label>
                             </div>
