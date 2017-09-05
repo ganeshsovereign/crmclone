@@ -2457,13 +2457,13 @@ Object.prototype = {
             societe.entity.push(self.user.entity);
 
         //console.log(societe);
-        var oldData = {
+        /*var oldData = {
             versionId: null,
             versionOfId: societe._id,
             data: societe.toObject()
-        };
+        };*/
 
-        SocieteModel.saveVersion(oldData, function(err, doc) {
+        societe.save(function(err, doc) {
             if (err)
                 console.log(err);
             self.json(doc);
@@ -2506,13 +2506,13 @@ Object.prototype = {
                 });
             }, 500);
 
-            var oldData = {
+            /*var oldData = {
                 versionId: null,
                 versionOfId: societe._id,
                 data: societe.toObject()
-            };
+            };*/
 
-            SocieteModel.saveVersion(oldData, function(err, doc) {
+            societe.save(function(err, doc) {
                 if (err) {
                     console.log(err);
                     return self.json({

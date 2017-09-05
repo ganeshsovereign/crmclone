@@ -1294,11 +1294,12 @@ Object.prototype = {
                 ProductFamilyModel.populate(res, { path: "datatable.data.sellFamily" }, function(err, res) {
                     ProductImagesModel.populate(res, { path: "datatable.data.imageSrc" }, function(err, res) {
 
+
                         //console.log(res);
 
                         for (var i = 0, len = res.datatable.data.length; i < len; i++) {
                             var row = res.datatable.data[i];
-                            //console.log(row);
+                            //console.log(row, i);
 
                             // Add checkbox
                             res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
@@ -1314,7 +1315,7 @@ Object.prototype = {
 
                             if (row.directCost)
                                 res.datatable.data[i].directCost = MODULE('utils').printPrice(row.directCost, 3);
-                            else if (row.Status == 'BUY' || row.Status == 'SELLBUY')
+                            else if (row.isSell)
                                 res.datatable.data[i].directCost = '<span class="text-danger">Inconnu</span>';
 
                             if (res.datatable.data[i].info.isActive == false)

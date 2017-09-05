@@ -29,9 +29,9 @@ var supplierPriceSchema = new Schema({
     minQty: Number,
     replenishmentTime: { type: Number, default: 0 }, // delai de reappro en jr
     prices: {
-        currency: { type: String, ref: 'currency', default: null },
-        pu_ht: { type: Number, default: 0 }, // For base price
-        pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
+        currency: { type: String, ref: 'currency', default: 'EUR' },
+        pu_ht: { type: Number, default: 0 } // For base price
+        //pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
     packing: Number //conditionement
 }, {

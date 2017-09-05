@@ -6,7 +6,7 @@
 var mongoose = require('mongoose'),
     _ = require('lodash'),
     timestamps = require('mongoose-timestamp'),
-    versioner = require('mongoose-versioner'),
+    version = require('mongoose-version'),
     //		mongoosastic = require('mongoosastic'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId;
@@ -169,7 +169,6 @@ addressSchema.virtual('status')
 
 
 var customerSchema = new Schema({
-
     isremoved: Boolean,
     type: { type: String, default: 'Company', enum: ['Person', 'Company'] },
     isOwn: { type: Boolean, default: false },
@@ -250,7 +249,7 @@ var customerSchema = new Schema({
         salesTeam: { type: ObjectId, ref: 'Department' },
         implementedBy: { type: ObjectId, ref: 'Customers' },
         isActive: { type: Boolean, default: true },
-        ref: { type: String, trim: true, uppercase: true, require: true, unique: true, default: '' }, //code_client or code_fournisseur
+        ref: { type: String, trim: true, uppercase: true, sparse: true }, //code_client or code_fournisseur
         language: { type: Number, default: 0 },
         receiveMessages: { type: Number, default: 0 },
         cptBilling: { type: Schema.Types.ObjectId, ref: 'Customers' },
@@ -262,9 +261,6 @@ var customerSchema = new Schema({
         bank_reglement: { type: ObjectId, ref: 'bank' },
         VATIsUsed: { type: Boolean, default: true },
 
-        groupOrder: { type: Boolean, default: false }, // 1 bill for many order
-        groupDelivery: { type: Boolean, default: true }, // 1 bill for many delivery
-        //zonegeo: String,
         rival: [String], //concurrent
 
         customerAccount: { type: String, set: MODULE('utils').setAccount, trim: true, uppercase: true }, //code_compta
@@ -323,7 +319,6 @@ var customerSchema = new Schema({
         idprof4: String,
         idprof5: String,
         idprof6: String, // TVA Intra
-        forme_juridique_code: String, //forme juridique
         category: { type: Schema.Types.ObjectId, ref: 'accountsCategories' }, //typent_id
         forme_juridique: String,
         capital: { type: Number, default: 0 },
@@ -337,7 +332,7 @@ var customerSchema = new Schema({
         sex: { type: String, default: "H" }
     },
 
-    ID: { type: Number /*, unique: true -> BUG with versioner*/ },
+    ID: { type: Number, unique: true },
     oldId: String // only use for migration
 
 }, {
@@ -347,6 +342,8 @@ var customerSchema = new Schema({
 });
 
 customerSchema.path('salesPurchases.ref').validate(function(v) {
+    if (!v)
+        return true;
     return v.length <= 7;
 }, 'The maximum length is 7.');
 
@@ -362,7 +359,7 @@ customerSchema.pre('save', function(next) {
     var EntityModel = MODEL('entity').Schema;
     var self = this;
 
-    if (this.new) { // Add default account
+    if (this.salesPurchases.ref && this.isModified('salesPurchases.ref')) {
         this.salesPurchases.customerAccount = "411" + this.salesPurchases.ref;
         this.salesPurchases.supplierAccount = "401" + this.salesPurchases.ref;
     }
@@ -388,9 +385,19 @@ customerSchema.pre('save', function(next) {
     //if (this.code_client == null && this.entity !== "ALL" && this.Status !== 'ST_NEVER') {
     //console.log("Save societe");
     if (!this.ID)
-        SeqModel.incCpt("C", function(seq, number) {
+        SeqModel.incNumber("C", 6, function(seq, number) {
             //self.barCode = "C" + seq;
             self.ID = number;
+
+            if (!self.salesPurchases.ref)
+                self.salesPurchases.ref = "C" + seq;
+
+            if (!self.salesPurchases.customerAccount)
+                self.salesPurchases.customerAccount = "411" + self.salesPurchases.ref;
+            if (!self.salesPurchases.supplierAccount)
+                self.salesPurchases.supplierAccount = "401" + self.salesPurchases.ref;
+
+
             next();
             //console.log(seq);
             /*EntityModel.findOne({ _id: self.entity }, "cptRef", function(err, entity) {
@@ -582,7 +589,7 @@ if (CONFIG('storing-files')) {
     customerSchema.plugin(gridfs.pluginGridFs, { root: "Customers" });
 }
 
-customerSchema.plugin(versioner, { modelName: 'Customers', collection: 'Customers.Version', mongoose: mongoose });
+customerSchema.plugin(version, { collection: 'Customers.Version', strategy: 'collection' });
 
 exports.Schema = mongoose.model('Customers', customerSchema);
 exports.name = "Customers";

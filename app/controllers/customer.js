@@ -1136,39 +1136,42 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         [1, "asc"]
                     ], // set first column as a default sort by asc
                     "columns": [{
-                        data: 'bool',
-                        "searchable": false
-                    }, {
-                        "data": "name.last"
-                    }, {
-                        "data": "salesPurchases.ref",
-                        defaultContent: ""
-                    }, {
-                        "data": "salesPurchases.salesPerson",
-                        visible: isSupplier == false,
-                        defaultContent: ""
-                    }, {
-                        "data": "address.zip",
-                        defaultContent: ""
-                    }, {
-                        "data": "address.city",
-                        defaultContent: ""
-                    }, {
-                        "data": "companyInfo.idprof3",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
-                    }, {
-                        data: "entity",
-                        visible: user.multiEntities,
-                        searchable: false
-                    }, {
-                        data: "Tag",
-                        defaultContent: ""
-                    }, {
-                        data: "updatedAt",
-                        defaultContent: ""
-                    }]
+                            data: 'bool',
+                            "searchable": false
+                        }, {
+                            "data": "name.last"
+                        }, {
+                            "data": "salesPurchases.ref",
+                            defaultContent: ""
+                        }, {
+                            "data": "salesPurchases.salesPerson",
+                            visible: isSupplier == false,
+                            defaultContent: ""
+                        }, {
+                            "data": "address.zip",
+                            defaultContent: ""
+                        }, {
+                            "data": "address.city",
+                            defaultContent: ""
+                        }, {
+                            "data": "companyInfo.idprof3",
+                            defaultContent: ""
+                        },
+                        /*{
+                                               "data": "Status"
+                                           },*/
+                        {
+                            data: "entity",
+                            visible: user.multiEntities,
+                            searchable: false
+                        }, {
+                            data: "Tag",
+                            defaultContent: ""
+                        }, {
+                            data: "updatedAt",
+                            defaultContent: ""
+                        }
+                    ]
                 }
             });
 
