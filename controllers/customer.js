@@ -1110,7 +1110,7 @@ exports.install = function() {
 
     F.route('/erp/api/societe/import', function() {
         var fixedWidthString = require('fixed-width-string');
-        var UserModel = MODEL('user').Schema;
+        var UserModel = MODEL('Employees').Schema;
         var SocieteModel = MODEL('Customers').Schema;
         //var ContactModel = MODEL('contact').Schema;
         var BankModel = MODEL('bank').Schema;
