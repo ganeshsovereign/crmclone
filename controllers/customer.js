@@ -1112,7 +1112,8 @@ exports.install = function() {
         var fixedWidthString = require('fixed-width-string');
         var UserModel = MODEL('user').Schema;
         var SocieteModel = MODEL('Customers').Schema;
-        var ContactModel = MODEL('contact').Schema;
+        //var ContactModel = MODEL('contact').Schema;
+        var BankModel = MODEL('bank').Schema;
         var self = this;
 
         if (self.query.key !== "COvy9NRXD2FEYjSQU6q3LM7HcdKesflGTB")
@@ -1133,469 +1134,478 @@ exports.install = function() {
          */
 
         var commercial_list = {};
+        BankModel.find({}, function(err, banks) {
+            UserModel.find({
+                //Status: "ENABLE"
+            }, function(err, users) {
+                //console.log(users);
 
-        UserModel.find({
-            //Status: "ENABLE"
-        }, function(err, users) {
-            //console.log(users);
-
-            for (var i = 0; i < users.length; i++) {
-                commercial_list[users[i]._id.toString()] = users[i];
-            }
-
-            var conv_id = {
-                effectif_id: {
-                    "0": "EF0",
-                    "1": "EF1-5",
-                    "6": "EF6-10",
-                    "11": "EF11-50",
-                    "51": "EF51-100",
-                    "101": "EF101-250",
-                    "251": "EF251-500",
-                    "501": "EF501-1000",
-                    "1001": "EF1001-5000",
-                    "5001": "EF5000+"
-                },
-                typent_id: {
-                    "Siège": "TE_SIEGE",
-                    "Etablissement": "TE_ETABL",
-                    "Publique / Administration": "TE_PUBLIC"
-                },
-                /*Status: {
-                 "": "ST_CFID",
-                 "Moins de 3 mois": "ST_CINF3",
-                 "OK Sensibilisation": "ST_NEW",
-                 "Bonne relation": "ST_NEW",
-                 "Peu visité": "ST_NEW",
-                 "Recontacter dans 2 mois": "ST_NEW",
-                 "Ne pas recontacter": "ST_NO",
-                 "Chaud": "ST_PCHAU",
-                 "Tiède": "ST_PTIED",
-                 "Froid": "ST_PFROI",
-                 "Non Déterminé": "ST_NEVER"
-                 },*/
-                prospectlevel: {
-                    "": "PL_NONE",
-                    "Niveau 3": "PL_HIGH",
-                    "Niveau 2": "PL_MEDIUM",
-                    "Niveau 1": "PL_LOW",
-                    "Niveau 0": "PL_NONE"
-                },
-                civilite: {
-                    "": "NO",
-                    "MME": "MME",
-                    "MLLE": "MLE",
-                    "Mme": "MME",
-                    "M.": "MR",
-                    "COLONEL": "COLONEL",
-                    "DOCTEUR": "DR",
-                    "GENERAL": "GENERAL",
-                    "PROFESSEUR": "PROF"
+                for (var i = 0; i < users.length; i++) {
+                    commercial_list[users[i]._id.toString()] = users[i];
                 }
-            };
 
-            var is_Array = [
-                "Tag"
-            ];
-
-            var convertRow = function(tab, row, index, cb) {
-                var societe = {};
-                societe.country_id = "FR";
-                societe.Tag = [];
-                societe.contact = {
-                    Tag: []
+                var conv_id = {
+                    effectif_id: {
+                        "0": "EF0",
+                        "1": "EF1-5",
+                        "6": "EF6-10",
+                        "11": "EF11-50",
+                        "51": "EF51-100",
+                        "101": "EF101-250",
+                        "251": "EF251-500",
+                        "501": "EF501-1000",
+                        "1001": "EF1001-5000",
+                        "5001": "EF5000+"
+                    },
+                    typent_id: {
+                        "Siège": "TE_SIEGE",
+                        "Etablissement": "TE_ETABL",
+                        "Publique / Administration": "TE_PUBLIC"
+                    },
+                    /*Status: {
+                     "": "ST_CFID",
+                     "Moins de 3 mois": "ST_CINF3",
+                     "OK Sensibilisation": "ST_NEW",
+                     "Bonne relation": "ST_NEW",
+                     "Peu visité": "ST_NEW",
+                     "Recontacter dans 2 mois": "ST_NEW",
+                     "Ne pas recontacter": "ST_NO",
+                     "Chaud": "ST_PCHAU",
+                     "Tiède": "ST_PTIED",
+                     "Froid": "ST_PFROI",
+                     "Non Déterminé": "ST_NEVER"
+                     },*/
+                    prospectlevel: {
+                        "": "PL_NONE",
+                        "Niveau 3": "PL_HIGH",
+                        "Niveau 2": "PL_MEDIUM",
+                        "Niveau 1": "PL_LOW",
+                        "Niveau 0": "PL_NONE"
+                    },
+                    civilite: {
+                        "": "NO",
+                        "MME": "MME",
+                        "MLLE": "MLE",
+                        "Mme": "MME",
+                        "M.": "MR",
+                        "COLONEL": "COLONEL",
+                        "DOCTEUR": "DR",
+                        "GENERAL": "GENERAL",
+                        "PROFESSEUR": "PROF"
+                    }
                 };
-                societe.remise_client = 0;
 
-                for (var i = 0; i < row.length; i++) {
-                    if (tab[i] === "false")
-                        continue;
+                var is_Array = [
+                    "Tag"
+                ];
 
-                    //
-                    if (tab[i] !== "contact.Tag" && tab[i].indexOf(".") >= 0) {
-                        var split = tab[i].split(".");
+                var convertRow = function(tab, row, index, cb) {
+                    var societe = {
 
-                        if (row[i]) {
-                            if (typeof societe[split[0]] === "undefined")
-                                societe[split[0]] = {};
+                    };
+                    societe.country_id = "FR";
+                    societe.Tag = [];
+                    societe.contact = {
+                        Tag: []
+                    };
+                    societe.remise_client = 0;
 
-                            societe[split[0]][split[1]] = row[i];
+                    for (var i = 0; i < row.length; i++) {
+                        if (tab[i] === "false")
+                            continue;
+
+                        //
+                        if (tab[i] !== "contact.Tag" && tab[i].indexOf(".") >= 0) {
+                            var split = tab[i].split(".");
+
+                            if (row[i]) {
+                                if (typeof societe[split[0]] === "undefined")
+                                    societe[split[0]] = {};
+
+                                societe[split[0]][split[1]] = row[i];
+                            }
+                            //continue;
                         }
-                        //continue;
-                    }
 
-                    if (tab[i] != "effectif_id" && typeof conv_id[tab[i]] !== 'undefined') {
+                        if (tab[i] != "effectif_id" && typeof conv_id[tab[i]] !== 'undefined') {
 
-                        if (tab[i] == "civilite" && conv_id[tab[i]][row[i]] === undefined)
-                            row[i] = "";
+                            if (tab[i] == "civilite" && conv_id[tab[i]][row[i]] === undefined)
+                                row[i] = "";
 
-                        if (conv_id[tab[i]][row[i]] === undefined)
-                            return console.log("error : unknown " + tab[i] + "->" + row[i] + " ligne " + index);
+                            if (conv_id[tab[i]][row[i]] === undefined)
+                                return console.log("error : unknown " + tab[i] + "->" + row[i] + " ligne " + index);
 
-                        row[i] = conv_id[tab[i]][row[i]];
-                    }
+                            row[i] = conv_id[tab[i]][row[i]];
+                        }
 
-                    switch (tab[i]) {
-                        case "name":
-                            if (row[i]) {
-                                societe.name = row[i].trim();
-                            }
-                            break;
-                        case "address":
-                            if (row[i]) {
-                                if (societe.address)
-                                    societe.address += "\n" + row[i];
-                                else
-                                    societe.address = row[i];
-                            }
-                            break;
-                        case "zip":
-                            if (row[i])
-                                societe.zip = fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
-                        case "BP":
-                            if (row[i]) {
-                                societe.address += "\n" + row[i].substr(0, row[i].indexOf(','));
-                            }
-                            break;
-                        case "brand":
-                            if (row[i])
-                                societe[tab[i]] = row[i].split(',');
-                            break;
-                        case "Tag":
-                            if (row[i]) {
-                                var seg = row[i].split(',');
-                                for (var j = 0; j < seg.length; j++) {
-                                    seg[j] = seg[j].replace(/\./g, "");
-                                    seg[j] = seg[j].trim();
+                        switch (tab[i]) {
+                            case "name":
+                                if (row[i]) {
+                                    societe.name = row[i].trim();
+                                }
+                                break;
+                            case "address":
+                                if (row[i]) {
+                                    if (societe.address)
+                                        societe.address += "\n" + row[i];
+                                    else
+                                        societe.address = row[i];
+                                }
+                                break;
+                            case "zip":
+                                if (row[i])
+                                    societe.zip = fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
+                            case "BP":
+                                if (row[i]) {
+                                    societe.address += "\n" + row[i].substr(0, row[i].indexOf(','));
+                                }
+                                break;
+                            case "brand":
+                                if (row[i])
+                                    societe[tab[i]] = row[i].split(',');
+                                break;
+                            case "Tag":
+                                if (row[i]) {
+                                    var seg = row[i].split(',');
+                                    for (var j = 0; j < seg.length; j++) {
+                                        seg[j] = seg[j].replace(/\./g, "");
+                                        seg[j] = seg[j].trim();
+
+                                        societe[tab[i]].push({
+                                            text: seg[j]
+                                        });
+                                    }
+                                }
+                                break;
+                            case "contact.Tag":
+                                if (row[i]) {
+                                    var seg = row[i].split(',');
+                                    for (var j = 0; j < seg.length; j++) {
+                                        seg[j] = seg[j].replace(/\./g, "");
+                                        seg[j] = seg[j].trim();
+
+                                        societe.contact.Tag.push({
+                                            text: seg[j]
+                                        });
+
+                                        //console.log(societe.contact);
+                                    }
+                                }
+                                break;
+                            case "capital":
+                                if (row[i])
+                                    societe[tab[i]] = parseInt(row[i].substr(0, row[i].indexOf(' ')), 10);
+                                break;
+                            case "yearCreated":
+                                if (row[i])
+                                    societe[tab[i]] = parseInt(row[i], 10) || null;
+                                break;
+                            case "phone":
+                                if (row[i])
+                                    societe[tab[i]] = row[i].replace(/ /g, "");
+                                break;
+                            case "phone_mobile":
+                                if (row[i])
+                                    societe["phone"] += "/" + row[i].replace(/ /g, "");
+                                break;
+                            case "fax":
+                                if (row[i])
+                                    societe[tab[i]] = row[i].replace(/ /g, "");
+                                break;
+                            case "contact_phone":
+                                if (row[i])
+                                    societe[tab[i]] = row[i].replace(/ /g, "");
+                                break;
+                            case "contact_fax":
+                                if (row[i])
+                                    societe[tab[i]] = row[i].replace(/ /g, "");
+                                break;
+                            case "idprof2":
+                                if (row[i])
+                                    societe['companyInfo.idprof2'] = row[i].replace(/ /g, "");
+                                break;
+                            case "idprof1":
+                                if (row[i])
+                                    societe[tab[i]] = row[i].replace(/ /g, "");
+                                break;
+                            case "idprof3":
+                                if (row[i])
+                                    societe[tab[i]] = row[i].replace(/ /g, "");
+                                break;
+                            case "effectif_id":
+                                if (row[i]) {
+                                    societe[tab[i]] = "EF0";
+
+                                    for (var idx in conv_id[tab[i]]) {
+                                        if (parseInt(idx, 10) <= parseInt(row[i], 10))
+                                            societe[tab[i]] = conv_id[tab[i]][idx];
+                                    }
+                                }
+                                break;
+                            case "notes":
+                                if (row[i]) {
+                                    if (!_.isArray(societe.notes))
+                                        societe.notes = [];
 
                                     societe[tab[i]].push({
-                                        text: seg[j]
+                                        author: {
+                                            name: "Inconnu"
+                                        },
+                                        datec: new Date(0),
+                                        note: row[i]
                                     });
                                 }
-                            }
-                            break;
-                        case "contact.Tag":
-                            if (row[i]) {
-                                var seg = row[i].split(',');
-                                for (var j = 0; j < seg.length; j++) {
-                                    seg[j] = seg[j].replace(/\./g, "");
-                                    seg[j] = seg[j].trim();
 
-                                    societe.contact.Tag.push({
-                                        text: seg[j]
-                                    });
-
-                                    //console.log(societe.contact);
+                                break;
+                            case "commercial_id":
+                                if (row[i]) {
+                                    if (!commercial_list[row[i]])
+                                        console.log("Error (Not found) commercial_id : " + row[i]);
+                                    else
+                                        societe.commercial_id = {
+                                            id: row[i],
+                                            name: (commercial_list[row[i]] ? commercial_list[row[i]].firstname + " " + commercial_list[row[i]].lastname : row[i])
+                                        };
                                 }
-                            }
-                            break;
-                        case "capital":
-                            if (row[i])
-                                societe[tab[i]] = parseInt(row[i].substr(0, row[i].indexOf(' ')), 10);
-                            break;
-                        case "yearCreated":
-                            if (row[i])
-                                societe[tab[i]] = parseInt(row[i], 10) || null;
-                            break;
-                        case "phone":
-                            if (row[i])
-                                societe[tab[i]] = row[i].replace(/ /g, "");
-                            break;
-                        case "phone_mobile":
-                            if (row[i])
-                                societe["phone"] += "/" + row[i].replace(/ /g, "");
-                            break;
-                        case "fax":
-                            if (row[i])
-                                societe[tab[i]] = row[i].replace(/ /g, "");
-                            break;
-                        case "contact_phone":
-                            if (row[i])
-                                societe[tab[i]] = row[i].replace(/ /g, "");
-                            break;
-                        case "contact_fax":
-                            if (row[i])
-                                societe[tab[i]] = row[i].replace(/ /g, "");
-                            break;
-                        case "idprof2":
-                            if (row[i])
-                                societe[tab[i]] = row[i].replace(/ /g, "");
-                            break;
-                        case "idprof1":
-                            if (row[i])
-                                societe[tab[i]] = row[i].replace(/ /g, "");
-                            break;
-                        case "idprof3":
-                            if (row[i])
-                                societe[tab[i]] = row[i].replace(/ /g, "");
-                            break;
-                        case "effectif_id":
-                            if (row[i]) {
-                                societe[tab[i]] = "EF0";
+                                break;
 
-                                for (var idx in conv_id[tab[i]]) {
-                                    if (parseInt(idx, 10) <= parseInt(row[i], 10))
-                                        societe[tab[i]] = conv_id[tab[i]][idx];
+                            case "datec":
+                                //console.log(row[i]);
+                                if (row[i])
+                                    societe[tab[i]] = new Date(row[i]);
+                                break;
+                            case "entity":
+                                if (row[i])
+                                    societe[tab[i]] = row[i].toLowerCase();
+                                break;
+                            case "rib.bank":
+                                if (row[i]) {
+                                    if (!societe.iban)
+                                        societe.iban = {};
+
+                                    societe.iban.id = 'FR76' + fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
                                 }
-                            }
-                            break;
-                        case "notes":
-                            if (row[i]) {
-                                if (!_.isArray(societe.notes))
-                                    societe.notes = [];
-
-                                societe[tab[i]].push({
-                                    author: {
-                                        name: "Inconnu"
-                                    },
-                                    datec: new Date(0),
-                                    note: row[i]
-                                });
-                            }
-
-                            break;
-                        case "commercial_id":
-                            if (row[i]) {
-                                if (!commercial_list[row[i]])
-                                    console.log("Error (Not found) commercial_id : " + row[i]);
-                                else
-                                    societe.commercial_id = {
-                                        id: row[i],
-                                        name: (commercial_list[row[i]] ? commercial_list[row[i]].firstname + " " + commercial_list[row[i]].lastname : row[i])
-                                    };
-                            }
-                            break;
-
-                        case "datec":
-                            //console.log(row[i]);
-                            if (row[i])
-                                societe[tab[i]] = new Date(row[i]);
-                            break;
-                        case "entity":
-                            if (row[i])
-                                societe[tab[i]] = row[i].toLowerCase();
-                            break;
-                        case "rib.bank":
-                            if (row[i]) {
-                                if (!societe.iban)
-                                    societe.iban = {};
-
-                                societe.iban.id = 'FR76' + fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
-                            }
-                            break;
-                        case "rib.guichet":
-                            if (row[i])
-                                societe.iban.id += fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
-                            break;
-                        case "rib.cpt":
-                            if (row[i])
-                                societe.iban.id += fixedWidthString(row[i], 11, { padding: '0', align: 'right' });
-                            break;
-                        case "rib.key":
-                            if (row[i])
-                                societe.iban.id += fixedWidthString(row[i], 2, { padding: '0', align: 'right' });
-                            break;
-                        default:
-                            if (row[i])
-                                societe[tab[i]] = row[i];
-                    }
-                }
-                //console.log(societe);
-                cb(societe);
-            };
-
-            if (self.files.length > 0) {
-                console.log(self.files[0].filename);
-
-                var tab = [];
-
-                csv()
-                    .from.path(self.files[0].path, {
-                        delimiter: ';',
-                        escape: '"'
-                    })
-                    .transform(function(row, index, callback) {
-                        if (index === 0) {
-                            tab = row; // Save header line
-                            return callback();
+                                break;
+                            case "rib.guichet":
+                                if (row[i])
+                                    societe.iban.id += fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
+                                break;
+                            case "rib.cpt":
+                                if (row[i])
+                                    societe.iban.id += fixedWidthString(row[i], 11, { padding: '0', align: 'right' });
+                                break;
+                            case "rib.key":
+                                if (row[i])
+                                    societe.iban.id += fixedWidthString(row[i], 2, { padding: '0', align: 'right' });
+                                break;
+                            case "bank_reglement":
+                                if (row[i]) {
+                                    let bank = _.find(banks, _.matchesProperty('ref', row[i]));
+                                    societe.bank_reglement = (bank ? bank._id : undefined);
+                                }
+                                break;
+                            default:
+                                if (row[i])
+                                    societe[tab[i]] = row[i];
                         }
-                        //console.log(tab);
-                        //console.log(row);
+                    }
+                    //console.log(societe);
+                    cb(societe);
+                };
 
-                        //console.log(row[0]);
+                if (self.files.length > 0) {
+                    console.log(self.files[0].filename);
 
-                        //return;
+                    var tab = [];
 
-                        var already_imported = {};
+                    csv()
+                        .from.path(self.files[0].path, {
+                            delimiter: ';',
+                            escape: '"'
+                        })
+                        .transform(function(row, index, callback) {
+                            if (index === 0) {
+                                tab = row; // Save header line
+                                return callback();
+                            }
+                            //console.log(tab);
+                            //console.log(row);
 
-                        convertRow(tab, row, index, function(data) {
+                            //console.log(row[0]);
 
-                            async.series([
-                                // import societe
-                                function(cb) {
-                                    //
-                                    //  Test si societe deja importe
-                                    //
+                            //return;
 
-                                    if (!data.entity)
-                                        return cb("Entity missing");
+                            var already_imported = {};
 
-                                    if (typeof already_imported[data[idx]] === 'undefined') {
+                            convertRow(tab, row, index, function(data) {
 
-                                        //import societe
-                                        if (data[idx]) {
-                                            var req = {};
-                                            req[idx] = data[idx];
+                                async.series([
+                                    // import societe
+                                    function(cb) {
+                                        //
+                                        //  Test si societe deja importe
+                                        //
 
-                                            SocieteModel.findOne(req, function(err, societe) {
-                                                if (err) {
-                                                    console.log(err);
-                                                    return callback(err);
-                                                }
+                                        if (!data.entity)
+                                            return cb("Entity missing");
 
-                                                if (societe == null) {
-                                                    societe = new SocieteModel(data);
-                                                    console.log("Create new societe");
-                                                } else {
-                                                    societe = _.extend(societe, data);
-                                                    console.log("Update societe ", societe._id);
-                                                }
+                                        if (typeof already_imported[data[idx]] === 'undefined') {
 
-                                                //console.log(row[10]);
-                                                //if (societe.commercial_id) {
-                                                //console.log(societe)
-                                                //console.log(societe.datec);
-                                                //}
+                                            //import societe
+                                            if (data[idx]) {
+                                                var req = {};
+                                                req[idx] = data[idx];
 
-                                                societe.save(function(err, doc) {
+                                                SocieteModel.findOne(req, function(err, societe) {
                                                     if (err) {
-                                                        console.log(societe, err);
-                                                        return cb(err);
+                                                        console.log(err);
+                                                        return callback(err);
                                                     }
 
-                                                    already_imported[doc[idx]] = {
-                                                        id: doc._id,
-                                                        name: doc.name
-                                                    };
+                                                    if (societe == null) {
+                                                        societe = new SocieteModel(data);
+                                                        console.log("Create new societe");
+                                                    } else {
+                                                        societe = _.extend(societe, data);
+                                                        console.log("Update societe ", societe._id);
+                                                    }
 
-                                                    cb(err, already_imported[doc[idx]]);
+                                                    //console.log(row[10]);
+                                                    //if (societe.commercial_id) {
+                                                    //console.log(societe)
+                                                    //console.log(societe.datec);
+                                                    //}
+
+                                                    societe.save(function(err, doc) {
+                                                        if (err) {
+                                                            console.log(societe, err);
+                                                            return cb(err);
+                                                        }
+
+                                                        already_imported[doc[idx]] = {
+                                                            id: doc._id,
+                                                            name: doc.name
+                                                        };
+
+                                                        cb(err, already_imported[doc[idx]]);
+
+                                                    });
 
                                                 });
-
-                                            });
-                                        } else
-                                            cb("_id or code_client or oldId missing", null);
-                                    } else {
-                                        cb(null, already_imported[data[idx]]);
-                                    }
-                                },
-                                //import contact
-                                function(cb) {
-                                    var res_contact = data.contact;
-
-                                    if (!res_contact.lastname || already_imported[data[idx]].id == null)
-                                        return cb(null, null);
-
-                                    res_contact.societe = already_imported[data[idx]];
-                                    //console.log(res_contact);
-
-                                    var query = {
-                                        $or: []
-                                    };
-
-                                    if (res_contact._id)
-                                        query.$or.push({
-                                            _id: res_contact._id
-                                        });
-
-                                    if (res_contact.email)
-                                        query.$or.push({
-                                            email: res_contact.email.toLowerCase()
-                                        });
-                                    //if (data.phone !== null)
-                                    //	query.$or.push({phone: data.phone});
-                                    if (res_contact.phone_mobile)
-                                        query.$or.push({
-                                            phone_mobile: res_contact.phone_mobile
-                                        });
-
-                                    if (!query.$or.length) {
-                                        //console.log(data.name);
-                                        //console.log(already_imported[data.name]);
-                                        query = {
-                                            "societe.id": already_imported[data[idx]].id,
-                                            lastname: (res_contact.lastname ? res_contact.lastname.toUpperCase() : "")
-                                        };
-                                    }
-
-                                    //console.log(query);
-
-                                    ContactModel.findOne(query, function(err, contact) {
-
-                                        if (err) {
-                                            console.log(err);
-                                            return callback();
-                                        }
-
-                                        if (contact == null) {
-                                            console.log("contact created");
-                                            contact = new ContactModel(res_contact);
+                                            } else
+                                                cb("_id or code_client or oldId missing", null);
                                         } else {
-                                            console.log("Contact found");
+                                            cb(null, already_imported[data[idx]]);
+                                        }
+                                    },
+                                    //import contact
+                                    function(cb) {
+                                        var res_contact = data.contact;
 
-                                            if (res_contact.Tag)
-                                                res_contact.Tag = _.union(contact.Tag, res_contact.Tag); // Fusion Tag
+                                        if (!res_contact.lastname || already_imported[data[idx]].id == null)
+                                            return cb(null, null);
 
-                                            contact = _.extend(contact, res_contact);
+                                        res_contact.societe = already_imported[data[idx]];
+                                        //console.log(res_contact);
+
+                                        var query = {
+                                            $or: []
+                                        };
+
+                                        if (res_contact._id)
+                                            query.$or.push({
+                                                _id: res_contact._id
+                                            });
+
+                                        if (res_contact.email)
+                                            query.$or.push({
+                                                email: res_contact.email.toLowerCase()
+                                            });
+                                        //if (data.phone !== null)
+                                        //	query.$or.push({phone: data.phone});
+                                        if (res_contact.phone_mobile)
+                                            query.$or.push({
+                                                phone_mobile: res_contact.phone_mobile
+                                            });
+
+                                        if (!query.$or.length) {
+                                            //console.log(data.name);
+                                            //console.log(already_imported[data.name]);
+                                            query = {
+                                                "societe.id": already_imported[data[idx]].id,
+                                                lastname: (res_contact.lastname ? res_contact.lastname.toUpperCase() : "")
+                                            };
                                         }
 
-                                        // Copy address societe
-                                        if (!contact.zip) {
-                                            contact.address = data.address;
-                                            contact.zip = data.zip;
-                                            contact.town = data.town;
-                                        }
+                                        //console.log(query);
 
-                                        //console.log(data);
+                                        ContactModel.findOne(query, function(err, contact) {
 
-                                        //console.log(row[10]);
-                                        //console.log(contact);
-                                        //console.log(societe.datec);
-
-                                        contact.save(function(err, doc) {
-                                            if (err)
+                                            if (err) {
                                                 console.log(err);
+                                                return callback();
+                                            }
 
-                                            cb(null, doc);
+                                            if (contact == null) {
+                                                console.log("contact created");
+                                                contact = new ContactModel(res_contact);
+                                            } else {
+                                                console.log("Contact found");
+
+                                                if (res_contact.Tag)
+                                                    res_contact.Tag = _.union(contact.Tag, res_contact.Tag); // Fusion Tag
+
+                                                contact = _.extend(contact, res_contact);
+                                            }
+
+                                            // Copy address societe
+                                            if (!contact.zip) {
+                                                contact.address = data.address;
+                                                contact.zip = data.zip;
+                                                contact.town = data.town;
+                                            }
+
+                                            //console.log(data);
+
+                                            //console.log(row[10]);
+                                            //console.log(contact);
+                                            //console.log(societe.datec);
+
+                                            contact.save(function(err, doc) {
+                                                if (err)
+                                                    console.log(err);
+
+                                                cb(null, doc);
+                                            });
                                         });
-                                    });
-                                }
-                            ], function(err, results) {
-                                if (err)
-                                    return console.log(err);
+                                    }
+                                ], function(err, results) {
+                                    if (err)
+                                        return console.log(err);
 
 
 
-                                callback();
+                                    callback();
+                                });
                             });
-                        });
 
-                        //return row;
-                    })
-                    .on("end", function(count) {
-                        console.log('Number of lines: ' + count);
-                        /*fs.unlink(self.files[0].path, function(err) {
-                         if (err)
-                         console.log(err);
-                         });*/
-                        return self.json({
-                            count: count
+                            //return row;
+                        })
+                        .on("end", function(count) {
+                            console.log('Number of lines: ' + count);
+                            /*fs.unlink(self.files[0].path, function(err) {
+                             if (err)
+                             console.log(err);
+                             });*/
+                            return self.json({
+                                count: count
+                            });
+                        })
+                        .on('error', function(error) {
+                            console.log(error.message);
                         });
-                    })
-                    .on('error', function(error) {
-                        console.log(error.message);
-                    });
-            }
+                }
+            });
         });
     }, ['upload'], 10240);
     F.route('/erp/api/societe/import/deliveryAddress', function() {
