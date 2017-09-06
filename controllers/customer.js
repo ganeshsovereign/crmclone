@@ -1462,6 +1462,8 @@ exports.install = function() {
                                                     if (err)
                                                         return callback(err);
 
+                                                    console.log(doc);
+
                                                     /*if (societe == null) {
                                                         societe = new SocieteModel(data);
                                                         console.log("Create new societe");
