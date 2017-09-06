@@ -1401,7 +1401,7 @@ exports.install = function() {
                             case "bank_reglement":
                                 if (row[i]) {
                                     let bank = _.find(banks, _.matchesProperty('ref', row[i].trim()));
-                                    societe.bank_reglement = (bank ? bank._id : undefined);
+                                    societe['salesPurchases.bank_reglement'] = (bank ? bank._id : undefined);
                                 }
                                 break;
                             default:
