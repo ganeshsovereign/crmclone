@@ -1,4 +1,4 @@
-MetronicApp.directive('sdBarcode', function () {
+MetronicApp.directive('sdBarcode', function() {
     return {
         // Restrict tells AngularJS how you will be declaring your directive in the markup.
         // A = attribute, C = class, E = element and M = comment
@@ -6,26 +6,26 @@ MetronicApp.directive('sdBarcode', function () {
         scope: {
             barcodeValue: '@'
         },
-        link: function (scope, elem, attrs) {
+        link: function(scope, elem, attrs) {
             elem.barcode(attrs.barcodeValue.toString(), "code128");
         }
     };
 });
 
-MetronicApp.directive('reportDateRange', ['$rootScope', function ($rootScope) {
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            scope: {
-                data: '=ngModel'
-            },
-            template: '<i class="icon-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block">{{data.start | date : \'d MMM yyyy\'}} - {{data.end | date : \'d MMM yyyy\'}}</span>&nbsp; <i class="fa fa-angle-down"></i>',
-            link: function (scope, element, attrs, ngModel) {
-                if (!jQuery().daterangepicker || !element) {
-                    return;
-                }
+MetronicApp.directive('reportDateRange', ['$rootScope', function($rootScope) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        scope: {
+            data: '=ngModel'
+        },
+        template: '<i class="icon-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block">{{data.start | date : \'d MMM yyyy\'}} - {{data.end | date : \'d MMM yyyy\'}}</span>&nbsp; <i class="fa fa-angle-down"></i>',
+        link: function(scope, element, attrs, ngModel) {
+            if (!jQuery().daterangepicker || !element) {
+                return;
+            }
 
-                element.daterangepicker({
+            element.daterangepicker({
                     opens: (Metronic.isRTL() ? 'right' : 'left'),
                     startDate: moment(scope.data.start),
                     endDate: moment(scope.data.end),
@@ -63,7 +63,7 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function ($rootScope) {
                         firstDay: 1
                     }
                 },
-                function (start, end) {
+                function(start, end) {
                     ngModel.$setViewValue({
                         start: start.toDate(),
                         end: end.toDate()
@@ -76,11 +76,11 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function ($rootScope) {
 
                     //console.log(start.toDate());
                 }
-                );
+            );
 
-            }
-        };
-    }]);
+        }
+    };
+}]);
 
 /*angular.module('mean.system').directive('sdSelect', function() {
  return function(scope, element) {
@@ -108,11 +108,11 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function ($rootScope) {
  };
  });*/
 
-MetronicApp.directive('ngEnter', function () {
-    return function (scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
+MetronicApp.directive('ngEnter', function() {
+    return function(scope, element, attrs) {
+        element.bind("keydown keypress", function(event) {
             if (event.which === 13) {
-                scope.$apply(function () {
+                scope.$apply(function() {
                     scope.$eval(attrs.ngEnter, {
                         'event': event
                     });
@@ -124,27 +124,27 @@ MetronicApp.directive('ngEnter', function () {
     };
 });
 
-MetronicApp.directive('ngBlur', function () {
-    return function (scope, elem, attrs) {
-        elem.bind('blur', function (event) {
+MetronicApp.directive('ngBlur', function() {
+    return function(scope, elem, attrs) {
+        elem.bind('blur', function(event) {
             scope.$eval(attrs.ngBlur);
         });
     };
 });
 
 MetronicApp.directive('ngConfirmClick', ['dialogs',
-    function (dialogs) {
+    function(dialogs) {
         return {
             restrict: 'A',
-            link: function (scope, element, attrs) {
-                element.bind('click', function () {
+            link: function(scope, element, attrs) {
+                element.bind('click', function() {
                     var message = attrs.ngConfirmClick || "Are you sure ?";
                     var title = attrs.ngConfirmTitle || "Confirmation";
 
                     var dlg = dialogs.confirm(title, message);
-                    dlg.result.then(function (btn) {
+                    dlg.result.then(function(btn) {
                         scope.$eval(attrs.confirmedClick);
-                    }, function (btn) {
+                    }, function(btn) {
                         if (attrs.canceledClick)
                             scope.$eval(attrs.canceledClick);
                     });
@@ -154,11 +154,11 @@ MetronicApp.directive('ngConfirmClick', ['dialogs',
     }
 ]);
 
-MetronicApp.directive('myFocus', function () {
+MetronicApp.directive('myFocus', function() {
     return {
         restrict: 'A',
-        link: function (scope, element, attr) {
-            scope.$watch(attr.myFocus, function (n, o) {
+        link: function(scope, element, attr) {
+            scope.$watch(attr.myFocus, function(n, o) {
                 if (n != 0 && n) {
                     element[0].focus();
                 }
@@ -168,20 +168,20 @@ MetronicApp.directive('myFocus', function () {
 });
 
 MetronicApp.factory('superCache', ['$cacheFactory',
-    function ($cacheFactory) {
+    function($cacheFactory) {
         return $cacheFactory('super-cache');
     }
 ]);
 
 MetronicApp.directive('crmAddress', ['$http',
-    function ($http) {
+    function($http) {
         return {
             restrict: 'A',
             scope: {
                 addressModel: '=model',
                 mode: '=?'
             },
-            templateUrl: function (el, attr) {
+            templateUrl: function(el, attr) {
                 if (attr.mode) {
                     if (attr.mode === 'create') {
                         return '/templates/core/address_edit.html';
@@ -195,19 +195,19 @@ MetronicApp.directive('crmAddress', ['$http',
                 } else
                     return '/templates/core/address.html';
             },
-            link: function (scope) {
+            link: function(scope) {
 
                 scope.updateAddressDir = true;
 
                 scope.deletedAddress = {
-                    name:null,
+                    name: null,
                     address: null,
                     zip: null,
                     town: null,
                     societe: {}
                 };
 
-                scope.enableUpdateAddress = function () {
+                scope.enableUpdateAddress = function() {
                     scope.deletedAddress = {
                         name: scope.addressModel.name,
                         address: scope.addressModel.address,
@@ -219,21 +219,21 @@ MetronicApp.directive('crmAddress', ['$http',
                     scope.updateAddressDir = !scope.updateAddressDir;
                 };
 
-                scope.cancelUpdateAddress = function () {
+                scope.cancelUpdateAddress = function() {
                     scope.addressModel.name = scope.deletedAddress.name;
                     scope.addressModel.address = scope.deletedAddress.address;
                     scope.addressModel.zip = scope.deletedAddress.zip;
                     scope.addressModel.town = scope.deletedAddress.town;
                     scope.updateAddressDir = !scope.updateAddressDir;
                 };
-                scope.getLocation = function (val) {
-                    return $http.jsonp('https://modules.tomanage.fr/api/zipcode/autocomplete?callback=JSON_CALLBACK&q='+val)
-                            .then(function (res) {
-                        return res.data;
-                    });
+                scope.getLocation = function(val) {
+                    return $http.jsonp('https://modules.tomanage.fr/api/zipcode/autocomplete?callback=JSON_CALLBACK&q=' + val)
+                        .then(function(res) {
+                            return res.data;
+                        });
                 };
 
-                scope.generateZip = function (item) {
+                scope.generateZip = function(item) {
                     scope.addressModel.zip = item.code;
                     scope.addressModel.town = item.city;
                 };
@@ -243,7 +243,7 @@ MetronicApp.directive('crmAddress', ['$http',
 ]);
 
 MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
-    function ($http, $modal, Contacts) {
+    function($http, $modal, Contacts) {
         return {
             restrict: 'A',
             scope: {
@@ -251,69 +251,71 @@ MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
                 societe: '=?',
                 mode: '=?'
             },
-            templateUrl: function (el, attr) {
+            templateUrl: function(el, attr) {
                 if (attr.mode) {
                     if (attr.mode === 'create')
                         return '/templates/core/contact_edit.html';
                 } else
                     return '/templates/core/contact.html';
             },
-            link: function (scope) {
+            link: function(scope) {
 
                 scope.updateContactDir = true;
                 scope.contacts = [];
 
-                scope.$watch('societe', function (newValue, oldValue) {
+                scope.$watch('societe', function(newValue, oldValue) {
                     if (!newValue)
                         return;
 
-                    $http({method: 'GET', url: '/erp/api/contact', params: {
+                    $http({
+                        method: 'GET',
+                        url: '/erp/api/contact',
+                        params: {
                             find: {
-                                societe : newValue.id
+                                societe: newValue.id
                             },
                             field: "_id firstname lastname name poste"
                         }
-                    }).success(function (data) {
+                    }).success(function(data) {
                         //console.log(data);
                         scope.contacts = data;
                     });
                 });
-                scope.addContact = function () {
+                scope.addContact = function() {
                     scope.contactModel.push(scope.selectedContact._id);
-                    scope.$parent.update(function (err, response) {
+                    scope.$parent.update(function(err, response) {
                         scope.$parent.findOne();
                     });
 
                 };
 
-                scope.deleteContact = function (index) {
+                scope.deleteContact = function(index) {
                     scope.contactModel.splice(index, 1);
-                    scope.$parent.update(function (err, response) {
+                    scope.$parent.update(function(err, response) {
                         scope.$parent.findOne();
                     });
                 };
 
-                scope.addNewContact = function () {
+                scope.addNewContact = function() {
 
                     var modalInstance = $modal.open({
                         templateUrl: '/templates/_contact/modal/create.html',
                         controller: "ContactCreateController",
                         resolve: {
-                            object: function () {
+                            object: function() {
                                 return {
                                     societe: scope.societe
                                 };
                             }
                         }
                     });
-                    modalInstance.result.then(function (contacts) {
+                    modalInstance.result.then(function(contacts) {
                         //scope.contacts.push(contacts);
                         scope.contactModel.push(contacts._id);
-                        scope.$parent.update(function (err, response) {
+                        scope.$parent.update(function(err, response) {
                             scope.$parent.findOne();
                         });
-                    }, function () {
-                    });
+                    }, function() {});
                 };
 
                 scope.deletedContact = {
@@ -323,7 +325,7 @@ MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
                     email: null
                 };
 
-                scope.enableUpdateContact = function () {
+                scope.enableUpdateContact = function() {
                     scope.deletedContact = {
                         id: scope.contactModel.id,
                         name: scope.contactModel.name,
@@ -333,7 +335,7 @@ MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
                     scope.updateContactDir = !scope.updateContactDir;
                 };
 
-                scope.cancelUpdateContact = function () {
+                scope.cancelUpdateContact = function() {
                     scope.contactModel.id = scope.deletedContact.id;
                     scope.contactModel.name = scope.deletedContact.name;
                     scope.contactModel.phone = scope.deletedContact.phone;
@@ -345,7 +347,7 @@ MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
     }
 ]);
 MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
-    function ($http, $modal, Products) {
+    function($http, $modal, Products) {
         return {
             restrict: 'E',
             transclude: true,
@@ -354,38 +356,38 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
                 obj: '=ngModel',
                 //societe: '=?'
             },
-            link: function (scope) {
+            link: function(scope) {
 
-                scope.addContact = function () {
+                scope.addContact = function() {
                     scope.contactModel.push(scope.selectedContact._id);
-                    scope.$parent.update(function (err, response) {
+                    scope.$parent.update(function(err, response) {
                         scope.$parent.findOne();
                     });
 
                 };
 
-                scope.addProducts = function () {
+                scope.addProducts = function() {
 
                     var modalInstance = $modal.open({
                         templateUrl: '/templates/core/modal/barcode_scan.html',
-                        controller: function ($scope, $modalInstance, object) {
+                        controller: function($scope, $modalInstance, object) {
                             //$scope.items = items;
                             //console.log(object);
 
-                            var round = function (value, decimals) {
+                            var round = function(value, decimals) {
                                 if (value > Math.pow(10, (decimals + 2) * -1) * -1 && value < Math.pow(10, (decimals + 2) * -1)) // Fix error little number
                                     return 0;
                                 return Number(Math.round(value + 'e' + (decimals)) + 'e-' + (decimals));
                             };
 
-                            $scope.readNewScan = function () {
+                            $scope.readNewScan = function() {
                                 console.log("SCAN");
 
                                 $http.post('/erp/api/product/scan', {
                                     scan: $scope.scan,
                                     price_level: object.price_level,
                                     qty: 1
-                                }).then(function (res) {
+                                }).then(function(res) {
                                     //console.log(res.data);
                                     //return res.data;
 
@@ -415,7 +417,7 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
                                 });
                             };
 
-                            var addProduct = function (data, index, lines) {
+                            var addProduct = function(data, index, lines) {
                                 //console.log(data);
                                 for (var i = 0; i < lines.length; i++) {
                                     if (lines[i].idLine === index) {
@@ -444,7 +446,7 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
                                 }
                             };
 
-                            var calculMontantHT = function (line, data, varname) {
+                            var calculMontantHT = function(line, data, varname) {
                                 if (varname)
                                     line[varname] = data;
 
@@ -465,7 +467,7 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
                                         price_level: object.price_level,
                                         qty: line.qty,
                                         _id: line.product.id
-                                    }).then(function (res) {
+                                    }).then(function(res) {
                                         console.log("TATA");
                                         console.log(res.data);
                                         line.pu_ht = res.data.pu_ht;
@@ -476,29 +478,28 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
                                 calculHT(line);
                             };
 
-                            $scope.ok = function () {
+                            $scope.ok = function() {
                                 $modalInstance.close($scope.selected.item);
                             };
 
-                            $scope.cancel = function () {
+                            $scope.cancel = function() {
                                 $modalInstance.dismiss('cancel');
                             };
                         },
                         windowClass: "",
                         resolve: {
-                            object: function () {
+                            object: function() {
                                 return scope.obj;
                             }
                         }
                     });
-                    modalInstance.result.then(function (contacts) {
+                    modalInstance.result.then(function(contacts) {
                         //scope.contacts.push(contacts);
                         scope.contactModel.push(contacts._id);
-                        scope.$parent.update(function (err, response) {
+                        scope.$parent.update(function(err, response) {
                             scope.$parent.findOne();
                         });
-                    }, function () {
-                    });
+                    }, function() {});
                 };
 
                 scope.deletedContact = {
@@ -508,7 +509,7 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
                     email: null
                 };
 
-                scope.enableUpdateContact = function () {
+                scope.enableUpdateContact = function() {
                     scope.deletedContact = {
                         id: scope.contactModel.id,
                         name: scope.contactModel.name,
@@ -518,7 +519,7 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
                     scope.updateContactDir = !scope.updateContactDir;
                 };
 
-                scope.cancelUpdateContact = function () {
+                scope.cancelUpdateContact = function() {
                     scope.contactModel.id = scope.deletedContact.id;
                     scope.contactModel.name = scope.deletedContact.name;
                     scope.contactModel.phone = scope.deletedContact.phone;
@@ -530,7 +531,7 @@ MetronicApp.directive('scanBarcode', ['$http', '$modal', 'Products',
     }
 ]);
 MetronicApp.directive('crmId', ['$http',
-    function ($http) {
+    function($http) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -545,38 +546,37 @@ MetronicApp.directive('crmId', ['$http',
                 url: "@",
                 onSelect: "="
             },
-            templateUrl: function (el, attr) {
+            templateUrl: function(el, attr) {
                 return '/templates/core/typeahead-form.html';
             },
-            link: function (scope, elm, attrs, ctrl) {
+            link: function(scope, elm, attrs, ctrl) {
                 //console.log(scope);
 
                 scope.$error = false;
                 scope.$error2 = true; // Only if accueil compte
 
-                scope.AutoComplete = function (val, url, entity) {
+                scope.AutoComplete = function(val, url, entity) {
                     return $http.post(url, {
                         take: 50, // limit
                         entity: entity,
                         filter: {
                             logic: 'and',
                             filters: [{
-                                    value: val
-                                }]
+                                value: val
+                            }]
                         }
-                    }).then(function (res) {
+                    }).then(function(res) {
                         //console.log(res.data);
                         return res.data;
                     });
                 };
-                ctrl.$validators.id = function (modelValue, viewValue) {
+                ctrl.$validators.id = function(modelValue, viewValue) {
 
                     if (ctrl.$isEmpty(modelValue)) {
                         if (scope.required) {
                             scope.$error = true;
                             return false;
-                        }
-                        else {
+                        } else {
                             // consider empty models to be valid
                             scope.$error = false;
                             return true;
@@ -595,7 +595,7 @@ MetronicApp.directive('crmId', ['$http',
                     scope.$error = true;
                     return false;
                 };
-                scope.changeName = function () {
+                scope.changeName = function() {
                     if (scope.model.name === 'Accueil' || !scope.model.name)
                         scope.$error2 = true;
                     else
@@ -603,9 +603,10 @@ MetronicApp.directive('crmId', ['$http',
                 };
             }
         };
-    }]);
+    }
+]);
 MetronicApp.directive('crmNotes', [
-    function () {
+    function() {
         return {
             restrict: 'E',
             require: 'ngModel',
@@ -613,35 +614,33 @@ MetronicApp.directive('crmNotes', [
                 noteModel: '=ngModel',
                 ngChange: '&'
             },
-            templateUrl: function (el, attr) {
+            templateUrl: function(el, attr) {
                 return '/templates/core/notes.html';
             },
-            link: function (scope, elem, attrs, ngModel) {
+            link: function(scope, elem, attrs, ngModel) {
 
                 //scope.updateNoteDir = true;
                 //console.log("titi",scope);
                 var first = false;
-               
-                scope.$watch('noteModel', function(){
-                //console.log(typeof scope.noteModel);
-                if (typeof scope.noteModel == "undefined") {
-                    //console.log("toto");
-                    first = true;
-                    scope.noteModel = {};
-                }
-                
-                else { 
-                    first=false;
-                    //console.log("tutu");
-                }
-                });               
-                
-                scope.update = function () {
+
+                scope.$watch('noteModel', function() {
+                    //console.log(typeof scope.noteModel);
+                    if (typeof scope.noteModel == "undefined") {
+                        //console.log("toto");
+                        first = true;
+                        scope.noteModel = {};
+                    } else {
+                        first = false;
+                        //console.log("tutu");
+                    }
+                });
+
+                scope.update = function() {
                     //console.log("save");
                     ngModel.$setViewValue(scope.noteModel);
-                    if (!first)  
+                    if (!first)
                         scope.ngChange();
-                    
+
                     return true;
                 };
                 scope.deletedNote = {
@@ -650,7 +649,7 @@ MetronicApp.directive('crmNotes', [
                     public: false,
                     edit: false
                 };
-                scope.enableUpdateNote = function () {
+                scope.enableUpdateNote = function() {
                     scope.deletedNote = {
                         title: scope.noteModel.title,
                         note: scope.noteModel.note,
@@ -659,7 +658,7 @@ MetronicApp.directive('crmNotes', [
                     };
                     scope.updateNoteDir = !scope.updateNoteDir;
                 };
-                scope.cancelUpdateNote = function () {
+                scope.cancelUpdateNote = function() {
                     scope.noteModel.title = scope.deletedNote.title;
                     scope.noteModel.note = scope.deletedNote.note;
                     scope.noteModel.public = scope.deletedNote.public;
@@ -671,359 +670,359 @@ MetronicApp.directive('crmNotes', [
     }
 ]);
 MetronicApp.directive(
-        'dateInput',
-        function (dateFilter) {
-            return {
-                //restrict: 'E',
-                scope: {
-                    dt: '=ngModel',
-                    ngRequired: '=' // TODO a tester
-                },
-                require: 'ngModel',
-                //template: '<input type="date" class="form-control" placeholder="jj/mm/aaaa"></input>',
-                template: '<p class="input-group"><input type="text" class="form-control" placeholder="jj/mm/aaaa" ng-model="dt" init-date="null" datepicker-popup="dd/MM/yyyy" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Fermer" /><span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
-                replace: true,
-                link: function (scope, elm, attrs, ngModelCtrl) {
-                    ngModelCtrl.$formatters.length = 0;
-                    ngModelCtrl.$parsers.length = 0;
-
-                    scope.opened = false;
-
-                    scope.open = function ($event) {
-                        $event.preventDefault();
-                        $event.stopPropagation();
-
-                        scope.opened = true;
-                    };
-
-                    //scope.setDate = function (year, month, day) {
-                    //    scope.dt = new Date(year, month, day);
-                    //};
-
-                    scope.dateOptions = {
-                        formatYear: 'yyyy',
-                        formatDay: 'dd',
-                        formatMonth: 'MM',
-                        startingDay: 1
-                    };
-
-                    //ngModelCtrl.$formatters.shift();
-                    /*ngModelCtrl.$render = function () {
-                     ngModelCtrl.$viewValue = new Date(ngModelCtrl.$viewValue);
-                     var date = ngModelCtrl.$viewValue ? dateFilter(ngModelCtrl.$viewValue,'dd/MM/yyyy' ) : '';
-                     elm.val(date);
-                     
-                     updateCalendar();
-                     };*/
-
-                    /*ngModelCtrl.$formatters.unshift(function (modelValue) {
-                     console.log("hi");
-                     console.log(modelValue);
-                     return dateFilter(modelValue, 'dd/MM/yyyy');
-                     });*/
-                    /*ngModelCtrl.$parsers.unshift(function (viewValue) {
-                     console.log("ho", viewValue);
-                     return new Date(viewValue);
-                     });*/
-                }
-            };
-        });
-//https://raw.githubusercontent.com/GrantMStevens/amCharts-Angular/master/dist/amChartsDirective.js
-// 1.0.4
-MetronicApp.directive('amChart', ['$q', function ($q) {
+    'dateInput',
+    function(dateFilter) {
         return {
-            restrict: 'E',
-            replace: true,
+            //restrict: 'E',
             scope: {
-                options: '=',
-                height: '@',
-                width: '@',
-                datas: '='
+                dt: '=ngModel',
+                minDate: '=',
+                ngRequired: '=' // TODO a tester
             },
-            template: '<div class="amchart"></div>',
-            link: function ($scope, $el) {
-                var id = getIdForUseInAmCharts();
-                $el.attr('id', id);
-                var chart;
+            require: 'ngModel',
+            //template: '<input type="date" class="form-control" placeholder="jj/mm/aaaa"></input>',
+            template: '<p class="input-group"><input type="text" class="form-control" placeholder="jj/mm/aaaa" ng-model="dt" min-date="minDate" init-date="null" datepicker-popup="dd/MM/yyyy" is-open="opened" datepicker-options="dateOptions" ng-required="false" close-text="Fermer" /><span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button></span></p>',
+            replace: true,
+            link: function(scope, elm, attrs, ngModelCtrl) {
+                ngModelCtrl.$formatters.length = 0;
+                ngModelCtrl.$parsers.length = 0;
 
-                // allow $scope.options to be a promise
-                $q.when($scope.options).then(function (options) {
-                    // we can't render a chart without any data
-                    if (options.data) {
-                        var renderChart = function (amChartOptions) {
-                            var o = amChartOptions || options;
+                scope.opened = false;
 
-                            // set height and width
-                            var height = $scope.height || '100%';
-                            var width = $scope.width || '100%';
+                scope.open = function($event) {
+                    $event.preventDefault();
+                    $event.stopPropagation();
 
-                            $el.css({
-                                'height': height,
-                                'width': width
-                            });
+                    scope.opened = true;
+                };
 
-                            // instantiate new chart object
-                            if (o.type === 'xy') {
-                                chart = o.theme ? new AmCharts.AmXYChart(AmCharts.themes[o.theme]) : new AmCharts.AmXYChart();
-                            } else if (o.type === 'pie') {
-                                chart = o.theme ? new AmCharts.AmPieChart(AmCharts.themes[o.theme]) : new AmCharts.AmPieChart();
-                            } else if (o.type === 'funnel') {
-                                chart = o.theme ? new AmCharts.AmFunnelChart(AmCharts.themes[o.theme]) : new AmCharts.AmFunnelChart();
-                            } else if (o.type === 'radar') {
-                                chart = o.theme ? new AmCharts.AmRadarChart(AmCharts.themes[o.theme]) : new AmCharts.AmRadarChart();
-                            } else {
-                                chart = o.theme ? new AmCharts.AmSerialChart(AmCharts.themes[o.theme]) : new AmCharts.AmSerialChart();
-                            }
+                //scope.setDate = function (year, month, day) {
+                //    scope.dt = new Date(year, month, day);
+                //};
 
-                            /** set some default values that amCharts doesnt provide **/
-                            $q.when(o.data)
-                                    .then(function (data) {
+                scope.dateOptions = {
+                    formatYear: 'yyyy',
+                    formatDay: 'dd',
+                    formatMonth: 'MM',
+                    startingDay: 1
+                };
 
-                                        chart.dataProvider = data;
-                                        // if a category field is not specified, attempt to use the first field from an object in the array
-                                        chart.categoryField = o.categoryField || Object.keys(o.data[0])[0];
-                                        chart.startDuration = 0.5; // default animation length, because everyone loves a little pizazz
+                //ngModelCtrl.$formatters.shift();
+                /*ngModelCtrl.$render = function () {
+                 ngModelCtrl.$viewValue = new Date(ngModelCtrl.$viewValue);
+                 var date = ngModelCtrl.$viewValue ? dateFilter(ngModelCtrl.$viewValue,'dd/MM/yyyy' ) : '';
+                 elm.val(date);
+                 
+                 updateCalendar();
+                 };*/
 
-                                        // AutoMargin is on by default, but the default 20px all around seems to create unnecessary white space around the control
-                                        chart.autoMargins = true;
-                                        chart.marginTop = 0;
-                                        chart.marginLeft = 0;
-                                        chart.marginBottom = 0;
-                                        chart.marginRight = 0;
-
-                                        // modify default creditsPosition
-                                        chart.creditsPosition = 'top-right';
-
-                                        function generateGraphProperties(data) {
-                                            // Assign Category Axis Properties
-                                            if (o.categoryAxis) {
-                                                var categoryAxis = chart.categoryAxis;
-
-                                                if (categoryAxis) {
-                                                    /* if we need to create any default values, we should assign them here */
-                                                    categoryAxis.parseDates = true;
-
-                                                    var keys = Object.keys(o.categoryAxis);
-                                                    for (var i = 0; i < keys.length; i++) {
-                                                        if (!angular.isObject(o.categoryAxis[keys[i]]) || angular.isArray(o.categoryAxis[keys[i]])) {
-                                                            categoryAxis[keys[i]] = o.categoryAxis[keys[i]];
-                                                        } else {
-                                                            console.log('Stripped categoryAxis obj ' + keys[i]);
-                                                        }
-                                                    }
-                                                    chart.categoryAxis = categoryAxis;
-                                                }
-                                            }
-
-                                            // Create value axis
-
-                                            /* if we need to create any default values, we should assign them here */
-
-                                            var addValueAxis = function (a) {
-                                                var valueAxis = new AmCharts.ValueAxis();
-
-                                                var keys = Object.keys(a);
-                                                for (var i = 0; i < keys.length; i++) {
-                                                    valueAxis[keys[i]] = a[keys[i]];
-                                                }
-                                                chart.addValueAxis(valueAxis);
-                                            };
-
-                                            if (o.valueAxes && o.valueAxes.length > 0) {
-                                                for (var i = 0; i < o.valueAxes.length; i++) {
-                                                    addValueAxis(o.valueAxes[i]);
-                                                }
-                                            }
-
-                                            //reusable function to create graph
-                                            var addGraph = function (g) {
-                                                var graph = new AmCharts.AmGraph();
-                                                /** set some default values that amCharts doesnt provide **/
-                                                // if a category field is not specified, attempt to use the second field from an object in the array as a default value
-                                                if (g && o.data && o.data.length > 0) {
-                                                    graph.valueField = g.valueField || Object.keys(o.data[0])[1];
-                                                }
-                                                graph.balloonText = '<span style="font-size:14px">[[category]]: <b>[[value]]</b></span>';
-                                                if (g) {
-                                                    var keys = Object.keys(g);
-                                                    // iterate over all of the properties in the graph object and apply them to the new AmGraph
-                                                    for (var i = 0; i < keys.length; i++) {
-                                                        graph[keys[i]] = g[keys[i]];
-                                                    }
-                                                }
-                                                chart.addGraph(graph);
-                                            };
-
-                                            // create the graphs
-                                            if (o.graphs && o.graphs.length > 0) {
-                                                for (var i = 0; i < o.graphs.length; i++) {
-                                                    addGraph(o.graphs[i]);
-                                                }
-                                            } else {
-                                                addGraph();
-                                            }
-
-                                            if (o.type === 'gantt' || o.type === 'serial' || o.type === 'xy') {
-                                                var chartCursor = new AmCharts.ChartCursor();
-                                                if (o.chartCursor) {
-                                                    var keys = Object.keys(o.chartCursor);
-                                                    for (var i = 0; i < keys.length; i++) {
-                                                        if (typeof o.chartCursor[keys[i]] !== 'object') {
-                                                            chartCursor[keys[i]] = o.chartCursor[keys[i]];
-                                                        }
-                                                    }
-                                                }
-                                                chart.addChartCursor(chartCursor);
-                                            }
-
-                                            if (o.chartScrollbar) {
-                                                var scrollbar = new AmCharts.ChartScrollbar();
-                                                var keys = Object.keys(o.chartScrollbar);
-                                                for (var i = 0; i < keys.length; i++) {
-                                                    scrollbar[keys[i]] = o.chartScrollbar[keys[i]];
-                                                }
-                                                chart.chartScrollbar = scrollbar;
-                                            }
-
-                                            if (o.balloon) {
-                                                chart.balloon = o.balloon;
-                                            }
-                                        }
-
-                                        function generatePieProperties() {
-                                            if (o.balloon) {
-                                                chart.balloon = o.balloon;
-                                            }
-                                        }
-
-                                        if (o.legend) {
-                                            var legend = new AmCharts.AmLegend();
-                                            var keys = Object.keys(o.legend);
-                                            for (var i = 0; i < keys.length; i++) {
-                                                legend[keys[i]] = o.legend[keys[i]];
-                                            }
-                                            chart.legend = legend;
-                                        }
-
-                                        if (o.type === 'pie') {
-                                            generatePieProperties();
-                                        } else {
-                                            generateGraphProperties();
-                                        }
-
-                                        if (o.titles) {
-                                            for (var i = 0; i < o.titles.length; i++) {
-                                                var title = o.titles[i];
-                                                chart.addTitle(title.text, title.size, title.color, title.alpha, title.bold);
-                                            }
-                                            ;
-                                        }
-
-                                        if (o.export) {
-                                            chart.amExport = o.export;
-                                        }
-
-                                        if (o.colors) {
-                                            chart.colors = o.colors;
-                                        }
-
-                                        if (o.listeners) {
-                                            for (var i = 0; i < o.listeners.length; i++) {
-                                                chart.addListener(o.listeners[i].event, o.listeners[i].method);
-                                            }
-                                        }
-
-                                        var addEventListeners = function (obj, chartObj) {
-                                            for (var i = 0; i < obj.length; i++) {
-                                                if (obj[i].listeners) {
-                                                    var listeners = obj[i].listeners;
-                                                    for (var l = 0; l < listeners.length; l++) {
-                                                        chartObj[i].addListener(listeners[l].event, listeners[l].method);
-                                                    }
-                                                }
-                                            }
-                                        };
-
-                                        var chartKeys = Object.keys(o);
-                                        for (var i = 0; i < chartKeys.length; i++) {
-                                            if (typeof o[chartKeys[i]] !== 'object' && typeof o[chartKeys[i]] !== 'function') {
-                                                chart[chartKeys[i]] = o[chartKeys[i]];
-                                            } else if (typeof o[chartKeys[i]] === 'object') {
-                                                addEventListeners(o[chartKeys[i]], chart[chartKeys[i]]);
-                                            }
-                                        }
-
-                                        // WRITE
-                                        chart.write(id);
-
-                                    });
-                        }; //renderchart
-
-
-                        // Render the chart
-                        renderChart();
-
-
-                        // EVENTS =========================================================================
-
-                        $scope.$on('amCharts.triggerChartAnimate', function (event, id) {
-                            if (id === $el[0].id || !id) {
-                                chart.animateAgain();
-                            }
-                        });
-
-                        $scope.$on('amCharts.updateData', function (event, data, id) {
-                            if (id === $el[0].id || !id) {
-                                chart.dataProvider = data;
-                                chart.validateData();
-                            }
-                        });
-
-                        $scope.$watch('datas', function (newValue, oldValue) {
-                            chart.dataProvider = newValue;
-                            chart.validateData();
-
-                        });
-
-
-                        $scope.$on('amCharts.validateNow', function (event, validateData, skipEvents, id) {
-                            if (id === $el[0].id || !id) {
-                                chart.validateNow(validateData === undefined ? true : validateData,
-                                        skipEvents === undefined ? false : skipEvents);
-                            }
-                        });
-
-                        $scope.$on('amCharts.renderChart', function (event, amChartOptions, id) {
-                            if (id === $el[0].id || !id) {
-                                chart.clear();
-                                renderChart(amChartOptions);
-                            }
-                        });
-
-                        $scope.$on('$destroy', function () {
-                            chart.clear();
-                        });
-                    }
-                });
-
-                function getIdForUseInAmCharts() {
-                    var id = $el[0].id;// try to use existing outer id to create new id
-
-                    if (!id) {//generate a UUID
-                        var guid = function guid() {
-                            function s4() {
-                                return Math.floor((1 + Math.random()) * 0x10000)
-                                        .toString(16)
-                                        .substring(1);
-                            }
-
-                            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-                                    s4() + '-' + s4() + s4() + s4();
-                        };
-                        id = guid();
-                    }
-                    return id;
-                }
+                /*ngModelCtrl.$formatters.unshift(function (modelValue) {
+                 console.log("hi");
+                 console.log(modelValue);
+                 return dateFilter(modelValue, 'dd/MM/yyyy');
+                 });*/
+                /*ngModelCtrl.$parsers.unshift(function (viewValue) {
+                 console.log("ho", viewValue);
+                 return new Date(viewValue);
+                 });*/
             }
         };
-    }]);
+    });
+//https://raw.githubusercontent.com/GrantMStevens/amCharts-Angular/master/dist/amChartsDirective.js
+// 1.0.4
+MetronicApp.directive('amChart', ['$q', function($q) {
+    return {
+        restrict: 'E',
+        replace: true,
+        scope: {
+            options: '=',
+            height: '@',
+            width: '@',
+            datas: '='
+        },
+        template: '<div class="amchart"></div>',
+        link: function($scope, $el) {
+            var id = getIdForUseInAmCharts();
+            $el.attr('id', id);
+            var chart;
+
+            // allow $scope.options to be a promise
+            $q.when($scope.options).then(function(options) {
+                // we can't render a chart without any data
+                if (options.data) {
+                    var renderChart = function(amChartOptions) {
+                        var o = amChartOptions || options;
+
+                        // set height and width
+                        var height = $scope.height || '100%';
+                        var width = $scope.width || '100%';
+
+                        $el.css({
+                            'height': height,
+                            'width': width
+                        });
+
+                        // instantiate new chart object
+                        if (o.type === 'xy') {
+                            chart = o.theme ? new AmCharts.AmXYChart(AmCharts.themes[o.theme]) : new AmCharts.AmXYChart();
+                        } else if (o.type === 'pie') {
+                            chart = o.theme ? new AmCharts.AmPieChart(AmCharts.themes[o.theme]) : new AmCharts.AmPieChart();
+                        } else if (o.type === 'funnel') {
+                            chart = o.theme ? new AmCharts.AmFunnelChart(AmCharts.themes[o.theme]) : new AmCharts.AmFunnelChart();
+                        } else if (o.type === 'radar') {
+                            chart = o.theme ? new AmCharts.AmRadarChart(AmCharts.themes[o.theme]) : new AmCharts.AmRadarChart();
+                        } else {
+                            chart = o.theme ? new AmCharts.AmSerialChart(AmCharts.themes[o.theme]) : new AmCharts.AmSerialChart();
+                        }
+
+                        /** set some default values that amCharts doesnt provide **/
+                        $q.when(o.data)
+                            .then(function(data) {
+
+                                chart.dataProvider = data;
+                                // if a category field is not specified, attempt to use the first field from an object in the array
+                                chart.categoryField = o.categoryField || Object.keys(o.data[0])[0];
+                                chart.startDuration = 0.5; // default animation length, because everyone loves a little pizazz
+
+                                // AutoMargin is on by default, but the default 20px all around seems to create unnecessary white space around the control
+                                chart.autoMargins = true;
+                                chart.marginTop = 0;
+                                chart.marginLeft = 0;
+                                chart.marginBottom = 0;
+                                chart.marginRight = 0;
+
+                                // modify default creditsPosition
+                                chart.creditsPosition = 'top-right';
+
+                                function generateGraphProperties(data) {
+                                    // Assign Category Axis Properties
+                                    if (o.categoryAxis) {
+                                        var categoryAxis = chart.categoryAxis;
+
+                                        if (categoryAxis) {
+                                            /* if we need to create any default values, we should assign them here */
+                                            categoryAxis.parseDates = true;
+
+                                            var keys = Object.keys(o.categoryAxis);
+                                            for (var i = 0; i < keys.length; i++) {
+                                                if (!angular.isObject(o.categoryAxis[keys[i]]) || angular.isArray(o.categoryAxis[keys[i]])) {
+                                                    categoryAxis[keys[i]] = o.categoryAxis[keys[i]];
+                                                } else {
+                                                    console.log('Stripped categoryAxis obj ' + keys[i]);
+                                                }
+                                            }
+                                            chart.categoryAxis = categoryAxis;
+                                        }
+                                    }
+
+                                    // Create value axis
+
+                                    /* if we need to create any default values, we should assign them here */
+
+                                    var addValueAxis = function(a) {
+                                        var valueAxis = new AmCharts.ValueAxis();
+
+                                        var keys = Object.keys(a);
+                                        for (var i = 0; i < keys.length; i++) {
+                                            valueAxis[keys[i]] = a[keys[i]];
+                                        }
+                                        chart.addValueAxis(valueAxis);
+                                    };
+
+                                    if (o.valueAxes && o.valueAxes.length > 0) {
+                                        for (var i = 0; i < o.valueAxes.length; i++) {
+                                            addValueAxis(o.valueAxes[i]);
+                                        }
+                                    }
+
+                                    //reusable function to create graph
+                                    var addGraph = function(g) {
+                                        var graph = new AmCharts.AmGraph();
+                                        /** set some default values that amCharts doesnt provide **/
+                                        // if a category field is not specified, attempt to use the second field from an object in the array as a default value
+                                        if (g && o.data && o.data.length > 0) {
+                                            graph.valueField = g.valueField || Object.keys(o.data[0])[1];
+                                        }
+                                        graph.balloonText = '<span style="font-size:14px">[[category]]: <b>[[value]]</b></span>';
+                                        if (g) {
+                                            var keys = Object.keys(g);
+                                            // iterate over all of the properties in the graph object and apply them to the new AmGraph
+                                            for (var i = 0; i < keys.length; i++) {
+                                                graph[keys[i]] = g[keys[i]];
+                                            }
+                                        }
+                                        chart.addGraph(graph);
+                                    };
+
+                                    // create the graphs
+                                    if (o.graphs && o.graphs.length > 0) {
+                                        for (var i = 0; i < o.graphs.length; i++) {
+                                            addGraph(o.graphs[i]);
+                                        }
+                                    } else {
+                                        addGraph();
+                                    }
+
+                                    if (o.type === 'gantt' || o.type === 'serial' || o.type === 'xy') {
+                                        var chartCursor = new AmCharts.ChartCursor();
+                                        if (o.chartCursor) {
+                                            var keys = Object.keys(o.chartCursor);
+                                            for (var i = 0; i < keys.length; i++) {
+                                                if (typeof o.chartCursor[keys[i]] !== 'object') {
+                                                    chartCursor[keys[i]] = o.chartCursor[keys[i]];
+                                                }
+                                            }
+                                        }
+                                        chart.addChartCursor(chartCursor);
+                                    }
+
+                                    if (o.chartScrollbar) {
+                                        var scrollbar = new AmCharts.ChartScrollbar();
+                                        var keys = Object.keys(o.chartScrollbar);
+                                        for (var i = 0; i < keys.length; i++) {
+                                            scrollbar[keys[i]] = o.chartScrollbar[keys[i]];
+                                        }
+                                        chart.chartScrollbar = scrollbar;
+                                    }
+
+                                    if (o.balloon) {
+                                        chart.balloon = o.balloon;
+                                    }
+                                }
+
+                                function generatePieProperties() {
+                                    if (o.balloon) {
+                                        chart.balloon = o.balloon;
+                                    }
+                                }
+
+                                if (o.legend) {
+                                    var legend = new AmCharts.AmLegend();
+                                    var keys = Object.keys(o.legend);
+                                    for (var i = 0; i < keys.length; i++) {
+                                        legend[keys[i]] = o.legend[keys[i]];
+                                    }
+                                    chart.legend = legend;
+                                }
+
+                                if (o.type === 'pie') {
+                                    generatePieProperties();
+                                } else {
+                                    generateGraphProperties();
+                                }
+
+                                if (o.titles) {
+                                    for (var i = 0; i < o.titles.length; i++) {
+                                        var title = o.titles[i];
+                                        chart.addTitle(title.text, title.size, title.color, title.alpha, title.bold);
+                                    };
+                                }
+
+                                if (o.export) {
+                                    chart.amExport = o.export;
+                                }
+
+                                if (o.colors) {
+                                    chart.colors = o.colors;
+                                }
+
+                                if (o.listeners) {
+                                    for (var i = 0; i < o.listeners.length; i++) {
+                                        chart.addListener(o.listeners[i].event, o.listeners[i].method);
+                                    }
+                                }
+
+                                var addEventListeners = function(obj, chartObj) {
+                                    for (var i = 0; i < obj.length; i++) {
+                                        if (obj[i].listeners) {
+                                            var listeners = obj[i].listeners;
+                                            for (var l = 0; l < listeners.length; l++) {
+                                                chartObj[i].addListener(listeners[l].event, listeners[l].method);
+                                            }
+                                        }
+                                    }
+                                };
+
+                                var chartKeys = Object.keys(o);
+                                for (var i = 0; i < chartKeys.length; i++) {
+                                    if (typeof o[chartKeys[i]] !== 'object' && typeof o[chartKeys[i]] !== 'function') {
+                                        chart[chartKeys[i]] = o[chartKeys[i]];
+                                    } else if (typeof o[chartKeys[i]] === 'object') {
+                                        addEventListeners(o[chartKeys[i]], chart[chartKeys[i]]);
+                                    }
+                                }
+
+                                // WRITE
+                                chart.write(id);
+
+                            });
+                    }; //renderchart
+
+
+                    // Render the chart
+                    renderChart();
+
+
+                    // EVENTS =========================================================================
+
+                    $scope.$on('amCharts.triggerChartAnimate', function(event, id) {
+                        if (id === $el[0].id || !id) {
+                            chart.animateAgain();
+                        }
+                    });
+
+                    $scope.$on('amCharts.updateData', function(event, data, id) {
+                        if (id === $el[0].id || !id) {
+                            chart.dataProvider = data;
+                            chart.validateData();
+                        }
+                    });
+
+                    $scope.$watch('datas', function(newValue, oldValue) {
+                        chart.dataProvider = newValue;
+                        chart.validateData();
+
+                    });
+
+
+                    $scope.$on('amCharts.validateNow', function(event, validateData, skipEvents, id) {
+                        if (id === $el[0].id || !id) {
+                            chart.validateNow(validateData === undefined ? true : validateData,
+                                skipEvents === undefined ? false : skipEvents);
+                        }
+                    });
+
+                    $scope.$on('amCharts.renderChart', function(event, amChartOptions, id) {
+                        if (id === $el[0].id || !id) {
+                            chart.clear();
+                            renderChart(amChartOptions);
+                        }
+                    });
+
+                    $scope.$on('$destroy', function() {
+                        chart.clear();
+                    });
+                }
+            });
+
+            function getIdForUseInAmCharts() {
+                var id = $el[0].id; // try to use existing outer id to create new id
+
+                if (!id) { //generate a UUID
+                    var guid = function guid() {
+                        function s4() {
+                            return Math.floor((1 + Math.random()) * 0x10000)
+                                .toString(16)
+                                .substring(1);
+                        }
+
+                        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                            s4() + '-' + s4() + s4() + s4();
+                    };
+                    id = guid();
+                }
+                return id;
+            }
+        }
+    };
+}]);
