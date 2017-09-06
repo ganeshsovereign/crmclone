@@ -1446,8 +1446,8 @@ exports.install = function() {
                                         //  Test si societe deja importe
                                         //
 
-                                        if (!data.entity)
-                                            return cb("Entity missing");
+                                        //if (!data.entity)
+                                        //    return cb("Entity missing");
 
                                         if (typeof already_imported[data[idx]] === 'undefined') {
 
