@@ -35,17 +35,15 @@ You can use it as a standalone application or as a web application to be able to
 ## Install the open source ERP software ToManage
 
 Need :
- - install Node.js > 4.0
- - install MongoDB > 3.2
+ - install Node.js 4.x
+ - install MongoDB 3.2
 
 ```shell
 git clone https://github.com/ToManage/framework.git
 ```
 
 ```shell
-npm install -g bower
 npm install
-bower install
 ```
 
 Using demo mongoDB database from dump directory
