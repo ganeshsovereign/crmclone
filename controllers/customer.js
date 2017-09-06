@@ -1399,7 +1399,6 @@ exports.install = function() {
                                     societe.iban.id += fixedWidthString(row[i], 2, { padding: '0', align: 'right' });
                                 break;
                             case "bank_reglement":
-                                console.log(banks, row[i]);
                                 if (row[i]) {
                                     let bank = _.find(banks, _.matchesProperty('ref', row[i].trim()));
                                     societe.bank_reglement = (bank ? bank._id : undefined);
@@ -1457,7 +1456,7 @@ exports.install = function() {
                                                 var req = {};
                                                 req[idx] = data[idx];
 
-                                                return console.log(data);
+                                                //return console.log(data);
 
                                                 SocieteModel.findAndUpdate(req, data, { upsert: false, multi: false, new: true }, function(err, doc) {
                                                     if (err)
@@ -1500,7 +1499,7 @@ exports.install = function() {
                                         }
                                     },
                                     //import contact
-                                    function(cb) {
+                                    /*function(cb) {
                                         var res_contact = data.contact;
 
                                         if (!res_contact.lastname || already_imported[data[idx]].id == null)
@@ -1579,7 +1578,7 @@ exports.install = function() {
                                                 cb(null, doc);
                                             });
                                         });
-                                    }
+                                    }*/
                                 ], function(err, results) {
                                     if (err)
                                         return console.log(err);
