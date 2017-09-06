@@ -1203,12 +1203,12 @@ exports.install = function() {
                     var societe = {
 
                     };
-                    societe.country_id = "FR";
-                    societe.Tag = [];
-                    societe.contact = {
-                        Tag: []
-                    };
-                    societe.remise_client = 0;
+                    //societe.country_id = "FR";
+                    //societe.Tag = [];
+                    //societe.contact = {
+                    //    Tag: []
+                    //};
+                    //societe.remise_client = 0;
 
                     for (var i = 0; i < row.length; i++) {
                         if (tab[i] === "false")
