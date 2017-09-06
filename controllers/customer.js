@@ -1456,19 +1456,17 @@ exports.install = function() {
                                                 var req = {};
                                                 req[idx] = data[idx];
 
-                                                SocieteModel.findOne(req, function(err, societe) {
-                                                    if (err) {
-                                                        console.log(err);
+                                                SocieteModel.findAndUpdate(req, data, { upsert: false, multi: false, new: true }, function(err, doc) {
+                                                    if (err)
                                                         return callback(err);
-                                                    }
 
-                                                    if (societe == null) {
+                                                    /*if (societe == null) {
                                                         societe = new SocieteModel(data);
                                                         console.log("Create new societe");
                                                     } else {
                                                         societe = _.extend(societe, data);
                                                         console.log("Update societe ", societe._id);
-                                                    }
+                                                    }*/
 
                                                     //console.log(row[10]);
                                                     //if (societe.commercial_id) {
@@ -1476,20 +1474,20 @@ exports.install = function() {
                                                     //console.log(societe.datec);
                                                     //}
 
-                                                    societe.save(function(err, doc) {
+                                                    /*societe.save(function(err, doc) {
                                                         if (err) {
                                                             console.log(societe, err);
                                                             return cb(err);
-                                                        }
+                                                        }*/
 
-                                                        already_imported[doc[idx]] = {
-                                                            id: doc._id,
-                                                            name: doc.name
-                                                        };
+                                                    already_imported[doc[idx]] = {
+                                                        id: doc._id,
+                                                        name: doc.name
+                                                    };
 
-                                                        cb(err, already_imported[doc[idx]]);
+                                                    cb(err, already_imported[doc[idx]]);
 
-                                                    });
+                                                    //});
 
                                                 });
                                             } else
