@@ -1885,7 +1885,7 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
 
         var url = getUrl();
         grid.resetFilter(url);
-        console.log("toto", url);
+        //console.log("toto", url);
     };
 
     var ModalContactCtrl = function($scope, $modalInstance, options) {

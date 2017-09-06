@@ -280,8 +280,8 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
         total_ttc = 0,
         weight = 0;
 
-    var taxesId = {};
-    var taxes = [];
+    //var taxesId = {};
+    //var taxes = [];
 
     if (!lines || !lines.length)
         return callback(null, {
@@ -310,35 +310,63 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
                 var rates = [];
 
-                TaxesModel.populate(lines, "product.taxes.taxeId", function(err, lines) {
+
+
+                lines = _.map(lines, function(elem) {
+                    elem.total_taxes = _.map(elem.total_taxes, function(tax) {
+                        if (tax.taxeId && tax.taxeId._id)
+                            tax.taxeId = tax.taxeId._id;
+                        return tax;
+                    });
+                    return elem;
+                });
+
+                //console.log(lines);
+
+                TaxesModel.populate(lines, "total_taxes.taxeId", function(err, lines) {
                     if (err)
                         return cb(err);
 
-                    _.each(lines, function(line) {
+                    if (!lines || !lines.length)
+                        return cb(null, VATIsUsed);
 
-                        if (!line.product)
+                    _.each(lines, function(line) {
+                        //return console.log(line.total_taxes);
+                        if (line.isDeleted)
                             return;
 
-                        for (var i = 0; i < line.product.taxes.length; i++) {
+                        if (!line.product || !line.total_taxes || !line.total_taxes.length)
+                            return;
+
+                        for (var i = 0; i < line.total_taxes.length; i++) {
                             //taxes.push(lines.product.taxes[i].taxeId);
-                            if (taxesId[line.product.taxes[i].taxeId._id.toString()] != null) //Already in tab
+                            //if (taxesId[line.product.taxes[i].taxeId._id.toString()] != null) //Already in tab
+                            //    continue;
+
+                            let tax = _.find(total_taxes, _.matchesProperty("taxeId", line.total_taxes[i].taxeId._id.toString()));
+
+                            if (tax)
                                 continue;
 
-                            taxesId[line.product.taxes[i].taxeId._id.toString()] = total_taxes.length;
+                            //taxesId[line.product.taxes[i].taxeId._id.toString()] = total_taxes.length;
                             total_taxes.push({
-                                taxeId: line.product.taxes[i].taxeId._id,
-                                isFixValue: line.product.taxes[i].taxeId.isFixValue,
-                                sequence: line.product.taxes[i].taxeId.sequence,
+                                taxeId: line.total_taxes[i].taxeId._id.toString(),
+                                isFixValue: line.total_taxes[i].taxeId.isFixValue,
+                                sequence: line.total_taxes[i].taxeId.sequence,
                                 total: 0
                             });
                         }
                     });
 
+                    //return;
+
                     //Add VAT
                     for (var i = 0, length = lines.length; i < length; i++) {
                         if (!lines[i].product)
                             continue;
-                        if (lines[i].type !== 'product')
+                        //if (lines[i].type !== 'product')
+                        //    continue;
+                        if (!lines[i].qty)
                             continue;
                         if (lines[i].isDeleted) {
                             lines[i].qty = 0;
@@ -347,34 +375,39 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                             continue;
                         }
 
-                        lines[i].total_taxes = []; // RESET All taxes
+                        //lines[i].total_taxes = []; // RESET All taxes
+
+                        //if (!lines[i].product.taxes)
+                        //    continue;
 
                         //Update TAXES
-                        if (lines[i].product.taxes.length)
-                            for (var j = 0; j < lines[i].product.taxes.length; j++) {
-                                //}
 
-                                let idTaxe = taxesId[lines[i].product.taxes[j].taxeId._id.toString()];
+                        for (var j = 0; j < lines[i].total_taxes.length; j++) {
+                            //}
 
-                                lines[i].total_taxes[idTaxe] = {
-                                    taxeId: lines[i].product.taxes[j].taxeId._id
-                                }; //Create new taxe
+                            let idTax = _.find(total_taxes, _.matchesProperty("taxeId", lines[i].total_taxes[j].taxeId._id.toString()));
 
-                                if (lines[i].product.taxes[j].taxeId.isFixValue) //ecotax
-                                    lines[i].total_taxes[idTaxe].value = lines[i].qty * lines[i].product.taxes[j].value;
-                                else
-                                    lines[i].total_taxes[idTaxe].value = lines[i].total_ht * lines[i].product.taxes[j].taxeId.rate / 100;
-                                //console.log(lines[i].total_taxes[0]);
+                            //lines[i].total_taxes[idTaxe] = {
+                            //    taxeId: lines[i].product.taxes[j].taxeId._id
+                            //}; //Create new taxe
 
-                                total_taxes[idTaxe].total += lines[i].total_taxes[idTaxe].value;
+                            lines[i].total_taxes[j].value = 0;
 
-                            }
+                            if (idTax.isFixValue) //ecotax // find ecotax in product
+                                lines[i].total_taxes[j].value = lines[i].qty * _.find(lines[i].product.taxes, _.matchesProperty('taxeId', lines[i].total_taxes[j].taxeId._id.toString())).value;
+                            else
+                                lines[i].total_taxes[j].value = lines[i].total_ht * lines[i].total_taxes[j].taxeId.rate / 100;
+
+                            idTax.total += lines[i].total_taxes[j].value;
+                        }
                     }
                     cb(null, VATIsUsed);
 
                 });
             },
             function(VATIsUsed, cb) {
+                //return console.log(lines[5]);
+
                 // shipping cost
                 if (!shipping.total_ht)
                     return cb(null, VATIsUsed);
@@ -398,22 +431,17 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     });
 
                     //Add VAT
-                    var found = false;
-                    for (var j = 0; j < total_taxes.length; j++)
-                        if (total_taxes[j].taxeId.toString() === taxe._id.toString()) {
-                            total_taxes[j].total += shipping.total_ht * taxe.rate / 100;
-                            found = true;
-                            break;
-                        }
 
-                    if (!found) {
+                    let idTax = _.find(total_taxes, _.matchesProperty("taxeId", taxe._id.toString()));
+                    if (idTax)
+                        idTax.total += shipping.total_ht * taxe.rate / 100;
+                    else
                         total_taxes.push({
                             sequence: taxe.sequence,
                             taxeId: taxe._id,
                             isFixValue: taxe.isFixValue,
                             value: shipping.total_ht * taxe.rate / 100
                         });
-                    }
 
                     cb(null, VATIsUsed);
 
@@ -427,11 +455,11 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 var ecotax = {
                     value: 0, //ecotax Value
                     total_tax: 0, // Add 20% on ecotax
-                    taxeId: null // Id tax 20% VTA
+                    taxeId: null // Id tax 20% VAT
                 };
 
                 async.each(total_taxes, function(tax, eCb) {
-                    if (tax.isFixValue == false) //classic VTA
+                    if (tax.isFixValue == false) //classic VAT
                         return eCb();
 
                     ecotax.value = tax.total; // Add ecoTax in Total HT ADD NEXT FOR SUBTOTAL
@@ -528,21 +556,16 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
             if (VATIsUsed && ecotax && ecotax.value) {
                 //Add ECOTAX in VTA
-                var found = false;
-                for (var j = 0; j < total_taxes.length; j++)
-                    if (total_taxes[j].taxeId.toString() === ecotax.taxeId.toString()) {
-                        total_taxes[j].total += ecotax.total_tax;
-                        found = true;
-                        break;
-                    }
 
-                if (!found) {
+                let idTax = _.find(total_taxes, _.matchesProperty("taxeId", ecotax.taxeId.toString()));
+                if (idTax)
+                    idTax.total += ecotax.total_tax;
+                else
                     total_taxes.push({
                         taxeId: ecotax.taxeId,
                         isFixValue: true,
                         value: ecotax.total_tax
                     });
-                }
             }
 
 

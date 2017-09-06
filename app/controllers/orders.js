@@ -868,6 +868,10 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
             return ($scope.offer[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
+        function getUrl() {
+            return "/erp/api/order/dt?quotation=true" + "&Status=" + $scope.status_id;
+        }
+
         function initDatatable() {
 
             grid.init({
@@ -889,7 +893,7 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/order/dt?quotation=true" // ajax source
+                        "url": getUrl() // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -953,7 +957,8 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
         }
 
         $scope.find = function() {
-            grid.resetFilter();
+            var url = getUrl();
+            grid.resetFilter(url);
         };
 
     }
@@ -1054,6 +1059,10 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
             return ($scope.order[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
+        function getUrl() {
+            return "/erp/api/order/dt" + "?Status=" + $scope.status_id;
+        }
+
         function initDatatable() {
 
             grid.init({
@@ -1075,7 +1084,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/order/dt" // ajax source
+                        "url": getUrl() // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -1145,7 +1154,9 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
         }
 
         $scope.find = function() {
-            grid.resetFilter();
+            var url = getUrl();
+            grid.resetFilter(url);
+            $scope.status_id = null;
         };
     }
 ]);
@@ -1246,6 +1257,10 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
             return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
+        function getUrl() {
+            return "/erp/api/delivery/dt" + "?Status=" + $scope.status_id;
+        }
+
         function initDatatable() {
 
             grid.init({
@@ -1267,7 +1282,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/delivery/dt" // ajax source
+                        "url": getUrl() // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -1345,7 +1360,8 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
 
 
         $scope.find = function() {
-            grid.resetFilter();
+            var url = getUrl();
+            grid.resetFilter(url);
         };
     }
 ]);
@@ -1861,6 +1877,11 @@ MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '
             return ($scope.offer[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
+        function getUrl() {
+            return "/erp/api/order/dt?quotation=true&forSales=false" + "&Status=" + $scope.status_id;
+        }
+
+
         function initDatatable() {
 
             grid.init({
@@ -1882,7 +1903,7 @@ MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/order/dt?quotation=true&forSales=false" // ajax source
+                        "url": getUrl() // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -1946,7 +1967,8 @@ MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '
         }
 
         $scope.find = function() {
-            grid.resetFilter();
+            var url = getUrl();
+            grid.resetFilter(url);
         };
     }
 ]);
@@ -2046,6 +2068,10 @@ MetronicApp.controller('OrderSupplierListController', ['$scope', '$rootScope', '
             return ($scope.order[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
+        function getUrl() {
+            return "/erp/api/order/dt?forSales=false" + "&Status=" + $scope.status_id;
+        }
+
         function initDatatable() {
 
             grid.init({
@@ -2067,7 +2093,7 @@ MetronicApp.controller('OrderSupplierListController', ['$scope', '$rootScope', '
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/order/dt?forSales=false" // ajax source
+                        "url": getUrl() // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -2131,7 +2157,8 @@ MetronicApp.controller('OrderSupplierListController', ['$scope', '$rootScope', '
         }
 
         $scope.find = function() {
-            grid.resetFilter();
+            var url = getUrl();
+            grid.resetFilter(url);
         };
     }
 ]);
@@ -2232,6 +2259,10 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
             return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
+        function getUrl() {
+            return "/erp/api/delivery/dt_supplier?forSales=false" + "&Status=" + $scope.status_id;
+        }
+
         function initDatatable() {
 
             grid.init({
@@ -2253,7 +2284,7 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/delivery/dt_supplier?forSales=false" // ajax source
+                        "url": getUrl() // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -2317,7 +2348,8 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
         }
 
         $scope.find = function() {
-            grid.resetFilter();
+            var url = getUrl();
+            grid.resetFilter(url);
         };
     }
 ]);
@@ -2702,8 +2734,13 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
         };
 
         $scope.find = function() {
-            grid.resetFilter();
+            var url = getUrl();
+            grid.resetFilter(url);
         };
+
+        function getUrl() {
+            return "/erp/api/stockreturn/dt" + "?Status=" + $scope.status_id;
+        }
 
         function initDatatable() {
 
@@ -2726,7 +2763,7 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/stockreturn/dt" // ajax source
+                        "url": getUrl() // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -2878,6 +2915,10 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
             return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
+        function getUrl() {
+            return "/erp/api/ordersfab/dt" + "?Status=" + $scope.status_id;
+        }
+
         function initDatatable() {
 
             grid.init({
@@ -2899,7 +2940,7 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                     "ajax": {
-                        "url": "/erp/api/ordersfab/dt" // ajax source
+                        "url": getUrl() // ajax source
                     },
                     "order": [
                         [1, "desc"]
@@ -2956,7 +2997,8 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
 
 
         $scope.find = function() {
-            grid.resetFilter();
+            var url = getUrl();
+            grid.resetFilter(url);
         };
     }
 ]);

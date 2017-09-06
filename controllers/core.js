@@ -360,33 +360,7 @@ function convert(type) {
     console.log(type);
 
     switch (type) {
-        case 'deliveryAddress':
-            var SocieteModel = MODEL('Customers').Schema;
 
-            SocieteModel.find({}, function(err, docs) {
-                if (err)
-                    return console.log(err);
-
-                docs.forEach(function(doc) {
-                    doc.addresses = [{
-                        name: doc.name,
-                        address: doc.address,
-                        zip: doc.zip,
-                        town: doc.town
-                    }];
-                    doc.deliveryAddress = 0;
-
-                    return doc.save(function(err, doc) {
-                        if (err)
-                            console.log(err);
-                    });
-
-                });
-
-
-            });
-            return self.plain("Type is deliveryAddress");
-            break;
         case 'code_compta':
             var SocieteModel = MODEL('Customers').Schema;
 
@@ -412,135 +386,10 @@ function convert(type) {
             return self.plain("Type is code_compta");
             break;
 
-        case 'offer':
-            var OfferModel = MODEL('offer').Schema;
-            mongoose.connection.db.collection('Offer', function(err, collection) {
-                collection.find({}, function(err, docs) {
-                    if (err)
-                        return console.log(err);
 
-                    docs.each(function(err, doc) {
-                        //console.log(pricelevel);
-                        if (err)
-                            return console.log(err);
 
-                        if (!doc)
-                            return;
 
-                        var set = {};
 
-                        if (doc.bl[0].societe && doc.bl[0].societe.name)
-                            set["bl.0.name"] = doc.bl[0].societe.name;
-
-                        if (doc.ref.length == 15)
-                            set.ref = "PC" + doc.ref.substring(4);
-
-                        OfferModel.update({ _id: doc._id }, { $set: set }, function(err, doc) {
-                            if (err || !doc)
-                                return console.log("Impossible de creer ", err);
-                        });
-
-                    });
-                });
-            });
-            return self.plain("Type is offer");
-            break;
-        case 'order':
-            var OrderModel = MODEL('order').Schema;
-            mongoose.connection.db.collection('Commande', function(err, collection) {
-                collection.find({}, function(err, docs) {
-                    if (err)
-                        return console.log(err);
-
-                    docs.each(function(err, doc) {
-                        //console.log(pricelevel);
-                        if (err)
-                            return console.log(err);
-
-                        if (!doc)
-                            return;
-
-                        var set = {};
-
-                        if (doc.bl[0].societe && doc.bl[0].societe.name)
-                            set["bl.0.name"] = doc.bl[0].societe.name;
-
-                        if (doc.ref.length == 15)
-                            set.ref = "CO" + doc.ref.substring(4);
-
-                        OrderModel.update({ _id: doc._id }, { $set: set }, function(err, doc) {
-                            if (err || !doc)
-                                return console.log("Impossible de creer ", err);
-                        });
-
-                    });
-                });
-            });
-            return self.plain("Type is order");
-            break;
-        case 'date_bill':
-            var BillModel = MODEL('invoice').Schema;
-            var BillSupplierModel = MODEL('billSupplier').Schema;
-            var setDate = MODULE('utils').setDate;
-            var moment = require('moment');
-
-            BillModel.find({}, "_id datec dater", function(err, docs) {
-                docs.forEach(function(elem) {
-                    //console.log(elem);
-
-                    //FIX 29/02 !!! replace 28/02
-                    //console.log(moment(elem.datec).day());
-                    if (moment(elem.datec).month() == 1 && moment(elem.datec).date() == 29)
-                        elem.datec = moment(elem.datec).subtract(1, 'day').toDate();
-
-                    elem.update({ $set: { datec: setDate(elem.datec), dater: setDate(elem.dater) } }, { w: 1 }, function(err, doc) {
-                        if (err)
-                            console.log(err);
-
-                        //console.log(doc);
-                    });
-                });
-            });
-
-            BillSupplierModel.find({}, "_id datec dater", function(err, docs) {
-                docs.forEach(function(elem) {
-                    //console.log(elem);
-
-                    //FIX 29/02 !!! replace 28/02
-                    //console.log(moment(elem.datec).day());
-                    if (moment(elem.datec).month() == 1 && moment(elem.datec).date() == 29)
-                        elem.datec = moment(elem.datec).subtract(1, 'day').toDate();
-
-                    elem.update({ $set: { datec: setDate(elem.datec), dater: setDate(elem.dater) } }, { w: 1 }, function(err, doc) {
-                        if (err)
-                            console.log(err);
-
-                        //console.log(doc);
-                    });
-                });
-            });
-            self.plain('Convert date bill is ok');
-            break;
-        case 'date_delivery':
-            var DeliveryModel = MODEL('delivery').Schema;
-            var setDate = MODULE('utils').setDate;
-            var moment = require('moment');
-
-            DeliveryModel.find({}, "_id datec datedl", function(err, docs) {
-                docs.forEach(function(elem) {
-                    //console.log(elem);
-
-                    elem.update({ $set: { datec: setDate(elem.datec), datedl: setDate(elem.datedl) } }, { w: 1 }, function(err, doc) {
-                        if (err)
-                            console.log(err);
-
-                        //console.log(doc);
-                    });
-                });
-            });
-
-            self.plain('Convert date delivery is ok');
-            break;
         case 'price_level_new':
             var PriceLevelModel = MODEL('pricelevel').Schema;
             var ProductPricesModel = MODEL('productPrices').Schema;

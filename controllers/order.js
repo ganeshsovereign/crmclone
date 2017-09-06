@@ -308,7 +308,8 @@ Object.prototype = {
         if (!self.body.createdBy)
             self.body.createdBy = self.user._id;
 
-        //console.log(self.body);
+        console.log(self.body.lines);
+        //return;
 
         async.waterfall([
             function(wCb) {
@@ -685,8 +686,8 @@ Object.prototype = {
         //console.log(self.query);
 
         if (!query.search.value) {
-            if (self.query.status_id && self.query.status_id !== 'null')
-                conditions.Status = self.query.status_id;
+            if (self.query.Status && self.query.Status !== 'null' && self.query.Status !== 'undefined')
+                conditions.Status = self.query.Status;
         } else
             delete conditions.Status;
 
