@@ -1399,8 +1399,9 @@ exports.install = function() {
                                     societe.iban.id += fixedWidthString(row[i], 2, { padding: '0', align: 'right' });
                                 break;
                             case "bank_reglement":
+                                console.log(banks, row[i]);
                                 if (row[i]) {
-                                    let bank = _.find(banks, _.matchesProperty('ref', row[i]));
+                                    let bank = _.find(banks, _.matchesProperty('ref', row[i].trim()));
                                     societe.bank_reglement = (bank ? bank._id : undefined);
                                 }
                                 break;
