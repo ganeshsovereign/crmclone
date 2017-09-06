@@ -1458,7 +1458,7 @@ exports.install = function() {
 
                                                 //return console.log(data);
 
-                                                SocieteModel.findAndUpdate(req, data, { upsert: false, multi: false, new: true }, function(err, doc) {
+                                                SocieteModel.findOneAndUpdate(req, data, { upsert: false, multi: false, new: true }, function(err, doc) {
                                                     if (err)
                                                         return callback(err);
 
