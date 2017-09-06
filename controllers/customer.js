@@ -1462,7 +1462,8 @@ exports.install = function() {
                                                     if (err)
                                                         return callback(err);
 
-                                                    console.log(doc);
+                                                    if (!doc)
+                                                        return cb(null, {});
 
                                                     /*if (societe == null) {
                                                         societe = new SocieteModel(data);
@@ -1484,12 +1485,12 @@ exports.install = function() {
                                                             return cb(err);
                                                         }*/
 
-                                                    already_imported[doc[idx]] = {
+                                                    already_imported[data[idx]] = {
                                                         id: doc._id,
                                                         name: doc.name
                                                     };
 
-                                                    cb(err, already_imported[doc[idx]]);
+                                                    cb(err, already_imported[data[idx]]);
 
                                                     //});
 
