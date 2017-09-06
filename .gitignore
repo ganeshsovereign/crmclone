@@ -25,7 +25,5 @@ logs.txt
 /install/
 databases/reqstats.json
 debug.pid
-dump/
-dump_old/
 productImages/*.*
 uploads/
