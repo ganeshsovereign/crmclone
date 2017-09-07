@@ -102,12 +102,14 @@ var entitySchema = new Schema({
         invoiceFoot: { type: String, default: '' }
     }],
 
-    tva_mode: { type: String, enum: ["payment", "invoice"], default: 'invoice' }
+    tva_mode: { type: String, enum: ["payment", "invoice"], default: 'invoice' } //-->  definied in taxe
+
 }, {
     toObject: { virtuals: true },
-    toJSON: { virtuals: true }
+    toJSON: { virtuals: true },
+    collection: 'Entity'
 });
 
 
-exports.Schema = mongoose.model('entity', entitySchema, 'Mysoc');
+exports.Schema = mongoose.model('entity', entitySchema);
 exports.name = 'entity';

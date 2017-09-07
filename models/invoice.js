@@ -361,10 +361,10 @@ billSchema.statics.setInvoiceNumber = function(invoice, callback) {
             if (err)
                 console.log(err);
 
-            if (entity && entity.cptRef)
+            /*if (entity && entity.cptRef)
                 invoice.ref = "FF" + entity.cptRef + seq;
-            else
-                invoice.ref = "FF" + seq;
+            else*/
+            invoice.ref = "FF" + seq;
             callback(null, invoice);
         });
     });

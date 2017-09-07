@@ -7,7 +7,7 @@ var fs = require('fs'),
     async = require('async');
 
 
-var round = MODULE('utils').round;
+const round = MODULE('utils').round;
 
 exports.version = 0.606;
 
@@ -68,6 +68,79 @@ F.on('load', function() {
                     });
 
                     aCb();
+                }
+
+                //convert entity MySoc
+                function convertEntities(aCb) {
+                    const EntityModel = MODEL('entity').Schema;
+
+                    mongoose.connection.db.collection('Mysoc', function(err, collection) {
+                        collection.find({}).toArray(function(err, entities) {
+                            if (err)
+                                return console.log(err);
+
+                            if (!entities)
+                                return aCb();
+
+                            async.forEachSeries(entities, function(entity, eCb) {
+
+                                EntityModel.findById(entity._id, function(newEntity) {
+                                    if (newEntity)
+                                        return eCb();
+
+                                    newEntity = new EntityModel({
+                                        "_id": entity._id,
+                                        "name": entity.name,
+                                        "address": {
+                                            "street": entity.address,
+                                            "city": entity.town,
+                                            "state": null,
+                                            "zip": entity.zip,
+                                            "country": entity.country_id
+                                        },
+                                        "phones": {
+                                            "phone": entity.phone,
+                                            "mobile": "",
+                                            "fax": entity.fax
+                                        },
+                                        "url": entity.url,
+                                        "companyInfo": {
+                                            "idprof1": entity.idprof1,
+                                            "idprof2": entity.idprof2,
+                                            "idprof3": entity.idprof3,
+                                            "idprof4": entity.idprof4,
+                                            "idprof6": entity.tva_intra,
+                                            "capital": parseFloat(entity.capital),
+                                            "effectif_id": entity.effectif_id,
+                                            "forme_juridique_code": entity.forme_juridique_code
+                                        },
+                                        "salesPurchases": {
+                                            "isActive": true,
+                                            "VATIsUsed": true
+                                        },
+                                        "datec": entity.datec,
+                                        "currency": entity.currency,
+                                        "fiscal_month_start": entity.fiscal_month_start,
+                                        "iban": {
+                                            "bank": entity.iban.name,
+                                            "rib": entity.iban.rib,
+                                            "id": entity.iban.iban,
+                                            "bic": entity.iban.bic
+                                        },
+                                        tva_mode: entity.tva_mode,
+                                        "langs": [{
+                                            "invoiceFoot": "P\\'enalit\\'e pour paiement tardif : inter\\^et l'egal x3 et une indemnit\\'e forfaitaire pour frais de recouvrement de 40 euros. R\\`eglement anticip\\'e, pas d'escompte."
+                                        }],
+                                        "logo": entity.logo,
+                                        "cgv": entity.cgv,
+                                        cptRef: entity.cptRef
+                                    });
+
+                                    newEntity.save(eCb);
+                                });
+                            }, aCb);
+                        });
+                    });
                 }
 
                 //Change users schema
@@ -544,7 +617,8 @@ F.on('load', function() {
                     var ProductPricesModel = MODEL('productPrices').Schema;
 
                     mongoose.connection.db.collection('Product', function(err, collection) {
-                        async.series([function(sCb) {
+                        async.waterfall([
+                            function(sCb) {
                                 collection.update({ 'suppliers.societe': {} }, { $unset: { "suppliers.$.societe": 1 } }, function(err, docs) {});
                                 collection.find({ 'suppliers.societe.name': { $ne: null } }).toArray(function(err, docs) {
                                     if (err)
@@ -565,7 +639,43 @@ F.on('load', function() {
                                     }, sCb);
                                 });
                             },
+                            //Load TVA
                             function(sCb) {
+                                const TaxesModel = MODEL('taxes').Schema;
+                                const EntityModel = MODEL('entity').Schema;
+
+                                EntityModel.findOne({}, function(err, entity) {
+                                    if (err)
+                                        return sCb(err);
+
+                                    if (!entity)
+                                        return sCb('No entity !');
+
+                                    let tva_mode = entity.tva_mode || 'invoice';
+
+                                    //change Defaut TVA
+                                    if (tva_mode == 'payment')
+                                        return TaxesModel.findOneAndUpdate({ isDefault: true }, { isDefault: false }, function(err, doc) {
+                                            TaxesModel.findOneAndUpdate({ isOnPaid: true, rate: 20 }, { isDefault: true }, function(err, doc) {
+                                                TaxesModel.find({ $or: [{ isOnPaid: true }, { rate: 0 }] }, function(err, taxes) {
+                                                    if (err)
+                                                        return sCb(err);
+
+                                                    sCb(null, taxes);
+                                                });
+                                            });
+                                        });
+
+
+                                    TaxesModel.find({ isOnPaid: false }, function(err, taxes) {
+                                        if (err)
+                                            return sCb(err);
+
+                                        sCb(null, taxes);
+                                    });
+                                });
+                            },
+                            function(taxes, sCb) {
                                 collection.find({}).toArray(function(err, docs) {
                                     if (err)
                                         return console.log(err);
@@ -575,9 +685,6 @@ F.on('load', function() {
 
                                     async.forEachLimit(docs, 100, function(doc, eCb) {
                                         //return console.log(doc);
-
-
-
                                         //return;
 
                                         if (doc.info && doc.info.SKU)
@@ -605,8 +712,8 @@ F.on('load', function() {
                                             product.variants = [];
                                             product.directCost = 0;
                                             product.indirectCost = 0;
-                                            product.taxes = [{ taxeId: "5901a41135e0150bde8f2b15" }];
 
+                                            product.taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', doc.tva_tx))._id }];
 
                                             if (doc.Status == "SELL")
                                                 product.isSell = true;
@@ -677,6 +784,33 @@ F.on('load', function() {
                                                 });
                                             });
 
+                                            // Add default price to SP priceList
+                                            if (product.isBuy)
+                                                PriceListModel.findOne({ priceListCode: "SP" }, function(err, priceList) {
+                                                    if (!priceList)
+                                                        return console.log("PriceList notfound");
+
+                                                    ProductPricesModel.findOne({ priceLists: priceList._id, product: product._id }, function(err, price) {
+                                                        if (!price)
+                                                            price = new ProductPricesModel({
+                                                                priceLists: priceList._id,
+                                                                product: product._id,
+                                                                prices: []
+                                                            });
+
+                                                        /* add prices */
+                                                        price.prices = [];
+
+                                                        price.prices.push({
+                                                            price: 0,
+                                                            count: 0
+                                                        });
+
+                                                        price.save(function(err, doc) {});
+
+                                                    });
+                                                });
+
 
                                             //console.log(product);
                                             product.save(eCb);
@@ -691,7 +825,7 @@ F.on('load', function() {
                 }
 
                 function dropCollectionEnd(employees, aCb) {
-                    var collectionName = ['Societe', 'Societe.Version', 'users'];
+                    var collectionName = ['Societe', 'Societe.Version', 'users', 'Mysoc'];
 
                     _.each(collectionName, function(collection) {
                         mongoose.connection.db.dropCollection(collection, function(err, result) {
@@ -702,7 +836,7 @@ F.on('load', function() {
                     aCb(null, employees);
                 }
 
-                async.waterfall([dropCollection, users, priceList, loadBank, loadEmployees, customer, contact, convertFamily, product, dropCollectionEnd], function(err) {
+                async.waterfall([dropCollection, convertEntities, users, priceList, loadBank, loadEmployees, customer, contact, convertFamily, product, dropCollectionEnd], function(err) {
                     if (err)
                         return console.log(err);
 
@@ -882,13 +1016,37 @@ F.on('load', function() {
                         });
                 }
 
+                //Load TVA
+                function loadTaxes(banks, users, aCb) {
+                    const TaxesModel = MODEL('taxes').Schema;
+                    const EntityModel = MODEL('entity').Schema;
+
+                    EntityModel.findOne({}, function(err, entity) {
+                        if (err)
+                            return aCb(err);
+
+                        if (!entity)
+                            return aCb('No entity !');
+
+                        let tva_mode = entity.tva_mode || 'invoice';
+
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                            if (err)
+                                return aCb(err);
+
+                            aCb(null, banks, users, taxes);
+                        });
+                    });
+                }
+
                 //convert customer order
-                function convertOrders(banks, users, aCb) {
+                function convertOrders(banks, users, taxes, aCb) {
                     var OrderModel = MODEL('order').Schema.OrderCustomer;
                     var OrderRowsModel = MODEL('orderRows').Schema;
                     var CustomerModel = MODEL('Customers').Schema;
 
                     const SeqModel = MODEL('Sequence').Schema;
+                    const EntityModel = MODEL('entity').Schema;
 
                     SeqModel.findById('CO', function(err, seq) {
                         if (err)
@@ -900,6 +1058,23 @@ F.on('load', function() {
                         });
 
                         seq.save(function(err, doc) {});
+                    });
+
+                    EntityModel.findOne({}, "cptRef", function(err, entity) {
+                        if (err)
+                            console.log(err);
+
+                        SeqModel.findById('FA' + (entity && entity.cptRef ? entity.cptRef : ""), function(err, seq) {
+                            if (err)
+                                return console.log(err);
+
+                            seq = new SeqModel({
+                                _id: "INVOICE",
+                                seq: seq.seq
+                            });
+
+                            seq.save(function(err, doc) {});
+                        });
                     });
 
                     console.log("convert customer orders");
@@ -978,26 +1153,30 @@ F.on('load', function() {
 
                                                     async.eachOfSeries(order.lines, function(line, i, cb) {
                                                         //console.log(line);
-                                                        ProductModel.findById(line.product.id, "_id taxes", function(err, product) {
-                                                            OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
+                                                        OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
 
-                                                                line.product = line.product.id;
-                                                                line.order = doc._id;
-                                                                delete line._id;
-                                                                line.sequence = i;
-                                                                if (product)
-                                                                    line.total_taxes = product.taxes;
+                                                            line.product = line.product.id;
+                                                            line.order = doc._id;
+                                                            delete line._id;
+                                                            line.sequence = i;
 
-                                                                //return console.log(line);
+                                                            if (line.tva_tx)
+                                                                line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
-                                                                if (!newLine)
-                                                                    newLine = new OrderRowsModel(line);
-                                                                else
-                                                                    newLine = _.extend(newLine, line);
+                                                            //return console.log(line);
 
-                                                                newLine.save(cb);
+                                                            if (line.product)
+                                                                line.type = 'product';
+                                                            else
+                                                                line.type = 'SUBTOTAL';
 
-                                                            });
+                                                            if (!newLine)
+                                                                newLine = new OrderRowsModel(line);
+                                                            else
+                                                                newLine = _.extend(newLine, line);
+
+                                                            newLine.save(cb);
+
                                                         });
                                                     }, function(err) {
                                                         if (err)
@@ -1013,7 +1192,19 @@ F.on('load', function() {
                                                 },
                                                 function(rows, newOrder, sCb) {
                                                     console.log("Refresh total");
+
+                                                    if (newOrder.isremoved)
+                                                        return sCb(null, newOrder, {
+                                                            total_ht: 0,
+                                                            total_taxes: 0,
+                                                            total_ttc: 0,
+                                                            weight: 0
+                                                        }, rows);
+
                                                     MODULE('utils').sumTotal(rows, newOrder.shipping, newOrder.discount, newOrder.supplier, function(err, result) {
+                                                        if (round(result.total_ttc) != round(order.total_ttc))
+                                                            return sCb('Error diff order total old {2} : {0}  new :{1}'.format(order.total_ttc, result.total_ttc, order._id.toString()));
+
                                                         sCb(err, newOrder, result, rows)
                                                     });
                                                 },
@@ -1085,7 +1276,7 @@ F.on('load', function() {
                     aCb(null);
                 }
 
-                async.waterfall([oldConvert, loadBank, loadEmployees, convertOrders, dropCollectionEnd], function(err) {
+                async.waterfall([oldConvert, loadBank, loadEmployees, loadTaxes, convertOrders, dropCollectionEnd], function(err) {
                     if (err)
                         return console.log(err);
 
@@ -1132,8 +1323,31 @@ F.on('load', function() {
                         });
                 }
 
+                //Load TVA
+                function loadTaxes(banks, users, aCb) {
+                    const TaxesModel = MODEL('taxes').Schema;
+                    const EntityModel = MODEL('entity').Schema;
+
+                    EntityModel.findOne({}, function(err, entity) {
+                        if (err)
+                            return aCb(err);
+
+                        if (!entity)
+                            return aCb('No entity !');
+
+                        let tva_mode = entity.tva_mode || 'invoice';
+
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                            if (err)
+                                return aCb(err);
+
+                            aCb(null, banks, users, taxes);
+                        });
+                    });
+                }
+
                 //convert customer offer
-                function convertOffers(banks, users, aCb) {
+                function convertOffers(banks, users, taxes, aCb) {
                     var OrderModel = MODEL('order').Schema.QuotationCustomer;
                     var OrderRowsModel = MODEL('orderRows').Schema;
                     var CustomerModel = MODEL('Customers').Schema;
@@ -1207,26 +1421,29 @@ F.on('load', function() {
 
                                                     async.eachOfSeries(order.lines, function(line, i, cb) {
                                                         //console.log(line);
-                                                        ProductModel.findById(line.product.id, "_id taxes", function(err, product) {
-                                                            OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
+                                                        OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
 
-                                                                line.product = line.product.id;
-                                                                line.order = doc._id;
-                                                                delete line._id;
-                                                                line.sequence = i;
-                                                                if (product)
-                                                                    line.total_taxes = product.taxes;
+                                                            line.product = line.product.id;
+                                                            line.order = doc._id;
+                                                            delete line._id;
+                                                            line.sequence = i;
+                                                            if (line.tva_tx)
+                                                                line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
-                                                                //return console.log(line);
+                                                            //return console.log(line);
 
-                                                                if (!newLine)
-                                                                    newLine = new OrderRowsModel(line);
-                                                                else
-                                                                    newLine = _.extend(newLine, line);
+                                                            if (line.product)
+                                                                line.type = 'product';
+                                                            else
+                                                                line.type = 'SUBTOTAL';
 
-                                                                newLine.save(cb);
+                                                            if (!newLine)
+                                                                newLine = new OrderRowsModel(line);
+                                                            else
+                                                                newLine = _.extend(newLine, line);
 
-                                                            });
+                                                            newLine.save(cb);
+
                                                         });
                                                     }, function(err) {
                                                         if (err)
@@ -1242,7 +1459,19 @@ F.on('load', function() {
                                                 },
                                                 function(rows, newOrder, sCb) {
                                                     console.log("Refresh total");
+
+                                                    if (newOrder.isremoved)
+                                                        return sCb(null, newOrder, {
+                                                            total_ht: 0,
+                                                            total_taxes: 0,
+                                                            total_ttc: 0,
+                                                            weight: 0
+                                                        }, rows);
+
                                                     MODULE('utils').sumTotal(rows, newOrder.shipping, newOrder.discount, newOrder.supplier, function(err, result) {
+                                                        if (round(result.total_ttc) != round(order.total_ttc))
+                                                            return sCb('Error diff offer total old {2} : {0}  new :{1}'.format(order.total_ttc, result.total_ttc, order._id.toString()));
+
                                                         sCb(err, newOrder, result, rows)
                                                     });
                                                 },
@@ -1314,7 +1543,7 @@ F.on('load', function() {
                     aCb(null);
                 }
 
-                async.waterfall([loadBank, loadEmployees, convertOffers, dropCollectionEnd], function(err) {
+                async.waterfall([loadBank, loadEmployees, loadTaxes, convertOffers, dropCollectionEnd], function(err) {
                     if (err)
                         return console.log(err);
 
@@ -1332,6 +1561,62 @@ F.on('load', function() {
             function(conf, wCb) {
                 if (conf.version >= 0.504)
                     return wCb(null, conf);
+
+                //Old convert first
+                function oldConvert(aCb) {
+                    console.log("convert old orderSupplier");
+
+                    mongoose.connection.db.collection('OrderSupplier', function(err, collection) {
+                        collection.find({}, function(err, docs) {
+                            if (err)
+                                return console.log(err);
+
+                            docs.each(function(err, doc) {
+                                //console.log(pricelevel);
+                                if (err)
+                                    return console.log(err);
+
+                                if (!doc)
+                                    return;
+
+                                var set = {};
+
+
+                                if (doc.ref.length == 15)
+                                    set.ref = "CF" + doc.ref.substring(4);
+
+                                if (_.isEmpty(set))
+                                    return;
+
+                                collection.update({ _id: doc._id }, { $set: set }, function(err, doc) {
+                                    if (err || !doc)
+                                        return console.log("Impossible de creer BillSupplier ", err);
+                                });
+
+                            });
+                        });
+                    });
+
+                    /*console.log("convert old delivery date");
+                    var DeliveryModel = MODEL('delivery').Schema;
+                    var setDate = MODULE('utils').setDate;
+                    var moment = require('moment');
+
+                    DeliveryModel.find({}, "_id datec datedl", function(err, docs) {
+                        docs.forEach(function(elem) {
+                            //console.log(elem);
+
+                            elem.update({ $set: { datec: setDate(elem.datec), datedl: setDate(elem.datedl) } }, { w: 1 }, function(err, doc) {
+                                if (err)
+                                    console.log(err);
+
+                                //console.log(doc);
+                            });
+                        });
+                    });*/
+
+                    aCb();
+                }
 
                 // Load Bank
                 function loadBank(aCb) {
@@ -1361,8 +1646,31 @@ F.on('load', function() {
                         });
                 }
 
+                //Load TVA
+                function loadTaxes(banks, users, aCb) {
+                    const TaxesModel = MODEL('taxes').Schema;
+                    const EntityModel = MODEL('entity').Schema;
+
+                    EntityModel.findOne({}, function(err, entity) {
+                        if (err)
+                            return aCb(err);
+
+                        if (!entity)
+                            return aCb('No entity !');
+
+                        let tva_mode = entity.tva_mode || 'invoice';
+
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                            if (err)
+                                return aCb(err);
+
+                            aCb(null, banks, users, taxes);
+                        });
+                    });
+                }
+
                 //convert supplier order
-                function convertSupplierOrders(banks, users, aCb) {
+                function convertSupplierOrders(banks, users, taxes, aCb) {
                     var OrderModel = MODEL('order').Schema.OrderSupplier;
                     var OrderRowsModel = MODEL('orderRows').Schema;
                     var CustomerModel = MODEL('Customers').Schema;
@@ -1432,26 +1740,30 @@ F.on('load', function() {
 
                                                     async.eachOfSeries(order.lines, function(line, i, cb) {
                                                         //console.log(line);
-                                                        ProductModel.findById(line.product.id, "_id taxes", function(err, product) {
-                                                            OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
+                                                        OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
 
-                                                                line.product = line.product.id;
-                                                                line.order = doc._id;
-                                                                delete line._id;
-                                                                line.sequence = i;
-                                                                if (product)
-                                                                    line.total_taxes = product.taxes;
+                                                            line.product = line.product.id;
+                                                            line.order = doc._id;
+                                                            delete line._id;
+                                                            line.sequence = i;
 
-                                                                //return console.log(line);
+                                                            if (line.tva_tx)
+                                                                line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
-                                                                if (!newLine)
-                                                                    newLine = new OrderRowsModel(line);
-                                                                else
-                                                                    newLine = _.extend(newLine, line);
+                                                            //return console.log(line);
 
-                                                                newLine.save(cb);
+                                                            if (line.product)
+                                                                line.type = 'product';
+                                                            else
+                                                                line.type = 'SUBTOTAL';
 
-                                                            });
+                                                            if (!newLine)
+                                                                newLine = new OrderRowsModel(line);
+                                                            else
+                                                                newLine = _.extend(newLine, line);
+
+                                                            newLine.save(cb);
+
                                                         });
                                                     }, function(err) {
                                                         if (err)
@@ -1467,7 +1779,18 @@ F.on('load', function() {
                                                 },
                                                 function(rows, newOrder, sCb) {
                                                     console.log("Refresh total");
+
+                                                    if (newOrder.isremoved)
+                                                        return sCb(null, newOrder, {
+                                                            total_ht: 0,
+                                                            total_taxes: 0,
+                                                            total_ttc: 0,
+                                                            weight: 0
+                                                        }, rows);
+
                                                     MODULE('utils').sumTotal(rows, newOrder.shipping, newOrder.discount, newOrder.supplier, function(err, result) {
+                                                        if (round(result.total_ttc) != round(order.total_ttc))
+                                                            return sCb('Error diff orderSupplier total old {2} : {0}  new :{1}'.format(order.total_ttc, result.total_ttc, order._id.toString()));
                                                         sCb(err, newOrder, result, rows)
                                                     });
                                                 },
@@ -1539,7 +1862,7 @@ F.on('load', function() {
                     aCb(null);
                 }
 
-                async.waterfall([loadBank, loadEmployees, convertSupplierOrders, dropCollectionEnd], function(err) {
+                async.waterfall([oldConvert, loadBank, loadEmployees, loadTaxes, convertSupplierOrders, dropCollectionEnd], function(err) {
                     if (err)
                         return console.log(err);
 
@@ -1552,9 +1875,545 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
+            },
+            //version 0.505
+            function(conf, wCb) {
+                if (conf.version >= 0.505)
+                    return wCb(null, conf);
+
+                // Load Bank
+                function loadBank(aCb) {
+                    console.log("convert bank");
+                    var BankModel = MODEL('bank').Schema;
+
+                    BankModel.find({}, "_id ref", function(err, banks) {
+                        aCb(err, banks);
+                    });
+                }
+
+                function loadEmployees(banks, aCb) {
+                    var EmployeeModel = MODEL('Employees').Schema;
+
+                    EmployeeModel.find({}, "_id relatedUser")
+                        .populate("relatedUser")
+                        .lean()
+                        .exec(function(err, users) {
+                            users = _.map(users, function(elem) {
+                                if (elem.relatedUser) {
+                                    elem.username = elem.relatedUser.username;
+                                    elem.relatedUser = elem.relatedUser._id.toString();
+                                }
+                                return elem;
+                            });
+                            aCb(err, banks, users);
+                        });
+                }
+
+                //Load TVA
+                function loadTaxes(banks, users, aCb) {
+                    const TaxesModel = MODEL('taxes').Schema;
+                    const EntityModel = MODEL('entity').Schema;
+
+                    EntityModel.findOne({}, function(err, entity) {
+                        if (err)
+                            return aCb(err);
+
+                        if (!entity)
+                            return aCb('No entity !');
+
+                        let tva_mode = entity.tva_mode || 'invoice';
+
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                            if (err)
+                                return aCb(err);
+
+                            aCb(null, banks, users, taxes);
+                        });
+                    });
+                }
+
+                //convert customer bills
+                function convertBills(banks, users, taxes, aCb) {
+                    var BillModel = MODEL('invoice').Schema;
+                    var CustomerModel = MODEL('Customers').Schema;
+                    var setDate = MODULE('utils').setDate;
+                    var moment = require('moment');
+
+                    console.log("convert customer bills");
+                    mongoose.connection.db.collection('Facture', function(err, collection) {
+                        collection.find({}).toArray(function(err, bills) {
+                            if (err)
+                                return console.log(err);
+
+                            if (!bills)
+                                return aCb();
+
+                            async.forEachSeries(bills, function(order, eCb) {
+                                    //console.log(order);
+
+                                    CustomerModel.findById(order.client.id, function(err, societe) {
+
+                                        order.forSales = true;
+                                        order.order = order._id.toString();
+                                        order.supplier = order.client.id;
+
+                                        order.address = societe.address;
+
+                                        order.shipping = {
+                                            "total_taxes": [],
+                                            "total_ht": order.shipping.total_ht
+                                        };
+
+                                        let commercial_id;
+
+                                        if (order.Status != 'DRAFT')
+                                            order.ID = parseInt(order.ref.split('-')[1]);
+
+                                        if (order.commercial_id && order.commercial_id.id) {
+                                            order.commercial_id.id = order.commercial_id.id.toString();
+                                            if (order.commercial_id.id.substr(0, 5) == 'user:') //Not an automatic code)
+                                                commercial_id = _.find(users, _.matchesProperty('username', order.commercial_id.id.substr(5)));
+                                            else
+                                                commercial_id = _.find(users, _.matchesProperty('relatedUser', order.commercial_id.id.toString()));
+
+                                            if (commercial_id)
+                                                order.salesPerson = commercial_id._id;
+                                        }
+
+                                        BillModel.findById(order._id, function(err, bill) {
+                                            if (err)
+                                                return eCb(err);
+
+                                            var lines = order.lines;
+                                            order.lines = [];
+
+                                            if (!bill)
+                                                bill = new BillModel(order);
+                                            else
+                                                bill = _.extend(bill, order);
+
+                                            //FIX 29/02 !!! replace 28/02
+                                            //console.log(moment(elem.datec).day());
+                                            if (moment(bill.datec).month() == 1 && moment(bill.datec).date() == 29)
+                                                bill.datec = moment(bill.datec).subtract(1, 'day').toDate();
+
+                                            async.waterfall([
+                                                function(sCb) {
+                                                    bill.save((err, doc) => sCb(err, doc));
+                                                },
+                                                function(doc, sCb) {
+                                                    const ProductModel = MODEL('product').Schema;
+
+                                                    async.eachOfSeries(lines, function(line, i, cb) {
+                                                            //console.log(line);
+
+                                                            line.product = line.product.id;
+                                                            line.order = doc._id;
+                                                            delete line._id;
+                                                            line.sequence = i;
+
+                                                            if (line.tva_tx === null)
+                                                                line.tva_tx = 0;
+
+                                                            line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
+
+                                                            //return console.log(line);
+
+                                                            if (line.product)
+                                                                line.type = 'product';
+                                                            else
+                                                                line.type = 'SUBTOTAL';
+
+                                                            doc.lines.push(line);
+
+                                                            cb();
+                                                        },
+                                                        function(err) {
+                                                            if (err)
+                                                                return sCb(err);
+
+                                                            sCb(err, doc.lines, doc);
+                                                        });
+                                                },
+                                                function(rows, newBill, sCb) {
+                                                    console.log("Refresh total");
+
+                                                    if (newBill.isremoved)
+                                                        return sCb(null, newBill, {
+                                                            total_ht: 0,
+                                                            total_taxes: 0,
+                                                            total_ttc: 0,
+                                                            weight: 0
+                                                        }, rows);
+
+                                                    MODULE('utils').sumTotal(rows, newBill.shipping, newBill.discount, newBill.supplier, function(err, result) {
+                                                        if (round(result.total_ttc) != round(order.total_ttc))
+                                                            return sCb('Error diff invoice total old {2} : {0}  new :{1}'.format(order.total_ttc, result.total_ttc, order._id.toString()));
+                                                        sCb(err, newBill, result, rows)
+                                                    });
+                                                },
+                                                function(newBill, result, rows, sCb) {
+                                                    // console.log(result);
+                                                    newBill.total_ht = result.total_ht;
+                                                    newBill.total_taxes = result.total_taxes;
+                                                    newBill.total_ttc = result.total_ttc;
+                                                    newBill.weight = result.weight;
+
+                                                    result.lines = rows;
+
+                                                    //return console.log(newBill.lines, result);
+
+                                                    BillModel.findByIdAndUpdate(newBill._id, result, { new: true }, function(err, doc) {
+                                                        sCb(err, doc, rows)
+                                                    });
+                                                }
+                                            ], function(err) {
+                                                eCb(err);
+                                            });
+                                        });
+                                    });
+                                },
+                                function(err) {
+                                    aCb(err);
+                                });
+                        });
+                    });
+                }
+
+                function dropCollectionEnd(aCb) {
+                    var collectionName = ['Facture'];
+
+                    _.each(collectionName, function(collection) {
+                        mongoose.connection.db.dropCollection(collection, function(err, result) {
+                            console.log(result);
+                        });
+                    });
+
+                    aCb(null);
+                }
+
+                async.waterfall([loadBank, loadEmployees, loadTaxes, convertBills, dropCollectionEnd], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.505 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.505));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            },
+            //version 0.506
+            function(conf, wCb) {
+                if (conf.version >= 0.506)
+                    return wCb(null, conf);
+
+                //Old convert first
+                function oldConvert(aCb) {
+                    console.log("convert old billSupplier");
+
+                    mongoose.connection.db.collection('BillSupplier', function(err, collection) {
+                        collection.find({}, function(err, docs) {
+                            if (err)
+                                return console.log(err);
+
+                            docs.each(function(err, doc) {
+                                //console.log(pricelevel);
+                                if (err)
+                                    return console.log(err);
+
+                                if (!doc)
+                                    return;
+
+                                var set = {};
+
+
+                                if (doc.ref.length == 15)
+                                    set.ref = "FF" + doc.ref.substring(4);
+
+                                if (_.isEmpty(set))
+                                    return;
+
+                                collection.update({ _id: doc._id }, { $set: set }, function(err, doc) {
+                                    if (err || !doc)
+                                        return console.log("Impossible de creer BillSupplier ", err);
+                                });
+
+                            });
+                        });
+                    });
+
+                    /*console.log("convert old delivery date");
+                    var DeliveryModel = MODEL('delivery').Schema;
+                    var setDate = MODULE('utils').setDate;
+                    var moment = require('moment');
+
+                    DeliveryModel.find({}, "_id datec datedl", function(err, docs) {
+                        docs.forEach(function(elem) {
+                            //console.log(elem);
+
+                            elem.update({ $set: { datec: setDate(elem.datec), datedl: setDate(elem.datedl) } }, { w: 1 }, function(err, doc) {
+                                if (err)
+                                    console.log(err);
+
+                                //console.log(doc);
+                            });
+                        });
+                    });*/
+
+                    aCb();
+                }
+
+                // Load Bank
+                function loadBank(aCb) {
+                    console.log("convert bank");
+                    var BankModel = MODEL('bank').Schema;
+
+                    BankModel.find({}, "_id ref", function(err, banks) {
+                        aCb(err, banks);
+                    });
+                }
+
+                function loadEmployees(banks, aCb) {
+                    var EmployeeModel = MODEL('Employees').Schema;
+
+                    EmployeeModel.find({}, "_id relatedUser")
+                        .populate("relatedUser")
+                        .lean()
+                        .exec(function(err, users) {
+                            users = _.map(users, function(elem) {
+                                if (elem.relatedUser) {
+                                    elem.username = elem.relatedUser.username;
+                                    elem.relatedUser = elem.relatedUser._id.toString();
+                                }
+                                return elem;
+                            });
+                            aCb(err, banks, users);
+                        });
+                }
+
+                //Load TVA
+                function loadTaxes(banks, users, aCb) {
+                    const TaxesModel = MODEL('taxes').Schema;
+                    const EntityModel = MODEL('entity').Schema;
+
+                    EntityModel.findOne({}, function(err, entity) {
+                        if (err)
+                            return aCb(err);
+
+                        if (!entity)
+                            return aCb('No entity !');
+
+                        let tva_mode = entity.tva_mode || 'invoice';
+
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                            if (err)
+                                return aCb(err);
+
+                            aCb(null, banks, users, taxes);
+                        });
+                    });
+                }
+
+                //convert supplier bills
+                function convertBills(banks, users, taxes, aCb) {
+                    var BillModel = MODEL('invoice').Schema;
+                    var CustomerModel = MODEL('Customers').Schema;
+                    var setDate = MODULE('utils').setDate;
+                    var moment = require('moment');
+
+                    console.log("convert supplier bills");
+                    mongoose.connection.db.collection('BillSupplier', function(err, collection) {
+                        collection.find({}).toArray(function(err, bills) {
+                            if (err)
+                                return console.log(err);
+
+                            if (!bills)
+                                return aCb();
+
+                            async.forEachSeries(bills, function(order, eCb) {
+                                    //console.log(order);
+
+                                    CustomerModel.findById(order.supplier.id, function(err, societe) {
+
+                                        order.forSales = false;
+                                        order.order = order._id.toString();
+                                        order.supplier = order.supplier.id;
+
+                                        order.address = {
+                                            street: order.address,
+                                            city: order.town,
+                                            zip: order.zip,
+                                            country: order.country_id
+                                        };
+
+                                        order.shipping = {
+                                            "total_taxes": [],
+                                            "total_ht": order.shipping.total_ht
+                                        };
+
+                                        let commercial_id;
+
+                                        if (order.Status != 'DRAFT')
+                                            order.ID = parseInt(order.ref.split('-')[1]);
+
+                                        if (order.commercial_id && order.commercial_id.id) {
+                                            order.commercial_id.id = order.commercial_id.id.toString();
+                                            if (order.commercial_id.id.substr(0, 5) == 'user:') //Not an automatic code)
+                                                commercial_id = _.find(users, _.matchesProperty('username', order.commercial_id.id.substr(5)));
+                                            else
+                                                commercial_id = _.find(users, _.matchesProperty('relatedUser', order.commercial_id.id.toString()));
+
+                                            if (commercial_id)
+                                                order.salesPerson = commercial_id._id;
+                                        }
+
+                                        BillModel.findById(order._id, function(err, bill) {
+                                            if (err)
+                                                return eCb(err);
+
+                                            var lines = order.lines;
+                                            order.lines = [];
+
+                                            if (!bill)
+                                                bill = new BillModel(order);
+                                            else
+                                                bill = _.extend(bill, order);
+
+                                            //FIX 29/02 !!! replace 28/02
+                                            //console.log(moment(elem.datec).day());
+                                            if (moment(bill.datec).month() == 1 && moment(bill.datec).date() == 29)
+                                                bill.datec = moment(bill.datec).subtract(1, 'day').toDate();
+
+                                            async.waterfall([
+                                                function(sCb) {
+                                                    bill.save((err, doc) => sCb(err, doc));
+                                                },
+                                                function(doc, sCb) {
+                                                    const ProductModel = MODEL('product').Schema;
+
+                                                    async.eachOfSeries(lines, function(line, i, cb) {
+                                                            //console.log(line);
+
+                                                            line.product = line.product.id;
+                                                            line.order = doc._id;
+                                                            delete line._id;
+                                                            line.sequence = i;
+
+                                                            if (line.tva_tx === null)
+                                                                line.tva_tx = 0;
+
+                                                            line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
+
+                                                            //return console.log(line);
+
+                                                            if (line.product)
+                                                                line.type = 'product';
+                                                            else
+                                                                line.type = 'SUBTOTAL';
+
+                                                            doc.lines.push(line);
+
+                                                            cb();
+                                                        },
+                                                        function(err) {
+                                                            if (err)
+                                                                return sCb(err);
+
+                                                            sCb(err, doc.lines, doc);
+                                                        });
+                                                },
+                                                function(rows, newBill, sCb) {
+                                                    console.log("Refresh total");
+
+                                                    if (newBill.isremoved)
+                                                        return sCb(null, newBill, {
+                                                            total_ht: 0,
+                                                            total_taxes: 0,
+                                                            total_ttc: 0,
+                                                            weight: 0
+                                                        }, rows);
+
+                                                    MODULE('utils').sumTotal(rows, newBill.shipping, newBill.discount, newBill.supplier, function(err, result) {
+
+                                                        result.correction = newBill.correction;
+                                                        result.total_ttc += result.correction;
+
+                                                        if (round(result.total_ttc) == round(order.total_ttc))
+                                                            return sCb(err, newBill, result, rows)
+
+                                                        if (Math.abs(round(result.total_ttc - order.total_ttc)) > 0.02)
+                                                            return sCb('Error diff invoice total old {2} : {0}  new :{1}'.format(order.total_ttc, result.total_ttc, order._id.toString()));
+
+                                                        result.correction += round(order.total_ttc - result.total_ttc, 2);
+                                                        result.total_ttc = order.total_ttc;
+
+                                                        //console.log(result, order.total_ttc);
+                                                        //return;
+
+                                                        sCb(err, newBill, result, rows)
+                                                    });
+                                                },
+                                                function(newBill, result, rows, sCb) {
+                                                    // console.log(result);
+                                                    newBill.total_ht = result.total_ht;
+                                                    newBill.total_taxes = result.total_taxes;
+                                                    newBill.total_ttc = result.total_ttc;
+                                                    newBill.weight = result.weight;
+
+                                                    result.lines = rows;
+
+                                                    //return console.log(newBill.lines, result);
+
+                                                    BillModel.findByIdAndUpdate(newBill._id, result, { new: true }, function(err, doc) {
+                                                        sCb(err, doc, rows)
+                                                    });
+                                                }
+                                            ], function(err) {
+                                                eCb(err);
+                                            });
+                                        });
+                                    });
+                                },
+                                function(err) {
+                                    aCb(err);
+                                });
+                        });
+                    });
+                }
+
+                function dropCollectionEnd(aCb) {
+                    var collectionName = ['BillSupplier'];
+
+                    _.each(collectionName, function(collection) {
+                        mongoose.connection.db.dropCollection(collection, function(err, result) {
+                            console.log(result);
+                        });
+                    });
+
+                    aCb(null);
+                }
+
+                async.waterfall([oldConvert, loadBank, loadEmployees, loadTaxes, convertBills, dropCollectionEnd], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.506 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.506));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
             }
         ],
         function(err, doc) {
+            console.log("End update");
             if (err)
                 return console.log(err);
 

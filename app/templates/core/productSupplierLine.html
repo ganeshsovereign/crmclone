@@ -79,14 +79,14 @@
                                                             <input type="checkbox" ng-change="calculMontantHT(line, $data)" ng-model="line.priceSpecific" ng-checked="line.priceSpecific"> Mod. </label>
                         </div>
                         <a href="#" tooltip="Tarif specific" ng-show="line.priceSpecific && !tableform.$visible"><i class="fa fa-warning font-yellow-gold"></i></a>-->
-                        <input type="number" ng-show="tableform.$visible" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.pu_ht" min="0" step="0.001" ng-change="calculMontantHT(line, $data)">
+                        <input type="number" ng-show="tableform.$visible" class="form-control" ng-model="line.pu_ht" min="0" step="0.001" ng-change="calculMontantHT(line, $data)">
                         <span ng-show="!tableform.$visible">{{ line.pu_ht || 0 | number:3}}</span>
                         <!--<span editable-number="line.pu_ht" e-ng-disabled="!line.priceSpecific" e-ng-change="calculMontantHT(line, $data, 'pu_ht')" e-min="0" e-step="0.001" e-form="tableform">
                                                         {{ line.pu_ht || 0 | number:3}}
                                                     </span>-->
                     </td>
                     <td ng-if="line.type != 'SUBTOTAL'" class="align-right">
-                        <input type="number" ng-show="tableform.$visible" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.discount" min="0" step="0.01" ng-change="calculMontantHT(line, $data)">
+                        <input type="number" ng-show="tableform.$visible" class="form-control" ng-model="line.discount" min="0" step="0.01" ng-change="calculMontantHT(line, $data)">
                         <span ng-show="!tableform.$visible">{{ line.discount || 0 | percent:3}}</span>
                         <!--<span editable-number="line.discount" e-ng-change="calculMontantHT(line, $data, 'discount')" e-min="0" e-step="0.001" e-form="tableform">
                                                         {{ line.discount || 0 | percent:3}}

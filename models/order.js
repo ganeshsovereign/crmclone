@@ -961,10 +961,14 @@ function saveOrder(next) {
                     if (err)
                         console.log(err);
 
-                    if (entity && entity.cptRef)
-                        self.ref = (self.forSales == true ? "CO" : "CF") + entity.cptRef + seq;
+                    if (self.forSales == true)
+                        if (entity && entity.cptRef)
+                            self.ref = "CO" + entity.cptRef + seq;
+                        else
+                            self.ref = "CO" + seq;
                     else
-                        self.ref = (self.forSales == true ? "CO" : "CF") + seq;
+                        self.ref = "CF" + seq;
+
                     wCb();
                 });
             });
@@ -998,10 +1002,14 @@ function saveQuotation(next) {
                 if (err)
                     console.log(err);
 
-                if (entity && entity.cptRef)
-                    self.ref = (self.forSales == true ? "PC" : "DA") + entity.cptRef + seq;
+                if (self.forSales == true)
+                    if (entity && entity.cptRef)
+                        self.ref = "PC" + entity.cptRef + seq;
+                    else
+                        self.ref = "PC" + seq;
                 else
-                    self.ref = (self.forSales == true ? "PC" : "DA") + seq;
+                    self.ref = "DA" + seq;
+
                 next();
             });
         });
@@ -1026,10 +1034,14 @@ function setNameDelivery(next) {
                 if (err)
                     console.log(err);
 
-                if (entity && entity.cptRef)
-                    self.ref = (self.forSales == true ? "BL" : "RE") + entity.cptRef + seq;
+                if (self.forSales == true)
+                    if (entity && entity.cptRef)
+                        self.ref = "BL" + entity.cptRef + seq;
+                    else
+                        self.ref = "BL" + seq;
                 else
-                    self.ref = (self.forSales == true ? "BL" : "RE") + seq;
+                    self.ref = "RE" + seq;
+
                 next();
             });
         });
@@ -1108,18 +1120,10 @@ function setNameOrdersFab(next) {
         return SeqModel.inc("OF", function(seq, number) {
             //console.log(seq);
             self.ID = number;
-            EntityModel.findOne({
-                _id: self.entity
-            }, "cptRef", function(err, entity) {
-                if (err)
-                    console.log(err);
 
-                if (entity && entity.cptRef)
-                    self.ref = "OF" + entity.cptRef + seq;
-                else
-                    self.ref = "OF" + seq;
-                next();
-            });
+            self.ref = "OF" + seq;
+            next();
+
         });
 
     self.ref = F.functions.refreshSeq(self.ref, self.datec);

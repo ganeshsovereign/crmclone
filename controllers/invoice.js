@@ -861,12 +861,12 @@ Object.prototype = {
             conditions.entity = self.user.entity;
 
         //console.log(self.query);
-        if (self.query['client.id'])
-            conditions['client.id'] = self.query['client.id'];
+        if (self.query['supplier'])
+            conditions['supplier'] = self.query['supplier'];
 
         var options = {
             conditions: conditions,
-            select: "client.id dater journalId ref"
+            select: "supplier dater journalId ref"
         };
 
         //console.log(options);

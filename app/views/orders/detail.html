@@ -30,8 +30,7 @@
                         <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
                     </div>
-                    <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'BILLED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED' || object.Status == 'PROCESSING'" mode="object._id" ng-create="create()"
-                        ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+                    <save ng-disabled="object.Status !== 'DRAFT'" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
 
                 </div>
                 <div class="portlet-body">
@@ -97,10 +96,10 @@
                                                 <label for="price_level">@(products:PriceLevel)</label>
                                             </div>
 
-                                            <div ng-hide="!object._id" class="form-group form-md-line-input">
+                                            <!--<div ng-hide="!object._id" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static" id="Amounts"> {{object.total_ht| currency}} @(HT) </div>
                                                 <label for="Amounts">@(Amounts) @(propal:CommercialProposal)</label>
-                                            </div>
+                                            </div>-->
 
                                             <div ng-hide="!object.tracking" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static" id="TrackingNumber"> {{object.tracking}} </div>

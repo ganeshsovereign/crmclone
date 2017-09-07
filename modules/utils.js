@@ -335,7 +335,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                         if (line.isDeleted)
                             return;
 
-                        if (!line.product || !line.total_taxes || !line.total_taxes.length)
+                        if (!line.total_taxes || !line.total_taxes.length)
                             return;
 
                         for (var i = 0; i < line.total_taxes.length; i++) {
@@ -362,10 +362,10 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
 
                     //Add VAT
                     for (var i = 0, length = lines.length; i < length; i++) {
-                        if (!lines[i].product)
-                            continue;
-                        //if (lines[i].type !== 'product')
+                        //if (!lines[i].product)
                         //    continue;
+                        if (lines[i].type !== 'product')
+                            continue;
                         if (!lines[i].qty)
                             continue;
                         if (lines[i].isDeleted) {
@@ -374,8 +374,6 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                             lines[i].discount = 0;
                             continue;
                         }
-
-                        //lines[i].total_taxes = []; // RESET All taxes
 
                         //if (!lines[i].product.taxes)
                         //    continue;
@@ -392,6 +390,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                             //}; //Create new taxe
 
                             lines[i].total_taxes[j].value = 0;
+                            //console.log(lines[i].total_taxes, total_taxes);
 
                             if (idTax.isFixValue) //ecotax // find ecotax in product
                                 lines[i].total_taxes[j].value = lines[i].qty * _.find(lines[i].product.taxes, _.matchesProperty('taxeId', lines[i].total_taxes[j].taxeId._id.toString())).value;
