@@ -103,7 +103,7 @@
     "SuppliersProductsSellSalesTurnover": "Chiffre d'affaires généré par la vente des produits des fournisseurs",
     "CheckReceipt": "Bordereau de remise de chèques",
     "CheckReceiptShort": "Bordereau",
-    "NewCheckReceipt": "Nouvelle remise",
+    "NewCheckReceipt": "Nouvelle remise de chèques",
     "NewCheckDeposit": "Nouveau dépôt",
     "NewCheckDepositOn": "Créer bordereau de dépôt sur compte: %s",
     "NoWaitingChecks": "Pas de chèque en attente de dépôt.",
@@ -188,5 +188,7 @@
     "BalanceBank": "Solde bancaire",
     "BalanceAccount": "Solde a venir",
     "PaymentWaiting": "Opération(s) a venir",
-    "Estimated": "Prévisionnel"
+    "Estimated": "Prévisionnel",
+    "ViewAllNonExportRows":"Voir toutes les lignes non-exportées",
+    "ViewDeletedRows":"Voir toutes les lignes effacées"
 }

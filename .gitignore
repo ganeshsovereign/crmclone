@@ -27,3 +27,4 @@ databases/reqstats.json
 debug.pid
 productImages/*.*
 uploads/
+dump/tm1

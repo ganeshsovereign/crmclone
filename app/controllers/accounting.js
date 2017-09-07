@@ -47,8 +47,8 @@ MetronicApp.controller('AccountingController', ['$scope', '$rootScope', '$http',
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = false;
-        $rootScope.settings.layout.pageBodySolid = true;
+        $rootScope.settings.layout.pageSidebarClosed = true;
+        $rootScope.settings.layout.pageBodySolid = false;
 
         $http({
             method: 'GET',

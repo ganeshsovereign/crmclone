@@ -23,8 +23,8 @@
         <div class="page-toolbar" ng-hide="group.isremoved">
             <div class="btn-group pull-right">
                 <button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
-                    @(Tools) <i class="fa fa-angle-down"></i>
-                </button>
+                        @(Tools) <i class="fa fa-angle-down"></i>
+                    </button>
                 <ul class="dropdown-menu pull-right" role="menu">
                     <li>
                         <a ng-show="group.Status == 'DRAFT' && group.dater && login.rights.payment.validate" data-ng-click="closed()">
@@ -32,10 +32,10 @@
                         </a>
                     </li>
                     <!--<li>
-                        <a ng-show='group.Status == "VALIDATE" || group.Status == "PAID"' ng-href="/erp/api/payment/chq/download/{{group._id}}" target="_blank">
-                            <i class="fa fa-file-excel-o"></i> @(Download)
-                        </a>
-                    </li>-->
+                            <a ng-show='group.Status == "VALIDATE" || group.Status == "PAID"' ng-href="/erp/api/payment/chq/download/{{group._id}}" target="_blank">
+                                <i class="fa fa-file-excel-o"></i> @(Download)
+                            </a>
+                        </li>-->
 
                     <li class="divider">
                     </li>
@@ -68,7 +68,7 @@
                                         <div class="actions" ng-show="editableCHQ.$visible">
                                             <button type="submit" ng-disabled="editableCHQ.$waiting" class="btn btn-default btn-sm">@(Save)</button>
                                             <button type="button" ng-disabled="editableCHQ.$waiting" ng-click="editableCHQ.$cancel();
-                                                findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                                                    findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
                                         </div>
                                     </div>
                                     <div class="portlet-body">
@@ -93,7 +93,7 @@
                                             <div class="col-md-4 name">@(@(bank:Bank) d'encaissement) : </div>
                                             <div class="col-md-8 value">
                                                 <span editable-select="group.bank_reglement" e-ng-options="s as s.name for s in banks track by s._id">
-                                                    {{group.bank_reglement.name}}</span>
+                                                        {{group.bank_reglement.name}}</span>
                                             </div>
                                         </div>
                                         <div class="row static-info">
@@ -140,8 +140,8 @@
                                     <thead>
                                         <tr role="row" class="heading">
                                             <!--<th width="2%">
-                                                <input type="checkbox" class="group-checkable"/>
-                                            </th>-->
+                                                    <input type="checkbox" class="group-checkable"/>
+                                                </th>-->
                                             <th>@(Company)</th>
                                             <th>@(bills:Ref)</th>
                                             <th>@(bills:DateEcheance)</th>

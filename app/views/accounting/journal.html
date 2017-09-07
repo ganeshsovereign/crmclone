@@ -1,187 +1,207 @@
-<div class="page-bar">
-    <ul class="page-breadcrumb">
-        <li>
-            <i class="fa fa-home"></i>
-            <a ui-sref="dashbord">@(Home)</a>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span>@(compta:Journaux)</span>
-        </li>
-    </ul>
-    <div class="page-toolbar">
-        <div report-date-range ng-model="date" class="pull-right tooltips btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
-    </div>
-</div>
-<h3 class="page-title">
-    @(compta:Journaux) <small>ecritures comptables</small>
-</h3>
-
-
-
 <div>
-    <div class="portlet box green">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-random"></i>@(compta:Journaux)
+    <div class="page-bar">
+        <ul class="page-breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a ui-sref="dashbord">@(Home)</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(compta:MenuFinancial)</span>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(compta:Journaux)</span>
+            </li>
+        </ul>
+
+        <div class="page-toolbar">
+            <div class="btn-group pull-right">
+                <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
+                    <i class="fa fa-share"></i> @(Tools)<i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a ng-href="/erp/api/accounting/download/{{journal}}?start_date={{date.start.toISOString()}}&end_date={{date.end.toISOString()}}" ng-class="{disabled:editable}" confirmed-click="classImported()" ng-confirm-click="Voulez-vous cloturer l'import et passer les ecritures comme etant importees ? <br> Montant {{totalExportAmount | currency}}">
+                            <i class="fa fa-download"></i> @(Download) CSV
+                        </a>
+                    </li>
+                    <li>
+                        <a ng-href="/erp/api/accounting/download/{{journal}}?mode=quadratus&start_date={{date.start.toISOString()}}&end_date={{date.end.toISOString()}}" ng-class="{disabled:editable}" confirmed-click="classImported()" ng-confirm-click="Voulez-vous cloturer l'import et passer les ecritures comme etant importees ? <br> Montant {{totalExportAmount | currency}}">
+                            <i class="fa fa-download"></i> @(Download) Quadratus
+                        </a>
+                    </li>
+                    <li>
+                        <a ng-href="/erp/api/accounting/download/{{journal}}?mode=kpmg&start_date={{date.start.toISOString()}}&end_date={{date.end.toISOString()}}" ng-class="{disabled:editable}" confirmed-click="classImported()" ng-confirm-click="Voulez-vous cloturer l'import et passer les ecritures comme etant importees ? <br> Montant {{totalExportAmount | currency}}">
+                            <i class="fa fa-download"></i> @(Download) KPMG
+                        </a>
+                    </li>
+                    <li>
+                        <a ng-href="/erp/api/accounting/download/list?csv=1&journal={{journal}}">
+                            <i class="fa fa-download"></i> @(bills:AccountingCode)
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="tools">
-        </div>
-        <div class="portlet-body">
-            <div class="table-toolbar">
-                <div class="row">
-                    <div class="col-md-1">
-                        <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
-                    </div>
-                    <div class="col-md-9">
-                        <div class="col-md-3">
-                            <select ng-model="journal" ng-disabled="account" ng-change="find();" ng-options="s as s for s in journaux track by s" class="form-control">
-                            </select>
-                        </div>
-                        <div class="col-md-3" ng-if="account">
-                            <select ng-model="account" ng-change="find();" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <!--<select ng-show="login.multiEntities" ng-model="entity" ng-change="changeEntity(entity);
-                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
-                            </select>-->
-                        </div>
-                        <div class="col-md-3">
-                            <label class="checkbox-inline">
-                                <input type="checkbox" uniform ng-model="deleted" ng-checked="deleted" ng-change="find()"> Voir les lignes supprimees </label>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="checkbox-inline">
-                                <input type="checkbox" uniform ng-model="allNoExported" ng-checked="allNoExported" ng-change="find()"> Voir toutes les lignes non-exportees </label>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="btn-group pull-right">
-                            <button class="btn dropdown-toggle" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i>
-                            </button>
-                            <ul class="dropdown-menu pull-right">
-                                <li>
-                                    <a ng-href="/erp/api/accounting/download/{{journal}}?start_date={{date.start.toISOString()}}&end_date={{date.end.toISOString()}}" ng-class="{disabled:editable}" confirmed-click="classImported()" ng-confirm-click="Voulez-vous cloturer l'import et passer les ecritures comme etant importees ? <br> Montant {{totalExportAmount | currency}} ">
-                                        <i class="fa fa-download"></i> @(Download) CSV
-                                    </a>
-                                </li>
-                                <li>
-                                    <a ng-href="/erp/api/accounting/download/{{journal}}?mode=quadratus&start_date={{date.start.toISOString()}}&end_date={{date.end.toISOString()}}" ng-class="{disabled:editable}" confirmed-click="classImported()" ng-confirm-click="Voulez-vous cloturer l'import et passer les ecritures comme etant importees ? <br> Montant {{totalExportAmount | currency}} ">
-                                        <i class="fa fa-download"></i> @(Download) Quadratus
-                                    </a>
-                                </li>
-                                <li>
-                                    <a ng-href="/erp/api/accounting/download/{{journal}}?mode=kpmg&start_date={{date.start.toISOString()}}&end_date={{date.end.toISOString()}}" ng-class="{disabled:editable}" confirmed-click="classImported()" ng-confirm-click="Voulez-vous cloturer l'import et passer les ecritures comme etant importees ? <br> Montant {{totalExportAmount | currency}} ">
-                                        <i class="fa fa-download"></i> @(Download) KPMG
-                                    </a>
-                                </li>
-                                <li>
-                                    <a ng-href="/erp/api/accounting/download/list?csv=1&journal={{journal}}">
-                                        <i class="fa fa-download"></i> @(bills:AccountingCode)
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+    </div>
+
+    <div>
+        <div class="portlet light portlet-form bordered">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-random"></i>
+                    <span class="caption-subject dark sbold uppercase">@(compta:Journaux)</span>
                 </div>
-                <div class="row">
-                    <div class="col-md-8"></div>
-                    <div class="col-md-4 col-sm-12">
-                        <div id="orderList_filter" class="dataTables_filter">
-                            <label>@(Search) : <input type="number" step="any" ng-model="search" ng-model-options="{debounce: {'default': 500, 'blur': 0}}" class="form-control input-small input-sm input-inline" placeholder="@(Amount)" aria-controls="orderList"></label>
-                        </div>
-                        <div class="table-group-actions pull-right">
-
-                        </div>
-
-                    </div>
+                <div class="actions">
+                    <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                    <div report-date-range ng-model="date" class="pull-right tooltips btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
                 </div>
             </div>
-            <div class="table-scrollable">
-                <table class="table table-condensed table-striped table-hover table-advance">
-                    <thead>
-                        <tr role="row" class="heading">
-                            <th></th>
-                            <th>@(Date)</th>
-                            <th class="text-right">@(compta:Piece)</th>
-                            <th class="text-right">@(compta:Account)</th>
-                            <th>@(Ref)</th>
-                            <th>@(Libelle)</th>
-                            <th class="text-right">@(compta:Debit)</th>
-                            <th class="text-right">@(compta:Credit)</th>
-                            <th class="text-right">@(DateModification)</th>
-                            <th style="width: 20px;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="entry in entries | filterAmount:search" ng-class="{danger:entry.voided}">
-                            <td>
-                                <!-- uniform -->
-                                <input ng-model="entry.exported" type="checkbox" ng-checked="entry.exported" disabled/>
-                            </td>
-                            <td>
-                                <a href="#" ng-hide="entry.exported" editable-bsdate="entry.datetime" e-datepicker-popup="dd/MM/yyyy" onaftersave="update(entry._id, $data, 'datetime')">
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row hidden-print">
+                        <div class="col-md-12">
+                            <div class="col-md-7">
+                                <div class="col-md-4">
+                                    <div class="form-group form-md-line-input">
+                                        <select ng-model="journal" ng-disabled="account" ng-change="find();" id="journal" ng-options="s as s for s in journaux track by s" class="form-control"></select>
+                                        <label for="Status">@(compta:JournalNum)</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" ng-if="account">
+                                    <div class="form-group form-md-line-input">
+                                        <select ng-model="account" ng-change="find();" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control"></select>
+                                        <label for="Status">@(compta:Account)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="md-checkbox-list">
+                                    <div class="md-checkbox">
+                                        <input type="checkbox" id="export" class="md-check" ng-model="allNoExported" ng-checked="allNoExported" ng-change="find()">
+                                        <label for="export">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> @(compta:ViewAllNonExportRows) </label>
+                                    </div>
+                                    <div class="md-checkbox">
+                                        <input type="checkbox" id="deleted" class="md-check" ng-model="deleted" ng-checked="deleted" ng-change="find()">
+                                        <label for="deleted">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> @(compta:ViewDeletedRows)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="col-md-2">
+                                <select ng-show="login.multiEntities" ng-model="entity" ng-change="changeEntity(entity);
+                                   find();" ng-options="s.id as s.name for s in entityList" class="form-control">
+                            </select>
+                            </div>-->
+                            <div class="col-md-2">
+                                <div id="orderList_filter" class="form-group form-md-line-input">
+                                    <input type="number" step="any" ng-model="search" ng-model-options="{debounce: {'default': 500, 'blur': 0}}" class="form-control input-small input-sm input-inline" placeholder="@(Amount)" aria-controls="orderList"></input>
+                                    <label for="orderList_filter">@(Search) :</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="row">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-4 col-sm-12">
+                            <div id="orderList_filter" class="dataTables_filter">
+                                <label>@(Search) : <input type="number" step="any" ng-model="search" ng-model-options="{debounce: {'default': 500, 'blur': 0}}" class="form-control input-small input-sm input-inline" placeholder="@(Amount)" aria-controls="orderList"></label>
+                            </div>
+                            <div class="table-group-actions pull-right">
+                            </div>
+                        </div>
+                    </div>-->
+                    </div>
+
+                    <div class="dataTables_wrapper table-responsive">
+                        <div class="col-md-12">
+                            <table class="table table-striped dataTable table-hover" id="productList">
+                                <thead>
+                                    <tr role="row" class="heading">
+                                        <th></th>
+                                        <th>@(Date)</th>
+                                        <th class="text-right">@(compta:Piece)</th>
+                                        <th class="text-right">@(compta:Account)</th>
+                                        <th>@(Ref)</th>
+                                        <th>@(Libelle)</th>
+                                        <th class="text-right">@(compta:Debit)</th>
+                                        <th class="text-right">@(compta:Credit)</th>
+                                        <th class="text-right">@(DateModification)</th>
+                                        <th style="width: 20px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="entry in entries | filterAmount:search" ng-class="{danger:entry.voided}">
+                                        <td>
+                                            <!-- uniform -->
+                                            <input ng-model="entry.exported" type="checkbox" ng-checked="entry.exported" disabled/>
+                                        </td>
+                                        <td>
+                                            <a href="#" ng-hide="entry.exported" editable-bsdate="entry.datetime" e-datepicker-popup="dd/MM/yyyy" onaftersave="update(entry._id, $data, 'datetime')">
                                     {{entry.datetime| date:"dd/MM/yyyy"}}
                                 </a>
-                                <span ng-show="entry.exported">
+                                            <span ng-show="entry.exported">
                                     {{entry.datetime| date:"dd/MM/yyyy"}}
                                 </span>
-                            </td>
-                            <td class="text-right">
-                                <div ng-hide="entry.meta.billId">{{entry.seq}}</div>
-                                <a ng-show="entry.meta.billId" ui-sref="bill.show({id:entry.meta.billId})"><i class="fa fa-money"></i> {{entry.meta.billRef}}</a>
-                                <a ng-show="entry.meta.billSupplierId" ui-sref="billSupplier.show({id:entry.meta.billSupplierId})"><i class="fa fa-money"></i> {{entry.meta.billSupplierRef}}</a>
-                            </td>
-                            <td>
-                                <div class="text-right">
-                                    <a href="#" ng-hide="entry.exported" editable-text="entry.accounts" onaftersave="update(entry._id, $data, 'accounts')">
+                                        </td>
+                                        <td class="text-right">
+                                            <div ng-hide="entry.meta.billId">{{entry.seq}}</div>
+                                            <a ng-show="entry.meta.billId" ui-sref="bill.show({id:entry.meta.billId})"><i class="fa fa-money"></i> {{entry.meta.billRef}}</a>
+                                            <a ng-show="entry.meta.billSupplierId" ui-sref="billSupplier.show({id:entry.meta.billSupplierId})"><i class="fa fa-money"></i> {{entry.meta.billSupplierRef}}</a>
+                                        </td>
+                                        <td>
+                                            <div class="text-right">
+                                                <a href="#" ng-hide="entry.exported" editable-text="entry.accounts" onaftersave="update(entry._id, $data, 'accounts')">
                                     {{entry.accounts}}
                                 </a>
-                                    <span ng-show="entry.exported">
+                                                <span ng-show="entry.exported">
                                 {{entry.accounts}}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <a ng-if="entry.meta.productId" ui-sref="product.show({id:entry.meta.productId})">{{entry.meta.productRef}}</a>
-                                <a ng-if="entry.meta.societeId" ui-sref="societe.show({id:entry.meta.societeId})"><i class="fa fa-institution"></i> {{entry.meta.societeName}}</a>
-                                <div ng-if="entry.meta.tva_tx"> TVA {{entry.meta.tva_tx}} %</div>
-                                <div ng-if="entry.meta.label"> {{entry.meta.label}} </div>
-                            </td>
-                            <td>
-                                <a href="#" ng-hide="entry.exported" editable-text="entry.memo" onaftersave="update(entry._id, $data, 'memo')">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a ng-if="entry.meta.productId" ui-sref="product.show({id:entry.meta.productId})">{{entry.meta.productRef}}</a>
+                                            <a ng-if="entry.meta.societeId" ui-sref="societe.show({id:entry.meta.societeId})"><i class="fa fa-institution"></i> {{entry.meta.societeName}}</a>
+                                            <div ng-if="entry.meta.tva_tx"> TVA {{entry.meta.tva_tx}} %</div>
+                                            <div ng-if="entry.meta.label"> {{entry.meta.label}} </div>
+                                        </td>
+                                        <td>
+                                            <a href="#" ng-hide="entry.exported" editable-text="entry.memo" onaftersave="update(entry._id, $data, 'memo')">
                                     {{entry.memo}}
                                 </a>
-                                <span ng-show="entry.exported">
+                                            <span ng-show="entry.exported">
                                     {{entry.memo}}
                                 </span>
 
-                            </td>
-                            <td>
-                                <div ng-if="entry.debit" class="text-right">{{entry.debit| currency}}</div>
-                            </td>
-                            <td>
-                                <div ng-if="entry.credit" class="text-right">{{entry.credit| currency}}</div>
-                            </td>
-                            <td>
-                                <div class="text-right">{{entry.timestamp| date:'@(main:date.format.java.dayhour)'}}</div>
-                            </td>
-                            <td>
-                                <button type="button" ng-hide="entry.exported || entry.voided" confirmed-click="deleteEntry(entry._journal)" ng-confirm-click="Annuler la transaction ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="Supprimer"></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="6" class="text-right h5">@(Total)</td>
-                            <td class="text-right h5">{{credit| currency}}</td>
-                            <td class="text-right h5">{{debit| currency}}</td>
-                            <td colspan="2" class="text-right"> ({{nbLines}} @(lines))</td>
-                        </tr>
-                    </tfoot>
-                </table>
+                                        </td>
+                                        <td>
+                                            <div ng-if="entry.debit" class="text-right">{{entry.debit| currency}}</div>
+                                        </td>
+                                        <td>
+                                            <div ng-if="entry.credit" class="text-right">{{entry.credit| currency}}</div>
+                                        </td>
+                                        <td>
+                                            <div class="text-right">{{entry.timestamp| date:'@(main:date.format.java.dayhour)'}}</div>
+                                        </td>
+                                        <td>
+                                            <button type="button" ng-hide="entry.exported || entry.voided" confirmed-click="deleteEntry(entry._journal)" ng-confirm-click="Annuler la transaction ?" class="btn btn-xs btn-danger glyphicon glyphicon-trash" title="Supprimer"></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="6" class="text-right h5">@(Total)</td>
+                                        <td class="text-right h5">{{credit| currency}}</td>
+                                        <td class="text-right h5">{{debit| currency}}</td>
+                                        <td colspan="2" class="text-right"> ({{nbLines}} @(lines))</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
