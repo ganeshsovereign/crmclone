@@ -14,7 +14,10 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>@(users:UserCard) </span>
+            <span>@(users:UserCard) :</span>
+        </li>
+        <li>
+            <span class="font-green-jungle sbold">{{user.username}}</span>
         </li>
     </ul>
     <div class="page-toolbar" ng-hide="user.isremoved">

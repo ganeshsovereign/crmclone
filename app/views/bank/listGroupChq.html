@@ -7,7 +7,7 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <a>@(bank:Bank)</a>
+                <span>@(bank:Bank)</span>
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
@@ -45,7 +45,7 @@
                 </div>
             <div class="actions">
                 <button class="btn blue" ui-sref="payment.chq.create">@(Add) <i class="fa fa-plus"></i></button>
-                <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
         <div class="portlet-body">
