@@ -1294,9 +1294,10 @@ F.on('load', function() {
                         elem = elem.toJSON();
                         product = elem.product ? elem.product._id : null;
 
-                        //console.log(elem);
-
                         if (!elem.qty || elem.isDeleted)
+                            return eahcCb();
+
+                        if (!elem.product.info.productType.inventory)
                             return eahcCb();
 
                         Availability.aggregate([{
@@ -1495,7 +1496,11 @@ F.on('load', function() {
                         order: data.order._id, //orderId
                         product: { $ne: null }
                     })
-                    .populate('product', 'directCost info')
+                    .populate({
+                        path: "product",
+                        select: "directCost info",
+                        populate: { path: "info.productType" },
+                    })
                     .populate('order', 'Status')
                     .exec(function(err, docs) {
                         if (err)

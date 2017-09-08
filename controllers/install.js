@@ -2526,6 +2526,36 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
+            },
+            /*version 0.508
+                update orderCustomer Status CLOSED -> BILLED
+                */
+            function(conf, wCb) {
+                if (conf.version >= 0.508)
+                    return wCb(null, conf);
+
+                //Old convert first
+                function convertStatus(aCb) {
+                    console.log("convert status customer order");
+                    const OrderModel = MODEL('order').Schema.OrderCustomer;
+
+                    //Select only objectId()
+                    OrderModel.update({ Status: 'CLOSED' }, { $set: { Status: "BILLED" } }, { multi: true }, aCb);
+                }
+
+                async.waterfall([convertStatus], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.508 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.508));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
             }
         ],
         function(err, doc) {
