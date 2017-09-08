@@ -1819,11 +1819,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('user', {
             url: "/user",
             abstract: true,
-            templateUrl: "/views/user/index.html"
+            templateUrl: "/views/settings/user/index.html"
         })
         .state('user.list', {
             url: "",
-            templateUrl: "/views/user/list.html",
+            templateUrl: "/views/settings/user/list.html",
             data: {
                 pageTitle: 'Liste des utilisateurs'
             },
@@ -1832,7 +1832,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('user.create', {
             parent: "user",
             url: "/create.html",
-            templateUrl: "/views/user/fiche.html",
+            templateUrl: "/views/settings/user/fiche.html",
             data: {
                 pageTitle: 'Nouvel utilisateur'
             },
@@ -1841,7 +1841,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('user.show', {
             parent: "user",
             url: "/{id}",
-            templateUrl: "/views/user/fiche.html",
+            templateUrl: "/views/settings/user/fiche.html",
             data: { pageTitle: 'Fiche collaborateur' },
             controller: "UserController"
         })
@@ -1920,11 +1920,11 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('group', {
             url: "/group",
             abstract: true,
-            templateUrl: "/views/group/index.html"
+            templateUrl: "/views/settings/group/index.html"
         })
         .state('group.list', {
             url: "",
-            templateUrl: "/views/group/list.html",
+            templateUrl: "/views/settings/group/list.html",
             data: {
                 pageTitle: 'Liste des utilisateurs'
             },
@@ -1933,7 +1933,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('group.create', {
             parent: "group",
             url: "/create.html",
-            templateUrl: "/views/group/create.html",
+            templateUrl: "/views/settings/group/create.html",
             data: {
                 pageTitle: 'Nouveau groupe'
             },
@@ -1942,7 +1942,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         .state('group.show', {
             parent: "group",
             url: "/{id}",
-            templateUrl: "/views/group/fiche.html",
+            templateUrl: "/views/settings/group/fiche.html",
             data: {
                 pageTitle: 'Fiche groupe'
             },

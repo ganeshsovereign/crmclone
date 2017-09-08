@@ -418,5 +418,6 @@
     "IncomingStock": "Stock Entrant",
     "WarehouseMsgProductNotAvailable": "Message quand le produit n'est plus disponible",
     "CreateNewPackaging": "Créer un nouveau conditionnemnt",
-    "ProductQty": "Quantité de produit"
+    "ProductQty": "Quantité de produit",
+    "ProductManagement": "Gestion des produits"
 }

@@ -182,7 +182,7 @@
                     "url": "/erp/#!/settings/product",
                     "perms": "settings.read",
                     "usertype": 2,
-                    "title": "admin:ModuleFamilyProducts",
+                    "title": "products:ProductManagement",
                     "icon": "fa-globe"
                 },
                 "menu:systemtools": {
