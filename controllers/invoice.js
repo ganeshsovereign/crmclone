@@ -907,7 +907,7 @@ Object.prototype = {
 
                     // Convert Status
                     if (row.Status == 'NOT_PAID' && row.dater > moment().subtract(10, 'days').toDate()) // Check if to late
-                        row.Status = 'VALIDATE';
+                        row.Status = 'VALIDATED';
 
                     res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
 
