@@ -1089,6 +1089,9 @@ F.on('load', function() {
                             async.forEachSeries(orders, function(order, eCb) {
                                     //console.log(order);
 
+                                    if (!order.client)
+                                        return eCb();
+
                                     CustomerModel.findById(order.client.id, function(err, societe) {
 
                                         if (order.client.cptBilling)
@@ -1371,6 +1374,9 @@ F.on('load', function() {
 
                             async.forEachSeries(orders, function(order, eCb) {
                                     //console.log(order);
+
+                                    if (!order.client)
+                                        return eCb();
 
                                     CustomerModel.findById(order.client.id, function(err, societe) {
 
@@ -1703,11 +1709,17 @@ F.on('load', function() {
                             async.forEachSeries(orders, function(order, eCb) {
                                     //console.log(order);
 
+                                    if (!order.supplier)
+                                        return eCb();
+
                                     CustomerModel.findById(order.supplier.id, function(err, societe) {
 
                                         order.forSales = false;
                                         order.order = order._id.toString();
                                         order.supplier = order.supplier.id;
+
+                                        if (order.billing && order.billing.societe.id)
+                                            order.billing = order.billing.societe.id;
 
                                         order.ref_client = order.ref_supplier;
 
@@ -1977,6 +1989,9 @@ F.on('load', function() {
                             async.forEachSeries(bills, function(order, eCb) {
                                     //console.log(order);
 
+                                    if (!order.client)
+                                        return eCb();
+
                                     CustomerModel.findById(order.client.id, function(err, societe) {
 
                                         order.forSales = true;
@@ -2049,9 +2064,9 @@ F.on('load', function() {
                                                             delete line._id;
                                                             line.sequence = i;
 
-                                                            if (line.tva_tx === null)
+                                                            if (line.tva_tx == null)
                                                                 line.tva_tx = 0;
-
+                                                            console.log(line.tva_tx);
                                                             line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
                                                             //return console.log(line);
@@ -2273,6 +2288,9 @@ F.on('load', function() {
 
                             async.forEachSeries(bills, function(order, eCb) {
                                     //console.log(order);
+
+                                    if (!order.supplier)
+                                        return eCb();
 
                                     CustomerModel.findById(order.supplier.id, function(err, societe) {
 
