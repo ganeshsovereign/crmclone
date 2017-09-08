@@ -238,6 +238,7 @@
     "Enable": "Actif",
     "Disable": "Bloqué",
     "NoConnect": "Actif / Sans connexion",
-    "Web": "Actif / Connexion Web"
+    "Web": "Actif / Connexion Web",
+    "GroupList": "Liste des groupes"
 
 }

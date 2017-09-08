@@ -10,11 +10,18 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
+            <span>@(companies:CompanyManagement)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
             <a ui-sref="settings.entity.list">@(companies:CompanyList)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>@(companies:CardCompany) </span>
+            <span>@(companies:CardCompany) :</span>
+        </li>
+        <li>
+            <span class="font-green-jungle sbold">{{entity.name}}</span>
         </li>
     </ul>
     <div class="page-toolbar" ng-hide="user.isremoved">
@@ -33,7 +40,7 @@
     </div>
 </div>
 
-<div ng-if="user.isremoved" class="alert alert-danger"><strong>@(users:BeCareful) !</strong> @(users:UserHasBeenDeleted) </div>
+<div ng-if="enity.isremoved" class="alert alert-danger"><strong>@(users:BeCareful) !</strong> @(users:UserHasBeenDeleted) </div>
 
 
 <div class="row">
@@ -44,7 +51,7 @@
                     <div class="portlet light portlet bordered">
                         <div class="portlet-body">
                             <div class="row">
-                                <div class="row list-separated profile-stat ">
+                                <div class="row list-separated profile-stat">
                                     <div class="col-md-12">
                                         <div class="col-md-6">
                                             <div class="profile">
@@ -81,29 +88,29 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-offset-1 col-md-10">
-                                    <div class="row list-separated profile-stat ">
-                                        <div class=" col-md-6 col-sm-6 col-xs-6 ">
-                                            <div class="uppercase profile-stat-title "> <i class="icon-calendar font-yellow-crusta "></i> {{entity.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
+                                    <div class="row list-separated profile-stat">
+                                        <div class=" col-md-6 col-sm-6 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> <i class="icon-calendar font-yellow-crusta"></i> {{entity.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
                                         </div>
-                                        <div class="col-md-6 col-sm-6 col-xs-6 ">
-                                            <div class="uppercase profile-stat-title "> <i class="icon-refresh font-yellow-crusta "></i> {{entity.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> <i class="icon-refresh font-yellow-crusta"></i> {{entity.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
                                         </div>
 
                                         <div>
-                                            <div class="col-md-6 col-sm-6 col-xs-6 ">
-                                                <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{entity.createdBy.username}}</a> </div>
-                                                <!--<div class="uppercase profile-stat-text "> @(CreatedBy)</div>-->
+                                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                                <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{entity.creationDate.username}}</a> </div>
+                                                <!--<div class="uppercase profile-stat-text"> @(CreatedBy)</div>-->
                                             </div>
-                                            <div class="col-md-6 col-sm-6 col-xs-6 ">
-                                                <div class="uppercase profile-stat-title "> <a class="font-yellow-crusta ">{{entity.editedBy.username}}</a> </div>
-                                                <!-- <div class="uppercase profile-stat-text "> @(EditedBy) </div>-->
+                                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                                <div class="uppercase profile-stat-title"> <a class="font-yellow-crusta">{{entity.editedBy.username}}</a> </div>
+                                                <!-- <div class="uppercase profile-stat-text"> @(EditedBy) </div>-->
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="row list-separated profile-stat ">
-                                        <div class="col-md-12 ">
-                                            <div class="uppercase profile-stat-title "> <i class="icon-key font-yellow-crusta "></i> {{user.lastConnection | date:'dd/MM/yyyy'}} </div>
+                                    <div class="row list-separated profile-stat">
+                                        <div class="col-md-12">
+                                            <div class="uppercase profile-stat-title"> <i class="icon-key font-yellow-crusta"></i> {{user.lastConnection | date:'dd/MM/yyyy'}} </div>
 
                                         </div>
                                     </div>
@@ -136,92 +143,91 @@
                                             <div class="portlet light bordered">
                                                 <div class="row">
                                                     <div class=" col-md-6 col-sm-12">
-                                                        <div class="form-group form-md-line-input  has-success">
-                                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.name.last">
-                                                            <label for="form_control_1">@(entity:name)<span class="required">
+                                                        <div class="form-group form-md-line-input has-success">
+                                                            <input type="text" class="form-control" id="Name" ng-model="entity.name">
+                                                            <label for="Name">@(Name)<span class="required">
                                                             * </span></label>
                                                         </div>
 
-                                                        <div class="form-group form-md-line-input  has-success">
-                                                            <input type="text" class="form-control" id="form_control_1" ng-model="entity.name">
-                                                            <label for="form_control_1">@(entity:name)<span class="required">
-                                                            * </span></label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <input type="text" class="form-control" id="Tel-Fixe" ng-model="entity.phones.phone">
+                                                            <label for="Tel-Fixe">@(Tel-Fixe)</label>
                                                         </div>
 
-                                                        <address ng-model="entity.address"></address>
-                                                    </div>
-
-                                                    <div class=" col-md-6 col-sm-12 ">
-                                                        <div class="form-group form-md-line-input ">
-                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="entity.phones.mobile ">
-                                                            <label for="form_control_1 ">@(Tel-Mobile)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <input type="text" class="form-control" id="Tel-Fax" ng-model="entity.phones.fax">
+                                                            <label for="Tel-Fax">@(Fax)</label>
                                                         </div>
 
-                                                        <div class="form-group form-md-line-input ">
-                                                            <div class="input-group ">
-                                                                <div class="input-group-control ">
-                                                                    <input type="text " class="form-control " id="form_control_1 " ng-model="entity.emails.email ">
-                                                                    <label for="form_control_1 ">@(Email)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <div class="input-group">
+                                                                <div class="input-group-control">
+                                                                    <input type="text" class="form-control" id="Email" ng-model="entity.emails.email">
+                                                                    <label for="Email">@(Email)</label>
                                                                 </div>
-                                                                <span class="input-group-btn btn-right ">
-                                                            <a ng-href="mailto:{{entity.emails.email}} "  class="btn yellow " type="button ">Go!</a>
-                                                        </span>
+                                                                <span class="input-group-btn btn-right">
+                                                                    <a ng-href="mailto:{{entity.emails.email}}"  class="btn yellow" type="button"> <i class="fa fa-envelope"></i></a>
+                                                                </span>
                                                             </div>
                                                         </div>
+                                                    </div>
+
+                                                    <div class=" col-md-6 col-sm-12">
+                                                        <address ng-model="entity.address" mode="simple"></address>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 ">
-                                            <div class="portlet light bordered ">
-                                                <div class="row ">
-                                                    <div class="col-md-6 col-sm-12 ">
+                                        <div class="col-md-6">
+                                            <div class="portlet light bordered">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-12">
 
-                                                        <div class="form-group form-md-line-input ">
-                                                            <select class="table-group-action-input form-control " required ng-model="employee.department " ng-options="s.id as s.name for s in $dict.department.data "></select>
-                                                            <label for="form_control_1 ">@(users:Department)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <select class="table-group-action-input form-control" required ng-model="employee.department" ng-options="s.id as s.name for s in $dict.department.data"></select>
+                                                            <label for="form_control_1">@(users:Department)</label>
                                                         </div>
 
-                                                        <div class="form-group form-md-line-input ">
-                                                            <select class="table-group-action-input form-control " required ng-model="employee.manager " ng-options="s.id as s.fullName for s in $dict.employees.data "></select>
-                                                            <label for="form_control_1 ">@(users:Manager)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <select class="table-group-action-input form-control" required ng-model="employee.manager" ng-options="s.id as s.fullName for s in $dict.employees.data"></select>
+                                                            <label for="form_control_1">@(users:Manager)</label>
                                                         </div>
 
-                                                        <div class="form-group form-md-line-input ">
-                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.jobPosition ">
-                                                            <label for="form_control_1 ">@(users:JobPosition)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.jobPosition">
+                                                            <label for="form_control_1">@(users:JobPosition)</label>
                                                         </div>
 
-                                                        <div class="form-group form-md-line-input ">
-                                                            <select class="table-group-action-input form-control " required ng-model="employee.homeAddress.country " ng-options="s.id as s.name for s in $dict.nationality.data "></select>
-                                                            <label for="form_control_1 ">@(users:CountryOfBirth)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <select class="table-group-action-input form-control" required ng-model="employee.homeAddress.country" ng-options="s.id as s.name for s in $dict.nationality.data"></select>
+                                                            <label for="form_control_1">@(users:CountryOfBirth)</label>
                                                         </div>
 
-                                                        <div class="form-group form-md-line-input ">
-                                                            <select class="table-group-action-input form-control " required ng-model="employee.nationality " ng-options="s.id as s.name for s in $dict.nationality.data "></select>
-                                                            <label for="form_control_1 ">@(users:Nationality)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <select class="table-group-action-input form-control" required ng-model="employee.nationality" ng-options="s.id as s.name for s in $dict.nationality.data"></select>
+                                                            <label for="form_control_1">@(users:Nationality)</label>
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-6 col-sm-12 ">
-                                                        <div class="form-group form-md-line-input ">
-                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.socialSecurityNumber ">
-                                                            <label for="form_control_1 ">@(users:SocialeSecurityNumber)</label>
+                                                    <div class="col-md-6 col-sm-12">
+                                                        <div class="form-group form-md-line-input">
+                                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.socialSecurityNumber">
+                                                            <label for="form_control_1">@(users:SocialeSecurityNumber)</label>
                                                         </div>
 
-                                                        <div class="form-group form-md-line-input ">
-                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.iban.id ">
-                                                            <label for="form_control_1 ">@(users:BankingEtablishment)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.iban.id">
+                                                            <label for="form_control_1">@(users:BankingEtablishment)</label>
                                                         </div>
 
-                                                        <div class="form-group form-md-line-input ">
-                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.iban.bank ">
-                                                            <label for="form_control_1 ">@(users:IBAN)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.iban.bank">
+                                                            <label for="form_control_1">@(users:IBAN)</label>
                                                         </div>
 
-                                                        <div class="form-group form-md-line-input ">
-                                                            <input type="text " class="form-control " id="form_control_1 " ng-model="employee.iban.swift ">
-                                                            <label for="form_control_1 ">@(users:BIC)</label>
+                                                        <div class="form-group form-md-line-input">
+                                                            <input type="text" class="form-control" id="form_control_1" ng-model="employee.iban.swift">
+                                                            <label for="form_control_1">@(users:BIC)</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -241,64 +247,64 @@
 
 
 <!--
-<div class="row ">
-    <div class="col-md-offset-3 col-md-6 ">
-        <div class="row ">
-            <div class="col-md-12 ">
-                <div class="form-horizontal form-row-seperated ">
-                    <div class="portlet portlet light bordered ">
-                        <div class="portlet-title ">
-                            <div class="caption font-yellow-crusta ">
-                                <h5 class="page-title " ng-class="{ 'font-red':!user.isEnable} ">
-                                    <i class="fa fa-user "></i> {{user.username}}
+<div class="row">
+    <div class="col-md-offset-3 col-md-6">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-horizontal form-row-seperated">
+                    <div class="portlet portlet light bordered">
+                        <div class="portlet-title">
+                            <div class="caption font-yellow-crusta">
+                                <h5 class="page-title" ng-class="{ 'font-red':!user.isEnable}">
+                                    <i class="fa fa-user"></i> {{user.username}}
                                 </h5>
                             </div>
-                            <save ng-disabled="!editable " mode="object._id " ng-create="create() " ng-update="update() " back-to="backTo " class="actions btn-set "></save>
+                            <save ng-disabled="!editable" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
                         </div>
-                        <div class="portlet-body ">
-                            <div class="form-body ">
-                                <div class="row ">
-                                    <div class="col-md-offset-1 col-md-10 ">
-                                        <div class="md-checkbox-inline ">
-                                            <div class="md-checkbox has-success ">
-                                                <input type="checkbox " id="isEnable " class="md-check " ng-model="user.isEnable " ng-checked="user.isEnable ">
-                                                <label for="isEnable ">
+                        <div class="portlet-body">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-md-offset-1 col-md-10">
+                                        <div class="md-checkbox-inline">
+                                            <div class="md-checkbox has-success">
+                                                <input type="checkbox" id="isEnable" class="md-check" ng-model="user.isEnable" ng-checked="user.isEnable">
+                                                <label for="isEnable">
                                                     <span></span>
-                                                     <span class="check "></span>
-                                                    <span class="box "></span> @(Activated)</label>
+                                                     <span class="check"></span>
+                                                    <span class="box"></span> @(Activated)</label>
                                             </div>
                                         </div>
 
-                                        <div class="form-group form-md-line-input has-success ">
-                                            <input type="text " class="form-control " id="form_control_1 " onbeforesave="checkUserExist($data) " ng-model="user.username ">
-                                            <label for="form_control_1 ">@(users:UserName)<span class="required ">
+                                        <div class="form-group form-md-line-input has-success">
+                                            <input type="text" class="form-control" id="form_control_1" onbeforesave="checkUserExist($data)" ng-model="user.username">
+                                            <label for="form_control_1">@(users:UserName)<span class="required">
                                         * </span></label>
                                         </div>
 
-                                        <div class="form-group form-md-line-input has-success ">
-                                            <input type="text " class="form-control " id="form_control_1 " ng-model="user.password ">
-                                            <label for="form_control_1 ">@(users:Password)</label>
+                                        <div class="form-group form-md-line-input has-success">
+                                            <input type="text" class="form-control" id="form_control_1" ng-model="user.password">
+                                            <label for="form_control_1">@(users:Password)</label>
                                         </div>
 
-                                        <div class="form-group form-md-line-input has-success ">
-                                            <input type="text " class="form-control " id="form_control_1 " ng-change="checkEmailExist " ng-model="user.email ">
-                                            <label for="form_control_1 ">@(Email)<span class="required ">
+                                        <div class="form-group form-md-line-input has-success">
+                                            <input type="text" class="form-control" id="form_control_1" ng-change="checkEmailExist" ng-model="user.email">
+                                            <label for="form_control_1">@(Email)<span class="required">
                                         * </span></label>
                                         </div>
 
-                                        <div class="form-group form-md-line-input has-success ">
-                                            <select type="text " class="form-control " id="form_control_1 " ng-model="user.groupe " ng-options="g.id as g.name for g in groups "></select>
-                                            <label for="form_control_1 ">@(users:Group)</label>
+                                        <div class="form-group form-md-line-input has-success">
+                                            <select type="text" class="form-control" id="form_control_1" ng-model="user.groupe" ng-options="g.id as g.name for g in groups"></select>
+                                            <label for="form_control_1">@(users:Group)</label>
                                         </div>
 
-                                        <div class="form-group form-md-line-input ">
-                                            <div class="form-control form-control-static "> {{user.lastConnection | date:'dd/MM/yyyy'}} </div>
-                                            <label for="lastConnection ">@(users:LastConnection)</label>
+                                        <div class="form-group form-md-line-input">
+                                            <div class="form-control form-control-static"> {{user.lastConnection | date:'dd/MM/yyyy'}} </div>
+                                            <label for="lastConnection">@(users:LastConnection)</label>
                                         </div>
 
-                                        <div class="form-group form-md-line-input ">
-                                            <div class="form-control form-control-static "> {{user.creationDate|date:'dd/MM/yyyy'}} </div>
-                                            <label for="creationDate ">@(users:CreatedAt)</label>
+                                        <div class="form-group form-md-line-input">
+                                            <div class="form-control form-control-static"> {{user.creationDate|date:'dd/MM/yyyy'}} </div>
+                                            <label for="creationDate">@(users:CreatedAt)</label>
                                         </div>
 
                                     </div>

@@ -1,7 +1,4 @@
 <div>
-    <h3 class="page-title">
-        <i class="fa fa-group font-green"></i> @(users:GroupManagement)
-    </h3>
     <div class="page-bar">
         <ul class="page-breadcrumb">
             <li>
@@ -11,6 +8,10 @@
             </li>
             <li>
                 <span>@(users:GroupManagement)</span>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <span>@(users:GroupList)</span>
             </li>
         </ul>
     </div>
@@ -57,8 +58,7 @@
                                 </li>
                                 <li>
                                     <a href="#" class="font-red" ng-show="login.rights.user.delete" confirmed-click="remove()" ng-confirm-click="@(Delete)">
-                                        <i class="fa fa-trash-o font-red"></i>
-                                        @(Delete)
+                                        <i class="fa fa-trash-o font-red"></i> @(Delete)
                                     </a>
                                 </li>
                             </ul>
@@ -71,7 +71,7 @@
                     <thead>
                         <tr role="row" class="heading">
                             <th width="2%">
-                                <input type="checkbox" class="group-checkable"/>
+                                <input type="checkbox" class="group-checkable" />
                             </th>
                             <th>@(Group)</th>
                             <th>@(NumberOfEmployeesAssigned)</th>

@@ -12,11 +12,15 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="group.list">@(users:GroupManagement)</a>
+            <span>@(users:GroupManagement)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>{{group.name}} </span>
+            <a ui-sref="group.list">@(users:GroupList)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>{{group.name}}</span>
         </li>
     </ul>
     <div class="page-toolbar" ng-hide="group.isremoved">
