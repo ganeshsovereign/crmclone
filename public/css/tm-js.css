@@ -668,7 +668,7 @@ small {
     padding: 5px;
 }
 
-.page-bar .page-toolbar {
+.page-bar .page-toolbar .date {
     zoom: 110%;
     padding-top: 3px;
 }
