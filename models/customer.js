@@ -371,16 +371,15 @@ customerSchema.pre('save', function(next) {
         self.shippingAddress[0].zip = self.address.zip;
         self.shippingAddress[0].city = self.address.city;
         self.shippingAddress[0].country = self.address.country;
-    }
-    /*else
-                       self.shippingAddress.push({
-                           name: self.fullName,
-                           street: self.address.street,
-                           zip: self.address.zip,
-                           city: self.address.city,
-                           country: self.address.country,
-                           Status: 'ENABLE'
-                       });*/
+    } else
+        self.shippingAddress.push({
+            name: self.fullName,
+            street: self.address.street,
+            zip: self.address.zip,
+            city: self.address.city,
+            country: self.address.country,
+            Status: 'ENABLE'
+        });
 
     //if (this.code_client == null && this.entity !== "ALL" && this.Status !== 'ST_NEVER') {
     //console.log("Save societe");
