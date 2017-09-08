@@ -1099,6 +1099,14 @@ F.on('load', function() {
                                         order.order = order._id.toString();
                                         order.supplier = order.client.id;
 
+                                        if (order.delivery_mode)
+                                            if (order.delivery_mode == 'Livraison')
+                                                order.delivery_mode = 'SHIP_STANDARD';
+                                            else
+                                                order.delivery_mode = 'SHIP_NONE';
+                                        else
+                                            order.delivery_mode = 'SHIP_NONE';
+
                                         order.address = societe.address;
 
                                         order.shippingAddress = {
@@ -1373,6 +1381,14 @@ F.on('load', function() {
 
                                         order.order = order._id.toString();
                                         order.supplier = order.client.id;
+
+                                        if (order.delivery_mode)
+                                            if (order.delivery_mode == 'Livraison')
+                                                order.delivery_mode = 'SHIP_STANDARD';
+                                            else
+                                                order.delivery_mode = 'SHIP_NONE';
+                                        else
+                                            order.delivery_mode = 'SHIP_NONE';
 
                                         order.address = societe.address;
 
@@ -1693,6 +1709,16 @@ F.on('load', function() {
                                         order.order = order._id.toString();
                                         order.supplier = order.supplier.id;
 
+                                        order.ref_client = order.ref_supplier;
+
+                                        if (order.delivery_mode)
+                                            if (order.delivery_mode == 'Livraison')
+                                                order.delivery_mode = 'SHIP_STANDARD';
+                                            else
+                                                order.delivery_mode = 'SHIP_NONE';
+                                        else
+                                            order.delivery_mode = 'SHIP_NONE';
+
                                         order.address = societe.address;
 
                                         order.shippingAddress = {
@@ -1957,6 +1983,14 @@ F.on('load', function() {
                                         order.order = order._id.toString();
                                         order.supplier = order.client.id;
 
+                                        if (order.delivery_mode)
+                                            if (order.delivery_mode == 'Livraison')
+                                                order.delivery_mode = 'SHIP_STANDARD';
+                                            else
+                                                order.delivery_mode = 'SHIP_NONE';
+                                        else
+                                            order.delivery_mode = 'SHIP_NONE';
+
                                         order.address = societe.address;
 
                                         order.shipping = {
@@ -1968,6 +2002,9 @@ F.on('load', function() {
 
                                         if (order.Status != 'DRAFT')
                                             order.ID = parseInt(order.ref.split('-')[1]);
+
+                                        if (order.Status == "STARTED")
+                                            order.Status = 'PAID_PARTIALLY';
 
                                         if (order.commercial_id && order.commercial_id.id) {
                                             order.commercial_id.id = order.commercial_id.id.toString();
@@ -2242,6 +2279,15 @@ F.on('load', function() {
                                         order.forSales = false;
                                         order.order = order._id.toString();
                                         order.supplier = order.supplier.id;
+                                        order.ref_client = order.ref_supplier;
+
+                                        if (order.delivery_mode)
+                                            if (order.delivery_mode == 'Livraison')
+                                                order.delivery_mode = 'SHIP_STANDARD';
+                                            else
+                                                order.delivery_mode = 'SHIP_NONE';
+                                        else
+                                            order.delivery_mode = 'SHIP_NONE';
 
                                         order.address = {
                                             street: order.address,
@@ -2257,8 +2303,8 @@ F.on('load', function() {
 
                                         let commercial_id;
 
-                                        if (order.Status != 'DRAFT')
-                                            order.ID = parseInt(order.ref.split('-')[1]);
+                                        if (order.Status == "STARTED")
+                                            order.Status = 'PAID_PARTIALLY';
 
                                         if (order.commercial_id && order.commercial_id.id) {
                                             order.commercial_id.id = order.commercial_id.id.toString();
@@ -2406,6 +2452,58 @@ F.on('load', function() {
                             return console.log(err);
 
                         console.log("ToManage updated to {0}".format(0.506));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            },
+            //version 0.507
+            function(conf, wCb) {
+                if (conf.version >= 0.507)
+                    return wCb(null, conf);
+
+                //Old convert first
+                function oldConvert(aCb) {
+                    console.log("convert compta journal");
+                    const TransactionModel = MODEL('transaction').Schema;
+
+                    //Select only objectId()
+                    TransactionModel.find({ "meta.bills.billId": { $type: 7 } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            var bills = doc.meta.bills;
+
+                            for (var i = 0, len = bills.length; i < len; i++)
+                                bills[i].billId = bills[i].billId.toString();
+
+
+                            //console.log(bills);
+
+                            doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
+
+                                //doc.save(function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+
+                    });
+
+                    aCb();
+                }
+
+                async.waterfall([oldConvert], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.507 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.507));
                         wCb(err, doc.values);
                         //wCb(err, conf);
                     });

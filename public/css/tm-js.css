@@ -668,7 +668,7 @@ small {
     padding: 5px;
 }
 
-.page-container-bg-solid .page-bar .page-toolbar,
-.page-content-white .page-bar .page-toolbar {
+.page-bar .page-toolbar {
     zoom: 110%;
+    padding-top: 3px;
 }

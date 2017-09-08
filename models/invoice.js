@@ -470,7 +470,7 @@ billSchema.virtual('_status')
         var statusList = exports.Status;
 
         if (status === 'NOT_PAID' && this.dater > moment().subtract(10, 'days').toDate()) //Check if late
-            status = 'VALIDATE';
+            status = 'VALIDATED';
 
         if (status && statusList.values[status] && statusList.values[status].label) {
             //console.log(this);

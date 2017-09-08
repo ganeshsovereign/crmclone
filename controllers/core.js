@@ -497,36 +497,6 @@ function convert(type) {
                 function(result) {});
             return self.plain("Type is price_level new format !!!");
             break;
-        case 'paymentTransactionBills':
-            /* Convert objectId to string */
-            var TransactionModel = MODEL('transaction').Schema;
-
-            //Select only objectId()
-            TransactionModel.find({ "meta.bills.billId": { $type: 7 } }, function(err, docs) {
-                if (err)
-                    return console.log(err);
-
-                docs.forEach(function(doc) {
-
-                    var bills = doc.meta.bills;
-
-                    for (var i = 0, len = bills.length; i < len; i++)
-                        bills[i].billId = bills[i].billId.toString();
-
-
-                    //console.log(bills);
-
-                    doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
-
-                        //doc.save(function(err, doc) {
-                        if (err)
-                            console.log(err);
-                    });
-                });
-
-            });
-            return self.plain("Type is paymentTransaction");
-            break;
         case 'commercial_id':
             var BillModel = MODEL('invoice').Schema;
             var SocieteModel = MODEL('Customers').Schema;
