@@ -254,7 +254,7 @@ function view_500() {
 
 function sendEmail() {
     var self = this;
-    const EntityModel = MODEL('Entity').Schema;
+    const EntityModel = MODEL('entity').Schema;
 
     //console.log(self.body);
 
