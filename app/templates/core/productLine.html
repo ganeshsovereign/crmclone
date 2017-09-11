@@ -147,9 +147,9 @@
                             </div>
                             <div class="btn-group btn-group">
                                 <button type="button" ng-show="tableform.$visible && line.product.dynForm" ng-click="editLine(line, line.idLine, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-pencil" title="@(Edit)"></button>
-                                <button type="button" ng-show="tableform.$visible  && line.type == 'product'" ng-click="copyLine(line, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-copy" title="@(ToClone)"></button>
-                                <button type="button" ng-show="tableform.$visible && line.type == 'product'" ng-click="addComment($index)" class="btn btn-info btn-icon-only btn-sm fa fa-comment" title="@(AddComment)"></button>
-                                <button type="button" ng-show="tableform.$visible && line.type == 'product'" ng-click="AddSubTotal($index)" class="btn btn-default btn-icon-only btn-sm fa fa-bars" title="@(AddSubTotal)"></button>
+                                <button type="button" ng-show="tableform.$visible  && (line.type == 'product' || line.type == 'COMMENT')" ng-click="copyLine(line, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-copy" title="@(ToClone)"></button>
+                                <button type="button" ng-show="tableform.$visible && (line.type == 'product' || line.type == 'COMMENT')" ng-click="addComment($index)" class="btn btn-info btn-icon-only btn-sm fa fa-comment" title="@(AddComment)"></button>
+                                <button type="button" ng-show="tableform.$visible && (line.type == 'product' || line.type == 'COMMENT')" ng-click="AddSubTotal($index)" class="btn btn-default btn-icon-only btn-sm fa fa-bars" title="@(AddSubTotal)"></button>
                                 <button type="button" ng-show="tableform.$visible && line.type != 'kit'" ng-disabled="line.allocated" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
                             </div>
                         </div>
