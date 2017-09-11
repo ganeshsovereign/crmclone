@@ -56,7 +56,7 @@
                         <div class="col-md-3">
                             <div class="form-group form-md-line-input ">
                                 <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control"></select>
-                                <label for="Status">@(Entity)</label>
+                                <label for="Status">@(companies:Entity)</label>
                             </div>
                         </div>
 
@@ -94,7 +94,7 @@
                             </th>
                             <th>Ref.</th>
                             <th width="15%">@(bills:DateEcheance)</th>
-                            <th width="15%">@(Entity)</th>
+                            <th width="15%">@(companies:Entity)</th>
                             <th width="15%">@(DateModification)</th>
                             <th width="15%">@(Status)</th>
                         </tr>

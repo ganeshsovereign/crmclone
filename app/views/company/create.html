@@ -40,17 +40,17 @@
                             <div class="col-md-6">
                                 <div class="form-group form-md-line-input">
                                     <select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
-                                    <label for="form_control_1">@(Entity)</label>
+                                    <label for="form_control_1">@(companies:Entity)</label>
                                     <div class="form-control-focus"> </div>
                                 </div>
                                 <div class="form-group form-md-line-input">
                                     <select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
-                                    <label for="form_control_1">@(Entity)</label>
+                                    <label for="form_control_1">@(companies:Entity)</label>
                                     <div class="form-control-focus"> </div>
                                 </div>
                             </div>
                             <div ng-if="login.multiEntities" class="form-group">
-                                <label class="col-md-1 control-label">@(Entity)</label>
+                                <label class="col-md-1 control-label">@(companies:Entity)</label>
                                 <div class="col-md-5">
                                     <select class="form-control" data-ng-model="societe.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
                                 </div>
@@ -85,7 +85,7 @@
                                         <span class="help-block">
                                         <div ng-show="societe.idprof2 == null || societe.idprof2 == '' && !noSiret"> @(companies:AccountDuplicateControle)</div>
                                         <div class="alert alert-warning" ng-show="societe.idprof2 && !validSiret"> Code incorrect.</div>
-                                        <div class="alert alert-danger" ng-show="validSiret && siretFound"> Ce code existe déjà dans la base : {{siretFound.name}} (@(Entity) : {{siretFound.entity}}).</div>
+                                        <div class="alert alert-danger" ng-show="validSiret && siretFound"> Ce code existe déjà dans la base : {{siretFound.name}} (@(companies:Entity) : {{siretFound.entity}}).</div>
                                         <div class="alert alert-success" ng-show="validSiret && !siretFound"> Code correct.</div>
                                     </span>
                                     </div>

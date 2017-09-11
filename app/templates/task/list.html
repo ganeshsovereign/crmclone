@@ -50,8 +50,7 @@
                             </li>-->
                             <li>
                                 <a href="#" class="font-red" ng-show="login.rights.task.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les taches ?">
-                                    <i class="fa fa-trash-o font-red"></i>
-                                    @(Delete)
+                                    <i class="fa fa-trash-o font-red"></i> @(Delete)
                                 </a>
                             </li>
                         </ul>
@@ -64,7 +63,7 @@
                 <thead>
                     <tr role="row" class="heading">
                         <th width="2%">
-                            <input type="checkbox" class="group-checkable"/>
+                            <input type="checkbox" class="group-checkable" />
                         </th>
                         <th>@(Title)</th>
                         <th>@(bills:DateEcheance)</th>
@@ -73,7 +72,7 @@
                         <th>@(tasks:AffectedTo)</th>
                         <th>@(tasks:DoneBy)</th>
                         <th>@(Status)</th>
-                        <th>@(Entity)</th>
+                        <th>@(companies:Entity)</th>
                         <th>@(DateModification)</th>
                         <th>@(Action)</th>
                     </tr>

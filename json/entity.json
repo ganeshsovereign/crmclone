@@ -42,7 +42,7 @@
                     ],
                     "enabled": "$conf->entity->enabled",
                     "usertype": 2,
-                    "title": "companies:CompanyManagement",
+                    "title": "companies:ManagementEntity",
                     "icon": "fa-globe"
                 }
             }

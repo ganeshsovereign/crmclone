@@ -76,7 +76,7 @@
                             </div>
 
                             <div ng-if="login.multiEntities" class="form-group">
-                                <label class="col-md-4 control-label">@(Entity)</label>
+                                <label class="col-md-4 control-label">@(companies:Entity)</label>
                                 <div class="col-md-4">
                                     <select class="form-control" required ng-model="employee.entity" ng-options="s.id as s.name for s in entityListAll"></select>
                                 </div>

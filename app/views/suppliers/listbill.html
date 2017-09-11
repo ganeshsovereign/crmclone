@@ -68,7 +68,7 @@
                         <div class="col-md-3">
                             <div class="form-group form-md-line-input ">
                                 <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control"></select>
-                                <label for="Status">@(Entity)</label>
+                                <label for="Status">@(companies:Entity)</label>
                             </div>
                         </div>
 
@@ -112,7 +112,7 @@
                             <th>@(commercial:Commercial)</th>
                             <th>@(TotalTTC)</th>
                             <th>@(Status)</th>
-                            <th>@(Entity)</th>
+                            <th>@(companies:Entity)</th>
                             <th>@(DateModification)</th>
                         </tr>
                         <!--<tr role="row" class="filter">

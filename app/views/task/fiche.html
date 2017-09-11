@@ -1,5 +1,5 @@
 <h3 class="page-title">
-    <i class="fa fa-check-square-o font-blue-madison"></i> @(tasks:Task) {{task.name}} {{task.societe.name}}<small> @(From) {{task.createdAt| date:'@(main:date.format.java.dayhour)'}}</small>  <span class="label" ng-class="task.status.css">{{task.status.name}}</span>
+    <i class="fa fa-check-square-o font-blue-madison"></i> @(tasks:Task) {{task.name}} {{task.societe.name}}<small> @(From) {{task.createdAt| date:'@(main:date.format.java.dayhour)'}}</small> <span class="label" ng-class="task.status.css">{{task.status.name}}</span>
 </h3>
 
 <div class="page-bar">
@@ -10,7 +10,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="task.todo" >@(tasks:TasksList)</a>
+            <a ui-sref="task.todo">@(tasks:TasksList)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
@@ -31,16 +31,14 @@
                 </li>-->
                 <li>
                     <a href="#" ng-if="!task.archived && task.author.id == login._id" ng-click="setArchived(task)">
-                        <i class="fa fa-check-square"></i>
-                        @(tasks:SetArchived)
+                        <i class="fa fa-check-square"></i> @(tasks:SetArchived)
                     </a>
                 </li>
                 <li class="divider">
                 </li>
                 <li>
                     <a href="#" class="font-red" ng-show="login.rights.task.delete" confirmed-click="remove(task)" ng-confirm-click="Supprimer la tache ?" title="Supprimer la tache">
-                        <i class="fa fa-trash-o font-red"></i>
-                        @(Delete)
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
                 </li>
             </ul>
@@ -103,12 +101,8 @@
                                     <div class="row static-info">
                                         <div class="col-md-4 name">@(companies:Company) :</div>
                                         <div class="col-md-8 value">
-                                            <a href="#" ui-sref="societe.show({id:task.societe.id})"
-                                               class="fa fa-institution"
-                                               editable-text="task.societe"
-                                               e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', bill.entity) | filter:{name:$viewValue}"
-                                               e-typeahead-on-select="updateAddress($item)"
-                                               > {{task.societe.name|| "Non defini"}} </a>
+                                            <a href="#" ui-sref="societe.show({id:task.societe.id})" class="fa fa-institution" editable-text="task.societe" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', bill.entity) | filter:{name:$viewValue}"
+                                                e-typeahead-on-select="updateAddress($item)"> {{task.societe.name|| "Non defini"}} </a>
                                         </div>
                                     </div>
 
@@ -122,12 +116,12 @@
                                     </div>
 
                                     <div class="row static-info">
-                                        <div class="col-md-4 name">@(Entity) :</div>
+                                        <div class="col-md-4 name">@(companies:Entity) :</div>
                                         <div class="col-md-8 value">
                                             <small class="label label-sm label-default">{{task.entity}}</small>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="row static-info">
                                         <div class="col-md-4 name">@(leads:Lead) :</div>
                                         <div class="col-md-8 value">
@@ -143,7 +137,7 @@
                                             <span href="#" editable-bsdate="task.datep" e-datepicker-popup="dd/MM/yyyy">
                                                 {{ (task.datep | date:"dd/MM/yyyy") || 'empty'}}
                                             </span>
-                                            <span editable-bstime="task.datep" e-show-meridian="false" e-minute-step="10" >
+                                            <span editable-bstime="task.datep" e-show-meridian="false" e-minute-step="10">
                                                 {{ (task.datep | date:"HH:mm") || 'empty'}}
                                             </span>
                                         </div>
@@ -170,8 +164,8 @@
                                                 <span class="input-group-btn btn-group-xs">
                                                     <button ng-disabled="task.percentage == 0" type="button" class="btn btn-default" ng-click="updatePercent(task.percentage - 25 < 0 ? 0 : task.percentage - 25);"><i class="glyphicon glyphicon-minus"></i></button>
                                                 </span>
-                                            <progressbar animate="true" value="task.percentage" type="success"><b>{{task.percentage}}%</b></progressbar>
-                                            <span class="input-group-btn btn-group-xs">
+                                                <progressbar animate="true" value="task.percentage" type="success"><b>{{task.percentage}}%</b></progressbar>
+                                                <span class="input-group-btn btn-group-xs">
                                                 <button ng-disabled="task.percentage == 100" type="button" class="btn btn-default" ng-click="updatePercent(task.percentage + 25 > 100 ? 100 : task.percentage + 25);"><i class="glyphicon glyphicon-plus"></i></button>
                                             </span>
                                             </p>
@@ -243,7 +237,7 @@
                                     </div>
 
                                     <pre editable-textarea="task.description" e-name="note" e-rows="6" e-cols="400" e-required e-class="form-control"></pre>
-                                    <pre class="well"  ng-show="!noteDesc.$visible">{{task.description}}</pre>
+                                    <pre class="well" ng-show="!noteDesc.$visible">{{task.description}}</pre>
 
                                 </div>
                             </div>
@@ -280,7 +274,7 @@
                         </ul>
                         <div class="chat-form" ng-if="editable">
                             <div class="input-cont">
-                                <input class="form-control" type="text" ng-model="newNote"  ng-enter="addNote()" placeholder="Ajouter un commentaire ici..."> </div>
+                                <input class="form-control" type="text" ng-model="newNote" ng-enter="addNote()" placeholder="Ajouter un commentaire ici..."> </div>
                             <div class="btn-cont">
                                 <span class="arrow"> </span>
                                 <a href="" class="btn blue icn-only" ng-click="addNote()">
@@ -295,4 +289,3 @@
         </tabset>
     </div>
 </div>
-
