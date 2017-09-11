@@ -82,7 +82,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail('Demande de prix',object.contacts)">
+                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail('Demande de prix','offer',object.contacts)">
                         <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>
@@ -127,7 +127,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail('Commande',object.contacts)">
+                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail('Commande','order',object.contacts)">
                         <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>

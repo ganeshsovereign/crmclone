@@ -353,14 +353,14 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 });
         };
 
-        $scope.sendEmail = function(title, emails) {
+        $scope.sendEmail = function(title, type, emails) {
             $http.post('/erp/api/sendEmail', {
                 to: emails,
                 data: {
                     title: title + ' ' + this.object.ref_client || "",
                     subtitle: this.object.supplier.fullName + (this.object.ref_client ? " - Reference " + this.object.ref_client : ""),
                     message: 'Veuillez trouver ci-joint le document. Cliquer sur le bouton ci-apres pour le telecharger.',
-                    url: '/erp/api/object/download/' + this.object._id,
+                    url: '/erp/api/' + type + '/download/' + this.object._id,
                     entity: this.object.entity
                 },
                 ModelEmail: 'email_PDF'
