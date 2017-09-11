@@ -54,24 +54,24 @@
         </div>
 
         <div class="form-group form-md-line-input">
-            <input type="text" class="form-control" id="ContactPhone" ng-model="addressModel.contact.phone" ng-disabled="editable">
+            <input type="text" class="form-control" id="ContactPhone" ng-model="addressModel.contact.phone" ng-disabled="editable" />
             <label for="ContactPhone">@(companies:Phone) </label>
         </div>
 
         <div class="form-group form-md-line-input">
-            <input type="text" class="form-control" id="ContactMobile" ng-model="addressModel.contact.mobile" ng-disabled="editable">
+            <input type="text" class="form-control" id="ContactMobile" ng-model="addressModel.contact.mobile" ng-disabled="editable" />
             <label for="ContactMobile">@(companies:PhoneMobile) </label>
         </div>
 
         <div class="form-group form-md-line-input">
-            <input type="text" class="form-control" id="ContactFax" ng-model="addressModel.contact.fax" ng-disabled="editable">
+            <input type="text" class="form-control" id="ContactFax" ng-model="addressModel.contact.fax" ng-disabled="editable" />
             <label for="ContactFax">@(companies:Fax) </label>
         </div>
 
         <div class="form-group form-md-line-input">
             <div class="input-group">
                 <div class="input-group-control">
-                    <input type="text" class="form-control" id="ContactEmail" ng-model="addressModel.contact.email">
+                    <input type="text" class="form-control" id="ContactEmail" ng-model="addressModel.contact.email" ng-disabled="editable" />
                     <label for="ContactEmail">@(Email) </label>
                 </div>
                 <span class="input-group-btn btn-right"><a ng-href="mailto:{{addressModel.contact.email}}" class="btn yellow" type="button"><i class="fa fa-envelope"></i></a></span>

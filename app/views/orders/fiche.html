@@ -157,7 +157,7 @@
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF) Proforma</a>
                 </li>
                 <li>
-                    <a ng-if="object.Status != 'DRAFT' && object.contacts.length" ng-href="#" ng-click="sendEmail()">
+                    <a ng-if="object.Status != 'DRAFT' && object.contacts.length" ng-href="#" ng-click="sendEmail('@(orders:Order)',object.address.contacts)">
                         <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>
@@ -191,7 +191,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="object.Status !='DRAFT' && object.contacts.length " ng-href="# " ng-click="sendEmail() ">
+                    <a ng-if="object.Status !='DRAFT' && object.contacts.length " ng-href="# " ng-click="sendEmail('@(deliveries:Delivery)',object.address.contact.email)">
                         <i class="fa fa-envelope "></i> @(mails:SendMail)
                     </a>
                 </li>
@@ -230,7 +230,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status !="DRAFT " && object.contacts.length' ng-href="# " ng-click="sendEmail() ">
+                    <a ng-show='object.Status !="DRAFT " && object.address.contact.email' ng-href="# " ng-click="sendEmail('@(bills:Bill)',object.address.contact.email)">
                         <i class="fa fa-envelope "></i> @(mails:SendMail)
                     </a>
                 </li>
@@ -258,7 +258,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status !="DRAFT " && object.contacts.length' ng-href="# " ng-click="sendEmail() ">
+                    <a ng-show='object.Status !="DRAFT " && object.contacts.length' ng-href="# " ng-click="sendEmail('@(deliveries:StockReturn)',object.shippingAddress.contact.email)">
                         <i class="fa fa-envelope "></i> @(mails:SendMail)
                     </a>
                 </li>
@@ -401,7 +401,7 @@
                 <div class="row list-separated profile-stat">
                     <div class="col-md-12">
                         <div class="uppercase profile-stat-text">@(Logs)</div>
-                        <div class="uppercase profile-stat-title"> {{object.history.date| date:'dd/MM/yyyy HH:mm'}} {{object.history.msg}}</div>
+                        <div class="uppercase profile-stat-title" ng-repeat="history in object.history"> {{history.date| date:'dd/MM/yyyy HH:mm'}} - {{history.msg}}</div>
                     </div>
                 </div>
             </div>

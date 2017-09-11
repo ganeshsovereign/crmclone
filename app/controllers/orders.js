@@ -353,13 +353,13 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 });
         };
 
-        $scope.sendEmail = function() {
+        $scope.sendEmail = function(title, emails) {
             $http.post('/erp/api/sendEmail', {
-                to: this.object.contacts,
+                to: emails,
                 data: {
-                    title: 'Votre devis ' + this.object.ref_client || "",
-                    subtitle: this.object.client.name + (this.object.ref_client ? " - Reference " + this.object.ref_client : ""),
-                    message: 'Veuillez trouver ci-joint la proposition commerciale. Cliquer sur le bouton ci-apres pour le telecharger.',
+                    title: title + ' ' + this.object.ref_client || "",
+                    subtitle: this.object.supplier.fullName + (this.object.ref_client ? " - Reference " + this.object.ref_client : ""),
+                    message: 'Veuillez trouver ci-joint le document. Cliquer sur le bouton ci-apres pour le telecharger.',
                     url: '/erp/api/object/download/' + this.object._id,
                     entity: this.object.entity
                 },
@@ -373,10 +373,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                         mode: 'email',
                         msg: 'email envoye',
                         Status: 'notify',
-                        author: {
-                            id: $rootScope.login._id,
-                            name: $rootScope.login.name
-                        }
+                        author: $rootScope.login._id
                     });
 
                     return $scope.update();

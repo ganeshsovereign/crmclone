@@ -177,6 +177,25 @@
                                 </div>
                             </div>
 
+                            <div ng-show="module('order') || module('offer')" ng-if="object.supplier" class="col-md-5 col-sm-12">
+                                <div class="portlet light bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-money"></i>
+                                            <span class="caption-subject uppercase"> @(orders:TypeContact_commande_external_CUSTOMER)</span>
+                                        </div>
+                                        <div class="tools">
+                                            <a href="" class="expand" data-original-title="" title=""> </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="form-group form-md-line-input">
+                                            <contact-id ng-model="object.contacts" supplier="object.supplier" ng-disabled="!editable"></contact-id>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div ng-hide="module('stockreturn')" class="col-md-5 col-sm-12">
                                 <div class="portlet light bordered">
                                     <div class="portlet-title">
@@ -194,7 +213,7 @@
                                     </div>
                                     <div ng-if="!module('delivery')" class="portlet-body" style="display: block;">
                                         <div class="form-group form-md-line-input">
-                                            <address ng-model="object.address" mode="simple" ng-disabled="!editable"></address>
+                                            <address ng-model="object.address" mode="withEmail" ng-disabled="!editable"></address>
                                         </div>
                                     </div>
                                     <div ng-if="module('delivery')" class="portlet-body" style="display: none;">

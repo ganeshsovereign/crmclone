@@ -175,7 +175,7 @@ MetronicApp.factory('superCache', ['$cacheFactory',
     }
 ]);
 
-MetronicApp.directive('crmAddress', ['$http',
+/*MetronicApp.directive('crmAddress', ['$http',
     function($http) {
         return {
             restrict: 'A',
@@ -249,7 +249,7 @@ MetronicApp.directive('crmAddress', ['$http',
             }
         };
     }
-]);
+]);*/
 
 MetronicApp.directive('save', function() {
     return {
@@ -282,7 +282,7 @@ MetronicApp.directive('address', ['$http', 'Societes',
                     if (attr.mode === 'simple')
                         return '/templates/core/address2.html';
 
-                    if (attr.mode === 'shipping')
+                    if (attr.mode === 'shipping' || attr.mode === 'withEmail')
                         return '/templates/core/addressShipping.html';
 
                     if (attr.mode === 'show')
@@ -377,13 +377,13 @@ MetronicApp.directive('address', ['$http', 'Societes',
     }
 ]);
 
-MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
-    function($http, $modal, Contacts) {
+MetronicApp.directive('contactId', ['$http', '$modal', 'Societes',
+    function($http, $modal, Societes) {
         return {
-            restrict: 'A',
+            restrict: 'E',
             scope: {
-                contactModel: '=model',
-                societe: '=?',
+                contactModel: '=ngModel',
+                supplier: '=?',
                 mode: '=?'
             },
             templateUrl: function(el, attr) {
@@ -398,22 +398,20 @@ MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
                 scope.updateContactDir = true;
                 scope.contacts = [];
 
-                scope.$watch('societe', function(newValue, oldValue) {
+                scope.$watch('supplier', function(newValue, oldValue) {
                     if (!newValue)
                         return;
 
                     $http({
                         method: 'GET',
-                        url: '/erp/api/contact',
+                        url: '/erp/api/societe',
                         params: {
-                            find: {
-                                societe: newValue.id
-                            },
-                            field: "_id firstname lastname name poste"
+                            company: newValue._id,
+                            field: "_id name poste emails phones"
                         }
                     }).success(function(data) {
-                        //console.log(data);
-                        scope.contacts = data;
+                        console.log(data);
+                        scope.contacts = data.data;
                     });
                 });
                 scope.addContact = function() {
@@ -431,15 +429,68 @@ MetronicApp.directive('crmContact', ['$http', '$modal', 'Contacts',
                     });
                 };
 
+                var ModalContactCtrl = function($scope, $modalInstance, options) {
+                    $scope.create = false;
+                    $scope.dict = options.dict;
+
+                    $scope.contact = {
+                        type: 'Person',
+                        salesPurchases: {
+                            isActive: true
+                        },
+                        company: options.supplier._id,
+                        name: {},
+                        emails: [],
+                        phones: {},
+                        address: options.supplier.address
+                    };
+
+                    $scope.addContactToCustomer = function(item) {
+                        console.log(item, $scope.supplier);
+                        Societes.get({
+                            Id: item._id
+                        }, function(contact) {
+                            contact.company = options.supplier._id;
+                            contact.$update(function(response) {
+                                $modalInstance.close(response);
+                            });
+                        });
+                    };
+
+                    $scope.createNewContact = function() {
+                        $scope.create = true;
+                    }
+
+                    $scope.delete = function(contact) {
+                        $http({
+                            method: 'DELETE',
+                            url: '/erp/api/societe/' + contact._id
+                        }).success(function(data, status) {
+                            $scope.contact.splice(index, 1);
+                        });
+                    };
+
+                    $scope.ok = function() {
+                        var contact = new Societes($scope.contact);
+                        contact.$save(function(response) {
+                            $modalInstance.close(response);
+                        });
+                    };
+
+                    $scope.cancel = function() {
+                        $modalInstance.dismiss('cancel');
+                    };
+                };
+
                 scope.addNewContact = function() {
 
                     var modalInstance = $modal.open({
-                        templateUrl: '/templates/_contact/modal/create.html',
-                        controller: "ContactCreateController",
+                        templateUrl: '/templates/contact/modal/addContact.html',
+                        controller: ModalContactCtrl,
                         resolve: {
-                            object: function() {
+                            options: function() {
                                 return {
-                                    societe: scope.societe
+                                    supplier: scope.supplier
                                 };
                             }
                         }
@@ -705,6 +756,14 @@ MetronicApp.directive('crmId', ['$http',
                         return res.data;
                     });
                 };
+
+                scope.refreshData = function() {
+                    $http.get("/erp/api/societe/" + scope.model._id).then(function(res) {
+                        //console.log(res.data);
+                        scope.onSelect(res.data);
+                    });
+                }
+
                 ctrl.$validators.id = function(modelValue, viewValue) {
 
                     if (ctrl.$isEmpty(modelValue)) {

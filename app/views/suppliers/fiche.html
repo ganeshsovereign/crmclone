@@ -82,7 +82,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail()">
+                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail('Demande de prix',object.contacts)">
                         <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>
@@ -127,7 +127,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail()">
+                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail('Commande',object.contacts)">
                         <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>
@@ -161,11 +161,6 @@
                         <i class="fa fa-file-pdf-o"></i> @(SendToFtp)
                     </a>
                 </li>
-                <li>
-                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail()">
-                        <i class="fa  fa-envelope"></i> @(mails:SendMail)
-                    </a>
-                </li>
             </ul>
 
             <!-- billsupplier -->
@@ -194,11 +189,6 @@
                 <li>
                     <a ng-show='object.Status != "DRAFT"' ng-href="/erp/api/bill/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
-                    </a>
-                </li>
-                <li>
-                    <a ng-show='object.Status != "DRAFT" && object.contacts.length' ng-href="#" ng-click="sendEmail()">
-                        <i class="fa  fa-envelope"></i> @(mails:SendMail)
                     </a>
                 </li>
             </ul>

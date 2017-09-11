@@ -1,15 +1,14 @@
-<div class="row static-info">
-    <div class="col-md-12 value">
-        <div class="row static-info">
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
             <div class="form-group form-md-line-input">
                 <div class="col-md-2 name">
                     @(Add) :
                 </div>
                 <div class="col-md-10 value">
-                    <!--<a data-ng-href="mailto:\{{contactModel.email}}" target="_blank" editable-email="contactModel.email">{{contactModel.email|| "Non defini"}}</a>-->
                     <div class="input-group input-group-sm">
 
-                        <select class="form-control" id="contacts" ng-model="selectedContact" ng-options="contact as contact.name for contact in contacts" ng-change="addContact()">                                    
+                        <select class="form-control" id="contacts" ng-model="selectedContact" ng-options="contact as contact.fullName for contact in contacts" ng-change="addContact()">                                    
                     </select>
 
                         <span class="input-group-btn">
@@ -20,6 +19,7 @@
                 </div>
             </div>
         </div>
+
         <div class="table-scrollable">
             <table class="table table-striped table-hover">
                 <thead>
@@ -32,9 +32,9 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="contact in contactModel">
-                        <td><a ui-sref="contact.show({id:contact._id})">{{contact.name}}</a></td>
-                        <td>{{contact.phone | phone}}</td>
-                        <td><a href="mailto:{{contact.email}}" target="_blank">{{contact.email}}</a></td>
+                        <td><a ui-sref="societe.show({id:contact._id})">{{contact.fullName}}</a></td>
+                        <td>{{contact.phones.phone | phone}}</td>
+                        <td><a href="mailto:{{contact.emails[0].email}}" target="_blank">{{contact.emails[0].email}}</a></td>
                         <td>
                             <a href="javascript:;" ng-click="deleteContact($index)" class="btn btn-outline btn-circle dark btn-sm red">
                                 <i class="fa fa-trash-o"></i> </a>

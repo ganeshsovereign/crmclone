@@ -201,20 +201,7 @@ var customerSchema = new Schema({
     department: { type: ObjectId, ref: 'Department', default: null },
     timezone: { type: String, default: 'UTC' },
 
-    address: {
-        street: { type: String, default: '' },
-        city: { type: String, default: '' },
-        state: { type: String, default: '' },
-        zip: { type: String, default: '' },
-        country: { type: String, ref: 'countries', default: 'FR' },
-        contact: {
-            name: { type: String, default: '' },
-            phone: { type: String, set: MODULE('utils').setPhone, default: '' },
-            mobile: { type: String, set: MODULE('utils').setPhone, default: '' },
-            fax: { type: String, set: MODULE('utils').setPhone, default: '' },
-            email: { type: String, lowercase: true, trim: true, index: true }
-        }
-    },
+    address: addressSchema,
 
     shippingAddress: [addressSchema], // list of deliveries address
     deliveryAddressId: { type: Schema.Types.ObjectId }, // id of default address in addresses

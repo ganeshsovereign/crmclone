@@ -426,7 +426,7 @@ baseSchema.statics.getById = function(id, callback) {
     async.waterfall([
             function(wCb) {
                 self.findOne(query, "-latex")
-                    .populate("contacts", "name phone email")
+                    .populate("contacts", "name phones emails")
                     .populate({
                         path: "supplier",
                         select: "name salesPurchases",

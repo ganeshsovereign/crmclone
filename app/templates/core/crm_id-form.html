@@ -11,9 +11,18 @@
                 typeahead-template-url="searchcompany.html" placeholder="{{placeholder}}" type="text" autocomplete="off" />
             <label for="{{name}}">{{label}} :</label>
         </div>
-        <span class="input-group-btn btn-right"><button class="btn" ng-class="{'btn-danger':$error, 'btn-success': !$error}" ng-disabled="$error" type="button" ui-sref="societe.show({id:model._id})"><span ng-hide="$error"><i class="fa fa-pencil"></i></span>
-        <i ng-show="$error" class="fa fa-warning"></i>
-        </button>
-        </span>
+        <span class="input-group-btn btn-right">
+                <button type="button" class="btn dropdown-toggle" ng-class="{'btn-danger':$error, 'btn-success': !$error}" ng-disabled="$error" data-toggle="dropdown" aria-expanded="false"> Action
+                    <i class="fa fa-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li ng-hide="$error">
+                        <a ui-sref="societe.show({id:model._id})"><i class="fa fa-pencil"></i> @(Edit)</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" ng-click="refreshData()"><i class="fa fa-refresh"></i> @(Refresh)</a>
+                    </li>
+                </ul>
+            </span>
     </div>
 </div>

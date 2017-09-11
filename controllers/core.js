@@ -273,7 +273,7 @@ function sendEmail() {
     if (typeof self.body.to == 'object' && self.body.to.length)
         dest = _.pluck(self.body.to, 'email');
     else
-        dest = self.body.to;
+        dest = [self.body.to];
 
     if (!dest || !dest.length)
         return self.throw500('No destinataire');
@@ -281,17 +281,27 @@ function sendEmail() {
     console.log(dest);
 
     //Send an email
-    self.mail(dest, self.body.data.entity + " - " + self.body.data.title, self.body.ModelEmail, self.body.data);
+    self.mail(dest, self.body.data.entity + " - " + self.body.data.title, self.body.ModelEmail, self.body.data, function(err) {
+        if (err) {
+            console.log(err);
+            return self.json({
+                errorNotify: {
+                    title: 'Erreur',
+                    message: err
+                }
+            });
+        }
+
+        self.json({
+            successNotify: {
+                title: "Mail envoye",
+                message: dest + " mail(s) envoye(s)"
+            }
+        });
+    });
 
     if (self.config['mail.address.copy'])
         self.mail(self.config['mail.address.copy'], self.body.data.entity + " - " + self.body.data.title, self.body.ModelEmail, self.body.data);
-
-    self.json({
-        successNotify: {
-            title: "Mail envoye",
-            message: self.body.to.length + " mail(s) envoye(s)"
-        }
-    });
 }
 
 function task_count() {
