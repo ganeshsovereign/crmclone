@@ -220,10 +220,7 @@ const baseSchema = new Schema({
     }],*/
     history: [{
         date: { type: Date, default: Date.now },
-        author: {
-            id: String,
-            name: String
-        },
+        author: { type: ObjectId, ref: 'Users' },
         mode: String, //email, order, alert, new, ...
         Status: String,
         msg: String

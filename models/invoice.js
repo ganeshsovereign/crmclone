@@ -122,10 +122,10 @@ var billSchema = new Schema({
             default: 0
         }*/
     },
-    createdBy: { type: ObjectId, ref: 'Users', default: null },
-    editedBy: { type: ObjectId, ref: 'Users', default: null },
-    salesPerson: { type: ObjectId, ref: 'Employees', default: null }, //commercial_id
-    salesTeam: { type: ObjectId, ref: 'Department', default: null },
+    createdBy: { type: ObjectId, ref: 'Users' },
+    editedBy: { type: ObjectId, ref: 'Users' },
+    salesPerson: { type: ObjectId, ref: 'Employees' }, //commercial_id
+    salesTeam: { type: ObjectId, ref: 'Department' },
     entity: String,
     optional: Schema.Types.Mixed,
     delivery_mode: { type: String, default: "Comptoir" },
@@ -187,10 +187,7 @@ var billSchema = new Schema({
     }],
     history: [{
         date: { type: Date, default: Date.now },
-        author: {
-            id: String,
-            name: String
-        },
+        author: { type: ObjectId, ref: 'Users' },
         mode: String, //email, order, alert, new, ...
         Status: String,
         msg: String
