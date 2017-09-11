@@ -254,6 +254,7 @@ function view_500() {
 
 function sendEmail() {
     var self = this;
+    const EntityModel = MODEL('Entity').Schema;
 
     //console.log(self.body);
 
@@ -267,41 +268,47 @@ function sendEmail() {
 
     //console.log(self.body);
 
-    self.body.data.entity = self.body.data.entity.charAt(0).toUpperCase() + self.body.data.entity.slice(1);
+    if (!self.body.data.entity)
+        return self.throw500('No entity');
 
-    var dest = [];
-    if (typeof self.body.to == 'object' && self.body.to.length)
-        dest = _.pluck(self.body.to, 'email');
-    else
-        dest = [self.body.to];
+    EntityModel.findById(self.body.data.entity, function(err, entity) {
+        if (err || !entity)
+            return self.throw500('Entity unknown');
 
-    if (!dest || !dest.length)
-        return self.throw500('No destinataire');
+        var dest = [];
+        if (typeof self.body.to == 'object' && self.body.to.length)
+            dest = _.pluck(self.body.to, 'email');
+        else
+            dest = [self.body.to];
 
-    console.log(dest);
+        if (!dest || !dest.length)
+            return self.throw500('No destinataire');
 
-    //Send an email
-    self.mail(dest, self.body.data.entity + " - " + self.body.data.title, self.body.ModelEmail, self.body.data, function(err) {
-        if (err) {
-            console.log(err);
-            return self.json({
-                errorNotify: {
-                    title: 'Erreur',
-                    message: err
+        //console.log(dest);
+
+        //Send an email
+        self.mail(dest, entity.name + " - " + self.body.data.title, self.body.ModelEmail, self.body.data, function(err) {
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
+
+            self.json({
+                successNotify: {
+                    title: "Mail envoye",
+                    message: dest + " mail(s) envoye(s)"
                 }
             });
-        }
-
-        self.json({
-            successNotify: {
-                title: "Mail envoye",
-                message: dest + " mail(s) envoye(s)"
-            }
         });
-    });
 
-    if (self.config['mail.address.copy'])
-        self.mail(self.config['mail.address.copy'], self.body.data.entity + " - " + self.body.data.title, self.body.ModelEmail, self.body.data);
+        if (self.config['mail.address.copy'])
+            self.mail(self.config['mail.address.copy'], self.body.data.entity + " - " + self.body.data.title, self.body.ModelEmail, self.body.data);
+    });
 }
 
 function task_count() {
