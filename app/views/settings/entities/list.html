@@ -7,11 +7,11 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(companies:CompanyManagement)</span>
+                <span>@(companies:ManagementEntity)</span>
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(companies:CompanyList)</span>
+                <span>@(companies:ListOfEntity)</span>
             </li>
         </ul>
 
@@ -42,7 +42,7 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-institution"></i>
-                <span class="caption-subject dark bold uppercase"> @(companies:CompanyList)</span>
+                <span class="caption-subject dark bold uppercase"> @(companies:ListOfEntity)</span>
             </div>
             <div class="actions">
                 <button class="btn blue" ui-sref="settings.entity.create">@(Add) <i class="fa fa-plus"></i></button>
@@ -80,7 +80,7 @@
                                 <th>@(Town)</th>
                                 <th>@(companies:ProfId3FR)</th>
                                 <th>@(Status)</th>
-                                <th>@(Entity)</th>
+                                <th>@(companies:Entity)</th>
                                 <th>@(Tag)</th>
                                 <th>@(DateModificationShort)</th>
                             </tr>

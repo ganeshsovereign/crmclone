@@ -33,7 +33,7 @@
 
                                             <div class="form-group form-md-line-input" ng-if="!object._id">
                                                 <select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
-                                                <label for="entity">@(Entity)</label>
+                                                <label for="entity">@(companies:Entity)</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input" ng-hide="module('billsupplier')">
@@ -45,7 +45,6 @@
                                                 <input type="text" class="form-control" id="ref_client" ng-model="object.ref_client">
                                                 <label for="ref_client">@(bills:InvoiceRefSupplier)</label>
                                             </div>
-
 
                                             <div ng-hide="!object._id" ng-if="module('ordersupplier')" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> <a ui-sref="offersupplier.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
@@ -77,7 +76,6 @@
                                         </div>
 
                                         <div class="col-md-6 col-sm-12">
-
                                             <div class="form-group form-md-line-input">
                                                 <select class="form-control" id="delivery_mode" ng-model="object.delivery_mode" ng-options="s as s for s in delivery_mode">
                                                         </select>
@@ -120,7 +118,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-5 col-sm-12">
+                            <div class="col-md-5">
                                 <div class="portlet light bordered">
                                     <div class="portlet-title">
                                         <div class="caption">
@@ -146,9 +144,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-5 col-sm-12">
                                 <div class="portlet light bordered">
                                     <div class="portlet-title">
                                         <div class="caption">

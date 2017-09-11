@@ -370,16 +370,14 @@
                 </div>
             </div>
 
-
             <div class="portlet light">
                 <div class="row list-separated profile-stat">
                     <div class="col-md-12">
                         <div class="form-group form-md-line-input">
                             <select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
-                            <label for="entity">@(Entity)</label>
+                            <label for="entity">@(companies:Entity)</label>
                         </div>
-                        <crm-id label="@(companies:Customer)" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)
-           " class="form-group form-md-line-input"></crm-id>
+                        <crm-id label="@(companies:Customer)" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
                     </div>
                 </div>
 

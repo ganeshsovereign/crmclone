@@ -51,7 +51,7 @@
                             </div>
 
                             <div ng-if="login.multiEntities" class="form-group">
-                                <label class="col-md-4 control-label">@(Entity)</label>
+                                <label class="col-md-4 control-label">@(companies:Entity)</label>
                                 <div class="col-md-8">
                                     <select class="form-control" data-ng-model="task.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
                                 </div>
