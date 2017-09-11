@@ -41,7 +41,7 @@ exports.install = function() {
     var object = new Object();
     F.route('/erp/api/bill', object.read, ['authorize']);
     F.route('/erp/api/bill/dt', object.readDT, ['post', 'authorize']);
-    F.route('/erp/api/bill/ca', object.ca, ['authorize']);
+    F.route('/erp/api/bill/stats', object.stats, ['authorize']);
     F.route('/erp/api/bill/pdf/', object.pdfAll, ['post', 'json', 'authorize']);
     F.route('/erp/api/bill/{id}', object.show, ['authorize']);
     F.route('/erp/api/bill', object.create, ['post', 'json', 'authorize'], 512);
@@ -1180,7 +1180,7 @@ Object.prototype = {
             });
         });
     },
-    ca: function() {
+    stats: function() {
         var BillModel = MODEL('invoice').Schema;
         var self = this;
 
@@ -1192,6 +1192,7 @@ Object.prototype = {
         var query = {
             isremoved: { $ne: true },
             Status: { '$ne': 'DRAFT' },
+            forSales: (self.query.forSales == 'false' ? false : true),
             datec: { '$gte': dateStart, '$lt': dateEnd }
         };
 

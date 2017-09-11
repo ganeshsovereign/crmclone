@@ -55,7 +55,7 @@
                     <div class="row step-thin">
                         <div class="col-md-12 bg-grey mt-step-col" ng-repeat="line in value">
                             <div class="mt-step-number font-grey" ng-class="{'progress-bar-success' : line.caN_1 <= line.caN, 'bg-red':line.caN_1 > line.caN}"><i class='fa' ng-class="{'fa-thumbs-o-up' : line.caN_1 <= line.caN, 'fa-thumbs-o-down':line.caN_1 > line.caN}"></i></div>
-                            <div class="mt-step-title uppercase">{{line.caFamily}}</div>
+                            <div class="mt-step-title uppercase">{{line.family.langs[_language].name}}</div>
                             <div class="mt-step-content"><span class='font-yellow-gold bold'>{{line.caN_1|number:0}}</span> <i class='fa fa-arrow-circle-right'></i> <span class='font-green-haze bold'>{{line.caN|number:0}}</span></div>
                         </div>
                     </div>

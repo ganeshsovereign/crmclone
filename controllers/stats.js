@@ -55,135 +55,162 @@ Object.prototype = {
         }
 
         if (self.query.societe) {
-            queryCA['client.id'] = self.module('utils').ObjectId(self.query.societe);
-            queryCAN_1['client.id'] = self.module('utils').ObjectId(self.query.societe);
+            queryCA['supplier'] = self.module('utils').ObjectId(self.query.societe);
+            queryCAN_1['supplier'] = self.module('utils').ObjectId(self.query.societe);
         }
 
         var ca = {};
         async.parallel({
-            caN: function(cb) {
-                BillModel.aggregate([
-                    { $match: queryCA },
-                    { $unwind: "$lines" },
-                    { $match: { 'lines.product.id': { $ne: null } } },
-                    { $project: { _id: 0, lines: 1, entity: 1 } },
-                    { $group: { _id: { id: "$lines.product.id", entity: "$entity" }, caN: { "$sum": "$lines.total_ht" } } }
-                ], function(err, doc) {
-                    if (err)
-                        return cb(err);
-                    //console.log(doc);
-                    cb(err, _.map(doc, function(elem) {
-                        //console.log(elem);
-                        elem.entity = elem._id.entity;
-                        elem.productId = elem._id.id;
-                        elem._id = elem._id.id + "_" + elem._id.entity;
-                        return elem;
-                    }));
-                });
+                caN: function(cb) {
+                    BillModel.aggregate([
+                        { $match: queryCA },
+                        { $unwind: "$lines" },
+                        { $match: { 'lines.product': { $ne: null } } },
+                        { $project: { _id: 0, lines: 1, entity: 1 } },
+                        {
+                            $lookup: {
+                                from: 'Product',
+                                localField: 'lines.product',
+                                foreignField: '_id',
+                                as: 'lines.product'
+                            }
+                        },
+                        { $unwind: "$lines.product" },
+                        {
+                            $project: {
+                                entity: 1,
+                                'lines.total_ht': 1,
+                                'lines.product._id': 1,
+                                'lines.product.sellFamily': 1
+                            }
+                        },
+                        { $group: { _id: { familyId: "$lines.product.sellFamily", entity: "$entity" }, caN: { "$sum": "$lines.total_ht" } } },
+                        {
+                            $lookup: {
+                                from: 'productFamily',
+                                localField: '_id.familyId',
+                                foreignField: '_id',
+                                as: 'family'
+                            }
+                        },
+                        { $unwind: "$family" }
+                    ], function(err, doc) {
+                        if (err)
+                            return cb(err);
+
+                        cb(err, _.map(doc, function(elem) {
+                            //console.log(elem);
+                            elem.entity = elem._id.entity;
+                            elem._id = elem._id.familyId.toString() + "_" + elem._id.entity;
+                            return elem;
+                        }));
+                    });
+                },
+                caN_1: function(cb) {
+                    BillModel.aggregate([
+                        { $match: queryCAN_1 },
+                        { $unwind: "$lines" },
+                        { $match: { 'lines.product': { $ne: null } } },
+                        { $project: { _id: 0, lines: 1, entity: 1 } },
+                        {
+                            $lookup: {
+                                from: 'Product',
+                                localField: 'lines.product',
+                                foreignField: '_id',
+                                as: 'lines.product'
+                            }
+                        },
+                        { $unwind: "$lines.product" },
+                        {
+                            $project: {
+                                entity: 1,
+                                'lines.total_ht': 1,
+                                'lines.product._id': 1,
+                                'lines.product.sellFamily': 1
+                            }
+                        },
+                        { $group: { _id: { familyId: "$lines.product.sellFamily", entity: "$entity" }, caN_1: { "$sum": "$lines.total_ht" } } },
+                        {
+                            $lookup: {
+                                from: 'productFamily',
+                                localField: '_id.familyId',
+                                foreignField: '_id',
+                                as: 'family'
+                            }
+                        },
+                        { $unwind: "$family" }
+                    ], function(err, doc) {
+                        if (err)
+                            return cb(err);
+
+                        cb(err, _.map(doc, function(elem) {
+                            //console.log(elem);
+                            elem.entity = elem._id.entity;
+                            elem._id = elem._id.familyId.toString() + "_" + elem._id.entity;
+                            return elem;
+                        }));
+                    });
+                }
             },
-            caN_1: function(cb) {
-                BillModel.aggregate([
-                    { $match: queryCAN_1 },
-                    { $unwind: "$lines" },
-                    { $match: { 'lines.product.id': { $ne: null } } },
-                    { $project: { _id: 0, lines: 1, entity: 1 } },
-                    { $group: { _id: { id: "$lines.product.id", entity: "$entity" }, caN_1: { "$sum": "$lines.total_ht" } } }
-                ], function(err, doc) {
-                    if (err)
-                        return cb(err);
+            function(err, results) {
+                if (err)
+                    return console.log(err);
 
-                    cb(err, _.map(doc, function(elem) {
-                        //console.log(elem);
-                        elem.entity = elem._id.entity;
-                        elem.productId = elem._id.id;
-                        elem._id = elem._id.id + "_" + elem._id.entity;
-                        return elem;
-                    }));
-                });
-            }
-        }, function(err, results) {
-            if (err)
-                return console.log(err);
+                async.waterfall([
+                    function(callback) {
+                        //merge array CaN et Ca N-1
+                        self.module('utils').mergeByProperty(results.caN, results.caN_1, '_id');
+                        results = _.map(results.caN, function(elem) {
+                            if (!elem.caN_1)
+                                elem.caN_1 = 0;
+                            if (!elem.caN)
+                                elem.caN = 0;
 
-            async.waterfall([
-                function(callback) {
-                    //merge array CaN et Ca N-1
-                    self.module('utils').mergeByProperty(results.caN, results.caN_1, '_id');
-                    results = _.map(results.caN, function(elem) {
-                        if (!elem.caN_1)
-                            elem.caN_1 = 0;
-                        if (!elem.caN)
-                            elem.caN = 0;
+                            return elem;
+                        });
+                        //return console.log(results);
+                        callback(null, results);
+                    },
+                    /*function(results, callback) {
+                        // get unique product ID
 
-                        return elem;
-                    });
+                        var productList = _.map(_.uniq(results, 'productId'), function(elem) {
+                            return elem.productId;
+                        });
+                        //console.log(productList);
 
-                    callback(null, results);
-                },
-                function(results, callback) {
-                    // get unique product ID
+                        callback(null, productList, results);
+                    },
+                    function(productList, results, callback) {
+                        // Get product Family form product ID
+                        ProductModel.find({ _id: { $in: productList } }, "_id caFamily", function(err, doc) {
+                            doc = _.indexBy(doc, '_id');
+                            //console.log(doc);
 
-                    var productList = _.map(_.uniq(results, 'productId'), function(elem) {
-                        return elem.productId;
-                    });
-                    //console.log(productList);
+                            callback(err, doc, results);
+                        });
+                    },
+                    function(family, results, callback) {
+                        // Merge caFamily
+                        //console.log(results);
+                        var res = _.map(results, function(elem) {
+                            //console.log(elem);
+                            if (family[elem.productId.toString()] && family[elem.productId.toString()].caFamily)
+                                elem.caFamily = family[elem.productId.toString()].caFamily;
+                            else
+                                elem.caFamily = 'OTHER';
+                            return elem;
+                        });
 
-                    callback(null, productList, results);
-                },
-                function(productList, results, callback) {
-                    // Get product Family form product ID
-                    ProductModel.find({ _id: { $in: productList } }, "_id caFamily", function(err, doc) {
-                        doc = _.indexBy(doc, '_id');
-                        //console.log(doc);
+                        callback(null, res);
+                    },*/
+                    function(results, callback) {
+                        // Group CA By Family
 
-                        callback(err, doc, results);
-                    });
-                },
-                function(family, results, callback) {
-                    // Merge caFamily
-                    //console.log(results);
-                    var res = _.map(results, function(elem) {
-                        //console.log(elem);
-                        if (family[elem.productId.toString()] && family[elem.productId.toString()].caFamily)
-                            elem.caFamily = family[elem.productId.toString()].caFamily;
-                        else
-                            elem.caFamily = 'OTHER';
-                        return elem;
-                    });
+                        /*if (results.length == 1) {
+                            var first, result;
 
-                    callback(null, res);
-                },
-                function(results, callback) {
-                    // Group CA By Family
-
-                    if (results.length == 1) {
-                        var first, result;
-
-                        first = results[0];
-
-                        result = {};
-
-                        if (!result[first.entity])
-                            result[first.entity] = {};
-
-                        if (!first.caFamily)
-                            first.caFamily = 'OTHER';
-
-                        if (!result[first.entity][first.caFamily])
-                            result[first.entity][first.caFamily] = first;
-
-                        return callback(null, result);
-                    }
-
-
-                    var res = _.reduce(results, function(result, elem, key) {
-                        //console.log(key);
-                        //return console.log(result);
-                        var first;
-
-                        if (key == 1) { // first element
-
-                            first = result;
+                            first = results[0];
 
                             result = {};
 
@@ -196,36 +223,71 @@ Object.prototype = {
                             if (!result[first.entity][first.caFamily])
                                 result[first.entity][first.caFamily] = first;
 
+                            return callback(null, result);
                         }
 
-                        if (!result[elem.entity])
-                            result[elem.entity] = {};
 
-                        if (!elem.caFamily)
-                            elem.caFamily = 'OTHER';
+                        var res = _.reduce(results, function(result, elem, key) {
+                            //console.log(key);
+                            //return console.log(result);
+                            var first;
 
-                        if (!result[elem.entity][elem.caFamily])
-                            result[elem.entity][elem.caFamily] = elem;
-                        else {
-                            result[elem.entity][elem.caFamily].caN += elem.caN;
-                            result[elem.entity][elem.caFamily].caN_1 += elem.caN_1;
-                        }
+                            if (key == 1) { // first element
 
-                        return result;
-                    });
+                                first = result;
 
-                    //console.log(res);
-                    callback(null, res);
-                }
-            ], function(err, result) {
-                if (err)
-                    return console.log(err);
+                                result = {};
 
-                //console.log(result);
+                                if (!result[first.entity])
+                                    result[first.entity] = {};
 
-                self.json(result);
+                                if (!first.caFamily)
+                                    first.caFamily = 'OTHER';
+
+                                if (!result[first.entity][first.caFamily])
+                                    result[first.entity][first.caFamily] = first;
+
+                            }
+
+                            if (!result[elem.entity])
+                                result[elem.entity] = {};
+
+                            if (!elem.caFamily)
+                                elem.caFamily = 'OTHER';
+
+                            if (!result[elem.entity][elem.caFamily])
+                                result[elem.entity][elem.caFamily] = elem;
+                            else {
+                                result[elem.entity][elem.caFamily].caN += elem.caN;
+                                result[elem.entity][elem.caFamily].caN_1 += elem.caN_1;
+                            }
+
+                            return result;
+                        });*/
+
+                        let res = {};
+
+                        _.each(results, function(elem) {
+                            if (!res[elem.entity])
+                                res[elem.entity] = [];
+
+                            res[elem.entity].push(elem);
+                        });
+
+
+
+                        //return console.log(res);
+                        callback(null, res);
+                    }
+                ], function(err, result) {
+                    if (err)
+                        return console.log(err);
+
+                    //return console.log(result);
+
+                    self.json(result);
+                });
             });
-        });
     },
     caEvolution: function() {
         var self = this;
