@@ -275,6 +275,8 @@ function sendEmail() {
         if (err || !entity)
             return self.throw500('Entity unknown');
 
+        self.body.entity = entity;
+
         var dest = [];
         if (typeof self.body.to == 'object' && self.body.to.length)
             dest = _.pluck(self.body.to, 'email');
