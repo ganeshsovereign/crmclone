@@ -1,6 +1,7 @@
 "use strict";
 
-var _ = require("lodash");
+const _ = require("lodash"),
+    async = require('async');
 
 exports.install = function() {
 
@@ -97,8 +98,7 @@ Entity.prototype = {
         var Status;
         //console.log(self.query);
         var conditions = {
-            isremoved: { $ne: true },
-            entity: self.query.entity
+            isremoved: { $ne: true }
         };
 
         if (!query.search.value) {
@@ -144,7 +144,7 @@ Entity.prototype = {
                 res.datatable.data[i].name = '<a class="with-tooltip" href="#!/settings/entity' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.username + '"><span class="fa fa-user"></span> ' + row.username + '</a>';
 
                 //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-                res.datatable.data[i].Status = (row.isEnable ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
+                //res.datatable.data[i].Status = (row.isEnable ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
                 // Action
                 res.datatable.data[i].action = '<a href="#!/setttings/entity' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.login + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                 // Add url on name

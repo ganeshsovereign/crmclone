@@ -55,34 +55,33 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
-        $scope.create = function() {
-            let societe = new Societe(this.societe);
-
-            societe.$save(function(response) {
-                //console.log(response);
-                $rootScope.$state.go("settings.entity.show", { id: response._id });
-            });
-        };
-
-        $scope.update = function(options, callback) { //example options : {status: Status}
-            let societe = $scope.societe;
-
-            entity.$update(options, function(response) {
-                $scope.societe = response;
-                if (callback)
-                    callback(null, response);
-            });
-        };
+        initDatatable();
 
     });
+
+    $scope.create = function() {
+        let societe = new Societe(this.societe);
+
+        societe.$save(function(response) {
+            //console.log(response);
+            $rootScope.$state.go("settings.entity.show", { id: response._id });
+        });
+    };
+
+    $scope.update = function(options, callback) { //example options : {status: Status}
+        let societe = $scope.societe;
+
+        entity.$update(options, function(response) {
+            $scope.societe = response;
+            if (callback)
+                callback(null, response);
+        });
+    };
 
     function getUrl(params) {
 
         if (!params)
             params = {};
-
-        if (!params.entity)
-            params.entity = $rootScope.entity;
 
         var url = $rootScope.buildUrl('/erp/api/entity/dt', params); // Build URL with json parameter
         //console.log(url);
@@ -92,7 +91,7 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
     function initDatatable(params, length) {
 
         grid.init({
-            src: $("#societeList"),
+            src: $("#entityList"),
             onSuccess: function(grid) {
                 // execute some code after table records loaded
             },
