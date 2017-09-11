@@ -2034,26 +2034,40 @@ function createDelivery2(doc, callback) {
             }
 
             for (var i = 0; i < doc.lines.length; i++) {
-                if (doc.lines[i].type == 'SUBTOTAL')
-                    tabLines.push({
-                        ref: "",
-                        description: "\\textbf{Sous-total}",
-                        tva_tx: null,
-                        pu_ht: "",
-                        discount: "",
-                        qty: "",
-                        total_ht: doc.lines[i].total_ht
-                    });
-                else
-                    tabLines.push({
-                        ref: doc.lines[i].product.info.SKU.substring(0, 12),
-                        description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
-                        tva_tx: (doc.lines[i].total_taxes.length ? doc.lines[i].total_taxes[0].taxeId.rate : null),
-                        pu_ht: doc.lines[i].pu_ht,
-                        discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
-                        qty: doc.lines[i].qty,
-                        total_ht: doc.lines[i].total_ht
-                    });
+                switch (doc.lines[i].type) {
+                    case 'SUBTOTAL':
+                        tabLines.push({
+                            ref: "",
+                            description: "\\textbf{Sous-total}",
+                            tva_tx: null,
+                            pu_ht: "",
+                            discount: "",
+                            qty: "",
+                            total_ht: doc.lines[i].total_ht
+                        });
+                        break;
+                    case 'COMMENT':
+                        tabLines.push({
+                            ref: "",
+                            description: "\\textbf{" + doc.lines[i].refProductSupplier + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                            tva_tx: null,
+                            pu_ht: "",
+                            discount: "",
+                            qty: "",
+                            total_ht: ""
+                        });
+                        break;
+                    default:
+                        tabLines.push({
+                            ref: doc.lines[i].product.info.SKU.substring(0, 12),
+                            description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
+                            tva_tx: (doc.lines[i].total_taxes.length ? doc.lines[i].total_taxes[0].taxeId.rate : null),
+                            pu_ht: doc.lines[i].pu_ht,
+                            discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
+                            qty: doc.lines[i].qty,
+                            total_ht: doc.lines[i].total_ht
+                        });
+                }
 
                 if (doc.lines[i].type == 'SUBTOTAL') {
                     tabLines[tabLines.length - 1].italic = true;

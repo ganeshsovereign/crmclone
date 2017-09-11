@@ -19,7 +19,7 @@ var OrderRowSchema = mongoose.Schema({
     order: { type: ObjectId, ref: 'order' },
     warehouse: { type: ObjectId, ref: 'warehouse' },
     type: { type: String, default: 'product' }, //Used for subtotal
-    refProductSupplier: String, //Only for an order Supplier
+    refProductSupplier: String, //Only for an order Supplier or For Ref Title Comment
     qty: { type: Number, default: 0 },
     total_taxes: [{
         _id: false,
@@ -33,6 +33,14 @@ var OrderRowSchema = mongoose.Schema({
     costPrice: { type: Number, default: 0 },
     discount: { type: Number, default: 0 },
     total_ht: { type: Number, default: 0, set: setPrice },
+    pdf: {
+        sizes: {
+            label: { type: String, default: 'normalsize' }
+        },
+        colors: {
+            label: { type: String, default: 'black' }
+        }
+    },
     optional: { type: Schema.Types.Mixed },
     //nominalCode: { type: Number, default: 0 },
     channel: { type: ObjectId, ref: 'integrations' },

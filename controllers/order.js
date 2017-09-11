@@ -337,12 +337,11 @@ Object.prototype = {
                 async.eachSeries(lines, function(line, eCb) {
                     newLines.push(line);
 
-                    console.log(line);
+                    //console.log(line);
 
-                    if (!line.product.info.productType.isBundle)
+                    if (!line.product || !line.product.info.productType.isBundle)
                         return eCb();
 
-                    console.log(line);
                     ProductModel.findById(line.product._id, "bundles info")
                         .populate("bundles.id", "info directCost indirectCost taxes weight")
                         .exec(function(err, product) {
@@ -409,7 +408,7 @@ Object.prototype = {
                 MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, wCb);
             },
             function(result, wCb) {
-                //console.log(result);
+                //return console.log(result);
                 self.body.total_ht = result.total_ht;
                 self.body.total_taxes = result.total_taxes;
                 self.body.total_ttc = result.total_ttc;
@@ -422,7 +421,7 @@ Object.prototype = {
             function(order, wCb) {
                 //order = _.extend(order, self.body);
                 //console.log(order.history);
-                //console.log(rows);
+                //return console.log(rows);
                 //update all rows
                 var newRows = [];
                 async.each(rows, function(orderRow, aCb) {
@@ -1426,42 +1425,55 @@ Object.prototype = {
                         });
 
                     for (var i = 0; i < doc.lines.length; i++) {
-                        if (doc.lines[i].type == 'SUBTOTAL')
-                            tabLines.push({
-                                ref: "",
-                                description: "\\textbf{Sous-total}",
-                                tva_tx: null,
-                                pu_ht: "",
-                                discount: "",
-                                qty: "",
-                                total_ht: doc.lines[i].total_ht
-                            });
-                        else {
-                            tabLines.push({
-                                ref: doc.lines[i].product.info.SKU.substring(0, 12),
-                                description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
-                                tva_tx: (doc.lines[i].total_taxes.length ? doc.lines[i].total_taxes[0].taxeId.rate : 0),
-                                pu_ht: doc.lines[i].pu_ht,
-                                discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
-                                qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
-                                total_ht: doc.lines[i].total_ht
-                            });
-
-                            /*if (doc.lines[i].total_taxes.length > 1) // Add ecotaxe
+                        switch (doc.lines[i].type) {
+                            case 'SUBTOTAL':
                                 tabLines.push({
-                                italic: true,
-                                ref: "",
-                                description: "\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].total_taxes[1].value + " \\euro}",
-                                //tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
-                                tva_tx: "",
-                                //pu_ht: doc.lines[i].product.taxes[1].value,
-                                pu_ht: "",
-                                discount: "",
-                                qty: "",
-                                //qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
-                                //total_ht: doc.lines[i].total_taxes[1].value
-                                total_ht: ""
-                            });*/
+                                    ref: "",
+                                    description: "\\textbf{Sous-total}",
+                                    tva_tx: null,
+                                    pu_ht: "",
+                                    discount: "",
+                                    qty: "",
+                                    total_ht: doc.lines[i].total_ht
+                                });
+                                break;
+                            case 'COMMENT':
+                                tabLines.push({
+                                    ref: "",
+                                    description: "\\textbf{" + doc.lines[i].refProductSupplier + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                                    tva_tx: null,
+                                    pu_ht: "",
+                                    discount: "",
+                                    qty: "",
+                                    total_ht: ""
+                                });
+                                break;
+                            default:
+                                tabLines.push({
+                                    ref: doc.lines[i].product.info.SKU.substring(0, 12),
+                                    description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
+                                    tva_tx: (doc.lines[i].total_taxes.length ? doc.lines[i].total_taxes[0].taxeId.rate : 0),
+                                    pu_ht: doc.lines[i].pu_ht,
+                                    discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
+                                    qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
+                                    total_ht: doc.lines[i].total_ht
+                                });
+
+                                /*if (doc.lines[i].total_taxes.length > 1) // Add ecotaxe
+                                    tabLines.push({
+                                    italic: true,
+                                    ref: "",
+                                    description: "\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].total_taxes[1].value + " \\euro}",
+                                    //tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
+                                    tva_tx: "",
+                                    //pu_ht: doc.lines[i].product.taxes[1].value,
+                                    pu_ht: "",
+                                    discount: "",
+                                    qty: "",
+                                    //qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
+                                    //total_ht: doc.lines[i].total_taxes[1].value
+                                    total_ht: ""
+                                });*/
                         }
 
                         if (doc.lines[i].type == 'kit') {

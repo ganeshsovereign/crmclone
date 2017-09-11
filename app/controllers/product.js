@@ -829,7 +829,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             page: 1,
             pageSize: 5,
             //                supplier: options.supplier,
-            inventory: true,
+            //inventory: true,
             options: options,
             filter: {
                 logic: 'and',

@@ -64,7 +64,7 @@ MetronicApp.directive('productLines', ['$http',
                     for (var i = 0; i < lines.length; i++) {
                         if (lines[i].idLine === index) {
                             lines[i] = {
-                                //type: 'product',
+                                type: 'product',
                                 pu_ht: data.prices.price,
                                 total_taxes: data.taxes,
                                 discount: data.discount,
@@ -200,6 +200,7 @@ MetronicApp.directive('productLines', ['$http',
                 // add line
                 scope.addLine = function(lines) {
                     lines.push({
+                        type: "product",
                         isNew: true,
                         idLine: lines.length
                     });
@@ -219,6 +220,24 @@ MetronicApp.directive('productLines', ['$http',
                     new_line.idLine = lines.length;
 
                     lines.push(new_line);
+                };
+
+                // Add a comment line
+                scope.addComment = function(index) {
+                    scope.linesModel.splice(index + 1, 0, {
+                        pu_ht: null,
+                        tva_tx: null,
+                        discount: null,
+                        type: 'COMMENT',
+                        product: null,
+                        description: "",
+                        isNew: true,
+                        qty: null
+                    });
+
+                    for (var i in scope.linesModel.lines) {
+                        scope.linesModel.lines[i].idLine = i;
+                    }
                 };
 
                 scope.AddSubTotal = function(index) {

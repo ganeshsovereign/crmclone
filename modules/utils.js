@@ -499,6 +499,10 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     subtotal = 0;
                     continue;
                 }
+                if (lines[i].type == 'COMMENT') {
+                    lines[i].total_ht = 0;
+                    continue;
+                }
                 if (lines[i].isDeleted)
                     continue;
 
