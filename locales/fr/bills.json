@@ -443,5 +443,7 @@
     "PaymentPeriod": "Délai de paiement",
     "AccountParameters": "Paramètres Comptables",
     "DiscountGlobal": "Remise Globale",
-    "BillSupplierAddress": "Adr. fournisseur"
+    "BillSupplierAddress": "Adr. fournisseur",
+    "DateOf": "Periode de facturation (debut)",
+    "DateTo": "Periode de facturation (fin)"
 }

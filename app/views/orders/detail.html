@@ -76,6 +76,16 @@
                                                 <label for="ref_client">@(orders:RefCustomerOrder)</label>
                                             </div>
 
+                                            <div ng-if="module('bill')" class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="dateOf" date-input ng-model="object.dateOf">
+                                                <label for="dateOf">@(bills:DateOf)</label>
+                                            </div>
+
+                                            <div ng-if="module('bill')" class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="dateTo" date-input ng-model="object.dateTo">
+                                                <label for="dateTo">@(bills:DateTo)</label>
+                                            </div>
+
                                             <div ng-hide="!object._id" ng-if="module('order')" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static" id="RefProposal"> <a ui-sref="offer.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
                                                 <label for="RefProposal">@(propal:RefProposal)</label>
