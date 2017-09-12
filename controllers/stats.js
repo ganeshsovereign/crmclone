@@ -11,7 +11,7 @@ var Dict = INCLUDE('dict');
 exports.install = function() {
 
     var object = new Object();
-    F.route('/erp/api/stats/caFamily', object.caFamily, ['authorize']);
+    F.route('/erp/api/stats/caFamily', object.caFamily, ['authorize']); // ForSales true or false
     F.route('/erp/api/stats/caEvolution', object.caEvolution, ['authorize']);
     F.route('/erp/api/stats/caGraph', object.caGraph, ['authorize']);
     F.route('/erp/api/stats/caCustomer', object.caCustomer, ['authorize']);
@@ -21,7 +21,7 @@ exports.install = function() {
     F.route('/erp/api/stats/billPenality', object.billPenality, ['authorize']);
     F.route('/erp/api/stats/result', object.result, ['authorize']);
 
-    F.route('/erp/api/stats/chFamily', object.chFamily, ['authorize']);
+    //F.route('/erp/api/stats/chFamily', object.chFamily, ['authorize']);
     F.route('/erp/api/stats/chEvolution', object.chEvolution, ['authorize']);
     F.route('/erp/api/stats/chGraph', object.chGraph, ['authorize']);
 };
@@ -39,7 +39,7 @@ Object.prototype = {
                 '$gte': moment(self.query.start).startOf('day').toDate(),
                 '$lt': moment(self.query.end).endOf('day').toDate()
             },
-            forSales: true
+            forSales: (self.query.forSales === 'false' ? false : true)
         };
         var queryCAN_1 = {
             Status: { '$ne': 'DRAFT' },
@@ -47,7 +47,7 @@ Object.prototype = {
                 '$gte': moment(self.query.start).startOf('day').subtract(1, 'year').toDate(),
                 '$lt': moment(self.query.end).endOf('day').subtract(1, 'year').toDate()
             },
-            forSales: true
+            forSales: (self.query.forSales === 'false' ? false : true)
         };
         if (!self.user.multiEntities) {
             queryCA.entity = self.user.entity;
@@ -81,10 +81,11 @@ Object.prototype = {
                                 entity: 1,
                                 'lines.total_ht': 1,
                                 'lines.product._id': 1,
-                                'lines.product.sellFamily': 1
+                                'lines.product.sellFamily': 1,
+                                'lines.product.costFamily': 1
                             }
                         },
-                        { $group: { _id: { familyId: "$lines.product.sellFamily", entity: "$entity" }, caN: { "$sum": "$lines.total_ht" } } },
+                        { $group: { _id: { familyId: "$lines.product." + (self.query.forSales === 'false' ? "costFamily" : "sellFamily"), entity: "$entity" }, caN: { "$sum": "$lines.total_ht" } } },
                         {
                             $lookup: {
                                 from: 'productFamily',
@@ -126,10 +127,11 @@ Object.prototype = {
                                 entity: 1,
                                 'lines.total_ht': 1,
                                 'lines.product._id': 1,
-                                'lines.product.sellFamily': 1
+                                'lines.product.sellFamily': 1,
+                                'lines.product.costFamily': 1
                             }
                         },
-                        { $group: { _id: { familyId: "$lines.product.sellFamily", entity: "$entity" }, caN_1: { "$sum": "$lines.total_ht" } } },
+                        { $group: { _id: { familyId: "$lines.product." + (self.query.forSales === 'false' ? "costFamily" : "sellFamily"), entity: "$entity" }, caN_1: { "$sum": "$lines.total_ht" } } },
                         {
                             $lookup: {
                                 from: 'productFamily',
@@ -682,15 +684,25 @@ Object.prototype = {
         BillModel.aggregate([
             { $match: query },
             { $project: { _id: 1, supplier: 1, total_ht: 1 } },
-            { $group: { _id: "$supplier", total_ht: { "$sum": "$total_ht" }, name: { $addToSet: "$client.name" } } },
+            { $group: { _id: "$supplier", total_ht: { "$sum": "$total_ht" } } },
+            {
+                $lookup: {
+                    from: 'Customers',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'supplier'
+                }
+            }, {
+                $unwind: "$supplier"
+            },
             { $sort: { total_ht: -1 } }
         ], function(err, doc) {
             if (err)
                 return console.log(err);
 
-            for (var i = 0, len = doc.length; i < len; i++)
+            /*for (var i = 0, len = doc.length; i < len; i++)
                 if ('5333032036f43f0e1882efce' === doc[i]._id.toString())
-                    doc[i].name[0] = "ACCUEIL";
+                    doc[i].name[0] = "ACCUEIL";*/
 
             self.json({ data: doc });
         });
@@ -706,7 +718,8 @@ Object.prototype = {
 
         var query = {
             Status: { '$ne': 'DRAFT' },
-            datec: { '$gte': dateStart, '$lt': dateEnd }
+            datec: { '$gte': dateStart, '$lt': dateEnd },
+            forSales: true
         };
 
         if (self.query.entity)
@@ -718,10 +731,21 @@ Object.prototype = {
             data: function(cb) {
                 BillModel.aggregate([
                     { $match: query },
-                    { $match: { "commercial_id.id": { $ne: null } } },
-                    { $project: { _id: 0, commercial_id: 1, total_ht: 1 } },
-                    { $group: { _id: "$commercial_id.id", total_ht: { "$sum": "$total_ht" }, name: { $first: "$commercial_id.name" } } },
-                    { $sort: { name: 1 } }
+                    { $match: { "salesPerson": { $ne: null } } },
+                    { $project: { _id: 0, salesPerson: 1, total_ht: 1 } },
+                    { $group: { _id: "$salesPerson", total_ht: { "$sum": "$total_ht" } } },
+                    {
+                        $lookup: {
+                            from: 'Employees',
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'salesPerson'
+                        }
+                    },
+                    {
+                        $unwind: "$salesPerson"
+                    },
+                    { $sort: { 'salesPerson.name.last': 1 } }
                 ], cb);
             },
             total: function(cb) {
@@ -1445,7 +1469,7 @@ function(err) {
             });
         });
     },
-    chFamily: function() {
+    /*chFamily: function() {
         var self = this;
         var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
@@ -1642,7 +1666,7 @@ function(err) {
                 self.json(result);
             });
         });
-    },
+    },*/
     chEvolution: function() {
         var self = this;
         var BillModel = MODEL('invoice').Schema;
@@ -1728,7 +1752,7 @@ function(err) {
     },
     chGraph: function() {
         var BillModel = MODEL('invoice').Schema;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         var self = this;
 
@@ -1899,6 +1923,7 @@ function(err) {
                 });
             },
             ca: function(cb) {
+                const BillModel = MODEL('invoice').Schema;
                 var query = {
                     Status: { '$ne': 'DRAFT' },
                     datec: { '$gte': dateStart, '$lt': dateEnd },
@@ -1924,6 +1949,7 @@ function(err) {
                 });
             },
             charges: function(cb) {
+                const BillModel = MODEL('invoice').Schema;
                 var query = {
                     Status: { '$ne': 'DRAFT' },
                     datec: { '$gte': dateStart, '$lt': dateEnd },
@@ -1934,7 +1960,7 @@ function(err) {
                     query.entity = self.user.entity;
 
 
-                Bill.aggregate([
+                BillModel.aggregate([
                     { $match: query },
                     { $project: { _id: 0, total_ht: 1, supplier: 1 } },
                     { $group: { _id: "$supplier.id", total_ht: { "$sum": "$total_ht" }, name: { $addToSet: "$supplier.name" } } }

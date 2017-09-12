@@ -1199,6 +1199,57 @@ Object.prototype = {
         if (self.query.entity)
             query.entity = self.query.entity;
 
+        /* supplier invoice */
+        if (self.query.forSales && self.query.forSales == 'false')
+            return BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, total_ht: 1, supplier: 1 } },
+                    { $group: { _id: "$supplier", total_ht: { "$sum": "$total_ht" } } },
+                    {
+                        $lookup: {
+                            from: 'Customers',
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'supplier'
+                        }
+                    },
+                    { $unwind: "$supplier" },
+                    { $project: { _id: 1, total_ht: 1, 'supplier.name': 1, 'supplier.isSubcontractor': "$supplier.salesPurchases.isSubcontractor" } },
+                    {
+                        $group: { _id: "$supplier.isSubcontractor", data: { $addToSet: { supplier: "$supplier", total_ht: "$total_ht" } }, total_ht: { "$sum": "$total_ht" } }
+                    }
+                ],
+                function(err, doc) {
+                    if (err)
+                        return console.log(err);
+
+                    if (!doc.length)
+                        return self.json({ total: 0 });
+                    //console.log(doc);
+
+                    let result = {
+                        charge: {
+                            total_ht: 0
+                        },
+                        subcontractor: {
+                            total_ht: 0
+                        }
+                    };
+
+                    _.map(doc, function(elem) {
+                        // supplier
+                        if (elem._id == false) {
+                            return result.charge = elem;
+                        }
+
+                        //subcontractor
+                        return result.subcontractor = elem;
+                    });
+
+                    self.json({ total: (result.charge.total_ht + result.subcontractor.total_ht), data: result });
+                });
+
+        /* Customer invoice */
         BillModel.aggregate([
             { $match: query },
             { $project: { _id: 0, total_ht: 1 } },
@@ -1209,7 +1260,7 @@ Object.prototype = {
 
             if (!doc.length)
                 return self.json({ total: 0 });
-            //console.log(doc);
+
             self.json({ total: doc[0].total_ht });
         });
     },

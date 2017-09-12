@@ -60,7 +60,7 @@
                         <!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
                     </td>
                     <td>
-                        <a href="#" ui-sref="user.show({id:client._id})" class="primary-link">{{user.name}}</a>
+                        <a href="#" ui-sref="employee.show({id:user._id})" class="primary-link">{{user.salesPerson.name.first}} {{user.salesPerson.name.last}}</a>
                     </td>
                     <td class="text-align-reverse">
                         {{user.total_ht | currency}}

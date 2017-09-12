@@ -2556,6 +2556,45 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
+            },
+            /*version 0.509
+                update product costFamily default cost
+                */
+            function(conf, wCb) {
+                if (conf.version >= 0.509)
+                    return wCb(null, conf);
+
+                //Old convert first
+                function productRefreshCost(aCb) {
+                    console.log("refresh costFamily product");
+                    const ProductModel = MODEL('product').Schema;
+
+                    //Select only objectId()
+                    ProductModel.find({ costFamily: null }, function(err, docs) {
+                        if (err)
+                            return aCb(err);
+
+                        docs.forEach(function(doc) {
+                            doc.save(function() {});
+                        });
+
+                    });
+                    aCb();
+                }
+
+                async.waterfall([productRefreshCost], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.509 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.509));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
             }
         ],
         function(err, doc) {

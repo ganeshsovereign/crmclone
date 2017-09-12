@@ -46,7 +46,7 @@
             <div class="portlet-title">
                 <div class="caption caption-md">
                     <i class="icon-bar-chart font-green-haze hide"></i>
-                    <span class="caption-subject font-green-haze bold uppercase"> Charges {{entity}}</span>
+                    <span class="caption-subject font-green-haze bold uppercase"> @(Sales) {{entity}}</span>
                     <span class="caption-helper"> {{date.start | date:'dd/MM/yyyy'}} - {{date.end | date:'dd/MM/yyyy'}}</span>
                 </div>
             </div>
@@ -54,9 +54,9 @@
                 <div class="mt-element-step">
                     <div class="row step-thin">
                         <div class="col-md-12 bg-grey mt-step-col" ng-repeat="line in value">
-                            <div class="mt-step-number font-grey" ng-class="{'progress-bar-success' : line.chN_1 >= line.chN, 'bg-red':line.chN_1 < line.chN}"><i class='fa' ng-class="{'fa-thumbs-o-up' : line.chN_1 >= line.chN, 'fa-thumbs-o-down':line.chN_1 < line.chN}"></i></div>
-                            <div class="mt-step-title uppercase">{{line.costCenter}}</div>
-                            <div class="mt-step-content"><span class='font-yellow-gold bold'>{{line.chN_1|number:0}}</span> <i class='fa fa-arrow-circle-right'></i> <span class='font-green-haze bold'>{{line.chN|number:0}}</span></div>
+                            <div class="mt-step-number font-grey" ng-class="{'progress-bar-success' : line.caN_1 >= line.caN, 'bg-red':line.caN_1 < line.caN}"><i class='fa' ng-class="{'fa-thumbs-o-up' : line.caN_1 >= line.caN, 'fa-thumbs-o-down':line.caN_1 < line.caN}"></i></div>
+                            <div class="mt-step-title uppercase">{{line.family.langs[_language].name}}</div>
+                            <div class="mt-step-content"><span class='font-yellow-gold bold'>{{line.caN_1|number:0}}</span> <i class='fa fa-arrow-circle-right'></i> <span class='font-green-haze bold'>{{line.caN|number:0}}</span></div>
                         </div>
                     </div>
                 </div>

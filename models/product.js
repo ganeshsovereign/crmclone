@@ -224,7 +224,7 @@ var productSchema = new Schema({
     dynForm: String,
 
     sellFamily: { type: Schema.Types.ObjectId, ref: 'productFamily', require: true },
-    costFamily: { type: Schema.Types.ObjectId, ref: 'productFamily', default: null },
+    costFamily: { type: Schema.Types.ObjectId, ref: 'productFamily', default: '59b791bdf8604049aefea737' },
 
     units: { type: String, default: "unit" },
 

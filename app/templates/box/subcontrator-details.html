@@ -27,7 +27,7 @@
                             @(TotalHT)
                         </div>
                         <div class="number">
-                            {{ getTotal(dataDebit.subcontractor, 'total_ht') | number:2}}
+                            {{ dataDebit.subcontractor.total_ht | number:2}}
                         </div>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                             @(Percentage) du CA
                         </div>
                         <div class="number">
-                            {{ getTotal(dataDebit.subcontractor, 'total_ht') / dataCaTotal * 100 | percent:0}}
+                            {{ dataDebit.subcontractor.total_ht / dataCaTotal * 100 | percent:0}}
                         </div>
                     </div>
                 </div>
@@ -63,18 +63,18 @@
                         </th>
                     </tr>
                 </thead>
-                <tr ng-repeat="user in dataDebit.subcontractor| orderBy :'-total_ht'">
+                <tr ng-repeat="user in dataDebit.subcontractor.data| orderBy :'-total_ht'">
                     <td class="fit">
                         <!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
                     </td>
                     <td>
-                        <a href="#" ui-sref="user.show({id:client._id})" class="primary-link">{{user.name[0]}}</a>
+                        <a href="#" ui-sref="societe.show({id:user.supplier._id})" class="primary-link">{{user.supplier.name.last}}</a>
                     </td>
                     <td class="text-align-reverse">
                         {{user.total_ht| currency}}
                     </td>
                     <td class="text-align-reverse">
-                        <span class="bold font-green-haze">{{user.total_ht / totalDebit.subcontractor * 100| percent:0}}</span>
+                        <span class="bold font-green-haze">{{user.total_ht / dataDebit.subcontractor.total_ht * 100| percent:0}}</span>
                     </td>
                 </tr>
             </table>

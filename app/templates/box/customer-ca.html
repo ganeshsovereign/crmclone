@@ -71,18 +71,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="client in dataCustomerCa | filter:search">
+                    <tr ng-repeat="supplier in dataCustomerCa | filter:search">
                         <td class="fit">
                             <!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
                         </td>
                         <td>
-                            <a href="#" ui-sref="societe.show({id:client._id})" class="primary-link">{{client.name[0]}}</a>
+                            <a href="#" ui-sref="societe.show({id:supplier.supplier._id})" class="primary-link">{{supplier.supplier.name.last}}</a>
                         </td>
                         <td class="text-align-reverse">
-                            {{client.total_ht| currency}}
+                            {{supplier.total_ht| currency}}
                         </td>
                         <td class="text-align-reverse">
-                            <span class="bold font-green-haze">{{client.total_ht / dataCustomerCaTotal * 100| percent:0}}</span>
+                            <span class="bold font-green-haze">{{supplier.total_ht / dataCustomerCaTotal * 100| percent:0}}</span>
                         </td>
                     </tr>
                 </tbody>

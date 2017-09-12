@@ -142,17 +142,11 @@ MetronicApp.controller('BoxTemporaryController', ['$rootScope', '$scope', '$http
                 forSales: false
             }
         }).success(function(data, status) {
-            console.log(data);
+            //console.log(data);
 
-            /*if (data.total === 0)
-                $scope.totalDebit = {
-                    charge: 0,
-                    subcontractor: 0
-                };
-            else*/
             $scope.totalDebit = data.total;
 
-            //$scope.dataDebit = data.data;
+            $scope.dataDebit = data.data;
         });
     };
 
@@ -181,7 +175,7 @@ MetronicApp.controller('BoxTemporaryController', ['$rootScope', '$scope', '$http
                 end_date: date.end
             }
         }).success(function(data, status) {
-            console.log(data);
+            //console.log(data);
             //$scope.dataBalance = data;
             $scope.resultYear = data.result;
         });
@@ -667,7 +661,7 @@ MetronicApp.controller('BoxBillController', ['$rootScope', '$scope', '$http', '$
                 end: date.end
             }
         }).success(function(data, status) {
-            console.log(data);
+            //console.log(data);
             $scope.caData = data;
             //console.log('Updates');
 
@@ -1111,11 +1105,12 @@ MetronicApp.controller('BoxBillSupplierController', ['$rootScope', '$scope', '$h
 
         $http({
             method: 'GET',
-            url: '/erp/api/stats/chFamily',
+            url: '/erp/api/stats/caFamily',
             params: {
                 start: date.start,
                 end: date.end,
-                societe: options
+                societe: options,
+                forSales: false
             }
         }).success(function(data, status) {
             //console.log(data);

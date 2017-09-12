@@ -27,7 +27,7 @@
                             @(TotalHT)
                         </div>
                         <div class="number">
-                            {{ getTotal(dataDebit.charge, 'total_ht') | number:2}}
+                            {{ dataDebit.charge.total_ht | number:2}}
                         </div>
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                             @(PercentageOfCA)
                         </div>
                         <div class="number">
-                            {{ getTotal(dataDebit.charge, 'total_ht') / dataCaTotal * 100 | percent:0}}
+                            {{ dataDebit.charge.total_ht / dataCaTotal * 100 | percent:0}}
                         </div>
                     </div>
                 </div>
@@ -59,22 +59,22 @@
                             CA HT
                         </th>
                         <th class="text-align-reverse">
-                            @(BreakdownOfByTurnover)
+                            @(Repartition)
                         </th>
                     </tr>
                 </thead>
-                <tr ng-repeat="charge in dataDebit.charge| orderBy :'-total_ht'">
+                <tr ng-repeat="charge in dataDebit.charge.data| orderBy :'-total_ht'">
                     <td class="fit">
                         <!--    <img class="user-pic" src="../../../assets/admin/layout/img/avatar4.jpg">-->
                     </td>
                     <td>
-                        <a href="#" ui-sref="charge.show({id:client._id})" class="primary-link">{{charge.name[0]}}</a>
+                        <a href="#" ui-sref="societe.show({id:charge.supplier._id})" class="primary-link">{{charge.supplier.name.last}}</a>
                     </td>
                     <td class="text-align-reverse">
                         {{charge.total_ht| currency}}
                     </td>
                     <td class="text-align-reverse">
-                        <span class="bold font-green-haze">{{charge.total_ht / dataCaTotal * 100| percent:0}}</span>
+                        <span class="bold font-green-haze">{{charge.total_ht / dataDebit.charge.total_ht * 100| percent:0}}</span>
                     </td>
                 </tr>
             </table>
