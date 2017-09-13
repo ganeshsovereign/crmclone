@@ -364,7 +364,7 @@ F.on('load', function() {
                                     }];
 
                                     customer.phones = {
-                                        phone: societe.phone,
+                                        phone: (societe.phone ? societe.phone.substr(0, 10) : null),
                                         fax: societe.fax
                                     };
 
@@ -387,6 +387,13 @@ F.on('load', function() {
                                     }*/
 
 
+                                    let salesPerson = null;
+                                    if (societe.commercial_id && societe.commercial_id.id && societe.commercial_id.id.toString().length == 24)
+                                        salesPerson = _.find(employees, _.matchesProperty('relatedUser', societe.commercial_id.id.toString()));
+
+                                    let priceList = null;
+                                    if (_.find(priceLists, _.matchesProperty('name', societe.price_level)))
+                                        priceList = _.find(priceLists, _.matchesProperty('name', societe.price_level));
 
                                     customer.salesPurchases = {
                                         isGeneric: false,
@@ -394,11 +401,12 @@ F.on('load', function() {
                                         isCustomer: (societe.Status == 'ST_CREC' || societe.Status == 'ST_CFID' || societe.Status == 'ST_CINF3' || societe.Status == 'ST_CPAR' || societe.Status == 'ST_INF3' ? true : false),
                                         isSupplier: (societe.fournisseur == 'SUPPLIER' ? true : false),
                                         isSubcontractor: (societe.fournisseur == 'SUBCONTRACTOR' ? true : false),
-                                        salesPerson: (societe.commercial_id && societe.commercial_id.id && societe.commercial_id.id.toString().length == 24 ? _.find(employees, _.matchesProperty('relatedUser', societe.commercial_id.id.toString()))._id : null), //commercial_id
+
+                                        salesPerson: (salesPerson ? salesPerson._id : null), //commercial_id
                                         isActive: true,
                                         ref: societe.code_client || null,
                                         cptBilling: (societe.cptBilling && societe.cptBilling.id ? societe.cptBilling.id : null),
-                                        priceList: _.find(priceLists, _.matchesProperty('name', societe.price_level))._id,
+                                        priceList: (priceList ? priceList._id : '58c962f7d3e1802b17fe95a4'), // Default
 
                                         cond_reglement: societe.cond_reglement,
                                         mode_reglement: societe.mode_reglement,
@@ -491,8 +499,8 @@ F.on('load', function() {
                                 }];
 
                                 contact.phones = {
-                                    phone: contact.phone,
-                                    mobile: contact.phone_mobile,
+                                    phone: (contact.phone ? contact.phone.substr(0, 10) : null),
+                                    mobile: (contact.phone_mobile ? contact.phone_mobile.substr(0, 10) : null),
                                     fax: contact.fax
                                 };
 
@@ -1079,7 +1087,7 @@ F.on('load', function() {
 
                     console.log("convert customer orders");
                     mongoose.connection.db.collection('Commande', function(err, collection) {
-                        collection.find({}).toArray(function(err, orders) {
+                        collection.find({ isremoved: { $ne: true } }).toArray(function(err, orders) {
                             if (err)
                                 return console.log(err);
 
@@ -1093,6 +1101,9 @@ F.on('load', function() {
                                         return eCb();
 
                                     CustomerModel.findById(order.client.id, function(err, societe) {
+
+                                        if (!societe)
+                                            return eCb('Societe Not found order customer {0} '.format(order._id));
 
                                         if (order.client.cptBilling)
                                             order.billing = order.client.cptBilling.id
@@ -1216,8 +1227,10 @@ F.on('load', function() {
                                                         }, rows);
 
                                                     MODULE('utils').sumTotal(rows, newOrder.shipping, newOrder.discount, newOrder.supplier, function(err, result) {
-                                                        if (round(result.total_ttc) != round(order.total_ttc))
+                                                        if (round(result.total_ttc) != round(order.total_ttc)) {
+                                                            console.log(result);
                                                             return sCb('Error diff order total old {2} : {0}  new :{1}'.format(order.total_ttc, result.total_ttc, order._id.toString()));
+                                                        }
 
                                                         sCb(err, newOrder, result, rows)
                                                     });
