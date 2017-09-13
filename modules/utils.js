@@ -439,7 +439,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                             sequence: taxe.sequence,
                             taxeId: taxe._id,
                             isFixValue: taxe.isFixValue,
-                            value: shipping.total_ht * taxe.rate / 100
+                            total: shipping.total_ht * taxe.rate / 100
                         });
 
                     cb(null, VATIsUsed);
