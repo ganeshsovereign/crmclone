@@ -56,7 +56,10 @@
                             @(compta:Accounts)
                         </th>
                         <th class="text-align-reverse">
-                            CA HT
+                            Total HT
+                        </th>
+                        <th class="text-align-reverse">
+                            Total N-1 HT
                         </th>
                         <th class="text-align-reverse">
                             @(Repartition)
@@ -72,6 +75,9 @@
                     </td>
                     <td class="text-align-reverse">
                         {{charge.total_ht| currency}}
+                    </td>
+                    <td class="text-align-reverse">
+                        {{charge.total_ht_1| currency}} <small>({{(charge.total_ht_1 - charge.total_ht)*100/charge.total_ht_1 | percent:0}})</small>
                     </td>
                     <td class="text-align-reverse">
                         <span class="bold font-green-haze">{{charge.total_ht / dataDebit.charge.total_ht * 100| percent:0}}</span>

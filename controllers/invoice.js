@@ -1181,19 +1181,26 @@ Object.prototype = {
         });
     },
     stats: function() {
-        var BillModel = MODEL('invoice').Schema;
+        const BillModel = MODEL('invoice').Schema;
         var self = this;
 
         var dateStart = moment(self.query.start).startOf('day').toDate();
         var dateEnd = moment(self.query.end).endOf('day').toDate();
+        var thisYear = moment(self.query.start).year();
+
+        var dateStartN1 = moment(self.query.start).subtract(1, 'year').startOf('day').toDate();
+        var dateEndN1 = moment(self.query.end).subtract(1, 'year').endOf('day').toDate();
+
         var ca = {};
-        //console.log(self.query);
 
         var query = {
             isremoved: { $ne: true },
-            Status: { '$ne': 'DRAFT' },
+            Status: { '$nin': ['DRAFT', 'CANCELED'] },
             forSales: (self.query.forSales == 'false' ? false : true),
-            datec: { '$gte': dateStart, '$lt': dateEnd }
+            $or: [
+                    { datec: { '$gte': dateStart, '$lt': dateEnd } },
+                    { datec: { '$gte': dateStartN1, '$lt': dateEndN1 } }
+                ] // Date de facture
         };
 
         if (self.query.entity)
@@ -1203,50 +1210,132 @@ Object.prototype = {
         if (self.query.forSales && self.query.forSales == 'false')
             return BillModel.aggregate([
                     { $match: query },
-                    { $project: { _id: 0, total_ht: 1, supplier: 1 } },
-                    { $group: { _id: "$supplier", total_ht: { "$sum": "$total_ht" } } },
+                    { $project: { _id: 0, total_ht: 1, supplier: 1, year: { $year: '$datec' } } },
+                    {
+                        $group: {
+                            _id: { id: "$supplier", year: "$year" },
+                            total_ht: { "$sum": "$total_ht" }
+                        }
+                    },
                     {
                         $lookup: {
                             from: 'Customers',
-                            localField: '_id',
+                            localField: '_id.id',
                             foreignField: '_id',
                             as: 'supplier'
                         }
                     },
                     { $unwind: "$supplier" },
-                    { $project: { _id: 1, total_ht: 1, 'supplier.name': 1, 'supplier.isSubcontractor': "$supplier.salesPurchases.isSubcontractor" } },
+                    { $project: { _id: 1, total_ht: 1, 'supplier.name': 1, 'supplier._id': 1, 'supplier.isSubcontractor': "$supplier.salesPurchases.isSubcontractor" } },
                     {
-                        $group: { _id: "$supplier.isSubcontractor", data: { $addToSet: { supplier: "$supplier", total_ht: "$total_ht" } }, total_ht: { "$sum": "$total_ht" } }
-                    }
+                        $group: { _id: { id: "$supplier.isSubcontractor", year: "$_id.year" }, data: { $addToSet: { supplier: "$supplier", total_ht: "$total_ht" } }, total_ht: { "$sum": "$total_ht" } }
+                    },
+                    { $sort: { '_id.year': -1, total_ht: -1 } }
                 ],
-                function(err, doc) {
+                function(err, docs) {
                     if (err)
                         return console.log(err);
 
-                    if (!doc.length)
+                    if (!docs.length)
                         return self.json({ total: 0 });
-                    //console.log(doc);
 
+                    //console.log(docs);
                     let result = {
                         charge: {
-                            total_ht: 0
+                            total_ht: 0,
+                            total_ht_1: 0,
+                            data: []
                         },
                         subcontractor: {
-                            total_ht: 0
+                            total_ht: 0,
+                            total_ht_1: 0,
+                            data: []
                         }
                     };
 
-                    _.map(doc, function(elem) {
-                        // supplier
-                        if (elem._id == false) {
-                            return result.charge = elem;
+                    //var res = [];
+                    var convertIdxCharge = {};
+                    var convertIdxSubContractor = {};
+
+                    async.forEachSeries(docs, function(elem, cb) {
+                        // supplier -> charge
+                        let doc = elem.data;
+                        if (elem._id.id == false) {
+
+                            if (elem._id.year == thisYear)
+                                result.charge.total_ht = elem.total_ht;
+                            else
+                                result.charge.total_ht_1 = elem.total_ht;
+
+                            for (var i = 0, len = doc.length; i < len; i++) {
+                                if (convertIdxCharge[doc[i].supplier._id.toString()] >= 0) {
+                                    if (elem._id.year == thisYear)
+                                        result.charge.data[convertIdxCharge[doc[i].supplier._id.toString()]].total_ht = doc[i].total_ht;
+                                    else
+                                        result.charge.data[convertIdxCharge[doc[i].supplier._id.toString()]].total_ht_1 = doc[i].total_ht;
+                                } else {
+                                    // add in array
+                                    if (elem._id.year == thisYear)
+                                        result.charge.data.push({
+                                            _id: doc[i].supplier._id.toString(),
+                                            total_ht: doc[i].total_ht,
+                                            total_ht_1: 0,
+                                            supplier: doc[i].supplier
+                                        });
+
+                                    else
+                                        result.charge.data.push({
+                                            _id: doc[i].supplier._id.toString(),
+                                            total_ht: 0,
+                                            total_ht_1: doc[i].total_ht,
+                                            supplier: doc[i].supplier
+                                        });
+
+                                    convertIdxCharge[doc[i].supplier._id.toString()] = result.charge.data.length - 1;
+                                }
+                            }
+
+                            return cb();
                         }
 
                         //subcontractor
-                        return result.subcontractor = elem;
-                    });
 
-                    self.json({ total: (result.charge.total_ht + result.subcontractor.total_ht), data: result });
+                        if (elem._id.year == thisYear)
+                            result.subcontractor.total_ht = elem.total_ht;
+                        else
+                            result.subcontractor.total_ht_1 = elem.total_ht;
+
+                        for (var i = 0, len = doc.length; i < len; i++) {
+                            if (convertIdxSubContractor[doc[i].supplier._id.toString()] >= 0) {
+                                if (elem._id.year == thisYear)
+                                    result.subcontractor.data[convertIdxSubContractor[doc[i].supplier._id.toString()]].total_ht = doc[i].total_ht;
+                                else
+                                    result.subcontractor.data[convertIdxSubContractor[doc[i].supplier._id.toString()]].total_ht_1 = doc[i].total_ht;
+                            } else {
+                                // add in array
+                                if (elem._id.year == thisYear)
+                                    result.subcontractor.data.push({
+                                        _id: doc[i].supplier._id.toString(),
+                                        total_ht: doc[i].total_ht,
+                                        total_ht_1: 0,
+                                        supplier: doc[i].supplier
+                                    });
+                                else
+                                    result.charge.data.push({
+                                        _id: doc[i].supplier._id.toString(),
+                                        total_ht: 0,
+                                        total_ht_1: doc[i].total_ht,
+                                        supplier: doc[i].supplier
+                                    });
+
+                                convertIdxSubContractor[doc[i].supplier._id.toString()] = result.subcontractor.data.length - 1;
+                            }
+                        }
+
+                        return cb();
+                    }, function(err) {
+                        self.json({ total: (result.charge.total_ht + result.subcontractor.total_ht), data: result });
+                    });
                 });
 
         /* Customer invoice */

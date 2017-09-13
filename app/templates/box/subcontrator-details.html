@@ -56,7 +56,10 @@
                             @(companies:Company)
                         </th>
                         <th class="text-align-reverse">
-                            CA HT
+                            Total HT
+                        </th>
+                        <th class="text-align-reverse">
+                            Total N-1 HT
                         </th>
                         <th class="text-align-reverse">
                             Repartition
@@ -72,6 +75,9 @@
                     </td>
                     <td class="text-align-reverse">
                         {{user.total_ht| currency}}
+                    </td>
+                    <td class="text-align-reverse">
+                        {{user.total_ht_1| currency}} <small>({{(user.total_ht_1 - user.total_ht)*100/user.total_ht_1 | percent:0}})</small>
                     </td>
                     <td class="text-align-reverse">
                         <span class="bold font-green-haze">{{user.total_ht / dataDebit.subcontractor.total_ht * 100| percent:0}}</span>

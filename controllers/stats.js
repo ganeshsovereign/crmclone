@@ -663,18 +663,25 @@ Object.prototype = {
         });
     },
     caCustomer: function() {
-        var BillModel = MODEL('invoice').Schema;
+        const BillModel = MODEL('invoice').Schema;
 
         var self = this;
 
         var dateStart = moment(self.query.start).startOf('day').toDate();
         var dateEnd = moment(self.query.end).endOf('day').toDate();
+        var thisYear = moment(self.query.start).year();
+
+        var dateStartN1 = moment(self.query.start).subtract(1, 'year').startOf('day').toDate();
+        var dateEndN1 = moment(self.query.end).subtract(1, 'year').endOf('day').toDate();
 
         var ca = {};
 
         var query = {
             Status: { '$nin': ['DRAFT', 'CANCELED'] },
-            datec: { '$gte': dateStart, '$lt': dateEnd }, // Date de facture
+            $or: [
+                { datec: { '$gte': dateStart, '$lt': dateEnd } },
+                { datec: { '$gte': dateStartN1, '$lt': dateEndN1 } }
+            ], // Date de facture
             forSales: true
         };
 
@@ -683,28 +690,59 @@ Object.prototype = {
 
         BillModel.aggregate([
             { $match: query },
-            { $project: { _id: 1, supplier: 1, total_ht: 1 } },
-            { $group: { _id: "$supplier", total_ht: { "$sum": "$total_ht" } } },
+            { $project: { _id: 1, supplier: 1, total_ht: 1, year: { $year: '$datec' } } },
+            {
+                $group: {
+                    _id: { id: "$supplier", year: "$year" },
+                    total_ht: { "$sum": "$total_ht" }
+                }
+            },
             {
                 $lookup: {
                     from: 'Customers',
-                    localField: '_id',
+                    localField: '_id.id',
                     foreignField: '_id',
                     as: 'supplier'
                 }
             }, {
                 $unwind: "$supplier"
             },
-            { $sort: { total_ht: -1 } }
+            { $sort: { '_id.year': -1, total_ht: -1 } }
         ], function(err, doc) {
             if (err)
                 return console.log(err);
 
-            /*for (var i = 0, len = doc.length; i < len; i++)
-                if ('5333032036f43f0e1882efce' === doc[i]._id.toString())
-                    doc[i].name[0] = "ACCUEIL";*/
+            var res = [];
+            var convertIdx = {};
 
-            self.json({ data: doc });
+            for (var i = 0, len = doc.length; i < len; i++) {
+                if (convertIdx[doc[i]._id.id.toString()] >= 0) {
+                    if (doc[i]._id.year == thisYear)
+                        res[convertIdx[doc[i]._id.id.toString()]].total_ht = doc[i].total_ht;
+                    else
+                        res[convertIdx[doc[i]._id.id.toString()]].total_ht_1 = doc[i].total_ht;
+                } else {
+                    // add in array
+                    if (doc[i]._id.year == thisYear)
+                        res.push({
+                            _id: doc[i]._id.id.toString(),
+                            total_ht: doc[i].total_ht,
+                            total_ht_1: 0,
+                            supplier: doc[i].supplier
+                        });
+                    else
+                        res.push({
+                            _id: doc[i]._id.id.toString(),
+                            total_ht: 0,
+                            total_ht_1: doc[i].total_ht,
+                            supplier: doc[i].supplier
+                        });
+
+                    convertIdx[doc[i]._id.id.toString()] = res.length - 1;
+                }
+            }
+
+            self.json({ data: res });
         });
     },
     caCommercial: function() {

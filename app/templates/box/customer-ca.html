@@ -66,6 +66,9 @@
                             CA HT
                         </th>
                         <th class="text-align-reverse">
+                            CA N-1 HT
+                        </th>
+                        <th class="text-align-reverse">
                             Repartition
                         </th>
                     </tr>
@@ -80,6 +83,9 @@
                         </td>
                         <td class="text-align-reverse">
                             {{supplier.total_ht| currency}}
+                        </td>
+                        <td class="text-align-reverse">
+                            {{supplier.total_ht_1| currency}} <small>({{(supplier.total_ht - supplier.total_ht_1)*100/supplier.total_ht_1 | percent:0}})</small>
                         </td>
                         <td class="text-align-reverse">
                             <span class="bold font-green-haze">{{supplier.total_ht / dataCustomerCaTotal * 100| percent:0}}</span>
