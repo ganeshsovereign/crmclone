@@ -610,22 +610,22 @@ Object.prototype = {
 
         var SocieteModel = MODEL('Customers').Schema;
 
-        var query = JSON.parse(self.req.body.query);
+        var query = JSON.parse(self.body.query);
 
         //console.log(self.query);
 
         var conditions = {
             Status: { $ne: "BILLED" },
             isremoved: { $ne: true },
-            //  forSales: true
+            forSales: true
         };
 
         //if (self.query.forSales == "false")
         //    conditions.forSales = false;
 
         if (!query.search.value) {
-            if (self.query.status_id && self.query.status_id !== 'null')
-                conditions.Status = self.query.status_id;
+            if (self.query.Status && self.query.Status !== 'null')
+                conditions.Status = self.query.Status;
         } else
             delete conditions.Status;
 
@@ -636,6 +636,8 @@ Object.prototype = {
             conditions: conditions,
             select: "ref forSales orderRows"
         };
+
+        console.log(options);
 
 
         async.parallel({
@@ -653,7 +655,7 @@ Object.prototype = {
             if (err)
                 console.log(err);
 
-            //console.log(res);
+            console.log(res);
             SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
 
                 for (var i = 0, len = res.datatable.data.length; i < len; i++) {

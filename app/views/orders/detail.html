@@ -410,7 +410,7 @@
                 </div>
             </div>
 
-            <div ng-hide="module( 'delivery') " class="col-md-5 col-sm-12 ">
+            <div ng-hide="module('delivery') && object.order._id != object._id" class="col-md-5 col-sm-12 ">
                 <div class="portlet mt-element-ribbon light portlet-fit bordered ">
                     <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase ">
                         <div class="ribbon-sub ribbon-bookmark "></div>
