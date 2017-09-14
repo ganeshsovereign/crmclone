@@ -390,11 +390,12 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                             //}; //Create new taxe
 
                             lines[i].total_taxes[j].value = 0;
-                            //console.log(lines[i].total_taxes, total_taxes);
+                            //console.log("test", lines[i].total_taxes, total_taxes, idTax);
 
-                            if (idTax.isFixValue) //ecotax // find ecotax in product
+                            if (idTax.isFixValue == true) { //ecotax // find ecotax in product
+                                //console.log(_.matchesProperty('taxeId', lines[i].total_taxes[j].taxeId._id.toString()));
                                 lines[i].total_taxes[j].value = lines[i].qty * _.find(lines[i].product.taxes, _.matchesProperty('taxeId', lines[i].total_taxes[j].taxeId._id.toString())).value;
-                            else
+                            } else
                                 lines[i].total_taxes[j].value = lines[i].total_ht * lines[i].total_taxes[j].taxeId.rate / 100;
 
                             idTax.total += lines[i].total_taxes[j].value;

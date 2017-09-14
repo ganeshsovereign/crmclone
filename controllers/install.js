@@ -337,6 +337,9 @@ F.on('load', function() {
                                     delete societe.address;
                                     delete societe.__v;
 
+                                    if (societe._id.toString() == '5333032036f43f0e1882efce') //ACCUEIL
+                                        customer.salesPurchases.isGeneric = true;
+
                                     customer = _.extend(customer, societe);
                                     customer.type = "Company";
                                     customer.name = {
@@ -1038,7 +1041,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -1094,7 +1097,7 @@ F.on('load', function() {
                             if (!orders)
                                 return aCb();
 
-                            async.forEachSeries(orders, function(order, eCb) {
+                            async.forEachLimit(orders, 100, function(order, eCb) {
                                     //console.log(order);
 
                                     if (!order.client)
@@ -1125,6 +1128,9 @@ F.on('load', function() {
                                             order.delivery_mode = 'SHIP_NONE';
 
                                         order.address = societe.address;
+
+                                        if (societe._id.toString() == '5333032036f43f0e1882efce') //ACCUEIL
+                                            order.address.name = order.client.name;
 
                                         order.shippingAddress = {
                                             name: order.bl[0].name,
@@ -1364,7 +1370,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -1388,13 +1394,16 @@ F.on('load', function() {
                             if (!orders)
                                 return aCb();
 
-                            async.forEachSeries(orders, function(order, eCb) {
+                            async.forEachLimit(orders, 100, function(order, eCb) {
                                     //console.log(order);
 
                                     if (!order.client)
                                         return eCb();
 
                                     CustomerModel.findById(order.client.id, function(err, societe) {
+
+                                        if (!societe)
+                                            return eCb('Societe Not found offer customer {0} '.format(order._id));
 
                                         if (order.client.cptBilling)
                                             order.billing = order.client.cptBilling.id
@@ -1416,6 +1425,9 @@ F.on('load', function() {
                                             order.delivery_mode = 'SHIP_NONE';
 
                                         order.address = societe.address;
+
+                                        if (societe._id.toString() == '5333032036f43f0e1882efce') //ACCUEIL
+                                            order.address.name = order.client.name;
 
                                         order.shippingAddress = {
                                             name: order.bl[0].name,
@@ -1464,7 +1476,9 @@ F.on('load', function() {
                                                         //console.log(line);
                                                         OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
 
-                                                            line.product = line.product.id;
+                                                            if (line.product)
+                                                                line.product = line.product.id;
+
                                                             line.order = doc._id;
                                                             delete line._id;
                                                             line.sequence = i;
@@ -1701,7 +1715,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -1725,7 +1739,7 @@ F.on('load', function() {
                             if (!orders)
                                 return aCb();
 
-                            async.forEachSeries(orders, function(order, eCb) {
+                            async.forEachLimit(orders, 100, function(order, eCb) {
                                     //console.log(order);
 
                                     if (!order.supplier)
@@ -1755,12 +1769,12 @@ F.on('load', function() {
 
                                         order.address = societe.address;
 
-                                        order.shippingAddress = {
+                                        /*order.shippingAddress = {
                                             name: order.bl[0].name,
                                             street: order.bl[0].address,
                                             zip: order.bl[0].zip,
                                             city: order.bl[0].town
-                                        };
+                                        };*/
 
                                         order.shipping = {
                                             "total_taxes": [],
@@ -1849,8 +1863,10 @@ F.on('load', function() {
                                                         }, rows);
 
                                                     MODULE('utils').sumTotal(rows, newOrder.shipping, newOrder.discount, newOrder.supplier, function(err, result) {
-                                                        if (round(result.total_ttc) != round(order.total_ttc))
+                                                        if (round(result.total_ttc) != round(order.total_ttc)) {
+                                                            console.log(result);
                                                             return sCb('Error diff orderSupplier total old {2} : {0}  new :{1}'.format(order.total_ttc, result.total_ttc, order._id.toString()));
+                                                        }
                                                         sCb(err, newOrder, result, rows)
                                                     });
                                                 },
@@ -1983,7 +1999,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -2021,7 +2037,7 @@ F.on('load', function() {
                                         order.supplier = order.client.id;
 
                                         if (order.bank_reglement)
-                                            order.bank_reglement = (delivery.bank_reglement ? _.find(banks, _.matchesProperty('ref', order.bank_reglement))._id : null);
+                                            order.bank_reglement = (order.bank_reglement ? _.find(banks, _.matchesProperty('ref', order.bank_reglement))._id : null);
 
                                         if (order.delivery_mode)
                                             if (order.delivery_mode == 'Livraison')
@@ -2032,6 +2048,9 @@ F.on('load', function() {
                                             order.delivery_mode = 'SHIP_NONE';
 
                                         order.address = societe.address;
+
+                                        if (societe._id.toString() == '5333032036f43f0e1882efce') //ACCUEIL
+                                            order.address.name = order.client.name;
 
                                         order.shipping = {
                                             "total_taxes": [],
@@ -2081,7 +2100,7 @@ F.on('load', function() {
                                                 function(doc, sCb) {
                                                     const ProductModel = MODEL('product').Schema;
 
-                                                    async.eachOfSeries(lines, function(line, i, cb) {
+                                                    async.eachOfLimit(lines, 100, function(line, i, cb) {
                                                             //console.log(line);
 
                                                             line.product = line.product.id;
@@ -2091,7 +2110,7 @@ F.on('load', function() {
 
                                                             if (line.tva_tx == null)
                                                                 line.tva_tx = 0;
-                                                            console.log(line.tva_tx);
+                                                            //console.log(line.tva_tx);
                                                             line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
                                                             //return console.log(line);
@@ -2113,7 +2132,7 @@ F.on('load', function() {
                                                         });
                                                 },
                                                 function(rows, newBill, sCb) {
-                                                    console.log("Refresh total");
+                                                    //console.log("Refresh total", newBill._id);
 
                                                     if (newBill.isremoved)
                                                         return sCb(null, newBill, {
@@ -2124,13 +2143,23 @@ F.on('load', function() {
                                                         }, rows);
 
                                                     MODULE('utils').sumTotal(rows, newBill.shipping, newBill.discount, newBill.supplier, function(err, result) {
-                                                        if (round(result.total_ttc) != round(order.total_ttc))
+
+                                                        result.correction = 0;
+                                                        //result.total_ttc += result.correction;
+
+                                                        if (round(result.total_ttc) == round(order.total_ttc))
+                                                            return sCb(err, newBill, result, rows)
+
+                                                        if (Math.abs(round(result.total_ttc - order.total_ttc)) > 0.02)
                                                             return sCb('Error diff invoice total old {2} : {0}  new :{1}'.format(order.total_ttc, result.total_ttc, order._id.toString()));
+
+                                                        result.correction += round(order.total_ttc - result.total_ttc, 2);
+                                                        result.total_ttc = order.total_ttc;
                                                         sCb(err, newBill, result, rows)
                                                     });
                                                 },
                                                 function(newBill, result, rows, sCb) {
-                                                    // console.log(result);
+                                                    //console.log("Result ", result);
                                                     newBill.total_ht = result.total_ht;
                                                     newBill.total_taxes = result.total_taxes;
                                                     newBill.total_ttc = result.total_ttc;
@@ -2286,7 +2315,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -2311,7 +2340,7 @@ F.on('load', function() {
                             if (!bills)
                                 return aCb();
 
-                            async.forEachSeries(bills, function(order, eCb) {
+                            async.forEachLimit(bills, 100, function(order, eCb) {
                                     //console.log(order);
 
                                     if (!order.supplier)
@@ -2448,7 +2477,7 @@ F.on('load', function() {
                                                         //console.log(result, order.total_ttc);
                                                         //return;
 
-                                                        sCb(err, newBill, result, rows)
+                                                        sCb(err, newBill, result, rows);
                                                     });
                                                 },
                                                 function(newBill, result, rows, sCb) {
@@ -2715,7 +2744,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }] }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -2745,7 +2774,7 @@ F.on('load', function() {
                             if (!docs)
                                 return aCb();
 
-                            async.forEachSeries(docs, function(delivery, eCb) {
+                            async.forEachLimit(docs, 100, function(delivery, eCb) {
 
                                     if (!delivery.client)
                                         return eCb();
