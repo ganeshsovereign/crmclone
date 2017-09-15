@@ -9,7 +9,8 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     $scope.editable = false;
     $scope.employee = {
         entity: $rootScope.login.entity,
-        datec: new Date()
+        datec: new Date(),
+        address: {}
     };
 
     $scope.dict = {};
@@ -65,9 +66,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
 
         $http({
             method: 'GET',
-            url: '/erp/api/employees/byDepartment',
+            url: '/erp/api/employees/getJobPositionForDd',
         }).success(function(data, status) {
-            $scope.$dict.department = data;
+            $scope.$dict.jobPositions = data;
             //console.log(data);
         });
 

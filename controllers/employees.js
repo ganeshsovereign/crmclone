@@ -10,6 +10,7 @@ const ObjectId = MODULE('utils').ObjectId;
 exports.install = function() {
 
     var object = new Object();
+    var jobPosition = new JobPosition();
 
     F.route('/erp/api/employees/dt', object.readDT, ['post', 'authorize']);
 
@@ -119,6 +120,8 @@ exports.install = function() {
             return self.json(result);
         });
     }, ['post', 'authorize']);
+
+    F.route('/erp/api/employees/getJobPositionForDd', jobPosition.getForDd, ['authorize']);
 
     /**
      *@api {get} /employees/ Request Employees
@@ -1095,7 +1098,7 @@ Object.prototype = {
 
                             for (var i = 0, len = res.datatable.data.length; i < len; i++) {
                                 var row = lines[i];
-                                console.log(row);
+                                //console.log(row);
                                 // Add checkbox
                                 res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
                                 // Add link company                
@@ -2951,6 +2954,22 @@ Object.prototype = {
         });
     }
 };
+
+function JobPosition() {}
+
+JobPosition.prototype = {
+    getForDd: function() {
+        var self = this;
+        const JobPositionModel = MODEL('JobPosition').Schema;
+
+        JobPositionModel.find({}, function(err, jobs) {
+            if (err)
+                return self.throw500(err);
+
+            return self.json({ data: jobs });
+        });
+    }
+}
 
 //event.on('recalculate', recalculate);
 

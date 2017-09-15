@@ -122,12 +122,12 @@
                                             </div>
 
                                             <div class="form-group form-md-line-input">
-                                                <select class="table-group-action-input form-control" required ng-model="employee.manager" ng-options="s.id as s.fullName for s in $dict.employees.data"></select>
+                                                <select class="table-group-action-input form-control" required ng-model="employee.manager" ng-options="s._id as s.fullName for s in $dict.employees.data"></select>
                                                 <label for="form_control_1">@(users:Manager)</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="form_control_1" ng-model="employee.jobPosition">
+                                                <select class="table-group-action-input form-control" required ng-model="employee.jobPosition" ng-options="p as p.name for p in $dict.jobPositions.data track by _id"></select>
                                                 <label for="form_control_1">@(users:JobPosition)</label>
                                             </div>
 

@@ -307,6 +307,43 @@ F.on('load', function() {
                         });
                 }
 
+                function convertAllProductPrices(priceLists, banks, employees, aCb) {
+                    console.log("convert productPrices");
+                    var ProductPricesModel = MODEL('productPrices').Schema;
+                    mongoose.connection.db.collection('PriceLevel', function(err, collection) {
+                        if (err)
+                            return aCb(err);
+                        collection.find({}).toArray(function(err, prices) {
+                            if (err)
+                                return aCb(err);
+
+                            async.forEachLimit(prices, 100, function(price, fCb) {
+                                console.log(price, priceLists);
+
+                                let newPrice = new ProductPricesModel({
+                                    priceLists: _.find(priceLists, _.matchesProperty('name', price.price_level.replace(/\ /g, '_')))._id,
+                                    product: price.product,
+                                    prices: []
+                                });
+
+                                /* add prices */
+                                newPrice.prices = [];
+
+                                newPrice.prices.push({
+                                    price: price.prices.pu_ht,
+                                    count: 0
+                                });
+
+                                newPrice.save(fCb);
+
+
+                            }, function(err) {
+                                aCb(err, priceLists, banks, employees);
+                            });
+                        });
+                    });
+                }
+
                 //Convert societe to Customer
                 function customer(priceLists, banks, employees, aCb) {
                     console.log("convert customers");
@@ -847,7 +884,7 @@ F.on('load', function() {
                     aCb(null, employees);
                 }
 
-                async.waterfall([dropCollection, convertEntities, users, priceList, loadBank, loadEmployees, customer, contact, convertFamily, product, dropCollectionEnd], function(err) {
+                async.waterfall([dropCollection, convertEntities, users, priceList, loadBank, loadEmployees, convertAllProductPrices, customer, contact, convertFamily, product, dropCollectionEnd], function(err) {
                     if (err)
                         return console.log(err);
 
@@ -1166,6 +1203,14 @@ F.on('load', function() {
                                                 shippingStatus: 'ALL'
                                             };
 
+                                        order.history = _.map(order.history, function(elem) {
+                                            if (elem.author && elem.author.id)
+                                                elem.author = elem.author.id;
+                                            else
+                                                elem.author = null;
+                                            return elem;
+                                        });
+
                                         OrderModel.findById(order._id, function(err, newOrder) {
                                             if (err)
                                                 return eCb(err);
@@ -1455,6 +1500,14 @@ F.on('load', function() {
                                             if (commercial_id)
                                                 order.salesPerson = commercial_id._id;
                                         }
+
+                                        order.history = _.map(order.history, function(elem) {
+                                            if (elem.author && elem.author.id)
+                                                elem.author = elem.author.id;
+                                            else
+                                                elem.author = null;
+                                            return elem;
+                                        });
 
                                         OrderModel.findById(order._id, function(err, newOrder) {
                                             if (err)
@@ -1796,6 +1849,14 @@ F.on('load', function() {
                                                 order.salesPerson = commercial_id._id;
                                         }
 
+                                        order.history = _.map(order.history, function(elem) {
+                                            if (elem.author && elem.author.id)
+                                                elem.author = elem.author.id;
+                                            else
+                                                elem.author = null;
+                                            return elem;
+                                        });
+
                                         OrderModel.findById(order._id, function(err, newOrder) {
                                             if (err)
                                                 return eCb(err);
@@ -2075,6 +2136,14 @@ F.on('load', function() {
                                             if (commercial_id)
                                                 order.salesPerson = commercial_id._id;
                                         }
+
+                                        order.history = _.map(order.history, function(elem) {
+                                            if (elem.author && elem.author.id)
+                                                elem.author = elem.author.id;
+                                            else
+                                                elem.author = null;
+                                            return elem;
+                                        });
 
                                         BillModel.findById(order._id, function(err, bill) {
                                             if (err)
@@ -2393,6 +2462,14 @@ F.on('load', function() {
                                             if (commercial_id)
                                                 order.salesPerson = commercial_id._id;
                                         }
+
+                                        order.history = _.map(order.history, function(elem) {
+                                            if (elem.author && elem.author.id)
+                                                elem.author = elem.author.id;
+                                            else
+                                                elem.author = null;
+                                            return elem;
+                                        });
 
                                         BillModel.findById(order._id, function(err, bill) {
                                             if (err)
