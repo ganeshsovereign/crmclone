@@ -873,7 +873,7 @@ F.on('load', function() {
                 }
 
                 function dropCollectionEnd(employees, aCb) {
-                    var collectionName = ['Societe', 'Societe.Version', 'users', 'Mysoc'];
+                    var collectionName = ['Societe', 'Societe.Version', 'users', 'Mysoc', 'PriceLevel'];
 
                     _.each(collectionName, function(collection) {
                         mongoose.connection.db.dropCollection(collection, function(err, result) {

@@ -1285,7 +1285,7 @@ F.on('load', function() {
             var stockStatus = {};
 
             if (docs && docs.length && docs[0].order.Status != "DRAFT" && docs[0].order.Status != "NEW") {
-                async.each(docs, function(elem, eahcCb) {
+                async.eachSeries(docs, function(elem, eahcCb) {
                         var product;
 
                         elem = elem.toJSON();
@@ -1294,7 +1294,7 @@ F.on('load', function() {
                         if (!elem.qty || elem.isDeleted)
                             return eahcCb();
 
-                        if (!elem.product.info.productType.inventory)
+                        if (elem.product.info.productType.isService == true)
                             return eahcCb();
 
                         Availability.aggregate([{
@@ -1383,7 +1383,7 @@ F.on('load', function() {
                                 var allocatedOnRow;
                                 var shippedDocs;
 
-                                //console.log(docs);
+                                console.log(docs);
 
                                 if (err)
                                     return eahcCb(err);
@@ -1396,8 +1396,17 @@ F.on('load', function() {
                                      stockStatus.fulfillStatus = 'NOA';
                                      }*/
 
-                                    stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
-                                    stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
+                                    if (elem.product.info.productType.inventory) {
+                                        // In Stock
+                                        stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
+                                        stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
+                                    } else {
+                                        // Product No Inventory
+                                        stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'ALL';
+                                        stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
+                                    }
+
+                                    console.log(stockStatus);
                                 } else {
                                     shippedDocs = _.filter(docs, function(el) {
                                         if (el.status && (el.status.isShipped || el.status.isReceived))
