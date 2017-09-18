@@ -27,8 +27,8 @@
                         <span ng-if="module('delivery')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(deliveries:NewPreparation) </span>
                         <span ng-if="module('stockreturn')" ng-show="object._id" class="caption-subject dark bold uppercase">@(deliveries:StockReturn) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('stockreturn')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(deliveries:NewStockReturn) </span>
-                        <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(bills:BillCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(bills:NewBill) </span>
+                        <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:BillCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewBill) </span>
                     </div>
                     <save ng-disabled="object.Status !== 'DRAFT'" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
 
@@ -78,12 +78,12 @@
 
                                             <div ng-if="module('bill')" class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="dateOf" date-input ng-model="object.dateOf">
-                                                <label for="dateOf">@(bills:DateOf)</label>
+                                                <label for="dateOf">@(orders:DateOf)</label>
                                             </div>
 
                                             <div ng-if="module('bill')" class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="dateTo" date-input ng-model="object.dateTo">
-                                                <label for="dateTo">@(bills:DateTo)</label>
+                                                <label for="dateTo">@(orders:DateTo)</label>
                                             </div>
 
                                             <div ng-hide="!object._id" ng-if="module('order')" class="form-group form-md-line-input">
@@ -148,13 +148,13 @@
 
                                             <div ng-if="module('bill')" class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="dateInvoice" date-input ng-model="object.datec">
-                                                <label for="dateInvoice">@(bills:DateInvoice)</label>
+                                                <label for="dateInvoice">@(orders:DateInvoice)</label>
                                             </div>
 
                                             <div ng-if="module('bill')" class="form-group form-md-line-input">
                                                 <!--<input type="text" class="form-control" id="datereglement" date-input ng-model="object.dater">-->
                                                 <div class="form-control form-control-static" id="datereglement"> {{object.dater | date:'shortDate'}} </div>
-                                                <label for="datereglement">@(bills:DatePayment)</label>
+                                                <label for="datereglement">@(orders:DatePayment)</label>
                                             </div>
 
                                             <div ng-hide="module('stockreturn')" class="form-group form-md-line-input">
@@ -165,12 +165,12 @@
                                             <div ng-hide="module('stockreturn')" class="form-group form-md-line-input">
                                                 <select class="form-control" id="mode_reglement_code" ng-model="object.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
                                                        </select>
-                                                <label for="mode_reglement_code">@(bills:PaymentMode)</label>
+                                                <label for="mode_reglement_code">@(orders:PaymentMode)</label>
                                             </div>
 
                                             <div ng-hide="module('stockreturn')" class="form-group form-md-line-input">
                                                 <select class="table-group-action-input form-control" id="bank_reglement" ng-model="object.bank_reglement" ng-options="s._id as s.ref for s in banks"></select>
-                                                <label for="bank_reglement">@(bills:PaymentBank)</label>
+                                                <label for="bank_reglement">@(orders:PaymentBank)</label>
                                             </div>
                                         </div>
                                     </div>
@@ -202,7 +202,7 @@
                                         <div class="portlet-title">
                                             <div class="caption">
                                                 <i class="fa fa-money"></i>
-                                                <span class="caption-subject uppercase"> @(bills:BillAddress)</span>
+                                                <span class="caption-subject uppercase"> @(orders:BillAddress)</span>
                                             </div>
                                             <div ng-if="!module('delivery')" class="tools">
                                                 <a href="" class="collapse" data-original-title="" title=""> </a>
@@ -349,13 +349,13 @@
                         <hr>
 
                         <div ng-hide="module('delivery')" class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(bills:DiscountGlobal) : <span class="icon-pencil grey" ng-click="discount.$show()" ng-hide="discount.$visible || !editable"></span></div>
+                            <div class="col-md-5 name">@(orders:DiscountGlobal) : <span class="icon-pencil grey" ng-click="discount.$show()" ng-hide="discount.$visible || !editable"></span></div>
                             <div class="col-md-7 value"><span editable-number="object.discount.discount.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="discount">
                                                 {{object.discount.discount.percent | percent:2}}  (-{{object.discount.discount.value | currency}})
                                             </span></div>
                         </div>
                         <div ng-hide="module('delivery')" class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(bills:EscompteOffered) : <span class="icon-pencil grey" ng-click="escompte.$show()" ng-hide="escompte.$visible || !editable"></span></div>
+                            <div class="col-md-5 name">@(orders:EscompteOffered) : <span class="icon-pencil grey" ng-click="escompte.$show()" ng-hide="escompte.$visible || !editable"></span></div>
                             <div class="col-md-7 value"><span editable-number="object.discount.escompte.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="escompte">
                                                 {{object.discount.escompte.percent | percent:2}} (-{{object.discount.escompte.value | currency}})
                                             </span></div>

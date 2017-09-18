@@ -40,11 +40,12 @@ angular.module("MetronicApp").controller('SettingGeneralController', ['$rootScop
 
 }]);
 
-angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
+angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
     var grid = new Datatable();
     var user = $rootScope.login;
 
     $scope.backTo = 'settings.entity.list';
+    $scope.object = {};
 
     $scope.societe = [];
 
@@ -60,9 +61,9 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
     });
 
     $scope.create = function() {
-        let societe = new Societe(this.societe);
+        let entity = new Settings.entity(this.entity);
 
-        societe.$save(function(response) {
+        entity.$save(function(response) {
             //console.log(response);
             $rootScope.$state.go("settings.entity.show", { id: response._id });
         });

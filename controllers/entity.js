@@ -141,7 +141,7 @@ Entity.prototype = {
                 res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>'; // Add id
                 res.datatable.data[i].DT_RowId = row._id.toString();
 
-                res.datatable.data[i].name = '<a class="with-tooltip" href="#!/settings/entity' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.username + '"><span class="fa fa-user"></span> ' + row.username + '</a>';
+                res.datatable.data[i].name = '<a class="with-tooltip" href="#!/settings/entity' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.name + '"><span class="fa fa-user"></span> ' + row.name + '</a>';
 
                 //res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
                 //res.datatable.data[i].Status = (row.isEnable ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');

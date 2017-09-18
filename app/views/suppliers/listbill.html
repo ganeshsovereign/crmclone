@@ -7,11 +7,11 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(bills:Billing)</span>
+                <span>@(orders:Billing)</span>
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(bills:ListBillsSuppliers)</span>
+                <span>@(orders:ListBillsSuppliers)</span>
             </li>
         </ul>
         <div class="page-toolbar">
@@ -44,7 +44,7 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-money"></i>
-                <span class="caption-subject dark bold uppercase"> @(bills:ListBillsSuppliers)</span>
+                <span class="caption-subject dark bold uppercase"> @(orders:ListBillsSuppliers)</span>
             </div>
             <div class="actions">
                 <button class="btn blue" ui-sref="billsupplier.create">@(Add) <i class="fa fa-plus"></i></button>
@@ -72,7 +72,7 @@
                             </div>
                         </div>
 
-                        <!--<label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
+                        <!--<label class="col-md-2 control-label text-right" for="form_control_1">@(orders:FilterbyStatus)</label>
 
                         <div class="col-md-3">
                             <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_delivery_status.values" class="form-control">
@@ -81,7 +81,7 @@
                             <div class="form-control-focus"> </div>
                         </div>
 
-                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyEntity)</label>
+                        <label class="col-md-2 control-label text-right" for="form_control_1">@(orders:FilterbyEntity)</label>
 
                         <div class="col-md-3">
                             <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
@@ -107,8 +107,8 @@
                             <th>Ref.</th>
                             <th>@(companies:Company)</th>
                             <th>@(RefCustomer)</th>
-                            <th>@(bills:DateInvoice)</th>
-                            <th>@(bills:DateEcheance)</th>
+                            <th>@(orders:DateInvoice)</th>
+                            <th>@(orders:DateEcheance)</th>
                             <th>@(commercial:Commercial)</th>
                             <th>@(TotalTTC)</th>
                             <th>@(Status)</th>

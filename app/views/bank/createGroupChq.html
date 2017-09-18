@@ -46,7 +46,7 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label">@(Amount)</label>
                                 <div class="col-md-8">
-                                    {{lines.total | currency}} ({{lines.count}} @(bills:Bills))
+                                    {{lines.total | currency}} ({{lines.count}} @(orders:ListBill))
                                 </div>
                             </div>
                             <div class="form-group">
@@ -57,7 +57,7 @@
                             </div>
                             <div class="form-group text-center">
                                 <a href="javascript:;" class="btn btn-success" ng-click="filterBills()">
-                                    <i class="fa fa-refresh"></i> @(Refresh) @(bills:List)</a>
+                                    <i class="fa fa-refresh"></i> @(Refresh) @(orders:ListBill)</a>
                             </div>
                         </div>
                         <div class="form-actions">
@@ -78,7 +78,7 @@
 
                 <div class="portlet-title">
                     <div class="caption font-green">
-                        <i class="fa fa-money font-green"></i> @(bills:List)
+                        <i class="fa fa-money font-green"></i> @(orders:ListBill)
                     </div>
                 </div>
                 <table class="table table-striped table-bordered table-hover no-footer">
@@ -88,9 +88,9 @@
                                 <input type="checkbox" class="group-checkable"/>
                             </th>-->
                             <th>@(Company)</th>
-                            <th>@(bills:Ref)</th>
-                            <th>@(bills:DateEcheance)</th>
-                            <th>@(bills:Amount)</th>
+                            <th>@(orders:Ref)</th>
+                            <th>@(orders:DateEcheance)</th>
+                            <th>@(orders:Amount)</th>
                         </tr>
                     </thead>
                     <tbody>
