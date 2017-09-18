@@ -18,7 +18,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('bill')">
-            <span>@(bills:Bills)</span>
+            <span>@(orders:Billing)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('offer')">
@@ -38,7 +38,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('bill')" )>
-            <a ui-sref="{{backTo}}">@(bills:List)</a>
+            <a ui-sref="{{backTo}}">@(orders:ListBillsCustomers)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('offer')">
@@ -58,8 +58,8 @@
             <span ng-show="!object._id">@(deliveries:NewStockReturn)</span>
         </li>
         <li ng-if="module('bill')">
-            <span ng-hide="!object._id">@(bills:BillCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
-            <span ng-show="!object._id">@(bills:NewBill)</span>
+            <span ng-hide="!object._id">@(orders:BillCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(orders:NewBill)</span>
         </li>
     </ul>
     <div class="page-toolbar">
@@ -126,8 +126,8 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show="object.Status == 'PROCESSING'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()">
-                        <i class="fa fa-money"></i> @(bills:CreateBill)
+                    <a ng-show="object.Status == 'PROCESSING'" ng-show="login.rights.order.createBills" ng-confirm-click="@(orders:ConfirmCloseBill)" ng-confirm-title="@(orders:CloseBill)" confirmed-click="createBill()">
+                        <i class="fa fa-money"></i> @(orders:CreateBill)
                     </a>
                 </li>
                 <li>
@@ -210,7 +210,7 @@
             <ul ng-if="module( 'bill') " class="dropdown-menu pull-right " role="menu ">
                 <li>
                     <a href="# " ng-show="(object.Status=='NOT_PAID' || object.Status=='VALIDATED' ) && object.journalId.length==0 && login.rights.bill.validate " data-ng-click="exportAccounting(object._id) ">
-                        <i class="fa fa-mail-forward "></i> @(bills:SendAccounting)
+                        <i class="fa fa-mail-forward "></i> @(orders:SendAccounting)
                     </a>
                 </li>
                 <li>
@@ -220,7 +220,7 @@
                 </li>
                 <li>
                     <a ng-if="object.Status=='DRAFT' && login.rights.bill.validate " data-ng-click="changeStatus( 'VALIDATED') ">
-                        <i class="fa fa-thumbs-o-up "></i> @(bills:ValidateBill)
+                        <i class="fa fa-thumbs-o-up "></i> @(orders:ValidateBill)
                     </a>
                 </li>
                 <li>
@@ -235,7 +235,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status !="DRAFT " && object.address.contact.email' ng-href="# " ng-click="sendEmail('@(bills:Bill)','bill',object.address.contact.email)">
+                    <a ng-show='object.Status !="DRAFT " && object.address.contact.email' ng-href="# " ng-click="sendEmail('@(orders:Bill)','bill',object.address.contact.email)">
                         <i class="fa fa-envelope "></i> @(mails:SendMail)
                     </a>
                 </li>
@@ -304,7 +304,7 @@
                                         <div ng-if="module( 'offer') " class="uppercase profile-stat-text "> @(propal:Prop) </div>
                                         <div ng-if="module( 'order') " class="uppercase profile-stat-text "> @(orders:Order) </div>
                                         <div ng-if="module( 'delivery') " class="uppercase profile-stat-text "> @(deliveries:PreparationNote) </div>
-                                        <div ng-if="module( 'bill') " class="uppercase profile-stat-text "> @(bills:Bill) </div>
+                                        <div ng-if="module( 'bill') " class="uppercase profile-stat-text "> @(orders:Bill) </div>
                                         <div class="uppercase profile-stat-title "> {{object.ref}} </div>
                                     </div>
                                 </div>
@@ -359,7 +359,7 @@
                     <ul class="nav " ng-if="module( 'bill') ">
                         <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
                             <a ui-sref="bill.show.detail({id:object._id}) ">
-                                <i class="icon-info "></i> @(bill:Details) </a>
+                                <i class="icon-info "></i> @(orders:Details) </a>
                         </li>
 
                         <li ng-class="{active: $state.includes(module() + '.show.payment')} " ng-show="object.journalId.length> 0">

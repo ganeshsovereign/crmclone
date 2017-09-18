@@ -72,7 +72,7 @@
                 <div class="row hidden-print">
                     <div class="form-group form-md-line-input">
 
-                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyStatus)</label>
+                        <label class="col-md-2 control-label text-right" for="form_control_1">@(orders:FilterbyStatus)</label>
                         <div class="col-md-3">
                             <select ng-model="type" ng-change="setCache('type', type);
                                     find();" ng-options="s.id as s.name for s in types" class="form-control">
@@ -80,7 +80,7 @@
                             <div class="form-control-focus"> </div>
                         </div>
                         <div class="col-md-1"></div>
-                        <label class="col-md-2 control-label text-right" for="form_control_1">@(bills:FilterbyFamily)</label>
+                        <label class="col-md-2 control-label text-right" for="form_control_1">@(orders:FilterbyFamily)</label>
                         <div class="col-md-3">
                             <div class="input-icon input-icon-sm right">
                                 <i class="fa fa-times" ng-click="family = null;

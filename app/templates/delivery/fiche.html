@@ -35,14 +35,14 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row">@(bills:PaymentConditions)</th>
+                                <th scope="row">@(orders:PaymentConditions)</th>
                                 <td>
                                     <a href="#" editable-select="societe.cond_reglement" buttons="no" e-ng-options="s.id as s.label for s in dict.fk_payment_term.values" onaftersave="update()">{{ showStatus('cond_reglement', 'fk_payment_term')}}
                                     </a>
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"> @(bills:PaymentMode) </th>
+                                <th scope="row"> @(orders:PaymentMode) </th>
                                 <td>
                                     <a href="#" editable-select="societe.mode_reglement" buttons="no" e-ng-options="s.id as s.label for s in dict.fk_paiement.values" onaftersave="update()">
                                         {{ showStatus('mode_reglement', 'fk_paiement')}}
@@ -50,7 +50,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row"> @(bills:PaymentBank) </th>
+                                <th scope="row"> @(orders:PaymentBank) </th>
                                 <td>
                                     <a href="#" editable-select="societe.bank_reglement" buttons="no" e-ng-options="s.ref as s.ref for s in banks" onaftersave="update()">
                                         {{societe.bank_reglement|| '@(main:Undefined)'}}
@@ -98,34 +98,34 @@
                         <ul class="list-unstyled">
                             <li>
                                 <span class="sale-info">
-                                    @(bills:DateLastBill) <i class="fa fa-img-up"></i>
+                                    @(orders:DateLastBill) <i class="fa fa-img-up"></i>
                                 </span>
                                 <span class="sale-num">
                                     {{ societe.updatedAt | date:'@(main:date.format.java.dayhour)' }} </span>
                             </li>
                             <li>
                                 <span class="sale-info">
-                                    @(bills:DateLastPayment) <i class="fa fa-img-down"></i>
+                                    @(orders:DateLastPayment) <i class="fa fa-img-down"></i>
                                 </span>
                                 <span class="sale-num">
                                     {{societe.status.name}} </span>
                             </li>
                             <li>
                                 <span class="sale-info">
-                                    @(bills:TotalInvoicedThisMonth) <i class="fa fa-img-up"></i>
+                                    @(orders:TotalInvoicedThisMonth) <i class="fa fa-img-up"></i>
                                 </span>
                                 <span class="sale-num">
                                     {{societe.commercial_id.name}} </span>
                             </li>
                             <li>
                                 <span class="sale-info">
-                                    @(bills:TotalInvoicedThisYear) </span>
+                                    @(orders:TotalInvoicedThisYear) </span>
                                 <span class="sale-num">
                                     27 </span>
                             </li>
                             <li>
                                 <span class="sale-info">
-                                    @(bills:RemainderToTake) </span>
+                                    @(orders:RemainderToTake) </span>
                                 <span class="sale-num">
                                     42 </span>
                             </li>

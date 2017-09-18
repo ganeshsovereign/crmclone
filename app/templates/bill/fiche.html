@@ -4,7 +4,7 @@
             <div class="portlet blue-steel box">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class="fa fa-money"></i>@(bills:BillingSettings)
+                        <i class="fa fa-money"></i>@(orders:BillingSettings)
                     </div>
                     <div class="actions">
                         <a href="javascript:;" ng-click="editableCommercial.$show()" ng-show="!editableCommercial.$visible && editable" class="btn btn-default btn-sm">
@@ -79,7 +79,7 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(bills:PaymentConditions) :
+                            @(orders:PaymentConditions) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-select="societe.cond_reglement" e-ng-options="s.id as s.label for s in dict.fk_payment_term.values">
@@ -89,7 +89,7 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(bills:PaymentMode) :
+                            @(orders:PaymentMode) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-select="societe.mode_reglement" e-ng-options="s.id as s.label for s in dict.fk_paiement.values">
@@ -99,7 +99,7 @@
                     </div>
                     <div class="row static-info">
                         <div class="col-md-5 name">
-                            @(bills:PaymentBank) :
+                            @(orders:PaymentBank) :
                         </div>
                         <div class="col-md-7 value">
                             <span editable-select="societe.bank_reglement" e-ng-options="s.ref as s.ref for s in banks">
@@ -216,30 +216,30 @@
                         <ul class="list-unstyled">
                             <li>
                                 <span class="sale-info">
-                                    @(bills:LastBill)
+                                    @(orders:LastBill)
                                 </span>
                                 <span class="sale-num"> - </span>
                             </li>
                             <li>
                                 <span class="sale-info">
-                                    @(bills:LastPayment)
+                                    @(orders:LastPayment)
                                 </span>
                                 <span class="sale-num"> - </span>
                             </li>
                             <li>
                                 <span class="sale-info">
-                                    @(bills:TotalInvoicedThisMonth)
+                                    @(orders:TotalInvoicedThisMonth)
                                 </span>
                                 <span class="sale-num"> - </span>
                             </li>
                             <li>
                                 <span class="sale-info">
-                                    @(bills:TotalInvoicedThisYear) </span>
+                                    @(orders:TotalInvoicedThisYear) </span>
                                 <span class="sale-num"> - </span>
                             </li>
                             <li>
                                 <span class="sale-info">
-                                    @(bills:RemainderToTake) </span>
+                                    @(orders:RemainderToTake) </span>
                                 <span class="sale-num"> - </span>
                             </li>
                         </ul>
@@ -252,11 +252,11 @@
     <div class='col-md-8'>
         <!--INVOICE TABLE-->
         <tabset class="tabbable-line tabbable-full-width">
-            <tab heading="@(bills:BillsCustomer)">
+            <tab heading="@(orders:BillsCustomer)">
                 <div ng-include="'/templates/_bill/list.html'" ng-controller="BillController" onload="ngIncludeInit({'client.id': societe._id}, 5)"></div>
             </tab>
 
-            <tab heading="@(bills:BillsSupplier)">
+            <tab heading="@(orders:BillsSupplier)">
                 <div class="portlet-body">
                     <div class="table-toolbar">
                         <div class="row">
@@ -297,12 +297,12 @@
                                     <th width="2%">
                                         <input type="checkbox" class="group-checkable">
                                     </th>
-                                    <th>@(bills:InvoiceId)</th>
-                                    <th>@(bills:Date)</th>
-                                    <th>@(bills:DateEcheance)</th>
-                                    <th>@(bills:NetToBePaid)</th>
-                                    <th>@(bills:AlreadyPaid)</th>
-                                    <th>@(bills:StillToBeDisbursed)</th>
+                                    <th>@(orders:InvoiceId)</th>
+                                    <th>@(orders:Date)</th>
+                                    <th>@(orders:DateEcheance)</th>
+                                    <th>@(orders:NetToBePaid)</th>
+                                    <th>@(orders:AlreadyPaid)</th>
+                                    <th>@(orders:StillToBeDisbursed)</th>
                                     <th>@(Status)</th>
                                     <th>@(DateLastModification)</th>
                                 </tr>
@@ -311,7 +311,7 @@
                     </div>
                 </div>
             </tab>
-            <tab heading="@(bills:InvoicePayment)">
+            <tab heading="@(orders:InvoicePayment)">
                 <div class="portlet-body">
                     <div class="table-toolbar">
                         <div class="row">
@@ -352,12 +352,12 @@
                                     <th width="2%">
                                         <input type="checkbox" class="group-checkable">
                                     </th>
-                                    <th>@(bills:DatePayment)</th>
-                                    <th>@(bills:TypePayment)</th>
-                                    <th>@(bills:NumberCheckTrans)</th>
-                                    <th>@(bills:Bank)</th>
-                                    <th>@(bills:PaymentBank)</th>
-                                    <th>@(bills:PaymentAmout)</th>
+                                    <th>@(orders:DatePayment)</th>
+                                    <th>@(orders:TypePayment)</th>
+                                    <th>@(orders:NumberCheckTrans)</th>
+                                    <th>@(orders:Bank)</th>
+                                    <th>@(orders:PaymentBank)</th>
+                                    <th>@(orders:PaymentAmout)</th>
                                 </tr>
                             </thead>
                         </table>

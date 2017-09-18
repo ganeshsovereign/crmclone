@@ -129,21 +129,21 @@
                                     <div class="col-md-offset-1 col-md-10">
 
                                         <div class="form-group form-md-line-input has-success">
-                                            <input type="text" class="form-control" id="form_control_1" onbeforesave="checkUserExist($data)" ng-model="user.username">
-                                            <label for="form_control_1">@(users:UserName)<span class="required">
+                                            <input type="text" class="form-control" id="UserName" onbeforesave="checkUserExist($data)" ng-model="user.username">
+                                            <label for="UserName">@(users:UserName)<span class="required">
                                         * </span></label>
                                         </div>
                                         <div class="form-group form-md-line-input has-success">
-                                            <input type="text" class="form-control" id="form_control_1" ng-model="user.password">
-                                            <label for="form_control_1">@(users:Password)</label>
+                                            <input type="text" class="form-control" id="Password" ng-model="user.password">
+                                            <label for="Password">@(users:Password)</label>
                                         </div>
                                         <div class="form-group form-md-line-input has-success">
-                                            <input type="text" class="form-control" id="form_control_1" ng-change="checkEmailExist" ng-model="user.email">
-                                            <label for="form_control_1">@(Email)<span class="required">
+                                            <input type="text" class="form-control" id="Email" ng-change="checkEmailExist" ng-model="user.email">
+                                            <label for="Email">@(Email)<span class="required">
                                         * </span></label>
                                         </div>
                                         <div class="form-group form-md-line-input has-success">
-                                            <select type="text" class="form-control" id="form_control_1" ng-model="user.groupe" ng-options="g.id as g.name for g in groups"></select>
+                                            <select type="text" class="form-control" id="Group" ng-model="user.groupe" ng-options="g.id as g.name for g in groups"></select>
                                             <label for="Group">@(users:Group)</label>
                                         </div>
 

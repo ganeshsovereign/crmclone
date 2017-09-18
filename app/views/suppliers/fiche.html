@@ -5,6 +5,22 @@
             <a ui-sref="home">@(Home)</a>
             <i class="fa fa-angle-right"></i>
         </li>
+        <li ng-if="module('ordersupplier')">
+            <span>@(orders:Orders)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('offersupplier')">
+            <span>@(propal:ProposalShort)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('deliverysupplier') || module('stockreturn')">
+            <span>@(deliveries:Logistics)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('billsupplier')">
+            <span>@(orders:Billing)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
         <li ng-if="module('ordersupplier') || module('offersupplier')">
             <span>@(propal:Purchases)</span>
             <i class="fa fa-angle-right"></i>
@@ -22,7 +38,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('billsupplier')" )>
-            <a ui-sref="{{backTo}}">@(bills:ListBillsSuppliers)</a>
+            <a ui-sref="{{backTo}}">@(orders:ListBillsSuppliers)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('offersupplier')">
@@ -38,8 +54,8 @@
             <span ng-show="!object._id">@(orders:NewReception)</span>
         </li>
         <li ng-if="module('billsupplier')">
-            <span ng-hide="!object._id">@(bills:BillSuppliers) : {{object.ref}} - {{object.supplier.fullName}}</span>
-            <span ng-show="!object._id">@(bills:NewBill)</span>
+            <span ng-hide="!object._id">@(orders:BillSuppliers) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(orders:NewBill)</span>
         </li>
     </ul>
     <div class="page-toolbar">
@@ -101,8 +117,8 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show="object.Status != 'DRAFT'" ng-show="login.rights.order.createBills" ng-confirm-click="@(bills:ConfirmCloseBill)" ng-confirm-title="@(bills:CloseBill)" confirmed-click="createBill()">
-                        <i class="fa fa-money"></i> @(bills:CreateBill)
+                    <a ng-show="object.Status != 'DRAFT'" ng-show="login.rights.order.createBills" ng-confirm-click="@(orders:ConfirmCloseBill)" ng-confirm-title="@(orders:CloseBill)" confirmed-click="createBill()">
+                        <i class="fa fa-money"></i> @(orders:CreateBill)
                     </a>
                 </li>
                 <li>
@@ -172,7 +188,7 @@
                 </li>
                 <li>
                     <a href="#" ng-show="(object.Status == 'NOT_PAID' || object.Status == 'VALIDATED') && object.journalId.length == 0 && login.rights.bill.validate" data-ng-click="exportAccounting(object._id)">
-                        <i class="fa fa-mail-forward"></i> @(bills:SendAccounting)
+                        <i class="fa fa-mail-forward"></i> @(orders:SendAccounting)
                     </a>
                 </li>
                 <li>
@@ -219,7 +235,7 @@
                                         <div ng-if="module('offersupplier')" class="uppercase profile-stat-text"> @(propal:PurchaseRequests) </div>
                                         <div ng-if="module('ordersupplier')" class="uppercase profile-stat-text"> @(orders:Order) </div>
                                         <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(orders:ReceptionNote) </div>
-                                        <div ng-if="module('billsupplier')" class="uppercase profile-stat-text"> @(bills:Bill) </div>
+                                        <div ng-if="module('billsupplier')" class="uppercase profile-stat-text"> @(orders:Bill) </div>
                                         <div class="uppercase profile-stat-title"> {{object.ref}} </div>
                                     </div>
                                 </div>
@@ -258,7 +274,7 @@
                         <ul class="nav" ng-if="module('billsupplier')">
                             <li ng-class="{active: $state.includes(module() + '.show.detail')}">
                                 <a ui-sref="billsupplier.show.detail({id:object._id}) ">
-                                    <i class="icon-info "></i> @(bill:Details) </a>
+                                    <i class="icon-info "></i> @(orders:Details) </a>
                             </li>
                             <li ng-class="{active: $state.includes(module() + '.show.payment')}" ng-show="object.journalId.length > 0">
                                 <a ui-sref="billsupplier.show.payment({id:object._id})">

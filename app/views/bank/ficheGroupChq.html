@@ -128,7 +128,7 @@
 
                                 <div class="portlet-title">
                                     <div class="caption font-green">
-                                        <i class="fa fa-money font-green"></i> @(bills:List)
+                                        <i class="fa fa-money font-green"></i> @(orders:ListBill)
                                     </div>
                                     <div class="actions">
                                         <a class="btn btn-circle btn-icon-only btn-default" title="@(Refresh)" href="javascript:;" ng-click="findOne()">
@@ -143,9 +143,9 @@
                                                     <input type="checkbox" class="group-checkable"/>
                                                 </th>-->
                                             <th>@(Company)</th>
-                                            <th>@(bills:Ref)</th>
-                                            <th>@(bills:DateEcheance)</th>
-                                            <th>@(bills:Amount)</th>
+                                            <th>@(orders:Ref)</th>
+                                            <th>@(orders:DateEcheance)</th>
+                                            <th>@(orders:Amount)</th>
                                             <th width='100px'>@(Actions)</th>
                                         </tr>
                                     </thead>

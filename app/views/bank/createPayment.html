@@ -37,7 +37,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-md-4 control-label">@(bills:PaymentMode)</label>
+                                <label class="col-md-4 control-label">@(orders:PaymentMode)</label>
                                 <div class="col-md-8">
                                     <select class="form-control" ng-disabled="!payment.mode" required data-ng-model="payment.mode_reglement_code" data-ng-options="s.id as s.label for s in dict.fk_paiement.values" ng-change="updateLabel()"></select>
                                 </div>
@@ -89,7 +89,7 @@
             <div class="portlet light" ng-if="payment.bills.length">
                 <div class="portlet-title">
                     <div class="caption font-green">
-                        <i class="fa fa-money font-green"></i> @(bills:BillsCustomers)
+                        <i class="fa fa-money font-green"></i> @(orders:BillsCustomers)
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -101,7 +101,7 @@
                                         Ref
                                     </th>
                                     <th>
-                                        @(bills:DateEcheance)
+                                        @(orders:DateEcheance)
                                     </th>
                                     <th>
                                         @(Status)
@@ -154,7 +154,7 @@
             <div class="portlet light" ng-if="payment.bills_supplier.length">
                 <div class="portlet-title">
                     <div class="caption font-blue-hoki">
-                        <i class="fa fa-group font-blue-hoki"></i> @(bills:BillsSuppliers)
+                        <i class="fa fa-group font-blue-hoki"></i> @(orders:BillsSuppliers)
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -166,7 +166,7 @@
                                         Ref
                                     </th>
                                     <th>
-                                        @(bills:DateEcheance)
+                                        @(orders:DateEcheance)
                                     </th>
                                     <th>
                                         @(Status)

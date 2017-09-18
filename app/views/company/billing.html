@@ -5,7 +5,7 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-credit-card"></i>
-                        <span class="caption-subject dark bold uppercase"> @(bills:Billing)</span>
+                        <span class="caption-subject dark bold uppercase"> @(orders:Billing)</span>
                         <span class="caption-helper"> - @(companies:CardCompany)</span>
                     </div>
                     <save ng-disabled="!editable" mode="societe._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
@@ -18,7 +18,7 @@
                                 <div class="portlet light portlet-form bordered">
                                     <div class="portlet-title">
                                         <div class="caption">
-                                            <i class="fa fa-cog"></i>@(bills:AccountParameters)
+                                            <i class="fa fa-cog"></i>@(orders:AccountParameters)
                                         </div>
 
                                     </div>
@@ -65,17 +65,17 @@
 
                                                     <div class="form-group form-md-line-input">
                                                         <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.cond_reglement" ng-options="s.id as s.label for s in dict.fk_payment_term.values"></select>
-                                                        <label for="form_control_1">@(bills:PaymentConditions)</label>
+                                                        <label for="form_control_1">@(orders:PaymentConditions)</label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input">
                                                         <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.mode_reglement" ng-options="s.id as s.label for s in dict.fk_paiement.values"></select>
-                                                        <label for="form_control_1">@(bills:PaymentMode)</label>
+                                                        <label for="form_control_1">@(orders:PaymentMode)</label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input">
                                                         <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.bank_reglement" ng-options="s._id as s.ref for s in banks"></select>
-                                                        <label for="form_control_1">@(bills:PaymentBank)</label>
+                                                        <label for="form_control_1">@(orders:PaymentBank)</label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input"></div>
@@ -117,32 +117,32 @@
 
                                             <div class="form-group form-md-line-input form-md-floating-label">
                                                 <div class="form-control form-control-static"> {{societe.idprof5}} </div>
-                                                <label for="form_control_1">@(bills:LastBill) :</label>
+                                                <label for="form_control_1">@(orders:LastBill) :</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input form-md-floating-label">
                                                 <div class="form-control form-control-static"> {{societe.idprof5}} </div>
-                                                <label for="form_control_1">@(bills:LastPayment) :</label>
+                                                <label for="form_control_1">@(orders:LastPayment) :</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input form-md-floating-label">
                                                 <div class="form-control form-control-static"> {{societe.idprof5}} </div>
-                                                <label for="form_control_1">@(bills:TotalInvoicedThisMonth) :</label>
+                                                <label for="form_control_1">@(orders:TotalInvoicedThisMonth) :</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input form-md-floating-label">
                                                 <div class="form-control form-control-static"> {{societe.idprof5}} </div>
-                                                <label for="form_control_1">@(bills:TotalInvoicedThisYear) :</label>
+                                                <label for="form_control_1">@(orders:TotalInvoicedThisYear) :</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input form-md-floating-label">
                                                 <div class="form-control form-control-static"> {{societe.idprof5}} </div>
-                                                <label for="form_control_1">@(bills:RemainderToTake) :</label>
+                                                <label for="form_control_1">@(orders:RemainderToTake) :</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input form-md-floating-label">
                                                 <div class="form-control form-control-static"> {{societe.idprof5}} </div>
-                                                <label for="form_control_1">@(bills:PaymentPeriod) :</label>
+                                                <label for="form_control_1">@(orders:PaymentPeriod) :</label>
                                             </div>
                                         </div>
                                     </div>
@@ -156,11 +156,11 @@
                     <div class='col-md-12'>
                         <!--INVOICE TABLE-->
                         <tabset class="tabbable-line tabbable-full-width">
-                            <tab heading="@(bills:BillsCustomer)" ng-if="societe.salesPurchases.isCustomer">
+                            <tab heading="@(orders:BillsCustomer)" ng-if="societe.salesPurchases.isCustomer">
                                 <div ng-include="'/templates/bill/list.html'" ng-controller="OrdersController" onload="ngIncludeInit({'client.id': societe._id}, 5)"></div>
                             </tab>
 
-                            <tab heading="@(bills:BillsSupplier)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor">
+                            <tab heading="@(orders:BillsSupplier)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor">
                                 <div class="portlet-body">
                                     <div class="table-toolbar">
                                         <div class="row">
@@ -192,12 +192,12 @@
                                                     <th width="2%">
                                                         <input type="checkbox" class="group-checkable">
                                                     </th>
-                                                    <th>@(bills:InvoiceId)</th>
-                                                    <th>@(bills:Date)</th>
-                                                    <th>@(bills:DateEcheance)</th>
-                                                    <th>@(bills:NetToBePaid)</th>
-                                                    <th>@(bills:AlreadyPaid)</th>
-                                                    <th>@(bills:StillToBeDisbursed)</th>
+                                                    <th>@(orders:InvoiceId)</th>
+                                                    <th>@(orders:Date)</th>
+                                                    <th>@(orders:DateEcheance)</th>
+                                                    <th>@(orders:NetToBePaid)</th>
+                                                    <th>@(orders:AlreadyPaid)</th>
+                                                    <th>@(orders:StillToBeDisbursed)</th>
                                                     <th>@(Status)</th>
                                                     <th>@(DateLastModification)</th>
                                                 </tr>
@@ -206,7 +206,7 @@
                                     </div>
                                 </div>
                             </tab>
-                            <tab heading="@(bills:InvoicePayment)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor || societe.salesPurchases.isCustomer">
+                            <tab heading="@(orders:InvoicePayment)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor || societe.salesPurchases.isCustomer">
                                 <div class="portlet-body">
                                     <div class="table-toolbar">
                                         <div class="row">
@@ -238,12 +238,12 @@
                                                     <th width="2%">
                                                         <input type="checkbox" class="group-checkable">
                                                     </th>
-                                                    <th>@(bills:DatePayment)</th>
-                                                    <th>@(bills:TypePayment)</th>
-                                                    <th>@(bills:NumberCheckTrans)</th>
-                                                    <th>@(bills:Bank)</th>
-                                                    <th>@(bills:PaymentBank)</th>
-                                                    <th>@(bills:PaymentAmout)</th>
+                                                    <th>@(orders:DatePayment)</th>
+                                                    <th>@(orders:TypePayment)</th>
+                                                    <th>@(orders:NumberCheckTrans)</th>
+                                                    <th>@(orders:Bank)</th>
+                                                    <th>@(orders:PaymentBank)</th>
+                                                    <th>@(orders:PaymentAmout)</th>
                                                 </tr>
                                             </thead>
                                         </table>
