@@ -379,14 +379,26 @@ Object.prototype = {
 
                             return DeliveryModel.findById(doc._id)
                                 .populate('order', 'shippingMethod shippingExpenses')
+                                .populate({
+                                    path: "orderRows.product",
+                                    select: "info",
+                                    populate: { path: "info.productType" }
+                                })
                                 .exec(function(err, result) {
                                     if (err)
                                         return wCb(err);
 
+                                    //return console.log((result.orderRows));
+
                                     result = result.toObject();
                                     result.orderRows = _.filter(result.orderRows, function(elem) {
-                                        return elem.qty && !elem.isDeleted;
+                                        if (!elem.qty || elem.isDeleted)
+                                            return false;
+
+                                        return true;
                                     });
+
+                                    //return console.log((result.orderRows));
 
                                     return Availability.updateAvailableProducts({
                                         doc: result
@@ -624,7 +636,7 @@ Object.prototype = {
         //    conditions.forSales = false;
 
         if (!query.search.value) {
-            if (self.query.Status && self.query.Status !== 'null')
+            if (self.query.Status && self.query.Status !== 'null' && self.query.Status !== 'undefined')
                 conditions.Status = self.query.Status;
         } else
             delete conditions.Status;
@@ -637,8 +649,7 @@ Object.prototype = {
             select: "ref forSales orderRows"
         };
 
-        console.log(options);
-
+        //console.log(options);
 
         async.parallel({
             status: function(cb) {
@@ -655,7 +666,7 @@ Object.prototype = {
             if (err)
                 console.log(err);
 
-            console.log(res);
+            //console.log(res);
             SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
 
                 for (var i = 0, len = res.datatable.data.length; i < len; i++) {

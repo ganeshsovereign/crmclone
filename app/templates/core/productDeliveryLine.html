@@ -34,19 +34,33 @@
                     <td class="center">
                         {{ line.orderQty || '0' }}
                     </td>
-                    <td class="center" ng-class="{'font-red bold': (editable && line.orderQty > (line.onHand + line.fulfilled))}">
+
+                    <td class="center" ng-if="line.product.productType.inventory" ng-class="{'font-red bold': (editable && line.orderQty > (line.onHand + line.fulfilled))}">
                         {{ line.onHand + line.fulfilled || '0' }}
                     </td>
+                    <td class="center" ng-if="!line.product.productType.inventory">@(products:NoStock)</td>
+
+
                     <td class="center">
                         {{ line.deliveryQty || '0' }}
                     </td>
                     <td class="center" ng-class="{bold:line.orderQty - line.deliveryQty - line.qty}"> {{line.orderQty - line.deliveryQty - line.qty }} </td>
-                    <td class=" center ">
+
+
+                    <td class="center" ng-if="line.product.productType.inventory">
                         <i class="fa fa-warning font-red " tooltip="@(deliveries:NoStockAvailable) " ng-if="line.qty> (line.onHand + line.fulfilled) && editable"></i>
                         <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-max="{{min(line.orderQty-line.deliveryQty, line.onHand + line.fulfilled) }}" e-step="any" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
                     </td>
+                    <td class="center" ng-if="!line.product.productType.inventory">
+                        <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-max="{{line.orderQty-line.deliveryQty }}" e-step="any" e-form="tableform">
+                                                            {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
+                                                        </span>
+                    </td>
+
+
+
                     <td>
                         <div class="btn-toolbar" role="toolbar">
                             <div class="btn-group btn-group">

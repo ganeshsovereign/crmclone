@@ -537,7 +537,7 @@ baseSchema.statics.getById = function(id, callback) {
                         {
                             $project: {
                                 _id: 1,
-                                inventory: "$productType.inventory",
+                                isService: "$productType.isService",
                                 'product._id': 1,
                                 'product.info.SKU': 1,
                                 'product.info.langs': 1,
@@ -558,7 +558,7 @@ baseSchema.statics.getById = function(id, callback) {
                             }
                         },
                         {
-                            $match: { inventory: true }
+                            $match: { isService: { $ne: true } }
                         },
                         {
                             $project: {
@@ -1349,7 +1349,8 @@ F.on('load', function() {
                                 $match: {
                                     'orderRows.orderRowId': elem._id,
                                     _type: { $ne: 'stockReturns' },
-                                    Status: { $ne: 'DRAFT' }
+                                    Status: { $ne: "DRAFT" },
+                                    isremoved: { $ne: true }
                                 }
                             }, {
                                 $project: {
@@ -1396,17 +1397,9 @@ F.on('load', function() {
                                      stockStatus.fulfillStatus = 'NOA';
                                      }*/
 
-                                    if (elem.product.info.productType.inventory) {
-                                        // In Stock
-                                        stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
-                                        stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
-                                    } else {
-                                        // Product No Inventory
-                                        stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'ALL';
-                                        stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
-                                    }
+                                    stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
+                                    stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
 
-                                    console.log(stockStatus);
                                 } else {
                                     shippedDocs = _.filter(docs, function(el) {
                                         if (el.status && (el.status.isShipped || el.status.isReceived))
@@ -1436,21 +1429,31 @@ F.on('load', function() {
                                     else
                                         stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'ALL';
 
-                                    console.log(stockStatus);
+                                    //console.log(stockStatus);
                                 }
 
                                 allocatedOnRow = fullfillOnRow + availability;
 
+                                if (!elem.product.info.productType.inventory) {
+                                    //Not IN STOCK Managment
+                                    // Allocated ALL
+                                    stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'NOT')) ? stockStatus.allocateStatus : 'ALL';
+                                    return eahcCb();
+                                }
+
                                 if (!allocatedOnRow) {
                                     // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
                                     stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'ALL')) ? 'NOA' : 'NOT';
-                                } else if (allocatedOnRow !== elem.qty)
+                                    return eahcCb();
+                                }
+
+                                if (allocatedOnRow !== elem.qty) {
                                     stockStatus.allocateStatus = 'NOA';
-                                else
-                                    stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
+                                    return eahcCb();
+                                }
 
-                                eahcCb();
-
+                                stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
+                                return eahcCb();
                             });
                         });
 
