@@ -308,7 +308,7 @@ Object.prototype = {
         if (!self.body.createdBy)
             self.body.createdBy = self.user._id;
 
-        console.log(self.body.lines);
+        //console.log(self.body.lines);
         //return;
 
         async.waterfall([

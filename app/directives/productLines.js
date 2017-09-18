@@ -116,6 +116,7 @@ MetronicApp.directive('productLines', ['$http',
                         }
 
                         //Refresh inventory
+                        console.log(line.product.info);
                         if (!line.product.info.productType.inventory)
                             return;
 

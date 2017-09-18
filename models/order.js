@@ -457,6 +457,8 @@ baseSchema.statics.getById = function(id, callback) {
                 if (!order.order)
                     order.order = { _id: order._id };
 
+                //return console.log(order.orderRows);
+
                 OrderRowModel.find({ order: order.order._id, isDeleted: { $ne: true } })
                     .populate({
                         path: "product",
@@ -481,6 +483,19 @@ baseSchema.statics.getById = function(id, callback) {
                             rows = _.sortBy(rows, 'sequence');
 
                             order = order.toObject();
+
+                            //Fix orderRowId to String
+                            order.orderRows = _.map(order.orderRows, function(elem) {
+                                //return console.log(elem);
+                                elem.orderRowId = elem.orderRowId.toString();
+                                return elem;
+                            });
+                            rows = _.map(rows, function(elem) {
+                                //return console.log(elem);
+                                elem._id = elem._id.toString();
+                                return elem;
+                            });
+
                             order.lines = rows || [];
 
                             //console.log(deliveries);
@@ -541,6 +556,7 @@ baseSchema.statics.getById = function(id, callback) {
                                 'product._id': 1,
                                 'product.info.SKU': 1,
                                 'product.info.langs': 1,
+                                'product.info.productType': 1,
                                 'product.weight': 1,
                                 'product.directCost': 1,
                                 orderQty: "$qty",
@@ -658,15 +674,29 @@ baseSchema.statics.getById = function(id, callback) {
             if (!order)
                 return callback(null, null);
 
-            //return console.log(orderRows);
+            //return console.log(orderRows, order.orderRows);
+
+            //if (!order.orderRows.length)
+
+            let firstCreateDelivery = true;
+
+            if (order.orderRows.length)
+                firstCreateDelivery = false;
 
             order.orderRows = _.map(orderRows, function(item) {
-                return _.extend(item, _.findWhere(order.orderRows, { orderRowId: item.orderRowId }));
+                if (!firstCreateDelivery)
+                    delete item.qty;
+
+                //console.log(item.orderRowId, order.orderRows);
+                //console.log('test', _.find(order.orderRows, _.matchesProperty('orderRowId', item.orderRowId.toString())));
+
+                return _.extend(item, _.find(order.orderRows, _.matchesProperty('orderRowId', item.orderRowId.toString())));
             });
+            //return console.log(order.orderRows);
 
             //Add onHand in delivery lines
             order.orderRows = _.map(order.orderRows, function(item) {
-                var data = _.findWhere(order.lines, { _id: item.orderRowId });
+                var data = _.find(order.lines, _.matchesProperty('_id', item.orderRowId));
 
                 if (!data || !data.onHand)
                     data = { onHand: 0 };
@@ -1349,7 +1379,7 @@ F.on('load', function() {
                                 $match: {
                                     'orderRows.orderRowId': elem._id,
                                     _type: { $ne: 'stockReturns' },
-                                    Status: { $ne: "DRAFT" },
+                                    //Status: { $ne: "DRAFT" },
                                     isremoved: { $ne: true }
                                 }
                             }, {
@@ -1384,7 +1414,7 @@ F.on('load', function() {
                                 var allocatedOnRow;
                                 var shippedDocs;
 
-                                console.log(docs);
+                                //console.log(docs);
 
                                 if (err)
                                     return eahcCb(err);
@@ -1393,14 +1423,16 @@ F.on('load', function() {
 
                                 if (!docs || !docs.length) {
 
-                                    /*if (!stockStatus.fulfillStatus) {
-                                     stockStatus.fulfillStatus = 'NOA';
-                                     }*/
+                                    if (!stockStatus.fulfillStatus)
+                                        stockStatus.fulfillStatus = 'NOA';
 
                                     stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
                                     stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
 
                                 } else {
+
+                                    //console.log(stockStatus);
+
                                     shippedDocs = _.filter(docs, function(el) {
                                         if (el.status && (el.status.isShipped || el.status.isReceived))
                                             return el;
