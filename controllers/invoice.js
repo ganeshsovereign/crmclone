@@ -489,7 +489,7 @@ Object.prototype = {
 
                         // Affect good compta code if null EUROP or INTER
                         if (!lineBill.product.sellFamily.accounts.length)
-                            return callback("Error family " + lineBill.sellFamily.langs[0].name + " no accounts !");
+                            return callback("Error family " + lineBill.product.sellFamily.langs[0].name + " no accounts !");
 
 
                         var compta_sell = lineBill.product.sellFamily.accounts[0].account;
