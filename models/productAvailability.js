@@ -553,11 +553,15 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
 
                 lastSum = orderRow.qty;
 
-                //console.log(orderRow, doc.warehouse);
+                //return console.log(orderRow.product, doc.warehouse);
+
+                //Only product with stock managment
+                if (orderRow.product.info.productType.inventory == false)
+                    return eachCb();
 
                 self.find({
                     warehouse: doc.warehouse,
-                    product: orderRow.product
+                    product: orderRow.product._id
                 }, function(err, avalabilities) {
                     if (err)
                         return eachCb(err);
@@ -703,7 +707,7 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
                             //    return eachCb(error);
 
                             eachCb();
-                            F.functions.BusMQ.publish('inventory:update', null, { product: { _id: orderRow.product } });
+                            F.functions.BusMQ.publish('inventory:update', null, { product: { _id: orderRow.product._id } });
 
                         });
                     } else

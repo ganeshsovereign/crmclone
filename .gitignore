@@ -28,3 +28,4 @@ debug.pid
 productImages/*.*
 uploads/
 dump/tm1
+packages/*.package

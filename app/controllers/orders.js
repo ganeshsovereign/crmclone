@@ -276,6 +276,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         $scope.update = function(callback) {
             var object = $scope.object;
+            if (!object._id)
+                return;
 
             for (var i = object.lines.length; i--;) {
                 // actually delete lines

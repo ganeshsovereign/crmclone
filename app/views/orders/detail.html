@@ -163,7 +163,7 @@
                                                 <label for="cond_reglement_code">@(deliveries:PaymentConditions)</label>
                                             </div>
                                             <div ng-hide="module('stockreturn')" class="form-group form-md-line-input">
-                                                <select class="form-control" id="mode_reglement_code" ng-model="object.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
+                                                <select class="form-control" id="mode_reglement_code" ng-model="object.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values" ng-change="update()">
                                                        </select>
                                                 <label for="mode_reglement_code">@(orders:PaymentMode)</label>
                                             </div>
@@ -178,25 +178,6 @@
                             </div>
 
                             <div class="col-md-5">
-                                <div ng-show="module('order') || module('offer')" ng-if="object.supplier">
-                                    <div class="portlet light bordered">
-                                        <div class="portlet-title">
-                                            <div class="caption">
-                                                <i class="fa fa-money"></i>
-                                                <span class="caption-subject uppercase"> @(orders:TypeContact_commande_external_CUSTOMER)</span>
-                                            </div>
-                                            <div class="tools">
-                                                <a href="" class="collapse" data-original-title="" title=""> </a>
-                                            </div>
-                                        </div>
-                                        <div class="portlet-body">
-                                            <div class="form-group form-md-line-input">
-                                                <contact-id ng-model="object.contacts" supplier="object.supplier" ng-disabled="!editable"></contact-id>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div ng-hide="module('stockreturn')">
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
@@ -266,6 +247,25 @@
                                         <div class="portlet-body" style="display: block;">
                                             <div class="form-group form-md-line-input">
                                                 <address ng-model="object.shippingAddress" ng-disabled="!editable"></address>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div ng-show="module('order') || module('offer')" ng-if="object.supplier">
+                                    <div class="portlet light bordered">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-money"></i>
+                                                <span class="caption-subject uppercase"> @(orders:TypeContact_commande_external_CUSTOMER)</span>
+                                            </div>
+                                            <div class="tools">
+                                                <a href="" class="expand" data-original-title="" title=""> </a>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body" style="display: none;">
+                                            <div class="form-group form-md-line-input">
+                                                <contact-id ng-model="object.contacts" supplier="object.supplier" ng-disabled="!editable"></contact-id>
                                             </div>
                                         </div>
                                     </div>

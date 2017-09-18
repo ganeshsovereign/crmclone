@@ -537,7 +537,7 @@ baseSchema.statics.getById = function(id, callback) {
                         {
                             $project: {
                                 _id: 1,
-                                inventory: "$productType.inventory",
+                                isService: "$productType.isService",
                                 'product._id': 1,
                                 'product.info.SKU': 1,
                                 'product.info.langs': 1,
@@ -558,7 +558,7 @@ baseSchema.statics.getById = function(id, callback) {
                             }
                         },
                         {
-                            $match: { inventory: true }
+                            $match: { isService: { $ne: true } }
                         },
                         {
                             $project: {
@@ -1285,7 +1285,7 @@ F.on('load', function() {
             var stockStatus = {};
 
             if (docs && docs.length && docs[0].order.Status != "DRAFT" && docs[0].order.Status != "NEW") {
-                async.each(docs, function(elem, eahcCb) {
+                async.eachSeries(docs, function(elem, eahcCb) {
                         var product;
 
                         elem = elem.toJSON();
@@ -1294,7 +1294,7 @@ F.on('load', function() {
                         if (!elem.qty || elem.isDeleted)
                             return eahcCb();
 
-                        if (!elem.product.info.productType.inventory)
+                        if (elem.product.info.productType.isService == true)
                             return eahcCb();
 
                         Availability.aggregate([{
@@ -1349,7 +1349,8 @@ F.on('load', function() {
                                 $match: {
                                     'orderRows.orderRowId': elem._id,
                                     _type: { $ne: 'stockReturns' },
-                                    Status: { $ne: 'DRAFT' }
+                                    Status: { $ne: "DRAFT" },
+                                    isremoved: { $ne: true }
                                 }
                             }, {
                                 $project: {
@@ -1383,7 +1384,7 @@ F.on('load', function() {
                                 var allocatedOnRow;
                                 var shippedDocs;
 
-                                //console.log(docs);
+                                console.log(docs);
 
                                 if (err)
                                     return eahcCb(err);
@@ -1398,6 +1399,7 @@ F.on('load', function() {
 
                                     stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
                                     stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
+
                                 } else {
                                     shippedDocs = _.filter(docs, function(el) {
                                         if (el.status && (el.status.isShipped || el.status.isReceived))
@@ -1427,21 +1429,31 @@ F.on('load', function() {
                                     else
                                         stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'ALL';
 
-                                    console.log(stockStatus);
+                                    //console.log(stockStatus);
                                 }
 
                                 allocatedOnRow = fullfillOnRow + availability;
 
+                                if (!elem.product.info.productType.inventory) {
+                                    //Not IN STOCK Managment
+                                    // Allocated ALL
+                                    stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'NOT')) ? stockStatus.allocateStatus : 'ALL';
+                                    return eahcCb();
+                                }
+
                                 if (!allocatedOnRow) {
                                     // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
                                     stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'ALL')) ? 'NOA' : 'NOT';
-                                } else if (allocatedOnRow !== elem.qty)
+                                    return eahcCb();
+                                }
+
+                                if (allocatedOnRow !== elem.qty) {
                                     stockStatus.allocateStatus = 'NOA';
-                                else
-                                    stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
+                                    return eahcCb();
+                                }
 
-                                eahcCb();
-
+                                stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
+                                return eahcCb();
                             });
                         });
 

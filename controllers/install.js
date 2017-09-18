@@ -318,7 +318,7 @@ F.on('load', function() {
                                 return aCb(err);
 
                             async.forEachLimit(prices, 100, function(price, fCb) {
-                                console.log(price, priceLists);
+                                //console.log(price, priceLists);
 
                                 let newPrice = new ProductPricesModel({
                                     priceLists: _.find(priceLists, _.matchesProperty('name', price.price_level.replace(/\ /g, '_')))._id,
@@ -849,10 +849,18 @@ F.on('load', function() {
                                                         /* add prices */
                                                         price.prices = [];
 
-                                                        price.prices.push({
-                                                            price: 0,
-                                                            count: 0
-                                                        });
+                                                        //return console.log(product.suppliers);
+
+                                                        if (product.suppliers.length)
+                                                            price.prices.push({
+                                                                price: product.suppliers[0].prices.pu_ht,
+                                                                count: 0
+                                                            });
+                                                        else
+                                                            price.prices.push({
+                                                                price: 0,
+                                                                count: 0
+                                                            });
 
                                                         price.save(function(err, doc) {});
 
@@ -873,7 +881,7 @@ F.on('load', function() {
                 }
 
                 function dropCollectionEnd(employees, aCb) {
-                    var collectionName = ['Societe', 'Societe.Version', 'users', 'Mysoc'];
+                    var collectionName = ['Societe', 'Societe.Version', 'users', 'Mysoc', 'PriceLevel'];
 
                     _.each(collectionName, function(collection) {
                         mongoose.connection.db.dropCollection(collection, function(err, result) {
