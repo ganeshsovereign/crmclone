@@ -23,20 +23,20 @@
                                     <div class="row">
                                         <div class=" col-md-6 col-sm-12">
                                             <div class="form-group form-md-line-input  has-success">
-                                                <input type="text" class="form-control" id="form_control_1" ng-model="employee.name.last">
-                                                <label for="form_control_1">@(users:LastName)<span class="required">
+                                                <input type="text" class="form-control" id="LastName" ng-model="employee.name.last">
+                                                <label for="LastName">@(users:LastName)<span class="required">
                                         * </span></label>
                                             </div>
 
                                             <div class="form-group form-md-line-input has-success">
-                                                <input type="text" class="form-control" id="form_control_1" ng-model="employee.name.first">
-                                                <label for="form_control_1">@(users:FirstName)<span class="required">
+                                                <input type="text" class="form-control" id="FirstName" ng-model="employee.name.first">
+                                                <label for="FirstName">@(users:FirstName)<span class="required">
                                         * </span></label>
                                             </div>
 
                                             <div class="form-group form-md-line-input has-success">
-                                                <input class="table-group-action-input form-control" date-input id="form_control_1" ng-model="employee.dateBirth">
-                                                <label for="form_control_1">@(users:dateBirth)<span class="required">
+                                                <input class="table-group-action-input form-control" date-input id="dateBirth" ng-model="employee.dateBirth">
+                                                <label for="dateBirth">@(users:dateBirth)<span class="required">
                                         * </span></label>
                                             </div>
 
@@ -45,15 +45,15 @@
 
                                         <div class="col-md-6 col-sm-12">
                                             <div class="form-group form-md-line-input">
-                                                <input type="number" class="form-control" id="form_control_1" ng-model="employee.phones.mobile">
-                                                <label for="form_control_1">@(Tel-Mobile)</label>
+                                                <input type="text" class="form-control" id="Mobile" ng-model="employee.phones.mobile">
+                                                <label for="Mobile">@(Tel-Mobile)</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input">
                                                 <div class="input-group">
                                                     <div class="input-group-control">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="employee.emails.work">
-                                                        <label for="form_control_1">@(Email)</label>
+                                                        <input type="text" class="form-control" id="Email" ng-model="employee.emails.work">
+                                                        <label for="Email">@(Email)</label>
                                                     </div>
                                                     <span class="input-group-btn btn-right">
                                                             <a ng-href="mailto:{{employee.emails.work}}"  class="btn yellow" type="button"><i class="fa fa-envelope"></i></a>
@@ -62,15 +62,15 @@
                                             </div>
 
                                             <div class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="form_control_1" ng-model="employee.skype">
-                                                <label for="form_control_1">@(users:Skype)</label>
+                                                <input type="text" class="form-control" id="Skype" ng-model="employee.skype">
+                                                <label for="Skype">@(users:Skype)</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input">
                                                 <div class="input-group">
                                                     <div class="input-group-control">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="employee.social.LI" placeholder="@(companies:WithHttp)">
-                                                        <label for="form_control_1">@(users:LinkedIn)</label>
+                                                        <input type="text" class="form-control" id="LinkedIn" ng-model="employee.social.LI" placeholder="@(companies:WithHttp)">
+                                                        <label for="LinkedIn">@(users:LinkedIn)</label>
                                                     </div>
                                                     <span class="input-group-btn btn-right">
                                                             <a ng-href="{{employee.social.LI}}"  class="btn yellow" type="button"><i class="fa fa-linkedin"></i></a>
@@ -80,8 +80,8 @@
                                             <div class="form-group form-md-line-input">
                                                 <div class="input-group">
                                                     <div class="input-group-control">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="employee.social.FB" placeholder="@(companies:WithHttp)">
-                                                        <label for="form_control_1">@(users:Facebook)</label>
+                                                        <input type="text" class="form-control" id="Facebook" ng-model="employee.social.FB" placeholder="@(companies:WithHttp)">
+                                                        <label for="Facebook">@(users:Facebook)</label>
                                                     </div>
                                                     <span class="input-group-btn btn-right">
                                                             <a ng-href="{{employee.social.FB}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-facebook"></i></a>
@@ -144,7 +144,7 @@
 
                                         <div class="col-md-6 col-sm-12">
                                             <div class="form-group form-md-line-input">
-                                                <input type="number" class="form-control" id="SocialeSecurityNumber" ng-model="employee.socialSecurityNumber">
+                                                <input type="text" class="form-control" id="SocialeSecurityNumber" ng-model="employee.socialSecurityNumber">
                                                 <label for="SocialeSecurityNumber">@(users:SocialeSecurityNumber)</label>
                                             </div>
 
