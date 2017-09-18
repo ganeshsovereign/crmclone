@@ -414,12 +414,13 @@ F.on('load', function() {
 
                                     if (societe.code_fournisseur)
                                         societe.code_client = societe.code_fournisseur;
-                                    if (societe.code_client) {
+
+                                    /*if (societe.code_client) {
                                         if (societe.code_client.substr(0, 3) == 'SY-' || societe.code_client.substr(0, 3) == 'LC-')
                                             societe.code_client = "";
                                         else
                                             societe.code_client = societe.code_client.substr(0, 7);
-                                    }
+                                    }*/
 
                                     /*if (societe.commercial_id && societe.commercial_id.id) {
                                         console.log(employees, societe.commercial_id.id);
@@ -455,8 +456,8 @@ F.on('load', function() {
 
                                         rival: [societe.rival],
 
-                                        customerAccount: societe.code_compta,
-                                        supplierAccount: societe.code_compta_fournisseur
+                                        customerAccount: (societe.code_compta || "").substr(0, 10),
+                                        supplierAccount: (societe.code_compta_fournisseur || "").substr(0, 10)
                                     };
 
                                     //return console.log(societe);
@@ -543,8 +544,6 @@ F.on('load', function() {
                                     mobile: (contact.phone_mobile ? contact.phone_mobile.substr(0, 10) : null),
                                     fax: contact.fax
                                 };
-
-
 
                                 contact.contactInfo = {
                                     soncas: contact.soncas,
@@ -814,6 +813,9 @@ F.on('load', function() {
 
                                                     /* add prices */
                                                     price.prices = [];
+
+                                                    if (!doc.prices.pu_ht)
+                                                        return; // No PRICE
 
                                                     price.prices.push({
                                                         price: doc.prices.pu_ht,

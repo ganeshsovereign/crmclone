@@ -693,6 +693,9 @@ Object.prototype = {
         if (!self.user.multiEntities)
             conditions.entity = self.user.entity;
 
+        if (self.query.entity && self.query.entity != 'undefined')
+            conditions.entity = self.query.entity;
+
         var options = {
             conditions: conditions,
             select: "supplier ref forSales status"

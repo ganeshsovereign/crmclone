@@ -328,11 +328,17 @@ var customerSchema = new Schema({
     toJSON: { virtuals: true }
 });
 
-customerSchema.path('salesPurchases.ref').validate(function(v) {
+customerSchema.path('salesPurchases.customerAccount').validate(function(v) {
     if (!v)
         return true;
-    return v.length <= 7;
-}, 'The maximum length is 7.');
+    return v.length <= 10;
+}, 'The maximum length is 10.');
+
+customerSchema.path('salesPurchases.supplierAccount').validate(function(v) {
+    if (!v)
+        return true;
+    return v.length <= 10;
+}, 'The maximum length is 10.');
 
 customerSchema.virtual('fullName').get(function() {
     if (this.name.first)
@@ -346,10 +352,10 @@ customerSchema.pre('save', function(next) {
     var EntityModel = MODEL('entity').Schema;
     var self = this;
 
-    if (this.salesPurchases.ref && this.isModified('salesPurchases.ref')) {
+    /*if (this.salesPurchases.ref && this.isModified('salesPurchases.ref')) {
         this.salesPurchases.customerAccount = "411" + this.salesPurchases.ref;
         this.salesPurchases.supplierAccount = "401" + this.salesPurchases.ref;
-    }
+    }*/
 
     // Update first address delivery copy main address
     if (self.shippingAddress && self.shippingAddress.length != 0) {
@@ -378,10 +384,10 @@ customerSchema.pre('save', function(next) {
             if (!self.salesPurchases.ref)
                 self.salesPurchases.ref = "C" + seq;
 
-            if (!self.salesPurchases.customerAccount)
+            /*if (!self.salesPurchases.customerAccount)
                 self.salesPurchases.customerAccount = "411" + self.salesPurchases.ref;
             if (!self.salesPurchases.supplierAccount)
-                self.salesPurchases.supplierAccount = "401" + self.salesPurchases.ref;
+                self.salesPurchases.supplierAccount = "401" + self.salesPurchases.ref;*/
 
 
             next();

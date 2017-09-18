@@ -1059,7 +1059,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
         };
 
         function getUrl() {
-            return "/erp/api/order/dt" + "?Status=" + $scope.status_id;
+            return "/erp/api/order/dt" + "?Status=" + $scope.status_id + "&entity=" + $rootScope.entity;
         }
 
         function initDatatable() {
