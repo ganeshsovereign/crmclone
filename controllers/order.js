@@ -728,7 +728,7 @@ Object.prototype = {
                     for (var i = 0, len = res.datatable.data.length; i < len; i++) {
                         var row = res.datatable.data[i];
 
-                        console.log(row);
+                        //console.log(row);
 
                         // Add checkbox
                         res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
