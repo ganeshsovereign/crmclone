@@ -261,8 +261,13 @@ Object.prototype = {
         self.body.dater = MODULE('utils').calculate_date_lim_reglement(self.body.datec, self.body.cond_reglement_code);
 
         rows = _.filter(rows, function(elem) {
-            console.log(elem);
-            return elem.type != 'kit';
+            if (elem.type == 'kit')
+                return false;
+
+            if (elem.isDeleted)
+                return false;
+
+            return true;
         });
 
         MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
