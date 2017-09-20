@@ -3087,6 +3087,152 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
+            },
+            //version 0.512 : convert Transaction schema meta
+            function(conf, wCb) {
+                if (conf.version >= 0.512)
+                    return wCb(null, conf);
+
+                //Old convert first
+                function oldConvert(aCb) {
+                    console.log("convert compta Transaction meta");
+                    const TransactionModel = MODEL('transaction').Schema;
+
+                    TransactionModel.find({ "meta.societeId": { $ne: null } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            //var bills = doc.meta.bills;
+
+                            //for (var i = 0, len = bills.length; i < len; i++)
+                            //    bills[i].billId = bills[i].billId.toString();
+
+
+                            //console.log(bills);
+
+                            doc.update({ $unset: { 'meta.societeId': 1, 'meta.societeName': 1 }, $set: { "meta.supplier": doc.meta.societeId.toString() } }, function(err, doc) {
+
+                                //doc.save(function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+
+                    });
+
+                    TransactionModel.find({ "meta.billId": { $ne: null } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            doc.update({ $unset: { 'meta.billId': 1, 'meta.billRef': 1 }, $set: { "meta.invoice": doc.meta.billId.toString() } }, function(err, doc) {
+
+                                //doc.save(function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+
+                    });
+
+                    TransactionModel.find({ "meta.productId": { $ne: null } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            doc.update({ $unset: { 'meta.productId': 1, 'meta.productRef': 1 }, $set: { "meta.product": doc.meta.productId.toString() } }, function(err, doc) {
+
+                                //doc.save(function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+
+                    });
+
+                    //TODO TVA-TX ?
+
+                    TransactionModel.find({ "meta.bills.billId": { $ne: null } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            var bills = doc.meta.bills;
+
+                            for (var i = 0, len = bills.length; i < len; i++)
+                                bills[i] = {
+                                    amount: bills[i].amount,
+                                    invoice: bills[i].billId.toString()
+                                };
+
+
+                            //console.log(bills);
+
+                            doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
+
+                                //doc.save(function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+
+                    });
+
+                    TransactionModel.find({ "meta.billsSupplier": { $ne: null } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            var bills = doc.meta.billsSupplier;
+
+                            async.forEach(bills, function(bill, fCb) {
+                                let newBill = {
+                                    amount: bill.amount,
+                                    invoice: bill.billSupplierId.toString()
+                                };
+                                doc.update({ $addToSet: { "meta.bills": newBill } }, function(err, doc) {
+
+                                    //doc.save(function(err, doc) {
+                                    if (err)
+                                        console.log(err);
+                                    fCb();
+                                });
+                            }, function(err) {
+
+                                doc.update({ $unset: { "meta.billsSupplier": 1 } }, function(err, doc) {
+
+                                    //doc.save(function(err, doc) {
+                                    if (err)
+                                        console.log(err);
+                                });
+                            });
+
+                        });
+
+                    });
+
+                    aCb();
+                }
+
+                async.waterfall([oldConvert], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.512 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.512));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
             }
         ],
         function(err, doc) {

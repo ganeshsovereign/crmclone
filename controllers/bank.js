@@ -85,7 +85,7 @@ Payment.prototype = {
         if (self.query.find)
             query = JSON.parse(self.query.find);
 
-        //console.log(query);
+        console.log("toto", query);
 
         TransactionModel.find(query)
             .populate({ path: "meta.supplier", select: "name", model: "Customers" })
@@ -97,8 +97,6 @@ Payment.prototype = {
                 //console.log(doc);
                 if (err)
                     return self.throw500(err);
-
-
 
                 self.json(doc);
             });

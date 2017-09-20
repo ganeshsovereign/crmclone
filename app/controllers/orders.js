@@ -2538,7 +2538,7 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
                     }, {
                         data: "supplier",
                         defaultContent: "",
-                        visible: (params && params['client.id'] ? false : true)
+                        visible: (params && params['supplier'] ? false : true)
                     }, {
                         data: "ref_client",
                         defaultContent: ""
@@ -2552,7 +2552,13 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
                         data: "salesPerson",
                         defaultContent: ""
                     }, {
-                        data: "total_ttc",
+                        "data": "total_ht",
+                        defaultContent: ""
+                    }, {
+                        "data": "total_ttc",
+                        defaultContent: ""
+                    }, {
+                        "data": "total_paid",
                         defaultContent: ""
                     }, {
                         data: "Status"

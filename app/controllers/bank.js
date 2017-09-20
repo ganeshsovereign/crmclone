@@ -841,10 +841,28 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
         });
     };
 
-    /*$scope.ngIncludeInit = function(params, length) {
+    $scope.ngIncludeInit = function(params, length) {
         $scope.params = params;
-        initDatatable(params, length);
-    };*/
+        //initDatatable(params, length);
+
+        console.log(params);
+
+        if (params.supplier)
+            $http({
+                method: 'GET',
+                url: '/erp/api/bank/payment/',
+                params: {
+                    find: {
+                        "meta.supplier": params.supplier,
+                        "meta.bills": { $ne: null },
+                        voided: false
+                    }
+                }
+            }).success(function(data, status) {
+                //console.log(data);
+                $scope.entries = data;
+            });
+    };
 
     $scope.open = function($event) {
         $event.preventDefault();
@@ -1045,37 +1063,19 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
 
         }
 
-        if ($rootScope.$state.current.name === 'bill.show.payment') {
-            $http({
-                method: 'GET',
-                url: '/erp/api/bank/payment/',
-                params: {
-                    find: {
-                        "meta.bills.invoice": data,
-                        voided: false
-                    }
+        $http({
+            method: 'GET',
+            url: '/erp/api/bank/payment/',
+            params: {
+                find: {
+                    "meta.bills.invoice": data,
+                    voided: false
                 }
-            }).success(function(data, status) {
-                console.log(data);
-                $scope.entries = data;
-            });
-        }
-
-        if ($rootScope.$state.current.name === 'billsupplier.show.payment') {
-            $http({
-                method: 'GET',
-                url: '/erp/api/bank/payment/',
-                params: {
-                    find: {
-                        "meta.bills.invoice": data,
-                        voided: false
-                    }
-                }
-            }).success(function(data, status) {
-                //console.log(data);
-                $scope.entries = data;
-            });
-        }
+            }
+        }).success(function(data, status) {
+            //console.log(data);
+            $scope.entries = data;
+        });
 
         return true;
     };
