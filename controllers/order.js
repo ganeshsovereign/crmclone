@@ -672,12 +672,13 @@ Object.prototype = {
 
         var round = MODULE('utils').round;
 
-        var SocieteModel = MODEL('Customers').Schema;
+        const SocieteModel = MODEL('Customers').Schema;
+        const EmployeeModel = MODEL('Employees').Schema;
 
         var query = JSON.parse(self.body.query);
 
         var conditions = {
-            // Status: { $ne: "CLOSED" },
+            Status: { $ne: "BILLED" },
             isremoved: { $ne: true }
             //  forSales: true
         };
@@ -686,7 +687,10 @@ Object.prototype = {
 
         if (!query.search.value) {
             if (self.query.Status && self.query.Status !== 'null' && self.query.Status !== 'undefined')
-                conditions.Status = self.query.Status;
+                if (self.query.Status == 'CLOSED') // TODO Remove fix in dict
+                    conditions.Status = "BILLED";
+                else
+                    conditions.Status = self.query.Status;
         } else
             delete conditions.Status;
 
@@ -719,54 +723,61 @@ Object.prototype = {
                 console.log(err);
 
             SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
+                EmployeeModel.populate(res, { path: "datatable.data.salesPerson", select: "name" }, function(err, res) {
 
-                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                    var row = res.datatable.data[i];
+                    for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                        var row = res.datatable.data[i];
 
-                    // Add checkbox
-                    res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                    // Add id
-                    res.datatable.data[i].DT_RowId = row._id.toString();
+                        console.log(row);
 
-                    // Add color line 
-                    /* if (res.datatable.data[i].Status === 'VALIDATED')
-                        res.datatable.data[i].DT_RowClass = "bg-yellow";*/
+                        // Add checkbox
+                        res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                        // Add id
+                        res.datatable.data[i].DT_RowId = row._id.toString();
 
-                    if (row.supplier && row.supplier._id)
-                        res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
-                    else {
-                        if (!row.supplier)
-                            res.datatable.data[i].supplier = {};
-                        res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
-                    }
+                        // Add color line 
+                        /* if (res.datatable.data[i].Status === 'VALIDATED')
+                            res.datatable.data[i].DT_RowClass = "bg-yellow";*/
 
-                    // Action
-                    //res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                    // Add url on name
-                    if (row.forSales)
-                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + '/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
-                    else
-                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + 'supplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
-                    // Convert Date
-                    res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                    res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
-                    // Convert Status
-                    res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-                    if (row.status && link == 'order') {
-                        res.datatable.data[i].Status += '<span class="pull-right">';
+                        if (row.supplier && row.supplier._id)
+                            res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
+                        else {
+                            if (!row.supplier)
+                                res.datatable.data[i].supplier = {};
+                            res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                        }
+
+                        // Action
+                        //res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                        // Add url on name
                         if (row.forSales)
-                            res.datatable.data[i].Status += '<span class="fa large fa-check-circle ' + (row.status.allocateStatus == 'NOR' ? 'font-grey' : '') + (row.status.allocateStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.allocateStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.allocateStatus == 'NOT' ? 'font-red' : '') + '"></span>';
-                        res.datatable.data[i].Status += '<span class="fa large fa-inbox ' + (row.status.fulfillStatus == 'NOR' ? 'font-grey' : '') + (row.status.fulfillStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.fulfillStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.fulfillStatus == 'NOT' ? 'font-red' : '') + '"></span>';
-                        res.datatable.data[i].Status += '<span class="fa large fa-truck ' + (row.status.shippingStatus == 'NOR' ? 'font-grey' : '') + (row.status.shippingStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.shippingStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.shippingStatus == 'NOT' ? 'font-red' : '') + '"></span>';
-                        res.datatable.data[i].Status += '</span>';
+                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + '/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                        else
+                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + 'supplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
+                        // Convert Date
+                        res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+                        // Convert Status
+                        res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+                        if (row.status && link == 'order') {
+                            res.datatable.data[i].Status += '<span class="pull-right">';
+                            if (row.forSales)
+                                res.datatable.data[i].Status += '<span class="fa large fa-check-circle ' + (row.status.allocateStatus == 'NOR' ? 'font-grey' : '') + (row.status.allocateStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.allocateStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.allocateStatus == 'NOT' ? 'font-red' : '') + '"></span>';
+                            res.datatable.data[i].Status += '<span class="fa large fa-inbox ' + (row.status.fulfillStatus == 'NOR' ? 'font-grey' : '') + (row.status.fulfillStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.fulfillStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.fulfillStatus == 'NOT' ? 'font-red' : '') + '"></span>';
+                            res.datatable.data[i].Status += '<span class="fa large fa-truck ' + (row.status.shippingStatus == 'NOR' ? 'font-grey' : '') + (row.status.shippingStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.shippingStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.shippingStatus == 'NOT' ? 'font-red' : '') + '"></span>';
+                            res.datatable.data[i].Status += '</span>';
+                        }
+
+                        if (row.salesPerson)
+                            res.datatable.data[i].salesPerson = row.salesPerson.fullName;
+
+                        res.datatable.data[i].total_ttc = round(row.total_ttc, 2);
                     }
 
-                    res.datatable.data[i].total_ttc = round(row.total_ttc, 2);
-                }
+                    //console.log(res.datatable);
 
-                //console.log(res.datatable);
-
-                self.json(res.datatable);
+                    self.json(res.datatable);
+                });
             });
         });
     },

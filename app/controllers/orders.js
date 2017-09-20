@@ -955,7 +955,9 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
             });
         }
 
-        $scope.find = function() {
+        $scope.find = function(clear) {
+            if (clear)
+                $scope.status_id = null;
             var url = getUrl();
             grid.resetFilter(url);
         };
@@ -970,17 +972,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
         var user = $rootScope.login;
 
         $scope.dict = {};
-        $scope.types = [{
-            name: "En cours",
-            id: "NOW"
-        }, {
-            name: "Clos",
-            id: "CLOSED"
-        }];
-        $scope.type = {
-            name: "En cours",
-            id: "NOW"
-        };
+        $scope.status_id = null;
 
         $scope.delivery_mode = ["Comptoir", "Livraison"];
 
@@ -1015,7 +1007,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
             $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
-            var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
+            var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term"];
             $http({
                 method: 'GET',
                 url: '/erp/api/dict',
@@ -1099,6 +1091,9 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
                         "data": "ref_client",
                         defaultContent: ""
                     }, {
+                        data: "salesPerson",
+                        defaultContent: ""
+                    }, {
                         "data": "date_livraison",
                         defaultContent: ""
                     }, {
@@ -1151,11 +1146,11 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
                 }
             });
         }
-
-        $scope.find = function() {
+        $scope.find = function(clear) {
+            if (clear)
+                $scope.status_id = null;
             var url = getUrl();
             grid.resetFilter(url);
-            $scope.status_id = null;
         };
     }
 ]);
@@ -1358,7 +1353,9 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
 
 
 
-        $scope.find = function() {
+        $scope.find = function(clear) {
+            if (clear)
+                $scope.status_id = null;
             var url = getUrl();
             grid.resetFilter(url);
         };
@@ -1555,7 +1552,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                         data: "dater",
                         defaultContent: ""
                     }, {
-                        data: "commercial_id.name",
+                        data: "salesPerson",
                         defaultContent: ""
                     }, {
                         "data": "total_ht",
@@ -1609,9 +1606,12 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             });
         }
 
-        $scope.find = function() {
+        $scope.find = function(clear) {
             var url;
             //console.log(this.status_id);
+
+            if (clear)
+                this.status_id = null;
 
             if ($scope.params) { // For ng-include in societe fiche
                 $scope.params.status_id = this.status_id;
@@ -1965,7 +1965,9 @@ MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '
             });
         }
 
-        $scope.find = function() {
+        $scope.find = function(clear) {
+            if (clear)
+                $scope.status_id = null;
             var url = getUrl();
             grid.resetFilter(url);
         };
@@ -2155,7 +2157,9 @@ MetronicApp.controller('OrderSupplierListController', ['$scope', '$rootScope', '
             });
         }
 
-        $scope.find = function() {
+        $scope.find = function(clear) {
+            if (clear)
+                $scope.status_id = null;
             var url = getUrl();
             grid.resetFilter(url);
         };
@@ -2346,7 +2350,9 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
             });
         }
 
-        $scope.find = function() {
+        $scope.find = function(clear) {
+            if (clear)
+                $scope.status_id = null;
             var url = getUrl();
             grid.resetFilter(url);
         };
@@ -2543,7 +2549,7 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
                         data: "dater",
                         defaultContent: ""
                     }, {
-                        data: "commercial_id.name",
+                        data: "salesPerson",
                         defaultContent: ""
                     }, {
                         data: "total_ttc",
@@ -2591,9 +2597,12 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
             });
         }
 
-        $scope.find = function() {
+        $scope.find = function(clear) {
             var url;
             //console.log(this.status_id);
+
+            if (clear)
+                this.status_id = null;
 
             if ($scope.params) { // For ng-include in societe fiche
                 $scope.params.status_id = this.status_id;
@@ -2732,7 +2741,9 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
             return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
-        $scope.find = function() {
+        $scope.find = function(clear) {
+            if (clear)
+                $scope.status_id = null;
             var url = getUrl();
             grid.resetFilter(url);
         };
@@ -2995,7 +3006,9 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
 
 
 
-        $scope.find = function() {
+        $scope.find = function(clear) {
+            if (clear)
+                $scope.status_id = null;
             var url = getUrl();
             grid.resetFilter(url);
         };

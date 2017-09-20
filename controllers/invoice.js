@@ -814,8 +814,10 @@ Object.prototype = {
     },
     readDT: function() {
         var self = this;
-        var BillModel = MODEL('invoice').Schema;
-        var SocieteModel = MODEL('Customers').Schema;
+        const BillModel = MODEL('invoice').Schema;
+        const SocieteModel = MODEL('Customers').Schema;
+        const EmployeeModel = MODEL('Employees').Schema;
+
 
         var query = JSON.parse(self.req.body.query);
 
@@ -888,46 +890,52 @@ Object.prototype = {
 
             //console.log(res);
             SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
+                EmployeeModel.populate(res, { path: "datatable.data.salesPerson", select: "name" }, function(err, res) {
 
-                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                    var row = res.datatable.data[i];
 
-                    // Add checkbox
-                    res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                    // Add link company
-                    if (row.supplier && row.supplier._id)
-                        res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
-                    else {
-                        if (!row.supplier)
-                            res.datatable.data[i].supplier = {};
-                        res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                    for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                        var row = res.datatable.data[i];
+
+                        // Add checkbox
+                        res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                        // Add link company
+                        if (row.supplier && row.supplier._id)
+                            res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
+                        else {
+                            if (!row.supplier)
+                                res.datatable.data[i].supplier = {};
+                            res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                        }
+                        // Add id
+                        res.datatable.data[i].DT_RowId = row._id.toString();
+
+                        // Convert Status
+                        if (row.Status == 'NOT_PAID' && row.dater > moment().subtract(10, 'days').toDate()) // Check if to late
+                            row.Status = 'VALIDATED';
+
+                        res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+
+                        if (res.datatable.data[i].journalId && res.datatable.data[i].journalId.length > 0)
+                        // Add color line 
+                            res.datatable.data[i].DT_RowClass = "bg-grey-silver";
+                        // Action
+                        res.datatable.data[i].action = '<a href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                        // Add url on name
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-money"></span> ' + row.ref + '</a>';
+                        // Convert Date
+                        res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].dater = (row.dater ? moment(row.dater).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].total_ttc = self.module('utils').round(res.datatable.data[i].total_ttc, 2);
+
+                        if (row.salesPerson)
+                            res.datatable.data[i].salesPerson = row.salesPerson.fullName;
                     }
-                    // Add id
-                    res.datatable.data[i].DT_RowId = row._id.toString();
 
-                    // Convert Status
-                    if (row.Status == 'NOT_PAID' && row.dater > moment().subtract(10, 'days').toDate()) // Check if to late
-                        row.Status = 'VALIDATED';
+                    //console.log(res.datatable);
 
-                    res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-
-                    if (res.datatable.data[i].journalId && res.datatable.data[i].journalId.length > 0)
-                    // Add color line 
-                        res.datatable.data[i].DT_RowClass = "bg-grey-silver";
-                    // Action
-                    res.datatable.data[i].action = '<a href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                    // Add url on name
-                    res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-money"></span> ' + row.ref + '</a>';
-                    // Convert Date
-                    res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                    res.datatable.data[i].dater = (row.dater ? moment(row.dater).format(CONFIG('dateformatShort')) : '');
-                    res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                    res.datatable.data[i].total_ttc = self.module('utils').round(res.datatable.data[i].total_ttc, 2);
-                }
-
-                //console.log(res.datatable);
-
-                self.json(res.datatable);
+                    self.json(res.datatable);
+                });
             });
         });
     },
