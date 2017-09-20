@@ -1596,9 +1596,25 @@ Object.prototype = {
                                 "type": "string",
                                 "value": societe.companyInfo.idprof6
                             },
+                            "SHIPPING.NAME": {
+                                "type": "string",
+                                "value": doc.shippingAddress.name
+                            },
+                            "SHIPPING.ADDRESS": {
+                                "type": "area",
+                                "value": doc.shippingAddress.street
+                            },
+                            "SHIPPING.ZIP": {
+                                "type": "string",
+                                "value": doc.shippingAddress.zip
+                            },
+                            "SHIPPING.TOWN": {
+                                "type": "string",
+                                "value": doc.shippingAddress.city
+                            },
                             "CODECLIENT": {
                                 "type": "string",
-                                "value": societe.salesPurchases.code_client
+                                "value": societe.salesPurchases.ref
                             },
                             "TITLE": { "type": "string", "value": title },
                             "REFCLIENT": {

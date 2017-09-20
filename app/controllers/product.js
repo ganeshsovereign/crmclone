@@ -1219,12 +1219,11 @@ MetronicApp.controller('LineController', ['$scope', '$http', '$modalInstance', '
 
 MetronicApp.controller('DynFormController', ['$scope', '$http', '$modalInstance', '$rootScope', 'object', 'options', function($scope, $http, $modalInstance, $rootScope, object, options) {
 
-    //console.log(object);
     $scope.model = object;
 
     $scope.dynform = {};
 
-    $http.get('/erp/api/product/dynform/' + object.product.dynForm)
+    $http.get('/erp/api/product/dynform/' + object.product.info.productType.dynamic.name)
         .then(function(res) {
             //console.log(res.data);
             $scope.dynform = res.data;
@@ -1232,7 +1231,7 @@ MetronicApp.controller('DynFormController', ['$scope', '$http', '$modalInstance'
 
     $scope.updated = function(modelValue, form) {
         //console.log(options);
-        $http.post('/erp/api/product/combined/' + options.price_level, this.model)
+        $http.post('/erp/api/product/combined/' + options.priceList, this.model)
             .then(function(res) {
                 //console.log(res.data);
                 //angular.extend($scope.model, res.data);

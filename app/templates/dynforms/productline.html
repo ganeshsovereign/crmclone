@@ -1,13 +1,13 @@
 <form name="myDynForm">
-        <div class="modal-header">
-            <h3 class="modal-title">@(products:ProductOrService) ({{model.product.name}}) - {{model.product.label}}</h3>
-        </div>
-        <div class="modal-body" sf-schema="dynform.schema" sf-form="dynform.form" sf-model="model">
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="addOrUpdate(myDynForm)">@(Ok)</button>
-            <button class="btn btn-warning" ng-click="cancel()">@(Cancel)</button>
-        </div>
+    <div class="modal-header">
+        <h3 class="modal-title">@(products:ProductOrService) ({{model.product.info.SKU}}) - {{model.product.info.langs[0].name}}</h3>
+    </div>
+    <div class="modal-body" sf-schema="dynform.schema" sf-form="dynform.form" sf-model="model">
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="addOrUpdate(myDynForm)">@(Ok)</button>
+        <button class="btn btn-warning" ng-click="cancel()">@(Cancel)</button>
+    </div>
 </form>
 <!--<form data-ng-init='init()' data-ng-submit='addOrUpdate()' class="no-margin-bottom block margin-bottom wizard same-height wizard-enabled" style="width: 800px;margin: 0 auto;">
 

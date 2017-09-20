@@ -317,25 +317,33 @@ F.on('load', function() {
                             if (err)
                                 return aCb(err);
 
-                            async.forEachLimit(prices, 100, function(price, fCb) {
-                                //console.log(price, priceLists);
+                            async.forEachSeries(prices, function(price, fCb) {
+                                //console.log(price, priceLists, _.find(priceLists, _.matchesProperty('name', price.price_level.replace(/\ /g, '_')))._id);
 
-                                let newPrice = new ProductPricesModel({
+                                ProductPricesModel.findOne({
                                     priceLists: _.find(priceLists, _.matchesProperty('name', price.price_level.replace(/\ /g, '_')))._id,
-                                    product: price.product,
-                                    prices: []
+                                    product: price.product
+                                }, function(err, newPrice) {
+                                    if (err)
+                                        return fCb(err);
+
+                                    if (!newPrice)
+                                        newPrice = new ProductPricesModel({
+                                            priceLists: _.find(priceLists, _.matchesProperty('name', price.price_level.replace(/\ /g, '_')))._id,
+                                            product: price.product,
+                                            prices: []
+                                        });
+
+                                    /* add prices */
+                                    newPrice.prices = [];
+
+                                    newPrice.prices.push({
+                                        price: price.prices.pu_ht,
+                                        count: 0
+                                    });
+
+                                    newPrice.save(fCb);
                                 });
-
-                                /* add prices */
-                                newPrice.prices = [];
-
-                                newPrice.prices.push({
-                                    price: price.prices.pu_ht,
-                                    count: 0
-                                });
-
-                                newPrice.save(fCb);
-
 
                             }, function(err) {
                                 aCb(err, priceLists, banks, employees);
@@ -386,6 +394,9 @@ F.on('load', function() {
                                     customer.emails = [{
                                         email: societe.email
                                     }];
+
+                                    if (societe.iban)
+                                        customer.iban.bic = societe.iban.swift;
 
                                     customer.address = {
                                         street: address,
@@ -750,7 +761,7 @@ F.on('load', function() {
                                             }];
 
                                             product.info.SKU = doc.ref;
-                                            product.info.isActive = doc.enabled;
+                                            product.info.isActive = true;
 
                                             product.info.EAN = doc.barCode;
                                             product.info.aclCode = doc.aclCode;

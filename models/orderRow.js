@@ -41,7 +41,7 @@ var OrderRowSchema = mongoose.Schema({
             label: { type: String, default: 'black' }
         }
     },
-    optional: { type: Schema.Types.Mixed },
+    optional: { type: Schema.Types.Mixed }, // For dynamic forms
     //nominalCode: { type: Number, default: 0 },
     channel: { type: ObjectId, ref: 'integrations' },
     integrationId: String,

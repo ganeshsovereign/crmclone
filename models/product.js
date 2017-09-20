@@ -447,7 +447,7 @@ productSchema.statics.query = function(options, callback) {
     });
 };
 
-productSchema.methods.getPrice = function(qty, price_level) {
+/*productSchema.methods.getPrice = function(qty, price_level) {
     var Pricebreak = INCLUDE('pricebreak');
     var self = this;
     var d = Q.defer();
@@ -483,7 +483,7 @@ productSchema.methods.getPrice = function(qty, price_level) {
 
     d.resolve(Pricebreak.price(qty).price);
     return d.promise;
-};
+};*/
 
 productSchema.methods.updateRating = function() {
     /* RATING UPDATE */

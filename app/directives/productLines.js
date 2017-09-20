@@ -1,5 +1,5 @@
-MetronicApp.directive('productLines', ['$http',
-    function($http) {
+MetronicApp.directive('productLines', ['$http', '$modal',
+    function($http, $modal) {
         return {
             restrict: 'E',
             require: 'ngModel',
@@ -80,7 +80,7 @@ MetronicApp.directive('productLines', ['$http',
                                 },
                                 description: (lines[i].description ? lines[i].description : data.info.langs[0].description),
                                 isNew: true,
-                                qty: lines[i].qty,
+                                qty: lines[i].qty || 0,
                                 //qty_order: lines[i].qty_order, // qty from order
                                 idLine: index
                             };

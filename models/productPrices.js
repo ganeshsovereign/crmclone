@@ -267,6 +267,10 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
 
                     //If expired priceList
                     if (priceList.isFixed) {
+                        if (!priceList.dateExpiration)
+                            return wCb(null, priceList._id, 0);
+
+                        //With a dateExpiration
                         if (priceList.dateExpiration && moment(priceList.dateExpiration).isAfter()) //date not expired
                             return wCb(null, priceList._id, 0);
                         else
@@ -282,6 +286,8 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
                     .exec(function(err, doc) {
                         if (err)
                             return wCb(err);
+
+                        //console.log(priceLists, doc);
 
                         //Found a price
                         if (doc && doc.priceLists)
@@ -365,7 +371,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
 
             if (!doc)
                 return callback(null, { ok: false, pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null, isFixed: false });
-
+            console.log(doc);
             Pricebreak.set(doc.prices);
 
             //console.log(Pricebreak.humanize(true, 3));

@@ -965,12 +965,22 @@ function saveOrder(next) {
 
     async.waterfall([
         function(wCb) {
-            if (self.warehouse)
+            if (self.warehouse && self.forSales == true)
                 return wCb();
+
+            if (self.warehouse && self.forSales == false) // Refresh shipping address
+                return WarehouseModel.findById(self.warehouse, "_id address", function(err, warehouse) {
+                if (warehouse && self.Status == "DRAFT")
+                    self.shippingAddress = warehouse.address;
+
+                return wCb();
+            });
 
             return WarehouseModel.findOne({ main: true }, "_id", function(err, warehouse) {
                 if (warehouse)
                     self.warehouse = warehouse._id;
+
+
 
                 return wCb();
             });

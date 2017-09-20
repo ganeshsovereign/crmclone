@@ -28,11 +28,11 @@
                                                 <div class="col-md-6">
 
                                                     <div ng-if="societe.salesPurchases.isCustomer" class="form-group form-md-line-input">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.customerAccount">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.customerAccount" maxlength="10">
                                                         <label for="form_control_1">@(compta:CustomerAccountancyCodeShort) </label>
                                                     </div>
 
-                                                    <div ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor" class="form-group form-md-line-input">
+                                                    <div ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor" class="form-group form-md-line-input" maxlength="10">
                                                         <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.supplierAccount">
                                                         <label for="form_control_1">@(compta:SupplierAccountancyCodeShort) </label>
                                                     </div>
@@ -86,7 +86,7 @@
                                                     </div>
 
                                                     <div class="form-group form-md-line-input">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.swift">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.bic">
                                                         <label for="form_control_1">@(bank:BIC/SWIFT) </label>
                                                     </div>
 
