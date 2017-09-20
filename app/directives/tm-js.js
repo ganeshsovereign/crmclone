@@ -410,7 +410,7 @@ MetronicApp.directive('contactId', ['$http', '$modal', 'Societes',
                             field: "_id name poste emails phones"
                         }
                     }).success(function(data) {
-                        console.log(data);
+                        //console.log(data);
                         scope.contacts = data.data;
                     });
                 });

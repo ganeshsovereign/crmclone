@@ -33,6 +33,13 @@ Pricebreak.prototype.price = function(quantity) {
     var max = 0;
     var self = this;
 
+    // Fix for price == 0
+    if (price == 0)
+        return ({
+            price: 0,
+            total: 0
+        });
+
     this.sortedBreaks
         .forEach(function(_break) {
             if (_break.count > max)

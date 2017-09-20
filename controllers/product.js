@@ -728,7 +728,7 @@ exports.install = function() {
     F.route('/erp/api/product/dynform/{combinedName}', dynform.show, ['authorize']);
     //F.route('/erp/api/product/combined', dynform.calcul, ['post', 'json', 'authorize']); // For eshop
     //F.route('/erp/api/product/combined', dynform.calcul, ['post', 'json', 'unauthorize']); // For eshop
-    F.route('/erp/api/product/combined/{pricelevel}', dynform.calcul, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/combined/{pricelevel}', dynform.calcul, ['post', 'json', 'authorize'], 512);
 
     // product types
     var productTypes = new ProductTypes();

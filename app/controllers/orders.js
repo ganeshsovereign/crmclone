@@ -209,7 +209,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
             }).success(function(data, status) {
                 $scope.$dict.shippingMethod = data.data;
-                console.log(data);
+                //console.log(data);
             });
 
 
@@ -319,7 +319,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 Id: $rootScope.$stateParams.id
             }, function(object) {
                 $scope.object = object;
-                console.log(object);
+                //console.log(object);
 
                 //automatic redirect if it's a supplier
                 if (object.forSales == false && current[0].indexOf("supplier") < 0)

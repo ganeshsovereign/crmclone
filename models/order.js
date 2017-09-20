@@ -462,7 +462,7 @@ baseSchema.statics.getById = function(id, callback) {
                 OrderRowModel.find({ order: order.order._id, isDeleted: { $ne: true } })
                     .populate({
                         path: "product",
-                        select: "taxes info weight units",
+                        select: "taxes info weight units sellFamily",
                         populate: { path: "info.productType" }
                     })
                     .populate({
