@@ -128,7 +128,7 @@
                                             </div>
 
                                             <div ng-hide="module('stockreturn')" class="form-group form-md-line-input">
-                                                <select class="form-control" id="commercial_id" ng-model="object.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees">
+                                                <select class="form-control" id="commercial_id" ng-model="object.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees" ng-change="update()">
                                                         </select>
                                                 <label for="commercial_id">@(commercial:Commercial)</label>
                                             </div>
@@ -163,7 +163,7 @@
                                             </div>
 
                                             <div ng-hide="module('stockreturn')" class="form-group form-md-line-input">
-                                                <select class="form-control" id="cond_reglement_code" ng-model="object.cond_reglement_code" ng-options="s.id as s.label for s in dict.fk_payment_term.values">
+                                                <select class="form-control" id="cond_reglement_code" ng-model="object.cond_reglement_code" ng-options="s.id as s.label for s in dict.fk_payment_term.values" ng-change="update()">
                                                         </select>
                                                 <label for="cond_reglement_code">@(deliveries:PaymentConditions)</label>
                                             </div>
