@@ -1884,12 +1884,12 @@ Object.prototype = {
                                     return console.log(err);
 
                                 //console.log(bill);
-                                /*for (var i = 0; i < bill.deliveries.length; i++) {
-                                    DeliveryModel.update({ _id: bill.deliveries[i] }, { $set: { Status: "BILLED" } }, function(err) {
+                                for (var i = 0; i < bill.orders.length; i++) {
+                                    OrderModel.update({ _id: bill.orders[i] }, { $set: { Status: "BILLED" } }, function(err) {
                                         if (err)
                                             console.log(err);
                                     });
-                                }*/
+                                }
                                 callback(err);
                             });
                         });
