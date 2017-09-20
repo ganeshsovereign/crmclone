@@ -26,7 +26,7 @@
     "QtyOnHand": "Qté en stock",
     "URLtracking": "URL de suivi",
     "SetDeliveryDate": "Définir la date de livraison",
-    "ValidateDeliveryReceipt": "Valider le bon de livraison",
+    "ValidateDeliveryReceipt": "Valider le bon",
     "ValidateDeliveryReceiptConfirm": "Êtes-vous sûr de vouloir valider ce bon de livraison ?",
     "DeleteDeliveryReceipt": "Supprimer le bon de livraison",
     "DeleteDeliveryReceiptConfirm": "Êtes-vous sûr de vouloir supprimer ce bon de livraison <b>%s</b> ?",

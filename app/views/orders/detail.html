@@ -96,6 +96,11 @@
                                                 <label for="RefOrderShort">@(orders:RefOrderShort)</label>
                                             </div>
 
+                                            <div ng-if="object.deliveries.length" ng-repeat="delivery in object.deliveries" class="form-group form-md-line-input">
+                                                <div class="form-control form-control-static" id="RefDeliveryShort"> <a ui-sref="delivery.show({id:delivery._id})">{{delivery.ref}}</a> </div>
+                                                <label for="RefDeliveryShort">@(orders:RefDelivery)</label>
+                                            </div>
+
                                             <div ng-if="object.orders" ng-repeat="order in object.orders" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static" id="RefOrderShort"> <a ui-sref="order.show({id:order._id})">{{order.ref}}</a> </div>
                                                 <label for="RefOrderShort">@(orders:RefOrderShort)</label>

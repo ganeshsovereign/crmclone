@@ -877,17 +877,11 @@ Object.prototype = {
         var entity = this.body.entity;
 
         // Generation de la facture PDF et download
-        var DeliveryModel = MODEL('delivery').Schema;
+        var DeliveryModel = MODEL('order').Schema.Order;
 
         var tabTex = [];
 
-        DeliveryModel.find({ Status: "SEND", _id: { $in: self.body.id } })
-            .populate("order", "ref ref_client total_ht datec")
-            .populate({
-                path: "lines.product.id",
-                select: "ref name label weight pack",
-                populate: { path: 'pack.id', select: "ref name label unit" }
-            })
+        DeliveryModel.find({ Status: "VALIDATED", _id: { $in: self.body.id } })
             .exec(function(err, deliveries) {
                 if (err)
                     return console.log(err);
@@ -896,14 +890,16 @@ Object.prototype = {
                     return self.json({ error: "No deliveries" });
 
                 async.each(deliveries, function(delivery, cb) {
+                    DeliveryModel.getById(delivery._id, function(err, delivery) {
 
-                    createDelivery2(delivery, function(err, tex) {
-                        if (err)
-                            return cb(err);
-                        //console.log(tex);
+                        createDelivery(delivery, function(err, tex) {
+                            if (err)
+                                return cb(err);
+                            //console.log(tex);
 
-                        tabTex.push({ id: delivery.ref, tex: tex });
-                        cb();
+                            tabTex.push({ id: delivery.ref, tex: tex });
+                            cb();
+                        });
                     });
                 }, function(err) {
                     if (err)
@@ -957,7 +953,7 @@ Object.prototype = {
         /*format : code_client;name;address1;address2;zip;town;weight;ref*/
 
         // Generation de la facture PDF et download
-        var DeliveryModel = MODEL('delivery').Schema;
+        const DeliveryModel = MODEL('order').Schema.Order;
 
         var Stream = require('stream');
         var stream = new Stream();
@@ -966,13 +962,13 @@ Object.prototype = {
 
 
 
-        DeliveryModel.find({ Status: "SEND", _id: { $in: self.body.id } })
-            .populate("client.id", "name code_client")
+        DeliveryModel.find({ Status: "VALIDATED", _id: { $in: self.body.id } })
+            .populate("supplier", "name salesPurchases.ref")
             .populate("order", "ref ref_client total_ht datec")
             .populate({
-                path: "lines.product.id",
+                path: "lines.product",
                 select: "ref name label weight pack",
-                populate: { path: 'pack.id', select: "ref name label unit" }
+                populate: { path: 'pack', select: "ref name label unit" }
             })
             .exec(function(err, deliveries) {
                 if (err)
@@ -986,8 +982,8 @@ Object.prototype = {
                     /*format : code_client;name;address1;address2;zip;town;weight;ref*/
 
                     csv += delivery.ref;
-                    csv += ";" + delivery.name;
-                    var address = delivery.address.split('\n');
+                    csv += ";" + delivery.supplier.fullName;
+                    var address = delivery.address.street.split('\n');
                     if (address[0])
                         csv += ";" + address[0];
                     else
@@ -996,8 +992,8 @@ Object.prototype = {
                         csv += ";" + address[1];
                     else
                         csv += ";";
-                    csv += ";" + delivery.zip;
-                    csv += ";" + delivery.town;
+                    csv += ";" + delivery.address.zip;
+                    csv += ";" + delivery.address.city;
                     csv += ";" + MODULE('utils').printNumber(delivery.weight);
                     csv += ";" + delivery.ref;
 
@@ -1039,7 +1035,7 @@ Object.prototype = {
         /*format : ref;label;qty*/
 
         // Generation de la facture PDF et download
-        var DeliveryModel = MODEL('delivery').Schema;
+        const DeliveryModel = MODEL('order').Schema.Order;
         var ProductModel = MODEL('product').Schema;
 
         var Stream = require('stream');
@@ -1051,10 +1047,10 @@ Object.prototype = {
         var tabCsv = [];
 
         DeliveryModel.aggregate([
-            { $match: { Status: "SEND", isremoved: { $ne: true }, _id: { $in: self.body.id } } },
-            { $unwind: "$lines" },
-            { $project: { _id: 0, lines: 1 } },
-            { $group: { _id: "$lines.product.id", qty: { "$sum": "$lines.qty" } } }
+            { $match: { Status: "VALIDATED", isremoved: { $ne: true }, _id: { $in: self.body.id } } },
+            { $unwind: "$orderRows" },
+            { $project: { _id: 0, orderRows: 1 } },
+            { $group: { _id: "$orderRows.product", qty: { "$sum": "$orderRows.qty" } } }
         ], function(err, deliveries) {
             if (err)
                 return console.log(err);
@@ -1063,14 +1059,14 @@ Object.prototype = {
                 return stream.emit('end');
 
             async.each(deliveries, function(delivery, cb) {
-                ProductModel.findOne({ _id: delivery._id }, "ref label", function(err, product) {
+                ProductModel.findOne({ _id: delivery._id }, "info", function(err, product) {
                     var csv = "";
 
-                    csv += product.ref;
-                    csv += ";" + product.label;
+                    csv += product.info.SKU;
+                    csv += ";" + product.info.langs[0].name;
                     csv += ";" + delivery.qty;
 
-                    tabCsv.push({ id: product.ref, csv: csv });
+                    tabCsv.push({ id: product.info.SKU, csv: csv });
                     cb();
                 });
 

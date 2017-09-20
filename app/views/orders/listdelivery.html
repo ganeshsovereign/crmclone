@@ -21,20 +21,34 @@
                 <ul class="dropdown-menu pull-right">
                     <li>
                         <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
-                                        @(PrintList) </a>
+                            @(PrintList) </a>
                     </li>
-                    <!--    <li>
-                                        <a href="#">
-                                            @(Update) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(Delete) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(BuildPDF) </a>
-                                    </li>-->
+                    <li class="divider"></li>
+                    <li>
+                        <a ng-show="login.rights.delivery.read" ng-click="openUrl('/erp/api/delivery/pdf/', 'id')" target="_blank">
+                            <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                        </a>
+                    </li>
+                    <li>
+                        <a ng-show="login.rights.delivery.read" ng-click="openUrl('/erp/api/delivery/csv/', 'id')" target="_blank">
+                            <i class="fa fa-file-excel-o"></i> @(CSV Etiquettes)</a>
+                    </li>
+                    <li>
+                        <a ng-show="login.rights.delivery.read" ng-click="openUrl('/erp/api/delivery/mvt/', 'id')" target="_blank">
+                            <i class="fa fa-file-excel-o"></i> @(CSV Mouvements)</a>
+                    </li>
+                    <li class="divider">
+                        <li>
+                            <a href="#" ng-click="changeStatus('VALIDATED','id')"><i class="fa fa-check"></i> 
+                            @(deliveries:ValidateDeliveryReceipt) </a>
+                        </li>
+                        <li class="divider">
+                        </li>
+                        <li>
+                            <a href="#" class="font-red" ng-show="login.rights.delivery.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les bons de livraison ?">
+                                <i class="fa fa-trash-o font-red"></i> @(Delete)
+                            </a>
+                        </li>
                 </ul>
             </div>
         </div>

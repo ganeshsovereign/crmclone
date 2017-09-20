@@ -116,13 +116,13 @@
             <!-- __ORDER__ -->
             <ul ng-if="module('order')" class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a ng-show="object.Status == 'VALIDATED'" ng-show="login.rights.order.createDelivery" ng-click="changeStatus('INVENTORY')">
-                        <i class="fa fa-check-circle"></i> @(orders:Processing)
+                    <a ng-show="object.Status == 'VALIDATED'" ng-show="login.rights.order.createDelivery" ng-confirm-click="@(orders:ConfirmProcessing)" confirmed-click="changeStatus('INVENTORY')">
+                        <i class="fa fa-external-link-square"></i> @(orders:Processing)
                     </a>
                 </li>
                 <li>
                     <a ng-if="(object.status.allocatedStatus != 'ALL' && (object.Status == 'PROCESSING' || object.Status == 'BILLED' )) && login.rights.order.createDelivery" ng-click="createDelivery()">
-                        <i class="fa fa-plane"></i> @(orders:CreatePreparation)
+                        <i class="fa fa-plane"></i> @(orders:CreateDelivery)
                     </a>
                 </li>
                 <li>

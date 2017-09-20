@@ -487,7 +487,12 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         $scope.changeStatus = function(Status) {
             $scope.object.Status = Status;
-            $scope.update();
+            //return console.log($scope.object);
+            $scope.update(function(object) {
+                // Automatic create the first delivery
+                if (object.Status == 'PROCESSING')
+                    $scope.createDelivery();
+            });
         };
 
         // Delivery printed
@@ -1152,6 +1157,22 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
             var url = getUrl();
             grid.resetFilter(url);
         };
+
+        $scope.createBills = function() {
+            if (grid && grid.getSelectedRows())
+                $http({
+                    method: 'POST',
+                    url: '/erp/api/order/billing',
+                    data: {
+                        id: grid.getSelectedRows()
+                    }
+                }).success(function(data, status) {
+                    if (status == 200) {
+                        $rootScope.$state.go("bill.list");
+                        //window.location = "/#!/bills/";
+                    }
+                });
+        };
     }
 ]);
 
@@ -1358,6 +1379,51 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
                 $scope.status_id = null;
             var url = getUrl();
             grid.resetFilter(url);
+        };
+
+        $scope.openUrl = function(url, param) {
+            if (!grid)
+                return;
+
+            var params = {};
+
+            if (!params.entity)
+                params.entity = $rootScope.entity;
+
+            params.id = grid.getSelectedRows();
+
+            //$window.open($rootScope.buildUrl(url, params), '_blank');
+            $http({
+                method: 'POST',
+                url: url,
+                data: params,
+                responseType: 'arraybuffer'
+            }).success(function(data, status, headers) {
+                headers = headers();
+
+                var filename = headers['x-filename'];
+                var contentType = headers['content-type'];
+
+                var linkElement = document.createElement('a');
+                try {
+                    var blob = new Blob([data], { type: contentType });
+                    var url = window.URL.createObjectURL(blob);
+
+                    linkElement.setAttribute('href', url);
+                    linkElement.setAttribute("download", filename);
+
+                    var clickEvent = new MouseEvent("click", {
+                        "view": window,
+                        "bubbles": true,
+                        "cancelable": false
+                    });
+                    linkElement.dispatchEvent(clickEvent);
+                } catch (ex) {
+                    console.log(ex);
+                }
+            }).error(function(data) {
+                console.log(data);
+            });
         };
     }
 ]);

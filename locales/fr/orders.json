@@ -159,6 +159,7 @@
     "ConfirmValidateBill": "Êtes-vous sûr de vouloir valider cette facture sous la référence <b>%s</b> ?",
     "ConfirmValidateOrder": "Êtes-vous sûr de vouloir valider cette commande sous la référence <b>%s</b> ?",
     "ConfirmValidatePayment": "Êtes-vous sûr de vouloir valider ce paiement, aucune modification n'est possible une fois le paiement validé ?",
+    "ConfirmProcessing": "Êtes-vous sûr de vouloir envoyer cette commande en preparation ? Une fois confirme cette commande ne sera plus modifiable",
     "ConsumedBy": "Consommé par",
     "ConvertToReduc": "Convertir en réduction future",
     "CorrectDelivery": "Correction bon livraison %s",
@@ -512,7 +513,6 @@
     "PDFEdisonDescription": "Modèle de commande simple",
     "PDFEinsteinDescription": "Modèle de commande complet (logo...)",
     "PDFOursinDescription": "Modèle de facture PDF complet (modèle alternatif)",
-    "Period": "Période d'intervention",
     "Period": "Période de facturation",
     "Phone campaign": "Campagne téléphone",
     "PhoneNumber": "Tél",
@@ -523,7 +523,7 @@
     "PrettyLittleSentence": "Accepte le règlement des sommes dues par chèque libellé à mon nom en ma qualité de Membre d'une Association de Gestion agréée par l'Administration Fiscale.",
     "PriceBase": "Base du prix",
     "Printed": "Imprimé",
-    "Processing": "Préparer la commande",
+    "Processing": "Envoyer a la logistique",
     "ProductCart": "Articles a expédier",
     "ProformaBill": "Facture Proforma :",
     "PropalStatusClosed": "Fermé",
@@ -740,5 +740,7 @@
     "VATmode": {
         "invoice": "Règlement de la TVA sur émission de la facture",
         "payment": "Règlement de la TVA sur les encaissements"
-    }
+    },
+    "ConfirmBillOrders": "Etes-vous sur de vouloir générer les factures ?",
+    "BillOrders": "Facturation des commandes"
 }

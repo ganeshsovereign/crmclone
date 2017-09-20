@@ -23,18 +23,12 @@
                         <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
                                         @(PrintList) </a>
                     </li>
-                    <!--    <li>
-                                        <a href="#">
-                                            @(Update) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(Delete) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(BuildPDF) </a>
-                                    </li>-->
+                    <li class="divider"></li>
+                    <li ng-show="login.rights.delivery.createBills">
+                        <a ng-confirm-click="@(orders:ConfirmBillOrders)" ng-confirm-title="@(orders:BillOrders)" confirmed-click="createBills()">
+                            <i class="fa fa-money"></i> @(bills:CreateBills)
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
