@@ -258,12 +258,12 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="object.Status !='DRAFT' " ng-href="/erp/api/{{module()}}/pdf/{{object.ref}} " target="_blank ">
+                    <a ng-href="/erp/api/delivery/pdf/{{object.ref}}?stockReturn=true" target="_blank ">
                         <i class="fa fa-file-pdf-o "></i> @(BuildPDF)
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status !="DRAFT " && object.contacts.length' ng-href="# " ng-click="sendEmail('@(deliveries:StockReturn)','stockreturn',object.shippingAddress.contact.email)">
+                    <a ng-if="object.supplier.emails[0].email" ng-click="sendEmail('@(deliveries:StockReturn)','stockreturn',object.shippingAddress.contact.email)">
                         <i class="fa fa-envelope "></i> @(mails:SendMail)
                     </a>
                 </li>

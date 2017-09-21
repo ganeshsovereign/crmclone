@@ -1,0 +1,102 @@
+\newcommand{\FOOT}{--FOOT--}
+
+
+
+%%ligne de tableau avec \\
+\newcommand{\specialcell}[2][c]{
+	\parbox[#1]{8.3cm}{#2}}
+
+\begin{tabular}{p{9cm} p{8cm}}
+    \vspace{0pt} 
+    \includegraphics[width=7.5cm]{--LOGO--}
+    & 
+    \vspace{0pt}
+   \raggedleft
+	%\begin{flushright}
+	\textcolor{violet}{\textsc{\Large Bon de retour --NUM--}}\\
+	Date d'exp\'edition : --DATEEXP--\\
+    {\small Date de commande : \textbf{--DATEC--}\\
+	Ref. commande : --ORDER--\\}~\\
+\end{tabular}
+
+%\vspace{-0.7cm}
+
+\begin{minipage}[t]{0.40\textwidth}
+{\small Emetteur :}\\
+\begin{fminipage}
+\textbf{\large --BILL.NAME--}\\
+--BILL.ADDRESS--\\
+\textsc{--BILL.ZIP-- --BILL.TOWN--}\\
+\begin{minipage}{\textwidth}
+\flushright
+{\tiny --CODECLIENT--}
+\end{minipage}
+\end{fminipage}
+\end{minipage}
+\hspace{1cm}
+\begin{minipage}[t]{0.52\textwidth}
+{\small Destinataire :}
+
+\begin{fminipage}
+\textbf{\large --DESTINATAIRE.NAME--}\\
+--DESTINATAIRE.ADDRESS--\\
+\textsc{--DESTINATAIRE.ZIP-- --DESTINATAIRE.TOWN--}
+\end{fminipage}
+\end{minipage}
+
+\begin{minipage}[t]{0.60\textwidth}
+{\small \it Informations :}\\
+--NOTES-- \\
+\end{minipage}
+\hspace{1cm}
+\begin{minipage}[t]{0.32\textwidth}
+\begin{flushright}
+{\it Ref. commande client : \textbf{--REFCLIENT--}}\\
+\vspace{1em}
+{\it Livraison : --DELIVERYMODE--}\\
+{\it Date de retour : \textbf{--DATEEXP--}}
+\vspace{1em}
+\end{flushright}
+\end{minipage}
+
+\setlength\LTleft{0pt}
+\setlength\LTright{0pt}
+\setlength\LTpre{5pt}
+\setlength\LTpost{0pt}
+\begin{longtable}{|p{2.5cm}|p{8.5cm}@{\extracolsep{1mm plus 1fil}}|r|r|}
+\hline
+\multicolumn{1}{|c}{R\'ef} &
+\multicolumn{1}{c}{D\'esignation} &
+\multicolumn{1}{c}{Qté cmdée} &
+\multicolumn{1}{c|}{Qté retournée} \\
+\hline \hline
+\endfirsthead
+
+\hline
+\multicolumn{4}{|l|}{\small\sl suite de la page pr\'ec\'edente}\\
+\hline \multicolumn{1}{|c}{R\'ef} &
+\multicolumn{1}{c}{D\'esignation} &
+\multicolumn{1}{c}{Qté cmdée} &
+\multicolumn{1}{c|}{Qté retournée} \\ \hline \hline
+\endhead
+
+\hline \multicolumn{4}{|r|}{{\small\sl suite sur la prochaine page}} \\ \hline
+\endfoot
+
+\hline
+\endlastfoot
+
+--TABULAR--
+
+\end{longtable}
+
+\begin{minipage}[t]{0.50\textwidth}
+\begin{fminipage}
+\begin{tabular}{p{4cm} r l}
+--TOTALQTY--
+\end{tabular}
+\end{fminipage}
+\end{minipage}
+\begin{minipage}[t]{0.50\textwidth}
+\centerline{\EANisbn[SC3,ISBN=--BARCODE--]}
+\end{minipage}

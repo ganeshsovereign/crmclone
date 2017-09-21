@@ -199,6 +199,8 @@ var EmployeeSchema = new Schema({
     editedBy: { type: ObjectId, ref: 'Users' },
 
     attachments: { type: Array, default: [] },
+    files: { type: Array, default: [] },
+
     notes: { type: Array, default: [] },
 
     contractEnd: {

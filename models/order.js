@@ -233,7 +233,8 @@ const baseSchema = new Schema({
     shippingMethod: { type: ObjectId, ref: 'shippingMethod' },
     shippingCost: { type: Number, default: 0 },
 
-    attachments: { type: Array, default: [] },
+    //attachments: { type: Array, default: [] },
+    files: { type: Array, default: [] },
 
     channel: { type: ObjectId, ref: 'integrations' },
     integrationId: String,
@@ -977,9 +978,10 @@ function saveOrder(next) {
             });
 
             return WarehouseModel.findOne({ main: true }, "_id", function(err, warehouse) {
-                if (warehouse)
+                if (warehouse) {
                     self.warehouse = warehouse._id;
-
+                    self.shippingAddress = warehouse.address;
+                }
 
 
                 return wCb();
@@ -1128,21 +1130,51 @@ function setNameReturns(next) {
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
     var OrderModel = MODEL('order').Schema.Order;
+    var WarehouseModel = MODEL('warehouse').Schema;
 
-    if (self.isNew && !self.ref)
-        return OrderModel.findById(self.order, "ref ID", function(err, order) {
-            SeqModel.incCpt(order._id, function(number) {
-                //console.log(seq);
+    async.waterfall([
+        function(wCb) {
+            if (self.warehouse) // Refresh shipping address
+                return WarehouseModel.findById(self.warehouse, "_id address", function(err, warehouse) {
+                if (warehouse && self.Status == "DRAFT")
+                    self.shippingAddress = warehouse.address;
 
-                self.ref = "RT" + order.ref.substring(2) + '/' + number;
-
-                next();
+                return wCb();
             });
-        });
 
-    if (self.date_livraison)
-        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
-    next();
+            WarehouseModel.findOne({ main: true }, "_id", function(err, warehouse) {
+                if (warehouse) {
+                    self.warehouse = warehouse._id;
+                    self.shippingAddress = warehouse.address;
+                }
+
+                return wCb();
+            });
+        },
+        function(wCb) {
+
+            if (self.isNew && !self.ref)
+                return OrderModel.findById(self.order, "ref ID", function(err, order) {
+                    SeqModel.incCpt(order._id, function(number) {
+                        //console.log(seq);
+
+                        self.ref = "RT" + order.ref.substring(2) + '/' + number;
+
+                        wCb();
+                    });
+                });
+
+            wCb();
+        },
+        function(wCb) {
+            if (self.date_livraison)
+                self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+
+            wCb();
+        }
+    ], function(err) {
+        next();
+    });
 }
 
 function setNameOrdersFab(next) {

@@ -326,9 +326,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     return $rootScope.$state.go(current[0] + "supplier" + ".show", { id: object._id });
 
                 //on utilise idLine pour definir la ligne produit que nous voulons supprimer
-                for (var i = 0; i < $scope.object.lines.length; i++) {
-                    $scope.object.lines[i].idLine = i;
-                }
+                if ($scope.object.lines)
+                    for (var i = 0; i < $scope.object.lines.length; i++) {
+                        $scope.object.lines[i].idLine = i;
+                    }
                 if (object.Status == "DRAFT" || object.Status == "NEW" || object.Status == "QUOTES")
                     $scope.editable = true;
                 else
@@ -2728,6 +2729,7 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
         var user = $rootScope.login;
 
         $scope.dict = {};
+        $scope.$dict = {};
 
         $scope.types = [{
             name: "En cours",
@@ -2743,15 +2745,6 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
 
         $scope.delivery_mode = ["Comptoir", "Livraison"];
 
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
-        $scope.$dict = {};
-
         // Init
         $scope.$on('$viewContentLoaded', function() {
             // initialize core components
@@ -2761,7 +2754,7 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
             $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
-            var dict = ["fk_delivery_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
+            var dict = ["fk_delivery_status", "fk_payment_term"];
             $http({
                 method: 'GET',
                 url: '/erp/api/dict',
@@ -2775,25 +2768,6 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
 
             $http({
                 method: 'GET',
-                url: '/erp/api/employees/bySalesAccount'
-            }).success(function(data, status) {
-                $scope.$dict.salesPerson = data.data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/employees/getForDd',
-                params: {
-                    isEmployee: true
-                }
-            }).success(function(data, status) {
-                $scope.$dict.employees = data.data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
                 url: '/erp/api/product/warehouse/select'
 
             }).success(function(data, status) {
@@ -2801,6 +2775,8 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
                 //console.log(data);
             });
 
+
+            initDatatable();
 
         });
 
@@ -2821,7 +2797,7 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
         };
 
         function getUrl() {
-            return "/erp/api/stockreturn/dt" + "?Status=" + $scope.status_id;
+            return "/erp/api/delivery/dt" + "?stockReturn=true&Status=" + $scope.status_id;
         }
 
         function initDatatable() {
@@ -2851,21 +2827,32 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
                         [1, "desc"]
                     ], // set first column as a default sort by asc
                     "columns": [{
-                        data: 'bool'
-                    }, {
-                        "data": "ID"
-                    }, {
-                        "data": "orders",
-                        defaultContent: ""
-                    }, {
-                        "data": "receivedAt",
-                        defaultContent: ""
-                    }, {
-                        "data": "receivedBy",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
-                    }]
+                            data: 'bool'
+                        }, {
+                            "data": "ID"
+                        }, {
+                            "data": "supplier",
+                            defaultContent: ""
+                        }, {
+                            "data": "order",
+                            defaultContent: ""
+                        }, {
+                            "data": "status.receivedAt",
+                            defaultContent: ""
+                        },
+                        {
+                            "data": "qty",
+                            defaultContent: ""
+                        }, {
+                            "data": "Status"
+                        }, {
+                            "data": "entity",
+                            defaultContent: ""
+                        }, {
+                            "data": "datec",
+                            defaultContent: ""
+                        }
+                    ]
                 }
             });
 
