@@ -8,10 +8,7 @@
             <a ui-sref="home">@(Home)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li>
-            <span>@(companies:ThirdParties)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
+
         <li>
             <a ng-hide="societe.type == 'Person'" ui-sref="societe.list">@(companies:CustomerList)</a>
             <a ng-hide="societe.type == 'Company'" ui-sref="contact.list">@(companies:ListOfContacts)</a>
