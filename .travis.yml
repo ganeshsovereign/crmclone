@@ -23,6 +23,19 @@ before_install:
   - sudo tar xzf dump/install.tgz -C tests/dump/
   # Restore demo database
   - mongorestore --port 27017 --db demo tests/dump/install/
+  # Copy config file
+  - sudo cp tests/config ./config
  
 install:
   - npm install
+
+before_script:
+- |
+  echo Start travis
+  echo Current dir is `pwd`
+  echo Home dir is `echo ~`
+  echo TRAVIS_BUILD_DIR is $TRAVIS_BUILD_DIR
+
+script:
+  - node debug.js &
+  - npm test

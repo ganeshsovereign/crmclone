@@ -1,7 +1,7 @@
 nbproject
 node_modules/
 default.properties
-config
+/config
 app/common/*
 .settings/
 .buildpath
