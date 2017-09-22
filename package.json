@@ -82,6 +82,6 @@
     "jshint": "^2.8.0"
   },
   "scripts": {
-    "test": "./node_modules/jshint/bin/jshint ./app/app.js"
+    "test": "./node_modules/jshint/bin/jshint ./app/**/**.js"
   }
 }
