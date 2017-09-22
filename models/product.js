@@ -192,7 +192,7 @@ var productSchema = new Schema({
 
     externalId: { type: String, default: '' },
 
-    //files: { type: Array, default: [] },
+    files: { type: Array, default: [] },
     attachments: { type: Array, default: [] },
 
     //label: { type: String, default: "" },

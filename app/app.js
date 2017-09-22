@@ -977,7 +977,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         .state('stockreturn.create', {
             parent: "stockreturn",
-            url: "/{id:[0-9a-z]{24}}",
+            url: "/create.html",
             templateUrl: "/views/orders/detail.html",
             data: {
                 pageTitle: 'Nouveau retour produit'

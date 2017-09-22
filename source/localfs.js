@@ -179,7 +179,10 @@ exports.pluginGridFs = function(schema, opt) {
 
         self.findOne({ 'files._id': ObjectId(fileId) }, "files", function(err, doc) {
             if (err)
-                return self.throw500(err);
+                return fn(err);
+
+            if (!doc)
+                return fn("No id found");
 
             //return console.log(doc);
 
@@ -204,17 +207,6 @@ exports.pluginGridFs = function(schema, opt) {
 
                 }
 
-        });
-
-        return;
-
-        return getGridFile(fileId.toString(), options, function(err, store) {
-            if (err) {
-                console.log(err);
-                return fn(err, null);
-            }
-            //console.log(store);
-            fn(null, store);
         });
     }
 

@@ -353,13 +353,13 @@
 
                         <hr>
 
-                        <div ng-hide="module('delivery')" class="row static-info align-reverse">
+                        <div ng-hide="module('delivery') || module('stockreturn')" class="row static-info align-reverse">
                             <div class="col-md-5 name">@(orders:DiscountGlobal) : <span class="icon-pencil grey" ng-click="discount.$show()" ng-hide="discount.$visible || !editable"></span></div>
                             <div class="col-md-7 value"><span editable-number="object.discount.discount.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="discount">
                                                 {{object.discount.discount.percent | percent:2}}  (-{{object.discount.discount.value | currency}})
                                             </span></div>
                         </div>
-                        <div ng-hide="module('delivery')" class="row static-info align-reverse">
+                        <div ng-hide="module('delivery') || module('stockreturn')" class="row static-info align-reverse">
                             <div class="col-md-5 name">@(orders:EscompteOffered) : <span class="icon-pencil grey" ng-click="escompte.$show()" ng-hide="escompte.$visible || !editable"></span></div>
                             <div class="col-md-7 value"><span editable-number="object.discount.escompte.percent" e-min="0" e-step="0.01" e-max="100" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="escompte">
                                                 {{object.discount.escompte.percent | percent:2}} (-{{object.discount.escompte.value | currency}})
@@ -415,7 +415,7 @@
                 </div>
             </div>
 
-            <div ng-hide="module('delivery') && object.order._id != object._id" class="col-md-5 col-sm-12 ">
+            <div ng-hide="(module('delivery') || module('stockreturn')) && object.order._id != object._id" class="col-md-5 col-sm-12 ">
                 <div class="portlet mt-element-ribbon light portlet-fit bordered ">
                     <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase ">
                         <div class="ribbon-sub ribbon-bookmark "></div>

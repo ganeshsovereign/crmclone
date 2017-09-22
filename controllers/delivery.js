@@ -605,18 +605,19 @@ Object.prototype = {
     },
     readDT: function() {
         var self = this;
+        const OrderModel = MODEL('order').Schema.OrderCustomer;
 
         if (self.query.stockReturn === 'true') {
-            if (self.query.forSales == "false")
-                return;
+            //if (self.query.forSales == "false")
+            //    return;
             //var DeliveryModel = MODEL('order').Schema.stockReturns;
-            else
-                var DeliveryModel = MODEL('order').Schema.stockReturns;
+            //else
+            var DeliveryModel = MODEL('order').Schema.stockReturns;
         } else {
-            if (self.query.forSales == "false")
-                var DeliveryModel = MODEL('order').Schema.GoodsInNote;
-            else
-                var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+            //if (self.query.forSales == "false")
+            //    var DeliveryModel = MODEL('order').Schema.GoodsInNote;
+            //else
+            var DeliveryModel = MODEL('order').Schema.GoodsOutNote;
         }
 
 
@@ -628,8 +629,8 @@ Object.prototype = {
 
         var conditions = {
             Status: { $ne: "BILLED" },
-            isremoved: { $ne: true },
-            forSales: true
+            isremoved: { $ne: true }
+            // forSales: true
         };
 
         //if (self.query.forSales == "false")
@@ -667,70 +668,77 @@ Object.prototype = {
                 console.log(err);
 
             //console.log(res);
-            SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
+            SocieteModel.populate(res, { path: "datatable.data.supplier", select: "_id name" }, function(err, res) {
+                OrderModel.populate(res, { path: "datatable.data.order", select: " _id ref" }, function(err, res) {
 
-                for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                    var row = res.datatable.data[i];
+                    for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                        var row = res.datatable.data[i];
+                        //console.log(row);
 
-                    // Add checkbox
-                    res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                    // Add id
-                    res.datatable.data[i].DT_RowId = row._id.toString();
-                    // Add color line 
-                    //if (res.datatable.data[i].Status === 'SEND')
-                    //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
-                    // Add link company
+                        // Add checkbox
+                        res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                        // Add id
+                        res.datatable.data[i].DT_RowId = row._id.toString();
+                        // Add color line 
+                        //if (res.datatable.data[i].Status === 'SEND')
+                        //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
+                        // Add link company
 
-                    if (row.supplier && row.supplier._id)
-                        res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
-                    else {
-                        if (!row.supplier)
-                            res.datatable.data[i].supplier = {};
-                        res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                        if (row.supplier && row.supplier._id)
+                            res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
+                        else {
+                            if (!row.supplier)
+                                res.datatable.data[i].supplier = {};
+                            res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                        }
+
+                        if (row.status) {
+                            //Printed Picked Packed Shipped
+                            if (res.datatable.data[i].status.isPrinted == null)
+                                res.datatable.data[i].status.isPrinted = '<span class="fa fa-close font-red"></span>';
+                            else
+                                res.datatable.data[i].status.isPrinted = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Imprimé le : ' + row.status.isPrinted.format(CONFIG('dateformatLong')) + '"></span>';
+
+                            if (res.datatable.data[i].status.isPicked == null)
+                                res.datatable.data[i].status.isPicked = '<span class="fa fa-close font-red"></span>';
+                            else
+                                res.datatable.data[i].status.isPicked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Scanné le : ' + row.status.isPicked.format(CONFIG('dateformatLong')) + '"></span>';
+
+                            if (res.datatable.data[i].status.isPacked == null)
+                                res.datatable.data[i].status.isPacked = '<span class="fa fa-close font-red"></span>';
+                            else
+                                res.datatable.data[i].status.isPacked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Emballé le : ' + row.status.isPacked.format(CONFIG('dateformatLong')) + '"></span>';
+
+                            if (res.datatable.data[i].status.isShipped == null)
+                                res.datatable.data[i].status.isShipped = '<span class="fa fa-close font-red"></span>';
+                            else
+                                res.datatable.data[i].status.isShipped = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Expédié le : ' + row.status.isShipped.format(CONFIG('dateformatLong')) + '"></span>';
+                        }
+
+                        // Action
+                        res.datatable.data[i].action = '<a href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                        // Add url on name
+                        //if (row.forSales)
+                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+
+                        if (row.order)
+                            res.datatable.data[i].order = '<a class="with-tooltip" href="#!/order/' + row.order._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.order.ref + '"><span class="fa fa-truck"></span> ' + row.order.ref + '</a>';
+                        // Convert Date
+                        res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+
+                        // Convert Status
+                        res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+
+                        res.datatable.data[i].qty = _.sum(row.orderRows, 'qty');
                     }
-                    //Printed Picked Packed Shipped
-                    if (res.datatable.data[i].status.isPrinted == null)
-                        res.datatable.data[i].status.isPrinted = '<span class="fa fa-close font-red"></span>';
-                    else
-                        res.datatable.data[i].status.isPrinted = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Imprimé le : ' + row.status.isPrinted.format(CONFIG('dateformatLong')) + '"></span>';
 
-                    if (res.datatable.data[i].status.isPicked == null)
-                        res.datatable.data[i].status.isPicked = '<span class="fa fa-close font-red"></span>';
-                    else
-                        res.datatable.data[i].status.isPicked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Scanné le : ' + row.status.isPicked.format(CONFIG('dateformatLong')) + '"></span>';
+                    //console.log(res.datatable);
 
-                    if (res.datatable.data[i].status.isPacked == null)
-                        res.datatable.data[i].status.isPacked = '<span class="fa fa-close font-red"></span>';
-                    else
-                        res.datatable.data[i].status.isPacked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Emballé le : ' + row.status.isPacked.format(CONFIG('dateformatLong')) + '"></span>';
-
-                    if (res.datatable.data[i].status.isShipped == null)
-                        res.datatable.data[i].status.isShipped = '<span class="fa fa-close font-red"></span>';
-                    else
-                        res.datatable.data[i].status.isShipped = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Expédié le : ' + row.status.isShipped.format(CONFIG('dateformatLong')) + '"></span>';
-
-                    // Action
-                    res.datatable.data[i].action = '<a href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                    // Add url on name
-                    if (row.forSales)
-                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
-                    else
-                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/deliverysupplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
-                    // Convert Date
-                    res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                    res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
-                    res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                    res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
-
-                    // Convert Status
-                    res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-
-                    res.datatable.data[i].qty = _.sum(row.orderRows, 'qty');
-                }
-
-                //console.log(res.datatable);
-
-                self.json(res.datatable);
+                    self.json(res.datatable);
+                });
             });
         });
     },
@@ -1815,6 +1823,10 @@ function createDelivery(doc, callback) {
     if (doc.forSales == false)
         model = "delivery_supplier.tex";
 
+    console.log(doc._type);
+    if (doc._type == 'stockReturns')
+        model = "stockreturn.tex";
+
 
     SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
 
@@ -1896,7 +1908,11 @@ function createDelivery(doc, callback) {
             });
 
         // 4 -> BL
-        var barcode = "4-" + moment(doc.date_livraison).format("YY") + "0-"; + doc.ref.split('-')[1].replace('_', '-');
+        // 5 -> RT
+        let code = 4;
+        if (doc._type == 'stockReturns')
+            code = 5;
+        var barcode = code + "-" + moment(doc.date_livraison).format("YY") + "0-"; + doc.ref.split('-')[1].replace('_', '-');
         var split = doc.ref.replace('/', '-').split('-');
         if (split.length == 2) //BL1607-02020-32
             barcode += "00" + fixedWidthString(doc.ID, 6, { padding: '0', align: 'right' });
@@ -1912,6 +1928,22 @@ function createDelivery(doc, callback) {
                 "NUM": {
                     "type": "string",
                     "value": doc.ref
+                },
+                "BILL.NAME": {
+                    "type": "string",
+                    "value": doc.address.name || doc.supplier.fullName
+                },
+                "BILL.ADDRESS": {
+                    "type": "area",
+                    "value": doc.address.street
+                },
+                "BILL.ZIP": {
+                    "type": "string",
+                    "value": doc.address.zip
+                },
+                "BILL.TOWN": {
+                    "type": "string",
+                    "value": doc.address.city
                 },
                 "DESTINATAIRE.NAME": {
                     "type": "string",
