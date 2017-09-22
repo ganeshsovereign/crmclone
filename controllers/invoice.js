@@ -1644,7 +1644,7 @@ function createBill(doc, cgv, callback) {
                     "NUM": { "type": "string", "value": doc.ref },
                     "DESTINATAIRE.NAME": {
                         "type": "string",
-                        "value": doc.supplier.fullName
+                        "value": doc.address.name || doc.supplier.fullName
                     },
                     "DESTINATAIRE.ADDRESS": {
                         "type": "area",
