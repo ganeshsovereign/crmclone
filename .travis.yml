@@ -19,6 +19,10 @@ node_js:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y build-essential graphicsmagick
+  # Extract dump install database
+  - sudo tar xzf dump/install.gz -C tests/dump/
+  # Restore demo database
+  - mongorestore --port 27017 --db demo tests/dump/install/
  
 install:
   - npm install
