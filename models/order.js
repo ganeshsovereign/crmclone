@@ -696,6 +696,7 @@ baseSchema.statics.getById = function(id, callback) {
                 if (!item.qty)
                     item.isDeleted = true;
 
+                return item;
             });
             //return console.log(order.orderRows);
 
