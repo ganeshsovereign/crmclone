@@ -1,8 +1,24 @@
+# This script is used by Travis CI to run automatically Continuous test integration
+# from ToManage ERP GitHub repository.
+# For syntax, see https://docs.travis-ci.com/user/languages/javascript-with-nodejs/
+
+dist: trusty
+sudo: required
+
 language: node_js
+
+# Start on every boot
+services:
+- redis-server
+- mongodb
+
 node_js:
   - "6"
   - "4"
+ 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y build-essential graphicsmagick
+ 
 install:
-  - npm install -g bower
   - npm install
-  - bower install
