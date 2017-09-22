@@ -4,6 +4,8 @@
 
 # Framework base to build your ToManage ERP/CRM and IoT
 
+![Build status](https://img.shields.io/travis/ToManage/TM-CRM_ERP/develop.svg)
+
 ToManage is the first ERP software with internet of things (IOT) network in open source.
 
 ERP software manage your organization's activity (contacts, suppliers, invoices, orders, stocks, agenda, ...).
