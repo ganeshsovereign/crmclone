@@ -185,7 +185,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
 
         var login = function(userId) {
             //console.log(userId);
-            if ($location.$$protocol == "http")
+            if ($location.$$protocol === "http")
                 websocketService.login('ws://' + $location.host() + ':' + $location.port() + '/erp/websocket/', userId);
             else
                 websocketService.login('wss://' + $location.host() + ':' + $location.port() + '/erp/websocket/', userId);
@@ -297,7 +297,7 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
                     parts.push(encodeUriQuery(key) + '=' + encodeUriQuery(v));
                 });
             });
-            return url + ((url.indexOf('?') == -1) ? '?' : '&') + parts.join('&');
+            return url + ((url.indexOf('?') === -1) ? '?' : '&') + parts.join('&');
         };
 
         $rootScope.loadUsers = function() {
