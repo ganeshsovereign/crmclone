@@ -15,7 +15,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                 ngChange: '&'
             },
             templateUrl: function(el, attr) {
-                //console.log(attr);
+                console.log(attr);
 
                 if (attr.ngTemplate)
                     return attr.ngTemplate;
@@ -60,7 +60,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                 };
 
                 scope.addProduct = function(data, index, lines) {
-                    console.log("addProduct ", data);
+                    //console.log("addProduct ", data);
                     for (var i = 0; i < lines.length; i++) {
                         if (lines[i].idLine === index) {
                             lines[i] = {
@@ -128,6 +128,10 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                             line.onHand = data.onHand;
                         });
                     }
+
+                    //console.log(scope.forSales);
+                    if (scope.forSales == false)
+                        return calculHT(line);
 
                     if (line.qty && line.product && line.product._id && !line.priceSpecific)
                         return $http.post('/erp/api/product/price', {
