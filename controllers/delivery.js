@@ -719,7 +719,10 @@ Object.prototype = {
                         res.datatable.data[i].action = '<a href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                         // Add url on name
                         //if (row.forSales)
-                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                        if (self.query.stockReturn === 'true')
+                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                        else
+                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
 
                         if (row.order)
                             res.datatable.data[i].order = '<a class="with-tooltip" href="#!/order/' + row.order._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.order.ref + '"><span class="fa fa-truck"></span> ' + row.order.ref + '</a>';
