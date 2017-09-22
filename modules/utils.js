@@ -504,7 +504,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     lines[i].total_ht = 0;
                     continue;
                 }
-                if (lines[i].isDeleted)
+                if (lines[i].isDeleted || !lines[i].qty)
                     continue;
 
                 total_ht += lines[i].total_ht;
