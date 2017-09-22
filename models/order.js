@@ -693,7 +693,7 @@ baseSchema.statics.getById = function(id, callback) {
                 //console.log('test', _.find(order.orderRows, _.matchesProperty('orderRowId', item.orderRowId.toString())));
 
                 item = _.extend(item, _.find(order.orderRows, _.matchesProperty('orderRowId', item.orderRowId.toString())));
-                if (!item.qty)
+                if (item.qty === undefined)
                     item.isDeleted = true;
 
                 return item;
