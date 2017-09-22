@@ -89,10 +89,17 @@
     // Custom Globals
     "globals"       : {
     		"angular"		: false,		// additional predefined global variables
+    		"Global"			: false,
     		"Metronic"		: false,
+    		"MetronicApp"	: false,
+    		"Datatable"		: false,
     		"Layout"			: false,
+    		"Grid"			: false,
+    		"Upload"			: false,
+    		"$"				: false,
     		"QuickSidebar"	: false,
     		"Demo"			: false,
-    		"$location"		: false
+    		"$location"		: false,
+    		"moment"			: false
     }
 }
