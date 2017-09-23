@@ -83,8 +83,9 @@
     "mocha": "^3.5.0"
   },
   "scripts": {
-  	"test": "concurrently \"npm run test-jshint\" \"npm run test-mocha\"",
-    "test-jshint": "./node_modules/jshint/bin/jshint ./app/**/**.js",
-    "test-mocha": "./node_modules/mocha/bin/mocha ./app/**/**.js"
+  	//"test": "concurrently \"npm run test-jshint\" \"npm run test-mocha\"",
+    //"test-jshint": "./node_modules/jshint/bin/jshint ./app/**/**.js",
+    //"test-mocha": "./node_modules/mocha/bin/mocha ./app/**/**.js"
+    "test": "./node_modules/mocha/bin/mocha ./app/**/**.js"
   }
 }
