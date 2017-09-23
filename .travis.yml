@@ -29,6 +29,7 @@ before_install:
 install:
   - npm install
   - npm install -g jshint
+  - npm install -g eslint
   - npm install -g mocha
 
 before_script:
@@ -42,4 +43,5 @@ script:
   - node debug.js &
   #- npm test
   - npm run test-jshint
-  #- npm run test-mocha
+  - npm run test-eslint
+  - npm run test-mocha

@@ -82,6 +82,7 @@
   },
   "scripts": {
     "test-jshint": "jshint ./app/**/**.js",
-    "test-mocha": "mocha ./app/**/**.js"
+    "test-eslint": "eslint ./app/**/**.js",
+    "test-mocha": "mocha tests/"
   }
 }
