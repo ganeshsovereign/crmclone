@@ -285,10 +285,15 @@ Object.prototype = {
             self.body.total_ht = result.total_ht;
             self.body.total_taxes = result.total_taxes;
             self.body.total_ttc = result.total_ttc;
+            //return console.log(result);
             self.body.weight = 0;
             //refresh weight only on qty sended
-            for (let i = 0, len = self.body.orderRows.length; i < len; i++)
+            for (let i = 0, len = self.body.orderRows.length; i < len; i++) {
+                if (!self.body.orderRows[i].qty || self.body.orderRows[i].isDeleted)
+                    continue;
+
                 self.body.weight += self.body.orderRows[i].qty * self.body.orderRows[i].product.weight;
+            }
             //console.log(self.body.orderRows[i].qty);
 
             DeliveryModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, delivery) {
@@ -719,7 +724,10 @@ Object.prototype = {
                         res.datatable.data[i].action = '<a href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                         // Add url on name
                         //if (row.forSales)
-                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                        if (self.query.stockReturn === 'true')
+                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                        else
+                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
 
                         if (row.order)
                             res.datatable.data[i].order = '<a class="with-tooltip" href="#!/order/' + row.order._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.order.ref + '"><span class="fa fa-truck"></span> ' + row.order.ref + '</a>';

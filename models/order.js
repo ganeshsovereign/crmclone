@@ -681,17 +681,22 @@ baseSchema.statics.getById = function(id, callback) {
 
             let firstCreateDelivery = true;
 
-            if (order.orderRows.length)
+            if (order.orderRows.length > 0)
                 firstCreateDelivery = false;
 
             order.orderRows = _.map(orderRows, function(item) {
-                if (!firstCreateDelivery)
+                if (!firstCreateDelivery) {
                     delete item.qty;
+                }
 
                 //console.log(item.orderRowId, order.orderRows);
                 //console.log('test', _.find(order.orderRows, _.matchesProperty('orderRowId', item.orderRowId.toString())));
 
-                return _.extend(item, _.find(order.orderRows, _.matchesProperty('orderRowId', item.orderRowId.toString())));
+                item = _.extend(item, _.find(order.orderRows, _.matchesProperty('orderRowId', item.orderRowId.toString())));
+                if (item.qty === undefined)
+                    item.isDeleted = true;
+
+                return item;
             });
             //return console.log(order.orderRows);
 

@@ -1,0 +1,4 @@
+--format=compact
+--ignore=adjoining-classes,overqualified-elements,duplicate-background-images,order-alphabetical,important,zero-units,ids
+--warnings=
+--errors=

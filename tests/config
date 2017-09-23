@@ -1,0 +1,23 @@
+name                     : TM-js
+version                  : 0.5.001
+author                   : ToManage
+database                 : mongodb://127.0.0.1/demo
+dateformatShort          : DD/MM/YYYY
+dateformatLong           : DD/MM/YYYY HH:mm
+manager-url              : /erp
+phone                    : +33 6 76 76 17 65
+default-language         : fr
+
+// Image convertor for resizing of pictures
+// Default image converter: im = ImageMagick, gm = GraphicsMagick
+default-image-converter	: gm
+
+// session cookie name
+cookie					: tmjs
+secret					: 1234qwerty
+sessionTimeout			: 360000
+
+accounting.VTE			: BLO
+accounting.ACH			: BLU
+
+storing-files			: localfs 
