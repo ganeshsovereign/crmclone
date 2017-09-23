@@ -53,7 +53,7 @@ script:
   
 - |
   echo "Checking CSS"
-  npm run test-csslint
+  #npm run test-csslint
   
 - |
   echo "Unit testing"
