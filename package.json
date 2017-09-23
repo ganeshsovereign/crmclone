@@ -83,6 +83,7 @@
   "scripts": {
     "test-jshint": "jshint ./app/**/**.js",
     "test-eslint": "eslint ./app/**/**.js",
+    "test-csslint": "csslint ./public/css/**.css",
     "test-mocha": "mocha tests/"
   }
 }

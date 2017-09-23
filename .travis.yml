@@ -28,8 +28,9 @@ before_install:
  
 install:
   - npm install
-  - npm install jshint --save-dev
+  #- npm install jshint --save-dev
   - npm install eslint@3.x babel-eslint@7 --save-dev
+  - npm install csslint --save-dev
   - npm install mocha --save-dev
 
 before_script:
@@ -40,8 +41,27 @@ before_script:
   echo TRAVIS_BUILD_DIR is $TRAVIS_BUILD_DIR
 
 script:
-  - node debug.js &
-  #- npm test
-  #- npm run test-jshint
-  - npm run test-eslint
-  - npm run test-mocha
+- |
+  echo "Start application"
+  node debug.js &
+  
+- |
+  echo "Checking coding style and syntax errors"
+  #npm run test-jshint
+  #npm run test-eslint
+  
+- |
+  echo "Checking CSS"
+  npm run test-csslint
+  
+- |
+  echo "Unit testing"
+  npm run test-mocha
+
+after_success:
+- |
+  echo Success
+
+after_failure:
+- |
+  echo Failure
