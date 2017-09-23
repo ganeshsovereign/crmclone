@@ -444,6 +444,6 @@
     "AccountParameters": "Paramètres Comptables",
     "DiscountGlobal": "Remise Globale",
     "BillSupplierAddress": "Adr. fournisseur",
-    "DateOf": "Periode de facturation (debut)",
-    "DateTo": "Periode de facturation (fin)"
+    "DateOf": "Période de facturation (début)",
+    "DateTo": "Période de facturation (fin)"
 }

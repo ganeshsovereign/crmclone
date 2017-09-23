@@ -88,7 +88,7 @@
     },
     "menus": {
         "menu:delivery": {
-            "position": 42,
+            "position": 30,
             "perms": "delivery.read",
             "enabled": "$conf->delivery->enabled",
             "usertype": 2,
@@ -112,15 +112,6 @@
                     "usertype": 2,
                     "icon": "fa-truck",
                     "title": "deliveries:SuppliersDeliveries"
-                },
-                "menu:stockcorrestion": {
-                    "url": "/erp/#!/product/stockcorrectionlist",
-                    "position": 10,
-                    "usertype": 2,
-                    "perms": "product.read",
-                    "enabled": "$conf->product->enabled",
-                    "icon": "fa fa-pencil",
-                    "title": "products:StockCorrection"
                 },
                 "menu:stockreturn": {
                     "position": 15,

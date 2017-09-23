@@ -199,11 +199,11 @@
     "DateLastBill": "Date de dernière facture",
     "DateLastPayment": "Date du dernier paiement",
     "DateMaxPayment": "Date limite règlement",
-    "DateOf": "Periode de facturation (debut)",
+    "DateOf": "Période de facturation (debut)",
     "DatePayment": "Date de paiement",
     "DateReceiptPlanned": "Date de réception prévue",
     "DateReceiptPlannedShort": "Date de réception",
-    "DateTo": "Periode de facturation (fin)",
+    "DateTo": "Période de facturation (fin)",
     "DefaultBank": "Banque par défaut",
     "DeleteBill": "Supprimer facture",
     "DeleteDeliveryReceipt": "Supprimer le bon de livraison",
@@ -737,6 +737,7 @@
     "ValidateStockReturn": "Valider le retour produit(s)",
     "VATIsNotUsedForInvoice": "* TVA non applicable art-293B du CGI",
     "WatermarkOnDraftBill": "Filigrane sur les brouillons de factures (aucun si vide)",
+    "Sales": "Ventes",
     "VATmode": {
         "invoice": "Règlement de la TVA sur émission de la facture",
         "payment": "Règlement de la TVA sur les encaissements"

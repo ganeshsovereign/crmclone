@@ -18,8 +18,7 @@
     ],
     "license": "OSL v3",
     "rights": {
-        "accounting": [
-            {
+        "accounting": [{
                 "desc": "Lire les ecritures comptables",
                 "perm": {
                     "read": true
@@ -31,19 +30,127 @@
                     "export": false
                 }
             }
+        ],
+        "payment": [{
+                "desc": "Lire les paiements",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Créer ou modifier les paiements",
+                "perm": {
+                    "create": true
+                }
+            },
+            {
+                "desc": "Valider les paiments",
+                "perm": {
+                    "validate": false
+                }
+            },
+            {
+                "desc": "Annueler les paiements",
+                "perm": {
+                    "delete": false
+                }
+            },
+            {
+                "desc": "Annuler une ligne de paiement",
+                "perm": {
+                    "cancel": false
+                }
+            },
+            {
+                "desc": "Rejeter un paiement",
+                "perm": {
+                    "reject": false
+                }
+            }
+        ],
+        "bill": [{
+                "desc": "Lire les factures",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Creer/modifier les factures",
+                "perm": {
+                    "create": false
+                }
+            },
+            {
+                "desc": "Dévalider les factures",
+                "perm": {
+                    "unvalidate": false
+                }
+            },
+            {
+                "desc": "Valider les factures",
+                "perm": {
+                    "validate": true
+                }
+            },
+            {
+                "desc": "Envoyer les factures par mail",
+                "perm": {
+                    "send": true
+                }
+            },
+            {
+                "desc": "Emettre des paiements sur les factures",
+                "perm": {
+                    "paiment": false
+                }
+            },
+            {
+                "desc": "Supprimer les factures",
+                "perm": {
+                    "delete": false
+                }
+            },
+            {
+                "desc": "Exporter les factures clients, attributs et reglements",
+                "perm": {
+                    "export": false
+                }
+            }
         ]
     },
     "menus": {
         "menu:accounting": {
-            "position": 45,
+            "position": 50,
             "perms": "bill.read",
             "enabled": "$conf->facture->enabled",
             "usertype": 2,
-            "icon": "fa-random",
+            "icon": "fa-money",
             "title": "compta:MenuFinancial",
             "submenus": {
-                "menu:accountingClient": {
+                "menu:billslist": {
+                    "position": 1,
+                    "url": "/erp/#!/bill",
+                    "perms": "bill.read",
+                    "icon": "fa-money",
+                    "enabled": "$conf->facture->enabled",
+                    "usertype": 2,
+                    "title": "bills:CustomersInvoices"
+                },
+                "menu:billssupplierlist": {
                     "position": 10,
+                    "url": "/erp/#!/billsupplier",
+                    "perms": "bill.read",
+                    "icon": "fa-money",
+                    "enabled": "$conf->facture->enabled",
+                    "usertype": 2,
+                    "title": "bills:SuppliersInvoices"
+                },
+                "menu:----------------": {
+                    "position": 15,
+                    "title": "--"
+                },
+                "menu:accountingClient": {
+                    "position": 20,
                     "url": "/erp/#!/accounting/journal?journal=VTE",
                     "perms": "accounting.read",
                     "enabled": "$conf->accounting->enabled",
@@ -52,7 +159,7 @@
                     "title": "compta:SellsJournal"
                 },
                 "menu:accountingSupplier": {
-                    "position": 11,
+                    "position": 30,
                     "url": "/erp/#!/accounting/journal?journal=ACH",
                     "perms": "accounting.read",
                     "enabled": "$conf->accounting->enabled",
@@ -61,7 +168,7 @@
                     "title": "compta:PurchasesJournal"
                 },
                 "menu:accountingOD": {
-                    "position": 12,
+                    "position": 40,
                     "url": "/erp/#!/accounting/journal?journal=OD",
                     "perms": "accounting.read",
                     "enabled": "$conf->accounting->enabled",
@@ -70,7 +177,7 @@
                     "title": "compta:ODJournal"
                 },
                 "menu:accountingBank": {
-                    "position": 13,
+                    "position": 50,
                     "url": "/erp/#!/accounting/bank",
                     "perms": "accounting.read",
                     "enabled": "$conf->accounting->enabled",
@@ -79,13 +186,22 @@
                     "title": "compta:BankAccounts"
                 },
                 "menu:accountingBalance": {
-                    "position": 15,
+                    "position": 60,
                     "url": "/erp/#!/accounting/balance",
                     "perms": "accounting.read",
                     "enabled": "$conf->accounting->enabled",
                     "icon": "fa-random",
                     "usertype": 2,
                     "title": "compta:AccountingBalance"
+                },
+                "menu:groupchq": {
+                    "position": 70,
+                    "url": "/erp/#!/bank/payment/chq",
+                    "perms": "payment.read",
+                    "enabled": "$conf->payment->enabled",
+                    "usertype": 2,
+                    "icon": "fa-credit-card",
+                    "title": "Remises de cheques"
                 }
             }
         }

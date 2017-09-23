@@ -5,6 +5,14 @@
             <a ui-sref="home">@(Home)</a>
             <i class="fa fa-angle-right"></i>
         </li>
+        <li ng-if="module('ordersupplier')">
+            <span>@(orders:Orders)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('offersupplier')">
+            <span>@(propal:ProposalShort)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
         <li ng-if="module('deliverysupplier') || module('stockreturn')">
             <span>@(deliveries:Logistics)</span>
             <i class="fa fa-angle-right"></i>
