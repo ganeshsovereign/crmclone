@@ -78,14 +78,10 @@
     "gulp-plumber": "^1.1.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
-    "prettify": "^0.1.7",
-    "jshint": "^2.8.0",
-    "mocha": "^3.5.0"
+    "prettify": "^0.1.7"
   },
   "scripts": {
-  	//"test": "concurrently \"npm run test-jshint\" \"npm run test-mocha\"",
-    //"test-jshint": "./node_modules/jshint/bin/jshint ./app/**/**.js",
-    //"test-mocha": "./node_modules/mocha/bin/mocha ./app/**/**.js"
-    "test": "./node_modules/mocha/bin/mocha ./app/**/**.js"
+    "test-jshint": "jshint ./app/**/**.js",
+    "test-mocha": "mocha ./app/**/**.js"
   }
 }
