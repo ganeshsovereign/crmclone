@@ -38,4 +38,5 @@ before_script:
 
 script:
   - node debug.js &
-  - npm test
+  - npm test-jshint
+  - npm test-mocha

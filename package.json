@@ -79,9 +79,11 @@
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
     "prettify": "^0.1.7",
-    "jshint": "^2.8.0"
+    "jshint": "^2.8.0",
+    "mocha": "^3.5.0"
   },
   "scripts": {
-    "test": "./node_modules/jshint/bin/jshint ./app/**/**.js"
+    "test-jshint": "./node_modules/jshint/bin/jshint ./app/**/**.js",
+    "test-mocha": "./node_modules/mocha/bin/mocha ./app/**/**.js"
   }
 }
