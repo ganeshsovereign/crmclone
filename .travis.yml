@@ -28,9 +28,9 @@ before_install:
  
 install:
   - npm install
-  - npm install -g jshint
-  - npm install -g eslint
-  - npm install -g mocha
+  - npm install jshint --save-dev
+  - npm install eslint@3.x babel-eslint@7 --save-dev
+  - npm install mocha --save-dev
 
 before_script:
 - |
