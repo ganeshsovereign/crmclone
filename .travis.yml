@@ -30,6 +30,7 @@ install:
   - npm install
   #- npm install jshint --save-dev
   - npm install eslint@3.x babel-eslint@7 --save-dev
+  - npm install htmlhint --save-dev
   - npm install csslint --save-dev
   - npm install mocha --save-dev
 
@@ -52,7 +53,11 @@ script:
   #npm run test-eslint
   
 - |
-  echo "Checking CSS"
+  echo "Checking HTML coding style"
+  npm run test-htmlhint
+  
+- |
+  echo "Checking CSS coding style"
   #npm run test-csslint
   
 - |
