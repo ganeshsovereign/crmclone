@@ -5,12 +5,12 @@
             <a ui-sref="home">@(Home)</a>
             <i class="fa fa-angle-right"></i></li>
         <li>
-            <a ui-sref="societe.list">@(companies:Companies)</a>
-            <i class="fa fa-angle-right"></i></li>
+            <span>@(compta:MenuFinancial)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
         <li>
-            <li>
-                <span>@(Dashboard)</span>
-            </li>
+            <span>@(compta:AccountingBalance)</span>
+        </li>
     </ul>
     <div class="page-toolbar">
         <div report-date-range ng-model="date" class="date pull-right tooltips btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>

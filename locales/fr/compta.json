@@ -3,7 +3,7 @@
     "Accountancy": "Compta",
     "AccountancyCard": "Fiche Compta",
     "Treasury": "Tréso",
-    "MenuFinancial": "Compta/Tréso",
+    "MenuFinancial": "Finances",
     "TaxModuleSetupToModifyRules": "Aller dans la <a href=\"%s\">configuration du module</a> pour modifier les règles de calcul",
     "OptionMode": "Option de tenue de comptabilité",
     "OptionModeTrue": "Option Recettes-Dépenses",
@@ -189,6 +189,6 @@
     "BalanceAccount": "Solde a venir",
     "PaymentWaiting": "Opération(s) a venir",
     "Estimated": "Prévisionnel",
-    "ViewAllNonExportRows":"Voir toutes les lignes non-exportées",
-    "ViewDeletedRows":"Voir toutes les lignes effacées"
+    "ViewAllNonExportRows": "Voir toutes les lignes non-exportées",
+    "ViewDeletedRows": "Voir toutes les lignes effacées"
 }
