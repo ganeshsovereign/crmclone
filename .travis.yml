@@ -54,7 +54,7 @@ script:
   
 - |
   echo "Checking HTML coding style"
-  npm run test-htmlhint
+  #npm run test-htmlhint
   
 - |
   echo "Checking CSS coding style"
