@@ -407,7 +407,7 @@ Dict.dict({ dictName: 'fk_bill_status', object: true }, function(err, doc) {
 
 exports.Status = {
     "_id": "fk_bill_status",
-    "lang": "bills",
+    "lang": "orders",
     "values": {
         "DRAFT": {
             "enable": true,
