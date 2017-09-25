@@ -1,0 +1,62 @@
+{
+    "name": "employee",
+    "version": "0.1.000",
+    "author": {
+        "name": "TM - ToManage"
+    },
+    "description": "Gestion des Collaborateurs",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TM-js/bank.git"
+    },
+    "engines": {
+        "node": "4.6.x",
+        "TM": "0.5.x"
+    },
+    "contributors": [
+        "Herve Prot <herve.prot@tomanage.fr>"
+    ],
+    "license": "OSL v3",
+    "rights": {
+        "employee": [{
+                "desc": "Lire la liste des collaborateurs",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Creer/modifier un ou des collaborateurs",
+                "perm": {
+                    "create": false
+                }
+            },
+            {
+                "desc": "Modifier un ou des collaborateurs",
+                "perm": {
+                    "entity": false
+                }
+            }
+        ]
+    },
+    "menus": {
+        "menu:HR": {
+            "position": 90,
+            "perms": "employee.read",
+            "enabled": "$conf->bank->enabled",
+            "usertype": 2,
+            "title": "HR",
+            "icon": "fa-group",
+            "submenus": {
+                "menu:employees": {
+                    "position": 10,
+                    "url": "/erp/#!/employee",
+                    "perms": "employee.read",
+                    "enabled": "$conf->employees->enabled",
+                    "usertype": 2,
+                    "icon": "fa-user",
+                    "title": "users:Employees"
+                }
+            }
+        }
+    }
+}

@@ -113,6 +113,15 @@
                     "enabled": "$conf->product->enabled",
                     "icon": "fa fa-share-alt",
                     "title": "products:ProductCategories"
+                },
+                "menu:images": {
+                    "url": "/erp/#!/product/images.html",
+                    "position": 70,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa fa-picture-o",
+                    "title": "products:Images"
                 }
             }
         }

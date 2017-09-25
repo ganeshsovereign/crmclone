@@ -69,25 +69,6 @@
                 }
             }
         ],
-        "employee": [{
-                "desc": "Lire la liste des collaborateurs",
-                "perm": {
-                    "read": true
-                }
-            },
-            {
-                "desc": "Creer/modifier un ou des collaborateurs",
-                "perm": {
-                    "create": false
-                }
-            },
-            {
-                "desc": "Modifier un ou des collaborateurs",
-                "perm": {
-                    "entity": false
-                }
-            }
-        ],
         "group": [{
                 "desc": "Consulter les groupes",
                 "perm": {
@@ -199,7 +180,7 @@
     "rights_admin_allowed": 1,
     "menus": {
         "menu:parameters": {
-            "position": 60,
+            "position": 1000,
             "url": "",
             "enabled": "settings.read",
             "usertype": 2,
@@ -213,15 +194,6 @@
                     "usertype": 2,
                     "icon": "fa-group",
                     "title": "users:LeaveManagement"
-                },
-                "menu:employees": {
-                    "position": 10,
-                    "url": "/erp/#!/employee",
-                    "perms": "employee.read",
-                    "enabled": "$conf->employees->enabled",
-                    "usertype": 2,
-                    "icon": "fa-user",
-                    "title": "users:ManagementEmployees"
                 },
                 "settings.entity": {
                     "position": 20,
@@ -242,15 +214,6 @@
                     "usertype": 2,
                     "icon": "fa-group",
                     "title": "users:GroupManagement"
-                },
-                "menu:images": {
-                    "url": "/erp/#!/product/images.html",
-                    "position": 40,
-                    "usertype": 2,
-                    "perms": "product.read",
-                    "enabled": "$conf->product->enabled",
-                    "icon": "fa fa-picture-o",
-                    "title": "products:ManagementPictures"
                 },
                 "settings.product": {
                     "position": 50,
