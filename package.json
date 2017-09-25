@@ -79,5 +79,12 @@
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^2.0.0",
     "prettify": "^0.1.7"
+  },
+  "scripts": {
+    "test-jshint": "jshint ./app/**/**.js",
+    "test-eslint": "eslint ./app/**/**.js",
+    "test-htmlhint": "htmlhint ./app/**/**/*.html",
+    "test-csslint": "csslint ./public/css/**.css",
+    "test-mocha": "mocha tests/"
   }
 }

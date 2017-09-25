@@ -69,6 +69,25 @@
                 }
             }
         ],
+        "employee": [{
+                "desc": "Lire la liste des collaborateurs",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Creer/modifier un ou des collaborateurs",
+                "perm": {
+                    "create": false
+                }
+            },
+            {
+                "desc": "Modifier un ou des collaborateurs",
+                "perm": {
+                    "entity": false
+                }
+            }
+        ],
         "group": [{
                 "desc": "Consulter les groupes",
                 "perm": {
@@ -108,6 +127,25 @@
             },
             {
                 "desc": "Supprimer les absences",
+                "perm": {
+                    "delete": false
+                }
+            }
+        ],
+        "entity": [{
+                "desc": "Lister les entités",
+                "perm": {
+                    "read": true
+                }
+            },
+            {
+                "desc": "Creer/modifier les entités",
+                "perm": {
+                    "create": false
+                }
+            },
+            {
+                "desc": "Supprimer les entités",
                 "perm": {
                     "delete": false
                 }
@@ -161,15 +199,78 @@
     "rights_admin_allowed": 1,
     "menus": {
         "menu:parameters": {
-            "position": 1000,
+            "position": 60,
             "url": "",
             "enabled": "settings.read",
             "usertype": 2,
             "title": "Parameters",
             "icon": "fa-cogs",
             "submenus": {
+                "menu:absences": {
+                    "position": 1,
+                    "url": "/erp/#!/europexpress/absence.html",
+                    "perms": "user.holidayAll",
+                    "usertype": 2,
+                    "icon": "fa-group",
+                    "title": "users:LeaveManagement"
+                },
+                "menu:employees": {
+                    "position": 10,
+                    "url": "/erp/#!/employee",
+                    "perms": "employee.read",
+                    "enabled": "$conf->employees->enabled",
+                    "usertype": 2,
+                    "icon": "fa-user",
+                    "title": "users:ManagementEmployees"
+                },
+                "settings.entity": {
+                    "position": 20,
+                    "url": "/erp/#!/settings/entity",
+                    "perms": [
+                        ["superadmin"],
+                        ["admin", "entity.read"]
+                    ],
+                    "enabled": "$conf->entity->enabled",
+                    "usertype": 2,
+                    "title": "companies:ManagementEntity",
+                    "icon": "fa-globe"
+                },
+                "menu:groups": {
+                    "position": 30,
+                    "url": "/erp/#!/group",
+                    "perms": "group.read",
+                    "usertype": 2,
+                    "icon": "fa-group",
+                    "title": "users:GroupManagement"
+                },
+                "menu:images": {
+                    "url": "/erp/#!/product/images.html",
+                    "position": 40,
+                    "usertype": 2,
+                    "perms": "product.read",
+                    "enabled": "$conf->product->enabled",
+                    "icon": "fa fa-picture-o",
+                    "title": "products:ManagementPictures"
+                },
+                "settings.product": {
+                    "position": 50,
+                    "url": "/erp/#!/settings/product",
+                    "perms": "settings.read",
+                    "usertype": 2,
+                    "title": "products:ProductManagement",
+                    "icon": "fa-globe"
+                },
+
+                "menu:team": {
+                    "position": 60,
+                    "url": "/erp/#!/user",
+                    "perms": "user.read",
+                    "usertype": 2,
+                    "icon": "fa-group",
+                    "title": "users:Collaborators"
+                },
                 "menu:modules": {
-                    "position": 55,
+                    "position": 70,
                     "enabled": "$user->admin",
                     "url": "",
                     "perms": "admin",
@@ -177,16 +278,8 @@
                     "usertype": 2,
                     "title": "admin:Modules"
                 },
-                "settings.product": {
-                    "position": 1,
-                    "url": "/erp/#!/settings/product",
-                    "perms": "settings.read",
-                    "usertype": 2,
-                    "title": "products:ProductManagement",
-                    "icon": "fa-globe"
-                },
                 "menu:systemtools": {
-                    "position": 60,
+                    "position": 80,
                     "usertype": 2,
                     "enabled": "$user->admin",
                     "title": "admin:SystemTools",
@@ -208,31 +301,6 @@
                             "title": "admin:Sessions"
                         }
                     }
-                },
-
-                "menu:team": {
-                    "position": 15,
-                    "url": "/erp/#!/user",
-                    "perms": "user.read",
-                    "usertype": 2,
-                    "icon": "fa-group",
-                    "title": "users:Collaborators"
-                },
-                "menu:groups": {
-                    "position": 20,
-                    "url": "/erp/#!/group",
-                    "perms": "group.read",
-                    "usertype": 2,
-                    "icon": "fa-group",
-                    "title": "users:GroupManagement"
-                },
-                "menu:absences": {
-                    "position": 25,
-                    "url": "/erp/#!/europexpress/absence.html",
-                    "perms": "user.holidayAll",
-                    "usertype": 2,
-                    "icon": "fa-group",
-                    "title": "users:LeaveManagement"
                 }
             }
         }
