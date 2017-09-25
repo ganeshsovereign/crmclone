@@ -221,7 +221,7 @@ var customerSchema = new Schema({
     internalNotes: {
         new: String,
         old: String,
-        author: { type: ObjectId, ref: 'User' },
+        author: { type: ObjectId, ref: 'Users' },
         datec: { type: Date, default: Date.now }
     },
     title: { type: String, default: '' },
