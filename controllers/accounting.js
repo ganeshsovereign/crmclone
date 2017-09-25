@@ -94,7 +94,7 @@ Object.prototype = {
         //myBook.setEntity(self.query.entity);
         myBook.setName(journal);
 
-        var entry = myBook.entry(self.body.libelleAccounting.toUpperCase(), self.body.datec, { id: self.user._id, name: self.user.name });
+        var entry = myBook.entry(self.body.libelleAccounting.toUpperCase(), self.body.datec, self.user._id);
 
         SeqModel.incCpt("PAY", function(seq) {
             //console.log(seq);
@@ -107,11 +107,11 @@ Object.prototype = {
                 var line = self.body.lines[i];
 
                 if (line.debit > 0)
-                    entry.debit(line.account, round(line.debit, 2), {
+                    entry.debit(line.account, round(line.debit, 2), null, {
                         manual: true
                     });
                 else if (line.credit > 0)
-                    entry.credit(line.account, round(line.credit, 2), {
+                    entry.credit(line.account, round(line.credit, 2), null, {
                         manual: true
                     });
 
@@ -127,6 +127,7 @@ Object.prototype = {
 
                 self.json(doc);
             }, function(err) {
+                console.log(err);
                 self.json({
                     errorNotify: {
                         title: 'Erreur',
@@ -801,7 +802,7 @@ Object.prototype = {
     },
     autocompleteAccount: function(journal) {
         var self = this;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         async.parallel([
             function(cb) {
