@@ -67,7 +67,7 @@
             "submenus": {
                 "menu:productlist": {
                     "url": "/erp/#!/product",
-                    "position": 1,
+                    "position": 10,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
@@ -76,16 +76,20 @@
                 },
                 "menu:productpricelevel": {
                     "url": "/erp/#!/product/pricelevel.html",
-                    "position": 10,
+                    "position": 20,
                     "usertype": 2,
                     "perms": "product.readTODO",
                     "enabled": true,
                     "icon": "fa fa-money",
                     "title": "products:PriceLevel"
                 },
+                "menu:-----------------": {
+                    "position": 30,
+                    "title": "--"
+                },
                 "menu:productattributes": {
                     "url": "/erp/#!/product/attributeslist",
-                    "position": 20,
+                    "position": 40,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
@@ -94,7 +98,7 @@
                 },
                 "menu:productfamily": {
                     "url": "/erp/#!/product/familyproductlist",
-                    "position": 30,
+                    "position": 50,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",
@@ -103,7 +107,7 @@
                 },
                 "menu:productcategories": {
                     "url": "/erp/#!/product/productcategories",
-                    "position": 40,
+                    "position": 60,
                     "usertype": 2,
                     "perms": "product.read",
                     "enabled": "$conf->product->enabled",

@@ -149,6 +149,19 @@
                     "position": 15,
                     "title": "--"
                 },
+                "menu:groupchq": {
+                    "position": 16,
+                    "url": "/erp/#!/bank/payment/chq",
+                    "perms": "payment.read",
+                    "enabled": "$conf->payment->enabled",
+                    "usertype": 2,
+                    "icon": "fa-credit-card",
+                    "title": "Remises de cheques"
+                },
+                "menu:-----------------": {
+                    "position": 19,
+                    "title": "--"
+                },
                 "menu:accountingClient": {
                     "position": 20,
                     "url": "/erp/#!/accounting/journal?journal=VTE",
@@ -193,15 +206,6 @@
                     "icon": "fa-random",
                     "usertype": 2,
                     "title": "compta:AccountingBalance"
-                },
-                "menu:groupchq": {
-                    "position": 70,
-                    "url": "/erp/#!/bank/payment/chq",
-                    "perms": "payment.read",
-                    "enabled": "$conf->payment->enabled",
-                    "usertype": 2,
-                    "icon": "fa-credit-card",
-                    "title": "Remises de cheques"
                 }
             }
         }

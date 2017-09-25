@@ -218,26 +218,8 @@
             "icon": "fa-shopping-cart",
             "title": "orders:Sales",
             "submenus": {
-                "menu:offerlist": {
-                    "position": 1,
-                    "url": "/erp/#!/offer",
-                    "perms": "offer.read",
-                    "enabled": "$conf->offer->enabled",
-                    "usertype": 2,
-                    "icon": "fa-calculator",
-                    "title": "propal:CommercialProposals"
-                },
-                "menu:orderslist": {
-                    "position": 10,
-                    "url": "/erp/#!/order",
-                    "perms": "order.read",
-                    "enabled": "$conf->commande->enabled",
-                    "usertype": 2,
-                    "icon": "fa-shopping-cart",
-                    "title": "orders:ListOfOrders"
-                },
                 "menu:customers": {
-                    "position": 20,
+                    "position": 10,
                     "url": "/erp/#!/societe?type=PROSPECT_CUSTOMER",
                     "perms": "societe.read",
                     "enabled": "$conf->societe->enabled",
@@ -247,7 +229,7 @@
                     "icon": "fa-institution"
                 },
                 "menu:contacts": {
-                    "position": 30,
+                    "position": 20,
                     "url": "/erp/#!/contact",
                     "perms": "contact.read",
                     "enabled": "$conf->societe->enabled",
@@ -256,8 +238,34 @@
                     "fk_menu": "menu:companies",
                     "icon": "fa-users"
                 },
-                "menu:companysegmentation": {
+                "menu:----------------": {
+                    "position": 35,
+                    "title": "--"
+                },
+                "menu:offerlist": {
                     "position": 40,
+                    "url": "/erp/#!/offer",
+                    "perms": "offer.read",
+                    "enabled": "$conf->offer->enabled",
+                    "usertype": 2,
+                    "icon": "fa-calculator",
+                    "title": "propal:CommercialProposals"
+                },
+                "menu:orderslist": {
+                    "position": 50,
+                    "url": "/erp/#!/order",
+                    "perms": "order.read",
+                    "enabled": "$conf->commande->enabled",
+                    "usertype": 2,
+                    "icon": "fa-shopping-cart",
+                    "title": "orders:ListOfOrders"
+                },
+                "menu:-----------------": {
+                    "position": 60,
+                    "title": "--"
+                },
+                "menu:companysegmentation": {
+                    "position": 70,
                     "url": "/erp/#!/societe/segmentation",
                     "perms": "societe.segmentation",
                     "enabled": "conf.societe.enabled",
@@ -267,7 +275,7 @@
                     "icon": "fa-institution"
                 },
                 "menu:thirdpartystats": {
-                    "position": 50,
+                    "position": 80,
                     "url": "/erp/#!/societe/stats",
                     "perms": "societe.stats",
                     "enabled": "$conf->societe->enabled",

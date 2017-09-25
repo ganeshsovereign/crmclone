@@ -77,8 +77,22 @@
             "icon": "fa-credit-card",
             "title": "propal:Purchases",
             "submenus": {
+                "menu:suppliers": {
+                    "position": 10,
+                    "url": "/erp/#!/societe/supplier?type=SUPPLIER_SUBCONTRACTOR",
+                    "perms": "societe.read",
+                    "enabled": "$conf->societe->enabled",
+                    "usertype": 2,
+                    "title": "companies:ListOfSuppliersShort",
+                    "fk_menu": "menu:companies",
+                    "icon": "fa-institution"
+                },
+                "menu:-----------------": {
+                    "position": 20,
+                    "title": "--"
+                },
                 "menu:offersupplier": {
-                    "position": 1,
+                    "position": 30,
                     "url": "/erp/#!/offersupplier",
                     "perms": "offersuppliers.read",
                     "enabled": "$conf->offersupplier->enabled",
@@ -87,25 +101,14 @@
                     "icon": "fa-institution"
                 },
                 "menu:ordersupplier": {
-                    "position": 10,
+                    "position": 40,
                     "url": "/erp/#!/ordersupplier",
                     "perms": "ordersuppliers.read",
                     "enabled": "$conf->ordersupplier->enabled",
                     "usertype": 2,
                     "title": "orders:SuppliersOrders",
                     "icon": "fa-institution"
-                },
-                "menu:suppliers": {
-                    "position": 20,
-                    "url": "/erp/#!/societe/supplier?type=SUPPLIER_SUBCONTRACTOR",
-                    "perms": "societe.read",
-                    "enabled": "$conf->societe->enabled",
-                    "usertype": 2,
-                    "title": "companies:ListOfSuppliersShort",
-                    "fk_menu": "menu:companies",
-                    "icon": "fa-institution"
                 }
-
             }
         }
     }
