@@ -134,7 +134,7 @@
                     "icon": "fa-money",
                     "enabled": "$conf->facture->enabled",
                     "usertype": 2,
-                    "title": "bills:CustomersInvoices"
+                    "title": "orders:CustomersInvoices"
                 },
                 "menu:billssupplierlist": {
                     "position": 10,
@@ -143,7 +143,7 @@
                     "icon": "fa-money",
                     "enabled": "$conf->facture->enabled",
                     "usertype": 2,
-                    "title": "bills:SuppliersInvoices"
+                    "title": "orders:SuppliersInvoices"
                 },
                 "menu:----------------": {
                     "position": 15,

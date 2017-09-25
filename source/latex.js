@@ -356,7 +356,7 @@ Template.prototype.applyHeadFoot = function() {
                     foot += "\\\\" + doc.langs[0].invoiceFoot;
 
                 tex = tex.replace(/--FOOT--/g, foot);
-                tex = tex.replace(/--VATMODE--/g, i18n.t("bills:VATmode." + doc.tva_mode));
+                tex = tex.replace(/--VATMODE--/g, i18n.t("orders:VATmode." + doc.tva_mode));
                 tex = tex.replace(/--ENTITY--/g, "\\textbf{" + doc.name + "}");
                 if (doc.iban)
                     tex = tex.replace(/--IBAN--/g, doc.iban.bank + "\\\\RIB : " + doc.iban.rib + "\\\\ IBAN : " + doc.iban.id + "\\\\ BIC : " + doc.iban.bic);

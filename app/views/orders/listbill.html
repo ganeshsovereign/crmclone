@@ -34,7 +34,7 @@
                     </li>
                     <li>
                         <a href="#" ng-show="login.rights.bill.validate" data-ng-click="exportAccounting()">
-                            <i class="fa fa-mail-forward"></i> @(bills:SendAccounting)
+                            <i class="fa fa-mail-forward"></i> @(orders:SendAccounting)
                         </a>
                     </li>
 
@@ -43,9 +43,9 @@
                                     @(BuildPDF) </a>
                             </li>-->
                     <!--<li>
-                                <a ng-show="login.rights.delivery.createBills" ng-confirm-click="@(deliveries:ConfirmCloseDelivery)" ng-confirm-title="@(deliveries:CloseDelivery)" confirmed-click="createBills()">
+                                <a ng-show="login.rights.delivery.createBills" ng-confirm-click="@(orders:ConfirmCloseDelivery)" ng-confirm-title="@(orders:CloseDelivery)" confirmed-click="createBills()">
                                     <i class="fa fa-money"></i>
-                                    @(bills:CreateBills)
+                                    @(orders:CreateBills)
                                 </a>
                             </li>-->
                     <li class="divider">

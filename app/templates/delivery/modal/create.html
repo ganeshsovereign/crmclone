@@ -1,12 +1,12 @@
 <div class="modal-header">
-    <h3 class="modal-title">@(deliveries:NewDelivery)</h3>
+    <h3 class="modal-title">@(orders:NewDelivery)</h3>
 </div>
 <div class="modal-body">
     <form ng-init="sum()" role="form">
 
         <div class="form-group">
             <label>@(orders:CustomerOrder) {{order.ref}} ({{order.ref_client}})</label>
-            <span class="help-block">@(deliveries:HelpConfirmQuantityDelivery)</span>
+            <span class="help-block">@(orders:HelpConfirmQuantityDelivery)</span>
 
 
             <div class="table-scrollable">
@@ -14,9 +14,9 @@
                     <thead>
                         <tr>
                             <th>@(products:ProductCode)</th>
-                            <th>@(deliveries:QtyOrdered)</th>
-                            <th>@(deliveries:QtyDelivered)</th>
-                            <th>@(deliveries:QtyToDelivered)</th>
+                            <th>@(orders:QtyOrdered)</th>
+                            <th>@(orders:QtyDelivered)</th>
+                            <th>@(orders:QtyToDelivered)</th>
                             <th>@(products:Weight)</th>
                         </tr>
                     </thead>

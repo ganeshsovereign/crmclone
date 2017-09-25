@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h4 class="modal-title"><span class="glyphicon glyphicon-envelope"></span> @(propal:SendPropalByMail)</h4>
+    <h4 class="modal-title"><span class="glyphicon glyphicon-envelope"></span> @(orders:SendPropalByMail)</h4>
 </div>
 <div class="modal-body">
     <ng-form name="nameDialog" novalidate role="form">
@@ -14,7 +14,7 @@
         </div>
         <div class="form-group input-group-lg">
             <label class="control-label" for="subtitle">@(Subtitle) :</label>
-            <input type="text" class="form-control" name="subtitle" id="subtitle" ng-model="email.subtitle"/>
+            <input type="text" class="form-control" name="subtitle" id="subtitle" ng-model="email.subtitle" />
             <span class="help-block">@(mails:Subtitle).</span>
         </div>
         <div class="form-group">

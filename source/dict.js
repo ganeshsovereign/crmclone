@@ -102,7 +102,7 @@ Dict.prototype.extrafield = function(params, callback) {
                 if (doc.fields[params.field].values[i].enable) {
                     var val = {};
                     val.id = i;
-                    val.label = i18n.t("bills:" + doc.fields[params.field].values[i].label);
+                    val.label = i18n.t("orders:" + doc.fields[params.field].values[i].label);
                     result.push(val);
                 }
             }

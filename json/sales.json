@@ -249,7 +249,7 @@
                     "enabled": "$conf->offer->enabled",
                     "usertype": 2,
                     "icon": "fa-calculator",
-                    "title": "propal:CommercialProposals"
+                    "title": "orders:CommercialProposals"
                 },
                 "menu:orderslist": {
                     "position": 50,
@@ -280,7 +280,7 @@
                     "perms": "societe.stats",
                     "enabled": "$conf->societe->enabled",
                     "usertype": 2,
-                    "title": "bills:BillsStatistics",
+                    "title": "orders:BillsStatistics",
                     "fk_menu": "menu:companies",
                     "icon": "fa-institution"
                 }

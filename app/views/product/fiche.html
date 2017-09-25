@@ -25,11 +25,12 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="product.list">@(products:ListProducts)</a>
+            <span>@(products:ProductsAndServices)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span></span>
+            <a ui-sref="product.list">@(products:ListProducts)</a>
+            <i class="fa fa-angle-right"></i>
         </li>
         <li>
             <span ng-class="{'font-red':!product.info.isActive}"> @(products:ProductSheet) : {{product.info.SKU}}</span>
