@@ -5,8 +5,8 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-info"></i>
-                        <span ng-if="module('offersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(propal:PurchaseRequests) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('offersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(propal:NewQuotation) </span>
+                        <span ng-if="module('offersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:PurchaseRequests) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('offersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewQuotation) </span>
                         <span ng-if="module('ordersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <!--/Puces-->
                         <span ng-if="module('ordersupplier')" ng-hide="!object._id" class="large fa fa-inbox" ng-class="{ 'font-grey': object.status.fulfillStatus=='NOR', 'font-green-jungle': object.status.fulfillStatus=='ALL', 'font-yellow-lemon': object.status.fulfillStatus=='NOA', 'font-red' : object.status.fulfillStatus=='NOT' }"></span>
@@ -48,7 +48,7 @@
 
                                             <div ng-hide="!object._id" ng-if="module('ordersupplier')" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> <a ui-sref="offersupplier.show({id:object.offer._id})">{{object.offer.ref}}</a> </div>
-                                                <label for="ref_client">@(propal:RefQuotation)</label>
+                                                <label for="ref_client">@(orders:RefQuotation)</label>
                                             </div>
 
                                             <div ng-if="object.order" class="form-group form-md-line-input">
@@ -64,7 +64,7 @@
 
                                             <!--<div ng-hide="!object._id" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static"> {{object.total_ht| currency}} @(HT) </div>
-                                                <label for="form_control_1">@(Amount) @(propal:PurchaseRequests)</label>
+                                                <label for="form_control_1">@(Amount) @(orders:PurchaseRequests)</label>
                                             </div>-->
 
                                             <div ng-hide="module('billsupplier')" class="form-group form-md-line-input">

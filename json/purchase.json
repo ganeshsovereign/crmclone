@@ -75,7 +75,7 @@
             "enabled": "$conf->offer->enabled",
             "usertype": 2,
             "icon": "fa-credit-card",
-            "title": "propal:Purchases",
+            "title": "orders:Purchases",
             "submenus": {
                 "menu:suppliers": {
                     "position": 10,
@@ -97,7 +97,7 @@
                     "perms": "offersuppliers.read",
                     "enabled": "$conf->offersupplier->enabled",
                     "usertype": 2,
-                    "title": "propal:PurchaseRequests",
+                    "title": "orders:PurchaseRequests",
                     "icon": "fa-institution"
                 },
                 "menu:ordersupplier": {

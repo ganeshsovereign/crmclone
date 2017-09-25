@@ -3,7 +3,7 @@
         <div class="portlet blue-steel box">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-truck"></i>@(deliveries:DeliveriesParameters)
+                    <i class="fa fa-truck"></i>@(orders:DeliveriesParameters)
                 </div>
             </div>
             <div class="portlet-body">
@@ -138,7 +138,7 @@
     </div>
     <div class='col-md-8'>
         <tabset class="tabbable-line tabbable-full-width">
-            <tab heading="@(deliveries:DeliveriesReceipt)">
+            <tab heading="@(orders:DeliveriesReceipt)">
                 <div class="portlet-body">
                     <div class="table-toolbar">
                         <div class="row">
@@ -179,13 +179,13 @@
                                     <th width="2%">
                                         <input type="checkbox" class="group-checkable">
                                     </th>
-                                    <th>@(deliveries:DeliveryID)</th>
+                                    <th>@(orders:DeliveryID)</th>
                                     <th>@(AmountHTShort)</th>
                                     <th>@(orders:OrderId)</th>
                                     <th>@(Status)</th>
                                     <th>@(Author)</th>
                                     <th>@(DateCreation)</th>
-                                    <th>@(deliveries:DeliveryDate)</th>
+                                    <th>@(orders:DeliveryDate)</th>
                                     <th>@(DateLastModification)</th>
                                 </tr>
                             </thead>
@@ -234,10 +234,10 @@
                                     <th width="2%">
                                         <input type="checkbox" class="group-checkable">
                                     </th>
-                                    <th>@(deliveries:DeliveryID)</th>
+                                    <th>@(orders:DeliveryID)</th>
                                     <th>@(Date)</th>
-                                    <th>@(deliveries:DeliveryMethod)</th>
-                                    <th>@(deliveries:TrackingNumber)</th>
+                                    <th>@(orders:DeliveryMethod)</th>
+                                    <th>@(orders:TrackingNumber)</th>
                                     <th>@(orders:OrderId)</th>
                                     <th>@(Status)</th>
                                     <th>@(Author)</th>
@@ -289,10 +289,10 @@
                                     <th width="2%">
                                         <input type="checkbox" class="group-checkable">
                                     </th>
-                                    <th>@(deliveries:DeliveryID)</th>
+                                    <th>@(orders:DeliveryID)</th>
                                     <th>@(Date)</th>
-                                    <th>@(deliveries:DeliveryMethod)</th>
-                                    <th>@(deliveries:TrackingNumber)</th>
+                                    <th>@(orders:DeliveryMethod)</th>
+                                    <th>@(orders:TrackingNumber)</th>
                                     <th>@(orders:OrderId)</th>
                                     <th>@(Status)</th>
                                     <th>@(Author)</th>

@@ -5,28 +5,46 @@
             <a ui-sref="home">@(Home)</a>
             <i class="fa fa-angle-right"></i>
         </li>
+
         <li ng-if="module('ordersupplier')">
-            <span>@(orders:Orders)</span>
+            <span>@(orders:Purchases)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('offersupplier')">
-            <span>@(propal:ProposalShort)</span>
+            <span>@(orders:Purchases)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('deliverysupplier') || module('stockreturn')">
-            <span>@(deliveries:Logistics)</span>
+            <span>@(orders:Logistics)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('billsupplier')">
-            <span>@(orders:Billing)</span>
+            <span>@(compta:MenuFinancial)</span>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('ordersupplier') || module('offersupplier')">
-            <span>@(propal:Purchases)</span>
+        <li ng-if="module('billsupplier')">
+            <span>@(orders:SuppliersInvoices)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('offersupplier')">
-            <a ui-sref="{{backTo}}">@(propal:ListOfPurchases)</a>
+            <span>@(orders:PurchaseRequests)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('ordersupplier')">
+            <span>@(orders:SuppliersOrders)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="module('deliverysupplier')">
+            <span>@(orders:SuppliersDeliveries)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
+
+        <!--<li ng-if="module('ordersupplier') || module('offersupplier')">
+            <span>@(orders:Purchases)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>-->
+        <li ng-if="module('offersupplier')">
+            <a ui-sref="{{backTo}}">@(orders:ListOfPurchases)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('ordersupplier')">
@@ -42,8 +60,8 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('offersupplier')">
-            <span ng-hide="!object._id">@(propal:PurchaseRequests) : {{object.ref}} - {{object.supplier.fullName}}</span>
-            <span ng-show="!object._id">@(propal:NewQuotation)</span>
+            <span ng-hide="!object._id">@(orders:PurchaseRequests) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(orders:NewQuotation)</span>
         </li>
         <li ng-if="module('ordersupplier')">
             <span ng-hide="!object._id">@(orders:Order) : {{object.ref}} - {{object.supplier.fullName}}</span>
@@ -66,8 +84,8 @@
             <!-- offersupplier -->
             <ul ng-if="module('offersupplier')" class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createOrder" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusSigned)" confirmed-click="createOrder()">
-                        <i class="fa fa-shopping-cart"></i> @(propal:CreateOrder)
+                    <a ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createOrder" ng-confirm-click="@(orders:ConfirmClosePropal)" ng-confirm-title="@(orders:PropalStatusSigned)" confirmed-click="createOrder()">
+                        <i class="fa fa-shopping-cart"></i> @(orders:CreateOrderSigned)
                     </a>
                 </li>
                 <li>
@@ -81,9 +99,9 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-hide="object.Status == 'NOTSIGNED' || object.Status == 'SIGNED' " ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(propal:ConfirmClosePropal)" ng-confirm-title="@(propal:PropalStatusNotSigned)"
+                    <a ng-hide="object.Status == 'NOTSIGNED' || object.Status == 'SIGNED' " ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(orders:ConfirmClosePropal)" ng-confirm-title="@(orders:PropalStatusNotSigned)"
                         confirmed-click="changeStatus('NOTSIGNED')">
-                        <i class="fa fa-thumbs-o-down"></i> @(propal:CloseOfferOrder)
+                        <i class="fa fa-thumbs-o-down"></i> @(orders:CloseOfferOrder)
                     </a>
                 </li>
                 <li>
@@ -232,7 +250,7 @@
                             <div class="profile-usertitle">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div ng-if="module('offersupplier')" class="uppercase profile-stat-text"> @(propal:PurchaseRequests) </div>
+                                        <div ng-if="module('offersupplier')" class="uppercase profile-stat-text"> @(orders:PurchaseRequests) </div>
                                         <div ng-if="module('ordersupplier')" class="uppercase profile-stat-text"> @(orders:Order) </div>
                                         <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(orders:ReceptionNote) </div>
                                         <div ng-if="module('billsupplier')" class="uppercase profile-stat-text"> @(orders:Bill) </div>
@@ -256,7 +274,7 @@
                         <ul class="nav" ng-if="module('offersupplier')">
                             <li ng-class="{active: $state.includes(module() + '.show.detail')}">
                                 <a ui-sref="offersupplier.show.detail({id:object._id}) ">
-                                    <i class="icon-info "></i> @(propal:Details) </a>
+                                    <i class="icon-info "></i> @(orders:DetailsOffer) </a>
                             </li>
                         </ul>
                         <ul class="nav" ng-if="module('ordersupplier')">

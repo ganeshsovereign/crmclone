@@ -6,7 +6,7 @@
 
 <div class="form-group form-md-line-input" ng-if="addressShipping.length > 1">
     <select class="form-control" id="selectShipping" ng-model="addressModel._id" ng-disabled="editable" ng-change="reloadAddress()" ng-options="addr._id as addr.name for addr in addressShipping"></select>
-    <label for="selectShipping">@(deliveries:DeliveryAddress) </label>
+    <label for="selectShipping">@(orders:DeliveryAddress) </label>
 </div>
 
 <div class="row">

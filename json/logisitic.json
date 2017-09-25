@@ -93,7 +93,7 @@
             "enabled": "$conf->delivery->enabled",
             "usertype": 2,
             "icon": "fa-truck",
-            "title": "deliveries:Logistics",
+            "title": "orders:Logistics",
             "submenus": {
                 "menu:deliverylist": {
                     "position": 1,
@@ -102,7 +102,7 @@
                     "enabled": "$conf->delivery->enabled",
                     "usertype": 2,
                     "icon": "fa-truck",
-                    "title": "deliveries:PreparationReceipt"
+                    "title": "orders:PreparationReceipt"
                 },
                 "menu:deliverysuppliers": {
                     "position": 5,
@@ -111,7 +111,7 @@
                     "enabled": "$conf->delivery->enabled",
                     "usertype": 2,
                     "icon": "fa-truck",
-                    "title": "deliveries:SuppliersDeliveries"
+                    "title": "orders:SuppliersDeliveries"
                 },
                 "menu:stockreturn": {
                     "position": 15,
@@ -120,7 +120,7 @@
                     "enabled": "$conf->delivery->enabled",
                     "usertype": 2,
                     "icon": "fa-refresh",
-                    "title": "deliveries:StockReturn"
+                    "title": "orders:StockReturn"
                 }
             }
         }

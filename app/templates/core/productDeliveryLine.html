@@ -18,7 +18,7 @@
                         <th style="width: 140px;">@(products:ProductCode)</th>
                         <th style="width: 15%;">@(Name)</th>
                         <th class="center" style="width: 80px;">@(QtyOrder)</th>
-                        <th class="center" style="width: 80px;">@(deliveries:QtyOnHand)</th>
+                        <th class="center" style="width: 80px;">@(orders:QtyOnHand)</th>
                         <th class="center" style="width: 100px;">@(QtyFulfilled)</th>
                         <th class="center" style="width: 120px;">@(Reminder)</th>
                         <th class="center" style="width: 100px;">@(QtyDelivered)</th>
@@ -48,7 +48,7 @@
 
 
                     <td class="center" ng-if="line.product.productType.inventory">
-                        <i class="fa fa-warning font-red " tooltip="@(deliveries:NoStockAvailable) " ng-if="line.qty> (line.onHand + line.fulfilled) && editable"></i>
+                        <i class="fa fa-warning font-red " tooltip="@(orders:NoStockAvailable) " ng-if="line.qty> (line.onHand + line.fulfilled) && editable"></i>
                         <span e-name="qty" editable-number="line.qty" e-ng-change="calculMontantHT(line, $data, 'qty')" e-min="0" e-max="{{min(line.orderQty-line.deliveryQty, line.onHand + line.fulfilled) }}" e-step="any" e-form="tableform">
                                                         {{ line.qty || 0 }} <small>{{line.product.unit}}</small>
                                                     </span>
