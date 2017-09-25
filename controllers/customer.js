@@ -3059,10 +3059,7 @@ Report.prototype = {
                 type: action.type,
                 entity: req.user.entity,
                 notes: [{
-                    author: {
-                        id: req.user._id,
-                        name: req.user.firstname + " " + req.user.lastname
-                    },
+                    author: req.user._id,
                     datec: new Date(),
                     percentage: 0,
                     note: i18n.t("tasks:" + action.id) + " " + i18n.t("tasks:" + action.type) + "\nCompte rendu du " + moment(req.body.datec).format(CONFIG('dateformatShort'))
@@ -3131,7 +3128,7 @@ Report.prototype = {
         var user = req.query.user;
 
         var query = {
-            "author.id": {
+            "author": {
                 "$nin": [user]
             },
             entity: req.query.entity

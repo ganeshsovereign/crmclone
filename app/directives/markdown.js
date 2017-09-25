@@ -12,19 +12,16 @@ MetronicApp.directive("markdownEditor", function($rootScope) {
 
             var obj = false; // Test if it's an object for fiche.societe.report or a single value
             var newData;
-            if(typeof scope.data === 'object') {
-                obj=true;
-            
-            newData = {
-                new: scope.data.new,
-                old: scope.data.new,
-                datec: new Date(),
-                author: {
-                    id: $rootScope.login._id,
-                    name: $rootScope.login.name
-                }
-            };
-        }
+            if (typeof scope.data === 'object') {
+                obj = true;
+
+                newData = {
+                    new: scope.data.new,
+                    old: scope.data.new,
+                    datec: new Date(),
+                    author: $rootScope.login._id
+                };
+            }
 
             $('#markdownEditor').markdown({
                 savable: false,
@@ -32,7 +29,7 @@ MetronicApp.directive("markdownEditor", function($rootScope) {
                 resize: "vertical",
                 height: scope.height || 200,
                 onChange: function(e) {
-                    if(obj)
+                    if (obj)
                         newData.new = e.getContent();
                     else
                         newData = e.getContent();
@@ -40,7 +37,7 @@ MetronicApp.directive("markdownEditor", function($rootScope) {
                     ngModel.$setViewValue(newData);
                 },
                 onShow: function(e) {
-                    if(obj)
+                    if (obj)
                         e.setContent(newData.new);
                     else
                         e.setContent(scope.data);
@@ -118,7 +115,7 @@ MetronicApp.directive("markdownDiff", function() {
         },
         template: '<pre id="displayDiff"></pre>',
         link: function(scope, element, attrs) {
-            if(scope.origin !== scope.new)
+            if (scope.origin !== scope.new)
                 check();
 
             function check() {

@@ -741,9 +741,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             note.note = this.note.note;
             note.css = this.note.css;
             note.datec = new Date();
-            note.author = {};
-            note.author.id = $rootScope.login._id;
-            note.author.name = $rootScope.login.firstname + " " + $rootScope.login.lastname;
+            note.author = $rootScope.login._id;
 
             if (!$scope.societe.notes)
                 $scope.societe.notes = [];
