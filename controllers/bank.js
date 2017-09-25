@@ -94,7 +94,7 @@ Payment.prototype = {
             .populate({ path: "meta.product", select: "info", model: "product" })
             .populate({ path: "meta.tax", select: "code", model: "taxes" })
             .exec(function(err, doc) {
-                //console.log(doc);
+                console.log(doc);
                 if (err)
                     return self.throw500(err);
 

@@ -148,11 +148,11 @@ bankSchema.virtual('acc_country').get(function() {
  * }]
  */
 
-bankSchema.methods.addPayment = function(options, user, callback) {
+/*bankSchema.methods.addPayment = function(options, user, callback) {
     var self = this;
     //var SocieteModel = MODEL('Customers').Schema;
     var BillModel = MODEL('invoice').Schema;
-    var BillSupplierModel = MODEL('billSupplier').Schema;
+    //var BillSupplierModel = MODEL('billSupplier').Schema;
 
     //console.log(options);
     //return;
@@ -185,112 +185,76 @@ bankSchema.methods.addPayment = function(options, user, callback) {
         entryOD.setSeq(seq);
 
         var bills = [];
-        for (var i = 0, len = options.bills.length; i < len; i++)
-            if (options.bills[i].payment != null)
-                bills.push({
-                    billId: options.bills[i]._id.toString(),
-                    billRef: options.bills[i].ref,
-                    amount: options.bills[i].payment
-                });
+        if (options.bills)
+            for (var i = 0, len = options.bills.length; i < len; i++)
+                if (options.bills[i].payment != null)
+                    bills.push({
+                        invoice: options.bills[i]._id,
+                        amount: options.bills[i].payment
+                    });
 
-        var billsSupplier = [];
-        for (var i = 0, len = options.bills_supplier.length; i < len; i++)
-            if (options.bills_supplier[i].payment != null)
-                billsSupplier.push({
-                    billSupplierId: options.bills_supplier[i]._id.toString(),
-                    billSupplierRef: options.bills_supplier[i].ref,
-                    amount: options.bills_supplier[i].payment
-                });
+                //var billsSupplier = [];
+        if (options.bills_supplier)
+            for (var i = 0, len = options.bills_supplier.length; i < len; i++)
+                if (options.bills_supplier[i].payment != null)
+                    bills.push({
+                        invoice: options.bills_supplier[i]._id,
+                        amount: options.bills_supplier[i].payment
+                    });
 
 
         if (options.mode === "Receipt")
             entry.debit(self.compta_bank, options.amount, {
                 type: options.mode_reglement_code,
                 pieceAccounting: options.pieceAccounting,
-                bills: bills, // Liste des factures
-                billsSupplier: billsSupplier
+                bills: bills // Liste des factures
+                    //billsSupplier: billsSupplier
             });
         else
             entry.credit(self.compta_bank, options.amount, {
                 type: options.mode_reglement_code,
                 pieceAccounting: options.pieceAccounting,
-                bills: bills, // Liste des factures
-                billsSupplier: billsSupplier
+                bills: bills // Liste des factures
+                    //billsSupplier: billsSupplier
             });
         // Get entity for TVA_MODE
 
         async.waterfall([
             // get entity
             function(callback) {
-                return mongoose.connection.db.collection('Mysoc', function(err, collection) {
-                    if (err)
-                        callback(err);
+                //load supplier
+                const CustomersModel = MODEL('Customers').Schema;
 
-                    //console.log(collection);
-
-                    collection.findOne({
-                        _id: user.entity
-                    }, { tva_mode: 1 }, function(err, entity) {
-                        //console.log(entity);
-                        callback(err, entity);
-                    });
-                });
-                //var entity = {
-                //    tva_mode: 'payment'
-                //};
-
-                //callback(null, entity);
+                CustomersModel.findById(bill.supplier._id || bill.supplier, callback);
             },
-            // load tva_dict
-            function(entity, callback) {
-                var tva = {
-                    tva_code_colle: [],
-                    tva_code_deduc: [],
-                    tva_code_colle_paid: [],
-                    tva_code_deduc_paid: []
-                };
 
-                if (entity.tva_mode !== 'payment')
-                    return callback(null, entity, tva);
-
-                Dict.dict({ dictName: "fk_tva", object: true }, function(err, docs) {
-                    for (var i = 0; i < docs.values.length; i++) {
-                        if (docs.values[i].pays_code === 'FR' && docs.values[i].enable) {
-                            tva.tva_code_colle[docs.values[i].value] = docs.values[i].code_compta_colle;
-                            tva.tva_code_deduc[docs.values[i].value] = docs.values[i].code_compta_deduc;
-                            tva.tva_code_colle_paid[docs.values[i].value] = docs.values[i].code_compta_colle_paid;
-                            tva.tva_code_deduc_paid[docs.values[i].value] = docs.values[i].code_compta_deduc_paid;
-                            //console.log(docs.values[i]);
-                        }
-                    }
-                    callback(err, entity, tva);
-                });
-
-            },
             // apply entry
-            function(entity, tva, callback) {
+            function(supplier, callback) {
+                if (!supplier)
+                    return callback("No supplier found");
+
+                const TaxModel = MODEL('taxes').Schema;
                 // client
                 for (var i = 0, len = options.bills.length; i < len; i++) {
                     var bill = options.bills[i];
 
-
+                    return console.log(bill.supplier);
                     if (bill.payment != null) {
                         if (bill.payment > 0)
-                            entry.credit(bill.client.id.code_compta, Math.abs(bill.payment), {
-                                billId: bill._id.toString(),
-                                billRef: bill.ref,
-                                societeId: bill.client.id._id.toString(),
-                                societeName: bill.client.name
+                            entry.credit(supplier.salesPurchases.customerAccount, Math.abs(bill.payment), {
+                                invoice: bill._id,
+                                societe: supplier._id
                             });
                         else
-                            entry.debit(bill.client.id.code_compta, Math.abs(bill.payment), {
-                                billId: bill._id.toString(),
-                                billRef: bill.ref,
-                                societeId: bill.client.id._id.toString(),
-                                societeName: bill.client.name
+                            entry.debit(supplier.salesPurchases.customerAccount, Math.abs(bill.payment), {
+                                invoice: bill._id,
+                                societe: supplier._id
                             });
 
                         //Migrate TVA to final account
+                        return console.log(bill.total_taxes);
+
+
                         if (entity.tva_mode === 'payment') // TVA sur encaissement
                             if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
                                 for (var j = 0, len2 = bill.total_tva.length; j < len2; j++) {
@@ -332,18 +296,14 @@ bankSchema.methods.addPayment = function(options, user, callback) {
 
                     if (bill.payment != null) {
                         if (bill.payment > 0)
-                            entry.debit(bill.supplier.id.code_compta_fournisseur, Math.abs(bill.payment), {
-                                billSupplierId: bill._id.toString(),
-                                billSupplierRef: bill.ref,
-                                societeId: bill.supplier.id._id.toString(),
-                                societeName: bill.supplier.name
+                            entry.debit(bill.supplier.salesPurchases.supplierAccount, Math.abs(bill.payment), {
+                                invoice: bill._id,
+                                societe: bill.supplier._id
                             });
                         else
-                            entry.credit(bill.supplier.id.code_compta_fournisseur, Math.abs(bill.payment), {
-                                billSupplierId: bill._id.toString(),
-                                billSupplierRef: bill.ref,
-                                societeId: bill.supplier.id._id.toString(),
-                                societeName: bill.supplier.name
+                            entry.credit(bill.supplier.salesPurchases.supplierAccount, Math.abs(bill.payment), {
+                                invocie: bill._id,
+                                societe: bill.supplier._id
                             });
 
                         //Migrate TVA to final account
@@ -455,7 +415,7 @@ bankSchema.methods.addPayment = function(options, user, callback) {
             }
         ], callback);
     });
-};
+};*/
 
 exports.Schema = mongoose.model('bank', bankSchema, 'Bank');
 exports.name = 'bank';

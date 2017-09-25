@@ -21,20 +21,40 @@
                 <ul class="dropdown-menu pull-right">
                     <li>
                         <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
-                                        @(PrintList) </a>
+                                    @(PrintList) </a>
                     </li>
-                    <!--    <li>
-                                        <a href="#">
-                                            @(Update) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(Delete) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(BuildPDF) </a>
-                                    </li>-->
+                    <li>
+                        <a ng-show="login.rights.bill.read" ng-click="openUrl('/erp/api/bill/pdf/', 'id')" target="_blank">
+                            <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-click="changeStatus('NOT_PAID','id')"><i class="fa fa-thumbs-o-up"></i>
+                                    @(Validate) </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-show="login.rights.bill.validate" data-ng-click="exportAccounting()">
+                            <i class="fa fa-mail-forward"></i> @(bills:SendAccounting)
+                        </a>
+                    </li>
+
+                    <!--<li>
+                                <a href="#">
+                                    @(BuildPDF) </a>
+                            </li>-->
+                    <!--<li>
+                                <a ng-show="login.rights.delivery.createBills" ng-confirm-click="@(deliveries:ConfirmCloseDelivery)" ng-confirm-title="@(deliveries:CloseDelivery)" confirmed-click="createBills()">
+                                    <i class="fa fa-money"></i>
+                                    @(bills:CreateBills)
+                                </a>
+                            </li>-->
+                    <li class="divider">
+                    </li>
+                    <li>
+                        <a href="#" class="font-red" ng-show="login.rights.bill.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les factures ?">
+                            <i class="fa fa-trash-o font-red"></i> @(Delete)
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

@@ -1112,7 +1112,7 @@ Object.prototype = {
             });
         });
         self.res.setHeader('x-filename', 'mouvements.csv');
-        self.stream('application/text', stream, "etiquettes.csv");
+        self.stream('application/text', stream, "mouvements.csv");
     },
     validAll: function() {
         var self = this;

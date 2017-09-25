@@ -1689,6 +1689,24 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             grid.resetFilter(url);
         };
 
+        $scope.changeStatus = function(Status, id) {
+
+            // ChangeStatus multi-bills
+            if (!grid)
+                return;
+
+            var params = {};
+            params.id = grid.getSelectedRows();
+
+            $http({
+                method: 'POST',
+                url: '/erp/api/bill/validate',
+                data: params
+            }).success(function(data, status, headers) {
+                $scope.find();
+            });
+        };
+
 
         $scope.exportAccounting = function(id) {
             if (!id && grid) {

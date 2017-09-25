@@ -998,67 +998,94 @@ Object.prototype = {
 
         var tabTex = [];
 
-        BillModel.find({ Status: { $ne: "DRAFT" }, isremoved: { $ne: true }, _id: { $in: self.body.id } }, function(err, bills) {
-            if (err)
-                return console.log(err);
-
-            if (!bills.length)
-                return self.json({ error: "No bills" });
-
-            async.each(bills, function(bill, cb) {
-
-                createBill(bill, false, function(err, tex) {
-                    if (err)
-                        return cb(err);
-                    //console.log(tex);
-
-                    tabTex.push({ id: bill.ref, tex: tex });
-                    cb();
-                });
-            }, function(err) {
+        BillModel.find({ Status: { $ne: "DRAFT" }, isremoved: { $ne: true }, _id: { $in: self.body.id } })
+            //.populate("contacts", "name phone email")
+            .populate({
+                path: "supplier",
+                select: "name salesPurchases",
+                populate: { path: "salesPurchases.priceList" }
+            })
+            .populate({
+                path: "lines.product",
+                select: "taxes info weight units",
+                //populate: { path: "taxes.taxeId" }
+            })
+            .populate({
+                path: "lines.total_taxes.taxeId"
+            })
+            .populate({
+                path: "total_taxes.taxeId"
+            })
+            //.populate("createdBy", "username")
+            //.populate("editedBy", "username")
+            //.populate("offer", "ref total_ht forSales")
+            .populate("order", "ref total_ht forSales")
+            .populate("orders", "ref total_ht forSales")
+            //.populate('invoiceControl')
+            //.populate('project', '_id name')
+            .populate('shippingMethod', '_id name')
+            //.populate('workflow', '_id name status')
+            .exec(function(err, bills) {
                 if (err)
                     return console.log(err);
 
-                var texOutput = "";
+                if (!bills.length)
+                    return self.json({ error: "No bills" });
 
-                function compare(x, y) {
-                    var a = parseInt(x.id.substring(x.id.length - 6, x.id.length), 10);
-                    var b = parseInt(y.id.substring(y.id.length - 6, y.id.length), 10);
+                async.each(bills, function(bill, cb) {
 
-                    if (a < b)
-                        return -1;
-                    if (a > b)
-                        return 1;
-                    return 0;
-                }
+                    createBill(bill, false, function(err, tex) {
+                        if (err)
+                            return cb(err);
+                        //console.log(tex);
 
-                tabTex.sort(compare);
+                        tabTex.push({ id: bill.ref, tex: tex });
+                        cb();
+                    });
+                }, function(err) {
+                    if (err)
+                        return console.log(err);
 
-                for (var i = 0; i < tabTex.length; i++) {
-                    if (i !== 0) {
-                        texOutput += "\\newpage\n\n";
-                        texOutput += "\\setcounter{page}{1}\n\n";
+                    var texOutput = "";
+
+                    function compare(x, y) {
+                        var a = parseInt(x.id.substring(x.id.length - 6, x.id.length), 10);
+                        var b = parseInt(y.id.substring(y.id.length - 6, y.id.length), 10);
+
+                        if (a < b)
+                            return -1;
+                        if (a > b)
+                            return 1;
+                        return 0;
                     }
 
-                    texOutput += tabTex[i].tex;
-                }
+                    tabTex.sort(compare);
 
-                //console.log(texOutput);
+                    for (var i = 0; i < tabTex.length; i++) {
+                        if (i !== 0) {
+                            texOutput += "\\newpage\n\n";
+                            texOutput += "\\setcounter{page}{1}\n\n";
+                        }
 
-                self.res.setHeader('Content-type', 'application/pdf');
-                self.res.setHeader('x-filename', 'factures.pdf');
-                Latex.Template(null, entity)
-                    .on('error', function(err) {
-                        console.log(err);
-                        self.throw500(err);
-                    })
-                    .compile("main", texOutput)
-                    .pipe(self.res)
-                    .on('close', function() {
-                        console.log('document written');
-                    });
+                        texOutput += tabTex[i].tex;
+                    }
+
+                    //console.log(texOutput);
+
+                    self.res.setHeader('Content-type', 'application/pdf');
+                    self.res.setHeader('x-filename', 'factures.pdf');
+                    Latex.Template(null, entity)
+                        .on('error', function(err) {
+                            console.log(err);
+                            self.throw500(err);
+                        })
+                        .compile("main", texOutput)
+                        .pipe(self.res)
+                        .on('close', function() {
+                            console.log('document written');
+                        });
+                });
             });
-        });
     },
     releve_facture: function(id) {
         // Generation de la facture PDF et download
@@ -1414,15 +1441,36 @@ Object.prototype = {
                 if (!bill)
                     return cb();
 
-                bill.Status = 'NOT_PAID';
-                bill.save(cb);
+                bill.Status = 'VALIDATED';
+                BillModel.setInvoiceNumber(bill, function(err, invoice) {
+                    if (err)
+                        return cb(err);
 
+                    BillModel.findByIdAndUpdate(id, invoice, { new: true }, function(err, doc) {
+                        if (err)
+                            return cb(err);
+
+                        cb();
+                    });
+                });
             });
         }, function(err) {
-            if (err)
-                return self.throw500(err);
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
+                    }
+                });
+            }
 
-            self.json({});
+            let doc = {};
+            doc.successNotify = {
+                title: "Success",
+                message: "Factures enregistrées"
+            };
+            self.json(doc);
         });
     },
 };
@@ -1542,6 +1590,7 @@ function createBill(doc, cgv, callback) {
                         });
                         break;
                     default:
+                        //console.log(doc.lines[i]);
                         tabLines.push({
                             ref: doc.lines[i].product.info.SKU.substring(0, 12),
                             description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : "") + (doc.lines[i].total_taxes.length > 1 ? "\\\\\\textit{" + doc.lines[i].total_taxes[1].taxeId.langs[0].name + " : " + doc.lines[i].product.taxes[1].value + " \\euro}" : ""),
