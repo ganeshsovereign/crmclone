@@ -633,7 +633,7 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            Status: { $ne: "SEND" },
+            Status: { $nin: ["BILLED", "SEND"] },
             isremoved: { $ne: true }
             // forSales: true
         };
