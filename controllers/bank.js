@@ -85,7 +85,7 @@ Payment.prototype = {
         if (self.query.find)
             query = JSON.parse(self.query.find);
 
-        console.log("toto", query);
+        console.log('payment read:', query);
 
         TransactionModel.find(query)
             .populate({ path: "meta.supplier", select: "name", model: "Customers" })
@@ -103,331 +103,25 @@ Payment.prototype = {
     },
     create: function() {
         var self = this;
-        var SocieteModel = MODEL('Customers').Schema;
-        var BillModel = MODEL('invoice').Schema;
 
-        var SeqModel = MODEL('Sequence').Schema; // Pour le numero de piece automatique
+        const PaymentModel = MODEL('payment').Schema;
 
-        console.log(this.body);
-        var body = this.body;
-        var Book = INCLUDE('accounting').Book;
-        var myBook = new Book();
-
-        // for Taxes
-        var myBookOD = new Book();
-
-        if (body.mode === "Receipt" && body.mode_reglement_code == 'CHQ') // Receive a CHQ
-            body.bank = { journalId: "RG" }; // Reglement
-
-        if (!body.bank.journalId)
-            return self.json({
-                errorNotify: {
-                    message: 'Journal de banque absent. Voir la configuration de la banque'
-                }
-            });
-
-        myBook.setName(body.bank.journalId);
-        //myBook.setEntity(body.bank.entity);
-
-        myBookOD.setName('OD');
-        //myBookOD.setEntity(body.bank.entity);
-
-        // Ecriture du reglement
-        var entry = myBook.entry(body.libelleAccounting, body.datec, self.user._id);
-        var entryOD = myBookOD.entry(body.libelleAccounting, body.datec, self.user._id);
-
-        SeqModel.incCpt("PAY", function(seq) {
-            //console.log(seq);
-            entry.setSeq(seq);
-            entryOD.setSeq(seq);
-
-            var bills = [];
-
-            for (var i = 0, len = body.bills.length; i < len; i++)
-                if (body.bills[i].payment != null)
-                    bills.push({
-                        invoice: body.bills[i]._id,
-                        amount: body.bills[i].payment
-                    });
-
-            for (var i = 0, len = body.bills_supplier.length; i < len; i++)
-                if (body.bills_supplier[i].payment != null)
-                    bills.push({
-                        invoice: body.bills_supplier[i]._id,
-                        amount: body.bills_supplier[i].payment
-                    });
-
-            if (body.mode === "Receipt" && body.mode_reglement_code == 'CHQ') { // Receive a CHQ
-                entry.debit("5800000", body.amount, null, {
-                    isWaiting: true, // Waiting bank transfert
-                    type: body.mode_reglement_code,
-                    pieceAccounting: body.pieceAccounting,
-                    supplier: body.supplier,
-                    bills: bills // Liste des factures
+        PaymenModel.addPayment(self.body, self.user, function(err, journal) {
+            if (err) {
+                console.log(err);
+                return self.json({
+                    errorNotify: {
+                        message: err
+                    }
                 });
-            } else {
-                if (body.mode === "Receipt")
-                    entry.debit(body.bank.compta_bank, body.amount, null, {
-                        type: body.mode_reglement_code,
-                        bank: body.bank._id,
-                        pieceAccounting: body.pieceAccounting,
-                        supplier: body.supplier,
-                        bills: bills // Liste des factures
-                    });
-                else
-                    entry.credit(body.bank.compta_bank, body.amount, null, {
-                        bank: body.bank._id,
-                        type: body.mode_reglement_code,
-                        pieceAccounting: body.pieceAccounting,
-                        supplier: body.supplier,
-                        bills: bills // Liste des factures
-                    });
             }
 
-            // Get entity for TVA_MODE
-            async.waterfall([
-                    // get societe for accounting
-                    function(callback) {
-                        //console.log(body);
-                        SocieteModel.findById(body.supplier, "name salesPurchases", function(err, societe) {
-                            if (err)
-                                return callback(err);
-                            if (!societe)
-                                return callback('Societe inconnue !');
-
-                            console.log(societe);
-
-                            callback(err, societe);
-                        });
-                    },
-                    // apply entry
-                    function(societe, callback) {
-
-                        //Options
-                        if (body.penality !== 0)
-                            entry.credit('763100', Math.abs(body.penality), "PENALITY", {
-                                type: body.mode_reglement_code,
-                                supplier: body.supplier
-                            });
-
-                        if (body.differential !== 0) {
-                            if (body.differential > 0)
-                                entry.credit('758000', Math.abs(body.differential), "CORRECTION", {
-                                    type: body.mode_reglement_code,
-                                    supplier: body.supplier
-                                });
-                            else
-                                entry.debit('658000', Math.abs(body.differential), "CORRECTION", {
-                                    type: body.mode_reglement_code,
-                                    supplier: body.supplier
-                                });
-                        }
-
-                        // client
-                        for (var i = 0, len = body.bills.length; i < len; i++) {
-                            var bill = body.bills[i];
-
-                            if (bill.payment == null)
-                                continue;
-
-                            //console.log(bill);
-
-                            if (bill.payment > 0)
-                                entry.credit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
-                                    type: body.mode_reglement_code,
-                                    invoice: bill._id,
-                                    supplier: bill.supplier._id
-                                });
-                            else
-                                entry.debit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
-                                    type: body.mode_reglement_code,
-                                    invoice: bill._id,
-                                    supplier: bill.supplier._id
-                                });
-
-
-                            //Migrate TVA to final account
-                            if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
-                                for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
-                                // No TVA
-                                if (bill.total_taxes[j].value == 0)
-                                    continue;
-
-                                // TVA on payment
-                                if (bill.total_taxes[j].taxeId.isOnPaid == false)
-                                    continue;
-
-                                if (bill.total_taxes[j].value > 0) {
-                                    entryOD.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                        type: body.mode_reglement_code,
-                                        supplier: bill.supplier._id,
-                                        invoice: bill._id,
-                                        tax: bill.total_taxes[j].taxeId._id
-                                    });
-                                    entryOD.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                        type: body.mode_reglement_code,
-                                        supplier: bill.supplier._id,
-                                        invoice: bill._id,
-                                        tax: bill.total_taxes[j].taxeId._id
-                                    });
-                                } else {
-                                    // Si avoir
-                                    entryOD.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                        type: body.mode_reglement_code,
-                                        supplier: bill.supplier._id,
-                                        invoice: bill._id,
-                                        tax: bill.total_taxes[j].taxeId._id
-                                    });
-                                    entryOD.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                        type: body.mode_reglement_code,
-                                        supplier: bill.supplier._id,
-                                        invoice: bill._id,
-                                        tax: bill.total_taxes[j].taxeId._id
-                                    });
-                                }
-                            }
-                        }
-
-                        // fournisseur
-                        for (var i = 0, len = body.bills_supplier.length; i < len; i++) {
-                            var bill = body.bills_supplier[i];
-                            if (bill.payment == null)
-                                continue;
-
-                            if (bill.payment > 0)
-                                entry.debit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
-                                    type: body.mode_reglement_code,
-                                    invoice: bill._id,
-                                    supplier: bill.supplier._id
-                                });
-                            else
-                                entry.credit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
-                                    type: body.mode_reglement_code,
-                                    invoice: bill._id,
-                                    supplier: bill.supplier._id
-                                });
-
-                            //Migrate TVA to final account
-                            if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
-                                for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
-
-                                if (bill.total_taxes[j].value == 0)
-                                    continue;
-
-                                //console.log(bill.total_taxes[j]);
-
-                                // TVA on payment
-                                if (bill.total_taxes[j].taxeId.isOnPaid == false)
-                                    continue;
-
-                                // TVA on payment
-                                if (bill.total_taxes[j].value > 0) {
-                                    entryOD.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                        type: body.mode_reglement_code,
-                                        supplier: bill.supplier._id,
-                                        invoice: bill._id,
-                                        tax: bill.total_taxes[j].taxeId._id
-                                    });
-                                    entryOD.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                        type: body.mode_reglement_code,
-                                        supplier: bill.supplier._id,
-                                        invoice: bill._id,
-                                        tax: bill.total_taxes[j].taxeId._id
-                                    });
-                                } else {
-                                    // Si avoir
-                                    entryOD.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                        type: body.mode_reglement_code,
-                                        supplier: bill.supplier._id,
-                                        invoice: bill._id,
-                                        tax: bill.total_taxes[j].taxeId._id
-                                    });
-                                    entryOD.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                        type: body.mode_reglement_code,
-                                        supplier: bill.supplier._id,
-                                        invoice: bill._id,
-                                        tax: bill.total_taxes[j].taxeId._id
-                                    });
-                                }
-                            }
-                        }
-
-                        //console.log(entry);
-                        callback(null);
-                    },
-                    // save transaction
-                    function(callback) {
-                        var journal_id = [];
-
-                        entry.commit().then(function(journal) {
-                            //console.log(journal);
-                            journal_id.push(journal);
-
-                            // ADD TVA lines
-                            if (entryOD.transactions.length)
-                                return entryOD.commit().then(function(journal) {
-                                    journal_id.push(journal);
-                                    return callback(null, journal_id);
-                                }, function(err) {
-                                    console.log(err);
-                                    return callback(null, journal_id);
-                                });
-
-                            return callback(null, journal_id);
-                        }, function(err) {
-                            callback(err.message);
-                        });
-                    },
-                    // update bills
-                    function(journal, callback) {
-
-                        var journalId = _.map(journal, function(item) {
-                            return item._id;
-                        });
-
-                        //change status bills PAID
-                        async.each(body.bills, function(bill, cb) {
-                            if (bill.payment == null)
-                                return cb();
-
-                            //console.log(bill);
-                            var status = "STARTED";
-                            if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2))
-                                status = "PAID";
-
-                            BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date() }, $inc: { total_paid: bill.payment }, $addToSet: { journalId: { $each: journalId } } }, cb);
-                        }, function(err) {});
-                        async.each(body.bills_supplier, function(bill, cb) {
-                            if (bill.payment == null)
-                                return cb();
-                            //console.log(bill);
-                            var status = "STARTED";
-                            if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2))
-                                status = "PAID";
-                            BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date() }, $inc: { total_paid: bill.payment }, $addToSet: { journalId: { $each: journalId } } }, cb);
-                        }, function(err) {});
-
-                        callback(null, journal);
-                    }
-                ],
-                function(err, journal) {
-
-                    if (err) {
-                        console.log(err);
-                        return self.json({
-                            errorNotify: {
-                                message: err
-                            }
-                        });
-                    }
-
-                    self.json({
-                        successNotify: {
-                            title: "Paiement enregistre",
-                            message: "Piece comptable : " + journal[0].seq
-                        }
-                    });
-                });
+            self.json({
+                successNotify: {
+                    title: "Paiement enregistre",
+                    message: "Piece comptable : " + journal[0].seq
+                }
+            });
         });
     },
     getGroupPayment: function(type) {
@@ -435,7 +129,7 @@ Payment.prototype = {
         var self = this;
 
         var query = {
-            type: type
+            mode_reglement: type.toUpperCase()
         };
 
         if (self.query) {
@@ -523,8 +217,6 @@ Payment.prototype = {
         var payment = {};
 
         payment = new PaymentModel(self.body);
-
-        payment.type = type;
         payment.createdBy = self.user._id;
         payment.mode_reglement = type.toUpperCase();
 
@@ -679,7 +371,7 @@ Payment.prototype = {
         var self = this;
         var PaymentModel = MODEL('payment').Schema;
 
-        return console.log(self.body);
+        console.log(self.body);
         if (!id)
             return self.json({
                 errorNotify: {
@@ -691,51 +383,59 @@ Payment.prototype = {
         PaymentModel.getById(id, function(err, payment) {
             //console.log(payment);
 
-            if (payment.lines[self.body.idx].bill._id.toString() != self.body.id) // checked good bill._id
-                return self.json({
-                errorNotify: {
-                    title: 'Erreur',
-                    message: "Le numero de la facture ne correspond pas"
-                }
-            });
+            payment.lines = _.map(payment.lines, function(line) {
+                if (line.supplier._id.toString() != self.body.id.supplier)
+                    return line;
 
-            var options = {
-                label: payment.lines[self.body.idx].bill.ref + ' ' + self.body.reason,
-                datec: new Date(),
-                amount: payment.lines[self.body.idx].amount,
-                mode_reglement_code: "LCR",
-                pieceAccounting: "",
-                bills: [],
-                bills_supplier: []
-            };
+                console.log(line);
 
-            options.bills[0] = payment.lines[self.body.idx].bill.toObject();
-            options.bills[0].payment = payment.lines[self.body.idx].amount * -1;
-
-            //console.log(options);
-            //return;
-
-            payment.bank_reglement.addPayment(options, self.user, function(err, journal) {
-
-                if (err) {
-                    console.log(err);
+                /*if (payment.lines[self.body.idx].bill._id.toString() != self.body.id) // checked good bill._id
                     return self.json({
-                        errorNotify: {
-                            message: err
-                        }
-                    });
-                }
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: "Le numero de la facture ne correspond pas"
+                    }
+                });*/
 
-                payment.lines[self.body.idx].isRejected = true;
-                payment.lines[self.body.idx].memo = self.body.reason;
+                var options = {
+                    label: payment.ref + ' ' + self.body.reason,
+                    datec: new Date(),
+                    amount: line.amount,
+                    bank: payment.bank_reglement,
+                    type: payment.mode_reglement,
+                    pieceAccounting: "",
+                    bills: line.bills,
+                    supplier: line.supplier
+                };
 
-                payment.save(function(err, doc) {
+                for (var i = 0; i < line.bills.length; i++)
+                    options.bills[i].payment = line.bills[i].amount * -1;
 
-                    self.json({
-                        successNotify: {
-                            title: "Paiement rejete",
-                            message: "Piece comptable : " + journal[0].seq
-                        }
+                //console.log(options);
+                //return;
+
+                PaymentModel.addPayment(options, self.user, function(err, journal) {
+
+                    if (err) {
+                        console.log(err);
+                        return self.json({
+                            errorNotify: {
+                                message: err
+                            }
+                        });
+                    }
+
+                    line.isRejected = true;
+                    line.memo = self.body.reason;
+
+                    payment.save(function(err, doc) {
+
+                        self.json({
+                            successNotify: {
+                                title: "Paiement rejete",
+                                message: "Piece comptable : " + journal[0].seq
+                            }
+                        });
                     });
                 });
             });
@@ -752,6 +452,7 @@ Payment.prototype = {
         //console.log(self.query);
 
         var conditions = {
+            mode_reglement: type.toUpperCase(),
             //Status: {$ne: "PAID"},
             isremoved: { $ne: true }
             //entity: self.query.entity
@@ -816,9 +517,9 @@ Payment.prototype = {
                     res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
 
                     // Action
-                    res.datatable.data[i].action = '<a href="#!/bank/payment/chq/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                    res.datatable.data[i].action = '<a href="#!/bank/payment/' + type + '/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
                     // Add url on name
-                    res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/bank/payment/chq/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-money"></span> ' + row.ref + '</a>';
+                    res.datatable.data[i].ref = '<a class="with-tooltip" href="#!/bank/payment/' + type + '/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-money"></span> ' + row.ref + '</a>';
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].total_amount = self.module('utils').round(res.datatable.data[i].total_amount, 2);

@@ -633,7 +633,7 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            Status: { $ne: "BILLED" },
+            Status: { $ne: "SEND" },
             isremoved: { $ne: true }
             // forSales: true
         };
@@ -905,7 +905,7 @@ Object.prototype = {
                 if (!deliveries.length)
                     return self.json({ error: "No deliveries" });
 
-                async.each(deliveries, function(delivery, cb) {
+                async.forEach(deliveries, function(delivery, cb) {
                     DeliveryModel.getById(delivery._id, function(err, delivery) {
 
                         createDelivery(delivery, function(err, tex) {
@@ -975,8 +975,6 @@ Object.prototype = {
         var stream = new Stream();
 
         var tabCsv = [];
-
-
 
         DeliveryModel.find({ Status: "VALIDATED", _id: { $in: self.body.id } })
             .populate("supplier", "name salesPurchases.ref")
@@ -1856,7 +1854,7 @@ function createDelivery(doc, callback) {
             //console.log(doc.lines[i]);
             let orderRow = _.findWhere(doc.orderRows, { orderRowId: doc.lines[i]._id })
 
-            if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0 && orderRow)
+            if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0 && orderRow && orderRow.qty !== 0)
                 tabLines.push({
                     ref: doc.lines[i].product.info.SKU.substring(0, 12),
                     description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),

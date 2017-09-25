@@ -3233,6 +3233,97 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
+            },
+            //version 0.513:  add  new Payment model -> convert LCR module
+            function(conf, wCb) {
+                if (conf.version >= 0.513)
+                    return wCb(null, conf);
+
+                //Old convert first
+                function convertLCR(aCb) {
+                    console.log("convert lcr model");
+                    const PaymentModel = MODEL('payment').Schema;
+                    const BillModel = MODEL('invoice').Schema;
+
+                    mongoose.connection.db.collection('Lcr', function(err, collection) {
+                        collection.find({}).toArray(function(err, lcrs) {
+                            if (err)
+                                return console.log(err);
+
+                            if (!lcrs)
+                                return aCb();
+
+                            async.forEachSeries(lcrs, function(lcr, eCb) {
+
+                                PaymentModel.findById(lcr._id, function(err, doc) {
+                                    if (err)
+                                        return eCb(err);
+
+                                    if (!doc)
+                                        doc = new PaymentModel(lcr);
+
+                                    doc.mode_reglement = "LCR";
+
+                                    async.forEach(lcr.lines, function(line, cb) {
+                                        delete line._id;
+
+                                        BillModel.findById(line.bill, "supplier", function(err, bill) {
+                                            if (err)
+                                                return cb(err);
+
+                                            if (bill)
+                                                line.supplier = bill.supplier;
+
+                                            line.bills = [{
+                                                invoice: line.bill,
+                                                amount: line.amount
+                                            }];
+
+                                            cb();
+                                        });
+                                    }, function(err) {
+
+                                        doc.lines = lcr.lines;
+
+                                        console.log(doc);
+
+                                        doc.save(eCb);
+                                    })
+                                });
+
+                                //Select only objectId()
+                                //OrderModel.update({ Status: 'CLOSED' }, { $set: { Status: "BILLED" } }, { multi: true }, aCb);
+                            }, aCb);
+                        });
+
+                    });
+                }
+
+                function dropCollectionEnd(aCb) {
+                    var collectionName = ['Lcr'];
+
+                    _.each(collectionName, function(collection) {
+                        mongoose.connection.db.dropCollection(collection, function(err, result) {
+                            console.log(result);
+                        });
+                    });
+
+                    aCb(null);
+                }
+
+                async.waterfall([convertLCR, dropCollectionEnd], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.513 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.513));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
             }
         ],
         function(err, doc) {
