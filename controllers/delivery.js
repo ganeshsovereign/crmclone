@@ -1854,7 +1854,7 @@ function createDelivery(doc, callback) {
             //console.log(doc.lines[i]);
             let orderRow = _.findWhere(doc.orderRows, { orderRowId: doc.lines[i]._id })
 
-            if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0 && orderRow && orderRow.qty !== 0)
+            if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0 && orderRow && orderRow.qty != null)
                 tabLines.push({
                     ref: doc.lines[i].product.info.SKU.substring(0, 12),
                     description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
