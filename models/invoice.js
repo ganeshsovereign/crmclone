@@ -579,7 +579,7 @@ F.on('load', function() {
                     if (round(payment, 2) >= round(bill.total_ttc, 2))
                         status = "PAID";
 
-                    if (round(payment, 2) <= 0)
+                    if (round(payment, 2) == 0)
                         status = "NOT_PAID";
 
                     BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date(), total_paid: payment } }, function(err, doc) {

@@ -208,7 +208,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                 isWaiting: true, // Waiting bank transfert
                 type: body.mode_reglement_code,
                 pieceAccounting: body.pieceAccounting,
-                supplier: body.supplier,
+                //supplier: body.supplier,
                 bills: bills // Liste des factures
             });
         } else {
@@ -217,7 +217,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                     type: body.mode_reglement_code,
                     bank: body.bank._id,
                     pieceAccounting: body.pieceAccounting,
-                    supplier: body.supplier,
+                    //supplier: body.supplier,
                     bills: bills // Liste des factures
                 });
             else
@@ -225,7 +225,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                     bank: body.bank._id,
                     type: body.mode_reglement_code,
                     pieceAccounting: body.pieceAccounting,
-                    supplier: body.supplier,
+                    //supplier: body.supplier,
                     bills: bills // Liste des factures
                 });
         }
@@ -260,7 +260,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
 
                 entry.credit('763100', Math.abs(body.penality), "PENALITY", {
                     //type: body.mode_reglement_code,
-                    supplier: body.supplier
+                    //supplier: body.supplier
                 });
 
                 wCb(null, societe);
@@ -272,12 +272,12 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                 if (body.differential > 0)
                     entry.credit('758000', Math.abs(body.differential), "CORRECTION", {
                         //type: body.mode_reglement_code,
-                        supplier: body.supplier
+                        //supplier: body.supplier
                     });
                 else
                     entry.debit('658000', Math.abs(body.differential), "CORRECTION", {
                         //type: body.mode_reglement_code,
-                        supplier: body.supplier
+                        //supplier: body.supplier
                     });
 
                 wCb(null, societe);
@@ -302,7 +302,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                     invoice: bill._id,
                                     amount: bill.payment
                                 }],
-                                supplier: body.supplier
+                                //supplier: body.supplier
                             });
                         else
                             entry.debit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
@@ -311,7 +311,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                     invoice: bill._id,
                                     amount: bill.payment
                                 }],
-                                supplier: body.supplier
+                                //supplier: body.supplier
                             });
 
 
@@ -329,7 +329,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             if (bill.total_taxes[j].value > 0) {
                                 entryOD.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
                                     //type: body.mode_reglement_code,
-                                    supplier: body.supplier,
+                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
                                         amount: bill.bill.total_taxes[j].value
@@ -338,7 +338,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                 });
                                 entryOD.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
                                     //type: body.mode_reglement_code,
-                                    supplier: body.supplier,
+                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
                                         amount: bill.bill.total_taxes[j].value
@@ -349,7 +349,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                 // Si avoir
                                 entryOD.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
                                     //type: body.mode_reglement_code,
-                                    supplier: body.supplier,
+                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
                                         amount: bill.bill.total_taxes[j].value
@@ -358,7 +358,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                 });
                                 entryOD.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
                                     //type: body.mode_reglement_code,
-                                    supplier: body.supplier,
+                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
                                         amount: bill.bill.total_taxes[j].value
@@ -383,7 +383,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                     invoice: bill._id,
                                     amount: bill.payment
                                 }],
-                                supplier: body.supplier
+                                //supplier: body.supplier
                             });
                         else
                             entry.credit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
@@ -392,7 +392,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                     invoice: bill._id,
                                     amount: bill.payment
                                 }],
-                                supplier: body.supplier
+                                //supplier: body.supplier
                             });
 
                         //Migrate TVA to final account
@@ -412,7 +412,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             if (bill.total_taxes[j].value > 0) {
                                 entryOD.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
                                     //type: body.mode_reglement_code,
-                                    supplier: body.supplier,
+                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
                                         amount: bill.total_taxes[j].value
@@ -421,7 +421,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                 });
                                 entryOD.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
                                     //type: body.mode_reglement_code,
-                                    supplier: body.supplier,
+                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
                                         amount: bill.total_taxes[j].value
@@ -432,7 +432,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                 // Si avoir
                                 entryOD.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
                                     //type: body.mode_reglement_code,
-                                    supplier: body.supplier,
+                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
                                         amount: bill.total_taxes[j].value
@@ -441,7 +441,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                 });
                                 entryOD.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
                                     //type: body.mode_reglement_code,
-                                    supplier: body.supplier,
+                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
                                         amount: bill.total_taxes[j].value
