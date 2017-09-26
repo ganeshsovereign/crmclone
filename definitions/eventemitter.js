@@ -26,6 +26,7 @@ var Bus = require('busmq');
 var queuesList = [
     'customer:update',
     'inventory:update',
+    'invoice:recalculateStatus',
     'order:recalculateStatus',
     'product:update',
     'product:updateDirectCost',

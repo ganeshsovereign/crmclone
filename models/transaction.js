@@ -24,20 +24,21 @@ var setAccount = MODULE('utils').setAccount;
 var TransationSchema = new Schema({
     credit: Number,
     debit: Number,
-    meta: Schema.Types.Mixed,
 
-    /*meta: {
+    meta: {
         bills: [{
+            _id: false,
             amount: Number,
             invoice: { type: Schema.Types.ObjectId, ref: 'invoice' }
         }],
+        invoice: { type: Schema.Types.ObjectId, ref: 'invoice' }, // for single invoice TODO convert in array an remove
         product: { type: Schema.Types.ObjectId, ref: 'product' },
         bank: { type: Schema.Types.ObjectId, ref: 'bank' },
         supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
-        invoice: { type: Schema.Types.ObjectId, ref: 'invoice' },
-        type: String,
-        tax: { type: Schema.Types.ObjectId, ref: 'taxes' },
-    },*/
+        pieceAccounting: String,
+        type: { type: String },
+        tax: { type: Schema.Types.ObjectId, ref: 'taxes' }
+    },
 
     datetime: { type: Date, set: setDate },
     account_path: [String],

@@ -22,6 +22,7 @@ var Dict = INCLUDE('dict');
 
 var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
+const round = MODULE('utils').round;
 
 /**
  * Article Schema
@@ -344,27 +345,10 @@ billSchema.statics.setInvoiceNumber = function(invoice, callback) {
                     invoice.ref = (invoice.total_ttc < 0 ? "AV" : "FA") + entity.cptRef + seq;
                 else
                     invoice.ref = (invoice.total_ttc < 0 ? "AV" : "FA") + seq;
+
                 callback(null, invoice);
             });
         });
-
-    //supplier invoice
-    return SeqModel.inc("SUPPLIER_INVOICE", function(seq, number) {
-        //console.log(seq);
-        invoice.ID = number;
-        EntityModel.findOne({
-            _id: invoice.entity
-        }, "cptRef", function(err, entity) {
-            if (err)
-                console.log(err);
-
-            /*if (entity && entity.cptRef)
-                invoice.ref = "FF" + entity.cptRef + seq;
-            else*/
-            invoice.ref = "FF" + seq;
-            callback(null, invoice);
-        });
-    });
 };
 
 /**
@@ -384,13 +368,33 @@ billSchema.pre('save', function(next) {
     if (self.total_ttc === 0)
         self.Status = 'DRAFT';
 
-    if (!self.ref && self.isNew)
-        return SeqModel.inc("PROV", function(seq, number) {
+    if (!self.ref && self.isNew) {
+        if (self.forSales == true)
+            return SeqModel.inc("PROV", function(seq, number) {
+                //console.log(seq);
+                self.ID = number;
+                self.ref = "PROV" + seq;
+                next();
+            });
+        //supplier invoice
+        return SeqModel.inc("SUPPLIER_INVOICE", function(seq, number) {
             //console.log(seq);
             self.ID = number;
-            self.ref = "PROV" + seq;
-            next();
+            EntityModel.findOne({
+                _id: self.entity
+            }, "cptRef", function(err, entity) {
+                if (err)
+                    console.log(err);
+
+                /*if (entity && entity.cptRef)
+                    invoice.ref = "FF" + entity.cptRef + seq;
+                else*/
+                self.ref = "FF" + seq;
+                next();
+            });
         });
+    }
+
 
     self.ref = F.functions.refreshSeq(self.ref, self.datec);
     next();
@@ -521,3 +525,58 @@ billSchema.virtual('amount').get(function() {
 
 exports.Schema = mongoose.model('invoice', billSchema, 'Invoices');
 exports.name = 'invoice';
+
+F.on('load', function() {
+    // Refresh pack prices from directCost
+    F.functions.BusMQ.subscribe('invoice:recalculateStatus', function(data) {
+        const BillModel = MODEL('invoice').Schema;
+        const TransactionModel = MODEL('transaction').Schema;
+        const ObjectId = MODULE('utils').ObjectId;
+
+        //console.log(data);
+        console.log("Update emit invoice", data);
+
+        if (!data.invoice || !data.invoice._id)
+            return;
+
+        BillModel.findById(data.invoice._id, "_id isremoved total_ttc", function(err, bill) {
+            if (err)
+                return console.log(err);
+
+            if (!bill)
+                return console.log("No bill found");
+
+            if (bill.isremoved)
+                return BillModel.update({ _id: bill._id }, { $set: { updatedAt: new Date(), total_ttc: 0, total_paid: 0, total_ht: 0 } }, function(err, doc) {
+                    if (err)
+                        return console.log(err);
+                });
+
+            TransactionModel.aggregate([{
+                $match: { "meta.invoice": ObjectId(data.invoice._id), voided: false, "meta.type": { $ne: null } }
+            }, {
+                $group: { _id: null, debit: { $sum: "$debit" }, credit: { $sum: "$credit" } }
+            }], function(err, doc) {
+                if (err)
+                    return console.log(err);
+
+                if (!doc || doc.length == 0)
+                    return;
+
+                let payment = doc[0].credit - doc[0].debit;
+
+                var status = "STARTED";
+                if (round(payment, 2) >= round(bill.total_ttc, 2))
+                    status = "PAID";
+
+                if (round(payment, 2) <= 0)
+                    status = "NOT_PAID";
+
+                BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date(), total_paid: payment } }, function(err, doc) {
+                    if (err)
+                        return console.log(err);
+                });
+            });
+        });
+    });
+});

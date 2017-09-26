@@ -445,7 +445,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
             // update bills
             function(journal, wCb) {
 
-                return console.log(journal, "toto");
+                //console.log(journal, "toto");
 
                 var journalId = _.map(journal, function(item) {
                     return item._id;
@@ -454,26 +454,41 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                 //change status bills PAID
                 if (body.bills)
                     async.forEach(body.bills, function(bill, cb) {
-                        if (bill.payment == null)
+                        return console.log("bill", bill);
+
+                        /*if (bill.payment == null)
                             return cb();
 
-                        //console.log(bill);
                         var status = "STARTED";
                         if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2))
                             status = "PAID";
 
-                        BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date() }, $inc: { total_paid: bill.payment }, $addToSet: { journalId: { $each: journalId } } }, cb);
-                    }, function(err) {});
+                        if (round(bill.payment + bill.total_paid, 2) <= 0)
+                            status = "NOT_PAID";
+
+                        BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date() }, $inc: { total_paid: bill.payment }, $addToSet: { journalId: { $each: journalId } } }, function(err, doc) {
+                            // ajouter cb a la fin
+
+                            console.log(doc);
+                        });*/
+                    }, function(err) {
+                        if (err)
+                            console.log(err);
+                    });
                 if (body.bills_supplier)
                     async.forEach(body.bills_supplier, function(bill, cb) {
-                        if (bill.payment == null)
+                        /*if (bill.payment == null)
                             return cb();
                         //console.log(bill);
                         var status = "STARTED";
                         if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2))
                             status = "PAID";
                         BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date() }, $inc: { total_paid: bill.payment }, $addToSet: { journalId: { $each: journalId } } }, cb);
-                    }, function(err) {});
+                        */
+                    }, function(err) {
+                        if (err)
+                            console.log(err);
+                    });
 
                 wCb(null, journal);
             }

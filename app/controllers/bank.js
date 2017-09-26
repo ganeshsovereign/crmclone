@@ -855,6 +855,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
                     find: {
                         "meta.supplier": params.supplier,
                         //  "meta.bills": { $ne: null }, !!! Bug with LCR
+                        "meta.type": { $ne: null },
                         voided: false
                     }
                 }

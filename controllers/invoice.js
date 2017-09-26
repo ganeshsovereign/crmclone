@@ -306,6 +306,8 @@ Object.prototype = {
                         });
                     }
 
+                    F.functions.BusMQ.publish('invoice:recalculateStatus', self.user._id, { invoice: { _id: doc._id } });
+
                     //console.log(doc);
                     doc = doc.toObject();
                     doc.successNotify = {

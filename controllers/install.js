@@ -2684,9 +2684,7 @@ F.on('load', function() {
                     });
                 });
             },
-            /*version 0.508
-                update orderCustomer Status CLOSED -> BILLED
-                */
+            //version 0.508 : update orderCustomer Status CLOSED -> BILLED
             function(conf, wCb) {
                 if (conf.version >= 0.508)
                     return wCb(null, conf);
@@ -2714,9 +2712,7 @@ F.on('load', function() {
                     });
                 });
             },
-            /*version 0.509
-                update product costFamily default cost
-                */
+            // version 0.509 : update product costFamily default cost
             function(conf, wCb) {
                 if (conf.version >= 0.509)
                     return wCb(null, conf);
@@ -2753,9 +2749,7 @@ F.on('load', function() {
                     });
                 });
             },
-            /*version 0.510
-                update ID ref bill supplier
-                */
+            //version 0.510 : update ID ref bill supplier
             function(conf, wCb) {
                 if (conf.version >= 0.510)
                     return wCb(null, conf);
@@ -2792,10 +2786,7 @@ F.on('load', function() {
                     });
                 });
             },
-            /*version 0.511
-                convert old delivery
-                NOTA : Delete ID_1 index in mongodb for Orders
-                */
+            // version 0.511 : convert old delivery NOTA : Delete ID_1 index in mongodb for Orders
             function(conf, wCb) {
                 if (conf.version >= 0.511)
                     return wCb(null, conf);
@@ -3320,6 +3311,131 @@ F.on('load', function() {
                             return console.log(err);
 
                         console.log("ToManage updated to {0}".format(0.513));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            },
+            //version 0.514 : convert Object for Transaction model
+            function(conf, wCb) {
+                if (conf.version >= 0.514)
+                    return wCb(null, conf);
+
+                const ObjectId = MODULE('utils').ObjectId;
+
+                function convertSupplier(aCb) {
+                    console.log("convert journal : supplier");
+                    const TransactionModel = MODEL('transaction').Schema;
+
+                    //Select only objectId()
+                    TransactionModel.find({ "meta.supplier": { $type: 2 } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            //console.log(bills);
+
+                            doc.update({ $set: { "meta.supplier": ObjectId(doc.meta.supplier) } }, function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+
+                    });
+
+                    aCb();
+                }
+
+                function convertBills(aCb) {
+                    console.log("convert bill journal");
+                    const TransactionModel = MODEL('transaction').Schema;
+
+                    //Select only objectId()
+                    TransactionModel.find({ "meta.bills.invoice": { $type: 2 } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            var bills = doc.meta.bills;
+
+                            for (var i = 0, len = bills.length; i < len; i++)
+                                bills[i].invoice = ObjectId(bills[i].invoice);
+
+
+                            //console.log(bills);
+
+                            doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
+
+                                //doc.save(function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+
+                    });
+
+                    aCb();
+                }
+
+                function convertBank(aCb) {
+                    console.log("convert journal : bank");
+                    const TransactionModel = MODEL('transaction').Schema;
+
+                    //Select only objectId()
+                    TransactionModel.find({ "meta.bank": { $type: 2 } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            //console.log(bills);
+
+                            doc.update({ $set: { "meta.bank": ObjectId(doc.meta.bank) } }, function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+
+                    });
+
+                    aCb();
+                }
+
+                function convertProduct(aCb) {
+                    console.log("convert journal : product");
+                    const TransactionModel = MODEL('transaction').Schema;
+
+                    //Select only objectId()
+                    TransactionModel.find({ "meta.product": { $type: 2 } }, function(err, docs) {
+                        if (err)
+                            return console.log(err);
+
+                        docs.forEach(function(doc) {
+
+                            //console.log(bills);
+
+                            doc.update({ $set: { "meta.product": ObjectId(doc.meta.product) } }, function(err, doc) {
+                                if (err)
+                                    console.log(err);
+                            });
+                        });
+
+                    });
+
+                    aCb();
+                }
+
+                async.waterfall([convertSupplier, convertBills, convertBank, convertProduct], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.514 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.514));
                         wCb(err, doc.values);
                         //wCb(err, conf);
                     });
