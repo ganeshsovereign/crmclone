@@ -487,7 +487,7 @@ Payment.prototype = {
                     mode_reglement_code: payment.mode_reglement,
                     pieceAccounting: "",
                     bills: line.bills, // Analyser ici !!!!!!!!
-                    supplier: line.supplier
+                    //supplier: line.supplier
                 };
 
                 for (var i = 0; i < line.bills.length; i++)

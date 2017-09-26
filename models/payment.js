@@ -208,7 +208,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                 isWaiting: true, // Waiting bank transfert
                 type: body.mode_reglement_code,
                 pieceAccounting: body.pieceAccounting,
-                //supplier: body.supplier,
+                supplier: body.supplier,
                 bills: bills // Liste des factures
             });
         } else {
@@ -217,7 +217,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                     type: body.mode_reglement_code,
                     bank: body.bank._id,
                     pieceAccounting: body.pieceAccounting,
-                    //supplier: body.supplier,
+                    supplier: body.supplier,
                     bills: bills // Liste des factures
                 });
             else
@@ -225,307 +225,328 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                     bank: body.bank._id,
                     type: body.mode_reglement_code,
                     pieceAccounting: body.pieceAccounting,
-                    //supplier: body.supplier,
+                    supplier: body.supplier,
                     bills: bills // Liste des factures
                 });
         }
 
-        // Get entity for TVA_MODE
-        async.waterfall([
-            // get societe for accounting
-            function(wCb) {
+        async.parallel([
+                function(pCb) {
+                    //Options
+                    if (!body.penality)
+                        return pCb();
 
-                //return console.log(body);
-
-                if (body.supplier && body.supplier._id)
-                    return wCb(null, body.supplier);
-
-                SocieteModel.findById(body.supplier, "name salesPurchases", function(err, societe) {
-                    if (err)
-                        return wCb(err);
-                    if (!societe)
-                        return wCb('Societe inconnue !');
-
-                    // console.log(societe);
-
-                    wCb(err, societe);
-                });
-            },
-            // apply entry
-            function(societe, wCb) {
-
-                //Options
-                if (!body.penality)
-                    return wCb(null, societe);
-
-                entry.credit('763100', Math.abs(body.penality), "PENALITY", {
-                    //type: body.mode_reglement_code,
-                    //supplier: body.supplier
-                });
-
-                wCb(null, societe);
-            },
-            function(societe, wCb) {
-                if (!body.differential)
-                    return wCb(null, societe);
-
-                if (body.differential > 0)
-                    entry.credit('758000', Math.abs(body.differential), "CORRECTION", {
+                    entry.credit('763100', Math.abs(body.penality), "PENALITY", {
                         //type: body.mode_reglement_code,
-                        //supplier: body.supplier
-                    });
-                else
-                    entry.debit('658000', Math.abs(body.differential), "CORRECTION", {
-                        //type: body.mode_reglement_code,
-                        //supplier: body.supplier
+                        supplier: body.supplier
                     });
 
-                wCb(null, societe);
+                    pCb();
+                },
+                function(pCb) {
+                    if (!body.differential)
+                        return pCb();
 
-            },
-            function(societe, wCb) {
+                    if (body.differential > 0)
+                        entry.credit('758000', Math.abs(body.differential), "CORRECTION", {
+                            //type: body.mode_reglement_code,
+                            supplier: body.supplier
+                        });
+                    else
+                        entry.debit('658000', Math.abs(body.differential), "CORRECTION", {
+                            //type: body.mode_reglement_code,
+                            supplier: body.supplier
+                        });
 
-                // client
-                if (body.bills)
-                    for (var i = 0, len = body.bills.length; i < len; i++) {
-                        var bill = body.bills[i];
+                    pCb();
+                },
+                function(pCb) {
+                    // client
+                    if (!body.bills)
+                        return pCb();
 
+                    async.forEach(body.bills, function(bill, aCb) {
                         if (bill.payment == null)
-                            continue;
+                            return aCb();
+
+                        //console.log(bill);
+
+                        if (!bill.supplier)
+                            return aCb('Societe inconnue !');
+
+                        let supplierId = bill.supplier;
+                        if (supplierId._id)
+                            supplierId = supplierId._id;
 
                         //return console.log(bill);
 
-                        if (bill.payment > 0)
-                            entry.credit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
-                                //type: body.mode_reglement_code,
-                                bills: [{
-                                    invoice: bill._id,
-                                    amount: bill.payment
-                                }],
-                                //supplier: body.supplier
-                            });
-                        else
-                            entry.debit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
-                                //type: body.mode_reglement_code,
-                                bills: [{
-                                    invoice: bill._id,
-                                    amount: bill.payment
-                                }],
-                                //supplier: body.supplier
-                            });
+                        SocieteModel.findById(supplierId, "name salesPurchases", function(err, societe) {
+                            if (err)
+                                return aCb(err);
 
+                            if (!societe)
+                                return aCb('Societe inconnue !');
 
-                        //Migrate TVA to final account
-                        if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
-                            for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
-                            // No TVA
-                            if (bill.total_taxes[j].value == 0)
-                                continue;
-
-                            // TVA on payment
-                            if (bill.total_taxes[j].taxeId.isOnPaid == false)
-                                continue;
-
-                            if (bill.total_taxes[j].value > 0) {
-                                entryOD.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                            if (bill.payment > 0)
+                                entry.credit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
                                     //type: body.mode_reglement_code,
-                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
-                                        amount: bill.bill.total_taxes[j].value
+                                        amount: bill.payment
                                     }],
-                                    tax: bill.total_taxes[j].taxeId._id
+                                    supplier: body.supplier
                                 });
-                                entryOD.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                            else
+                                entry.debit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
                                     //type: body.mode_reglement_code,
-                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
-                                        amount: bill.bill.total_taxes[j].value
+                                        amount: bill.payment
                                     }],
-                                    tax: bill.total_taxes[j].taxeId._id
+                                    supplier: body.supplier
                                 });
-                            } else {
-                                // Si avoir
-                                entryOD.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    //type: body.mode_reglement_code,
-                                    //supplier: body.supplier,
-                                    bills: [{
-                                        invoice: bill._id,
-                                        amount: bill.bill.total_taxes[j].value
-                                    }],
-                                    tax: bill.total_taxes[j].taxeId._id
-                                });
-                                entryOD.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    //type: body.mode_reglement_code,
-                                    //supplier: body.supplier,
-                                    bills: [{
-                                        invoice: bill._id,
-                                        amount: bill.bill.total_taxes[j].value
-                                    }],
-                                    tax: bill.total_taxes[j].taxeId._id
-                                });
+
+
+                            //Migrate TVA to final account
+                            if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
+                                for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
+                                // No TVA
+                                if (bill.total_taxes[j].value == 0)
+                                    continue;
+
+                                // TVA on payment
+                                if (bill.total_taxes[j].taxeId.isOnPaid == false)
+                                    continue;
+
+                                if (bill.total_taxes[j].value > 0) {
+                                    entryOD.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        //type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entryOD.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        //type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                } else {
+                                    // Si avoir
+                                    entryOD.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        //type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entryOD.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        //type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                }
                             }
-                        }
-                    }
 
-                // fournisseur
-                if (body.bills_supplier)
-                    for (var i = 0, len = body.bills_supplier.length; i < len; i++) {
-                        var bill = body.bills_supplier[i];
+                            aCb();
+                        });
+                    }, pCb);
+                },
+                function(pCb) {
+                    // fournisseur
+
+                    if (!body.bills_supplier)
+                        return pCb();
+
+                    async.forEach(body.bills_supplier, function(bill, aCb) {
                         if (bill.payment == null)
-                            continue;
+                            return aCb();
 
-                        if (bill.payment > 0)
-                            entry.debit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
-                                //type: body.mode_reglement_code,
-                                bills: [{
-                                    invoice: bill._id,
-                                    amount: bill.payment
-                                }],
-                                //supplier: body.supplier
-                            });
-                        else
-                            entry.credit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
-                                //type: body.mode_reglement_code,
-                                bills: [{
-                                    invoice: bill._id,
-                                    amount: bill.payment
-                                }],
-                                //supplier: body.supplier
-                            });
+                        if (!bill.supplier)
+                            return aCb('Societe inconnue !');
 
-                        //Migrate TVA to final account
-                        if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
-                            for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
+                        let supplierId = bill.supplier;
+                        if (supplierId._id)
+                            supplierId = supplierId._id;
 
-                            if (bill.total_taxes[j].value == 0)
-                                continue;
+                        //return console.log(bill);
 
-                            //console.log(bill.total_taxes[j]);
+                        SocieteModel.findById(supplierId, "name salesPurchases", function(err, societe) {
+                            if (err)
+                                return aCb(err);
 
-                            // TVA on payment
-                            if (bill.total_taxes[j].taxeId.isOnPaid == false)
-                                continue;
+                            if (!societe)
+                                return aCb('Societe inconnue !');
 
-                            // TVA on payment
-                            if (bill.total_taxes[j].value > 0) {
-                                entryOD.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                            if (bill.payment > 0)
+                                entry.debit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
                                     //type: body.mode_reglement_code,
-                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
-                                        amount: bill.total_taxes[j].value
+                                        amount: bill.payment
                                     }],
-                                    tax: bill.total_taxes[j].taxeId._id
+                                    supplier: body.supplier
                                 });
-                                entryOD.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                            else
+                                entry.credit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
                                     //type: body.mode_reglement_code,
-                                    //supplier: body.supplier,
                                     bills: [{
                                         invoice: bill._id,
-                                        amount: bill.total_taxes[j].value
+                                        amount: bill.payment
                                     }],
-                                    tax: bill.total_taxes[j].taxeId._id
+                                    supplier: body.supplier
                                 });
-                            } else {
-                                // Si avoir
-                                entryOD.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    //type: body.mode_reglement_code,
-                                    //supplier: body.supplier,
-                                    bills: [{
-                                        invoice: bill._id,
-                                        amount: bill.total_taxes[j].value
-                                    }],
-                                    tax: bill.total_taxes[j].taxeId._id
-                                });
-                                entryOD.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    //type: body.mode_reglement_code,
-                                    //supplier: body.supplier,
-                                    bills: [{
-                                        invoice: bill._id,
-                                        amount: bill.total_taxes[j].value
-                                    }],
-                                    tax: bill.total_taxes[j].taxeId._id
-                                });
+
+                            //Migrate TVA to final account
+                            if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
+                                for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
+
+                                if (bill.total_taxes[j].value == 0)
+                                    continue;
+
+                                //console.log(bill.total_taxes[j]);
+
+                                // TVA on payment
+                                if (bill.total_taxes[j].taxeId.isOnPaid == false)
+                                    continue;
+
+                                // TVA on payment
+                                if (bill.total_taxes[j].value > 0) {
+                                    entryOD.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        //type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entryOD.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        //type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                } else {
+                                    // Si avoir
+                                    entryOD.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        //type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entryOD.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        //type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                }
                             }
-                        }
-                    }
 
-                //console.log(entry);
-                wCb(null);
-            },
-            // save transaction
-            function(wCb) {
-                var journal_id = [];
+                            aCb();
+                        });
+                    }, pCb);
+                }
+            ],
+            function(err) {
+                if (err)
+                    return callback(err);
 
-                entry.commit().then(function(journal) {
-                    //console.log(journal);
-                    journal_id.push(journal);
+                async.waterfall([
+                    // save transaction
+                    function(wCb) {
+                        var journal_id = [];
 
-                    // ADD TVA lines
-                    if (entryOD.transactions.length)
-                        return entryOD.commit().then(function(journal) {
+                        entry.commit().then(function(journal) {
+                            //console.log(journal);
                             journal_id.push(journal);
+
+                            // ADD TVA lines
+                            if (entryOD.transactions.length)
+                                return entryOD.commit().then(function(journal) {
+                                    journal_id.push(journal);
+                                    return wCb(null, journal_id);
+                                }, function(err) {
+                                    console.log(err);
+                                    return wCb(null, journal_id);
+                                });
+
                             return wCb(null, journal_id);
                         }, function(err) {
                             console.log(err);
-                            return wCb(null, journal_id);
+                            wCb(err.message);
+                        });
+                    },
+                    // update bills
+                    function(journal, wCb) {
+
+                        //console.log(journal, "toto");
+
+                        //change status bills PAID
+                        if (!body.bills)
+                            return wCb(null, journal);
+
+                        async.forEach(body.bills, function(invoice, cb) {
+                            //console.log("bill", invoice);
+
+                            if (invoice && invoice._id) {
+                                F.functions.BusMQ.publish('invoice:recalculateStatus', user._id, { invoice: { _id: invoice._id } });
+                                return cb();
+                            }
+
+                            return cb();
+
+                        }, function(err) {
+                            return wCb(err, journal);
                         });
 
-                    return wCb(null, journal_id);
-                }, function(err) {
-                    console.log(err);
-                    wCb(err.message);
-                });
-            },
-            // update bills
-            function(journal, wCb) {
+                    },
+                    function(journal, wCb) {
 
-                //console.log(journal, "toto");
+                        //console.log("toto");
 
-                //change status bills PAID
-                if (!body.bills)
-                    return wCb(null, journal);
+                        //change status bills PAID
+                        if (!body.bills_supplier)
+                            return wCb(null, journal);
 
-                async.forEach(body.bills, function(invoice, cb) {
-                    //console.log("bill", invoice);
+                        async.forEach(body.bills_supplier, function(invoice, cb) {
+                            //console.log("bill supplier", invoice);
 
-                    if (invoice && invoice._id) {
-                        F.functions.BusMQ.publish('invoice:recalculateStatus', user._id, { invoice: { _id: invoice._id } });
-                        return cb();
+                            if (invoice && invoice._id) {
+                                F.functions.BusMQ.publish('invoice:recalculateStatus', user._id, { invoice: { _id: invoice._id } });
+                                return cb();
+                            }
+
+                            return cb();
+
+                        }, function(err) {
+                            return wCb(err, journal);
+                        });
                     }
-
-                    return cb();
-
-                }, function(err) {
-                    return wCb(err, journal);
-                });
-
-            },
-            function(journal, wCb) {
-
-                //console.log("toto");
-
-                //change status bills PAID
-                if (!body.bills_supplier)
-                    return wCb(null, journal);
-
-                async.forEach(body.bills_supplier, function(invoice, cb) {
-                    //console.log("bill supplier", invoice);
-
-                    if (invoice && invoice._id) {
-                        F.functions.BusMQ.publish('invoice:recalculateStatus', user._id, { invoice: { _id: invoice._id } });
-                        return cb();
-                    }
-
-                    return cb();
-
-                }, function(err) {
-                    return wCb(err, journal);
-                });
-            }
-        ], callback);
+                ], callback);
+            });
     });
 };
 
