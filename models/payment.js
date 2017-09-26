@@ -84,7 +84,7 @@ paymentSchema.pre('save', function(next) {
     if (this.isNew)
         SeqModel.inc(this.mode_reglement.toUpperCase(), self.datec, function(seq, idx) {
             //console.log(seq);
-            self.ref = self.type.toUpperCase() + seq;
+            self.ref = self.mode_reglement.toUpperCase() + seq;
             self.seq = idx;
 
             next();
