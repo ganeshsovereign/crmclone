@@ -324,44 +324,43 @@ Payment.prototype = {
                 });
 
                 entry.commit().then(function(journal) {
-                    //console.log(journal);
+                        //console.log(journal);
 
-                    async.parallel([
-                        function(pCb) {
-                            payment.Status = "PAID";
-                            payment.journalId.push(journal);
-                            pCb(null, payment);
-                        },
-                        function(pCb) {
-                            let journalIds = _.map(payment.lines, function(elem) {
-                                console.log(elem);
-                                return elem.journalId;
-                            });
-
-                            TransactionModel.update({ 'meta.isWaiting': true, _journal: { $in: journalIds } }, { $set: { 'meta.isWaiting': false, 'meta.journalId': journal._id } }, pCb);
-
-                        }
-                    ], function(err, result) {
-                        payment.save(function(err, doc) {
-                            self.json({
-                                successNotify: {
-                                    title: "Paiement enregistre",
-                                    message: "Piece comptable : " + journal.seq
+                        async.parallel([
+                                function(pCb) {
+                                    payment.Status = "PAID";
+                                    payment.journalId.push(journal);
+                                    pCb(null, payment);
+                                },
+                                function(pCb) {
+                                    async.forEach(payment.lines, function(line, aCb) {
+                                        //console.log(line);
+                                        TransactionModel.update({ 'meta.isWaiting': true, _journal: line.journalId }, { $set: { 'meta.isWaiting': false } }, aCb);
+                                    }, pCb);
                                 }
+                            ],
+                            function(err, result) {
+                                payment.save(function(err, doc) {
+                                    self.json({
+                                        successNotify: {
+                                            title: "Paiement enregistre",
+                                            message: "Piece comptable : " + journal.seq
+                                        }
+                                    });
+                                });
+
                             });
+
+
+
+                    },
+                    function(err) {
+                        return self.json({
+                            errorNotify: {
+                                message: err.message
+                            }
                         });
-
                     });
-
-
-
-                }, function(err) {
-                    return self.json({
-                        errorNotify: {
-                            message: err.message
-                        }
-                    });
-                });
 
                 return console.log(entry);
             });
