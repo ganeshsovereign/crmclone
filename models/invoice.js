@@ -553,7 +553,7 @@ F.on('load', function() {
                 });
 
             TransactionModel.aggregate([{
-                    $match: { "meta.bills.invoice": ObjectId(data.invoice._id), voided: false, "meta.bank": { $ne: null } }
+                    $match: { "meta.bills.invoice": ObjectId(data.invoice._id), voided: false, $or: [{ "meta.bank": { $ne: null } }, { "meta.isWaiting": true }], }
                 }, {
                     $unwind: {
                         path: '$meta.bills'

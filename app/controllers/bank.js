@@ -855,7 +855,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
                     find: {
                         "meta.supplier": params.supplier,
                         "meta.bills": { $ne: null },
-                        "meta.bank": { $ne: null },
+                        $or: [{ "meta.bank": { $ne: null } }, { "meta.isWaiting": true }],
                         voided: false
                     }
                 }
@@ -1069,7 +1069,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
             url: '/erp/api/bank/payment/',
             params: {
                 find: {
-                    "meta.bank": { $ne: null },
+                    $or: [{ "meta.bank": { $ne: null } }, { "meta.isWaiting": true }],
                     "meta.bills.invoice": data,
                     voided: false
                 }
