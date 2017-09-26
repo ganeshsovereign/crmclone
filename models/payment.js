@@ -155,7 +155,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
 
     var SeqModel = MODEL('Sequence').Schema; // Pour le numero de piece automatique
 
-    console.log(options);
+    console.log("payment options", options);
     var body = options;
     var Book = INCLUDE('accounting').Book;
     var myBook = new Book();
@@ -185,6 +185,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
         entryOD.setSeq(seq);
 
         var bills = [];
+        //var bills_supplier = [];
 
         if (body.bills)
             for (var i = 0, len = body.bills.length; i < len; i++)
@@ -258,7 +259,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                     return wCb(null, societe);
 
                 entry.credit('763100', Math.abs(body.penality), "PENALITY", {
-                    type: body.mode_reglement_code,
+                    //type: body.mode_reglement_code,
                     supplier: body.supplier
                 });
 
@@ -270,12 +271,12 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
 
                 if (body.differential > 0)
                     entry.credit('758000', Math.abs(body.differential), "CORRECTION", {
-                        type: body.mode_reglement_code,
+                        //type: body.mode_reglement_code,
                         supplier: body.supplier
                     });
                 else
                     entry.debit('658000', Math.abs(body.differential), "CORRECTION", {
-                        type: body.mode_reglement_code,
+                        //type: body.mode_reglement_code,
                         supplier: body.supplier
                     });
 
@@ -296,14 +297,20 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
 
                         if (bill.payment > 0)
                             entry.credit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
-                                type: body.mode_reglement_code,
-                                invoice: bill._id,
+                                //type: body.mode_reglement_code,
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: bill.payment
+                                }],
                                 supplier: body.supplier
                             });
                         else
                             entry.debit(societe.salesPurchases.customerAccount, Math.abs(bill.payment), null, {
-                                type: body.mode_reglement_code,
-                                invoice: bill._id,
+                                //type: body.mode_reglement_code,
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: bill.payment
+                                }],
                                 supplier: body.supplier
                             });
 
@@ -321,29 +328,41 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
 
                             if (bill.total_taxes[j].value > 0) {
                                 entryOD.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    type: body.mode_reglement_code,
+                                    //type: body.mode_reglement_code,
                                     supplier: body.supplier,
-                                    invoice: bill._id,
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.bill.total_taxes[j].value
+                                    }],
                                     tax: bill.total_taxes[j].taxeId._id
                                 });
                                 entryOD.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    type: body.mode_reglement_code,
+                                    //type: body.mode_reglement_code,
                                     supplier: body.supplier,
-                                    invoice: bill._id,
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.bill.total_taxes[j].value
+                                    }],
                                     tax: bill.total_taxes[j].taxeId._id
                                 });
                             } else {
                                 // Si avoir
                                 entryOD.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    type: body.mode_reglement_code,
+                                    //type: body.mode_reglement_code,
                                     supplier: body.supplier,
-                                    invoice: bill._id,
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.bill.total_taxes[j].value
+                                    }],
                                     tax: bill.total_taxes[j].taxeId._id
                                 });
                                 entryOD.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    type: body.mode_reglement_code,
+                                    //type: body.mode_reglement_code,
                                     supplier: body.supplier,
-                                    invoice: bill._id,
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.bill.total_taxes[j].value
+                                    }],
                                     tax: bill.total_taxes[j].taxeId._id
                                 });
                             }
@@ -359,14 +378,20 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
 
                         if (bill.payment > 0)
                             entry.debit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
-                                type: body.mode_reglement_code,
-                                invoice: bill._id,
+                                //type: body.mode_reglement_code,
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: bill.payment
+                                }],
                                 supplier: body.supplier
                             });
                         else
                             entry.credit(societe.salesPurchases.supplierAccount, Math.abs(bill.payment), null, {
-                                type: body.mode_reglement_code,
-                                invoice: bill._id,
+                                //type: body.mode_reglement_code,
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: bill.payment
+                                }],
                                 supplier: body.supplier
                             });
 
@@ -386,29 +411,41 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             // TVA on payment
                             if (bill.total_taxes[j].value > 0) {
                                 entryOD.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    type: body.mode_reglement_code,
+                                    //type: body.mode_reglement_code,
                                     supplier: body.supplier,
-                                    invoice: bill._id,
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.total_taxes[j].value
+                                    }],
                                     tax: bill.total_taxes[j].taxeId._id
                                 });
                                 entryOD.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    type: body.mode_reglement_code,
+                                    //type: body.mode_reglement_code,
                                     supplier: body.supplier,
-                                    invoice: bill._id,
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.total_taxes[j].value
+                                    }],
                                     tax: bill.total_taxes[j].taxeId._id
                                 });
                             } else {
                                 // Si avoir
                                 entryOD.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    type: body.mode_reglement_code,
+                                    //type: body.mode_reglement_code,
                                     supplier: body.supplier,
-                                    invoice: bill._id,
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.total_taxes[j].value
+                                    }],
                                     tax: bill.total_taxes[j].taxeId._id
                                 });
                                 entryOD.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                    type: body.mode_reglement_code,
+                                    //type: body.mode_reglement_code,
                                     supplier: body.supplier,
-                                    invoice: bill._id,
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.total_taxes[j].value
+                                    }],
                                     tax: bill.total_taxes[j].taxeId._id
                                 });
                             }
@@ -447,50 +484,46 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
 
                 //console.log(journal, "toto");
 
-                var journalId = _.map(journal, function(item) {
-                    return item._id;
+                //change status bills PAID
+                if (!body.bills)
+                    return wCb(null, journal);
+
+                async.forEach(body.bills, function(invoice, cb) {
+                    //console.log("bill", invoice);
+
+                    if (invoice && invoice._id) {
+                        F.functions.BusMQ.publish('invoice:recalculateStatus', user._id, { invoice: { _id: invoice._id } });
+                        return cb();
+                    }
+
+                    return cb();
+
+                }, function(err) {
+                    return wCb(err, journal);
                 });
 
+            },
+            function(journal, wCb) {
+
+                //console.log("toto");
+
                 //change status bills PAID
-                if (body.bills)
-                    async.forEach(body.bills, function(bill, cb) {
-                        return console.log("bill", bill);
+                if (!body.bills_supplier)
+                    return wCb(null, journal);
 
-                        /*if (bill.payment == null)
-                            return cb();
+                async.forEach(body.bills_supplier, function(invoice, cb) {
+                    //console.log("bill supplier", invoice);
 
-                        var status = "STARTED";
-                        if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2))
-                            status = "PAID";
+                    if (invoice && invoice._id) {
+                        F.functions.BusMQ.publish('invoice:recalculateStatus', user._id, { invoice: { _id: invoice._id } });
+                        return cb();
+                    }
 
-                        if (round(bill.payment + bill.total_paid, 2) <= 0)
-                            status = "NOT_PAID";
+                    return cb();
 
-                        BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date() }, $inc: { total_paid: bill.payment }, $addToSet: { journalId: { $each: journalId } } }, function(err, doc) {
-                            // ajouter cb a la fin
-
-                            console.log(doc);
-                        });*/
-                    }, function(err) {
-                        if (err)
-                            console.log(err);
-                    });
-                if (body.bills_supplier)
-                    async.forEach(body.bills_supplier, function(bill, cb) {
-                        /*if (bill.payment == null)
-                            return cb();
-                        //console.log(bill);
-                        var status = "STARTED";
-                        if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2))
-                            status = "PAID";
-                        BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date() }, $inc: { total_paid: bill.payment }, $addToSet: { journalId: { $each: journalId } } }, cb);
-                        */
-                    }, function(err) {
-                        if (err)
-                            console.log(err);
-                    });
-
-                wCb(null, journal);
+                }, function(err) {
+                    return wCb(err, journal);
+                });
             }
         ], callback);
     });

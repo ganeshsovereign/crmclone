@@ -553,30 +553,41 @@ F.on('load', function() {
                 });
 
             TransactionModel.aggregate([{
-                $match: { "meta.invoice": ObjectId(data.invoice._id), voided: false, "meta.type": { $ne: null } }
-            }, {
-                $group: { _id: null, debit: { $sum: "$debit" }, credit: { $sum: "$credit" } }
-            }], function(err, doc) {
-                if (err)
-                    return console.log(err);
-
-                if (!doc || doc.length == 0)
-                    return;
-
-                let payment = doc[0].credit - doc[0].debit;
-
-                var status = "STARTED";
-                if (round(payment, 2) >= round(bill.total_ttc, 2))
-                    status = "PAID";
-
-                if (round(payment, 2) <= 0)
-                    status = "NOT_PAID";
-
-                BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date(), total_paid: payment } }, function(err, doc) {
+                    $match: { "meta.bills.invoice": ObjectId(data.invoice._id), voided: false, "meta.bank": { $ne: null } }
+                }, {
+                    $unwind: {
+                        path: '$meta.bills'
+                    }
+                }, {
+                    $match: { "meta.bills.invoice": ObjectId(data.invoice._id) }
+                }, {
+                    $group: { _id: null, amount: { $sum: "$meta.bills.amount" } }
+                }],
+                function(err, doc) {
                     if (err)
                         return console.log(err);
+
+                    console.log(doc);
+
+                    if (!doc || doc.length == 0)
+                        return;
+
+                    let payment = doc[0].amount;
+                    console.log(payment);
+
+                    var status = "STARTED";
+                    if (round(payment, 2) >= round(bill.total_ttc, 2))
+                        status = "PAID";
+
+                    if (round(payment, 2) <= 0)
+                        status = "NOT_PAID";
+
+                    BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date(), total_paid: payment } }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+                        console.log(doc);
+                    });
                 });
-            });
         });
     });
 });

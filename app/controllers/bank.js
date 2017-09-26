@@ -854,8 +854,8 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
                 params: {
                     find: {
                         "meta.supplier": params.supplier,
-                        //  "meta.bills": { $ne: null }, !!! Bug with LCR
-                        "meta.type": { $ne: null },
+                        "meta.bills": { $ne: null },
+                        "meta.bank": { $ne: null },
                         voided: false
                     }
                 }
@@ -1069,6 +1069,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
             url: '/erp/api/bank/payment/',
             params: {
                 find: {
+                    "meta.bank": { $ne: null },
                     "meta.bills.invoice": data,
                     voided: false
                 }

@@ -86,13 +86,13 @@
                                                     </div>
 
                                                     <div class="form-group form-md-line-input">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.bic">
-                                                        <label for="form_control_1">@(bank:BIC/SWIFT) </label>
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.id">
+                                                        <label for="form_control_1">@(bank:IBAN) </label>
                                                     </div>
 
                                                     <div class="form-group form-md-line-input">
-                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.id">
-                                                        <label for="form_control_1">@(bank:IBAN) </label>
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.bic">
+                                                        <label for="form_control_1">@(bank:BIC/SWIFT) </label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -161,7 +161,7 @@
                             </tab>
 
                             <tab heading="@(orders:BillsSupplier)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor">
-                                <div ng-include="'/templates/bill/list.html'" ng-controller="BillSupplierListController" onload="ngIncludeInit({'supplier': societe._id}, 10)"></div>
+                                <div ng-include="'/templates/bill/listSupplier.html'" ng-controller="BillSupplierListController" onload="ngIncludeInit({'supplier': societe._id}, 10)"></div>
                             </tab>
                             <tab heading="@(orders:InvoicePayment)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor || societe.salesPurchases.isCustomer">
                                 <div class="portlet-body" ng-controller="PaymentController" ng-init="ngIncludeInit({'supplier': societe._id}, 10)">

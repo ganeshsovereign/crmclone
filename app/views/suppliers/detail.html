@@ -103,7 +103,7 @@
                                                 <label for="cond_reglement_code">@(orders:PaymentConditions)</label>
                                             </div>
                                             <div class="form-group form-md-line-input">
-                                                <select class="form-control" id="mode_reglement_code" ng-model="object.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values">
+                                                <select class="form-control" id="mode_reglement_code" ng-model="object.mode_reglement_code" ng-options="s.id as s.label for s in dict.fk_paiement.values" ng-change="update()">
                                                        </select>
                                                 <label for="mode_reglement_code">@(orders:PaymentMode)</label>
                                             </div>
@@ -325,6 +325,15 @@
                         <div class="row static-info align-reverse ">
                             <div class="col-md-5 name bold ">@(AmountTTC) :</div>
                             <div class="col-md-7 value bold ">{{object.total_ttc| currency}}</div>
+                        </div>
+                        <hr>
+                        <div class="row static-info align-reverse ">
+                            <div class="col-md-5 name">@(AmountPaid) :</div>
+                            <div class="col-md-7 value">{{object.total_paid| currency}}</div>
+                        </div>
+                        <div class="row static-info align-reverse ">
+                            <div class="col-md-5 name bold ">@(AmountToPaid) :</div>
+                            <div class="col-md-7 value bold ">{{object.total_ttc - object.total_paid| currency}}</div>
                         </div>
                     </div>
                 </div>

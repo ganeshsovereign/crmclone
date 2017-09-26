@@ -2593,7 +2593,7 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
         function initDatatable(params, length) {
 
             grid.init({
-                src: $("#billList"),
+                src: $("#billSupplierList"),
                 onSuccess: function(grid) {
                     // execute some code after table records loaded
                 },

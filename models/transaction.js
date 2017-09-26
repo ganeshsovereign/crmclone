@@ -26,12 +26,13 @@ var TransationSchema = new Schema({
     debit: Number,
 
     meta: {
+        isWaiting: Boolean, // Waiting bank transfert (CHQ)
         bills: [{
             _id: false,
             amount: Number,
             invoice: { type: Schema.Types.ObjectId, ref: 'invoice' }
         }],
-        invoice: { type: Schema.Types.ObjectId, ref: 'invoice' }, // for single invoice TODO convert in array an remove
+        invoice: { type: Schema.Types.ObjectId, ref: 'invoice' }, // TODO remove after v0.514
         product: { type: Schema.Types.ObjectId, ref: 'product' },
         bank: { type: Schema.Types.ObjectId, ref: 'bank' },
         supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },

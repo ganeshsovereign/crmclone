@@ -1,0 +1,133 @@
+<div class="portlet-body">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="btn-group">
+                    <button class="btn blue" ui-sref="bill.create">@(Add) <i class="fa fa-plus"></i></button>
+                    <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="col-md-4">
+                    <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_bill_status.values" class="form-control">
+                        <option value="">-- @(Status) --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
+                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="btn-group pull-right">
+                    <a class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown">@(Tools) <i class="fa fa-angle-down"></i></a>
+                    <ul class="dropdown-menu pull-right">
+                        <!--    <li>
+                                <a href="#">
+                                    @(Update) </a>
+                            </li>-->
+
+                        <!--<li>
+                            <a href="#">
+                                @(BuildPDF) </a>
+                        </li>-->
+                        <!--<li>
+                            <a ng-show="login.rights.delivery.createBills" ng-confirm-click="@(orders:ConfirmCloseDelivery)" ng-confirm-title="@(orders:CloseDelivery)" confirmed-click="createBills()">
+                                <i class="fa fa-money"></i>
+                                @(orders:CreateBills)
+                            </a>
+                        </li>-->
+                        <li ng-if="societe._id">
+                            <a ng-href="/erp/api/bill/releveFacture/pdf/{{societe._id}}?entity={{entity}}" target="_blank"> @(orders:PaymentStatement) </a>
+                        </li>
+                        <li class="divider">
+                        </li>
+                        <li>
+                            <a href="#" class="font-red" ng-show="login.rights.bill.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les factures ?">
+                                <i class="fa fa-trash-o font-red"></i> @(Delete)
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="dataTables_wrapper no-footer">
+        <table class="table table-bordered dataTable no-footer" id="billSupplierList">
+            <thead>
+                <tr role="row" class="heading">
+                    <th width="2%">
+                        <input type="checkbox" class="group-checkable" />
+                    </th>
+                    <th>Ref.</th>
+                    <th>@(companies:Company)</th>
+                    <th>@(RefCustomer)</th>
+                    <th>@(orders:DateInvoice)</th>
+                    <th>@(orders:DateEcheance)</th>
+                    <th>@(commercial:Commercial)</th>
+                    <th>@(TotalHT)</th>
+                    <th>@(TotalTTC)</th>
+                    <th>@(AmountPaid)</th>
+                    <th>@(Status)</th>
+                    <th>@(companies:Entity)</th>
+                    <th>@(DateModification)</th>
+                </tr>
+                <!--<tr role="row" class="filter">
+                    <td>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-filter input-sm" name="ref">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-filter input-sm" name="societe_name">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-filter input-sm" name="contact_name">
+                    </td>
+                    <td>
+                        <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
+                            <input type="text" class="form-control form-filter input-sm" readonly name="order_date_from" placeholder="From">
+                            <span class="input-group-btn">
+                                <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
+                            </span>
+                        </div>
+                        <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
+                            <input type="text" class="form-control form-filter input-sm" readonly name="order_date_to" placeholder="To">
+                            <span class="input-group-btn">
+                                <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="margin-bottom-5">
+                            <input type="text" class="form-control form-filter input-sm" name="order_price_from" placeholder="From"/>
+                        </div>
+                        <input type="text" class="form-control form-filter input-sm" name="order_price_to" placeholder="To"/>
+                    </td>
+                    <td>
+                        <select name="order_status" class="form-control form-filter input-sm">
+                            <option value="">Select...</option>
+                            <option value="pending">Pending</option>
+                            <option value="closed">Closed</option>
+                            <option value="hold">On Hold</option>
+                            <option value="fraud">Fraud</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-filter input-sm" name="order_ship_to">
+                    </td>
+                    <td>
+                    </td>
+                    
+                    <td>
+                        <div class="margin-bottom-5">
+                            <button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
+                        </div>
+                        <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
+                    </td>
+                </tr>-->
+            </thead>
+        </table>
+    </div>
+</div>

@@ -3317,6 +3317,25 @@ F.on('load', function() {
                 });
             },
             //version 0.514 : convert Object for Transaction model
+            // ATTENTION il faut migrer les banques a la main pour ajouter la bank dans les meta
+            /*
+            db.getCollection('Transaction').update(
+                // query 
+                {
+                    'accounts':"512110"
+                },
+                
+                // update 
+                {
+                    $set : {'meta.bank':ObjectId("586a080bdb5b6948a2ba0c6c")}
+                },
+                
+                // options 
+                {
+                    "multi" : true,  // update only one document 
+                    "upsert" : false  // insert a new document, if no existing document match the query 
+                }
+            );*/
             function(conf, wCb) {
                 if (conf.version >= 0.514)
                     return wCb(null, conf);
@@ -3427,7 +3446,38 @@ F.on('load', function() {
                     aCb();
                 }
 
-                async.waterfall([convertSupplier, convertBills, convertBank, convertProduct], function(err) {
+                function convertInvoiceArray(aCb) {
+                    console.log("convert journal : Invoice to Array");
+                    const TransactionModel = MODEL('transaction').Schema;
+
+                    //Select only objectId()
+                    TransactionModel.find({ "meta.invoice": { $ne: null } })
+                        .populate("meta.invoice")
+                        .exec(function(err, docs) {
+                            if (err)
+                                return console.log(err);
+
+                            docs.forEach(function(doc) {
+
+                                //console.log(bills);
+
+                                var bills = [{
+                                    invoice: doc.meta.invoice._id,
+                                    amount: doc.meta.invoice.total_paid
+                                }];
+
+                                doc.update({ $unset: { "meta.invoice": 1 }, $set: { "meta.bills": bills } }, function(err, doc) {
+                                    if (err)
+                                        console.log(err);
+                                });
+                            });
+
+                        });
+
+                    aCb();
+                }
+
+                async.waterfall([convertSupplier, convertBills, convertBank, convertProduct, convertInvoiceArray], function(err) {
                     if (err)
                         return console.log(err);
 

@@ -833,7 +833,6 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            //Status: {$ne: "PAID"},
             isremoved: { $ne: true },
             entity: self.query.entity,
             forSales: true

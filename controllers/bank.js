@@ -85,7 +85,7 @@ Payment.prototype = {
         if (self.query.find)
             query = JSON.parse(self.query.find);
 
-        console.log('payment read:', query);
+        console.log('payment read:', self.query.find);
 
         TransactionModel.find(query)
             .populate({ path: "meta.supplier", select: "name" })
