@@ -1,3 +1,6 @@
+<div ng-repeat="error in societe.errors" class="alert alert-warning">
+    <strong>Erreur !</strong> {{error}} </div>
+
 <div class="row">
     <div class="col-md-12">
         <div class="form-horizontal form-row-seperated">
@@ -109,6 +112,39 @@
                             </div>
 
                             <div class="col-md-6 col-sm-12">
+                                <form editable-form name="editableInfo" onaftersave="addNote()">
+                                    <div class="portlet light bordered">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                Infos stratégiques
+                                            </div>
+                                            <div class="actions" ng-show="!editableInfo.$visible">
+                                                <a href="#" ng-click="editableInfo.$show()" ng-show="!editableInfo.$visible && editable" class="btn btn-circle btn-default btn-sm" data-original-title="" title="@(Add)"><i class="fa fa-plus"></i>@(Add)</a>
+                                            </div>
+                                            <div class="actions" ng-show="editableInfo.$visible">
+                                                <button type="submit" ng-disabled="editableInfo.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                                                <button type="button" ng-disabled="editableInfo.$waiting" ng-click="editableInfo.$cancel();
+                                                                findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                                            </div>
+
+                                        </div>
+                                        <div class="portlet-body">
+                                            <span editable-select="note.css" e-ng-options="s.id as s.name for s in noteStatus"></span>
+                                            <pre editable-textarea="note.note" e-name="note" e-rows="6" e-cols="400" e-required e-class="form-control"></pre>
+                                            <div class="" style="max-height:400px;overflow-y: auto">
+                                                <div ng-repeat="vnote in societe.notes| orderBy:'-datec'">
+                                                    <div class="note row" ng-class="vnote.css">
+                                                        <h4 class="block col-md-12"><i class="icon-speech"></i> <b>{{vnote.author.username}}</b> - <i>{{ vnote.datec | date:'@(main:date.format.java.dayhour)' }}</i> <span ng-if="login.rights.societe.delete" title="Supprimer note"
+                                                                class="pull-right icon icon-trash" ng-confirm-click="Supprimer la note ?" confirmed-click="removeNote(vnote)"></span></h4>
+                                                        <pre class="col-md-12">{{vnote.note}}</pre>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+
                                 <div class="portlet light bordered">
                                     <div class="form-group form-md-line-input">
                                         <select class="table-group-action-input form-control" id="Language" required ng-model="societe.salesPurchases.language" ng-options="s.idx as s.name for s in $dict.language"></select>

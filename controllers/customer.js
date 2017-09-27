@@ -2001,13 +2001,15 @@ function societe(id, cb) {
 
     //console.log(query);
 
-    SocieteModel.findOne(query, function(err, doc) {
-        if (err)
-            return console.log(err);
+    SocieteModel.findOne(query)
+        .populate("notes.author", "username")
+        .exec(function(err, doc) {
+            if (err)
+                return console.log(err);
 
-        //console.log(doc);
-        cb(doc);
-    });
+            //console.log(doc);
+            cb(doc);
+        });
 }
 
 Object.prototype = {
@@ -2971,6 +2973,7 @@ Object.prototype = {
             entity: {
                 $in: ["ALL", req.query.entity]
             },
+            isremoved: { $ne: true },
             "commercial_id.name": {
                 $ne: null
             }

@@ -1,5 +1,5 @@
-<div ng-if="employee.isremoved" class="alert alert-danger">
-    <strong>@(BeCareful)</strong>&nbsp;@(companies:CompanyDeleted)</div>
+<div ng-if="societe.isremoved" class="alert alert-danger">
+    <strong>@(BeCareful)</strong>@(companies:CompanyDeleted)</div>
 
 <div class="page-bar" ng-init="findOne()">
     <ul class="page-breadcrumb">
@@ -26,7 +26,7 @@
             <small ng-hide="!societe.salesPurchases.isActive" class="font-yellow-crusta sbold">@(Enabled)</small><small ng-show="!societe.salesPurchases.isActive" class="font-red">@(Disabled)</small>
         </li>
     </ul>
-    <div class="page-toolbar">
+    <div class="page-toolbar" ng-hide="societe.isremoved">
         <div class="btn-group">
             <a class="btn yellow-crusta dropdown-toggle uppercase" href="javascript:;" data-toggle="dropdown">
                 <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>

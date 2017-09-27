@@ -280,12 +280,13 @@ var customerSchema = new Schema({
     },
 
     notes: [{
+        _id: false,
         note: String,
         title: String,
         task: { type: ObjectId, ref: 'DealTasks' },
         attachment: {},
         datec: { type: Date, default: Date.now },
-        author: { type: ObjectId, ref: 'User' },
+        author: { type: ObjectId, ref: 'Users' },
         css: { type: String, default: "note-info" }
     }],
 
@@ -539,9 +540,9 @@ customerSchema.virtual('errors')
     .get(function() {
         var errors = [];
 
-        if (!this.cond_reglement)
+        if (!this.salesPurchases.cond_reglement)
             errors.push(i18n.t("companies:ErrEmptyReglement"));
-        if (!this.mode_reglement)
+        if (!this.salesPurchases.mode_reglement)
             errors.push(i18n.t("companies:ErrEmptyCondition"));
 
         //Check Valid IBAN
