@@ -810,17 +810,14 @@ Object.prototype = {
         var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
 
-        //var dateStart = moment().startOf('year').subtract(1, 'year').startOf('day').toDate();
-        //var dateStart = moment().startOf('month').subtract(1, 'month').toDate(); For testing
-        //var dateEnd = moment().endOf('year').endOf('day').toDate();
-
         var dateStart = moment(self.query.start).startOf('day').toDate();
         var dateEnd = moment(self.query.end).endOf('day').toDate();
 
         var query = {
             Status: { '$ne': 'DRAFT' },
             datec: { '$gte': dateStart, '$lte': dateEnd },
-            forSales: true
+            forSales: true,
+            isremoved: { $ne: true }
         };
 
         //console.log(self.query);
@@ -828,215 +825,130 @@ Object.prototype = {
             query.entity = self.query.entity;
 
         var commercial = {};
+
         if (self.query.commercial)
-            commercial["commercial_id.id"] = self.query.commercial;
+            commercial["salesPerson"] = self.query.commercial;
         else
-        //commercial["commercial_id.id"] = { $ne: null };
-            return self.json([]);
+            commercial["salesPerson"] = { $ne: null };
+        //return self.json([]);
 
-        //console.log(commercial, query);
+        console.log(commercial, query);
 
-        // get customer list
-        BillModel.find({ $and: [query, commercial] }).distinct('client.name', function(err, ids) {
+        async.waterfall([
+            function(cb) {
+                BillModel.aggregate([
+                    { $match: { $and: [query, commercial] } },
+                    { $unwind: "$lines" },
+                    { $project: { _id: 0, salesPerson: 1, supplier: 1, total_ht: 1, lines: 1, datec: 1, month: { $month: "$datec" }, year: { $year: "$datec" } } },
+                    { $group: { _id: { salesPerson: "$salesPerson", year: "$year", month: "$month", productId: "$lines.product" }, total_ht: { "$sum": "$lines.total_ht" } } },
+                    {
+                        $lookup: {
+                            from: 'Product',
+                            localField: '_id.productId',
+                            foreignField: '_id',
+                            as: 'product'
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$product'
+                        }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            total_ht: 1,
+                            'product._id': 1,
+                            'product.sellFamily': 1,
+                        }
+                    }, {
+                        $group: { _id: { salesPerson: "$_id.salesPerson", year: "$_id.year", month: "$_id.month", familyId: "$product.sellFamily" }, total_ht: { "$sum": "$total_ht" } }
+                    }, { $sort: { "_id.salesPerson": 1, "_id.year": 1, "_id.month": 1 } }
+                ], function(err, doc) {
+                    if (err)
+                        return cb(err);
+
+                    //return console.log(doc);
+
+                    cb(err, _.map(doc, function(elem) {
+                        //console.log(elem);
+                        elem.year = elem._id.year;
+                        elem.month = elem._id.month;
+                        elem.societe = elem._id.salesPerson;
+                        elem.caFamily = elem._id.familyId.toString();
+                        elem._id = elem.year + '_' + elem.month;
+                        return elem;
+                    }));
+                });
+            }
+        ], function(err, result) {
             if (err)
                 return console.log(err);
-            //console.log(ids);
-            ids = _.map(ids, function(elem) {
-                return { name: elem, data: [] };
-            });
 
-            //ids = [{name: 'PGDIS SPACETIQUE',data: []}];
+            return console.log(result);
 
-            //ids = _.chunk(ids, 5);
-            //console.log(ids[3]);
+            var output = [];
+            var family = [];
 
-            async.map(ids, function(societe, callback) {
+            async.eachSeries(result, function(elems, callback) {
+                //console.log(elems);
 
-                async.waterfall([
-                    function(cb) {
-                        BillModel.aggregate([
-                            { $match: query },
-                            { $match: { "client.name": societe.name } },
-                            { $unwind: "$lines" },
-                            { $project: { _id: 0, commercial_id: 1, client: 1, total_ht: 1, lines: 1, datec: 1, month: { $month: "$datec" }, year: { $year: "$datec" } } },
-                            { $group: { _id: { year: "$year", month: "$month", productId: "$lines.product.id" }, total_ht: { "$sum": "$lines.total_ht" } } },
-                            { $sort: { "_id.societe": 1, "_id.year": 1, "_id.month": 1 } }
-                        ], function(err, doc) {
-                            if (err)
-                                return cb(err);
+                var outTemp = [];
 
-                            cb(err, _.map(doc, function(elem) {
-                                //console.log(elem);
-                                elem.year = elem._id.year;
-                                elem.month = elem._id.month;
-                                elem.societe = societe.name;
-                                elem.productId = elem._id.productId.toString();
-                                elem._id = elem.year + '_' + elem.month;
-                                return elem;
-                            }));
-                        });
-                    },
-                    function(results, cb) {
-                        // get unique product ID
-                        var productList = _.map(_.uniq(results, 'productId'), function(elem) {
-                            return elem.productId;
-                        });
-                        //console.log(productList);
-
-                        cb(null, productList, results);
-                    },
-                    function(productList, results, callback) {
-                        // Get product Family form product ID
-                        ProductModel.find({ _id: { $in: productList } }, "_id caFamily", function(err, doc) {
-                            doc = _.indexBy(doc, '_id');
-                            //console.log(doc);
-
-                            callback(err, doc, results);
-                        });
-                    },
-                    function(family, results, callback) {
-                        // Merge caFamily
-                        //console.log(results);
-                        var res = _.map(results, function(elem) {
-                            //console.log(elem);
-                            if (family[elem.productId.toString()])
-                                elem.caFamily = family[elem.productId.toString()].caFamily;
-                            else
-                                elem.caFamily = 'OTHER';
-                            return elem;
-                        });
-
-                        callback(null, res);
-                    },
-                    function(results, callback) {
-                        // Group CA By Family
-                        //console.log("reduce");
-
-                        if (results.length > 1) {
-                            var res = _.reduce(results, function(result, elem, key) {
-                                //console.log(key);
-                                //return console.log(result);
-                                var first;
-
-                                if (key == 1) { // first element
-
-                                    first = result;
-
-                                    result = {};
-
-                                    if (!result[first._id])
-                                        result[first._id] = {};
-
-                                    if (!first.caFamily)
-                                        first.caFamily = 'OTHER';
-
-                                    if (!result[first._id][first.caFamily])
-                                        result[first._id][first.caFamily] = first;
-
-                                }
-
-                                if (!result[elem._id])
-                                    result[elem._id] = {};
-
-                                if (!elem.caFamily)
-                                    elem.caFamily = 'OTHER';
-
-                                if (!result[elem._id][elem.caFamily])
-                                    result[elem._id][elem.caFamily] = elem;
-                                else
-                                    result[elem._id][elem.caFamily].total_ht += elem.total_ht;
-
-                                return result;
-                            });
-                        } else {
-                            var res = {};
-
-                            res[results[0]._id] = {};
-                            if (!results[0].caFamily)
-                                results[0].caFamily = 'OTHER';
-                            res[results[0]._id][results[0].caFamily] = results[0];
-
-                            //console.log("only One !!!!");
-                            //console.log(res);
-                        }
-
-                        //console.log(res);
-                        callback(null, res);
-                    }
+                async.forEachOfSeries(elems, function(elem, key, callback) {
+                    //console.log(key);
 
 
-                ], function(err, result) {
-                    if (err)
-                        return console.log(err);
-
-                    //console.log(result);
-
-                    var output = [];
-                    var family = [];
-
-                    async.eachSeries(result, function(elems, callback) {
-                        //console.log(elems);
-
-                        var outTemp = [];
-
-                        async.forEachOfSeries(elems, function(elem, key, callback) {
-                            //console.log(key);
-
-
-                            elem[key] = elem.total_ht;
-                            delete elem.productId;
-                            family.push(elem.caFamily);
-                            delete elem.caFamily;
-                            elem.name = elem.month + "-" + elem.year;
+                    elem[key] = elem.total_ht;
+                    delete elem.productId;
+                    family.push(elem.caFamily);
+                    delete elem.caFamily;
+                    elem.name = elem.month + "-" + elem.year;
 
 
 
-                            callback(null);
+                    callback(null);
 
-                        }, function(err) {
+                }, function(err) {
 
 
-                            elems = _.values(elems); // convert object to array
+                    elems = _.values(elems); // convert object to array
 
-                            var res = _.reduce(elems, function(result, elem, key) {
+                    var res = _.reduce(elems, function(result, elem, key) {
 
-                                result.total_ht += elem.total_ht;
-                                result = _.defaults(result, elem);
+                        result.total_ht += elem.total_ht;
+                        result = _.defaults(result, elem);
 
-                                //console.log(key);
-                                //console.log(result);
+                        //console.log(key);
+                        //console.log(result);
 
-                                return result;
-                            });
-
-                            //console.log(res);
-
-                            output.push(res);
-                            callback(err);
-                        });
-
-                    }, function(err) {
-
-                        //console.log(output);
-                        societe.data = output;
-                        societe.family = _.uniq(family);
-
-                        callback(err);
+                        return result;
                     });
 
-                    //TODO Regrouper les lignes pour faire un seul tableau et listes les familles dans un 2eme champs !!!
+                    //console.log(res);
 
-
+                    output.push(res);
+                    callback(err);
                 });
+
             }, function(err) {
-                if (err)
-                    return console.log(err);
-                //console.log(ids[0]);
-                console.log("end Stats clients");
-                self.json(ids);
+
+                //console.log(output);
+                societe.data = output;
+                societe.family = _.uniq(family);
+
+                callback(err);
             });
 
+            //TODO Regrouper les lignes pour faire un seul tableau et listes les familles dans un 2eme champs !!!
+
+
         });
+        /* }, function(err) {
+             if (err)
+                 return console.log(err);
+             //console.log(ids[0]);
+             console.log("end Stats clients");
+             self.json(ids);
+         });*/
     },
     detailsClientCsv: function() {
         var self = this;

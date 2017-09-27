@@ -1470,6 +1470,11 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
             $scope.find();
         });
 
+        $scope.date = {
+            start: moment().startOf('year').subtract(3, 'year').toDate(),
+            end: moment().endOf('year').subtract('year').toDate()
+        };
+
         // Estimated https://handsontable.com/features.html
 
         var products = [{
@@ -1539,22 +1544,19 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
         var dataF = new dataFactory();
 
         $scope.find = function() {
-
-            //console.log(dataF.generateArrayOfObjects(10));
-
             $http({
                 method: 'GET',
                 url: '/erp/api/stats/DetailsClient',
                 params: {
                     entity: $rootScope.entity,
-                    commercial: ($scope.commercial ? $scope.commercial.id : null)
+                    commercial: ($scope.commercial ? $scope.commercial.id : null),
+                    start: $scope.date.start,
+                    end: $scope.date.end
                 }
             }).success(function(data, status) {
-                console.log(data);
+                //console.log(data);
                 $scope.dataClients = data;
             });
-
-
 
         };
 
@@ -1578,6 +1580,12 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
                 console.log("change");
                 console.log(err, data);
             }
+        };
+
+        // This month
+        $scope.date = {
+            start: moment().startOf('month').toDate(),
+            end: moment().endOf('month').toDate()
         };
 
     }
