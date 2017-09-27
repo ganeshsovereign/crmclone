@@ -220,7 +220,7 @@ Payment.prototype = {
         payment.createdBy = self.user._id;
         payment.mode_reglement = type.toUpperCase();
 
-        //console.log(self.body);
+        //return console.log(self.body);
 
         payment.save(function(err, doc) {
             if (err)
@@ -390,93 +390,6 @@ Payment.prototype = {
 
                 //return console.log(line);
 
-                /*{ mode: 'Receipt',
-  entity: 'otcconcept',
-  datec: '2017-09-26T07:39:13.675Z',
-  penality: 0,
-  differential: 0,
-  bills: 
-   [ { _id: '59c51b5d3ecc766c40fa6b4b',
-       ref: 'FA1709-003657',
-       ID: 3657,
-       dater: '2017-11-21T11:02:02.577Z',
-       createdAt: '2017-09-22T14:17:01.532Z',
-       updatedAt: '2017-09-26T07:14:23.024Z',
-       entity: 'otcconcept',
-       supplier: [Object],
-       salesPerson: '59c1103daffa55394713b736',
-       __v: 1,
-       createdBy: '57b2d5fc75d934ac365036e7',
-       lines: [Object],
-       weight: 3.2640000000000002,
-       address: [Object],
-       delivery_mode: 'SHIP_STANDARD',
-       shipping: [Object],
-       total_paid: 0,
-       total_ttc: 123.96,
-       total_taxes: [Object],
-       correction: 0,
-       total_ht: 103.3,
-       discount: [Object],
-       notes: [Object],
-       datec: '2017-09-22T14:02:02.577Z',
-       orders: [Object],
-       journalId: [Object],
-       imported: false,
-       ref_client: '',
-       contacts: [],
-       type: 'INVOICE_AUTO',
-       mode_reglement_code: 'LCR',
-       cond_reglement_code: '60D',
-       Status: 'VALIDATED',
-       currency: [Object],
-       forSales: true,
-       amount: 123.96,
-       _status: [Object],
-       id: '59c51b5d3ecc766c40fa6b4b',
-       payment: 123.96 } ],
-  bills_supplier: [],
-  supplier: '583ffed1c94c707f72398bc6',
-  libelleAccounting: 'LCR PHARMACIE SAINTE CATHERINE',
-  mode_reglement_code: 'LCR',
-  bank: 
-   { _id: '586a080bdb5b6948a2ba0c6c',
-     ref: 'SG',
-     libelle: 'SOCIETE GENERALE',
-     currency: 'EUR',
-     country: 'FR',
-     code_bank: 30003,
-     code_counter: '03954',
-     account_number: '00027000086',
-     compta_bank: '512110',
-     journalId: 'SG',
-     min_balance_allowed: 10000,
-     min_balance_required: 2000,
-     author: { name: 'admin', id: 'user:admin' },
-     __v: 0,
-     name_bank: 'SG',
-     bic: 'SOGEFRPP',
-     town: '',
-     zip: '',
-     address: '',
-     entity: [ 'otcconcept' ],
-     iban: 'FR7630003039540002700008680',
-     acc_country: '',
-     acc_type: { css: '' },
-     name: 'SG (SG 00027000086)',
-     acc_status: { css: '' },
-     id: '586a080bdb5b6948a2ba0c6c' },
-  amount: 123.96 }
-*/
-
-                /*if (payment.lines[self.body.idx].bill._id.toString() != self.body.id) // checked good bill._id
-                    return self.json({
-                    errorNotify: {
-                        title: 'Erreur',
-                        message: "Le numero de la facture ne correspond pas"
-                    }
-                });*/
-
                 var options = {
                     //entity: null,
                     // mode = payment -> It was rejected
@@ -486,12 +399,14 @@ Payment.prototype = {
                     bank: payment.bank_reglement,
                     mode_reglement_code: payment.mode_reglement,
                     pieceAccounting: "",
-                    bills: line.bills, // Analyser ici !!!!!!!!
-                    //supplier: line.supplier
+                    bills: [],
+                    supplier: line.supplier
                 };
 
-                for (var i = 0; i < line.bills.length; i++)
+                for (var i = 0; i < line.bills.length; i++) {
+                    options.bills[i] = line.bills[i].invoice.toObject();
                     options.bills[i].payment = line.bills[i].amount * -1;
+                }
 
                 //console.log(options);
                 //return;

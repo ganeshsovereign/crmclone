@@ -1437,7 +1437,9 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
             method: 'POST',
             url: '/erp/api/bank/payment/chq/reject/' + $scope.group._id,
             data: {
-                id: $scope.group.lines[idx].bill._id,
+                bills: $scope.group.lines[idx].bills,
+                supplier: $scope.group.lines[idx].supplier._id,
+                entity: $scope.group.entity,
                 idx: idx,
                 reason: reason
             }

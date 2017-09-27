@@ -269,7 +269,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                         if (bill.payment == null)
                             return aCb();
 
-                        //console.log(bill);
+                        //return console.log(bill);
 
                         if (!bill.supplier)
                             return aCb('Societe inconnue !');
