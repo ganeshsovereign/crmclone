@@ -3260,6 +3260,9 @@ F.on('load', function() {
                                     if (!doc)
                                         doc = new PaymentModel(lcr);
 
+                                    delete lcr.__v;
+
+                                    doc = _.extend(doc, lcr);
                                     doc.mode_reglement = "LCR";
 
                                     async.forEach(lcr.lines, function(line, cb) {
@@ -3501,6 +3504,76 @@ F.on('load', function() {
                 }
 
                 async.waterfall([convertSeqFF, convertSupplier, convertBills, convertBank, convertProduct, convertInvoiceArray], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.514 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.514));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            },
+            //Version 0.515 : Fix error convert LCR
+            function(conf, wCb) {
+                if (conf.version >= 0.515)
+                    return wCb(null, conf);
+
+                //Old convert first
+                function convertLCR(aCb) {
+                    console.log("convert lcr model");
+                    const PaymentModel = MODEL('payment').Schema;
+                    const BillModel = MODEL('invoice').Schema;
+
+                    mongoose.connection.db.collection('Lcr', function(err, collection) {
+                        collection.find({}).toArray(function(err, lcrs) {
+                            if (err)
+                                return console.log(err);
+
+                            if (!lcrs)
+                                return aCb();
+
+                            async.forEachSeries(lcrs, function(lcr, eCb) {
+
+                                PaymentModel.findById(lcr._id, function(err, doc) {
+                                    if (err)
+                                        return eCb(err);
+
+                                    if (!doc)
+                                        return eCb("LCR not found");
+
+                                    doc = _.extend(doc, { ref: lcr.ref, seq: lcr.seq });
+                                    doc.mode_reglement = "LCR";
+
+                                    //console.log(doc);
+
+                                    doc.save(eCb);
+                                });
+
+                                //Select only objectId()
+                                //OrderModel.update({ Status: 'CLOSED' }, { $set: { Status: "BILLED" } }, { multi: true }, aCb);
+                            }, aCb);
+                        });
+
+                    });
+                }
+
+                function dropCollectionEnd(aCb) {
+                    var collectionName = ['Lcr'];
+
+                    _.each(collectionName, function(collection) {
+                        mongoose.connection.db.dropCollection(collection, function(err, result) {
+                            console.log(result);
+                        });
+                    });
+
+                    aCb(null);
+                }
+
+                async.waterfall([convertLCR, dropCollectionEnd], function(err) {
                     if (err)
                         return console.log(err);
 
