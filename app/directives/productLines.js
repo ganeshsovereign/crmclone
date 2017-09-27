@@ -15,7 +15,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                 ngChange: '&'
             },
             templateUrl: function(el, attr) {
-                console.log(attr);
+                //console.log(attr);
 
                 if (attr.ngTemplate)
                     return attr.ngTemplate;
@@ -26,7 +26,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
             },
             link: function(scope, elem, attrs, ngModel) {
 
-                //console.log(scope);
+                console.log(scope);
 
                 //Used in delivery
                 scope.min = function(val1, val2) {
@@ -64,6 +64,9 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                     for (var i = 0; i < lines.length; i++) {
                         if (lines[i].idLine === index) {
                             lines[i] = {
+                                _id: lines[i]._id,
+                                order: lines[i].order,
+
                                 type: 'product',
                                 pu_ht: data.prices.price,
                                 total_taxes: data.taxes,
@@ -79,7 +82,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                                         //family: data.product.id.caFamily
                                 },
                                 description: (lines[i].description ? lines[i].description : data.info.langs[0].description),
-                                isNew: true,
+                                isNew: (lines[i]._id ? false : true),
                                 qty: lines[i].qty || 0,
                                 //qty_order: lines[i].qty_order, // qty from order
                                 idLine: index
