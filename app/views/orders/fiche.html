@@ -256,11 +256,11 @@
                         <i class="fa fa-envelope "></i> @(mails:SendMail)
                     </a>
                 </li>
-                <!--<li>
-                    <a href="# " class="font-red " ng-if="object.Status=='DRAFT' && login.rights.order.delete " confirmed-click="remove(orders) " ng-confirm-click="Supprimer le document ? " title="Supprimer le document ">
+                <li>
+                    <a href="# " class="font-red " ng-if="object.Status=='DRAFT' && login.rights.bill.delete " confirmed-click="remove(object) " ng-confirm-click="Supprimer le document ? " title="Supprimer le document ">
                         <i class="fa fa-trash-o font-red "></i> @(Delete)
                     </a>
-                </li>-->
+                </li>
             </ul>
             <!-- __STOCKRETURN__ -->
             <ul ng-if="module( 'stockreturn') " class="dropdown-menu pull-right " role="menu ">
