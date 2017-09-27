@@ -123,7 +123,7 @@
                                             <td>{{line.createdAt | date : "shortDate"}}</td>
                                             <td>
                                                 <a class="btn green fa fa-pencil" ui-sref="product.family.show({id:line._id})" title="Editer"></a>
-                                                <button ng-if="line.countProducts == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
+                                                <button ng-if="line.countCostProducts == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteFamily)" confirmed-click="remove(line)"></button>
                                             </td>
                                         </tr>
                                     </tbody>

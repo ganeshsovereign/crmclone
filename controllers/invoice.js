@@ -522,9 +522,12 @@ Object.prototype = {
                         if (!lineBill.product.sellFamily.accounts.length)
                             return callback("Error family " + lineBill.product.sellFamily.langs[0].name + " no accounts !");
 
+                        var compta_sell;
+                        //if (lineBill.product.sellFamily.accounts.length)
+                        compta_sell = lineBill.product.sellFamily.accounts[0].account;
 
-                        var compta_sell = lineBill.product.sellFamily.accounts[0].account;
-                        //TODO get compta_sell from Family
+                        //if (product.compta_sell)
+                        //    compta_sell = product.compta_sell;
 
                         if (bill.address.country !== "FR")
                             return callback("Error supplier not in France");
@@ -623,185 +626,192 @@ Object.prototype = {
                 return callback(); // Not a supplier invoice
 
             async.waterfall([
-                function(cb) {
+                    function(cb) {
 
-                    // TODO Notify
-                    // TODO Add accounting
-                    var Book = INCLUDE('accounting').Book;
-                    var myBook = new Book();
-                    //myBook.setEntity(bill.entity);
-                    myBook.setName('ACH');
+                        // TODO Notify
+                        // TODO Add accounting
+                        var Book = INCLUDE('accounting').Book;
+                        var myBook = new Book();
+                        //myBook.setEntity(bill.entity);
+                        myBook.setName('ACH');
 
-                    // You can specify a Date object as the second argument in the book.entry() method if you want the transaction to be for a different date than today
-                    var entry = myBook.entry(bill.supplier.fullName, bill.datec, self.user._id) // libelle, date
-                        .setSeq(bill.ID); // numero de piece
+                        // You can specify a Date object as the second argument in the book.entry() method if you want the transaction to be for a different date than today
+                        var entry = myBook.entry(bill.supplier.fullName, bill.datec, self.user._id) // libelle, date
+                            .setSeq(bill.ID); // numero de piece
 
-                    // Add amount to client account
-                    if (bill.total_ttc >= 0)
-                        entry.credit(bill.supplier.salesPurchases.supplierAccount, bill.total_ttc, null, {
-                            supplier: bill.supplier._id,
-                            bills: [{
-                                invoice: bill._id,
-                                amount: bill.total_ttc
-                            }]
-                        });
-                    else
-                        entry.debit(bill.supplier.salesPurchases.supplierAccount, Math.abs(bill.total_ttc), null, {
-                            supplier: bill.supplier._id,
-                            bills: [{
-                                invoice: bill._id,
-                                amount: bill.total_ttc
-                            }]
-                        });
+                        // Add amount to client account
+                        if (bill.total_ttc >= 0)
+                            entry.credit(bill.supplier.salesPurchases.supplierAccount, bill.total_ttc, null, {
+                                supplier: bill.supplier._id,
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: bill.total_ttc
+                                }]
+                            });
+                        else
+                            entry.debit(bill.supplier.salesPurchases.supplierAccount, Math.abs(bill.total_ttc), null, {
+                                supplier: bill.supplier._id,
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: bill.total_ttc
+                                }]
+                            });
 
-                    cb(null, entry);
-                },
-                function(entry, cb) {
+                        cb(null, entry);
+                    },
+                    function(entry, cb) {
 
-                    // Add product lines
-                    // compact product lines
+                        // Add product lines
+                        // compact product lines
 
-                    var productLines = _.compact(_.map(bill.lines, function(line) {
-                        if (!line.product)
-                            return null;
+                        var productLines = _.compact(_.map(bill.lines, function(line) {
+                            if (!line.product)
+                                return null;
 
-                        return {
-                            id: line.product._id.toString(),
-                            product: line.product,
-                            total_ht: line.total_ht
+                            return {
+                                id: line.product._id.toString(),
+                                product: line.product,
+                                total_ht: line.total_ht
+                            }
+                        }));
+
+                        var out = {};
+                        for (var i = 0, len = productLines.length; i < len; i++) {
+                            if (out[productLines[i].id])
+                                out[productLines[i].id].total_ht += productLines[i].total_ht;
+                            else
+                                out[productLines[i].id] = {
+                                    id: productLines[i].id,
+                                    product: productLines[i].product,
+                                    total_ht: productLines[i].total_ht
+                                };
                         }
-                    }));
 
-                    var out = {};
-                    for (var i = 0, len = productLines.length; i < len; i++) {
-                        if (out[productLines[i].id])
-                            out[productLines[i].id].total_ht += productLines[i].total_ht;
-                        else
-                            out[productLines[i].id] = {
-                                id: productLines[i].id,
-                                product: productLines[i].product,
-                                total_ht: productLines[i].total_ht
-                            };
-                    }
+                        var arr = _.values(out); // convert object to array
+                        //console.log(productLines, arr);
 
-                    var arr = _.values(out); // convert object to array
-                    //console.log(productLines, arr);
+                        async.each(arr, function(lineBill, callback) {
+                            ProductModel.findOne({ _id: lineBill.id }, "ref compta_buy compta_buy_eu compta_buy_exp", function(err, product) {
 
-                    async.each(arr, function(lineBill, callback) {
+                                if (!lineBill.product.costFamily)
+                                    return callback("Error no family cost on product {0} !".format(lineBill.product.info.SKU));
 
-                        if (!lineBill.product.costFamily)
-                            return callback("Error no family cost on product {0} !".format(lineBill.product.info.SKU));
-
-                        if (!lineBill.product.costFamily.accounts.length)
-                            return callback("Error family " + lineBill.costFamily.langs[0].name + " no accounts !");
+                                if (!lineBill.product.costFamily.accounts.length && !product.compta_buy)
+                                    return callback("Error family " + lineBill.costFamily.langs[0].name + " no accounts !");
 
 
-                        var compta_buy = lineBill.product.costFamily.accounts[0].account;
-                        //TODO get compta_sell from Family
+                                var compta_buy;;
+                                if (lineBill.product.costFamily.accounts.length)
+                                    compta_buy = lineBill.product.costFamily.accounts[0].account;
 
-                        if (bill.address.country !== "FR")
-                            return callback("Error supplier not in France");
+                                if (product.compta_buy)
+                                    compta_buy = product.compta_buy;
+
+                                if (bill.address.country !== "FR")
+                                    return callback("Error supplier not in France");
 
 
-                        if (lineBill.total_ht > 0)
-                            entry.debit(compta_buy, lineBill.total_ht, null, {
-                                product: lineBill.product._id,
-                                supplier: bill.supplier._id,
-                                bills: [{
-                                    invoice: bill._id,
-                                    amount: lineBill.total_ht
-                                }]
-                            });
-                        else
-                            entry.credit(compta_buy, Math.abs(lineBill.total_ht), null, {
-                                product: lineBill.product._id,
-                                supplier: bill.supplier._id,
-                                bills: [{
-                                    invoice: bill._id,
-                                    amount: lineBill.total_ht
-                                }]
+                                if (lineBill.total_ht > 0)
+                                    entry.debit(compta_buy, lineBill.total_ht, null, {
+                                        product: lineBill.product._id,
+                                        supplier: bill.supplier._id,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: lineBill.total_ht
+                                        }]
+                                    });
+                                else
+                                    entry.credit(compta_buy, Math.abs(lineBill.total_ht), null, {
+                                        product: lineBill.product._id,
+                                        supplier: bill.supplier._id,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: lineBill.total_ht
+                                        }]
+                                    });
+
+                                callback();
                             });
 
-                        callback();
+                        }, function(err) {
+                            if (err)
+                                return cb(err);
 
-                    }, function(err) {
-                        if (err)
-                            return cb(err);
+                            //lignes TVA
+                            for (var i = 0; i < bill.total_taxes.length; i++) {
+                                //console.log(bill.total_taxes[i]);
 
-                        //lignes TVA
-                        for (var i = 0; i < bill.total_taxes.length; i++) {
-                            //console.log(bill.total_taxes[i]);
+                                //No tva
+                                if (bill.total_taxes[i].value == 0)
+                                    continue;
 
-                            //No tva
-                            if (bill.total_taxes[i].value == 0)
-                                continue;
+                                if (!bill.total_taxes[i].taxeId.buyAccount)
+                                    return cb("Compta Taxe inconnu : " + bill.total_taxes[i].taxeId.code);
 
-                            if (!bill.total_taxes[i].taxeId.buyAccount)
-                                return cb("Compta Taxe inconnu : " + bill.total_taxes[i].taxeId.code);
+                                var buyAccount = bill.total_taxes[i].taxeId.buyAccount;
 
-                            var buyAccount = bill.total_taxes[i].taxeId.buyAccount;
+                                if (bill.total_taxes[i].taxeId.isOnPaid)
+                                    buyAccount = "445640"; //Waiting account
 
-                            if (bill.total_taxes[i].taxeId.isOnPaid)
-                                buyAccount = "445640"; //Waiting account
+                                if (bill.total_taxes[i].value >= 0)
+                                    entry.debit(buyAccount, bill.total_taxes[i].value, bill.total_taxes[i].taxeId.code, {
+                                        tax: bill.total_taxes[i].taxeId._id,
+                                        supplier: bill.supplier._id,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[i].value
+                                        }]
+                                    });
+                                else
+                                    entry.credit(buyAccount, Math.abs(bill.total_taxes[i].value), bill.total_taxes[i].taxeId.code, {
+                                        tax: bill.total_taxes[i].taxeId._id,
+                                        supplier: bill.supplier._id,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[i].value
+                                        }]
+                                    });
 
-                            if (bill.total_taxes[i].value >= 0)
-                                entry.debit(buyAccount, bill.total_taxes[i].value, bill.total_taxes[i].taxeId.code, {
-                                    tax: bill.total_taxes[i].taxeId._id,
+                            }
+                            cb(err, entry);
+                        });
+                    },
+                    function(entry, cb) {
+                        console.log(entry);
+
+                        //Apply correction if needed
+                        if (bill.correction !== 0) {
+                            if (bill.correction >= 0)
+                                entry.debit("658000", bill.correction, "CORRECTION", {
+                                    label: "CORRECTION",
                                     supplier: bill.supplier._id,
                                     bills: [{
                                         invoice: bill._id,
-                                        amount: bill.total_taxes[i].value
+                                        amount: bill.correction
                                     }]
                                 });
                             else
-                                entry.credit(buyAccount, Math.abs(bill.total_taxes[i].value), bill.total_taxes[i].taxeId.code, {
-                                    tax: bill.total_taxes[i].taxeId._id,
+                                entry.credit("658000", Math.abs(bill.correction), "CORRECTION", {
+                                    label: "CORRECTION",
                                     supplier: bill.supplier._id,
                                     bills: [{
                                         invoice: bill._id,
-                                        amount: bill.total_taxes[i].value
+                                        amount: bill.correction
                                     }]
                                 });
-
                         }
-                        cb(err, entry);
-                    });
-                },
-                function(entry, cb) {
-                    console.log(entry);
 
-                    //Apply correction if needed
-                    if (bill.correction !== 0) {
-                        if (bill.correction >= 0)
-                            entry.debit("658000", bill.correction, "CORRECTION", {
-                                label: "CORRECTION",
-                                supplier: bill.supplier._id,
-                                bills: [{
-                                    invoice: bill._id,
-                                    amount: bill.correction
-                                }]
-                            });
-                        else
-                            entry.credit("658000", Math.abs(bill.correction), "CORRECTION", {
-                                label: "CORRECTION",
-                                supplier: bill.supplier._id,
-                                bills: [{
-                                    invoice: bill._id,
-                                    amount: bill.correction
-                                }]
+                        entry.commit()
+                            .then(function(journal) {
+                                //console.log(journal);
+                                //self.json(journal);
+                                cb(null, journal);
+                            }, function(err) {
+                                cb(err);
                             });
                     }
-
-                    entry.commit()
-                        .then(function(journal) {
-                            //console.log(journal);
-                            //self.json(journal);
-                            cb(null, journal);
-                        }, function(err) {
-                            cb(err);
-                        });
-                }
-            ], callback);
+                ],
+                callback);
         };
 
         async.each(ids, function(id, callback) {

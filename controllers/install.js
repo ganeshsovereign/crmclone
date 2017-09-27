@@ -771,6 +771,13 @@ F.on('load', function() {
                                             product.directCost = 0;
                                             product.indirectCost = 0;
 
+                                            //product.compta_buy = doc.compta_buy;
+                                            //product.compta_buy_eu = doc..compta_buy_eu;
+                                            //product.compta_buy_exp = doc.compta_buy_exp
+                                            //product.compta_sell = doc.compta_sell;
+                                            //product.compta_sell_eu = doc.compta_sell_eu;
+                                            //product.compta_sell_exp = doc.compta_sell_exp;
+
                                             product.taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', doc.tva_tx))._id }];
 
                                             if (doc.Status == "SELL")
@@ -3342,6 +3349,22 @@ F.on('load', function() {
 
                 const ObjectId = MODULE('utils').ObjectId;
 
+                function convertSeqFF(aCb) {
+                    const SeqModel = MODEL('Sequence').Schema;
+
+                    SeqModel.findById('FF', function(err, seq) {
+                        if (err)
+                            return console.log(err);
+
+                        seq = new SeqModel({
+                            _id: "INVOICE_SUPPLIER",
+                            seq: seq.seq
+                        });
+
+                        seq.save(aCb);
+                    });
+                }
+
                 function convertSupplier(aCb) {
                     console.log("convert journal : supplier");
                     const TransactionModel = MODEL('transaction').Schema;
@@ -3477,7 +3500,7 @@ F.on('load', function() {
                     aCb();
                 }
 
-                async.waterfall([convertSupplier, convertBills, convertBank, convertProduct, convertInvoiceArray], function(err) {
+                async.waterfall([convertSeqFF, convertSupplier, convertBills, convertBank, convertProduct, convertInvoiceArray], function(err) {
                     if (err)
                         return console.log(err);
 
