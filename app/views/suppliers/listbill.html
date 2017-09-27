@@ -21,20 +21,22 @@
                 <ul class="dropdown-menu pull-right">
                     <li>
                         <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
-                                        @(PrintList) </a>
+                                            @(PrintList) </a>
                     </li>
-                    <!--    <li>
-                                        <a href="#">
-                                            @(Update) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(Delete) </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            @(BuildPDF) </a>
-                                    </li>-->
+                    <li>
+                        <a ng-show="login.rights.bill.read" ng-click="openUrl('/erp/api/bill/pdf/', 'id')" target="_blank">
+                            <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-click="changeStatus('NOT_PAID','id')"><i class="fa fa-thumbs-o-up"></i>
+                                            @(Validate) </a>
+                    </li>
+                    <li>
+                        <a href="#" ng-show="login.rights.bill.validate" data-ng-click="exportAccounting()">
+                            <i class="fa fa-mail-forward"></i> @(orders:SendAccounting)
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

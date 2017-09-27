@@ -403,12 +403,18 @@ Object.prototype = {
                     if (bill.total_ttc >= 0)
                         entry.debit(bill.supplier.salesPurchases.customerAccount, bill.total_ttc, null, {
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.total_ttc
+                            }]
                         });
                     else
                         entry.credit(bill.supplier.salesPurchases.customerAccount, Math.abs(bill.total_ttc), null, {
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.total_ttc
+                            }]
                         });
 
                     //Add transport
@@ -416,13 +422,19 @@ Object.prototype = {
                         entry.credit('624200', bill.shipping.total_ht, null, {
                             label: 'TRANSPORT',
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.shipping.total_ht
+                            }]
                         });
                     else if (bill.shipping.total_ht < 0)
                         entry.credit('624200', Math.abs(bill.shipping.total_ht), null, {
                             label: 'TRANSPORT',
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.shipping.total_ht
+                            }]
                         });
 
                     //Add global discount
@@ -430,13 +442,19 @@ Object.prototype = {
                         entry.debit('709000', bill.discount.discount.value, "REMISE", {
                             label: 'DISCOUNT',
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.discount.discount.value
+                            }]
                         });
                     else if (bill.discount.discount.value < 0)
                         entry.credit('709000', Math.abs(bill.discount.discount.value), null, {
                             label: 'DISCOUNT',
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.discount.discount.value
+                            }]
                         });
 
                     //Add escompte
@@ -444,13 +462,19 @@ Object.prototype = {
                         entry.debit('665000', bill.discount.escompte.value, "ESCOMPTE", {
                             label: 'ESCOMPTE',
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.discount.escompte.value
+                            }]
                         });
                     else if (bill.discount.discount.value < 0)
                         entry.credit('665000', Math.abs(bill.discount.escompte.value), null, {
                             label: 'ESCOMPTE',
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.discount.escompte.value
+                            }]
                         });
 
 
@@ -518,13 +542,19 @@ Object.prototype = {
                             entry.credit(compta_sell, lineBill.total_ht, null, {
                                 product: lineBill.product._id,
                                 supplier: bill.supplier._id,
-                                invoice: bill._id
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: lineBill.total_ht
+                                }]
                             });
                         else
                             entry.debit(compta_sell, Math.abs(lineBill.total_ht), null, {
                                 product: lineBill.product._id,
                                 supplier: bill.supplier._id,
-                                invoice: bill._id
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: lineBill.total_ht
+                                }]
                             });
 
                         callback();
@@ -553,13 +583,19 @@ Object.prototype = {
                                 entry.credit(sellAccount, bill.total_taxes[i].value, bill.total_taxes[i].taxeId.code, {
                                     tax: bill.total_taxes[i].taxeId._id,
                                     supplier: bill.supplier._id,
-                                    invoice: bill._id
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.total_taxes[i].value
+                                    }]
                                 });
                             else
                                 entry.debit(sellAccount, Math.abs(bill.total_taxes[i].value), bill.total_taxes[i].taxeId.code, {
                                     tax: bill.total_taxes[i].taxeId._id,
                                     supplier: bill.supplier._id,
-                                    invoice: bill._id
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.total_taxes[i].value
+                                    }]
                                 });
 
                         }
@@ -604,12 +640,18 @@ Object.prototype = {
                     if (bill.total_ttc >= 0)
                         entry.credit(bill.supplier.salesPurchases.supplierAccount, bill.total_ttc, null, {
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.total_ttc
+                            }]
                         });
                     else
                         entry.debit(bill.supplier.salesPurchases.supplierAccount, Math.abs(bill.total_ttc), null, {
                             supplier: bill.supplier._id,
-                            invoice: bill._id
+                            bills: [{
+                                invoice: bill._id,
+                                amount: bill.total_ttc
+                            }]
                         });
 
                     cb(null, entry);
@@ -665,13 +707,19 @@ Object.prototype = {
                             entry.debit(compta_buy, lineBill.total_ht, null, {
                                 product: lineBill.product._id,
                                 supplier: bill.supplier._id,
-                                invoice: bill._id
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: lineBill.total_ht
+                                }]
                             });
                         else
                             entry.credit(compta_buy, Math.abs(lineBill.total_ht), null, {
                                 product: lineBill.product._id,
                                 supplier: bill.supplier._id,
-                                invoice: bill._id
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: lineBill.total_ht
+                                }]
                             });
 
                         callback();
@@ -700,13 +748,19 @@ Object.prototype = {
                                 entry.debit(buyAccount, bill.total_taxes[i].value, bill.total_taxes[i].taxeId.code, {
                                     tax: bill.total_taxes[i].taxeId._id,
                                     supplier: bill.supplier._id,
-                                    invoice: bill._id
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.total_taxes[i].value
+                                    }]
                                 });
                             else
                                 entry.credit(buyAccount, Math.abs(bill.total_taxes[i].value), bill.total_taxes[i].taxeId.code, {
                                     tax: bill.total_taxes[i].taxeId._id,
                                     supplier: bill.supplier._id,
-                                    invoice: bill._id
+                                    bills: [{
+                                        invoice: bill._id,
+                                        amount: bill.total_taxes[i].value
+                                    }]
                                 });
 
                         }
@@ -722,13 +776,19 @@ Object.prototype = {
                             entry.debit("658000", bill.correction, "CORRECTION", {
                                 label: "CORRECTION",
                                 supplier: bill.supplier._id,
-                                invoice: bill._id
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: bill.correction
+                                }]
                             });
                         else
                             entry.credit("658000", Math.abs(bill.correction), "CORRECTION", {
                                 label: "CORRECTION",
                                 supplier: bill.supplier._id,
-                                invoice: bill._id
+                                bills: [{
+                                    invoice: bill._id,
+                                    amount: bill.correction
+                                }]
                             });
                     }
 
