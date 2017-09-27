@@ -215,6 +215,11 @@
                             <a ui-sref="product.show.channels({id:product._id})">
                                 <i class="icon-shopping-cart"></i> @(products:Channels) <span ng-if="product.channels.active" class="badge badge-success">{{product.channels.active}}</span></a>
                         </li>-->
+
+                        <!--<li ng-class="{active: $state.includes('product.show.stats')}">
+                            <a ui-sref="product.show.stats({id:product._id})">
+                                <i class="icon-bar-chart"></i> @(Statistics) </a>
+                        </li>-->
                     </ul>
                 </div>
             </div>

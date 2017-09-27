@@ -742,9 +742,10 @@ exports.install = function() {
     //warehouse
     var warehouse = new Warehouse();
     var stock = new StockCorrection();
+    console.log(stock);
     F.route('/erp/api/product/warehouse/', warehouse.get, ['authorize']);
     F.route('/erp/api/product/warehouse/select', warehouse.getForDd, ['authorize']);
-    F.route('/erp/api/product/warehouse/{id}', warehouse.get, ['authorize']);
+    // F.route('/erp/api/product/warehouse/{id}', warehouse.get, ['authorize']);
     F.route('/erp/api/product/warehouse/getHierarchyWarehouse', warehouse.getHierarchyWarehouse, ['authorize']);
     F.route('/erp/api/product/warehouse/zone/select', warehouse.getForDdZone, ['authorize']);
     F.route('/erp/api/product/warehouse/location/select', warehouse.getForDdLocation, ['authorize']);
@@ -969,7 +970,9 @@ Object.prototype = {
             query.isBuy = true;
             cost = true;
             base = false;
-        } else
+        }
+
+        if (self.body.isSell || self.query.isSell == "true")
             query.isSell = true;
 
         async.waterfall([
@@ -2287,7 +2290,7 @@ Object.prototype = {
     },
     consumption: function() {
         var self = this;
-        var DeliveryModel = MODEL('delivery').Schema;
+        var OrderModel = MODEL('order').Schema.OrderCustomer;
 
         var query = self.query;
 
@@ -2298,16 +2301,27 @@ Object.prototype = {
 
         //console.log(query);
 
-        DeliveryModel.aggregate([
-            { $match: { datedl: { $gte: query.start_date, $lt: query.end_date }, Status: { $nin: ['DRAFT', 'CANCELLED'] }, isremoved: { $ne: true } } },
-            { $project: { _id: 1, lines: 1, datedl: 1, month: { $month: "$datedl" } } },
+        OrderModel.aggregate([
+            { $match: { datec: { $gte: query.start_date, $lt: query.end_date }, Status: { $nin: ['DRAFT', 'CANCELLED'] }, isremoved: { $ne: true } } },
+            { $project: { _id: 1, datec: 1, month: { $month: "$datec" } } },
+            {
+                $lookup: {
+                    from: 'orderRows',
+                    localField: '_id',
+                    foreignField: 'order',
+                    as: 'lines'
+                }
+            },
             { $unwind: "$lines" },
-            { $group: { _id: { product: "$lines.product.id", month: "$month" }, qty: { "$sum": "$lines.qty" }, weight: { "$sum": "$lines.weight" }, total_ht: { "$sum": "$lines.total_ht" } } },
+            { $project: { _id: 1, datec: 1, month: { $month: "$datec" }, 'lines.qty': 1, 'lines.product': 1, 'lines.total_ht': 1 } },
+            { $group: { _id: { product: "$lines.product", month: "$month" }, qty: { "$sum": "$lines.qty" }, weight: { "$sum": "$lines.weight" }, total_ht: { "$sum": "$lines.total_ht" } } },
             //{$lookup: {from: 'Product', localField: '_id.product', foreignField: '_id', as: 'pack'} },
             { $sort: { "_id.product": 1, "_id.month": 1 } }
         ], function(err, docs) {
             if (err)
                 return console.log(err);
+
+            console.log(docs);
 
 
             var options = {
@@ -2316,7 +2330,7 @@ Object.prototype = {
                 select: "ref name label weight pack",
                 populate: { path: 'pack.id', select: "ref name label unit weight" }
             };
-            DeliveryModel.populate(docs, options, function(err, elems) {
+            OrderModel.populate(docs, options, function(err, elems) {
 
                 //construct array of month
                 var new_data = {};
@@ -5906,7 +5920,7 @@ StockCorrection.prototype = {
         var skip = (parseInt(data.page || 1, 10) - 1) * limit;
         var obj = {};
         var addObj = {};
-        var StockCorrection = MODEL('order').Schema.StockCorrections;
+        const StockCorrectionModel = MODEL('order').Schema.StockCorrections;
         /* var filterMapper = new FilterMapper();*/
 
         var keys;
@@ -5927,7 +5941,7 @@ StockCorrection.prototype = {
         } else
             sort = { 'createdAt': -1 };
 
-        StockCorrection.aggregate([{
+        StockCorrectionModel.aggregate([{
                 $match: obj
             },
             {
@@ -6010,9 +6024,9 @@ StockCorrection.prototype = {
 
     getById: function(id) {
         var self = this;
-        var StockCorrection = MODEL('order').Schema.StockCorrections;
+        const StockCorrectionModel = MODEL('order').Schema.StockCorrections;
 
-        StockCorrection.findById(id)
+        StockCorrectionModel.findById(id)
             .populate('warehouse', ' name')
             .populate('location', ' name')
             .populate('orderRows.product', ' name')
@@ -6139,13 +6153,13 @@ StockCorrection.prototype = {
 
     bulkRemove: function() {
         var self = this;
-        var StockCorrection = MODEL('orders').Schema.stockCorrections;
+        const StockCorrectionModel = MODEL('orders').Schema.stockCorrections;
         var body = req.body || { ids: [] };
         var ids = body.ids;
 
         // todo some validation on ids array, like check for objectId
 
-        StockCorrection.remove({ _id: { $in: ids } }, function(err, removed) {
+        StockCorrectionModel.remove({ _id: { $in: ids } }, function(err, removed) {
             if (err)
                 return self.throw500(err);
 
@@ -6155,9 +6169,9 @@ StockCorrection.prototype = {
 
     remove: function(id) {
         var self = this;
-        var StockCorrection = MODEL('orders').Schema.stockCorrections;
+        const StockCorrectionModel = MODEL('orders').Schema.stockCorrections;
 
-        StockCorrection.findOneAndRemove({ _id: id }, function(err, correction) {
+        StockCorrectionModel.findOneAndRemove({ _id: id }, function(err, correction) {
             if (err)
                 return self.throw500(err);
 
@@ -6324,7 +6338,7 @@ StockInventory.prototype = {
 };
 
 function StockReturn() {}
-StockCorrection.prototype = {
+StockReturn.prototype = {
     /*{ orderRows: 
 +   [ { locationsReceived: [],
 +       cost: 7,
@@ -6650,9 +6664,9 @@ StockCorrection.prototype = {
     },
     remove: function(id) {
         var self = this;
-        var StockCorrection = MODEL('orders').Schema.stockCorrections;
+        const StockCorrectionModel = MODEL('orders').Schema.stockCorrections;
 
-        StockCorrection.findOneAndRemove({ _id: id }, function(err, correction) {
+        StockCorrectionModel.findOneAndRemove({ _id: id }, function(err, correction) {
             if (err)
                 return self.throw500(err);
 

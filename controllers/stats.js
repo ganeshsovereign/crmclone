@@ -34,6 +34,7 @@ Object.prototype = {
         var ProductModel = MODEL('product').Schema;
         var queryCA = {
             Status: { '$ne': 'DRAFT' },
+            isremoved: { $ne: true },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').toDate(),
                 '$lt': moment(self.query.end).endOf('day').toDate()
@@ -42,6 +43,7 @@ Object.prototype = {
         };
         var queryCAN_1 = {
             Status: { '$ne': 'DRAFT' },
+            isremoved: { $ne: true },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').subtract(1, 'year').toDate(),
                 '$lt': moment(self.query.end).endOf('day').subtract(1, 'year').toDate()
@@ -951,21 +953,20 @@ Object.prototype = {
     },
     detailsClientCsv: function() {
         var self = this;
-        var BillModel = MODEL('invoice').Schema;
-        var ProductModel = MODEL('product').Schema;
+        const BillModel = MODEL('invoice').Schema;
+        const ProductModel = MODEL('product').Schema;
+        const ObjectId = MODULE('utils').ObjectId;
 
         var Stream = require('stream');
         var stream = new Stream();
         var json2csv = require('json2csv');
-
-        // var dateStart = moment().startOf('year').subtract(3, 'year').startOf('day').toDate();
-        // var dateEnd = moment().endOf('year').endOf('day').toDate();
 
         var dateStart = moment(self.query.start).startOf('day').toDate();
         var dateEnd = moment(self.query.end).endOf('day').toDate();
 
         var query = {
             Status: { '$ne': 'DRAFT' },
+            isremoved: { $ne: true },
             datec: { '$gte': dateStart, '$lte': dateEnd }
         };
 
@@ -975,9 +976,9 @@ Object.prototype = {
         var commercial = {};
 
         if (self.query.commercial)
-            commercial["commercial_id.id"] = self.query.commercial;
+            commercial["salesPerson"] = ObjectId(self.query.commercial);
         else
-            commercial["commercial_id.id"] = { $ne: null };
+            commercial["salesPerson"] = { $ne: null };
         //return self.json([]);
 
         //console.log(commercial, query);
@@ -987,9 +988,8 @@ Object.prototype = {
             {
                 $project: {
                     _id: 0,
-                    commercial_id: "$commercial_id.id",
-                    commercial_name: "$commercial_id.name",
-                    client: 1,
+                    salesPerson: 1,
+                    supplier: 1,
                     total_ht: "$lines.total_ht",
                     discount: "$lines.discount",
                     lines: 1,
@@ -1003,7 +1003,7 @@ Object.prototype = {
             {
                 $lookup: {
                     from: 'Product',
-                    localField: 'lines.product.id',
+                    localField: 'lines.product',
                     foreignField: '_id',
                     as: 'product'
                 }
@@ -1012,21 +1012,40 @@ Object.prototype = {
             },
             {
                 $lookup: {
-                    from: 'Societe',
-                    localField: 'client.id',
+                    from: 'Employees',
+                    localField: 'salesPerson',
                     foreignField: '_id',
-                    as: 'client'
+                    as: 'salesPerson'
                 }
             }, {
-                $unwind: "$client"
+                $unwind: "$salesPerson"
+            },
+            {
+                $lookup: {
+                    from: 'Customers',
+                    localField: 'supplier',
+                    foreignField: '_id',
+                    as: 'supplier'
+                }
+            }, {
+                $unwind: "$supplier"
+            },
+            {
+                $lookup: {
+                    from: 'productFamily',
+                    localField: 'product.sellFamily',
+                    foreignField: '_id',
+                    as: 'family'
+                }
+            }, {
+                $unwind: "$family"
             },
             {
                 $project: {
                     _id: 0,
-                    commercial_id: 1,
-                    commercial_name: 1,
-                    client_id: "$client._id",
-                    client_name: { "$concat": ["$client.name", " (", "$client.code_client", ")"] },
+                    salesPerson: { "$concat": ['$salesPerson.name.last', " ", '$salesPerson.name.first'] },
+                    supplier_id: "$supplier._id",
+                    supplier_name: { "$concat": ["$supplier.name.last", " (", "$supplier.salesPurchases.ref", ")"] },
                     total_ht: 1,
                     discount: 1,
                     //lines: 1,
@@ -1036,8 +1055,8 @@ Object.prototype = {
                     year: 1,
                     datec: { $dateToString: { format: "%d/%m/%Y", date: "$datec" } },
                     productId: "$product._id",
-                    productName: "$product.ref",
-                    family: "$product.caFamily"
+                    productName: "$product.info.SKU",
+                    family: { $arrayElemAt: ["$family.langs", 0] }
                 }
             },
             /* {
@@ -1062,9 +1081,9 @@ Object.prototype = {
                                    }, */
             {
                 $sort: {
-                    commercial_name: 1,
+                    salesPerson: 1,
                     //_id: 1,
-                    "client_name": 1,
+                    "supplier_name": 1,
                     ref: 1
                         // family: 1,
                 }
@@ -1072,11 +1091,14 @@ Object.prototype = {
         ], function(err, docs) {
             if (err)
                 return console.log(err);
+
+            console.log(docs);
+
             //self.json(docs);
             //async.forEach(docs, function(line, cb) {
             json2csv({
                 data: docs,
-                fields: ['commercial_name', 'client_name', 'ref', 'productName', 'datec', 'qty', 'total_ht', 'discount'],
+                fields: ['salesPerson', 'supplier_name', 'ref', 'productName', 'family', 'datec', 'qty', 'total_ht', 'discount'],
                 del: ";"
             }, function(err, csv) {
                 if (err)

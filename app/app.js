@@ -1456,6 +1456,13 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
                 pageTitle: 'Canaux - Integration'
             }
         })
+        .state('product.show.stats', {
+            url: "/stats",
+            templateUrl: "/views/product/stats.html",
+            data: {
+                pageTitle: 'Statistiques produits'
+            }
+        })
         // Bank/Payment
         .state('bank', {
             url: "/bank",
