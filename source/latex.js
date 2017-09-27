@@ -358,10 +358,10 @@ Template.prototype.applyHeadFoot = function() {
                 tex = tex.replace(/--FOOT--/g, foot);
                 tex = tex.replace(/--VATMODE--/g, i18n.t("orders:VATmode." + doc.tva_mode));
                 tex = tex.replace(/--ENTITY--/g, "\\textbf{" + doc.name + "}");
-                if (doc.iban)
-                    tex = tex.replace(/--IBAN--/g, doc.iban.bank + "\\\\RIB : " + doc.iban.rib + "\\\\ IBAN : " + doc.iban.id + "\\\\ BIC : " + doc.iban.bic);
+                if (doc.iban && doc.iban.id)
+                    tex = tex.replace(/--IBAN--/g, doc.iban.bank + "\\\\ IBAN : " + doc.iban.id + "\\\\ BIC : " + doc.iban.bic);
                 else
-                    tex = tex.replace(/--IBAN--/g, "RIB sur demande.");
+                    tex = tex.replace(/--IBAN--/g, "RIB/IBAN sur demande.");
                 tex = tex.replace(/--LOGO--/g, doc.logo);
                 tex = tex.replace(/é/g, "\\'e");
                 tex = tex.replace(/è/g, "\\`e");
