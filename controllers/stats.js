@@ -3,7 +3,6 @@ var fs = require('fs'),
     csv = require('csv'),
     _ = require('lodash'),
     moment = require('moment'),
-    dateFormat = require('dateformat'),
     async = require('async');
 
 var Dict = INCLUDE('dict');

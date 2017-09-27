@@ -3,7 +3,6 @@ var async = require("async");
 var moment = require('moment'),
     csv = require('csv'),
     fs = require('fs'),
-    dateFormat = require('dateformat'),
     _ = require("lodash");
 
 var Dict = INCLUDE('dict');
@@ -506,271 +505,244 @@ Object.prototype = {
             var debit = 0;
             var credit = 0;
 
-            async.eachSeries(res.results, function(entry, cb) {
-
-                if (entry.exported)
-                    return cb(null); //Already exported
-
-                async.waterfall([
-                        function(cb) {
-                            if (entry.meta && entry.meta.invoice)
-                                return BillModel.findOne({ _id: entry.meta.invoice }, "dater dateOf dateTo", function(err, bill) {
-                                    if (!bill)
-                                        return cb(null, { dater: null, dateOf: null, dateTo: null });
-
-                                    cb(null, { dater: bill.dater, dateOf: bill.dateOf, dateTo: bill.dateTo });
-                                });
-
-                            cb(null, { dater: null, dateOf: null, dateTo: null });
-                        },
-                        /*function(dates, cb) {
-                            if (entry.meta && entry.meta.billId)
-                                return BillSupplierModel.findOne({ _id: entry.meta.billId }, "dater dateOf dateTo", function(err, bill) {
-                                    if (!bill)
-                                        return cb(null, dates);
-
-                                    cb(null, { dater: bill.dater, dateOf: bill.dateOf, dateTo: bill.dateTo });
-                                });
-
-                            if (entry.meta && entry.meta.billSupplierId)
-                                return BillSupplierModel.findOne({ _id: entry.meta.billSupplierId }, "dater dateOf dateTo", function(err, bill) {
-                                    if (!bill)
-                                        return cb(null, dates);
-
-                                    cb(null, { dater: bill.dater, dateOf: bill.dateOf, dateTo: bill.dateTo });
-                                });
-
-                            cb(null, dates);
-                        }*/
-                    ],
-                    function(err, result) {
-
-                        if (result.dater == null)
-                            result.dater = "";
-
-                        if (result.dateOf == null)
-                            result.dateOf = "";
-
-                        if (result.dateTo == null)
-                            result.dateTo = "";
-
-                        var out = "";
-
-                        if (mode === 'csv') {
-                            out += dateFormat(entry.datetime, "dd/mm/yyyy");
-                            out += ";" + (CONFIG('accounting.' + entry.book) || entry.book);
-                            out += ";" + entry.accounts;
-                            if (entry.seq) {
-                                out += ";" + entry.seq;
-                                if (entry.reconcilliation)
-                                    out += "-R" + moment(entry.reconcilliation).format("MMYY");
-                            } else
-                                out += ";";
-
-                            if (entry.memo)
-                                out += ";" + entry.memo;
-                            else
-                                out += ";";
-
-                            out += ";" + round(entry.debit, 2).toString().replace(".", ",");
-                            out += ";" + round(entry.credit, 2).toString().replace(".", ",");
-                            out += ";" + "E";
-                            out += ";" + ""; // lettrage
-                            out += ";" + "";
-                            if (journal == 'VTE' || journal == 'ACH')
-                                out += (result.dater ? dateFormat(result.dater, "dd/mm/yyyy") : ""); //date echeance
-                            out += ";" + "";
-                            if (journal == 'VTE' || journal == 'ACH')
-                                out += (result.dateOf ? dateFormat(result.dateOf, "dd/mm/yyyy") : ""); //date debut periode
-                            out += ";" + "";
-                            if (journal == 'VTE' || journal == 'ACH')
-                                out += (result.dateTo ? dateFormat(result.dateTo, "dd/mm/yyyy") : ""); //date fin periode
-
-                            if (entry.reconcilliation)
-                                out += ";R" + moment(entry.reconcilliation).format("MMYY");
-                            else
-                                out += ";";
-
-
-                            debit += round(entry.debit, 2);
-                            credit += round(entry.credit, 2);
-                        }
-
-                        if (mode === 'kpmg') {
-                            if (!entry.meta.type)
-                                out += (CONFIG('accounting.' + entry.book) || entry.book);
-                            else
-                                out += "RG_C";
-
-                            out += ";" + moment(entry.datetime).format("DD/MM/YYYY");
-
-                            if (journal == 'VTE' || journal == 'ACH') {
-                                if (entry.meta.invoice) {
-                                    out += ";" + entry.meta.invoice.ref;
-                                    //if (entry.reconcilliation)
-                                    //    out += "-R" + moment(entry.reconcilliation).format("MMYY");
-                                } else
-                                    out += ";";
-                            } else {
-                                if (entry.seq) {
-                                    out += ";" + entry.seq;
-                                    //if (entry.reconcilliation)
-                                    //    out += "-R" + moment(entry.reconcilliation).format("MMYY");
-                                } else
-                                    out += ";";
-                            }
-
-                            if (entry.memo)
-                                out += ";" + entry.memo;
-                            else
-                                out += ";";
-
-                            if (!entry.meta.bank)
-                                if (entry.accounts.substr(0, 3) == '401' || entry.accounts.substr(0, 3) == '411') {
-                                    out += ";" + entry.accounts.substr(0, 3) + "00000";
-                                    out += ";" + entry.meta.supplier.ID;
-                                } else
-                                    out += ";" + entry.accounts + ";";
-                            else {
-                                switch (entry.meta.type) {
-                                    case 'CHQ':
-                                        out += ";582500";
-                                        break;
-                                    case 'VIR':
-                                        out += ";582200";
-                                        break;
-                                    case 'CB':
-                                        out += ";582100";
-                                        break;
-                                    case 'PRELV':
-                                        out += ";582300";
-                                        break;
-                                    case 'AFF': //Affacturage
-                                        out += ";582400";
-                                        break;
-                                    default:
-                                        return cb("Mode de reglement inconnu {0} : code comptable manquant".format(entry));
-                                }
-                                out += ";";
-                            }
-
-
-
-                            out += ";" + round(entry.debit, 2).toString().replace(".", ",");
-                            out += ";" + round(entry.credit, 2).toString().replace(".", ",");
-
-                            if (journal == 'VTE' || journal == 'ACH')
-                                out += ";" + (result.dater ? moment(result.dater).format("DD/MM/YYYY") : ""); //date echeance
-                            out += ";" + "";
-
-                            if (entry.meta.product) {
-                                if (journal == 'VTE')
-                                    out += entry.meta.product.sellFamily.name;
-                                if (journal == 'ACH')
-                                    out += entry.meta.product.costFamily.name;
-                            }
-
-                            debit += round(entry.debit, 2);
-                            credit += round(entry.credit, 2);
-                        }
-
-                        if (mode === 'quadratus') {
-                            out += 'M';
-
-                            // rename accounts
-                            entry.accounts = entry.accounts.replace(/^401/, "0");
-                            entry.accounts = entry.accounts.replace(/^411/, "9");
-
-                            var account = fixedWidthString(entry.accounts, 9, { ellipsis: '.' });
-                            out += account.substr(0, 8);
-                            //if ((CONFIG('accounting.' + entry.book) || entry.book).length > 2)
-                            //    return cb('accounting journal length > 2!');
-
-                            out += fixedWidthString(CONFIG('accounting.' + entry.book) || entry.book.substr(0, 2), 2);
-                            out += '000'; //Folio
-                            out += dateFormat(entry.datetime, "ddmmyy");
-                            out += " "; //Filler
-                            out += fixedWidthString(entry.memo, 20, { ellipsis: '.' });
-                            if (entry.credit) {
-                                out += 'C';
-                                out += "+"; //signe + ou -
-                                out += fixedWidthString(round(entry.credit * 100, 0), 12, { padding: '0', align: 'right' });
-                            } else {
-                                out += 'D';
-                                out += "+"; //signe + ou -
-                                out += fixedWidthString(round(entry.debit * 100, 0), 12, { padding: '0', align: 'right' });
-                            }
-                            //if (entry.reconcilliation)
-                            //    out += fixedWidthString("R" + moment(entry.reconcilliation).format("MMYY"), 8);
-                            //else
-                            out += fixedWidthString("", 8); //contrepartie
-                            if (journal == 'VTE' || journal == 'ACH')
-                                out += (result.dater ? dateFormat(result.dater, "ddmmyy") : fixedWidthString("", 6)); //date echeance
-                            else
-                                out += fixedWidthString("", 6);
-                            out += fixedWidthString("", 5); // Lettrage
-                            out += fixedWidthString("", 5); // Numero de piece UNUSED
-                            out += fixedWidthString("", 19); //Filler
-
-                            /* Add reconcilliation in seq */
-                            if (entry.reconcilliation)
-                                entry.seq = (entry.seq ? entry.seq : "") + "-" + moment(entry.reconcilliation).format("MM");
-
-                            out += fixedWidthString((entry.seq ? entry.seq : ""), 8, { align: 'right' }); // Numero de piece
-                            out += " "; //Filler
-                            out += "EUR";
-                            out += fixedWidthString("", 3); // UNUSED
-                            out += fixedWidthString("", 3); //Filler
-                            out += fixedWidthString(entry.memo, 32, { ellipsis: '.' });
-                            out += fixedWidthString((entry.seq ? entry.seq : ""), 10); // Numero de piece
-                            out += fixedWidthString("", 73); //Filler
-
-                            if (journal == 'VTE' || journal == 'ACH')
-                                if (result.dateOf || result.dateTo) {
-                                    out += "\n";
-                                    out += "Y;";
-                                    if (result.dateOf) {
-                                        out += "PeriodiciteDebut=";
-                                        out += dateFormat(result.dateOf, "dd/mm/yy"); //date debut periode
-                                        out += ";";
-                                    }
-                                    if (result.dateTo) {
-                                        out += "PeriodiciteFin=";
-                                        out += dateFormat(result.dateTo, "dd/mm/yy"); //date fin periode
-                                        out += ";";
-                                    }
-                                }
-
-
-                            debit += round(entry.debit, 2);
-                            credit += round(entry.credit, 2);
-                        }
-
-                        out += "\n";
-
-                        stream.emit('data', out);
-                        cb(null);
-                    });
-
-
-
-            }, function(err) {
+            BillModel.populate(res.results, { path: "meta.bills.invoice", select: "_id ref dater dateOf dateTo" }, function(err, res) {
                 if (err)
                     return console.log(err);
+
+                for (var i = 0, len = res.length; i < len; i++) {
+                    let entry = res[i];
+
+                    if (entry.exported)
+                        continue; //Already exported
+
+                    let result = {
+                        dater: "",
+                        dateOf: "",
+                        dateTo: ""
+                    };
+
+                    if (entry.meta.bills && entry.meta.bills.length && entry.meta.bills[0].invoice) {
+                        if (entry.meta.bills[0].invoice.dater)
+                            result.dater = entry.meta.bills[0].invoice.dater;
+                        if (entry.meta.bills[0].invoice.dateOf)
+                            result.dater = entry.meta.bills[0].invoice.dateOf;
+                        if (entry.meta.bills[0].invoice.dateTo)
+                            result.dater = entry.meta.bills[0].invoice.dateTo;
+                    }
+
+                    var out = "";
+
+                    if (mode === 'csv') {
+                        out += moment(entry.datetime).format(CONFIG('dateformatShort'));
+                        out += ";" + (CONFIG('accounting.' + entry.book) || entry.book);
+                        out += ";" + entry.accounts;
+                        if (entry.seq) {
+                            out += ";" + entry.seq;
+                            if (entry.reconcilliation)
+                                out += "-R" + moment(entry.reconcilliation).format("MMYY");
+                        } else
+                            out += ";";
+
+                        if (entry.memo)
+                            out += ";" + entry.memo;
+                        else
+                            out += ";";
+
+                        out += ";" + round(entry.debit, 2).toString().replace(".", ",");
+                        out += ";" + round(entry.credit, 2).toString().replace(".", ",");
+                        out += ";" + "E";
+                        out += ";" + ""; // lettrage
+                        out += ";" + "";
+                        if (journal == 'VTE' || journal == 'ACH')
+                            out += (result.dater ? moment(result.dater).format(CONFIG('dateformatShort')) : ""); //date echeance
+                        out += ";" + "";
+                        if (journal == 'VTE' || journal == 'ACH')
+                            out += (result.dateOf ? moment(result.dateOf).format(CONFIG('dateformatShort')) : ""); //date debut periode
+                        out += ";" + "";
+                        if (journal == 'VTE' || journal == 'ACH')
+                            out += (result.dateTo ? moment(result.dateTo).format(CONFIG('dateformatShort')) : ""); //date fin periode
+
+                        if (entry.reconcilliation)
+                            out += ";R" + moment(entry.reconcilliation).format("MMYY");
+                        else
+                            out += ";";
+
+
+                        debit += round(entry.debit, 2);
+                        credit += round(entry.credit, 2);
+                    }
+
+                    if (mode === 'kpmg') {
+                        if (!entry.meta.type)
+                            out += (CONFIG('accounting.' + entry.book) || entry.book);
+                        else
+                            out += "RG_C";
+
+                        out += ";" + moment(entry.datetime).format("DD/MM/YYYY");
+
+                        if (journal == 'VTE' || journal == 'ACH') {
+                            if (entry.meta.invoice) {
+                                out += ";" + entry.meta.invoice.ref;
+                                //if (entry.reconcilliation)
+                                //    out += "-R" + moment(entry.reconcilliation).format("MMYY");
+                            } else
+                                out += ";";
+                        } else {
+                            if (entry.seq) {
+                                out += ";" + entry.seq;
+                                //if (entry.reconcilliation)
+                                //    out += "-R" + moment(entry.reconcilliation).format("MMYY");
+                            } else
+                                out += ";";
+                        }
+
+                        if (entry.memo)
+                            out += ";" + entry.memo;
+                        else
+                            out += ";";
+
+                        if (!entry.meta.bank)
+                            if (entry.accounts.substr(0, 3) == '401' || entry.accounts.substr(0, 3) == '411') {
+                                out += ";" + entry.accounts.substr(0, 3) + "00000";
+                                out += ";" + entry.meta.supplier.ID;
+                            } else
+                                out += ";" + entry.accounts + ";";
+                        else {
+                            switch (entry.meta.type) {
+                                case 'CHQ':
+                                    out += ";582500";
+                                    break;
+                                case 'VIR':
+                                    out += ";582200";
+                                    break;
+                                case 'CB':
+                                    out += ";582100";
+                                    break;
+                                case 'PRELV':
+                                    out += ";582300";
+                                    break;
+                                case 'AFF': //Affacturage
+                                    out += ";582400";
+                                    break;
+                                default:
+                                    return console.log("Mode de reglement inconnu {0} : code comptable manquant".format(entry));
+                            }
+                            out += ";";
+                        }
+
+
+
+                        out += ";" + round(entry.debit, 2).toString().replace(".", ",");
+                        out += ";" + round(entry.credit, 2).toString().replace(".", ",");
+
+                        if (journal == 'VTE' || journal == 'ACH')
+                            out += ";" + (result.dater ? moment(result.dater).format("DD/MM/YYYY") : ""); //date echeance
+                        out += ";" + "";
+
+                        if (entry.meta.product) {
+                            if (journal == 'VTE')
+                                out += entry.meta.product.sellFamily.name;
+                            if (journal == 'ACH')
+                                out += entry.meta.product.costFamily.name;
+                        }
+
+                        debit += round(entry.debit, 2);
+                        credit += round(entry.credit, 2);
+                    }
+
+                    if (mode === 'quadratus') {
+                        out += 'M';
+
+                        // rename accounts
+                        entry.accounts = entry.accounts.replace(/^401/, "0");
+                        entry.accounts = entry.accounts.replace(/^411/, "9");
+
+                        var account = fixedWidthString(entry.accounts, 9, { ellipsis: '.' });
+                        out += account.substr(0, 8);
+                        //if ((CONFIG('accounting.' + entry.book) || entry.book).length > 2)
+                        //    return cb('accounting journal length > 2!');
+
+                        out += fixedWidthString(CONFIG('accounting.' + entry.book) || entry.book.substr(0, 2), 2);
+                        out += '000'; //Folio
+                        out += moment(entry.datetime).format('DDMMYY');
+                        out += " "; //Filler
+                        out += fixedWidthString(entry.memo, 20, { ellipsis: '.' });
+                        if (entry.credit) {
+                            out += 'C';
+                            out += "+"; //signe + ou -
+                            out += fixedWidthString(round(entry.credit * 100, 0), 12, { padding: '0', align: 'right' });
+                        } else {
+                            out += 'D';
+                            out += "+"; //signe + ou -
+                            out += fixedWidthString(round(entry.debit * 100, 0), 12, { padding: '0', align: 'right' });
+                        }
+                        //if (entry.reconcilliation)
+                        //    out += fixedWidthString("R" + moment(entry.reconcilliation).format("MMYY"), 8);
+                        //else
+                        out += fixedWidthString("", 8); //contrepartie
+                        if (journal == 'VTE' || journal == 'ACH')
+                            out += (result.dater ? moment(result.dater).format('DDMMYY') : fixedWidthString("", 6)); //date echeance
+                        else
+                            out += fixedWidthString("", 6);
+                        out += fixedWidthString("", 5); // Lettrage
+                        out += fixedWidthString("", 5); // Numero de piece UNUSED
+                        out += fixedWidthString("", 19); //Filler
+
+                        /* Add reconcilliation in seq */
+                        if (entry.reconcilliation)
+                            entry.seq = (entry.seq ? entry.seq : "") + "-" + moment(entry.reconcilliation).format("MM");
+
+                        out += fixedWidthString((entry.seq ? entry.seq : ""), 8, { align: 'right' }); // Numero de piece
+                        out += " "; //Filler
+                        out += "EUR";
+                        out += fixedWidthString("", 3); // UNUSED
+                        out += fixedWidthString("", 3); //Filler
+                        out += fixedWidthString(entry.memo, 32, { ellipsis: '.' });
+                        out += fixedWidthString((entry.seq ? entry.seq : ""), 10); // Numero de piece
+                        out += fixedWidthString("", 73); //Filler
+
+                        if (journal == 'VTE' || journal == 'ACH')
+                            if (result.dateOf || result.dateTo) {
+                                out += "\n";
+                                out += "Y;";
+                                if (result.dateOf) {
+                                    out += "PeriodiciteDebut=";
+                                    out += moment(result.dateOf).format(CONFIG('dateformatShort')); //date debut periode
+                                    out += ";";
+                                }
+                                if (result.dateTo) {
+                                    out += "PeriodiciteFin=";
+                                    out += moment(result.dateTo).format(CONFIG('dateformatShort')); //date fin periode
+                                    out += ";";
+                                }
+                            }
+
+
+                        debit += round(entry.debit, 2);
+                        credit += round(entry.credit, 2);
+                    }
+
+                    out += "\n";
+
+                    stream.emit('data', out);
+
+                }
+
 
                 console.log("Debit : " + debit);
                 console.log("Credit : " + credit);
 
                 stream.emit('end');
-            });
 
-            /*} else if (req.query.imported)
-             BillModel.update({_id: {$in: need_imported}}, {$set: {imported: true}}, {multi: true}, function (err, result) {
-             if (err)
-             console.log(err);
-             
-             console.log(result);
-             });*/
+
+                /*} else if (req.query.imported)
+                 BillModel.update({_id: {$in: need_imported}}, {$set: {imported: true}}, {multi: true}, function (err, result) {
+                 if (err)
+                 console.log(err);
+                 
+                 console.log(result);
+                 });*/
+            });
         });
 
         self.stream('application/text', stream, journal + '_' + dateStart.getFullYear().toString() + "_" + (dateStart.getMonth() + 1).toString() + "." + extension);
