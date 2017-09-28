@@ -6,6 +6,7 @@
 var mongoose = require('mongoose'),
     _ = require('lodash'),
     timestamps = require('mongoose-timestamp'),
+    version = require('mongoose-version'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -201,7 +202,12 @@ var EmployeeSchema = new Schema({
     attachments: { type: Array, default: [] },
     files: { type: Array, default: [] },
 
-    notes: { type: Array, default: [] },
+    internalNotes: {
+        new: String,
+        old: String,
+        author: { type: ObjectId, ref: 'Users' },
+        datec: { type: Date, default: Date.now }
+    },
 
     arrivalDate: { type: Date },
     contractEnd: {
@@ -296,6 +302,8 @@ exports.Status = {
         }
     }
 };
+
+EmployeeSchema.plugin(version, { collection: 'Employees.Version' });
 
 exports.Schema = mongoose.model('Employees', EmployeeSchema);
 exports.name = 'Employees';

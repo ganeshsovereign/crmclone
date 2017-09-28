@@ -3588,9 +3588,9 @@ F.on('load', function() {
                                                 dateBirth: user.birthDate,
                                                 arrivalDate: user.arrivalDate,
 
-                                                notes: [{
-                                                    note: user.descriptionPoste + "\n" + user.sector
-                                                }],
+                                                internalNotes: {
+                                                    new: user.descriptionPoste + "\n" + user.sector
+                                                },
 
                                                 phones: {
                                                     mobile: user.telMobile,
