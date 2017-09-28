@@ -57,7 +57,8 @@
                                 </div>
                             </div>
 
-                            <div crm-id label="@(companies:Company)" name="societeId" ng-model="task.societe" entity="task.entity" url="/erp/api/societe/autocomplete" on-select="searchContact" placeholder="@(companies:CompanyName)"></div>
+                            <crm-id label="@(companies:CompanyName)" name="societeId" ng-model="task.supplier" entity="task.entity" url="/erp/api/societe/autocomplete" on-select="searchContact" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
+
 
                             <div class="form-group" ng-if="contacts.length">
                                 <label class="col-md-4 control-label">@(Contact)</label>
@@ -151,7 +152,7 @@
                                         <span class="input-group-addon">
                                             <i class="icon icon-user"></i>
                                         </span>
-                                        <input type="text" id="affectedTo" data-ng-model="task.usertodo" typeahead="user as user.name for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}" class="form-control" autocomplete="off">
+                                        <input type="text" id="affectedTo" data-ng-model="task.usertodo" typeahead="user as user.username for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}" class="form-control" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -172,7 +173,7 @@
     <div class="form-actions">
         <div class="row">
             <div class="col-md-offset-5 col-md-7">
-                <button type="submit" ng-disabled='!task.usertodo.id' class="btn blue">@(Add)</button>
+                <button type="submit" ng-disabled='!task.usertodo' class="btn blue">@(Add)</button>
                 <a ui-sref="task.todo" class="btn default">@(Cancel)</a>
             </div>
         </div>

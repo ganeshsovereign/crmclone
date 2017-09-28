@@ -24,34 +24,29 @@ var setDate = MODULE('utils').setDate;
  */
 var taskSchema = new Schema({
     name: String,
-    societe: { id: Schema.Types.ObjectId, name: String },
-    contact: { id: Schema.Types.ObjectId, name: String },
+    supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
+    contact: { type: Schema.Types.ObjectId, ref: 'Customers' },
     datec: { type: Date, default: Date.now, set: setDate }, // date de creation
     datep: Date, // date de debut
     datef: Date, // date de fin
     duration: Number,
     type: String,
     entity: String,
-    author: { id: String, name: String },
-    usertodo: { id: String, name: String },
-    userdone: { id: String, name: String },
+    author: { type: Schema.Types.ObjectId, ref: 'Users' },
+    usertodo: { type: Schema.Types.ObjectId, ref: 'Users' },
+    userdone: { type: Schema.Types.ObjectId, ref: 'Users' },
     description: { type: String },
     notes: [{
-        author: { type: String, ref: 'User' },
+        _id: false,
+        author: { type: Schema.Types.ObjectId, ref: 'Users' },
         datec: { type: Date, default: Date.now },
         percentage: { type: Number, default: 0 },
         class: Boolean, // To switch conversation left/right
         note: String
     }],
-    lead: {
-        id: { type: Schema.Types.ObjectId, ref: 'Lead' },
-        name: String
-    },
+    lead: { type: Schema.Types.ObjectId, ref: 'Lead' },
     archived: { type: Boolean, default: false },
-    group: {
-        id: { type: String, ref: 'group' },
-        name: String
-    }
+    group: { type: String, ref: 'group' },
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }

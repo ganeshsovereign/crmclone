@@ -83,13 +83,11 @@ Object.prototype = {
     create: function() {
         var self = this;
 
-        console.log(self.req.body);
+        console.log(self.body);
 
-        Task.create(self.req.body, self.user, F.functions.EE, function(err, task) {
-            if (err) {
-                console.log(err);
+        Task.create(self.body, self.user, F.functions.EE, function(err, task) {
+            if (err)
                 return self.throw500(err);
-            }
 
             self.json(task);
         });

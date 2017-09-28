@@ -85,8 +85,8 @@ exports.install = function() {
             query = {
                 //'$or': [
                 //    { firstname: new RegExp(filter, "i") },
-                username: new RegExp(filter, "i")
-
+                username: new RegExp(filter, "i"),
+                isremoved: { $ne: true }
             };
 
         if (self.query.status) {
@@ -95,34 +95,12 @@ exports.install = function() {
             query.Status = { $ne: "DISABLE" };
         }
 
-        UserModel.find(query, {}, { limit: self.body.take }, function(err, docs) {
-            if (err) {
-                console.log("err : /api/user/name/autocomplete");
-                console.log(err);
-                return;
-            }
+        UserModel.find(query, "_id username group", { limit: self.body.take }, function(err, docs) {
+            if (err)
+                return self.throw500(err);
+            console.log(docs);
 
-            var result = [];
-
-            if (docs !== null)
-                for (var i in docs) {
-                    //console.log(docs[i]);
-
-                    result[i] = {};
-                    /*if (self.query.lastname) {
-                        result[i] = {};
-                        result[i].name = docs[i].lastname;
-                        result[i].id = docs[i]._id;
-                        result[i].entity = docs[i].entity;
-                    } else {*/
-                    //result[i].name = docs[i].name;
-                    result[i].name = docs[i].username;
-                    result[i].id = docs[i]._id;
-                    result[i].entity = docs[i].entity;
-
-                }
-
-            return self.json(result);
+            return self.json(docs || []);
         });
     }, ['post', 'authorize']);
 

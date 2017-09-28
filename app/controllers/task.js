@@ -35,8 +35,8 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
     $scope.task = {
         //type: "AC_RDV",
         usertodo: {
-            id: user._id,
-            name: user.username
+            _id: user._id,
+            username: user.username
         },
         datep: new Date().setHours(new Date().getHours(), 0),
         datef: new Date().setHours(new Date().getHours() + 1, 0),
@@ -86,8 +86,8 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
     $scope.params = { type: "MYTASK" };
 
     $scope.user = {
-        id: user.id,
-        name: user.firstname + " " + user.lastname
+        _id: user._id,
+        fullName: user.fullName
     };
 
     // Init
@@ -194,9 +194,9 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
 
             if ($scope.task.length) {
                 var inOut = false; //in
-                var old = $scope.task.notes[0].author.id;
+                var old = $scope.task.notes[0].author;
                 for (var i = 0, len = $scope.task.length; i < len; i++) {
-                    if (old !== $scope.task.notes[i].author.id)
+                    if (old !== $scope.task.notes[i].author)
                         inOut = !inOut;
                     $scope.task.notes[i].class = inOut;
                 }
@@ -254,10 +254,7 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
             note: this.newNote,
             percentage: $scope.task.percentage,
             datec: new Date(),
-            author: {
-                name: user.firstname + " " + user.lastname,
-                id: user._id
-            }
+            author: user._id
         });
 
         this.newNote = "";
@@ -266,17 +263,14 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
     };
 
     $scope.updatePercent = function(percentage) {
-        if ($scope.task.notes.length > 0 && $scope.task.notes[$scope.task.notes.length - 1].author.id == user.id) {
+        if ($scope.task.notes.length > 0 && $scope.task.notes[$scope.task.notes.length - 1].author == user._id) {
             $scope.task.notes[$scope.task.notes.length - 1].percentage = percentage;
             $scope.task.notes[$scope.task.notes.length - 1].datec = new Date();
         } else
             $scope.task.notes.push({
                 percentage: percentage,
                 datec: new Date(),
-                author: {
-                    name: user.firstname + " " + user.lastname,
-                    id: user.id
-                }
+                author: user._id
             });
 
         $scope.update();
@@ -287,17 +281,14 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
 
 
         if (!row.userdone || !row.userdone.id) {
-            if (row.notes.length > 0 && row.notes[row.notes.length - 1].author.id == user.id) {
+            if (row.notes.length > 0 && row.notes[row.notes.length - 1].author == user._id) {
                 row.notes[row.notes.length - 1].percentage = 100;
                 row.notes[row.notes.length - 1].datec = new Date();
             } else
                 row.notes.push({
                     percentage: 100,
                     datec: new Date(),
-                    author: {
-                        name: user.firstname + " " + user.lastname,
-                        id: user.id
-                    }
+                    author: user._id
                 });
         }
 
