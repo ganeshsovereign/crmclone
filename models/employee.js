@@ -203,6 +203,7 @@ var EmployeeSchema = new Schema({
 
     notes: { type: Array, default: [] },
 
+    arrivalDate: { type: Date },
     contractEnd: {
         reason: { type: String, default: '' },
         date: { type: Date, default: Date.now }
