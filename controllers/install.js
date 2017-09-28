@@ -205,6 +205,13 @@ F.on('load', function() {
                                                 "jobPosition": "57cc0b0d2de00d14145d9929",
                                                 "department": "57cc0a2d2de00d14145d9922",
 
+                                                dateBirth: user.birthDate,
+                                                arrivalDate: user.arrivalDate,
+
+                                                internalNotes: {
+                                                    new: user.descriptionPoste + "\n" + user.sector
+                                                },
+
                                                 phones: {
                                                     mobile: user.telMobile,
                                                     phone: user.telFixe,
@@ -220,7 +227,13 @@ F.on('load', function() {
                                                 }
                                             });
 
-                                            eCb();
+                                            employee.save(function(err, employee) {
+                                                console.log(employee);
+                                                if (err)
+                                                    return eCb(err);
+
+                                                eCb();
+                                            });
                                         });
                                     });
                                 });
@@ -3589,7 +3602,8 @@ F.on('load', function() {
                                                 arrivalDate: user.arrivalDate,
 
                                                 internalNotes: {
-                                                    new: user.descriptionPoste + "\n" + user.sector
+                                                    new: user.descriptionPoste + "\n" + user.sector,
+                                                    old: user.descriptionPoste + "\n" + user.sector
                                                 },
 
                                                 phones: {
