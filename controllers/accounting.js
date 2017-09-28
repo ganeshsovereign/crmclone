@@ -459,6 +459,8 @@ Object.prototype = {
         var fixedWidthString = require('fixed-width-string');
         var BillModel = MODEL('invoice').Schema;
 
+        const setLabel = MODULE('utils').setLabel;
+
         var Book = INCLUDE('accounting').Book;
         var myBook = new Book();
         //myBook.setEntity(self.query.entity);
@@ -544,7 +546,7 @@ Object.prototype = {
                             out += ";";
 
                         if (entry.memo)
-                            out += ";" + entry.memo;
+                            out += ";" + setLabel(entry.memo);
                         else
                             out += ";";
 
@@ -597,7 +599,7 @@ Object.prototype = {
                         }
 
                         if (entry.memo)
-                            out += ";" + entry.memo;
+                            out += ";" + setLabel(entry.memo);
                         else
                             out += ";";
 
@@ -666,7 +668,7 @@ Object.prototype = {
                         out += '000'; //Folio
                         out += moment(entry.datetime).format('DDMMYY');
                         out += " "; //Filler
-                        out += fixedWidthString(entry.memo, 20, { ellipsis: '.' });
+                        out += fixedWidthString(setLabel(entry.memo), 20, { ellipsis: '.' });
                         if (entry.credit) {
                             out += 'C';
                             out += "+"; //signe + ou -
@@ -697,7 +699,7 @@ Object.prototype = {
                         out += "EUR";
                         out += fixedWidthString("", 3); // UNUSED
                         out += fixedWidthString("", 3); //Filler
-                        out += fixedWidthString(entry.memo, 32, { ellipsis: '.' });
+                        out += fixedWidthString(setLabel(entry.memo), 32, { ellipsis: '.' });
                         out += fixedWidthString((entry.seq ? entry.seq : ""), 10); // Numero de piece
                         out += fixedWidthString("", 73); //Filler
 

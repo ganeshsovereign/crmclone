@@ -76,6 +76,15 @@ exports.setLink = function(link) {
     return link;
 };
 
+exports.setLabel = function(txt) {
+    if (!txt)
+        return null;
+
+    txt = txt.replace(/[^a-zA-Z0-9 ]/g, '');
+
+    return txt;
+};
+
 exports.setAccount = function(account) {
     if (account) {
         account = account.replace(/ /g, "");
