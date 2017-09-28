@@ -3,6 +3,7 @@
 var fs = require('fs'),
     _ = require('lodash'),
     moment = require('moment'),
+    mongoose = require('mongoose'),
     async = require('async');
 
 const ObjectId = MODULE('utils').ObjectId;
