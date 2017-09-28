@@ -50,14 +50,18 @@
                             <div class="col-md-6">
                                 <div class="portlet light bordered">
                                     <div class="form-group form-md-line-input">
-                                        <select class="form-control" id="warehouse" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse" ng-change="LoadLocation()">
+                                        <select class="form-control" id="warehouse" ng-disabled="object._id" ng-model="object.warehouse._id" ng-options="s._id as s.name for s in $dict.warehouse" ng-change="LoadLocation()">
                                                         </select>
                                         <label for="warehouse">@(products:Warehouse)</label>
                                     </div>
-                                    <div class="form-group form-md-line-input">
+                                    <div class="form-group form-md-line-input" ng-hide="object._id">
                                         <select ng-disabled="!object.warehouse._id" class="form-control" id="location" ng-model="object.location._id" ng-options="s._id as s.name for s in $dict.location">
                                                         </select>
                                         <label for="location">@(products:Location)</label>
+                                    </div>
+                                    <div ng-hide="!object._id" class="form-group form-md-line-input">
+                                        <div class="form-control form-control-static" id="location2"> {{object.location.name}} </div>
+                                        <label for="location2">@(products:Location)</label>
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +83,7 @@
                 </div>
             </div>
         </div>
-        <div ng-hide="object._id" class="row">
+        <div class="row">
             <div class="col-md-12">
                 <product-stock-lines ng-model="object.orderRows" title="'@(products:Products)'" ng-disabled="editable" location="object.location"></product-stock-lines>
             </div>

@@ -6016,6 +6016,7 @@ StockCorrection.prototype = {
 
             response.total = count;
             response.data = result;
+
             self.json(response);
         });
 
@@ -6028,12 +6029,11 @@ StockCorrection.prototype = {
         StockCorrectionModel.findById(id)
             .populate('warehouse', ' name')
             .populate('location', ' name')
-            .populate('orderRows.product', ' name')
+            .populate('orderRows.product', ' _id info')
             .populate('createdBy', 'username')
             .exec(function(err, correction) {
                 if (err)
                     return self.throw500(err);
-
 
                 self.json(correction);
             });

@@ -436,6 +436,12 @@ exports.Status = {
             "cssClass": "ribbon-color-success label-success",
             "system": true
         },
+        "STARTED": {
+            "enable": true,
+            "label": "BillStatusStarted",
+            "cssClass": "ribbon-color-warning label-warning",
+            "system": true
+        },
         "PAID_PARTIALLY": {
             "enable": true,
             "label": "BillStatusClosedPaidPartially",
