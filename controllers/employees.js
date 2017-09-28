@@ -2467,7 +2467,8 @@ Object.prototype = {
 
 
                 if (data.dateBirth || data.hired)
-                    event.emit('recalculate', self, null, next);
+                    F.functions.BusMQ.publish('employee:recalculate', self.user._id, {});
+                //    event.emit('recalculate', self, null, next);
 
 
                 // todo refactor it
