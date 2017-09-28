@@ -154,6 +154,7 @@ var productSchema = new Schema({
         maxStockLevel: { type: Number },
         stockTimeLimit: { type: Number, default: 360 }
     },
+    packing: { type: Number, default: 1 }, //conditonnement
 
     variants: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }],
     attributes: [{
@@ -169,8 +170,6 @@ var productSchema = new Schema({
             integrationId: String
         }]
     }],
-
-    packing: { type: Number, defaut: 1 }, //conditonnement
 
     pack: [product], // conditionned pack from MP + production form supplier -> be in stock need prepare
     bundles: [product], // bundles or promotion pack of sell products -> Not prepare before order

@@ -164,6 +164,13 @@ Marketing
                                                 <div class="form-control-focus"> </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group form-md-line-input">
+                                                <input type="number" class="form-control" id="packing" ng-model="product.packing" min="0" step="1">
+                                                <label for="packing">@(products:Packing)</label>
+                                                <div class="form-control-focus"> </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <hr>
                                     <div class="row" ng-if="product.info.productType.inventory == true">
