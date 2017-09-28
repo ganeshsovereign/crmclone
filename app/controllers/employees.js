@@ -162,7 +162,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
 
         employee.$update(options, function(response) {
 
-            $scope.employee = response;
+            $scope.findOne();
 
             if (callback)
                 callback(null, response);
