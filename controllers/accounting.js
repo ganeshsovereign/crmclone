@@ -517,6 +517,9 @@ Object.prototype = {
                     if (entry.exported)
                         continue; //Already exported
 
+                    if (entry.debit == 0 && entry.credit == 0)
+                        continue; //Empty line
+
                     let result = {
                         dater: "",
                         dateOf: "",
