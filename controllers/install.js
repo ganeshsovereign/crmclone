@@ -209,7 +209,8 @@ F.on('load', function() {
                                                 arrivalDate: user.arrivalDate,
 
                                                 internalNotes: {
-                                                    new: user.descriptionPoste + "\n" + user.sector
+                                                    new: user.descriptionPoste + "\n" + user.sector,
+                                                    old: user.descriptionPoste + "\n" + user.sector
                                                 },
 
                                                 phones: {
@@ -3532,7 +3533,7 @@ F.on('load', function() {
                 });
             },
             //version 0.515 : convert address from old users
-            function(conf, wCb) {
+            /*function(conf, wCb) {
                 if (conf.version >= 0.515)
                     return wCb(null, conf);
 
@@ -3661,7 +3662,7 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
-            }
+            }*/
         ],
         function(err, doc) {
             console.log("End update");

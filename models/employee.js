@@ -202,6 +202,8 @@ var EmployeeSchema = new Schema({
     attachments: { type: Array, default: [] },
     files: { type: Array, default: [] },
 
+    notes: { type: Array, default: [] },
+
     internalNotes: {
         new: String,
         old: String,
