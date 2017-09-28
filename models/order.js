@@ -441,7 +441,7 @@ baseSchema.statics.getById = function(id, callback) {
                     .populate({
                         path: "orderRows.product",
                         select: "taxes info weight units",
-                        //populate: { path: "info.productType" }
+                        populate: { path: "info.productType" } //For delivery stock
                     })
                     .populate("orderRows.locationsReceived.location", "_id name")
                     .populate('warehouse', 'name')
@@ -1515,6 +1515,8 @@ F.on('load', function() {
 
                                 allocatedOnRow = fullfillOnRow + availability;
 
+                                console.log("toto", availability);
+
                                 if (!elem.product.info.productType.inventory) {
                                     //Not IN STOCK Managment
                                     // Allocated ALL
@@ -1522,13 +1524,15 @@ F.on('load', function() {
                                     return eahcCb();
                                 }
 
+                                console.log(allocatedOnRow);
+
                                 if (!allocatedOnRow) {
                                     // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
                                     stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'ALL')) ? 'NOA' : 'NOT';
                                     return eahcCb();
                                 }
 
-                                if (allocatedOnRow !== elem.qty) {
+                                if (allocatedOnRow < elem.qty) {
                                     stockStatus.allocateStatus = 'NOA';
                                     return eahcCb();
                                 }

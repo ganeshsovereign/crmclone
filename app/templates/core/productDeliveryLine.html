@@ -35,10 +35,10 @@
                         {{ line.orderQty || '0' }}
                     </td>
 
-                    <td class="center" ng-if="line.product.productType.inventory" ng-class="{'font-red bold': (editable && line.orderQty > (line.onHand + line.fulfilled))}">
+                    <td class="center" ng-if="line.product.info.productType.inventory" ng-class="{'font-red bold': (editable && line.orderQty > (line.onHand + line.fulfilled))}">
                         {{ line.onHand + line.fulfilled || '0' }}
                     </td>
-                    <td class="center" ng-if="!line.product.productType.inventory">@(products:NoStock)</td>
+                    <td class="center" ng-if="!line.product.info.productType.inventory">@(products:NoStock)</td>
 
 
                     <td class="center">
