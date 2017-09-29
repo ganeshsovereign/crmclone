@@ -67,6 +67,46 @@ Edit and replace demo name database in config file
 node debug.js
 ```
 
+## Run node.js service with systemd
+
+Create /etc/systemd/system/nodeserver.service
+
+```shell
+[Unit]
+Description=ToManage ERP
+Documentation=https://www.tomanage.fr
+After=network.target
+Requires=mongodb.service
+
+[Service]
+Environment=NODE_PORT=8000
+Type=simple
+User=root
+Group=root
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodeserver
+ExecStart=/usr/bin/node /path/to/tomanage/debug.js
+WorkingDirectory=/path/to/tomanage
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+Enable the service
+
+```shell
+systemctl enable nodeserver.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/nodeserver.service to /etc/systemd/system/nodeserver.service.
+```
+Start the service
+
+```shell
+systemctl start nodeserver.service
+```
+
 Demo authentication : admin/admin
 
 Good coding :)
