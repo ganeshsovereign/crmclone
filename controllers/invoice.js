@@ -574,8 +574,8 @@ Object.prototype = {
                             if (bill.total_taxes[i].value == 0)
                                 continue;
 
-                            if (!bill.total_taxes[i].taxeId.sellAccount)
-                                console.log("Compta Taxe inconnu : " + bill.total_taxes[i].taxeId.code);
+                            if (!bill.total_taxes[i].taxeId.sellAccount && !bill.total_taxes[i].taxeId.isOnPaid)
+                                return cb("Compta Taxe inconnu : " + bill.total_taxes[i].taxeId.code);
 
                             var sellAccount = bill.total_taxes[i].taxeId.sellAccount;
 
@@ -745,7 +745,7 @@ Object.prototype = {
                                 if (bill.total_taxes[i].value == 0)
                                     continue;
 
-                                if (!bill.total_taxes[i].taxeId.buyAccount)
+                                if (!bill.total_taxes[i].taxeId.buyAccount && !bill.total_taxes[i].taxeId.isOnPaid)
                                     return cb("Compta Taxe inconnu : " + bill.total_taxes[i].taxeId.code);
 
                                 var buyAccount = bill.total_taxes[i].taxeId.buyAccount;
