@@ -3379,7 +3379,9 @@ F.on('load', function() {
                             seq: seq.seq
                         });
 
-                        seq.save(aCb);
+                        seq.save(function(err, doc) {
+                            aCb();
+                        });
                     });
                 }
 
