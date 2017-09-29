@@ -2654,58 +2654,6 @@ F.on('load', function() {
                     });
                 });
             },
-            //version 0.507
-            function(conf, wCb) {
-                if (conf.version >= 0.507)
-                    return wCb(null, conf);
-
-                //Old convert first
-                function oldConvert(aCb) {
-                    console.log("convert compta journal");
-                    const TransactionModel = MODEL('transaction').Schema;
-
-                    //Select only objectId()
-                    TransactionModel.find({ "meta.bills.billId": { $type: 7 } }, function(err, docs) {
-                        if (err)
-                            return console.log(err);
-
-                        docs.forEach(function(doc) {
-
-                            var bills = doc.meta.bills;
-
-                            for (var i = 0, len = bills.length; i < len; i++)
-                                bills[i].billId = bills[i].billId.toString();
-
-
-                            //console.log(bills);
-
-                            doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
-
-                                //doc.save(function(err, doc) {
-                                if (err)
-                                    console.log(err);
-                            });
-                        });
-
-                    });
-
-                    aCb();
-                }
-
-                async.waterfall([oldConvert], function(err) {
-                    if (err)
-                        return console.log(err);
-
-                    Dict.findByIdAndUpdate('const', { 'values.version': 0.507 }, { new: true }, function(err, doc) {
-                        if (err)
-                            return console.log(err);
-
-                        console.log("ToManage updated to {0}".format(0.507));
-                        wCb(err, doc.values);
-                        //wCb(err, conf);
-                    });
-                });
-            },
             //version 0.508 : update orderCustomer Status CLOSED -> BILLED
             function(conf, wCb) {
                 if (conf.version >= 0.508)
@@ -3112,147 +3060,167 @@ F.on('load', function() {
                     const TransactionModel = MODEL('transaction').Schema;
 
                     async.waterfall([
-                        function(wCb) {
-                            TransactionModel.find({ "meta.societeId": { $ne: null } }, function(err, docs) {
-                                if (err)
-                                    return wCb(err);
+                            function(wCb) {
+                                console.log("convert compta Transaction meta societeId");
+                                mongoose.connection.db.collection('Transaction', function(err, collection) {
+                                    collection.find({ "meta.societeId": { $ne: null } }).toArray(function(err, docs) {
+                                        if (err)
+                                            return wCb(err);
 
-                                if (!docs)
-                                    return wCb();
+                                        if (!docs)
+                                            return wCb();
 
-                                async.forEach(docs, function(doc, eCb) {
+                                        async.forEach(docs, function(doc, eCb) {
 
-                                    //var bills = doc.meta.bills;
+                                            //var bills = doc.meta.bills;
 
-                                    //for (var i = 0, len = bills.length; i < len; i++)
-                                    //    bills[i].billId = bills[i].billId.toString();
+                                            //for (var i = 0, len = bills.length; i < len; i++)
+                                            //    bills[i].billId = bills[i].billId.toString();
 
+                                            TransactionModel.update({ _id: doc._id }, { $set: { "meta.supplier": doc.meta.societeId.toString() } },
+                                                function(err, res) {
+                                                    if (err)
+                                                        return eCb(err);
 
-                                    //console.log(bills);
+                                                    collection.update({ _id: doc._id }, { $unset: { 'meta.societeId': 1, 'meta.societeName': 1 } }, function(err, doc) {
 
-                                    doc.update({ $unset: { 'meta.societeId': 1, 'meta.societeName': 1 }, $set: { "meta.supplier": doc.meta.societeId.toString() } }, function(err, doc) {
-
-                                        //doc.save(function(err, doc) {
-                                        return eCb(err);
+                                                        //doc.save(function(err, doc) {
+                                                        return eCb(err);
+                                                    });
+                                                });
+                                        }, wCb);
                                     });
-                                }, wCb);
-                            });
-                        },
-                        function(wCb) {
+                                });
+                            },
+                            function(wCb) {
+                                console.log("convert compta Transaction meta billId");
+                                mongoose.connection.db.collection('Transaction', function(err, collection) {
+                                    collection.find({ "meta.billId": { $ne: null } }).toArray(function(err, docs) {
+                                        if (err)
+                                            return wCb(err);
 
-                            TransactionModel.find({ "meta.billId": { $ne: null } }, function(err, docs) {
-                                if (err)
-                                    return wCb(err);
+                                        if (!docs)
+                                            return wCb();
 
-                                if (!docs)
-                                    return wCb();
+                                        async.forEach(docs, function(doc, eCb) {
+                                            TransactionModel.update({ _id: doc._id }, { $set: { "meta.invoice": doc.meta.billId.toString() } },
+                                                function(err, res) {
+                                                    if (err)
+                                                        return eCb(err);
 
-                                async.forEach(docs, function(doc, eCb) {
+                                                    collection.update({ _id: doc._id }, { $unset: { 'meta.billId': 1, 'meta.billRef': 1 } }, function(err, doc) {
 
+                                                        //doc.save(function(err, doc) {
+                                                        return eCb(err);
+                                                    });
+                                                });
+                                        }, wCb);
 
-                                    doc.update({ $unset: { 'meta.billId': 1, 'meta.billRef': 1 }, $set: { "meta.invoice": doc.meta.billId.toString() } }, function(err, doc) {
-
-                                        //doc.save(function(err, doc) {
-                                        return eCb(err);
                                     });
-                                }, wCb);
+                                });
+                            },
+                            function(wCb) {
+                                console.log("convert compta Transaction meta productId");
+                                mongoose.connection.db.collection('Transaction', function(err, collection) {
+                                    collection.find({ "meta.productId": { $ne: null } }).toArray(function(err, docs) {
+                                        if (err)
+                                            return wCb(err);
 
-                            });
-                        },
-                        function(wCb) {
+                                        if (!docs)
+                                            return wCb();
 
-                            TransactionModel.find({ "meta.productId": { $ne: null } }, function(err, docs) {
-                                if (err)
-                                    return wCb(err);
+                                        async.forEach(docs, function(doc, eCb) {
+                                            TransactionModel.update({ _id: doc._id }, { $set: { "meta.product": doc.meta.productId.toString() } },
+                                                function(err, res) {
+                                                    if (err)
+                                                        return eCb(err);
 
-                                if (!docs)
-                                    return wCb();
+                                                    collection.update({ _id: doc._id }, { $unset: { 'meta.productId': 1, 'meta.productRef': 1 } }, function(err, doc) {
 
-                                async.forEach(docs, function(doc, eCb) {
-
-
-                                    doc.update({ $unset: { 'meta.productId': 1, 'meta.productRef': 1 }, $set: { "meta.product": doc.meta.productId.toString() } }, function(err, doc) {
-
-                                        //doc.save(function(err, doc) {
-                                        return eCb(err);
+                                                        //doc.save(function(err, doc) {
+                                                        return eCb(err);
+                                                    });
+                                                });
+                                        }, wCb);
                                     });
-                                }, wCb);
+                                });
+                            },
+                            function(wCb) {
 
-                            });
-                        },
-                        function(wCb) {
+                                //TODO TVA-TX ?
+                                console.log("convert compta Transaction meta bills");
+                                mongoose.connection.db.collection('Transaction', function(err, collection) {
+                                    collection.find({ "meta.bills.billId": { $ne: null } }).toArray(function(err, docs) {
+                                        if (err)
+                                            return wCb(err);
 
-                            //TODO TVA-TX ?
+                                        if (!docs)
+                                            return wCb();
 
-                            TransactionModel.find({ "meta.bills.billId": { $ne: null } }, function(err, docs) {
-                                if (err)
-                                    return wCb(err);
-
-                                if (!docs)
-                                    return wCb();
-
-                                async.forEach(docs, function(doc, eCb) {
-
-
-                                    var bills = doc.meta.bills;
-
-                                    for (var i = 0, len = bills.length; i < len; i++)
-                                        bills[i] = {
-                                            amount: bills[i].amount,
-                                            invoice: bills[i].billId.toString()
-                                        };
+                                        async.forEach(docs, function(doc, eCb) {
 
 
-                                    //console.log(bills);
+                                            var bills = doc.meta.bills;
 
-                                    doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
+                                            for (var i = 0, len = bills.length; i < len; i++)
+                                                bills[i] = {
+                                                    amount: bills[i].amount,
+                                                    invoice: bills[i].billId.toString()
+                                                };
 
-                                        //doc.save(function(err, doc) {
-                                        return eCb(err);
+
+                                            //console.log(bills);
+
+                                            TransactionModel.update({ _id: doc._id }, { $set: { "meta.bills": bills } }, function(err, doc) {
+
+                                                //doc.save(function(err, doc) {
+                                                return eCb(err);
+                                            });
+                                        }, wCb);
                                     });
-                                }, wCb);
+                                });
+                            },
+                            function(wCb) {
+                                console.log("convert compta Transaction meta billsSupplier");
+                                mongoose.connection.db.collection('Transaction', function(err, collection) {
+                                    collection.find({ "meta.billsSupplier": { $ne: null } }).toArray(function(err, docs) {
+                                        if (err)
+                                            return wCb(err);
 
-                            });
-                        },
-                        function(wCb) {
+                                        if (!docs)
+                                            return wCb();
 
-                            TransactionModel.find({ "meta.billsSupplier": { $ne: null } }, function(err, docs) {
-                                if (err)
-                                    return wCb(err);
+                                        async.forEach(docs, function(doc, eCb) {
+                                            var bills = doc.meta.billsSupplier;
 
-                                if (!docs)
-                                    return wCb();
+                                            async.forEach(bills, function(bill, fCb) {
+                                                let newBill = {
+                                                    amount: bill.amount,
+                                                    invoice: bill.billSupplierId.toString()
+                                                };
+                                                TransactionModel.update({ _id: doc._id }, { $addToSet: { "meta.bills": newBill } }, function(err, doc) {
 
-                                async.forEach(docs, function(doc, eCb) {
-                                    var bills = doc.meta.billsSupplier;
+                                                    //doc.save(function(err, doc) {
+                                                    if (err)
+                                                        console.log(err);
+                                                    fCb();
+                                                });
+                                            }, function(err) {
 
-                                    async.forEach(bills, function(bill, fCb) {
-                                        let newBill = {
-                                            amount: bill.amount,
-                                            invoice: bill.billSupplierId.toString()
-                                        };
-                                        doc.update({ $addToSet: { "meta.bills": newBill } }, function(err, doc) {
+                                                collection.update({ _id: doc._id }, { $unset: { "meta.billsSupplier": 1 } }, function(err, doc) {
 
-                                            //doc.save(function(err, doc) {
-                                            if (err)
-                                                console.log(err);
-                                            fCb();
-                                        });
-                                    }, function(err) {
-
-                                        doc.update({ $unset: { "meta.billsSupplier": 1 } }, function(err, doc) {
-
-                                            //doc.save(function(err, doc) {
-                                            return eCb(err);
-                                        });
+                                                    //doc.save(function(err, doc) {
+                                                    return eCb(err);
+                                                });
+                                            });
+                                        }, wCb);
                                     });
-
-                                }, wCb);
-                            });
-                        }
-                    ], function(err) {
-                        aCb();
-                    });
+                                });
+                            }
+                        ],
+                        function(err) {
+                            aCb(err);
+                        });
                 }
 
                 async.waterfall([oldConvert], function(err) {
