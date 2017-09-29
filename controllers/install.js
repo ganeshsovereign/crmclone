@@ -3115,6 +3115,9 @@ F.on('load', function() {
                         if (err)
                             return console.log(err);
 
+                        if (!docs)
+                            return;
+
                         docs.forEach(function(doc) {
 
                             //var bills = doc.meta.bills;
@@ -3179,6 +3182,9 @@ F.on('load', function() {
                         if (err)
                             return console.log(err);
 
+                        if (!docs)
+                            return;
+
                         docs.forEach(function(doc) {
 
                             var bills = doc.meta.bills;
@@ -3205,6 +3211,9 @@ F.on('load', function() {
                     TransactionModel.find({ "meta.billsSupplier": { $ne: null } }, function(err, docs) {
                         if (err)
                             return console.log(err);
+
+                        if (!docs)
+                            return;
 
                         docs.forEach(function(doc) {
 
