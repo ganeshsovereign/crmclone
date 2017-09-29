@@ -3111,141 +3111,148 @@ F.on('load', function() {
                     console.log("convert compta Transaction meta");
                     const TransactionModel = MODEL('transaction').Schema;
 
-                    TransactionModel.find({ "meta.societeId": { $ne: null } }, function(err, docs) {
-                        if (err)
-                            return console.log(err);
-
-                        if (!docs)
-                            return;
-
-                        docs.forEach(function(doc) {
-
-                            //var bills = doc.meta.bills;
-
-                            //for (var i = 0, len = bills.length; i < len; i++)
-                            //    bills[i].billId = bills[i].billId.toString();
-
-
-                            //console.log(bills);
-
-                            doc.update({ $unset: { 'meta.societeId': 1, 'meta.societeName': 1 }, $set: { "meta.supplier": doc.meta.societeId.toString() } }, function(err, doc) {
-
-                                //doc.save(function(err, doc) {
+                    async.waterfall([
+                        function(wCb) {
+                            TransactionModel.find({ "meta.societeId": { $ne: null } }, function(err, docs) {
                                 if (err)
-                                    console.log(err);
+                                    return wCb(err);
+
+                                if (!docs)
+                                    return wCb();
+
+                                async.forEach(docs, function(doc, eCb) {
+
+                                    //var bills = doc.meta.bills;
+
+                                    //for (var i = 0, len = bills.length; i < len; i++)
+                                    //    bills[i].billId = bills[i].billId.toString();
+
+
+                                    //console.log(bills);
+
+                                    doc.update({ $unset: { 'meta.societeId': 1, 'meta.societeName': 1 }, $set: { "meta.supplier": doc.meta.societeId.toString() } }, function(err, doc) {
+
+                                        //doc.save(function(err, doc) {
+                                        return eCb(err);
+                                    });
+                                }, wCb);
                             });
-                        });
+                        },
+                        function(wCb) {
 
-                    });
-
-                    TransactionModel.find({ "meta.billId": { $ne: null } }, function(err, docs) {
-                        if (err)
-                            return console.log(err);
-
-                        if (!docs)
-                            return;
-
-                        docs.forEach(function(doc) {
-
-                            doc.update({ $unset: { 'meta.billId': 1, 'meta.billRef': 1 }, $set: { "meta.invoice": doc.meta.billId.toString() } }, function(err, doc) {
-
-                                //doc.save(function(err, doc) {
+                            TransactionModel.find({ "meta.billId": { $ne: null } }, function(err, docs) {
                                 if (err)
-                                    console.log(err);
+                                    return wCb(err);
+
+                                if (!docs)
+                                    return wCb();
+
+                                async.forEach(docs, function(doc, eCb) {
+
+
+                                    doc.update({ $unset: { 'meta.billId': 1, 'meta.billRef': 1 }, $set: { "meta.invoice": doc.meta.billId.toString() } }, function(err, doc) {
+
+                                        //doc.save(function(err, doc) {
+                                        return eCb(err);
+                                    });
+                                }, wCb);
+
                             });
-                        });
+                        },
+                        function(wCb) {
 
-                    });
-
-                    TransactionModel.find({ "meta.productId": { $ne: null } }, function(err, docs) {
-                        if (err)
-                            return console.log(err);
-
-                        if (!docs)
-                            return;
-
-                        docs.forEach(function(doc) {
-
-                            doc.update({ $unset: { 'meta.productId': 1, 'meta.productRef': 1 }, $set: { "meta.product": doc.meta.productId.toString() } }, function(err, doc) {
-
-                                //doc.save(function(err, doc) {
+                            TransactionModel.find({ "meta.productId": { $ne: null } }, function(err, docs) {
                                 if (err)
-                                    console.log(err);
+                                    return wCb(err);
+
+                                if (!docs)
+                                    return wCb();
+
+                                async.forEach(docs, function(doc, eCb) {
+
+
+                                    doc.update({ $unset: { 'meta.productId': 1, 'meta.productRef': 1 }, $set: { "meta.product": doc.meta.productId.toString() } }, function(err, doc) {
+
+                                        //doc.save(function(err, doc) {
+                                        return eCb(err);
+                                    });
+                                }, wCb);
+
                             });
-                        });
+                        },
+                        function(wCb) {
 
-                    });
+                            //TODO TVA-TX ?
 
-                    //TODO TVA-TX ?
-
-                    TransactionModel.find({ "meta.bills.billId": { $ne: null } }, function(err, docs) {
-                        if (err)
-                            return console.log(err);
-
-                        if (!docs)
-                            return;
-
-                        docs.forEach(function(doc) {
-
-                            var bills = doc.meta.bills;
-
-                            for (var i = 0, len = bills.length; i < len; i++)
-                                bills[i] = {
-                                    amount: bills[i].amount,
-                                    invoice: bills[i].billId.toString()
-                                };
-
-
-                            //console.log(bills);
-
-                            doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
-
-                                //doc.save(function(err, doc) {
+                            TransactionModel.find({ "meta.bills.billId": { $ne: null } }, function(err, docs) {
                                 if (err)
-                                    console.log(err);
+                                    return wCb(err);
+
+                                if (!docs)
+                                    return wCb();
+
+                                async.forEach(docs, function(doc, eCb) {
+
+
+                                    var bills = doc.meta.bills;
+
+                                    for (var i = 0, len = bills.length; i < len; i++)
+                                        bills[i] = {
+                                            amount: bills[i].amount,
+                                            invoice: bills[i].billId.toString()
+                                        };
+
+
+                                    //console.log(bills);
+
+                                    doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
+
+                                        //doc.save(function(err, doc) {
+                                        return eCb(err);
+                                    });
+                                }, wCb);
+
                             });
-                        });
+                        },
+                        function(wCb) {
 
-                    });
+                            TransactionModel.find({ "meta.billsSupplier": { $ne: null } }, function(err, docs) {
+                                if (err)
+                                    return wCb(err);
 
-                    TransactionModel.find({ "meta.billsSupplier": { $ne: null } }, function(err, docs) {
-                        if (err)
-                            return console.log(err);
+                                if (!docs)
+                                    return wCb();
 
-                        if (!docs)
-                            return;
+                                async.forEach(docs, function(doc, eCb) {
+                                    var bills = doc.meta.billsSupplier;
 
-                        docs.forEach(function(doc) {
+                                    async.forEach(bills, function(bill, fCb) {
+                                        let newBill = {
+                                            amount: bill.amount,
+                                            invoice: bill.billSupplierId.toString()
+                                        };
+                                        doc.update({ $addToSet: { "meta.bills": newBill } }, function(err, doc) {
 
-                            var bills = doc.meta.billsSupplier;
+                                            //doc.save(function(err, doc) {
+                                            if (err)
+                                                console.log(err);
+                                            fCb();
+                                        });
+                                    }, function(err) {
 
-                            async.forEach(bills, function(bill, fCb) {
-                                let newBill = {
-                                    amount: bill.amount,
-                                    invoice: bill.billSupplierId.toString()
-                                };
-                                doc.update({ $addToSet: { "meta.bills": newBill } }, function(err, doc) {
+                                        doc.update({ $unset: { "meta.billsSupplier": 1 } }, function(err, doc) {
 
-                                    //doc.save(function(err, doc) {
-                                    if (err)
-                                        console.log(err);
-                                    fCb();
-                                });
-                            }, function(err) {
+                                            //doc.save(function(err, doc) {
+                                            return eCb(err);
+                                        });
+                                    });
 
-                                doc.update({ $unset: { "meta.billsSupplier": 1 } }, function(err, doc) {
-
-                                    //doc.save(function(err, doc) {
-                                    if (err)
-                                        console.log(err);
-                                });
+                                }, wCb);
                             });
-
-                        });
-
+                        }
+                    ], function(err) {
+                        aCb();
                     });
-
-                    aCb();
                 }
 
                 async.waterfall([oldConvert], function(err) {
