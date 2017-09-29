@@ -39,6 +39,11 @@ Need :
  - install MongoDB 3.2
 
 ```shell
+curl -sL https://deb.nodesource.com/setup_4.x | sudo bash -
+apt-get install nodejs
+```
+
+```shell
 git clone git@github.com:ToManage/framework.git
 ```
 
