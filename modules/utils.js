@@ -591,7 +591,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                     if (total_taxes[j].isFixValue)
                         continue;
 
-                    total_ttc += total_taxes[j].total;
+                    total_ttc += total_taxes[j].value;
                 }
 
             total_taxes = _.sortBy(total_taxes, 'sequence');

@@ -777,7 +777,7 @@ Object.prototype = {
                         });
                     },
                     function(entry, cb) {
-                        console.log(entry);
+
 
                         //Apply correction if needed
                         if (bill.correction !== 0) {
@@ -800,6 +800,8 @@ Object.prototype = {
                                     }]
                                 });
                         }
+
+                        console.log(entry);
 
                         entry.commit()
                             .then(function(journal) {
