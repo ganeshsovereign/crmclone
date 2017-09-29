@@ -3139,6 +3139,9 @@ F.on('load', function() {
                         if (err)
                             return console.log(err);
 
+                        if (!docs)
+                            return;
+
                         docs.forEach(function(doc) {
 
                             doc.update({ $unset: { 'meta.billId': 1, 'meta.billRef': 1 }, $set: { "meta.invoice": doc.meta.billId.toString() } }, function(err, doc) {
@@ -3154,6 +3157,9 @@ F.on('load', function() {
                     TransactionModel.find({ "meta.productId": { $ne: null } }, function(err, docs) {
                         if (err)
                             return console.log(err);
+
+                        if (!docs)
+                            return;
 
                         docs.forEach(function(doc) {
 
