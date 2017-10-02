@@ -229,9 +229,7 @@ Object.prototype = {
 
             bill = new BillModel(bill);
 
-            bill.author = {};
-            bill.author.id = self.user._id;
-            bill.author.name = self.user.name;
+            bill.createdBy = self.user._id;
 
             if (bill.entity == null)
                 bill.entity = self.user.entity;

@@ -850,6 +850,7 @@ Object.prototype = {
         var myBook = new Book();
         //myBook.setEntity(self.query.entity);
         myBook.setName(journal);
+        console.log(self.body);
 
         myBook[self.body.method](self.body.id, self.body.data).then(function() {
             //console.log("ok");

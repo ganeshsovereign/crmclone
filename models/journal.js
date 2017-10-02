@@ -18,28 +18,25 @@ var JournalSchema = new Schema({
     datetime: { type: Date, set: setDate },
     memo: {
         type: String,
-        "default": '',
+        default: '',
         uppercase: true
     },
-    _transactions: [{
-        type: Schema.Types.ObjectId,
-        ref: 'transaction'
-    }],
+    _transactions: [{ type: Schema.Types.ObjectId, ref: 'transaction' }],
     book: String,
     entity: { type: String },
     voided: {
         type: Boolean,
-        "default": false
+        default: false
     },
     void_reason: String,
     approved: {
         type: Boolean,
-        "default": true
+        default: true
     },
     exported: Date, // Date of export
     seq: { type: String }, // Numero de piece comptable
     reconcilliation: Date, // Dte of rapprochement bank (date de valeur)
-    author: { type: ObjectId, ref: 'Users', default: null }
+    author: { type: ObjectId, ref: 'Users' }
 }, {
     toObject: { virtuals: true },
     toJSON: { virtuals: true }
@@ -223,10 +220,13 @@ JournalSchema.methods.setReconcilliation = function(book, date) {
 
     Q.all(voids).then(function(transactions) {
         var key, meta, newMemo, trans, val, valid_fields, _j, _len1;
-
+        console.log(_this.toJSON());
         return _this.save(function(err, entry) {
-            if (err)
+            if (err) {
+                console.log(err);
+
                 return deferred.reject(err);
+            }
             return deferred.resolve(entry);
         });
     }, function(err) {

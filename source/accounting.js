@@ -269,8 +269,7 @@ exports.Book.prototype.entry = function(memo, date, author, original_journal) {
     if (original_journal == null) {
         original_journal = null;
     }
-    if (author == null)
-        author = {};
+
     return new Entry(this, memo, date, author, original_journal);
 };
 
@@ -771,9 +770,9 @@ exports.Book.prototype.setReconcilliation = function(journal_id, date) {
 
     deferred = Q.defer();
     this.journalModel.findById(journal_id, function(err, journal) {
-        if (err) {
+        if (err)
             return deferred.reject(err);
-        } else if (!journal)
+        else if (!journal)
             return deferred.reject("JournalId not found");
         else {
             return journal.setReconcilliation(_this, date).then(function() {

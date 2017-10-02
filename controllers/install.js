@@ -3655,6 +3655,58 @@ F.on('load', function() {
                     });
                 });
             }*/
+            //version 0.516 : Fix author in journal Transaction
+            function(conf, wCb) {
+                if (conf.version >= 0.516)
+                    return wCb(null, conf);
+
+                function journal(aCb) {
+                    console.log("convert journal author");
+                    const JournalModel = MODEL('journal').Schema;
+                    const ObjectId = MODULE('utils').ObjectId;
+
+                    mongoose.connection.db.collection('Journal', function(err, collection) {
+                        collection.find({ author: { $type: 3 } }).toArray(function(err, docs) {
+                            if (err)
+                                return console.log(err);
+
+                            if (!docs)
+                                return aCb();
+
+                            async.forEachSeries(docs, function(doc, eCb) {
+
+                                if (doc == null)
+                                    return eCb();
+
+                                console.log(ObjectId(doc.author._id));
+
+                                JournalModel.update({ _id: doc._id }, {
+                                        $set: { author: ObjectId(doc.author._id) }
+                                    },
+                                    function(err, doc) {
+
+                                        return eCb(err);
+
+                                    });
+                            }, aCb);
+                        });
+                    });
+                }
+
+                async.waterfall([journal], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.514 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.514));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            }
         ],
         function(err, doc) {
             console.log("End update");
