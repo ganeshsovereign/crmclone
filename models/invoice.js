@@ -558,6 +558,9 @@ F.on('load', function() {
                         return console.log(err);
                 });
 
+            if (bill.Status == "DRAFT")
+                return;
+
             TransactionModel.aggregate([{
                     $match: { "meta.bills.invoice": ObjectId(data.invoice._id), voided: false, $or: [{ "meta.bank": { $ne: null } }, { "meta.isWaiting": true }], }
                 }, {
