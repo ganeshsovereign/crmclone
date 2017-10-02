@@ -312,7 +312,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
         callback = function() {};
     }
 
-    Availability.aggregate([{
+    var query = [{
             $match: { isJob: false }
         },
         {
@@ -362,7 +362,7 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 warehouse: { $arrayElemAt: ['$warehouse', 0] },
                 product: { $arrayElemAt: ['$product', 0] },
                 goodsInNote: { $arrayElemAt: ['$goodsInNote', 0] },
-                'createdBy': { $arrayElemAt: ['$createdBy', 0] },
+                createdBy: { $arrayElemAt: ['$createdBy', 0] },
                 createdAt: 1,
                 description: 1,
                 cost: 1,
@@ -483,25 +483,45 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 cost: '$root.cost',
                 variants: '$root.variants',
                 total: 1,
+                total_cost: { $multiply: ["$root.onHand", "$root.cost"] },
                 value: { $multiply: ['$root.inStock', '$root.cost'] },
                 inStock: '$root.inStock',
                 allocated: '$root.allocated',
                 onHand: '$root.onHand'
             }
-        },
-        {
-            $sort: sort
-        }, {
-            $skip: skip
-        }, {
-            $limit: limit
         }
-    ]).exec(function(err, result) {
-        if (err)
-            return callback(err);
+    ];
 
-        callback(null, result);
-    });
+
+    async.parallel([
+            function(pCb) {
+                let localQuery = _(query).concat({
+                    $sort: sort
+                }, {
+                    $skip: skip
+                }, {
+                    $limit: limit
+                });
+
+                Availability.aggregate(localQuery.value()).exec(pCb);
+            },
+            function(pCb) {
+                let localQuery = _(query).concat({
+                    $group: {
+                        _id: null,
+                        total_cost: { $sum: "$total_cost" }
+                    }
+                });
+
+                Availability.aggregate(localQuery.value()).exec(pCb);
+            }
+        ],
+        function(err, result) {;
+            if (err)
+                return callback(err);
+
+            callback(null, result);
+        });
 };
 
 AvailabilitySchema.statics.getAvailabilityForProducts = function(query, options, callback) {

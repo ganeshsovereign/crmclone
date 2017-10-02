@@ -73,7 +73,7 @@
                                     <th width="70px">@(products:Shelf)</th>
                                     <th width="70px">@(products:Bin)</th>
                                     <th>@(products:InStock)</th>
-                                    <th>@(products:Allocated)</th>
+                                    <th>@(products:OutStock)</th>
                                     <th>@(products:OnHand)</th>
                                     <th>@(products:stockDayLimit)</th>
                                     <th>@(products:MinStock)</th>
@@ -104,10 +104,16 @@
                                     <td class="center">{{line.stockTimeLimit|| '--'}} @(products:Day)</td>
                                     <td class="center">{{line.product.inventory.minStockLevel}}</td>
                                     <td class="center">{{line.product.inventory.maxStockLevel}}</td>
-                                    <td>{{line.product.prices.pu_ht | currency}}</td>
-                                    <td>{{line.product.prices.pu_ht*line.inStock | currency}} </td>
+                                    <td>{{line.cost | currency}}</td>
+                                    <td>{{line.total_cost | currency}} </td>
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="17">@(Total) @(All) Stock(s)</td>
+                                    <td>{{total_cost | currency}} </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

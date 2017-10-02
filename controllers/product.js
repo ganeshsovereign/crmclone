@@ -6276,15 +6276,16 @@ StockInventory.prototype = {
         };
 
         ProductsAvailabilityModel.getList(options, function(err, result) {
-            var count;
+            var count, total_cost;
             var response = {};
 
             if (err)
                 return self.throw500(err);
 
-            count = result[0] && result[0].total ? result[0].total : 0;
+            count = result[0] && result[0][0].total ? result[0][0].total : 0;
+            total_cost = result[1] && result[1][0].total_cost ? result[1][0].total_cost : 0;
 
-            result = _.map(result, function(line) {
+            result = _.map(result[0], function(line) {
                 if (!line.product.inventory.stockTimeLimit)
                     return line;
 
@@ -6299,6 +6300,7 @@ StockInventory.prototype = {
             });
 
             response.total = count;
+            response.total_cost = total_cost
             response.data = result;
             //console.log(response);
             self.json(response);

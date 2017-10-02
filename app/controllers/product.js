@@ -2061,6 +2061,7 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
             //console.log(data);
             $scope.listObject = data.data;
             $scope.page.total = data.total;
+            $scope.total_cost = data.total_cost;
             //$scope.totalEntries = data.total;
         });
 
