@@ -733,7 +733,6 @@ Object.prototype = {
                             res.datatable.data[i].order = '<a class="with-tooltip" href="#!/order/' + row.order._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.order.ref + '"><span class="fa fa-truck"></span> ' + row.order.ref + '</a>';
                         // Convert Date
                         res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                        res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
                         res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
                         res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
 
