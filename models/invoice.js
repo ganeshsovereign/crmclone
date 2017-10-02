@@ -545,7 +545,7 @@ F.on('load', function() {
         if (!data.invoice || !data.invoice._id)
             return;
 
-        BillModel.findById(data.invoice._id, "_id isremoved total_ttc", function(err, bill) {
+        BillModel.findById(data.invoice._id, "_id Status isremoved total_ttc", function(err, bill) {
             if (err)
                 return console.log(err);
 
