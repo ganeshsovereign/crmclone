@@ -576,7 +576,11 @@ F.on('load', function() {
                     console.log(doc);
 
                     if (!doc || doc.length == 0)
-                        return;
+                        return BillModel.update({ _id: bill._id }, { $set: { Status: "NOT_PAID", updatedAt: new Date(), total_paid: 0 } }, function(err, doc) {
+                            if (err)
+                                return console.log(err);
+                        });
+
 
                     let payment = doc[0].amount;
                     console.log(payment);
