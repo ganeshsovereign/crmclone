@@ -914,7 +914,7 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
                         "data": "ref_client",
                         defaultContent: ""
                     }, {
-                        "data": "date_livraison",
+                        "data": "datedl",
                         defaultContent: ""
                     }, {
                         "data": "total_ht",
@@ -1100,7 +1100,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
                         data: "salesPerson",
                         defaultContent: ""
                     }, {
-                        "data": "date_livraison",
+                        "data": "datedl",
                         defaultContent: ""
                     }, {
                         "data": "total_ht",
@@ -1314,7 +1314,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
                         "data": "ref_client",
                         defaultContent: ""
                     }, {
-                        "data": "date_livraison",
+                        "data": "datedl",
                         defaultContent: ""
                     }, {
                         "data": "qty",
@@ -2003,7 +2003,7 @@ MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '
                         "data": "ref_client",
                         defaultContent: ""
                     }, {
-                        "data": "date_livraison",
+                        "data": "datedl",
                         defaultContent: ""
                     }, {
                         "data": "total_ht",
@@ -2195,7 +2195,7 @@ MetronicApp.controller('OrderSupplierListController', ['$scope', '$rootScope', '
                         "data": "ref_client",
                         defaultContent: ""
                     }, {
-                        "data": "date_livraison",
+                        "data": "datedl",
                         defaultContent: ""
                     }, {
                         "data": "total_ht",
@@ -2388,7 +2388,7 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
                         "data": "ref_client",
                         defaultContent: ""
                     }, {
-                        "data": "date_livraison",
+                        "data": "datedl",
                         defaultContent: ""
                     }, {
                         "data": "total_ht",
@@ -3037,7 +3037,7 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
                     }, {
                         "data": "ID"
                     }, {
-                        "data": "date_livraison",
+                        "data": "datedl",
                         defaultContent: ""
                     }, {
                         "data": "entity",

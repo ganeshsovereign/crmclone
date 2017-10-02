@@ -2289,7 +2289,7 @@ Object.prototype = {
     },
     consumption: function() {
         var self = this;
-        var OrderModel = MODEL('order').Schema.OrderCustomer;
+        var OrderModel = MODEL('order').Schema.GoodsOutNote;
 
         var query = self.query;
 
@@ -2301,8 +2301,8 @@ Object.prototype = {
         //console.log(query);
 
         OrderModel.aggregate([
-            { $match: { datec: { $gte: query.start_date, $lt: query.end_date }, Status: { $nin: ['DRAFT', 'CANCELLED'] }, isremoved: { $ne: true } } },
-            { $project: { _id: 1, datec: 1, month: { $month: "$datec" } } },
+            { $match: { datedl: { $gte: query.start_date, $lt: query.end_date }, Status: { $nin: ['DRAFT', 'CANCELLED'] }, isremoved: { $ne: true } } },
+            { $project: { _id: 1, datedl: "$datedl", month: { $month: "$datedl" } } },
             {
                 $lookup: {
                     from: 'orderRows',
@@ -2312,22 +2312,29 @@ Object.prototype = {
                 }
             },
             { $unwind: "$lines" },
-            { $project: { _id: 1, datec: 1, month: { $month: "$datec" }, 'lines.qty': 1, 'lines.product': 1, 'lines.total_ht': 1 } },
+            { $project: { _id: 1, datedl: 1, month: { $month: "$datedl" }, 'lines.qty': 1, 'lines.product': 1, 'lines.total_ht': 1 } },
             { $group: { _id: { product: "$lines.product", month: "$month" }, qty: { "$sum": "$lines.qty" }, weight: { "$sum": "$lines.weight" }, total_ht: { "$sum": "$lines.total_ht" } } },
-            //{$lookup: {from: 'Product', localField: '_id.product', foreignField: '_id', as: 'pack'} },
+            //{ $lookup: { from: 'Product', localField: '_id.product', foreignField: '_id', as: 'pack' } },
+            //{ $unwind: "$pack" },
             { $sort: { "_id.product": 1, "_id.month": 1 } }
         ], function(err, docs) {
             if (err)
                 return console.log(err);
 
-            console.log(docs);
+            //console.log(docs);
 
+            /*self.json({
+                year: moment(query.start_date).year(),
+                items: docs || []
+            });*/
+
+            // return;
 
             var options = {
                 path: '_id.product',
                 model: 'product',
-                select: "ref name label weight pack",
-                populate: { path: 'pack.id', select: "ref name label unit weight" }
+                select: "info weight pack",
+                populate: { path: 'pack.id', select: "info unit weight" }
             };
             OrderModel.populate(docs, options, function(err, elems) {
 
@@ -2337,31 +2344,29 @@ Object.prototype = {
                 elems.map(function(obj) {
                     //console.log(obj._id);
 
-
-
                     // Create new object from old
-                    if (!new_data[obj._id.product.ref])
-                        new_data[obj._id.product.ref] = {
-                            'id': obj._id.product.id,
-                            'ref': obj._id.product.ref,
-                            'label': obj._id.product.label,
+                    if (!new_data[obj._id.product.info.SKU])
+                        new_data[obj._id.product.info.SKU] = {
+                            'id': obj._id.product._id,
+                            'ref': obj._id.product.info.SKU,
+                            'label': obj._id.product.info.langs[0].name,
                             'month': []
                         };
 
-                    if (!new_data[obj._id.product.ref].month[obj._id.month])
-                        new_data[obj._id.product.ref].month[obj._id.month] = {
+                    if (!new_data[obj._id.product.info.SKU].month[obj._id.month])
+                        new_data[obj._id.product.info.SKU].month[obj._id.month] = {
                             'month': obj._id.month,
                             'qty': obj.qty,
                             'weight': obj.weight,
                             'total_ht': obj.total_ht
                         };
                     else {
-                        new_data[product.id.ref].month[obj._id.month].qty += obj.qty;
-                        new_data[product.id.ref].month[obj._id.month].weight += obj.weight;
-                        new_data[product.id.ref].month[obj._id.month].total_ht += obj.total_ht;
+                        new_data[obj._id.product.info.SKU].month[obj._id.month].qty += obj.qty;
+                        new_data[obj._id.product.info.SKU].month[obj._id.month].weight += obj.weight;
+                        new_data[obj._id.info.SKU].month[obj._id.month].total_ht += obj.total_ht;
                     }
 
-                    new_data[obj._id.product.ref].month[obj._id.month] = {
+                    new_data[obj._id.product.info.SKU].month[obj._id.month] = {
                         'month': obj._id.month,
                         'qty': obj.qty,
                         'weight': obj.weight,
@@ -2371,28 +2376,26 @@ Object.prototype = {
                     for (var i = 0, len = obj._id.product.pack.length; i < len; i++) {
                         var product = obj._id.product.pack[i];
                         //console.log(product);
-                        if (!new_data[product.id.ref])
-                            new_data[product.id.ref] = {
+                        if (!new_data[product.id.info.SKU])
+                            new_data[product.id.info.SKU] = {
                                 'id': product.id._id,
-                                'ref': product.id.ref,
-                                'label': product.id.label,
+                                'ref': product.id.info.SKU,
+                                'label': product.id.info.langs[0].name,
                                 'month': []
                             };
 
-                        if (!new_data[product.id.ref].month[obj._id.month])
-                            new_data[product.id.ref].month[obj._id.month] = {
+                        if (!new_data[product.id.info.SKU].month[obj._id.month])
+                            new_data[product.id.info.SKU].month[obj._id.month] = {
                                 'month': obj._id.month,
                                 'qty': obj.qty * product.qty,
                                 'weight': obj.qty * product.qty * product.id.weight
                                     //'total_ht': obj.total_ht * product.qty
                             };
                         else {
-                            new_data[product.id.ref].month[obj._id.month].qty += obj.qty * product.qty;
-                            new_data[product.id.ref].month[obj._id.month].weight += obj.qty * product.qty * product.id.weight;
+                            new_data[product.id.info.SKU].month[obj._id.month].qty += obj.qty * product.qty;
+                            new_data[product.id.info.SKU].month[obj._id.month].weight += obj.qty * product.qty * product.id.weight;
                             //    'total_ht': obj.total_ht
                         }
-
-
                     }
 
                 });

@@ -1254,6 +1254,8 @@ F.on('load', function() {
                                             return elem;
                                         });
 
+                                        order.datedl = order.date_livraison;
+
                                         OrderModel.findById(order._id, function(err, newOrder) {
                                             if (err)
                                                 return eCb(err);
@@ -1551,6 +1553,8 @@ F.on('load', function() {
                                                 elem.author = null;
                                             return elem;
                                         });
+
+                                        order.datedl = order.date_livraison;
 
                                         OrderModel.findById(order._id, function(err, newOrder) {
                                             if (err)
@@ -1899,6 +1903,8 @@ F.on('load', function() {
                                                 elem.author = null;
                                             return elem;
                                         });
+
+                                        order.datedl = order.date_livraison;
 
                                         OrderModel.findById(order._id, function(err, newOrder) {
                                             if (err)
@@ -3697,11 +3703,79 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', { 'values.version': 0.514 }, { new: true }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.516 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
-                        console.log("ToManage updated to {0}".format(0.514));
+                        console.log("ToManage updated to {0}".format(0.516));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            },
+            // 0.517 : rename date_livraison -> datedl
+            function(conf, wCb) {
+                if (conf.version >= 0.517)
+                    return wCb(null, conf);
+
+                function renameDateOrders(aCb) {
+                    console.log("convert $rename date_livraison");
+                    const ObjectId = MODULE('utils').ObjectId;
+
+                    mongoose.connection.db.collection('Orders', function(err, collection) {
+                        collection.update({ date_livraison: { $exists: true } }, {
+                                $rename: { date_livraison: "datedl" }
+                            }, { multi: true, upsert: false },
+                            function(err, doc) {
+                                return aCb(err);
+                            });
+                    });
+                }
+
+                function convertDeliveryDatedl(aCb) {
+                    console.log("re-convert delivery for datedl");
+                    const DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+
+                    mongoose.connection.db.collection('Delivery', function(err, collection) {
+                        collection.find({}).toArray(function(err, deliveries) {
+                            if (err)
+                                return console.log(err);
+
+                            if (!deliveries)
+                                return aCb();
+
+                            async.forEachSeries(deliveries, function(delivery, eCb) {
+
+                                if (delivery == null)
+                                    return eCb();
+
+                                DeliveryModel.update({ _id: delivery._id }, { $set: { datedl: delivery.datedl } }, { upsert: false }, eCb);
+                            }, aCb);
+                        });
+                    });
+                }
+
+                function dropCollectionEnd(aCb) {
+                    var collectionName = ['Delivery'];
+
+                    _.each(collectionName, function(collection) {
+                        mongoose.connection.db.dropCollection(collection, function(err, result) {
+                            console.log(result);
+                        });
+                    });
+
+                    aCb(null);
+                }
+
+                async.waterfall([renameDateOrders, convertDeliveryDatedl, dropCollectionEnd], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.517 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.517));
                         wCb(err, doc.values);
                         //wCb(err, conf);
                     });

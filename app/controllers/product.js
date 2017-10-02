@@ -1675,7 +1675,7 @@ MetronicApp.controller('ProductStatsController', ['$scope', '$rootScope', '$http
             url: '/erp/api/product/consumption',
             params: query
         }).success(function(data, status) {
-            //console.log(data);
+            console.log(data);
             $scope.entries = data;
             //$scope.totalEntries = data.total;
         });

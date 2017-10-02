@@ -229,7 +229,7 @@ Object.prototype = {
             order.notes = [];
             order.latex = {};
             order.datec = new Date();
-            order.date_livraison = new Date();
+            order.datedl = new Date();
             order.deliveries = []; // remove link to delivery
             order.bills = []; // remove link to bill
 
@@ -757,7 +757,7 @@ Object.prototype = {
                             res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + 'supplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
                         // Convert Date
                         res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                        res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
                         // Convert Status
                         res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
                         if (row.status && link == 'order') {
@@ -868,7 +868,7 @@ Object.prototype = {
                         res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + 'supplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
                     // Convert Date
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                    res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+                    res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
 
                     // Convert Status
                     res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
@@ -1184,7 +1184,7 @@ Object.prototype = {
                             order: 1,
                             'deliveries.ref': 1,
                             'deliveries._id': 1,
-                            'deliveries.date_livraison': 1,
+                            'deliveries.datedl': 1,
                             'deliveries.lines': {
                                 $filter: {
                                     input: "$deliveries.lines",
@@ -1205,7 +1205,7 @@ Object.prototype = {
                             _id: "$_id",
                             orderQty: { $first: "$orderQty" },
                             deliveryQty: { $sum: "$deliveries.lines.qty" },
-                            deliveries: { $addToSet: { _id: "$deliveries._id", ref: "$deliveries.ref", qty: "$deliveries.lines.qty", date_livraison: "$deliveries.date_livraison" } },
+                            deliveries: { $addToSet: { _id: "$deliveries._id", ref: "$deliveries.ref", qty: "$deliveries.lines.qty", datedl: "$deliveries.datedl" } },
                             refProductSupplier: { $first: "$refProductSupplier" },
                             description: { $first: "$description" }
                         }
@@ -1648,7 +1648,7 @@ Object.prototype = {
                             },
                             "DATEEXP": {
                                 "type": "date",
-                                "value": doc.date_livraison,
+                                "value": doc.datedl,
                                 "format": CONFIG('dateformatShort')
                             },
                             "REGLEMENT": {
@@ -1751,7 +1751,7 @@ Object.prototype = {
                         datec: 1,
                         cond_reglement_code: 1,
                         mode_reglement_code: 1,
-                        date_livraison: 1,
+                        datedl: 1,
                         delivery_mode: 1,
                         entity: 1,
                         "ref": 1,
@@ -1777,7 +1777,7 @@ Object.prototype = {
                         datec: 1,
                         cond_reglement_code: 1,
                         mode_reglement_code: 1,
-                        date_livraison: 1,
+                        datedl: 1,
                         delivery_mode: 1,
                         entity: 1,
                         ref: 1,
@@ -1799,7 +1799,7 @@ Object.prototype = {
                 /*{
                     $unwind: "$lines"
                 },*/
-                { "$sort": { date_livraison: 1 } },
+                { "$sort": { datedl: 1 } },
                 { "$group": { "_id": { supplier: "$supplier", entity: "$entity" }, "data": { "$push": "$$ROOT" } } }
             ],
             function(err, docs) {

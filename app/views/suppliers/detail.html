@@ -82,7 +82,7 @@
                                                 <label for="delivery_mode">@(orders:RemovingOrder)</label>
                                             </div>
                                             <div ng-if="!module('billsupplier')" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="dateLivraison" date-input ng-model="object.date_livraison">
+                                                <input type="text" class="form-control" id="dateLivraison" date-input ng-model="object.datedl">
                                                 <label for="dateLivraison">@(DeliveryDate)</label>
                                             </div>
 
@@ -276,7 +276,7 @@
                                     </tr>
                                     <tr ng-repeat="delivery in line.deliveries">
                                         <td class="text-right">
-                                            <a ui-sref="deliverysupplier.show({id:delivery._id})">{{delivery.ref}}</a> {{delivery.date_livraison|date:'dd/MM/yyyy'}}</td>
+                                            <a ui-sref="deliverysupplier.show({id:delivery._id})">{{delivery.ref}}</a> {{delivery.datedl|date:'dd/MM/yyyy'}}</td>
                                         <td></td>
                                         <td class="text-center">{{delivery.qty}}</td>
                                         <td></td>

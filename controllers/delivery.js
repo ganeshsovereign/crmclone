@@ -735,7 +735,7 @@ Object.prototype = {
                         res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                         res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
                         res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                        res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
 
                         // Convert Status
                         res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
@@ -836,7 +836,7 @@ Object.prototype = {
                     res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
                     res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                    res.datatable.data[i].date_livraison = (row.date_livraison ? moment(row.date_livraison).format(CONFIG('dateformatShort')) : '');
+                    res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
 
                     // Convert Status
                     res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
@@ -1918,7 +1918,7 @@ function createDelivery(doc, callback) {
         let code = 4;
         if (doc._type == 'stockReturns')
             code = 5;
-        var barcode = code + "-" + moment(doc.date_livraison).format("YY") + "0-"; + doc.ref.split('-')[1].replace('_', '-');
+        var barcode = code + "-" + moment(doc.datedl).format("YY") + "0-"; + doc.ref.split('-')[1].replace('_', '-');
         var split = doc.ref.replace('/', '-').split('-');
         if (split.length == 2) //BL1607-02020-32
             barcode += "00" + fixedWidthString(doc.ID, 6, { padding: '0', align: 'right' });
@@ -1986,7 +1986,7 @@ function createDelivery(doc, callback) {
                 },
                 "DATEEXP": {
                     "type": "date",
-                    "value": doc.date_livraison,
+                    "value": doc.datedl,
                     "format": CONFIG('dateformatShort')
                 },
                 "ORDER": { "type": "string", "value": (doc.order && doc.order.ref ? doc.order.ref : "-") },
@@ -2257,7 +2257,7 @@ function createDelivery2(doc, callback) {
                     "DELIVERYMODE": { "type": "string", "value": doc.delivery_mode },
                     "DATEEXP": {
                         "type": "date",
-                        "value": doc.date_livraison,
+                        "value": doc.datedl,
                         "format": CONFIG('dateformatShort')
                     },
                     "DATEC": {

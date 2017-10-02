@@ -65,7 +65,7 @@ const baseSchema = new Schema({
         default: Date.now,
         set: setDate
     },
-    date_livraison: {
+    datedl: {
         type: Date,
         set: setDate
     },
@@ -612,7 +612,7 @@ baseSchema.statics.getById = function(id, callback) {
                                 'deliveries.ref': 1,
                                 'deliveries._id': 1,
                                 'deliveries.status': 1,
-                                'deliveries.date_livraison': 1,
+                                'deliveries.datedl': 1,
                                 'deliveries.orderRows': {
                                     $filter: {
                                         input: "$deliveries.orderRows",
@@ -637,7 +637,7 @@ baseSchema.statics.getById = function(id, callback) {
                                 sequence: { $first: "$sequence" },
                                 product: { $first: "$product" },
                                 deliveryQty: { $sum: "$deliveries.orderRows.qty" },
-                                deliveries: { $addToSet: { _id: "$deliveries._id", ref: "$deliveries.ref", qty: "$deliveries.orderRows.qty", date_livraison: "$deliveries.date_livraison", status: "$deliveries.status" } },
+                                deliveries: { $addToSet: { _id: "$deliveries._id", ref: "$deliveries.ref", qty: "$deliveries.orderRows.qty", datedl: "$deliveries.datedl", status: "$deliveries.status" } },
                                 refProductSupplier: { $first: "$refProductSupplier" },
                                 description: { $first: "$description" }
                             }
@@ -1020,8 +1020,8 @@ function saveOrder(next) {
             });
         },
         function(wCb) {
-            if (self.date_livraison)
-                self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+            if (self.datedl)
+                self.ref = F.functions.refreshSeq(self.ref, self.datedl);
 
             wCb();
         }
@@ -1103,8 +1103,8 @@ function setNameDelivery(next) {
             });
         });
 
-    if (self.date_livraison)
-        self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+    if (self.datedl)
+        self.ref = F.functions.refreshSeq(self.ref, self.datedl);
     next();
 }
 
@@ -1174,8 +1174,8 @@ function setNameReturns(next) {
             wCb();
         },
         function(wCb) {
-            if (self.date_livraison)
-                self.ref = F.functions.refreshSeq(self.ref, self.date_livraison);
+            if (self.datedl)
+                self.ref = F.functions.refreshSeq(self.ref, self.datedl);
 
             wCb();
         }

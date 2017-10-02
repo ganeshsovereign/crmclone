@@ -16,7 +16,7 @@ var setDate = MODULE('utils').setDate;
 var OrderRowSchema = mongoose.Schema({
     product: { type: ObjectId, ref: 'product' },
     product_type: String,
-    order: { type: ObjectId, ref: 'order' },
+    order: { type: ObjectId, ref: 'order', index: true },
     warehouse: { type: ObjectId, ref: 'warehouse' },
     type: { type: String, default: 'product' }, //Used for subtotal
     refProductSupplier: String, //Only for an order Supplier or For Ref Title Comment
