@@ -1449,20 +1449,34 @@ Object.prototype = {
                     });
                 });
 
+        var query = {
+            isremoved: { $ne: true },
+            Status: { '$nin': ['DRAFT', 'CANCELED'] },
+            forSales: (self.query.forSales == 'false' ? false : true),
+            $or: [
+                    { datec: { '$gte': dateStart, '$lt': dateEnd } }
+                ] // Date de facture
+        };
+
         /* Customer invoice */
         BillModel.aggregate([
-            { $match: query },
-            { $project: { _id: 0, total_ht: 1 } },
-            { $group: { _id: null, total_ht: { "$sum": "$total_ht" } } }
-        ], function(err, doc) {
-            if (err)
-                return console.log(err);
+                { $match: query },
+                {
+                    $project: { _id: 0, total_ht: 1 }
+                },
+                { $group: { _id: null, total_ht: { "$sum": "$total_ht" } } }
+            ],
+            function(err, doc) {
+                if (err)
+                    return console.log(err);
 
-            if (!doc.length)
-                return self.json({ total: 0 });
+                if (!doc.length)
+                    return self.json({ total: 0 });
 
-            self.json({ total: doc[0].total_ht });
-        });
+                console.log("totototot", doc);
+
+                self.json({ total: doc[0].total_ht });
+            });
     },
     download: function(id) {
         var self = this;
