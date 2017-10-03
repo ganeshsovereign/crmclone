@@ -789,7 +789,7 @@ exports.install = function() {
      isInventory: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST),
      isReceived: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST) } }
 */
-    F.route('/erp/api/product/warehouse/stockCorrection', stock.create, ['post', 'json', 'authorize']);
+    F.route('/erp/api/product/warehouse/stockCorrection', stock.create, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/product/warehouse/stockCorrection/inventory', stock.updateInventoryAll, ['upload'], 1024); //1MB
 
     F.route('/erp/api/product/warehouse/allocate', stock.allocate, ['post', 'json', 'authorize']);
@@ -3364,24 +3364,32 @@ function Prices() {};
 Prices.prototype = {
     read: function() {
         var self = this;
-        var query = self.query;
+
         var ProductPricesModel = MODEL('productPrices').Schema;
         var TaxesModel = MODEL('taxes').Schema;
         var ObjectId = MODULE('utils').ObjectId;
+
+        console.log(self.query);
+
+        var filter = self.query.filter || {};
+        var sort;
 
         var paginationObject = MODULE('helper').page(self.query);
         var limit = paginationObject.limit;
         var skip = paginationObject.skip;
 
-        var priceList = query.priceList ? ObjectId(query.priceList) : null;
-        var product = query.product ? ObjectId(query.product) : null;
+        const FilterMapper = MODULE('helper').filterMapper;
+        var filterMapper = new FilterMapper();
+
+        var priceList = self.query.priceList ? ObjectId(self.query.priceList) : null;
+        var product = self.query.product ? ObjectId(self.query.product) : null;
 
         var cost = false;
 
         if (!priceList && !product)
             return self.json([]);
 
-        query = {};
+        var query = {};
         var sort = 'product.info.SKU';
 
         if (priceList)
@@ -3395,7 +3403,28 @@ Prices.prototype = {
         if (self.query.cost)
             cost = true;
 
-        //console.log(query, cost);
+        /*if (filter && typeof filter === 'object') {
+            let optionsObject = filterMapper.mapFilter(filter, { contentType: contentType });
+
+            if (filter && filter.services) {
+                if (filter.services.value.indexOf('isCustomer') !== -1) {
+                    optionsObject['salesPurchases.isCustomer'] = true;
+                }
+                if (filter.services.value.indexOf('isSupplier') !== -1) {
+                    optionsObject['salesPurchases.isSupplier'] = true;
+                }
+            }
+
+            delete optionsObject.services;
+        }*/
+
+        if (self.query.sort)
+            sort = JSON.parse(self.query.sort);
+        else
+            sort = { 'product.info.SKU': -1 };
+
+
+        console.log(query, sort);
 
         function queryBuilder() {
             var query1 = [{
@@ -3462,7 +3491,7 @@ Prices.prototype = {
                 $unwind: "$priceLists"
             });
             query1.push({
-                $sort: { 'product.info.SKU': 1 }
+                $sort: sort
             });
 
             return query1;
