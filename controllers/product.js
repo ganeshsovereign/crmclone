@@ -3449,6 +3449,7 @@ Prices.prototype = {
                         'product.info': 1,
                         'product.directCost': 1,
                         'product.indirectCost': 1,
+                        'product.totalCost': { $sum: ["$product.directCost", "$product.indirectCost"] },
                         'priceLists': 1,
                         updatedAt: 1,
                         prices: 1,

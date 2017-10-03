@@ -24,10 +24,11 @@
 
 body {
     font-size: 12px;
-    zoom: 90%;
+    /*zoom: 90%;*/
 }
 
-body,
+
+/*body,
 h1,
 h2,
 h3,
@@ -35,11 +36,12 @@ h4,
 h5,
 h6 {
     font-family: "OpenSans Regular", Ubuntu, sans-serif;
-}
+}*/
 
 .table td,
 .table th {
     font-size: 12px;
+    cursor: pointer;
 }
 
 .page-header.navbar.navbar-fixed-top,
@@ -136,13 +138,41 @@ table.info-table {
     background-color: #FFFFFF;
 }
 
+
+/* New theme */
+
+.page-footer-fixed .page-footer {
+    height: 23px;
+    padding: 0 30px;
+    border-top: 1px solid #494747;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #FFFFFF;
+    margin-left: 45px;
+}
+
+.page-footer .page-footer-inner {
+    width: 100%;
+}
+
+.page-footer .page-footer-inner .pagination {
+    margin: 0 0;
+}
+
+.page-footer .pagination-sm>li>a,
+.page-footer .pagination-sm>li>span {
+    padding: 1px 10px;
+}
+
 .page-header.navbar .page-logo .logo-default {
     margin-top: 10px;
     width: 165px;
 }
 
 .page-header.navbar {
-    background-color: #55555;
+    background-color: #555555;
 }
 
 ul.nav-tabs,

@@ -1219,3 +1219,60 @@ MetronicApp.directive('amChart', ['$q', function($q) {
         }
     };
 }]);
+
+MetronicApp.directive('tableSort', [
+    function() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                tableSort: '@',
+                name: '@',
+                ngModel: '=',
+                //ngClick: '&',
+            },
+            template: '<div ng-click="changeSort()"><i class="fa fa-fw" ng-class="{\'fa-sort\' : ngModel[\'{{tableSort}}\'] === undefined, \'fa-sort-up\' : ngModel[\'{{tableSort}}\'] === 1, \'fa-sort-down\' : ngModel[\'{{tableSort}}\'] === -1}"></i>{{name}}</div>',
+            link: function(scope, element, attrs, ngModel) {
+
+                scope.changeSort = function() {
+                    var idx = scope.tableSort;
+
+                    if (scope.ngModel[idx])
+                        scope.ngModel[idx] *= -1;
+                    else {
+                        scope.ngModel = {};
+                        scope.ngModel[idx] = 1;
+                    }
+
+                    ngModel.$setViewValue(scope.ngModel);
+
+                    return scope.$parent.find();
+                }
+
+            }
+        };
+    }
+]);
+
+MetronicApp.directive('tableFooter', [
+    function() {
+        return {
+            restrict: 'E',
+            require: 'ngModel',
+            scope: {
+                page: '=ngModel',
+                //ngClick: '&',
+            },
+            templateUrl: '/templates/layout/table-footer.html',
+            link: function(scope, element, attrs, ngModel) {
+
+
+                scope.find = function() {
+                    ngModel.$setViewValue(scope.page);
+
+                    return scope.$parent.find();
+                };
+            }
+        };
+    }
+]);

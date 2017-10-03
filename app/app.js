@@ -159,7 +159,7 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
         layout: {
             pageSidebarClosed: false, // sidebar menu state
             pageBodySolid: false, // solid body color state
-            pageAutoScrollOnLoad: 1000 // auto scroll to top on page load
+            pageAutoScrollOnLoad: 0 // auto scroll to top on page load
         },
         layoutImgPath: Metronic.getAssetsPath() + 'admin/layout/img/',
         layoutCssPath: Metronic.getAssetsPath() + 'admin/layout/css/'
@@ -336,6 +336,8 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
             formatYear: 'yy',
             startingDay: 1
         };
+
+        $rootScope.Math = window.Math;
 
 
     }

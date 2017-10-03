@@ -1327,16 +1327,30 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
         total: 0
     };
 
+    $scope.sort = { 'product.info.SKU': 1 };
+
+
+
     $scope.find = function() {
         $scope.grid = {};
         Metronic.blockUI({
             target: '.waiting',
-            animate: true,
-            overlayColor: 'none'
+            animate: false,
+            boxed: true,
+            overlayColor: 'gray'
         });
+
+
+
+
         //$scope.init();
 
-        var query = { filter: this.search, limit: $scope.page.limit, page: $scope.page.page };
+        var query = {
+            filter: this.search,
+            limit: $scope.page.limit,
+            page: $scope.page.page,
+            sort: this.sort
+        };
 
         if (productId)
             query.product = productId;
@@ -1361,7 +1375,9 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
             $scope.page.total = data.total;
             $scope.prices = data.data;
 
-            Metronic.unblockUI('.waiting');
+            $timeout(function() {
+                Metronic.unblockUI('.waiting');
+            }, 0);
         });
     };
 

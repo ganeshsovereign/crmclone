@@ -4,13 +4,9 @@
 @{ngStyle('/assets/admin/pages/css/tasks.css')}
 
 <!-- cdnjs -->
-@{ngResource(model.resources)}
-@{ngController(model.controllers)}
-
-@{section footer}
-@{end}
+@{ngResource(model.resources)} @{ngController(model.controllers)} @{section footer} @{end}
 
 <!-- BEGIN ACTUAL CONTENT -->
 <div ui-view class="fade-in-up">
-</div> 
+</div>
 <!-- END ACTUAL CONTENT -->

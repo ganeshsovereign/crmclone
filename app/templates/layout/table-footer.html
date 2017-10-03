@@ -1,0 +1,22 @@
+<div class="page-footer" ng-show="page.total">
+    <div class="page-footer-inner">
+        <div class="row">
+            <div class="col-md-1">
+                <span>{{(page.page - 1) * page.limit || (page.total?1:0)}} - {{Math.min(page.limit * page.page, page.total)}} of {{page.total}} items</span>
+            </div>
+            <div class="col-md-2">
+                show :
+                <div class="btn-group btn-group-xs btn-group-solid">
+                    <button type="button" class="btn btn-xs" ng-class="{blue : page.limit == 25}" ng-click="page.limit = 25; find()">25</button>
+                    <button type="button" class="btn btn-xs" ng-class="{blue : page.limit == 50}" ng-click="page.limit = 50; find()">50</button>
+                    <button type="button" class="btn btn-xs" ng-class="{blue : page.limit == 100}" ng-click="page.limit = 100; find()">100</button>
+                    <button type="button" class="btn btn-xs" ng-class="{blue : page.limit == 200}" ng-click="page.limit = 200; find()">200</button>
+                </div>
+            </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-3">
+                <pagination total-items="page.total" ng-model="page.page" items-per-page="page.limit" max-size="6" class="pagination-sm pull-right" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="find()"></pagination>
+            </div>
+        </div>
+    </div>
+</div>
