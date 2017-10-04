@@ -32,6 +32,7 @@ exports.install = function() {
     F.route('/erp/api/bank/payment', payment.read, ['authorize']);
     //F.route('/erp/api/payment/dt', payment.readDT, ['post', 'authorize']);
     F.route('/erp/api/bank/payment', payment.create, ['post', 'json', 'authorize'], 1024);
+    F.route('/erp/api/bank/payment/bills', payment.getAllWaitingBills, ['authorize']);
 
     F.route('/erp/api/bank/payment/{type}', payment.getGroupPayment, ['authorize']); //Chq
     F.route('/erp/api/bank/payment/{type}/dt', payment.readGroupDT, ['post', 'authorize']);
@@ -82,6 +83,8 @@ Payment.prototype = {
         var TransactionModel = MODEL('transaction').Schema;
         var query;
 
+        console.log("toto");
+
         if (self.query.find)
             query = JSON.parse(self.query.find);
 
@@ -123,6 +126,57 @@ Payment.prototype = {
                 }
             });
         });
+    },
+    getAllWaitingBills: function() {
+        var BillModel = MODEL('invoice').Schema;
+        var self = this;
+
+        var query = {};
+        if (self.query) {
+            for (var i in self.query) {
+                switch (i) {
+                    case "query":
+                        if (self.query.query == "WAIT") // For payment
+                            query.Status = { "$nin": ["PAID", "CANCELLED", "DRAFT"] };
+                        break;
+                    case "dater":
+                        query.dater = JSON.parse(self.query.dater);
+                        break;
+                    case "journalId":
+                        query.journalId = JSON.parse(self.query.journalId);
+                        break;
+                    default:
+                        query[i] = self.query[i];
+                        break;
+                }
+            }
+        }
+
+        // console.log(self.query);
+        //console.log(query);
+
+        BillModel.find(query, "-history -files -latex")
+            .populate("supplier", "name")
+            .populate({
+                path: "total_taxes.taxeId"
+            })
+            .sort({ ID: 1 })
+            .exec(function(err, doc) {
+                if (err) {
+                    console.log(err);
+                    self.json({
+                        notify: {
+                            type: "error",
+                            message: err
+                        }
+                    });
+                    return;
+                }
+
+                //console.log(doc);
+
+                self.json(doc);
+            });
     },
     getGroupPayment: function(type) {
         var PaymentModel = MODEL('payment').Schema;

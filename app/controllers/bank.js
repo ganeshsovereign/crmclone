@@ -922,7 +922,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
 
         if ($scope.payment.bills.length)
             $scope.payment.libelleAccounting += $scope.payment.bills[0].supplier.fullName;
-        else if ($scope.payment.bills_supplier)
+        else if ($scope.payment.bills_supplier.length)
             $scope.payment.libelleAccounting += $scope.payment.bills_supplier[0].supplier.fullName;
 
         return true;
@@ -1048,15 +1048,23 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
         }
 
         if ($rootScope.$state.current.name === 'billsupplier.show.payment.create' || $rootScope.$state.current.name === 'bill.show.payment.create') {
-            Orders.bill.query({ supplier: id, forSales: true, "query": "WAIT" }, function(bills) {
-                $scope.payment.bills = bills;
+            $http({
+                method: 'GET',
+                url: '/erp/api/bank/payment/bills',
+                params: { supplier: id, forSales: true, "query": "WAIT" }
+            }).success(function(data, status) {
+                $scope.payment.bills = data;
                 //console.log(bills);
 
                 $scope.updateLabel();
             });
 
-            Orders.billSupplier.query({ supplier: id, forSales: false, "query": "WAIT" }, function(bills) {
-                $scope.payment.bills_supplier = bills;
+            $http({
+                method: 'GET',
+                url: '/erp/api/bank/payment/bills',
+                params: { supplier: id, forSales: false, "query": "WAIT" }
+            }).success(function(data, status) {
+                $scope.payment.bills_supplier = data;
                 //console.log(bills);
 
                 $scope.updateLabel();
