@@ -1266,6 +1266,8 @@ MetronicApp.directive('tableFooter', [
             templateUrl: '/templates/layout/table-footer.html',
             link: function(scope, element, attrs, ngModel) {
 
+                scope.Math = window.Math;
+
 
                 scope.find = function() {
                     ngModel.$setViewValue(scope.page);

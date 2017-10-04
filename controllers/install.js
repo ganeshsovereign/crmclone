@@ -3780,6 +3780,80 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
+            },
+            // 0.518 : add rights on orders and invoices
+            function(conf, wCb) {
+                if (conf.version >= 0.518)
+                    return wCb(null, conf);
+
+                function convertOrders(aCb) {
+                    console.log("convert order rights");
+
+                    const Model = MODEL('order').Schema.Order;
+
+                    Model.update({}, {
+                            $set: {
+                                "whoCanRW": "everyOne",
+                                "groups": {
+                                    "group": [],
+                                    "users": [],
+                                    "owner": null
+                                }
+                            }
+                        }, { multi: true, upsert: false },
+                        function(err, doc) {
+                            return aCb(err);
+                        });
+                }
+
+                function convertInvoices(aCb) {
+                    console.log("convert invoice rights");
+
+                    const Model = MODEL('invoice').Schema;
+
+                    Model.update({}, {
+                            $set: {
+                                "whoCanRW": "everyOne",
+                                "groups": {
+                                    "group": [],
+                                    "users": [],
+                                    "owner": null
+                                }
+                            }
+                        }, { multi: true, upsert: false },
+                        function(err, doc) {
+                            return aCb(err);
+                        });
+                }
+
+                function convertCustomer(aCb) {
+                    console.log("convert customer Name");
+
+                    const Model = MODEL('Customers').Schema;
+
+                    Model.update({ 'name.first': null }, {
+                            $set: {
+                                'name.first': ""
+                            }
+                        }, { multi: true, upsert: false },
+                        function(err, doc) {
+                            return aCb(err);
+                        });
+                }
+
+                async.waterfall([convertOrders, convertInvoices, convertCustomer], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.518 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.518));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
             }
         ],
         function(err, doc) {

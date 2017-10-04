@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <div class="portlet light portlet-form bordered">
+    <div class="portlet light portlet-form bordered waiting">
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-calculator"></i>
@@ -87,638 +87,199 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="searchContainer">
-            <div class="search-view">
-                <div class="search-field">
-                    <span class="search icon-search"></span>
+            <div id="searchContainer">
+                <div class="search-view">
+                    <div class="search-field">
+                        <span class="search icon-search"></span>
 
-                    <div id="searchGlobalContainer">
-                        <div id="searchFilterContainer"></div>
-                        <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
-                        <div id="searchInput" data-text="Search" contenteditable="" class="ui-autocomplete-input" autocomplete="off"></div>
-                        <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" id="ui-id-9" tabindex="0" style="display: none;"></ul>
+                        <div id="searchGlobalContainer">
+                            <div id="searchFilterContainer"></div>
+                            <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+                            <div id="searchInput" data-text="Search" contenteditable="" class="ui-autocomplete-input" autocomplete="off"></div>
+                            <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" id="ui-id-9" tabindex="0" style="display: none;"></ul>
+                        </div>
+                        <span class="search-content icon-caret-down"></span>
                     </div>
-                    <span class="search-content icon-caret-down"></span>
-                </div>
-                <div class="search-options hidden">
-                    <ul class="filter-dialog-tabs">
-                        <li data-value="#filtersContent" class="filterTabs active">
-                            <span class="icon-filter"></span> Filters
-                            <span class="caret"></span>
-                        </li>
-                        <li data-value="#favoritesContent" class="filterTabs">
-                            <span class="icon-star2"></span> Favorites
-                            <span class="caret"></span>
-                        </li>
-                    </ul>
-
-                    <div class="drop-down-filter">
-                        <ul class="condition hidden">
-                            <span class="CondParagraph">Condition</span>
-                            <li class="conditionAND">
-                                <input type="checkbox" checked="" id="logicCondition" value="and">
-                                <label for="logicCondition">AND</label>
+                    <div class="search-options hidden">
+                        <ul class="filter-dialog-tabs">
+                            <li data-value="#filtersContent" class="filterTabs active">
+                                <span class="icon-filter"></span> Filters
+                                <span class="caret"></span>
+                            </li>
+                            <li data-value="#favoritesContent" class="filterTabs">
+                                <span class="icon-star2"></span> Favorites
+                                <span class="caret"></span>
                             </li>
                         </ul>
-                        <!--<li class="hidden">
+
+                        <div class="drop-down-filter">
+                            <ul class="condition hidden">
+                                <span class="CondParagraph">Condition</span>
+                                <li class="conditionAND">
+                                    <input type="checkbox" checked="" id="logicCondition" value="and">
+                                    <label for="logicCondition">AND</label>
+                                </li>
+                            </ul>
+                            <!--<li class="hidden">
                         <input type="checkbox" id="defaultFilter" value="empty">
                         <label for="defaultFilter">Clear</label>
                     </li>-->
 
-                        <li class="hidden group btn btn-default customFilter">
-                            Add Custom Filter
-                        </li>
+                            <li class="hidden group btn btn-default customFilter">
+                                Add Custom Filter
+                            </li>
 
-                        <div id="filtersContent" class="tabContent">
-                            <div id="supplierFullContainer" class="filterGroup" data-value="supplier._id">
-                                <div class="groupName">
-                                    <span id="supplier">Supplier</span>
-                                </div>
-                                <div id="supplierContainer" class="ulContent hidden">
-                                    <div class="_filterContent">
-
-                                        <ul id="supplierUl" class="filterValues">
-                                            <li class=" " data-value="57c9ac51d07eb4d23e0b8cc5">
-                                                <span class="icon icon-checked2"></span> Angelika Wietowska
-                                            </li>
-
-                                            <li class=" " data-value="57c993c1d07eb4d23e0b8c42">
-                                                <span class="icon icon-checked2"></span> Jane Doe
-                                            </li>
-
-                                            <li class=" " data-value="57c996b2d07eb4d23e0b8c56">
-                                                <span class="icon icon-checked2"></span> Lisa Shephard
-                                            </li>
-
-                                            <li class=" " data-value="57c99a50d07eb4d23e0b8c6b">
-                                                <span class="icon icon-checked2"></span> Vivian Tseng
-                                            </li>
-                                        </ul>
+                            <div id="filtersContent" class="tabContent">
+                                <div id="supplierFullContainer" class="filterGroup" data-value="supplier._id">
+                                    <div class="groupName">
+                                        <span id="supplier">Supplier</span>
                                     </div>
+                                    <div id="supplierContainer" class="ulContent hidden">
+                                        <div class="_filterContent">
 
-                                </div>
-                            </div>
-                            <div id="workflowFullContainer" class="filterGroup" data-value="workflow._id">
-                                <div class="groupName">
-                                    <span id="workflow">Status</span>
-                                </div>
-                                <div id="workflowContainer" class="ulContent hidden">
-                                    <div class="_filterContent">
+                                            <ul id="supplierUl" class="filterValues">
+                                                <li class=" " data-value="57c9ac51d07eb4d23e0b8cc5">
+                                                    <span class="icon icon-checked2"></span> Angelika Wietowska
+                                                </li>
 
-                                        <ul id="workflowUl" class="filterValues">
-                                            <li class=" " data-value="55647b932e4aa3804a765ec5">
-                                                <span class="icon icon-checked2"></span> Draft/ Quotation
-                                            </li>
+                                                <li class=" " data-value="57c993c1d07eb4d23e0b8c42">
+                                                    <span class="icon icon-checked2"></span> Jane Doe
+                                                </li>
 
-                                            <li class=" " data-value="56599347bfd103f108eb4caa">
-                                                <span class="icon icon-checked2"></span> Invoiced received
-                                            </li>
+                                                <li class=" " data-value="57c996b2d07eb4d23e0b8c56">
+                                                    <span class="icon icon-checked2"></span> Lisa Shephard
+                                                </li>
 
-                                            <li class=" " data-value="5555bf276a3f01acae0b5561">
-                                                <span class="icon icon-checked2"></span> Pending PO
-                                            </li>
-                                        </ul>
+                                                <li class=" " data-value="57c99a50d07eb4d23e0b8c6b">
+                                                    <span class="icon icon-checked2"></span> Vivian Tseng
+                                                </li>
+                                            </ul>
+                                        </div>
+
                                     </div>
+                                </div>
+                                <div id="workflowFullContainer" class="filterGroup" data-value="workflow._id">
+                                    <div class="groupName">
+                                        <span id="workflow">Status</span>
+                                    </div>
+                                    <div id="workflowContainer" class="ulContent hidden">
+                                        <div class="_filterContent">
 
+                                            <ul id="workflowUl" class="filterValues">
+                                                <li class=" " data-value="55647b932e4aa3804a765ec5">
+                                                    <span class="icon icon-checked2"></span> Draft/ Quotation
+                                                </li>
+
+                                                <li class=" " data-value="56599347bfd103f108eb4caa">
+                                                    <span class="icon icon-checked2"></span> Invoiced received
+                                                </li>
+
+                                                <li class=" " data-value="5555bf276a3f01acae0b5561">
+                                                    <span class="icon icon-checked2"></span> Pending PO
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="favoritesContent" class="tabContent hidden">
-                            <div class="forSavedFilters"></div>
-                            <div class="filter_name_wrapper">
-                                <div class="_animateInputBox">
-                                    <input type="text" id="forFilterName" class="_animate" maxlength="24" required="">
-                                    <label class="_animate">Filter name</label>
+                            <div id="favoritesContent" class="tabContent hidden">
+                                <div class="forSavedFilters"></div>
+                                <div class="filter_name_wrapper">
+                                    <div class="_animateInputBox">
+                                        <input type="text" id="forFilterName" class="_animate" maxlength="24" required="">
+                                        <label class="_animate">Filter name</label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="_actionGroup">
+                                <div class="_actionGroup">
 
-                                <button class="btn blue" id="saveFilterButton">Save</button>
+                                    <button class="btn blue" id="saveFilterButton">Save</button>
 
-                                <div class="useByDefault _defaultWrp">
-                                    <label class="_animatedCheckbox">
+                                    <div class="useByDefault _defaultWrp">
+                                        <label class="_animatedCheckbox">
               <input type="checkbox" class="defaultFilter" id="defaultFilter">
               <span></span>
             </label>
-                                    <span class="_description">Use by default</span>
+                                        <span class="_description">Use by default</span>
+                                    </div>
+
                                 </div>
 
+                                <ul id="savedFiltersElements" class="_savedFiltersElements">
+                                </ul>
                             </div>
-
-                            <ul id="savedFiltersElements" class="_savedFiltersElements">
-                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="_tableWrap _tableOrderList">
-            <table class="list  stripedList order-list">
-                <colgroup>
-                    <col width="42px">
-                    <col width="20%">
-                    <col width="14%">
-                    <col width="8%">
-                    <col width="10%">
-                    <col width="12%">
-                    <col width="13%">
-                    <col width="13%">
-                    <col width="10%">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th class="centerCell">
-                            <label class="_customCHeckbox">
-                            <input type="checkbox" id="checkAll">
-                            <span></span>
-                        </label>
-                        </th>
-                        <th class="oe_sortable" data-sort="name">Reference
-                            <span class="arrow down"></span>
-                            <span class="arrow up"></span>
-                        </th>
-                        <th class="oe_sortable" data-sort="supplier.name">Supplier
-                            <span class="arrow down"></span>
-                            <span class="arrow up"></span>
-                        </th>
-                        <th class="oe_sortable" data-sort="status.fulfillStatus">Received
-                            <span class="arrow down"></span>
-                            <span class="arrow up"></span>
-                        </th>
-                        <th class="oe_sortable" data-sort="workflow.name">Status
-                            <span class="arrow down"></span>
-                            <span class="arrow up"></span>
-                        </th>
-                        <th class="oe_sortable" data-sort="paymentBalance">Balance
-                            <span class="arrow down"></span>
-                            <span class="arrow up"></span>
-                        </th>
-                        <th class="oe_sortable" data-sort="paymentsPaid">Prepaid
-                            <span class="arrow down"></span>
-                            <span class="arrow up"></span>
-                        </th>
-                        <th class="oe_sortable" data-sort="paymentInfo.total">Total
-                            <span class="arrow down"></span>
-                            <span class="arrow up"></span>
-                        </th>
-                        <th class="oe_sortable sortDn" data-sort="orderDate">Order Date
-                            <span class="arrow down"></span>
-                            <span class="arrow up"></span>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="listTable" class="enableTableOdd">
-
-
-                    <tr data-id="589dfa0376977b064a8d11a0">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="589dfa0376977b064a8d11a0" class="checkbox">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_10</td>
-
-
-
-                        <td>Lisa Shephard</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box red _fullfilled" title=" Not Received"></span>
-                        </td>
-                        <td>Pending PO</td>
-                        <td class="balance">$ 431.25
-
-                        </td>
-                        <td class="paid">$ 0
-
-                        </td>
-                        <td class="total">$431.25
-                        </td>
-
-                        <td>10 Feb, 2017</td>
-                    </tr>
-
-
-
-                    <tr data-id="589d9f1d3b9a5502140024ef" class="notEditable">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="589d9f1d3b9a5502140024ef" class="checkbox notRemovable" disabled="disabled">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_9</td>
-
-
-
-                        <td>Jane Doe</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box green _fullfilled" title=" Received"></span>
-                        </td>
-                        <td>Invoiced received</td>
-                        <td class="balance">$ 11.50
-
-                        </td>
-                        <td class="paid">$ 0
-
-                        </td>
-                        <td class="total">$11.50
-                        </td>
-
-                        <td>10 Feb, 2017</td>
-                    </tr>
-
-
-
-                    <tr data-id="589d8d444e868fce4e58d2d8" class="notEditable">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="589d8d444e868fce4e58d2d8" class="checkbox notRemovable" disabled="disabled">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_8</td>
-
-
-
-                        <td>Angelika Wietowska</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box red _fullfilled" title=" Not Received"></span>
-                        </td>
-                        <td>Invoiced received</td>
-                        <td class="balance">$ 475.00
-
-                        </td>
-                        <td class="paid">$ 0
-
-                        </td>
-                        <td class="total">$475.00
-                        </td>
-
-                        <td>10 Feb, 2017</td>
-                    </tr>
-
-
-
-                    <tr data-id="589d855ef69c33914e10fbb5" class="notEditable">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="589d855ef69c33914e10fbb5" class="checkbox notRemovable" disabled="disabled">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_6</td>
-
-
-
-                        <td>Angelika Wietowska</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box green _fullfilled" title=" Received"></span>
-                        </td>
-                        <td>Invoiced received</td>
-                        <td class="balance">$ 434.15
-
-                        </td>
-                        <td class="paid">$ 0
-
-                        </td>
-                        <td class="total">$434.15
-                        </td>
-
-                        <td>10 Feb, 2017</td>
-                    </tr>
-
-
-
-                    <tr data-id="589d83e55c8be0bc4e830cde" class="notEditable">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="589d83e55c8be0bc4e830cde" class="checkbox notRemovable" disabled="disabled">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_5</td>
-
-
-
-                        <td>Lisa Shephard</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box green _fullfilled" title=" Received"></span>
-                        </td>
-                        <td>Invoiced received</td>
-                        <td class="balance">$ 579.65
-
-                        </td>
-                        <td class="paid">$ 0
-
-                        </td>
-                        <td class="total">$579.65
-                        </td>
-
-                        <td>10 Feb, 2017</td>
-                    </tr>
-
-
-
-                    <tr data-id="589d7eb64e868fce4e58d2b7" class="notEditable">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="589d7eb64e868fce4e58d2b7" class="checkbox notRemovable" disabled="disabled">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_4</td>
-
-
-
-                        <td>Jane Doe</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box green _fullfilled" title=" Received"></span>
-                        </td>
-                        <td>Invoiced received</td>
-                        <td class="balance">$ 2 905.00
-
-                        </td>
-                        <td class="paid">$ 0
-
-                        </td>
-                        <td class="total">$2 905.00
-                        </td>
-
-                        <td>10 Feb, 2017</td>
-                    </tr>
-
-
-
-                    <tr data-id="589d8b715c8be0bc4e830cfc">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="589d8b715c8be0bc4e830cfc" class="checkbox notRemovable" disabled="disabled">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_7</td>
-
-
-
-                        <td>Vivian Tseng</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box green _fullfilled" title=" Received"></span>
-                        </td>
-                        <td>Draft/ Quotation</td>
-                        <td class="balance">$ 0
-
-                        </td>
-                        <td class="paid">$ 358.25
-
-                        </td>
-                        <td class="total">$358.25
-                        </td>
-
-                        <td>07 Feb, 2017</td>
-                    </tr>
-
-
-
-                    <tr data-id="5898952649cd23e02ca7c332" class="notEditable">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="5898952649cd23e02ca7c332" class="checkbox notRemovable" disabled="disabled">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_2</td>
-
-
-
-                        <td>Vivian Tseng</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box green _fullfilled" title=" Received"></span>
-                        </td>
-                        <td>Invoiced received</td>
-                        <td class="balance">$ 667.00
-
-                        </td>
-                        <td class="paid">$ 0
-
-                        </td>
-                        <td class="total">$667.00
-                        </td>
-
-                        <td>06 Feb, 2017</td>
-                    </tr>
-
-
-
-                    <tr data-id="5898954a49cd23e02ca7c340" class="notEditable">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="5898954a49cd23e02ca7c340" class="checkbox notRemovable" disabled="disabled">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_3</td>
-
-
-
-                        <td>Vivian Tseng</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box green _fullfilled" title=" Received"></span>
-                        </td>
-                        <td>Invoiced received</td>
-                        <td class="balance">$ 782.00
-
-                        </td>
-                        <td class="paid">$ 0
-
-                        </td>
-                        <td class="total">$782.00
-                        </td>
-
-                        <td>05 Feb, 2017</td>
-                    </tr>
-
-
-
-                    <tr data-id="5898950e49cd23e02ca7c324">
-                        <td class="notForm centerCell">
-                            <label class="_customCHeckbox">
-                <input type="checkbox" value="5898950e49cd23e02ca7c324" class="checkbox notRemovable" disabled="disabled">
-                <span></span>
-            </label>
-                        </td>
-                        <td>PO_1</td>
-
-
-
-                        <td>Jane Doe</td>
-                        <td class="centerCell _statusOrders"><span class="icon-box green _fullfilled" title=" Received"></span>
-                        </td>
-                        <td>Pending PO</td>
-                        <td class="balance">$ 425.50
-
-                        </td>
-                        <td class="paid">$ 0
-
-                        </td>
-                        <td class="total">$425.50
-                        </td>
-
-                        <td>05 Feb, 2017</td>
-                    </tr>
-
-                </tbody>
-                <tfoot id="listTotal">
-                    <tr>
-                        <td colspan="5">Total</td>
-                        <td><span id="balance" class="money">6 711.05</span></td>
-                        <td><span id="paid" class="money">358.25</span></td>
-                        <td><span id="total" class="money">7 069.30</span></td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-
-        <div id="timeRecivingDataFromServer">Created in 354ms </div>
-
-
-        <div class="dataTables_wrapper no-footer table-responsive">
-            <div class="col-md-12">
-                <table class="table dataTable no-footer table-hover" id="orderList1">
+            <div class="no-footer table-responsive">
+                <table class="table table-striped table-hover table-condensed no-footer">
+                    <colgroup>
+                        <col width="42px">
+                        <col width="12%">
+                        <col width="14%">
+                        <col width="8%">
+                        <col width="10%">
+                        <col width="12%">
+                        <col width="8%">
+                        <col width="8%">
+                        <col width="8%">
+                        <col width="70px">
+                        <col width="10%">
+                        <col width="10%">
+                    </colgroup>
                     <thead>
                         <tr role="row" class="heading">
-                            <th width="2%">
-                                <input type="checkbox" class="group-checkable" />
+                            <th class="text-center">
+                                <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" />
                             </th>
-                            <th>@(Ref)</th>
-                            <th>@(companies:Company)</th>
+                            <th table-sort='ID' ng-model="sort" name="@(Ref)"></th>
+                            <th table-sort='supplier.fullName' ng-model="sort" name="@(companies:Company)"></th>
                             <th>@(RefCustomer)</th>
-                            <th>@(commercial:Commercial)</th>
-                            <th>@(DeliveryDate)</th>
+                            <th table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Commercial)"></th>
+                            <th table-sort='datedl' ng-model="sort" name="@(DeliveryDate)"></th>
                             <th>@(TotalHT)</th>
                             <th>@(TotalTTC)</th>
                             <th>@(AmountPaid)</th>
                             <th>@(Status)</th>
-                            <th>@(companies:Entity)</th>
+                            <th></th>
                             <th>@(DateCreation)</th>
                         </tr>
-                        <!--<tr role="row" class="filter">
-                            <td>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="ref">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="societe_name">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="contact_name">
-                            </td>
-                            <td>
-                                <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="offer_date_from" placeholder="From">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
-                                    </span>
-                                </div>
-                                <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="offer_date_to" placeholder="To">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="margin-bottom-5">
-                                    <input type="text" class="form-control form-filter input-sm" name="offer_price_from" placeholder="From"/>
-                                </div>
-                                <input type="text" class="form-control form-filter input-sm" name="offer_price_to" placeholder="To"/>
-                            </td>
-                            <td>
-                                <select name="offer_status" class="form-control form-filter input-sm">
-                                    <option value="">Select...</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="closed">Closed</option>
-                                    <option value="hold">On Hold</option>
-                                    <option value="fraud">Fraud</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="offer_ship_to">
-                            </td>
-                            <td>
-                            </td>
-                            
-                            <td>
-                                <div class="margin-bottom-5">
-                                    <button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
-                                </div>
-                                <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
-                            </td>
-                        </tr>-->
                     </thead>
+                    <tbody>
+                        <tr ng-repeat="line in orders" ui-sref="order.show({id:line._id})">
+                            <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
+                            <td><a class="with-tooltip" ui-sref="order.show({id:line._id})"><i class="fa fa-shopping-cart"></i> {{line.ref}}</a></td>
+                            <td>
+                                <a ng-if="line.supplier._id" class="with-tooltip" ui-sref="societe.show({id:line.supplier._id})"><i class="fa fa-institution"></i> {{line.supplier.fullName}}</a>
+                                <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty"> @(Empty)</span>
+                            </td>
+                            <td>{{line.ref_client}}</td>
+                            <td>{{line.salesPerson.fullName}}</td>
+                            <td>{{line.datedl| date:'dd/MM/yyyy'}}</td>
+                            <td>{{line.total_ht| currency}}</td>
+                            <td>{{line.total_ttc| currency}}</td>
+                            <td>{{line.total_paid| currency}}</td>
+                            <td>
+                                <span class="label label-sm {{line.Status.css}}"> {{line.Status.name}}</span>
+                            </td>
+                            <td>
+                                <div class="pull-right">
+                                    <span class="large fa fa-check-circle" ng-class="{ 'font-grey': line.status.allocateStatus=='NOR','font-green-jungle': line.status.allocateStatus=='ALL' , 'font-yellow-lemon': line.status.allocateStatus=='NOA', 'font-red' : line.status.allocateStatus=='NOT' }"></span>
+                                    <span class="large fa fa-inbox" ng-class="{ 'font-grey': line.status.fulfillStatus=='NOR', 'font-green-jungle': line.status.fulfillStatus=='ALL', 'font-yellow-lemon': line.status.fulfillStatus=='NOA', 'font-red' : line.status.fulfillStatus=='NOT' }"></span>
+                                    <span class="large fa fa-truck" ng-class="{ 'font-grey': line.status.shippingStatus=='NOR','font-green-jungle': line.status.shippingStatus=='ALL', 'font-yellow-lemon': line.status.shippingStatus=='NOA', 'font-red' : line.status.shippingStatus=='NOT' }"></span>
+                                </div>
+                            </td>
+                            <td>{{line.datec| date:'dd/MM/yyyy'}}</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
 
-<div class="page-footer">
-    <div class="pagination _pagination">
-
-        <div class="countOnPage _countOnPage">
-
-            <div class="_pagesInfo">
-                <span class="_value" id="gridStart">1</span>
-                <span class="_separator">-</span>
-                <span class="_value" id="gridEnd">10</span>
-                <span class="_separator">of</span>
-                <span class="_value" id="gridCount">10</span>
-                <span class="_separator">items</span>
-
-            </div>
-
-            <div class="_quantityListWrap">
-                <span class="_listTitle">show :</span>
-                <ul class="pageList _quantityList">
-                    <li class="itemsNumber _listItem">25</li>
-                    <li class="itemsNumber _listItem selectedItemsNumber">50</li>
-                    <li class="itemsNumber _listItem">100</li>
-                    <li class="itemsNumber _listItem">200</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="nextPrev _pageActionBlock">
-            <button class="_paginationBtn first_ShowPage" id="firstShowPage" type="button" disabled="">
-                                        <span class="icon-cheveronL"></span>
-                                    </button>
-            <button class="_paginationBtn previous_Page" id="previousPage" type="button" disabled="">
-                                        <span class="icon-arrow-left2"></span>
-                                    </button>
-
-            <div class="_item">Page</div>
-
-            <div class="_actionBlock">
-                <input id="currentShowPage" class="_currentPage" type="text">
-                <div class="allPage _pagesListWrap">
-                    <button class="_paginationBtn currentPageList">
-                                                <span class="icon-arrow-up2"></span>
-                                            </button>
-                    <ul id="pageList" class="_pagesList allNumberPerPage">
-                        <li class="showPage">1</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="_item">
-                <span>of</span>
-                <span id="lastPage" class="_lastPage">1</span>
-            </div>
-
-            <button class="_paginationBtn next_Page" id="nextPage" type="button" disabled="">
-                                        <span class="icon-arrow-right2"></span>
-                                    </button>
-            <button class="_paginationBtn last_ShowPage" id="lastShowPage" type="button" disabled="">
-                                        <span class="icon-cheveronR"></span>
-                                    </button>
-        </div>
-    </div>
-
-</div>
+<table-footer ng-model="page"></table-footer>

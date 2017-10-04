@@ -143,7 +143,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-show="object.Status == 'PROCESSING'" ng-show="login.rights.order.createBills" ng-confirm-click="@(orders:ConfirmCloseBill)" ng-confirm-title="@(orders:CloseBill)" confirmed-click="createBill()">
+                    <a ng-show="object.Status == 'PROCESSING' || object.Status == 'VALIDATED' " ng-show="login.rights.order.createBills" ng-confirm-click="@(orders:ConfirmCloseBill)" ng-confirm-title="@(orders:CloseBill)" confirmed-click="createBill()">
                         <i class="fa fa-money"></i> @(orders:CreateBill)
                     </a>
                 </li>

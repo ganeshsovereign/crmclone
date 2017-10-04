@@ -3390,7 +3390,7 @@ Prices.prototype = {
             return self.json([]);
 
         var query = {};
-        var sort = 'product.info.SKU';
+        var sort;
 
         if (priceList)
             query.priceLists = priceList;
@@ -3424,7 +3424,7 @@ Prices.prototype = {
             sort = { 'product.info.SKU': -1 };
 
 
-        console.log(query, sort);
+        //console.log(query, sort);
 
         function queryBuilder() {
             var query1 = [{

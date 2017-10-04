@@ -53,7 +53,71 @@ exports.install = function(options) {
     F.route('/erp/api/order/lines/list', object.listLines, ['authorize']);
     F.route('/erp/api/order/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/order/dt_stockreturn', object.readDT_stockreturn, ['post', 'authorize']);
-    F.route('/erp/api/order', object.all, ['authorize']);
+    F.route('/erp/api/order', object.getByViewType, ['authorize']);
+    /**
+     *@api {get} /order/ Request Orders
+     *
+     * @apiVersion 0.0.1
+     * @apiName getOrders
+     * @apiGroup Order
+     *
+     * @apiParam (?Field=value) {String} viewType="list" Type of View
+     * @apiParam (?Field=value) {Number} page=1 Number of page
+     * @apiParam (?Field=value) {Number} count=100 Count of Orders which will show
+     * @apiParam (?Field=value) {String} contentType="order" Type of content
+     *
+     * @apiSuccess {Object} Orders
+     * @apiSuccessExample Success-Response:
+     HTTP/1.1 200 OK
+     {
+          total: 1014,
+          count: 50,
+          data: [
+            {
+              _id: "584abe3153bfade838152cea",
+              salesPerson: {
+                name: null
+              },
+              workflow: {
+                _id: "55647b932e4aa3804a765ec5",
+                name: "Draft/ Quotation",
+                status: "New"
+              },
+              supplier: {
+                _id: "57bacf6d4b2d7f3b4233d5c9",
+                name: "Actifile "
+              },
+              currency: {
+                rate: 1,
+                _id: {
+                  _id: "USD",
+                  name: "USD",
+                  decPlace: 2,
+                  symbol: "$",
+                  active: true
+                }
+              },
+              paymentInfo: {
+                taxes: 0,
+                unTaxed: 30000,
+                total: 30000
+              },
+              datec: "2016-12-23T00:00:00.000Z",
+              name: "SO_2",
+              status: {
+                allocateStatus: "ALL",
+                fulfillStatus: "ALL",
+                shippingStatus: "NOT"
+              },
+              removable: false,
+              channel: null,
+              paymentsPaid: 0,
+              total: 1014
+            },
+        ...
+          ]
+}
+     */
     F.route('/erp/api/order', object.create, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/order/billing', object.createAllBills, ['post', 'json', 'authorize']);
     F.route('/erp/api/order/{orderId}', object.clone, ['post', 'json', 'authorize'], 512);
@@ -86,6 +150,504 @@ Object.prototype = {
             self.json(doc.lines);
         });
     },*/
+
+    getByViewType: function() {
+        var self = this;
+        var Order = MODEL('order').Schema.OrderCustomer;
+        var OrderStatus = MODEL('order').Status;
+
+        var data = self.query;
+        var quickSearch = data.quickSearch;
+        var paginationObject = MODULE('helper').page(self.query);
+        var limit = paginationObject.limit;
+        var skip = paginationObject.skip;
+
+        const FilterMapper = MODULE('helper').filterMapper;
+        var filterMapper = new FilterMapper();
+
+        var accessRollSearcher;
+        var contentSearcher;
+        var waterfallTasks;
+        var contentType = data.contentType;
+        var sort = {};
+        var filter = data.filter || {};
+        var key;
+        var queryObject = {};
+        var optionsObject = {};
+        var matchObject = {};
+        var regExp;
+        var pastDue = filter.pastDue;
+
+        if (quickSearch) {
+            regExp = new RegExp(quickSearch, 'ig');
+            matchObject['supplier.name'] = { $regex: regExp };
+        }
+
+        queryObject.$and = [];
+
+        if (filter && typeof filter === 'object') {
+            queryObject.$and.push(filterMapper.mapFilter(filter, { contentType: contentType })); // caseFilter(filter);
+        }
+
+        if (self.query.sort)
+            sort = JSON.parse(self.query.sort);
+        else
+            sort = { ID: -1, datec: -1 };
+
+        if (contentType !== 'order' && contentType !== 'integrationUnlinkedOrders') {
+            Order = MODEL('order').Schema.OrderSupplier;
+
+            queryObject.$and.push({ _type: 'purchaseOrders' });
+        } else {
+            queryObject.$and.push({ _type: 'Order' });
+        }
+
+        if (pastDue) {
+            optionsObject.$and.push({ expectedDate: { $gt: new Date(filter.date.value[1]) } }, { 'workflow.status': { $ne: 'Done' } });
+        }
+
+        accessRollSearcher = function(cb) {
+            const accessRoll = MODULE('helper').accessRoll;
+
+            accessRoll(self.user, Order, cb);
+        };
+
+        contentSearcher = function(ids, cb) {
+            var newQueryObj = {};
+            const ObjectId = MODULE('utils').ObjectId;
+
+            var salesManagerMatch = {
+                $and: [
+                    { $eq: ['$$projectMember.projectPositionId', ObjectId("570e9a75785753b3f1d9c86e")] }, //CONSTANTS.SALESMANAGER
+                    {
+                        $or: [{
+                            $and: [{
+                                $eq: ['$$projectMember.startDate', null]
+                            }, {
+                                $eq: ['$$projectMember.endDate', null]
+                            }]
+                        }, {
+                            $and: [{
+                                $lte: ['$$projectMember.startDate', '$datec']
+                            }, {
+                                $eq: ['$$projectMember.endDate', null]
+                            }]
+                        }, {
+                            $and: [{
+                                $eq: ['$$projectMember.startDate', null]
+                            }, {
+                                $gte: ['$$projectMember.endDate', '$datec']
+                            }]
+                        }, {
+                            $and: [{
+                                $lte: ['$$projectMember.startDate', '$datec']
+                            }, {
+                                $gte: ['$$projectMember.endDate', '$datec']
+                            }]
+                        }]
+                    }
+                ]
+            };
+
+            newQueryObj.$and = [];
+            newQueryObj.$and.push(queryObject);
+            newQueryObj.$and.push({ _id: { $in: ids } });
+
+            //console.log(JSON.stringify(newQueryObj));
+            Order.aggregate([{
+                    $project: {
+                        workflow: 1,
+                        supplier: 1,
+                        'currency': 1,
+                        payments: 1,
+                        salesManagers: {
+                            $filter: {
+                                input: '$projectMembers',
+                                as: 'projectMember',
+                                cond: salesManagerMatch
+                            }
+                        },
+                        channel: 1,
+                        salesPerson: 1,
+                        orderRows: 1,
+                        paymentInfo: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        total_ttc: 1,
+                        total_ht: 1,
+                        total_paid: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1
+                    }
+                },
+                /*{
+                                    $lookup: {
+                                        from: 'projectMembers',
+                                        localField: 'project',
+                                        foreignField: 'projectId',
+                                        as: 'projectMembers'
+                                    }
+                            },*/
+                /*{
+                                   $lookup: {
+                                       from: 'Payment',
+                                       localField: '_id',
+                                       foreignField: 'order',
+                                       as: 'payments'
+                                   }
+                               },*/
+                {
+                    $lookup: {
+                        from: 'Customers',
+                        localField: 'supplier',
+                        foreignField: '_id',
+                        as: 'supplier'
+                    }
+                },
+                /*{
+                                   $lookup: {
+                                       from: 'workflows',
+                                       localField: 'workflow',
+                                       foreignField: '_id',
+                                       as: 'workflow'
+                                   }
+                               },*/
+                {
+                    $lookup: {
+                        from: 'currency',
+                        localField: 'currency._id',
+                        foreignField: '_id',
+                        as: 'currency._id'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'Project',
+                        localField: 'project',
+                        foreignField: '_id',
+                        as: 'project'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'Employees',
+                        localField: 'salesPerson',
+                        foreignField: '_id',
+                        as: 'salesPerson'
+                    }
+                },
+                /* {
+                                           $lookup: {
+                                               from: 'integrations',
+                                               localField: 'channel',
+                                               foreignField: '_id',
+                                               as: 'channel'
+                                           }
+                                       },*/
+                {
+                    $project: {
+                        workflow: { $arrayElemAt: ['$workflow', 0] },
+                        supplier: { $arrayElemAt: ['$supplier', 0] },
+                        'currency._id': { $arrayElemAt: ['$currency._id', 0] },
+                        payments: 1,
+                        'currency.rate': 1,
+                        salesManagers: 1,
+                        channel: { $arrayElemAt: ['$channel', 0] },
+                        salesPerson: { $arrayElemAt: ['$salesPerson', 0] },
+                        orderRows: 1,
+                        paymentInfo: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        total_ttc: 1,
+                        total_ht: 1,
+                        total_paid: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1
+                    }
+                }, {
+                    $project: {
+                        salesManager: { $arrayElemAt: ['$salesManagers', 0] },
+                        supplier: {
+                            _id: '$supplier._id',
+                            fullName: { $concat: ['$supplier.name.first', ' ', '$supplier.name.last'] }
+                        },
+
+                        workflow: {
+                            _id: '$workflow._id',
+                            status: '$workflow.status',
+                            name: '$workflow.name'
+                        },
+
+                        tempWorkflow: {
+                            _id: '$tempWorkflow._id',
+                            status: '$tempWorkflow.status'
+                        },
+
+                        channel: {
+                            _id: '$channel._id',
+                            name: '$channel.channelName',
+                            type: '$channel.type'
+                        },
+
+                        currency: 1,
+                        paymentInfo: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        total_ttc: 1,
+                        total_ht: 1,
+                        total_paid: 1,
+                        Status: 1,
+                        ID: 1,
+                        salesPerson: 1,
+                        ref: 1,
+                        isOrder: 1,
+                        proformaCounter: 1,
+                        payments: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1
+                    }
+                }, {
+                    $match: matchObject
+                }, {
+                    $lookup: {
+                        from: 'Employees',
+                        localField: 'salesManager.employeeId',
+                        foreignField: '_id',
+                        as: 'salesManager'
+                    }
+                }, {
+                    $project: {
+                        salesPerson: { $ifNull: ['$salesPerson', { $arrayElemAt: ['$salesManager', 0] }] },
+                        workflow: 1,
+                        tempWorkflow: 1,
+                        supplier: 1,
+                        currency: 1,
+                        paymentInfo: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        total_ttc: 1,
+                        total_ht: 1,
+                        total_paid: 1,
+                        Status: 1,
+                        ID: 1,
+                        payments: 1,
+                        ref: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1,
+                        channel: 1
+                    }
+                }, {
+                    $project: {
+                        salesPerson: {
+                            _id: '$salesPerson._id',
+                            fullName: { $concat: ['$salesPerson.name.first', ' ', '$salesPerson.name.last'] }
+                        },
+                        workflow: 1,
+                        tempWorkflow: 1,
+                        supplier: 1,
+                        currency: 1,
+                        paymentInfo: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        total_ttc: 1,
+                        total_ht: 1,
+                        total_paid: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1,
+                        channel: 1,
+                        payments: 1,
+                        removable: {
+                            $cond: {
+                                if: { $or: [{ $eq: ['$workflow.status', 'Done'] }, { $eq: ['$tempWorkflow.status', 'Done'] }, { $and: [{ $ne: ['$status.fulfillStatus', 'NOR'] }, { $ne: ['$status.fulfillStatus', 'NOT'] }] }] },
+                                then: false,
+                                else: true
+                            }
+                        }
+                    }
+                }
+                /*, {
+                                    $match: newQueryObj TODO Activate for users permissions
+                                }*/
+                , {
+                    $group: {
+                        _id: null,
+                        total: { $sum: 1 },
+                        root: { $push: '$$ROOT' }
+                    }
+                }, {
+                    $unwind: '$root'
+                }, {
+                    $project: {
+                        _id: '$root._id',
+                        salesPerson: '$root.salesPerson',
+                        workflow: '$root.workflow',
+                        supplier: '$root.supplier',
+                        currency: '$root.currency',
+                        paymentInfo: '$root.paymentInfo',
+                        datec: '$root.datec',
+                        ref_client: '$root.ref_client',
+                        datedl: '$root.datedl',
+                        total_ttc: '$root.total_ttc',
+                        total_ht: '$root.total_ht',
+                        total_paid: '$root.total_paid',
+                        Status: '$root.Status',
+                        ID: '$root.ID',
+                        ref: '$root.ref',
+                        status: '$root.status',
+                        removable: '$root.removable',
+                        channel: '$root.channel',
+                        payments: '$root.payments',
+                        total: 1
+                    }
+                }, {
+                    $unwind: {
+                        path: '$payments',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $project: {
+                        salesPerson: 1,
+                        workflow: 1,
+                        supplier: 1,
+                        currency: 1,
+                        paymentInfo: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        total_ttc: 1,
+                        total_ht: 1,
+                        total_paid: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        removable: 1,
+                        channel: 1,
+                        total: 1,
+                        'payments.currency': 1,
+                        'payments.paidAmount': { $cond: [{ $eq: ['$payments.refund', true] }, { $multiply: ['$payments.paidAmount', -1] }, '$payments.paidAmount'] }
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        salesPerson: { $first: '$salesPerson' },
+                        workflow: { $first: '$workflow' },
+                        supplier: { $first: '$supplier' },
+                        currency: { $first: '$currency' },
+                        paymentInfo: { $first: '$paymentInfo' },
+                        datec: { $first: '$datec' },
+                        ref_client: { $first: '$ref_client' },
+                        datedl: { $first: '$datedl' },
+                        total_ttc: { $first: '$total_ttc' },
+                        total_ht: { $first: '$total_ht' },
+                        total_paid: { $first: '$total_paid' },
+                        ID: { $first: '$ID' },
+                        Status: { $first: '$Status' },
+                        ref: { $first: '$ref' },
+                        status: { $first: '$status' },
+                        removable: { $first: '$removable' },
+                        channel: { $first: '$channel' },
+                        paymentsPaid: { $sum: { $divide: ['$payments.paidAmount', '$payments.currency.rate'] } },
+                        total: { $first: '$total' }
+                    }
+                }, {
+                    $project: {
+                        salesPerson: 1,
+                        workflow: 1,
+                        supplier: 1,
+                        currency: 1,
+                        paymentInfo: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        total_ttc: 1,
+                        total_ht: 1,
+                        total_paid: 1,
+                        Status: 1,
+                        ref: 1,
+                        ID: 1,
+                        status: 1,
+                        removable: 1,
+                        channel: 1,
+                        paymentsPaid: 1,
+                        paymentBalance: { $subtract: ['$paymentInfo.total', '$paymentsPaid'] },
+                        total: 1
+                    }
+                },
+                {
+                    $sort: sort
+                },
+                {
+                    $skip: skip
+                }, {
+                    $limit: limit
+                }
+            ], cb);
+        };
+
+        waterfallTasks = [accessRollSearcher, contentSearcher];
+
+        async.waterfall(waterfallTasks, function(err, result) {
+            var count;
+            var firstElement;
+            var response = {};
+
+            if (err)
+                return self.throw500(err);
+
+            result = _.map(result, function(line) {
+                var res_status = {};
+
+                var status = line.Status;
+                var statusList = OrderStatus;
+
+                if (status && statusList.values[status] && statusList.values[status].label) {
+                    res_status.id = status;
+                    res_status.name = i18n.t("orders:" + statusList.values[status].label);
+                    //this.status.name = statusList.values[status].label;
+                    res_status.css = statusList.values[status].cssClass;
+                } else { // By default
+                    res_status.id = status;
+                    res_status.name = status;
+                    res_status.css = "";
+                }
+
+                line.Status = res_status;
+
+                return line;
+            });
+
+            firstElement = result[0];
+            count = firstElement && firstElement.total ? firstElement.total : 0;
+            response.total = count;
+            //response.total = result.length;
+            response.data = result;
+
+            console.log(result);
+
+            self.json(response);
+        });
+
+    },
     /**
      * Create an order
      */

@@ -58,6 +58,12 @@
             </a>
             <ul class="dropdown-menu pull-right">
                 <li>
+                    <a ng-if="product.Status == 'PREPARED'" data-ng-click="update(true)">
+                        <i class="fa fa-thumbs-o-up"></i> @(Validate)
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
                     <a href="#" ng-click="clone()">
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
@@ -67,11 +73,7 @@
                         <i class="fa fa-copy"></i> @(products:CreateNewPackaging)
                     </a>
                 </li>
-                <li>
-                    <a ng-if="product.Status == 'PREPARED'" data-ng-click="update(true)">
-                        <i class="fa fa-thumbs-o-up"></i> @(Validate)
-                    </a>
-                </li>
+
                 <li>
                     <a ng-if="product.Status == 'VALIDATED'" data-ng-click="changeStatus('PUBLISHED')">
                         <i class="fa fa-thumbs-o-up"></i> @(Send)

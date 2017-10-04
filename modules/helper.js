@@ -104,12 +104,14 @@ var FilterMapper = function() {
         var filterValues;
         var filterType;
         var filterBackend;
-        var filterConstants = FILTER_CONSTANTS[contentType] || {};
+        var filterConstants = F.global.filters[contentType] || {};
         var filterConstantsByName;
         var filterObject;
         var filterName;
         var key;
         var i;
+
+        //return console.log(filter, options, F.global.filters[contentType]);
 
         var $orArray;
 
@@ -219,4 +221,56 @@ exports.rewriteAccess = {
     everyOne: getEveryOneOption,
     group: getGroupOption,
     owner: getOwnerOption
+};
+
+exports.accessRoll = function(user, Model, waterfallCb) {
+    departmentSearcher = function(waterfallCallback) {
+        const DepartmentModel = MODEL('Department').Schema;
+        const ObjectId = MODULE('utils').ObjectId;
+
+        DepartmentModel.aggregate({
+                $match: {
+                    users: ObjectId(user._id)
+                }
+            }, {
+                $project: {
+                    _id: 1
+                }
+            },
+            waterfallCallback);
+    };
+
+    contentIdsSearcher = function(deps, waterfallCallback) {
+        var everyOne = exports.rewriteAccess.everyOne();
+        var owner = exports.rewriteAccess.owner(user._id);
+        var group = exports.rewriteAccess.group(user._id, deps);
+        var whoCanRw = [everyOne, owner, group];
+        var matchQuery = {
+            $or: whoCanRw
+        };
+
+        //console.log(JSON.stringify(matchQuery));
+
+        Model.aggregate({
+                $match: matchQuery
+            }, {
+                $project: {
+                    _id: 1
+                }
+            },
+            waterfallCallback
+        );
+    };
+
+    waterfallTasks = [departmentSearcher, contentIdsSearcher];
+
+    async.waterfall(waterfallTasks, function(err, result) {
+        if (err) {
+            return waterfallCb(err);
+        }
+
+        resultArray = _.pluck(result, '_id');
+
+        waterfallCb(null, resultArray);
+    });
 };

@@ -287,5 +287,66 @@
 
             }
         }
+    },
+    "filters": {
+        "order": {
+            "forSales": {
+                "backend": "forSales",
+                "type": "boolean"
+            },
+
+            "supplier": {
+                "displayName": "Customer",
+                "backend": "supplier._id"
+            },
+
+            "salesPerson": {
+                "displayName": "Assigned To",
+                "backend": "salesPerson._id"
+            },
+
+            "workflow": {
+                "displayName": "Status",
+                "backend": "workflow._id"
+            },
+
+            "allocationStatus": {
+                "displayName": "Allocation Status",
+                "backend": "status.allocateStatus",
+                "type": "string"
+            },
+
+            "fulfilledStatus": {
+                "displayName": "Fulfilled Status",
+                "backend": "status.fulfillStatus",
+                "type": "string"
+            },
+
+            "shippingStatus": {
+                "displayName": "Shipping Status",
+                "backend": "status.shippingStatus",
+                "type": "string"
+            },
+
+            "channel": {
+                "displayName": "Channel",
+                "backend": "channel._id"
+            },
+
+            "name": {
+                "displayName": "Reference",
+                "backend": "_id"
+            },
+
+            "date": {
+                "type": "date",
+                "backend": {
+                    "key": "orderDate",
+                    "operator": ["$gte", "$lte"]
+                }
+            },
+
+            "array": ["supplier", "salesPerson", "workflow", "allocationStatus", "fulfilledStatus", "shippingStatus", "channel", "name"]
+        }
     }
 }

@@ -13,6 +13,8 @@ exports.install = function() {
 
     console.log("ToManage modules install...");
 
+    F.global.filters = {};
+
     //F.once('i18n', function() {
     fs.readdirSync(__dirname + '/../json').forEach(function(file) {
         if (file === "index.js")
@@ -62,6 +64,8 @@ exports.install = function() {
             }
 
             menus = _.defaults(menus, data.menus);
+
+            F.global.filters = _.extend(F.global.filters, data.filters);
 
             for (var i in data.menus) {
                 // Convert for old menu speedealing

@@ -336,10 +336,6 @@ MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$loca
             formatYear: 'yy',
             startingDay: 1
         };
-
-        $rootScope.Math = window.Math;
-
-
     }
 ]);
 

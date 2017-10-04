@@ -971,16 +971,24 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
     }
 ]);
 
-MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
-    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
+MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'Orders',
+    function($scope, $rootScope, $http, $modal, $filter, $timeout, Orders) {
 
-        var grid = new Datatable();
+        //var grid = new Datatable();
         var user = $rootScope.login;
 
         $scope.dict = {};
         $scope.status_id = null;
 
         $scope.delivery_mode = ["Comptoir", "Livraison"];
+
+        $scope.page = {
+            limit: 25,
+            page: 1,
+            total: 0
+        };
+
+        $scope.sort = { 'ID': -1 };
 
         $scope.open = function($event) {
             $event.preventDefault();
@@ -1044,7 +1052,8 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
                 //console.log(data);
             });
 
-            initDatatable();
+            //initDatatable();
+            $scope.find();
         });
 
         $scope.showStatus = function(idx, dict) {
@@ -1060,7 +1069,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
             return "/erp/api/order/dt" + "?Status=" + $scope.status_id + "&entity=" + $rootScope.entity;
         }
 
-        function initDatatable() {
+        /*function initDatatable() {
 
             grid.init({
                 src: $("#orderList"),
@@ -1151,12 +1160,41 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$locatio
                     });
                 }
             });
-        }
+        }*/
         $scope.find = function(clear) {
             if (clear)
                 $scope.status_id = null;
-            var url = getUrl();
-            grid.resetFilter(url);
+            //var url = getUrl();
+            //grid.resetFilter(url);
+
+            Metronic.blockUI({
+                target: '.waiting',
+                animate: false,
+                boxed: true,
+                overlayColor: 'gray'
+            });
+
+            var query = {
+                filter: this.search,
+                viewType: 'list',
+                contentType: 'order',
+                limit: $scope.page.limit,
+                page: $scope.page.page,
+                sort: this.sort
+            };
+
+            //console.log(query);
+
+            Orders.order.query(query, function(data, status) {
+                console.log("orders", data);
+                $scope.page.total = data.total;
+                $scope.orders = data.data;
+
+                $timeout(function() {
+                    Metronic.unblockUI('.waiting');
+                }, 0);
+            });
+
         };
 
         $scope.createBills = function() {
