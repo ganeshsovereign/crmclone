@@ -295,14 +295,19 @@
                 "type": "boolean"
             },
 
+            "entity": {
+                "displayName": "Entity",
+                "backend": "entity"
+            },
+
             "supplier": {
                 "displayName": "Customer",
-                "backend": "supplier._id"
+                "backend": "supplier"
             },
 
             "salesPerson": {
                 "displayName": "Assigned To",
-                "backend": "salesPerson._id"
+                "backend": "salesPerson"
             },
 
             "workflow": {

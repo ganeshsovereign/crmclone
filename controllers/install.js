@@ -3781,9 +3781,9 @@ F.on('load', function() {
                     });
                 });
             },
-            // 0.518 : add rights on orders and invoices
+            // 0.519 : add rights on orders and invoices
             function(conf, wCb) {
-                if (conf.version >= 0.518)
+                if (conf.version >= 0.519)
                     return wCb(null, conf);
 
                 function convertOrders(aCb) {
@@ -3841,15 +3841,39 @@ F.on('load', function() {
                         });
                 }
 
-                async.waterfall([convertOrders, convertInvoices, convertCustomer], function(err) {
+                function convertDateDl(aCb) {
+                    console.log("convert order null datedl");
+
+                    const Model = MODEL('order').Schema.Order;
+
+                    Model.find({ datedl: null }, "_id datec", function(err, docs) {
+                        if (err)
+                            return aCb(err);
+
+                        if (!docs)
+                            return aCb();
+
+                        docs.forEach(function(line) {
+                            Model.update({ _id: line._id }, {
+                                    $set: {
+                                        datedl: line.datec
+                                    }
+                                }, { multi: false, upsert: false },
+                                function(err, doc) {});
+                        });
+                        aCb();
+                    });
+                }
+
+                async.waterfall([convertOrders, convertInvoices, convertCustomer, convertDateDl], function(err) {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', { 'values.version': 0.518 }, { new: true }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.519 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
-                        console.log("ToManage updated to {0}".format(0.518));
+                        console.log("ToManage updated to {0}".format(0.519));
                         wCb(err, doc.values);
                         //wCb(err, conf);
                     });

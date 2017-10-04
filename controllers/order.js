@@ -170,9 +170,11 @@ Object.prototype = {
         var waterfallTasks;
         var contentType = data.contentType;
         var sort = {};
-        var filter = data.filter || {};
+        var filter = data.filter && JSON.parse(data.filter) || {};
         var key;
-        var queryObject = {};
+        var filterObject = {
+            isremoved: { $ne: true }
+        };
         var optionsObject = {};
         var matchObject = {};
         var regExp;
@@ -183,11 +185,13 @@ Object.prototype = {
             matchObject['supplier.name'] = { $regex: regExp };
         }
 
-        queryObject.$and = [];
+        filterObject.$and = [];
 
         if (filter && typeof filter === 'object') {
-            queryObject.$and.push(filterMapper.mapFilter(filter, { contentType: contentType })); // caseFilter(filter);
+            filterObject.$and.push(filterMapper.mapFilter(filter, { contentType: contentType })); // caseFilter(filter);
         }
+
+        //return console.log(filterObject);
 
         if (self.query.sort)
             sort = JSON.parse(self.query.sort);
@@ -197,9 +201,9 @@ Object.prototype = {
         if (contentType !== 'order' && contentType !== 'integrationUnlinkedOrders') {
             Order = MODEL('order').Schema.OrderSupplier;
 
-            queryObject.$and.push({ _type: 'purchaseOrders' });
+            //queryObject.$and.push({ _type: 'purchaseOrders' });
         } else {
-            queryObject.$and.push({ _type: 'Order' });
+            //queryObject.$and.push({ _type: 'Order' });
         }
 
         if (pastDue) {
@@ -250,11 +254,14 @@ Object.prototype = {
             };
 
             newQueryObj.$and = [];
-            newQueryObj.$and.push(queryObject);
+            //newQueryObj.$and.push(queryObject);
+            //console.log(JSON.stringify(filterObject));
             newQueryObj.$and.push({ _id: { $in: ids } });
 
-            //console.log(JSON.stringify(newQueryObj));
             Order.aggregate([{
+                    $match: filterObject
+                },
+                {
                     $project: {
                         workflow: 1,
                         supplier: 1,
@@ -483,11 +490,11 @@ Object.prototype = {
                             }
                         }
                     }
-                }
-                /*, {
-                                    $match: newQueryObj TODO Activate for users permissions
-                                }*/
-                , {
+                },
+                {
+                    $match: newQueryObj
+                },
+                {
                     $group: {
                         _id: null,
                         total: { $sum: 1 },
@@ -600,6 +607,44 @@ Object.prototype = {
                     $skip: skip
                 }, {
                     $limit: limit
+                }, {
+                    $group: {
+                        _id: null,
+                        total_ht: { $sum: "$total_ht" },
+                        total_ttc: { $sum: "$total_ttc" },
+                        total_paid: { $sum: "$total_paid" },
+                        root: { $push: '$$ROOT' }
+                    }
+                }, {
+                    $unwind: '$root'
+                }, {
+                    $project: {
+                        _id: '$root._id',
+                        salesPerson: '$root.salesPerson',
+                        workflow: '$root.workflow',
+                        supplier: '$root.supplier',
+                        currency: '$root.currency',
+                        paymentInfo: '$root.paymentInfo',
+                        datec: '$root.datec',
+                        ref_client: '$root.ref_client',
+                        datedl: '$root.datedl',
+                        total_ttc: '$root.total_ttc',
+                        total_ht: '$root.total_ht',
+                        total_paid: '$root.total_paid',
+                        Status: '$root.Status',
+                        ID: '$root.ID',
+                        ref: '$root.ref',
+                        status: '$root.status',
+                        removable: '$root.removable',
+                        channel: '$root.channel',
+                        payments: '$root.payments',
+                        total: '$root.total',
+                        totalAll: {
+                            total_ht: "$total_ht",
+                            total_ttc: "$total_ttc",
+                            total_paid: "$total_paid"
+                        }
+                    }
                 }
             ], cb);
         };
@@ -639,10 +684,15 @@ Object.prototype = {
             firstElement = result[0];
             count = firstElement && firstElement.total ? firstElement.total : 0;
             response.total = count;
+            response.totalAll = firstElement && firstElement.totalAll ? firstElement.totalAll : {
+                total_ht: 0,
+                total_ttc: 0,
+                total_paid: 0
+            };
             //response.total = result.length;
             response.data = result;
 
-            console.log(result);
+            //console.log(result);
 
             self.json(response);
         });

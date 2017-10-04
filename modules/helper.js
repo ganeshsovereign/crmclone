@@ -36,6 +36,19 @@ var FilterMapper = function() {
         var result = {};
         var _operator = operator || '$in';
 
+        //console.log(values, type);
+
+        // ng-tags-inputs modules {_id : , name : }
+        values = _.map(values, function(elem) {
+            if (elem && typeof elem === 'object' && elem._id)
+                return elem._id;
+
+            if (elem && typeof elem === 'object' && elem.id)
+                return elem.id;
+
+            return elem;
+        });
+
         switch (type) {
             case 'ObjectId':
                 if (values.indexOf('None') !== -1) {
@@ -121,9 +134,14 @@ var FilterMapper = function() {
 
         for (i = filterNames.length - 1; i >= 0; i--) {
             filterName = filterNames[i];
+
             if (filterNames.indexOf(filterName) !== -1) {
                 filterObject = filter[filterName];
                 filterValues = filterObject.value || [];
+
+                if (filterValues.length == 0)
+                    continue;
+
                 filterConstantsByName = filterConstants[filterName] || {};
                 filterType = !!filterObject.type ? filterObject.type : filterConstantsByName.type || 'ObjectId';
                 filterBackend = filterConstantsByName.backend || filterObject.key || filterObject.backend;

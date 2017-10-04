@@ -52,6 +52,15 @@
                 <div class="row hidden-print">
                     <div class="form-group form-md-line-input">
                         <div class="col-md-3">
+                            <tags-input ng-model="search.supplier.value" text="_id" display-property="fullName" key-property="_id" placeholder="@(Search) @(companies:Companies)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
+                                <auto-complete source="loadTags($query)"></auto-complete>
+                            </tags-input>{{search}}
+
+                            <tags-input ng-model="search.entity.value" text="_id" display-property="name" key-property="id" placeholder="@(Search) @(Entities)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
+                                    <auto-complete source="entityList" min-length="0"></auto-complete>
+                                </tags-input>
+
+
                             <div class="form-group form-md-line-input ">
                                 <select ng-model="status_id" ng-change="find();" id="Status" ng-options="s.id as s.label for s in dict.fk_order_status.values" class="form-control"></select>
                                 <label for="Status">@(Status)</label>
@@ -276,6 +285,15 @@
                             <td>{{line.datec| date:'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6" class="text-right">@(Total)</td>
+                            <td>{{totalAll.total_ht | currency}}</td>
+                            <td>{{totalAll.total_ttc | currency}}</td>
+                            <td>{{totalAll.total_paid | currency}}</td>
+                            <td colspan="3"></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>

@@ -67,6 +67,7 @@ const baseSchema = new Schema({
     },
     datedl: {
         type: Date,
+        default: Date.now,
         set: setDate
     },
     notes: [{

@@ -978,7 +978,18 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
         var user = $rootScope.login;
 
         $scope.dict = {};
-        $scope.status_id = null;
+        $scope.search = {
+            entity: {
+                key: 'entity',
+                value: [{
+                    _id: 'otcconcept',
+                    name: 'OTC Concept'
+                }],
+                type: 'string'
+            },
+            supplier: { key: 'supplier', value: [], type: '' }
+            //salesPerson: { key: 'salesPerson._id', value: , type: '' }
+        };
 
         $scope.delivery_mode = ["Comptoir", "Livraison"];
 
@@ -988,7 +999,25 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             total: 0
         };
 
-        $scope.sort = { 'ID': -1 };
+        $scope.sort = { 'datedl': -1 };
+
+        $scope.loadTags = function(query) {
+            return $http({
+                method: 'POST',
+                url: '/erp/api/societe/autocomplete',
+                data: {
+                    take: 50, // limit
+                    entity: $rootScope.entity,
+                    filter: {
+                        logic: 'and',
+                        filters: [{
+                            value: query
+                        }]
+                    }
+                }
+            });
+        };
+
 
         $scope.open = function($event) {
             $event.preventDefault();
@@ -1162,8 +1191,6 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             });
         }*/
         $scope.find = function(clear) {
-            if (clear)
-                $scope.status_id = null;
             //var url = getUrl();
             //grid.resetFilter(url);
 
@@ -1175,7 +1202,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             });
 
             var query = {
-                filter: this.search,
+                filter: $scope.search,
                 viewType: 'list',
                 contentType: 'order',
                 limit: $scope.page.limit,
@@ -1189,6 +1216,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 console.log("orders", data);
                 $scope.page.total = data.total;
                 $scope.orders = data.data;
+                $scope.totalAll = data.totalAll;
 
                 $timeout(function() {
                     Metronic.unblockUI('.waiting');
