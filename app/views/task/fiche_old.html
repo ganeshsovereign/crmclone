@@ -1,0 +1,277 @@
+<div class="page-bar">
+    <ul class="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a ui-sref="task.todo">@(tasks:TasksList)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <span>@(tasks:NewTask)</span>
+        </li>
+    </ul>
+
+    <div class="page-toolbar">
+        <div class="btn-group pull-right">
+            <button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                @(Tools) <i class="fa fa-angle-down"></i>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+                <li>
+                    <a href="#" ng-if="!task.archived && task.author.id == login._id" ng-click="setArchived(task)">
+                        <i class="fa fa-check-square"></i> @(tasks:SetArchived)
+                    </a>
+                </li>
+                <li class="divider">
+                </li>
+                <li>
+                    <a href="#" class="font-red" ng-show="login.rights.task.delete" confirmed-click="remove(task)" ng-confirm-click="Supprimer la tache ?" title="Supprimer la tache">
+                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                <form editable-form name="editableTask" onaftersave="update()">
+                    <div class="portlet blue-madison box">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-check-square-o"></i>@(tasks:Task)
+                            </div>
+                            <div class="actions">
+                                <a href="javascript:;" ng-click="editableTask.$show()" ng-show="!editableTask.$visible && editable" class="btn btn-default btn-sm">
+                                    <i class="fa fa-pencil"></i> @(Edit) </a>
+                            </div>
+                            <div class="actions" ng-show="editableTask.$visible">
+                                <button type="submit" ng-disabled="editableTask.$waiting" class="btn btn-default btn-sm">@(Save)</button>
+                                <button type="button" ng-disabled="editableTask.$waiting" ng-click="editableTask.$cancel();
+                                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(Title) :</div>
+                                <div class="col-md-8 value">
+                                    <span class="blue h5" editable-text="task.name">
+                                                {{task.name|| "Non defini"}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row static-info">
+                                        <div class="col-md-4 name">@(Type) :</div>
+                                        <div class="col-md-8 value">
+                                            {{task._type.name}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row static-info">
+                                        <div class="col-md-4 name">@(Group) :</div>
+                                        <div class="col-md-8 value">
+                                            <span editable-select="task.group" onshow="loadGroup()" e-ng-options="group as group.name for group in groups track by group.id">
+
+                                                <small class="label label-sm label-default">{{task.group.name|| 'Aucun groupe'}}</small>
+                                            </span>
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(companies:Company) :</div>
+                                <div class="col-md-8 value">
+                                    <a href="#" ui-sref="societe.show({id:task.societe.id})" class="fa fa-institution" editable-text="task.societe" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', bill.entity) | filter:{name:$viewValue}"
+                                        e-typeahead-on-select="updateAddress($item)"> {{task.societe.name|| "Non defini"}} </a>
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(companies:Contact) :</div>
+                                <div class="col-md-8 value">
+                                    <span class="icon-user" editable-select="task.contact" onshow="loadContact(task.societe)" e-ng-options="contact as contact.name for contact in contacts track by contact.id">
+                                                {{task.contact.name|| "Non defini"}}
+                                            </span>
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(companies:Entity) :</div>
+                                <div class="col-md-8 value">
+                                    <small class="label label-sm label-default">{{task.entity}}</small>
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(leads:Lead) :</div>
+                                <div class="col-md-8 value">
+                                    <span editable-select="task.lead" onshow="loadLead(task.societe)" e-ng-options="lead as lead.name for lead in leads track by lead.id">
+                                                {{task.lead.name|| 'Aucun'}}
+                                            </span>
+                                </div>
+                            </div>
+
+                            <div class="row static-info" ng-if="isEvent">
+                                <div class="col-md-4 name">@(tasks:DateActionStart) :</div>
+                                <div class="col-md-8 value">
+                                    <span href="#" editable-bsdate="task.datep" e-datepicker-popup="dd/MM/yyyy">
+                                                {{ (task.datep | date:"dd/MM/yyyy") || 'empty'}}
+                                            </span>
+                                    <span editable-bstime="task.datep" e-show-meridian="false" e-minute-step="10">
+                                                {{ (task.datep | date:"HH:mm") || 'empty'}}
+                                            </span>
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name" ng-if="task.type == 'isEvent'">@(tasks:DateActionEnd) :</div>
+                                <div class="col-md-4 name" ng-if="task.type != 'isEvent'">@(tasks:DateEchAction) :</div>
+                                <div class="col-md-8 value">
+                                    <span editable-bsdate="task.datef" e-datepicker-popup="dd/MM/yyyy">
+                                                {{ (task.datef | date:"dd/MM/yyyy") || 'empty'}}
+                                            </span>
+                                    <span editable-bstime="task.datef" e-show-meridian="false" e-minute-step="10">
+                                                {{ (task.datef | date:"HH:mm") || 'empty'}}
+                                            </span>
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(Status) :</div>
+                                <div class="col-md-8 value">
+
+                                    <p class="input-group" ng-show="editable">
+                                        <span class="input-group-btn btn-group-xs">
+                                                    <button ng-disabled="task.percentage == 0" type="button" class="btn btn-default" ng-click="updatePercent(task.percentage - 25 < 0 ? 0 : task.percentage - 25);"><i class="glyphicon glyphicon-minus"></i></button>
+                                                </span>
+                                        <progressbar animate="true" value="task.percentage" type="success"><b>{{task.percentage}}%</b></progressbar>
+                                        <span class="input-group-btn btn-group-xs">
+                                                <button ng-disabled="task.percentage == 100" type="button" class="btn btn-default" ng-click="updatePercent(task.percentage + 25 > 100 ? 100 : task.percentage + 25);"><i class="glyphicon glyphicon-plus"></i></button>
+                                            </span>
+                                    </p>
+                                    <progressbar ng-hide="editable" animate="true" value="task.percentage" type="success"><b>{{task.percentage}}%</b></progressbar>
+
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(tasks:CreatedBy) :</div>
+                                <div class="col-md-8 value">
+                                    <span>{{task.author.name|| "Non defini"}}</span>
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(tasks:AffectedTo) :</div>
+                                <div class="col-md-8 value">
+                                    <span editable-text="task.usertodo" e-typeahead="user as user.name for user in AutoComplete($viewValue,'/api/user/name/autocomplete',5) | filter:{name:$viewValue}">
+                                                {{task.usertodo.name|| "Non defini"}}
+                                            </span>
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(DateCreation) :</div>
+                                <div class="col-md-8 value">
+                                    {{task.createdAt|date:'dd/MM/yyyy HH:mm'}}
+                                </div>
+                            </div>
+
+                            <div class="row static-info">
+                                <div class="col-md-4 name">@(DateLastModification) :</div>
+                                <div class="col-md-8 value">
+                                    {{task.updatedAt|date:'dd/MM/yyyy HH:mm'}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-8 col-sm-12">
+
+                <form editable-form name="noteDesc" onaftersave="update()">
+                    <div class="portlet light">
+                        <div class="portlet-title">
+                            <div class="caption font-green-sharp">
+                                <i class="icon-speech"></i>
+                                <span class="caption-subject">@(Description)</span>
+                            </div>
+                            <div class="actions">
+                                <a href="javascript:;" ng-click="noteDesc.$show()" ng-show="!noteDesc.$visible && editable" class="btn btn-default btn-sm">
+                                    <i class="fa fa-pencil"></i> Éditer </a>
+                            </div>
+                            <div class="actions ng-hide" ng-show="noteDesc.$visible">
+                                <button type="submit" ng-disabled="noteDesc.$waiting" class="btn btn-default btn-sm">Enregistrer</button>
+                                <button type="button" ng-disabled="noteDesc.$waiting" ng-click="noteDesc.$cancel()" class="btn btn-default btn-sm">Annuler</button>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="text-center" ng-if="task.type != 'isEvent'">@(tasks:DateEchAction) : {{task.datef| date:'dd/MM/yyyy'}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="text-center"> @(tasks:AffectedTo) : {{task.usertodo.name|| "Non defini"}}</p>
+                                </div>
+                            </div>
+
+                            <pre editable-textarea="task.description" e-name="note" e-rows="6" e-cols="400" e-required e-class="form-control"></pre>
+                            <pre class="well" ng-show="!noteDesc.$visible">{{task.description}}</pre>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-bubble font-red-sunglo"></i>
+                    <span class="caption-subject font-red-sunglo bold uppercase">@(Comments)</span>
+                </div>
+                <!--<div class="actions">
+                            <div class="portlet-input input-inline">
+                                <div class="input-icon right">
+                                    <i class="icon-magnifier"></i>
+                                    <input type="text" class="form-control input-circle" placeholder="search..."> </div>
+                            </div>
+                        </div>-->
+            </div>
+            <div class="portlet-body" id="chats">
+                <ul class="chats">
+                    <li ng-class="{in: !note.class, out:note.class}" ng-repeat="note in task.notes">
+                        <img class="avatar" alt="" src="/assets/admin/layout/img/avatar3.jpg">
+                        <div class="message">
+                            <span class="arrow"> </span>
+                            <a href="javascript:;" class="name"> {{note.author.name}} </a>
+                            <span class="datetime"> {{ note.datec | date:'@(main:date.format.java.dayhour)' }} </span> <span class="font-green">{{note.percentage| percent:0}}</span>
+                            <span class="body"> {{note.note}} </span>
+                        </div>
+                    </li>
+                </ul>
+                <div class="chat-form" ng-if="editable">
+                    <div class="input-cont">
+                        <input class="form-control" type="text" ng-model="newNote" ng-enter="addNote()" placeholder="Ajouter un commentaire ici..."> </div>
+                    <div class="btn-cont">
+                        <span class="arrow"> </span>
+                        <a href="" class="btn blue icn-only" ng-click="addNote()">
+                            <i class="fa fa-check icon-white"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
