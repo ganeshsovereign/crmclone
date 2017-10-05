@@ -976,6 +976,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
         //var grid = new Datatable();
         var user = $rootScope.login;
+        $scope.grid = {};
 
         $scope.dict = {};
         $scope.search = {
@@ -1017,6 +1018,14 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
         $scope.resetFilter = function() {
             $rootScope.$state.reload();
+        }
+
+        $scope.checkedAll = function() {
+            if (!this.checkAll)
+                this.grid = {};
+            for (var i = 0; i < $scope.orders.length; i++)
+                if (this.checkAll)
+                    this.grid[$scope.orders[i]._id] = true;
         }
 
 
@@ -1191,9 +1200,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 }
             });
         }*/
-        $scope.find = function(clear) {
-            //var url = getUrl();
-            //grid.resetFilter(url);
+        $scope.find = function() {
 
             Metronic.blockUI({
                 target: '.waiting',
@@ -1227,19 +1234,27 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
         };
 
         $scope.createBills = function() {
-            if (grid && grid.getSelectedRows())
+            //return console.log($scope.grid);
+            var grid = [];
+
+            angular.forEach($scope.grid, function(value, key) {
+                if (value == true)
+                    this.push(key);
+            }, grid);
+
+            if (grid)
                 $http({
                     method: 'POST',
                     url: '/erp/api/order/billing',
                     data: {
-                        id: grid.getSelectedRows()
+                        id: grid
                     }
                 }).success(function(data, status) {
                     if (status == 200) {
                         $rootScope.$state.go("bill.list");
-                        //window.location = "/#!/bills/";
                     }
                 });
+
         };
     }
 ]);
