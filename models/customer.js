@@ -584,5 +584,85 @@ if (CONFIG('storing-files')) {
 
 customerSchema.plugin(version, { collection: 'Customers.Version', strategy: 'collection' });
 
+/**
+ * Methods
+ */
+customerSchema.virtual('_status')
+    .get(function() {
+        var res_status = {};
+
+        var status = this.Status;
+        var statusList = exports.Status;
+
+        if (status && statusList.values[status] && statusList.values[status].label) {
+            res_status.id = status;
+            res_status.name = i18n.t("companies:" + statusList.values[status].label);
+            //this.status.name = statusList.values[status].label;
+            res_status.css = statusList.values[status].cssClass;
+        } else { // By default
+            res_status.id = status;
+            res_status.name = status;
+            res_status.css = "";
+        }
+
+        return res_status;
+    });
+
+exports.Status = {
+    "_id": "fk_stcomm",
+    "lang": "companies",
+    "values": {
+        "ST_NEVER": {
+            "enable": true,
+            "label": "NeverContacted",
+            "cssClass": "ribbon-color-default label-default",
+            "system": true
+        },
+        "ST_PFROI": {
+            "enable": true,
+            "label": "ColdProspect",
+            "cssClass": "ribbon-color-info label-success",
+            "system": true
+        },
+        "ST_PCHAU": {
+            "enable": true,
+            "label": "HotProspect",
+            "cssClass": "ribbon-color-danger",
+            "system": true
+        },
+        "ST_NEW": {
+            "enable": true,
+            "label": "NewCustomer",
+            "cssClass": "ribbon-color-warning label-warning",
+            "system": true
+        },
+        "ST_CFID": {
+            "enable": true,
+            "label": "LoyalCustomer",
+            "cssClass": "ribbon-color-success",
+            "system": true
+        },
+        "ST_CVIP": {
+            "enable": true,
+            "label": "VIP",
+            "cssClass": "ribbon-color-primary label-warning",
+            "system": true
+        },
+        "ST_LOOSE": {
+            "enable": true,
+            "label": "LostCustomer",
+            "cssClass": "ribbon-color-danger label-danger",
+            "system ": true
+        },
+        "ST_NO": {
+            "enable": true,
+            "label": "DoNotContact",
+            "cssClass": "ribbon-color-info label-info",
+            "system": true
+        }
+    }
+};
+
+
 exports.Schema = mongoose.model('Customers', customerSchema);
 exports.name = "Customers";
