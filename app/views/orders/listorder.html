@@ -54,9 +54,14 @@
                         <div class="portlet-body">
                             <form ng-submit="find()">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
 
-                                        <crm-id label="@(companies:Company)" name="societeId" placeholder="@(Search)" ng-model="search.supplier.value[0]" entity="login.entity" url="/erp/api/societe/autocomplete" class="form-group" bootstrap="true"></crm-id>
+                                        <div class="form-group">
+                                            <label for="Status">@(Ref)</label>
+                                            <input ng-model="search.ref.value" class="form-control input-sm" ng-change="find()" />
+                                        </div>
+
+                                        <crm-id label="@(companies:Company)" name="societeId" placeholder="@(Search)" on-select="find" ng-model="search.supplier.value[0]" entity="login.entity" url="/erp/api/societe/autocomplete" class="form-group" bootstrap="true"></crm-id>
 
                                         <!--<div class="form-group">
                                             <label>@(companies:Company)</label>
@@ -68,7 +73,7 @@
 
                                         <div class="form-group">
                                             <label>@(commercial:Commercial)</label>
-                                            <select ng-model="search.salesPerson.value[0]" id="Status" ng-options="s._id as s.fullName for s in $dict.salesPerson" class="form-control input-sm"></select>
+                                            <select ng-model="search.salesPerson.value[0]" id="Status" ng-change="find()" ng-options="s._id as s.fullName for s in $dict.salesPerson" class="form-control input-sm"></select>
                                             <!--<tags-input ng-model="search.salesPerson.value" display-property="fullName" key-property="_id" placeholder="@(Search)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
                                                 <auto-complete source="$dict.salesPerson" min-length="0"></auto-complete>
                                             </tags-input>-->
@@ -87,7 +92,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-6">
 
 
                                     </div>

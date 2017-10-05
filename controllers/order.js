@@ -185,8 +185,14 @@ Object.prototype = {
             matchObject['ref'] = { $regex: regExp };
         }
 
-        if (!filter || !filter.Status || !filter.Status.value.length)
+        filter = _.filter(filter, function(elem) {
+            return elem.value.length;
+        });
+
+        if (!filter || filter.length == 1)
             filterObject.Status = { $ne: "BILLED" };
+
+        console.log(filter);
 
         filterObject.$and = [];
 
