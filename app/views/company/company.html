@@ -115,16 +115,15 @@
                                 <form editable-form name="editableInfo" onaftersave="addNote()">
                                     <div class="portlet light bordered">
                                         <div class="portlet-title">
-                                            <div class="caption">
-                                                Infos stratégiques
+                                            <div class="caption">@(StrategicInformation)
                                             </div>
                                             <div class="actions" ng-show="!editableInfo.$visible">
-                                                <a href="#" ng-click="editableInfo.$show()" ng-show="!editableInfo.$visible && editable" class="btn btn-circle btn-default btn-sm" data-original-title="" title="@(Add)"><i class="fa fa-plus"></i>@(Add)</a>
+                                                <a href="#" ng-click="editableInfo.$show()" ng-show="!editableInfo.$visible && editable" class="btn yellow-haze btn-sm" data-original-title="" title="@(Add)"><i class="fa fa-plus"></i>@(Add)</a>
                                             </div>
                                             <div class="actions" ng-show="editableInfo.$visible">
-                                                <button type="submit" ng-disabled="editableInfo.$waiting" class="btn btn-default btn-sm">@(Save)</button>
                                                 <button type="button" ng-disabled="editableInfo.$waiting" ng-click="editableInfo.$cancel();
-                                                                findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+                                                                findOne();" class="btn red btn-sm"><i class="fa fa-angle-left"></i>@(Cancel)</button>
+                                                <button type="submit" ng-disabled="editableInfo.$waiting" class="btn green btn-sm"><i class="fa fa-check-circle"></i>@(Save)</button>
                                             </div>
 
                                         </div>
@@ -135,7 +134,7 @@
                                                 <div ng-repeat="vnote in societe.notes| orderBy:'-datec'">
                                                     <div class="note row" ng-class="vnote.css">
                                                         <h4 class="block col-md-12"><i class="icon-speech"></i> <b>{{vnote.author.username}}</b> - <i>{{ vnote.datec | date:'@(main:date.format.java.dayhour)' }}</i> <span ng-if="login.rights.societe.delete" title="Supprimer note"
-                                                                class="pull-right icon icon-trash" ng-confirm-click="Supprimer la note ?" confirmed-click="removeNote(vnote)"></span></h4>
+                                                                class="pull-right icon icon-trash" ng-confirm-click="@(DeletePostIt)" confirmed-click="removeNote(vnote)"></span></h4>
                                                         <pre class="col-md-12">{{vnote.note}}</pre>
                                                     </div>
                                                 </div>
