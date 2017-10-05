@@ -288,15 +288,6 @@ pre {
     display: block;
 }
 
-.static-info {
-    margin-bottom: 15px;
-}
-
-hr {
-    margin: 10px 0;
-    border-top-color: #bbb;
-}
-
 .progress {
     margin: 2px 0;
     height: 20px;
@@ -420,6 +411,7 @@ hr {
     border: 0;
     border-top: 1px solid #eee;
     border-bottom: 0;
+    margin: 10px 0;
 }
 
 .tree-handle {
@@ -503,10 +495,6 @@ h4 {
     padding: 3px 9px;
 }
 
-.input-sm {
-    height: 27px;
-}
-
 .profile-usermenu ul li a:hover {
     background-color: #F4F6F7;
     color: #364150;
@@ -539,14 +527,6 @@ h4 {
     -webkit-transition-delay: .3s;
     -moz-transition-delay: .3s;
     transition-delay: .3s;
-}
-
-.input-group-sm>.input-group-btn>select.btn,
-.input-group-sm>select.form-control,
-.input-group-sm>select.input-group-addon,
-select.input-sm {
-    height: 27px;
-    line-height: 27px;
 }
 
 .profile-usermenu ul li a {
@@ -597,19 +577,6 @@ select.input-sm {
     color: #f7ca18;
 }
 
-.portlet.light>.portlet-title>.caption>.caption-subject {
-    font-size: 14px;
-}
-
-.portlet.light>.portlet-title>.caption>i {
-    font-size: 24px;
-    margin-top: 3px;
-}
-
-label {
-    font-weight: 500;
-}
-
 b,
 optgroup,
 strong {
@@ -618,10 +585,6 @@ strong {
 
 .md-checkbox {
     margin-left: 5px;
-}
-
-label {
-    margin-bottom: 25px;
 }
 
 .btn:not(.md-skip) {
@@ -701,4 +664,9 @@ small {
 .page-bar .page-toolbar .date {
     zoom: 110%;
     padding-top: 3px;
+}
+
+.form .form-actions.right,
+.portlet-form .form-actions.no-padding {
+    padding: 0 0 !important;
 }

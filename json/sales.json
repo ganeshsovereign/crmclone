@@ -297,7 +297,14 @@
 
             "entity": {
                 "displayName": "Entity",
-                "backend": "entity"
+                "backend": "entity",
+                "type": "string"
+            },
+
+            "Status": {
+                "displayName": "Status",
+                "backend": "Status",
+                "type": "string"
             },
 
             "supplier": {

@@ -48,176 +48,93 @@
         <div class="tools">
         </div>
         <div class="portlet-body">
-            <div class="table-toolbar">
-                <div class="row hidden-print">
-                    <div class="form-group form-md-line-input">
-                        <div class="col-md-3">
-                            <tags-input ng-model="search.supplier.value" text="_id" display-property="fullName" key-property="_id" placeholder="@(Search) @(companies:Companies)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
-                                <auto-complete source="loadTags($query)"></auto-complete>
-                            </tags-input>{{search}}
+            <div class="row hidden-print">
+                <div class="col-md-9">
+                    <div class="portlet light bg-inverse">
+                        <div class="portlet-body">
+                            <form ng-submit="find()">
+                                <div class="row">
+                                    <div class="col-md-6">
 
-                            <tags-input ng-model="search.entity.value" text="_id" display-property="name" key-property="id" placeholder="@(Search) @(Entities)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
-                                    <auto-complete source="entityList" min-length="0"></auto-complete>
-                                </tags-input>
+                                        <crm-id label="@(companies:Company)" name="societeId" placeholder="@(Search)" ng-model="search.supplier.value[0]" entity="login.entity" url="/erp/api/societe/autocomplete" class="form-group" bootstrap="true"></crm-id>
+
+                                        <!--<div class="form-group">
+                                            <label>@(companies:Company)</label>
+
+                                            <tags-input ng-model="search.supplier.value" display-property="fullName" key-property="_id" placeholder="@(Search)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
+                                                <auto-complete source="loadAutocomplete($query, '/erp/api/societe/autocomplete')"></auto-complete>
+                                            </tags-input>
+                                        </div>-->
+
+                                        <div class="form-group">
+                                            <label>@(commercial:Commercial)</label>
+                                            <select ng-model="search.salesPerson.value[0]" id="Status" ng-options="s._id as s.fullName for s in $dict.salesPerson" class="form-control input-sm"></select>
+                                            <!--<tags-input ng-model="search.salesPerson.value" display-property="fullName" key-property="_id" placeholder="@(Search)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
+                                                <auto-complete source="$dict.salesPerson" min-length="0"></auto-complete>
+                                            </tags-input>-->
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="Status">@(companies:Entity)</label>
+                                            <select ng-show="login.multiEntities" ng-model="search.entity.value[0]" ng-options="s.id as s.name for s in entityList" class="form-control input-sm"></select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>@(Status)</label>
+                                            <select ng-model="search.Status.value[0]" id="Status" ng-options="s.id as s.label for s in dict.fk_order_status.values" class="form-control input-sm"></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
 
 
-                            <div class="form-group form-md-line-input ">
-                                <select ng-model="status_id" ng-change="find();" id="Status" ng-options="s.id as s.label for s in dict.fk_order_status.values" class="form-control"></select>
-                                <label for="Status">@(Status)</label>
-                            </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions right no-padding">
+                                    <button type="button" class="btn btn-sm default" ng-click="resetFilter()">@(Reset)</button>
+                                    <button type="submit" class="btn btn-sm green">@(Search)</button>
+                                </div>
+                            </form>
                         </div>
-
-                        <div class="col-md-3">
-                            <div class="form-group form-md-line-input ">
-                                <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity); find();" ng-options="s.id as s.name for s in entityList" class="form-control"></select>
-                                <label for="Status">@(companies:Entity)</label>
-                            </div>
-                        </div>
-
-                        <!--<label class="col-md-2 control-label text-right" for="form_control_1">@(orders:FilterbyStatus)</label>
-
-                        <div class="col-md-3">
-                            <select ng-model="status_id" ng-change="find();" ng-options="s.id as s.label for s in dict.fk_offer_status.values" class="form-control">
-                                <option value="">-- @(All) --</option>
-                            </select>
-                            <div class="form-control-focus"> </div>
-                        </div>
-
-                        <label class="col-md-2 control-label text-right" for="form_control_1">@(orders:FilterbyEntity)</label>
-
-                        <div class="col-md-3">
-                            <select ng-show="login.multiEntities" ng-model="entity" ng-change="setEntity(entity);
-                                    find();" ng-options="s.id as s.name for s in entityList" class="form-control">
-                            </select>
-                            <div class="form-control-focus"> </div>
-                        </div>
-                        <div class="col-md-1"></div>-->
-
                     </div>
+
                 </div>
-            </div>
-
-            <div id="searchContainer">
-                <div class="search-view">
-                    <div class="search-field">
-                        <span class="search icon-search"></span>
-
-                        <div id="searchGlobalContainer">
-                            <div id="searchFilterContainer"></div>
-                            <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
-                            <div id="searchInput" data-text="Search" contenteditable="" class="ui-autocomplete-input" autocomplete="off"></div>
-                            <ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content ui-corner-all" id="ui-id-9" tabindex="0" style="display: none;"></ul>
+                <div class="col-md-3">
+                    <div class="portlet mt-element-ribbon light portlet-fit bordered ">
+                        <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase ">
+                            <div class="ribbon-sub ribbon-bookmark "></div>
+                            <i class="fa fa-pause "></i>
                         </div>
-                        <span class="search-content icon-caret-down"></span>
-                    </div>
-                    <div class="search-options hidden">
-                        <ul class="filter-dialog-tabs">
-                            <li data-value="#filtersContent" class="filterTabs active">
-                                <span class="icon-filter"></span> Filters
-                                <span class="caret"></span>
-                            </li>
-                            <li data-value="#favoritesContent" class="filterTabs">
-                                <span class="icon-star2"></span> Favorites
-                                <span class="caret"></span>
-                            </li>
-                        </ul>
-
-                        <div class="drop-down-filter">
-                            <ul class="condition hidden">
-                                <span class="CondParagraph">Condition</span>
-                                <li class="conditionAND">
-                                    <input type="checkbox" checked="" id="logicCondition" value="and">
-                                    <label for="logicCondition">AND</label>
-                                </li>
-                            </ul>
-                            <!--<li class="hidden">
-                        <input type="checkbox" id="defaultFilter" value="empty">
-                        <label for="defaultFilter">Clear</label>
-                    </li>-->
-
-                            <li class="hidden group btn btn-default customFilter">
-                                Add Custom Filter
-                            </li>
-
-                            <div id="filtersContent" class="tabContent">
-                                <div id="supplierFullContainer" class="filterGroup" data-value="supplier._id">
-                                    <div class="groupName">
-                                        <span id="supplier">Supplier</span>
-                                    </div>
-                                    <div id="supplierContainer" class="ulContent hidden">
-                                        <div class="_filterContent">
-
-                                            <ul id="supplierUl" class="filterValues">
-                                                <li class=" " data-value="57c9ac51d07eb4d23e0b8cc5">
-                                                    <span class="icon icon-checked2"></span> Angelika Wietowska
-                                                </li>
-
-                                                <li class=" " data-value="57c993c1d07eb4d23e0b8c42">
-                                                    <span class="icon icon-checked2"></span> Jane Doe
-                                                </li>
-
-                                                <li class=" " data-value="57c996b2d07eb4d23e0b8c56">
-                                                    <span class="icon icon-checked2"></span> Lisa Shephard
-                                                </li>
-
-                                                <li class=" " data-value="57c99a50d07eb4d23e0b8c6b">
-                                                    <span class="icon icon-checked2"></span> Vivian Tseng
-                                                </li>
-                                            </ul>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <div id="workflowFullContainer" class="filterGroup" data-value="workflow._id">
-                                    <div class="groupName">
-                                        <span id="workflow">Status</span>
-                                    </div>
-                                    <div id="workflowContainer" class="ulContent hidden">
-                                        <div class="_filterContent">
-
-                                            <ul id="workflowUl" class="filterValues">
-                                                <li class=" " data-value="55647b932e4aa3804a765ec5">
-                                                    <span class="icon icon-checked2"></span> Draft/ Quotation
-                                                </li>
-
-                                                <li class=" " data-value="56599347bfd103f108eb4caa">
-                                                    <span class="icon icon-checked2"></span> Invoiced received
-                                                </li>
-
-                                                <li class=" " data-value="5555bf276a3f01acae0b5561">
-                                                    <span class="icon icon-checked2"></span> Pending PO
-                                                </li>
-                                            </ul>
-                                        </div>
-
-                                    </div>
-                                </div>
+                        <div class="portlet-title ">
+                            <div class="caption ">
+                                <i class=" icon-control-pause font-yellow-crusta "></i>
+                                <span class="caption-subject font-yellow-crusta bold uppercase ">Totaux</span>
                             </div>
-                            <div id="favoritesContent" class="tabContent hidden">
-                                <div class="forSavedFilters"></div>
-                                <div class="filter_name_wrapper">
-                                    <div class="_animateInputBox">
-                                        <input type="text" id="forFilterName" class="_animate" maxlength="24" required="">
-                                        <label class="_animate">Filter name</label>
-                                    </div>
-                                </div>
-
-                                <div class="_actionGroup">
-
-                                    <button class="btn blue" id="saveFilterButton">Save</button>
-
-                                    <div class="useByDefault _defaultWrp">
-                                        <label class="_animatedCheckbox">
-              <input type="checkbox" class="defaultFilter" id="defaultFilter">
-              <span></span>
-            </label>
-                                        <span class="_description">Use by default</span>
-                                    </div>
-
-                                </div>
-
-                                <ul id="savedFiltersElements" class="_savedFiltersElements">
-                                </ul>
+                        </div>
+                        <div class="portlet-body ">
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(Qty)</div>
+                                <div class="col-md-7 value  ng-binding">{{totalAll.count}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(TotalHT)</div>
+                                <div class="col-md-7 value  ng-binding">{{totalAll.total_ht | currency}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name bold ">@(TotalTTC)</div>
+                                <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc | currency}}</div>
+                            </div>
+                            <hr>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name">@(AmountPaid)</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.total_paid | currency}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name bold ">@(AmountToPaid)</div>
+                                <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc - totalAll.total_paid | currency}}</div>
                             </div>
                         </div>
                     </div>
@@ -285,15 +202,6 @@
                             <td>{{line.datec| date:'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="6" class="text-right">@(Total)</td>
-                            <td>{{totalAll.total_ht | currency}}</td>
-                            <td>{{totalAll.total_ttc | currency}}</td>
-                            <td>{{totalAll.total_paid | currency}}</td>
-                            <td colspan="3"></td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>

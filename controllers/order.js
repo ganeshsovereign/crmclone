@@ -182,8 +182,11 @@ Object.prototype = {
 
         if (quickSearch) {
             regExp = new RegExp(quickSearch, 'ig');
-            matchObject['supplier.name'] = { $regex: regExp };
+            matchObject['ref'] = { $regex: regExp };
         }
+
+        if (!filter || !filter.Status || !filter.Status.value.length)
+            filterObject.Status = { $ne: "BILLED" };
 
         filterObject.$and = [];
 
@@ -196,7 +199,7 @@ Object.prototype = {
         if (self.query.sort)
             sort = JSON.parse(self.query.sort);
         else
-            sort = { ID: -1, datec: -1 };
+            sort = { datedl: -1, ID: -1 };
 
         if (contentType !== 'order' && contentType !== 'integrationUnlinkedOrders') {
             Order = MODEL('order').Schema.OrderSupplier;
@@ -498,118 +501,6 @@ Object.prototype = {
                     $group: {
                         _id: null,
                         total: { $sum: 1 },
-                        root: { $push: '$$ROOT' }
-                    }
-                }, {
-                    $unwind: '$root'
-                }, {
-                    $project: {
-                        _id: '$root._id',
-                        salesPerson: '$root.salesPerson',
-                        workflow: '$root.workflow',
-                        supplier: '$root.supplier',
-                        currency: '$root.currency',
-                        paymentInfo: '$root.paymentInfo',
-                        datec: '$root.datec',
-                        ref_client: '$root.ref_client',
-                        datedl: '$root.datedl',
-                        total_ttc: '$root.total_ttc',
-                        total_ht: '$root.total_ht',
-                        total_paid: '$root.total_paid',
-                        Status: '$root.Status',
-                        ID: '$root.ID',
-                        ref: '$root.ref',
-                        status: '$root.status',
-                        removable: '$root.removable',
-                        channel: '$root.channel',
-                        payments: '$root.payments',
-                        total: 1
-                    }
-                }, {
-                    $unwind: {
-                        path: '$payments',
-                        preserveNullAndEmptyArrays: true
-                    }
-                }, {
-                    $project: {
-                        salesPerson: 1,
-                        workflow: 1,
-                        supplier: 1,
-                        currency: 1,
-                        paymentInfo: 1,
-                        datec: 1,
-                        ref_client: 1,
-                        datedl: 1,
-                        total_ttc: 1,
-                        total_ht: 1,
-                        total_paid: 1,
-                        Status: 1,
-                        ID: 1,
-                        ref: 1,
-                        status: 1,
-                        removable: 1,
-                        channel: 1,
-                        total: 1,
-                        'payments.currency': 1,
-                        'payments.paidAmount': { $cond: [{ $eq: ['$payments.refund', true] }, { $multiply: ['$payments.paidAmount', -1] }, '$payments.paidAmount'] }
-                    }
-                }, {
-                    $group: {
-                        _id: '$_id',
-                        salesPerson: { $first: '$salesPerson' },
-                        workflow: { $first: '$workflow' },
-                        supplier: { $first: '$supplier' },
-                        currency: { $first: '$currency' },
-                        paymentInfo: { $first: '$paymentInfo' },
-                        datec: { $first: '$datec' },
-                        ref_client: { $first: '$ref_client' },
-                        datedl: { $first: '$datedl' },
-                        total_ttc: { $first: '$total_ttc' },
-                        total_ht: { $first: '$total_ht' },
-                        total_paid: { $first: '$total_paid' },
-                        ID: { $first: '$ID' },
-                        Status: { $first: '$Status' },
-                        ref: { $first: '$ref' },
-                        status: { $first: '$status' },
-                        removable: { $first: '$removable' },
-                        channel: { $first: '$channel' },
-                        paymentsPaid: { $sum: { $divide: ['$payments.paidAmount', '$payments.currency.rate'] } },
-                        total: { $first: '$total' }
-                    }
-                }, {
-                    $project: {
-                        salesPerson: 1,
-                        workflow: 1,
-                        supplier: 1,
-                        currency: 1,
-                        paymentInfo: 1,
-                        datec: 1,
-                        ref_client: 1,
-                        datedl: 1,
-                        total_ttc: 1,
-                        total_ht: 1,
-                        total_paid: 1,
-                        Status: 1,
-                        ref: 1,
-                        ID: 1,
-                        status: 1,
-                        removable: 1,
-                        channel: 1,
-                        paymentsPaid: 1,
-                        paymentBalance: { $subtract: ['$paymentInfo.total', '$paymentsPaid'] },
-                        total: 1
-                    }
-                },
-                {
-                    $sort: sort
-                },
-                {
-                    $skip: skip
-                }, {
-                    $limit: limit
-                }, {
-                    $group: {
-                        _id: null,
                         total_ht: { $sum: "$total_ht" },
                         total_ttc: { $sum: "$total_ttc" },
                         total_paid: { $sum: "$total_paid" },
@@ -638,13 +529,99 @@ Object.prototype = {
                         removable: '$root.removable',
                         channel: '$root.channel',
                         payments: '$root.payments',
-                        total: '$root.total',
+                        total: 1,
                         totalAll: {
+                            count: "$total",
                             total_ht: "$total_ht",
                             total_ttc: "$total_ttc",
                             total_paid: "$total_paid"
                         }
                     }
+                }, {
+                    $unwind: {
+                        path: '$payments',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $project: {
+                        salesPerson: 1,
+                        workflow: 1,
+                        supplier: 1,
+                        currency: 1,
+                        paymentInfo: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        total_ttc: 1,
+                        total_ht: 1,
+                        total_paid: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        removable: 1,
+                        channel: 1,
+                        total: 1,
+                        totalAll: 1,
+                        'payments.currency': 1,
+                        'payments.paidAmount': { $cond: [{ $eq: ['$payments.refund', true] }, { $multiply: ['$payments.paidAmount', -1] }, '$payments.paidAmount'] }
+                    }
+                }, {
+                    $group: {
+                        _id: '$_id',
+                        salesPerson: { $first: '$salesPerson' },
+                        workflow: { $first: '$workflow' },
+                        supplier: { $first: '$supplier' },
+                        currency: { $first: '$currency' },
+                        paymentInfo: { $first: '$paymentInfo' },
+                        datec: { $first: '$datec' },
+                        ref_client: { $first: '$ref_client' },
+                        datedl: { $first: '$datedl' },
+                        total_ttc: { $first: '$total_ttc' },
+                        total_ht: { $first: '$total_ht' },
+                        total_paid: { $first: '$total_paid' },
+                        ID: { $first: '$ID' },
+                        Status: { $first: '$Status' },
+                        ref: { $first: '$ref' },
+                        status: { $first: '$status' },
+                        removable: { $first: '$removable' },
+                        channel: { $first: '$channel' },
+                        paymentsPaid: { $sum: { $divide: ['$payments.paidAmount', '$payments.currency.rate'] } },
+                        total: { $first: '$total' },
+                        totalAll: { $first: '$totalAll' }
+                    }
+                }, {
+                    $project: {
+                        salesPerson: 1,
+                        workflow: 1,
+                        supplier: 1,
+                        currency: 1,
+                        paymentInfo: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        total_ttc: 1,
+                        total_ht: 1,
+                        total_paid: 1,
+                        Status: 1,
+                        ref: 1,
+                        ID: 1,
+                        status: 1,
+                        removable: 1,
+                        channel: 1,
+                        paymentsPaid: 1,
+                        paymentBalance: { $subtract: ['$paymentInfo.total', '$paymentsPaid'] },
+                        total: 1,
+                        totalAll: 1
+                    }
+                },
+                {
+                    $sort: sort
+                },
+                {
+                    $skip: skip
+                }, {
+                    $limit: limit
                 }
             ], cb);
         };
@@ -685,6 +662,7 @@ Object.prototype = {
             count = firstElement && firstElement.total ? firstElement.total : 0;
             response.total = count;
             response.totalAll = firstElement && firstElement.totalAll ? firstElement.totalAll : {
+                count: 0,
                 total_ht: 0,
                 total_ttc: 0,
                 total_paid: 0

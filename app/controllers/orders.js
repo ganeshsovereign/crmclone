@@ -981,17 +981,13 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
         $scope.search = {
             entity: {
                 key: 'entity',
-                value: [{
-                    _id: 'otcconcept',
-                    name: 'OTC Concept'
-                }],
+                value: [$rootScope.login.entity],
                 type: 'string'
             },
-            supplier: { key: 'supplier', value: [], type: '' }
-            //salesPerson: { key: 'salesPerson._id', value: , type: '' }
+            supplier: { key: 'supplier', value: [], type: '' },
+            salesPerson: { key: 'salesPerson', value: [], type: '' },
+            Status: { key: 'Status', value: [], type: 'string' },
         };
-
-        $scope.delivery_mode = ["Comptoir", "Livraison"];
 
         $scope.page = {
             limit: 25,
@@ -1001,10 +997,10 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
         $scope.sort = { 'datedl': -1 };
 
-        $scope.loadTags = function(query) {
+        /*$scope.loadAutocomplete = function(query, url) {
             return $http({
                 method: 'POST',
-                url: '/erp/api/societe/autocomplete',
+                url: url,
                 data: {
                     take: 50, // limit
                     entity: $rootScope.entity,
@@ -1016,7 +1012,11 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                     }
                 }
             });
-        };
+        };*/
+
+        $scope.resetFilter = function() {
+            $rootScope.$state.reload();
+        }
 
 
         $scope.open = function($event) {

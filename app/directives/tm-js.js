@@ -730,7 +730,8 @@ MetronicApp.directive('crmId', ['$http',
                 typeahead: "@",
                 placeholder: "@",
                 url: "@",
-                onSelect: "="
+                onSelect: "=",
+                bootstrap: "=" // Bootstrap or material desgin ? (default false -> md)
             },
             templateUrl: function(el, attr) {
                 return '/templates/core/crm_id-form.html';
@@ -762,6 +763,15 @@ MetronicApp.directive('crmId', ['$http',
                         //console.log(res.data);
                         scope.onSelect(res.data);
                     });
+                }
+
+                scope.change = function(item) {
+                    if (scope.onSelect)
+                        scope.onSelect(item);
+
+                    console.log(item);
+                    ctrl.$setViewValue(item);
+
                 }
 
                 ctrl.$validators.id = function(modelValue, viewValue) {
