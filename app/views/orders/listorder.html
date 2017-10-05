@@ -165,7 +165,7 @@
                     <thead>
                         <tr role="row" class="heading">
                             <th class="text-center">
-                                <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" />
+                                <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" ng-click="checkedAll()" />
                             </th>
                             <th table-sort='ID' ng-model="sort" name="@(Ref)"></th>
                             <th table-sort='supplier.fullName' ng-model="sort" name="@(companies:Company)"></th>
@@ -181,30 +181,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="line in orders" ui-sref="order.show({id:line._id})">
+                        <tr ng-repeat="line in orders">
                             <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
-                            <td><a class="with-tooltip" ui-sref="order.show({id:line._id})"><i class="fa fa-shopping-cart"></i> {{line.ref}}</a></td>
+                            <td ui-sref="order.show({id:line._id})"><a class=" with-tooltip " ui-sref="order.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
                             <td>
-                                <a ng-if="line.supplier._id" class="with-tooltip" ui-sref="societe.show({id:line.supplier._id})"><i class="fa fa-institution"></i> {{line.supplier.fullName}}</a>
-                                <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty"> @(Empty)</span>
+                                <a ng-if="line.supplier._id" class="with-tooltip " ui-sref="societe.show({id:line.supplier._id}) "><i class="fa fa-institution "></i> {{line.supplier.fullName}}</a>
+                                <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty "> @(Empty)</span>
                             </td>
-                            <td>{{line.ref_client}}</td>
-                            <td>{{line.salesPerson.fullName}}</td>
-                            <td>{{line.datedl| date:'dd/MM/yyyy'}}</td>
-                            <td>{{line.total_ht| currency}}</td>
-                            <td>{{line.total_ttc| currency}}</td>
-                            <td>{{line.total_paid| currency}}</td>
-                            <td>
-                                <span class="label label-sm {{line.Status.css}}"> {{line.Status.name}}</span>
+                            <td ui-sref="order.show({id:line._id})">{{line.ref_client}}</td>
+                            <td ui-sref="order.show({id:line._id})">{{line.salesPerson.fullName}}</td>
+                            <td ui-sref="order.show({id:line._id})">{{line.datedl| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="order.show({id:line._id})">{{line.total_ht| currency}}</td>
+                            <td ui-sref="order.show({id:line._id})">{{line.total_ttc| currency}}</td>
+                            <td ui-sref="order.show({id:line._id})">{{line.total_paid| currency}}</td>
+                            <td ui-sref="order.show({id:line._id})">
+                                <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
                             </td>
-                            <td>
-                                <div class="pull-right">
-                                    <span class="large fa fa-check-circle" ng-class="{ 'font-grey': line.status.allocateStatus=='NOR','font-green-jungle': line.status.allocateStatus=='ALL' , 'font-yellow-lemon': line.status.allocateStatus=='NOA', 'font-red' : line.status.allocateStatus=='NOT' }"></span>
-                                    <span class="large fa fa-inbox" ng-class="{ 'font-grey': line.status.fulfillStatus=='NOR', 'font-green-jungle': line.status.fulfillStatus=='ALL', 'font-yellow-lemon': line.status.fulfillStatus=='NOA', 'font-red' : line.status.fulfillStatus=='NOT' }"></span>
-                                    <span class="large fa fa-truck" ng-class="{ 'font-grey': line.status.shippingStatus=='NOR','font-green-jungle': line.status.shippingStatus=='ALL', 'font-yellow-lemon': line.status.shippingStatus=='NOA', 'font-red' : line.status.shippingStatus=='NOT' }"></span>
+                            <td ui-sref="order.show({id:line._id})">
+                                <div class="pull-right ">
+                                    <span class="large fa fa-check-circle " ng-class="{ 'font-grey': line.status.allocateStatus=='NOR' , 'font-green-jungle': line.status.allocateStatus=='ALL' , 'font-yellow-lemon': line.status.allocateStatus=='NOA'
+                                , 'font-red' : line.status.allocateStatus=='NOT' } "></span>
+                                    <span class="large fa fa-inbox " ng-class="{ 'font-grey': line.status.fulfillStatus=='NOR' , 'font-green-jungle': line.status.fulfillStatus=='ALL' , 'font-yellow-lemon': line.status.fulfillStatus=='NOA' ,
+                                'font-red' : line.status.fulfillStatus=='NOT' } "></span>
+                                    <span class="large fa fa-truck " ng-class="{ 'font-grey': line.status.shippingStatus=='NOR' , 'font-green-jungle': line.status.shippingStatus=='ALL' , 'font-yellow-lemon': line.status.shippingStatus=='NOA' ,
+                                'font-red' : line.status.shippingStatus=='NOT' } "></span>
                                 </div>
                             </td>
-                            <td>{{line.datec| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="order.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -213,4 +216,4 @@
     </div>
 </div>
 
-<table-footer ng-model="page"></table-footer>
+<table-footer ng-model="page "></table-footer>
