@@ -102,7 +102,7 @@
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 
-<body ng-controller="AppController" class="page-header-fixed page-sidebar-closed-hide-logo page-on-load page-footer-fixed" ng-class="{'page-container-bg-solid': settings.layout.pageBodySolid, 'page-sidebar-closed': settings.layout.pageSidebarClosed}">
+<body ng-controller="AppController" class="page-header-fixed page-sidebar-closed-hide-logo page-on-load" ng-class="{'page-container-bg-solid': settings.layout.pageBodySolid, 'page-sidebar-closed': settings.layout.pageSidebarClosed}">
     <!-- BEGIN PAGE SPINNER -->
     <div ng-spinner-bar class="page-spinner-bar">
         <div class="bounce1"></div>
@@ -138,8 +138,8 @@
     </div>
     <!-- END CONTAINER -->
     <!-- BEGIN FOOTER -->
-    <!--<div data-ng-include="'/templates/layout/footer.html'" class="page-footer">
-    </div>-->
+    <div data-ng-include="'/templates/layout/footer.html'" data-ng-controller="FooterController" class="page-footer">
+    </div>
 
     <!-- END FOOTER -->
     <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->

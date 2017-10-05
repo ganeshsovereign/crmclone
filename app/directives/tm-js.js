@@ -1264,7 +1264,7 @@ MetronicApp.directive('tableSort', [
     }
 ]);
 
-MetronicApp.directive('tableFooter', [
+MetronicApp.directive('tablePagination', [
     function() {
         return {
             restrict: 'E',
@@ -1273,7 +1273,7 @@ MetronicApp.directive('tableFooter', [
                 page: '=ngModel',
                 //ngClick: '&',
             },
-            templateUrl: '/templates/layout/table-footer.html',
+            templateUrl: '/templates/layout/table-pagination.html',
             link: function(scope, element, attrs, ngModel) {
 
                 scope.Math = window.Math;
