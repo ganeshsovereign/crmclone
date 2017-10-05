@@ -6,7 +6,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="task.todo">@(tasks:TasksList)</a>
+            <a ui-sref="task.list">@(tasks:TasksList)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
@@ -144,7 +144,7 @@
 
                                     <div class="portlet light bordered">
                                         <div class="form-group form-md-line-input ">
-                                            <textarea class="form-control" data-ng-model="task.description" rows="10"></textarea>
+                                            <textarea class="form-control" data-ng-model="task.description" rows="8"></textarea>
                                             <label for="description">@(Description)</label>
                                         </div>
                                     </div>
