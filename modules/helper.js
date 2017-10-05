@@ -36,18 +36,21 @@ var FilterMapper = function() {
         var result = {};
         var _operator = operator || '$in';
 
-        //console.log(values, type);
+        // console.log(values, type);
 
         // ng-tags-inputs modules {_id : , name : }
-        values = _.map(values, function(elem) {
-            if (elem && typeof elem === 'object' && elem._id)
-                return elem._id;
+        if (typeof values == 'object')
+            values = _.map(values, function(elem) {
+                if (elem && typeof elem === 'object' && elem._id)
+                    return elem._id;
 
-            if (elem && typeof elem === 'object' && elem.id)
-                return elem.id;
+                if (elem && typeof elem === 'object' && elem.id)
+                    return elem.id;
 
-            return elem;
-        });
+                return elem;
+            });
+
+        //console.log(values, type);
 
         switch (type) {
             case 'ObjectId':
@@ -89,6 +92,9 @@ var FilterMapper = function() {
                 result[_operator] = _.map(values, function(element) {
                     return element === 'true';
                 });
+                break;
+            case 'regex':
+                result = new RegExp(values.toLowerCase(), "gi");
                 break;
             case 'letter':
                 result = new RegExp('^[' + values.toLowerCase() + values.toUpperCase() + '].*');

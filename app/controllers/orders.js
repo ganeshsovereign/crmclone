@@ -979,6 +979,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
         $scope.dict = {};
         $scope.search = {
+            ref: { key: 'ref', value: "", type: 'regex' },
             entity: {
                 key: 'entity',
                 value: [$rootScope.login.entity],
