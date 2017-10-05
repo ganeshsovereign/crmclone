@@ -1,11 +1,13 @@
 <div class="todo-main-header">
-    <h3><i class="fa fa-check-square-o"></i> @(tasks:TasksList)</h3>
     <ul class="todo-breadcrumb">
         <li>
+            <i class="fa fa-home"></i>
             <a ui-sref="home">@(Home)</a>
+            <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span class="todo-active" >Todo</span>
+            <span class="todo-active">Todo</span>
+            <i class="fa fa-angle-right"></i>
         </li>
         <li>
             <a ui-sref="task.list">@(tasks:TasksList)</a>
@@ -56,7 +58,7 @@
                     <li class="todo-tasks-item" ng-repeat="task in tasks" ng-class="{'todo-task-ended':task.ended}">
                         <div class="row">
                             <div class="col-md-9">
-                                <input uniform type="checkbox" ng-disabled="task.ended" ng-model="task.ended" ng-click="closed(task)"/>
+                                <input uniform type="checkbox" ng-disabled="task.ended" ng-model="task.ended" ng-click="closed(task)" />
                                 <h4 class="todo-inline">
                                     <a ui-sref="task.show({id:task._id})" ng-class="{bold:!task.ended, 'text-warning':task.usertodo.id != login._id, 'line-through':task.ended}">{{task.name}}</a>
                                 </h4> <span ng-hide="task.ended" class="label label-sm" ng-class="task.status.css">{{task.status.name}}</span> <button ng-show="task.ended && task.author.id == login._id" class="btn btn-sm red" ng-click="setArchived(task)"><i class="fa fa-times"></i> @(tasks:SetArchived)</button>
