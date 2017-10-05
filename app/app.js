@@ -1495,7 +1495,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/todo?menuclose?group",
             templateUrl: "/views/task/todo.html",
             data: {
-                pageTitle: 'Liste des taches'
+                pageTitle: 'Liste des tâches'
             },
             controller: "TaskController"
         })
@@ -1504,16 +1504,16 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/task/fiche.html",
             data: {
-                pageTitle: 'Tache'
+                pageTitle: 'Tâche'
             },
             controller: "TaskController"
         })
         .state('task.create', {
             parent: "task",
             url: "/create.html?societe",
-            templateUrl: "/views/task/create.html",
+            templateUrl: "/views/task/fiche.html",
             data: {
-                pageTitle: 'Creation d\'une tache'
+                pageTitle: 'Création d\'une tâche'
             },
             controller: "TaskController"
         })

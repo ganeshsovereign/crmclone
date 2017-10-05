@@ -853,5 +853,7 @@
     "BreakdownOfTurnover": "Répartition / CA",
     "Adjustment": "Ajustement",
     "AddComment": "Ajouter un commentaire",
-    "Stock": "Stock"
+    "Stock": "Stock",
+    "StrategicInformation": "Info stratégiques",
+    "DeletePostIt": "Supprimer la note ?"
 }

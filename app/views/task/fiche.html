@@ -1,7 +1,3 @@
-<h3 class="page-title">
-    <i class="fa fa-check-square-o font-blue-madison"></i> @(tasks:Task) {{task.name}} {{task.societe.name}}<small> @(From) {{task.createdAt| date:'@(main:date.format.java.dayhour)'}}</small> <span class="label" ng-class="task.status.css">{{task.status.name}}</span>
-</h3>
-
 <div class="page-bar">
     <ul class="page-breadcrumb">
         <li>
@@ -10,282 +6,160 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <a ui-sref="task.todo">@(tasks:TasksList)</a>
+            <a ui-sref="task.list">@(tasks:TasksList)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span>{{task.name}}</span>
+            <span>@(tasks:NewTask)</span>
         </li>
     </ul>
-    <div class="page-toolbar">
-        <div class="btn-group pull-right">
-            <button type="button" class="btn btn-fit-height grey-salt dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
-                @(Tools) <i class="fa fa-angle-down"></i>
-            </button>
-            <ul class="dropdown-menu pull-right" role="menu">
-                <!--<li>
-                    <a href="#" ng-show="(bill.Status == 'NEW' || bill.Status == 'DRAFT') && login.rights.bill.validate" data-ng-click="changeStatus('VALIDATE')">
-                        <i class="fa fa-thumbs-o-up"></i>
-                        @(Close)
-                    </a>
-                </li>-->
-                <li>
-                    <a href="#" ng-if="!task.archived && task.author.id == login._id" ng-click="setArchived(task)">
-                        <i class="fa fa-check-square"></i> @(tasks:SetArchived)
-                    </a>
-                </li>
-                <li class="divider">
-                </li>
-                <li>
-                    <a href="#" class="font-red" ng-show="login.rights.task.delete" confirmed-click="remove(task)" ng-confirm-click="Supprimer la tache ?" title="Supprimer la tache">
-                        <i class="fa fa-trash-o font-red"></i> @(Delete)
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
 </div>
 
 
 
+<form ng-submit="create()" role="form">
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+            <div class="portlet light portlet bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-check-square-o"></i>
+                        <span class="caption-subject dark bold uppercase"> @(tasks:NewTask)</span>
+                    </div>
+                    <div class="actions btn-set">
+                        <a ui-sref="task.list" class="btn red"><i class="fa fa-angle-left"></i>@(Cancel)</a>
+                        <button type="submit" ng-disabled='!task.usertodo' class="btn green"><i class="fa fa-check-circle"></i>@(Add)</button>
+                    </div>
+                </div>
+                <div class="portlet-body form">
+                    <div class="form-horizontal">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12">
+                                    <div class="form-group form-md-line-input has-success">
+                                        <input required type="text" ng-model="task.name" id="Title" class="form-control" autocomplete="on">
+                                        <label for="Title">@(Title)<span class="required">
+                                        * </span></label>
+                                    </div>
 
-<div class="row">
-    <div class="col-md-12">
-        <tabset class="tabbable-line tabbable-full-width">
-            <tab heading="@(tasks:Task)">
-                <div class="row">
-                    <div class="col-md-4 col-sm-12">
-                        <form editable-form name="editableTask" onaftersave="update()">
-                            <div class="portlet blue-madison box">
-                                <div class="portlet-title">
-                                    <div class="caption">
-                                        <i class="fa fa-check-square-o"></i>@(tasks:Task)
+                                    <div class="form-group form-md-line-input has-success">
+                                        <select class="form-control" id="Categories" required data-ng-model="eventType" ng-change="typeChange(eventType)" data-ng-options="c as c.label for c in dict.fk_actioncomm.values track by c.id"></select>
+                                        <label for="Categories">@(Categories)</label>
                                     </div>
-                                    <div class="actions">
-                                        <a href="javascript:;" ng-click="editableTask.$show()" ng-show="!editableTask.$visible && editable" class="btn btn-default btn-sm">
-                                            <i class="fa fa-pencil"></i> @(Edit) </a>
+
+                                    <div ng-if="login.multiEntities" class="form-group form-md-line-input has-success">
+                                        <select class="form-control" id="Entity" data-ng-model="task.entity" data-ng-options="s.id as s.name for s in entityListAll"></select>
+                                        <label for="Entity">@(companies:Entity)</label>
                                     </div>
-                                    <div class="actions" ng-show="editableTask.$visible">
-                                        <button type="submit" ng-disabled="editableTask.$waiting" class="btn btn-default btn-sm">@(Save)</button>
-                                        <button type="button" ng-disabled="editableTask.$waiting" ng-click="editableTask.$cancel();
-                                            findOne();" class="btn btn-default btn-sm">@(Cancel)</button>
+
+                                    <crm-id label="@(companies:CompanyName)" name="societeId" ng-model="task.supplier" entity="task.entity" url="/erp/api/societe/autocomplete" on-select="searchContact" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
+
+                                    <div class="form-group form-md-line-input has-success">
+                                        <div class="input-icon left">
+                                            <select class="form-control" id="Team" required ng-model="task.group" data-ng-options="c as c.name for c in groups track by c.id"></select>
+                                            <label for="Team">@(tasks:Team)</label>
+                                            <i class="fa fa-users"></i>
+                                        </div>
                                     </div>
+
+                                    <div class="form-group form-md-line-input has-success">
+                                        <div class="input-icon left">
+                                            <input type="text" id="affectedTo" data-ng-model="task.usertodo" typeahead="user as user.username for user in AutoComplete($viewValue, '/erp/api/user/name/autocomplete',10) | filter:{name:$viewValue}" class="form-control" autocomplete="off">
+                                            <label for="affectedTo">@(tasks:AffectedTo)</label>
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                    </div>
+
+                                    <div ng-if="contacts.length" class="form-group form-md-line-input has-success">
+                                        <div class="input-icon left">
+                                            <select class="form-control" id="contact" ng-model="task.contact" ng-options="contact as contact.name for contact in contacts"></select>
+                                            <label for="contact">@(Contact)</label>
+                                            <i class="fa fa-user"></i>
+                                        </div>
+                                    </div>
+
+                                    <div ng-if="leads.length" class="form-group form-md-line-input has-success">
+                                        <select class="form-control" id="lead" ng-model="task.lead" ng-options="lead as lead.name for lead in leads"></select>
+                                        <label for="Entity">@(leads:Lead)</label>
+                                    </div>
+
                                 </div>
-                                <div class="portlet-body">
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(Title) :</div>
-                                        <div class="col-md-8 value">
-                                            <span class="blue h5" editable-text="task.name">
-                                                {{task.name|| "Non defini"}}
-                                        </div>
-                                    </div>
-
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(Type) :</div>
-                                        <div class="col-md-8 value">
-                                            {{task._type.name}}
-                                        </div>
-                                    </div>
-
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(Group) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-select="task.group" onshow="loadGroup()" e-ng-options="group as group.name for group in groups track by group.id">
-
-                                                <small class="label label-sm label-default">{{task.group.name|| 'Aucun groupe'}}</small>
+                                <div class="col-md-6 col-sm-12">
+                                    <div ng-if="isEvent" class="form-group form-md-line-input">
+                                        <label class="col-md-3 control-label">@(tasks:DateActionStart)</label>
+                                        <div class="col-md-9">
+                                            <div class="col-md-7" style="margin-top: 34px;">
+                                                <p class="input-group">
+                                                    <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="task.datep" ng-change="task.datef = task.datep" is-open="opened[0]" datepicker-options="dateOptions" ng-required="true" close-text="Fermer" />
+                                                    <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default" ng-click="open($event, 0)"><i class="glyphicon glyphicon-calendar"></i></button>
                                             </span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <timepicker ng-model="task.datep" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:Company) :</div>
-                                        <div class="col-md-8 value">
-                                            <a href="#" ui-sref="societe.show({id:task.societe.id})" class="fa fa-institution" editable-text="task.societe" e-typeahead="societe as societe.name for societe in AutoComplete($viewValue, '/erp/api/societe/autocomplete', bill.entity) | filter:{name:$viewValue}"
-                                                e-typeahead-on-select="updateAddress($item)"> {{task.societe.name|| "Non defini"}} </a>
-                                        </div>
-                                    </div>
-
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:Contact) :</div>
-                                        <div class="col-md-8 value">
-                                            <span class="icon-user" editable-select="task.contact" onshow="loadContact(task.societe)" e-ng-options="contact as contact.name for contact in contacts track by contact.id">
-                                                {{task.contact.name|| "Non defini"}}
+                                    <div class="form-group form-md-line-input">
+                                        <label class="col-md-3 control-label" ng-if="isEvent">@(tasks:DateActionEnd)</label>
+                                        <label class="col-md-3 control-label" ng-if="!isEvent">@(tasks:DateEchAction)</label>
+                                        <div class="col-md-9">
+                                            <div class="col-md-7" style="margin-top: 34px;">
+                                                <p class="input-group">
+                                                    <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="task.datef" is-open="opened[1]" datepicker-options="dateOptions" ng-required="true" close-text="Fermer" />
+                                                    <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default" ng-click="open($event, 1)"><i class="glyphicon glyphicon-calendar"></i></button>
                                             </span>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <timepicker ng-model="task.datef" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+                                            </div>
+
                                         </div>
                                     </div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(companies:Entity) :</div>
-                                        <div class="col-md-8 value">
-                                            <small class="label label-sm label-default">{{task.entity}}</small>
-                                        </div>
+                                    <div class="form-group form-md-line-input has-success">
+                                        <select class="form-control" id="Status" data-ng-model="task.state" data-ng-options="s.id as s.name for s in entityListAll"></select>
+                                        <label for="Status">@(Status)</label>
                                     </div>
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(leads:Lead) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-select="task.lead" onshow="loadLead(task.societe)" e-ng-options="lead as lead.name for lead in leads track by lead.id">
-                                                {{task.lead.name|| 'Aucun'}}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row static-info" ng-if="isEvent">
-                                        <div class="col-md-4 name">@(tasks:DateActionStart) :</div>
-                                        <div class="col-md-8 value">
-                                            <span href="#" editable-bsdate="task.datep" e-datepicker-popup="dd/MM/yyyy">
-                                                {{ (task.datep | date:"dd/MM/yyyy") || 'empty'}}
-                                            </span>
-                                            <span editable-bstime="task.datep" e-show-meridian="false" e-minute-step="10">
-                                                {{ (task.datep | date:"HH:mm") || 'empty'}}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name" ng-if="task.type == 'isEvent'">@(tasks:DateActionEnd) :</div>
-                                        <div class="col-md-4 name" ng-if="task.type != 'isEvent'">@(tasks:DateEchAction) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-bsdate="task.datef" e-datepicker-popup="dd/MM/yyyy">
-                                                {{ (task.datef | date:"dd/MM/yyyy") || 'empty'}}
-                                            </span>
-                                            <span editable-bstime="task.datef" e-show-meridian="false" e-minute-step="10">
-                                                {{ (task.datef | date:"HH:mm") || 'empty'}}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(Status) :</div>
-                                        <div class="col-md-8 value">
-
-                                            <p class="input-group" ng-show="editable">
+                                    <!--<div class="form-group">
+                                        <label class="col-md-4 control-label">@(Status)</label>
+                                        <div class="col-md-8">
+                                            <p class="input-group">
                                                 <span class="input-group-btn btn-group-xs">
-                                                    <button ng-disabled="task.percentage == 0" type="button" class="btn btn-default" ng-click="updatePercent(task.percentage - 25 < 0 ? 0 : task.percentage - 25);"><i class="glyphicon glyphicon-minus"></i></button>
-                                                </span>
+                                            <button ng-disabled="task.percentage == 0" type="button" class="btn btn-default" ng-click="task.percentage = (task.percentage - 25 < 0 ? 0 : task.percentage - 25);"><i class="glyphicon glyphicon-minus"></i></button>
+                                        </span>
                                                 <progressbar animate="true" value="task.percentage" type="success"><b>{{task.percentage}}%</b></progressbar>
                                                 <span class="input-group-btn btn-group-xs">
-                                                <button ng-disabled="task.percentage == 100" type="button" class="btn btn-default" ng-click="updatePercent(task.percentage + 25 > 100 ? 100 : task.percentage + 25);"><i class="glyphicon glyphicon-plus"></i></button>
-                                            </span>
+                                        <button ng-disabled="task.percentage == 100" type="button" class="btn btn-default" ng-click="task.percentage = (task.percentage + 25 > 100 ? 100 : task.percentage + 25);"><i class="glyphicon glyphicon-plus"></i></button>
+                                    </span>
                                             </p>
-                                            <progressbar ng-hide="editable" animate="true" value="task.percentage" type="success"><b>{{task.percentage}}%</b></progressbar>
-
                                         </div>
-                                    </div>
+                                    </div>-->
 
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(tasks:CreatedBy) :</div>
-                                        <div class="col-md-8 value">
-                                            <span>{{task.author.name|| "Non defini"}}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(tasks:AffectedTo) :</div>
-                                        <div class="col-md-8 value">
-                                            <span editable-text="task.usertodo" e-typeahead="user as user.name for user in AutoComplete($viewValue,'/api/user/name/autocomplete',5) | filter:{name:$viewValue}">
-                                                {{task.usertodo.name|| "Non defini"}}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(DateCreation) :</div>
-                                        <div class="col-md-8 value">
-                                            {{task.createdAt|date:'dd/MM/yyyy HH:mm'}}
-                                        </div>
-                                    </div>
-
-                                    <div class="row static-info">
-                                        <div class="col-md-4 name">@(DateLastModification) :</div>
-                                        <div class="col-md-8 value">
-                                            {{task.updatedAt|date:'dd/MM/yyyy HH:mm'}}
+                                    <div class="portlet light bordered">
+                                        <div class="form-group form-md-line-input ">
+                                            <textarea class="form-control" data-ng-model="task.description" rows="8"></textarea>
+                                            <label for="description">@(Description)</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-
-                    <div class="col-md-8 col-sm-12">
-
-                        <form editable-form name="noteDesc" onaftersave="update()">
-                            <div class="portlet light">
-                                <div class="portlet-title">
-                                    <div class="caption font-green-sharp">
-                                        <i class="icon-speech"></i>
-                                        <span class="caption-subject">@(Description)</span>
-                                    </div>
-                                    <div class="actions">
-                                        <a href="javascript:;" ng-click="noteDesc.$show()" ng-show="!noteDesc.$visible && editable" class="btn btn-default btn-sm">
-                                            <i class="fa fa-pencil"></i> Éditer </a>
-                                    </div>
-                                    <div class="actions ng-hide" ng-show="noteDesc.$visible">
-                                        <button type="submit" ng-disabled="noteDesc.$waiting" class="btn btn-default btn-sm">Enregistrer</button>
-                                        <button type="button" ng-disabled="noteDesc.$waiting" ng-click="noteDesc.$cancel()" class="btn btn-default btn-sm">Annuler</button>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-offset-3 col-md-6 col-sm-6 col-xs-6">
+                                    <div class="uppercase profile-stat-title  col-md-6"> <i class="icon-calendar font-yellow-crusta "></i> {{user.creationDate|date:'dd/MM/yyyy HH:mm'}} </div>
+                                    <div class="uppercase profile-stat-title  col-md-6"> <i class="icon-refresh font-yellow-crusta "></i> {{user.updatedAt|date:'dd/MM/yyyy HH:mm'}} </div>
                                 </div>
-                                <div class="portlet-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="text-center" ng-if="task.type != 'isEvent'">@(tasks:DateEchAction) : {{task.datef| date:'dd/MM/yyyy'}}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="text-center"> @(tasks:AffectedTo) : {{task.usertodo.name|| "Non defini"}}</p>
-                                        </div>
-                                    </div>
-
-                                    <pre editable-textarea="task.description" e-name="note" e-rows="6" e-cols="400" e-required e-class="form-control"></pre>
-                                    <pre class="well" ng-show="!noteDesc.$visible">{{task.description}}</pre>
-
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
-
-                <div class="portlet light">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class="icon-bubble font-red-sunglo"></i>
-                            <span class="caption-subject font-red-sunglo bold uppercase">@(Comments)</span>
-                        </div>
-                        <!--<div class="actions">
-                            <div class="portlet-input input-inline">
-                                <div class="input-icon right">
-                                    <i class="icon-magnifier"></i>
-                                    <input type="text" class="form-control input-circle" placeholder="search..."> </div>
-                            </div>
-                        </div>-->
-                    </div>
-                    <div class="portlet-body" id="chats">
-                        <ul class="chats">
-                            <li ng-class="{in: !note.class, out:note.class}" ng-repeat="note in task.notes">
-                                <img class="avatar" alt="" src="/assets/admin/layout/img/avatar3.jpg">
-                                <div class="message">
-                                    <span class="arrow"> </span>
-                                    <a href="javascript:;" class="name"> {{note.author.name}} </a>
-                                    <span class="datetime"> {{ note.datec | date:'@(main:date.format.java.dayhour)' }} </span> <span class="font-green">{{note.percentage| percent:0}}</span>
-                                    <span class="body"> {{note.note}} </span>
-                                </div>
-                            </li>
-                        </ul>
-                        <div class="chat-form" ng-if="editable">
-                            <div class="input-cont">
-                                <input class="form-control" type="text" ng-model="newNote" ng-enter="addNote()" placeholder="Ajouter un commentaire ici..."> </div>
-                            <div class="btn-cont">
-                                <span class="arrow"> </span>
-                                <a href="" class="btn blue icn-only" ng-click="addNote()">
-                                    <i class="fa fa-check icon-white"></i>
-                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-
-            </tab>
-        </tabset>
+            </div>
+        </div>
     </div>
-</div>
+</form>

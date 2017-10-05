@@ -96,7 +96,7 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = false;
+        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         if ($rootScope.$stateParams.menuclose)
