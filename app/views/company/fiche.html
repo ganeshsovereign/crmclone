@@ -67,11 +67,8 @@
 <div class="row">
     <div class="col-md-12">
         <div class="profile-sidebar mt-element-ribbon portlet-fit bordered">
-            <div ng-hide="!societe._id" ng-if="societe.type == 'Person'" class="ribbon ribbon-right ribbon-clip ribbon-shadow uppercase ribbon-color-danger" ng-class="object.status.css ">
-                <div class="ribbon-sub ribbon-clip ribbon-right ribon-color-danger"></div> @(companies:Person)
-            </div>
-            <div ng-hide="!societe._id" ng-if="societe.type == 'Company'" class="ribbon ribbon-right ribbon-clip ribbon-shadow uppercase ribbon-color-success" ng-class="object.status.css ">
-                <div class="ribbon-sub ribbon-clip ribbon-right "></div> @(companies:Company)
+            <div ng-hide="!societe._id" class="ribbon ribbon-right ribbon-clip ribbon-shadow uppercase ribbon-color-success" ng-class="societe._status.css ">
+                <div class="ribbon-sub ribbon-clip ribbon-right "></div> {{societe._status.name}}
             </div>
             <div class="portlet light profile-sidebar-portlet">
                 <div class="row">
