@@ -83,8 +83,6 @@ Payment.prototype = {
         var TransactionModel = MODEL('transaction').Schema;
         var query;
 
-        console.log("toto");
-
         if (self.query.find)
             query = JSON.parse(self.query.find);
 

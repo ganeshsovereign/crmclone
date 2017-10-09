@@ -42,7 +42,7 @@ exports.install = function() {
     F.route('/erp/api/bill', object.read, ['authorize']);
     F.route('/erp/api/bill/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/bill/stats', object.stats, ['authorize']);
-    F.route('/erp/api/bill/pdf/', object.pdfAll, ['post', 'json', 'authorize']);
+    F.route('/erp/api/bill/pdf/', object.pdfAll, ['post', 'json', 'authorize', 60000]);
     F.route('/erp/api/bill/{id}', object.show, ['authorize']);
     F.route('/erp/api/bill', object.create, ['post', 'json', 'authorize'], 512);
     F.route('/erp/api/bill/{id}', object.clone, ['post', 'json', 'authorize'], 512);

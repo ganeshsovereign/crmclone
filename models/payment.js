@@ -502,8 +502,6 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                     // update bills
                     function(journal, wCb) {
 
-                        //console.log(journal, "toto");
-
                         //change status bills PAID
                         if (!body.bills)
                             return wCb(null, journal);
@@ -524,8 +522,6 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
 
                     },
                     function(journal, wCb) {
-
-                        //console.log("toto");
 
                         //change status bills PAID
                         if (!body.bills_supplier)

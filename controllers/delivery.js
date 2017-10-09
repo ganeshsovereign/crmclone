@@ -45,7 +45,7 @@ exports.install = function() {
     F.route('/erp/api/delivery/dt_supplier', object.readDT_supplier, ['post', 'authorize']);
     F.route('/erp/api/delivery/caFamily', object.caFamily, ['authorize']);
     F.route('/erp/api/delivery/statistic', object.statistic, ['post', 'json', 'authorize']);
-    F.route('/erp/api/delivery/pdf/', object.pdfAll, ['post', 'json', 'authorize']);
+    F.route('/erp/api/delivery/pdf/', object.pdfAll, ['post', 'json', 'authorize', 60000]);
     F.route('/erp/api/delivery/csv/', object.csvAll, ['post', 'json', 'authorize']);
     F.route('/erp/api/delivery/mvt/', object.csvMvt, ['post', 'json', 'authorize']);
     F.route('/erp/api/delivery/pdf/{deliveryId}', object.pdf, ['authorize']);
@@ -904,7 +904,7 @@ Object.prototype = {
                 if (!deliveries.length)
                     return self.json({ error: "No deliveries" });
 
-                async.forEach(deliveries, function(delivery, cb) {
+                async.forEachLimit(deliveries, 30, function(delivery, cb) {
                     DeliveryModel.getById(delivery._id, function(err, delivery) {
 
                         createDelivery(delivery, function(err, tex) {

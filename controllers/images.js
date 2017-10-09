@@ -231,7 +231,7 @@ var Images = function() {
                                 if (err)
                                     return wCb(err);
                                 wCb();
-                                console.log('toto', info);*/
+                                console.log(info);*/
                             ImagesModel.update({ imageSrc: name }, {
                                 $set: {
                                     imageSrc: name

@@ -830,12 +830,10 @@ MetronicApp.directive('crmNotes', [
                 scope.$watch('noteModel', function() {
                     //console.log(typeof scope.noteModel);
                     if (typeof scope.noteModel == "undefined") {
-                        //console.log("toto");
                         first = true;
                         scope.noteModel = {};
                     } else {
                         first = false;
-                        //console.log("tutu");
                     }
                 });
 

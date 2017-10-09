@@ -192,7 +192,7 @@ Object.prototype = {
         if (!filter || filter.length == 1)
             filterObject.Status = { $ne: "BILLED" };
 
-        console.log(filter);
+        //console.log(filter);
 
         filterObject.$and = [];
 

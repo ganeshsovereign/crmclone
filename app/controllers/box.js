@@ -72,7 +72,6 @@ MetronicApp.controller('BoxTemporaryController', ['$rootScope', '$scope', '$http
              }).success(function (data, status) {
              if (status == 200) {
              $scope.result = data;
-             //console.log("toto", data);
              
              $scope.countCourses = {};
              $rootScope.TotalCourses = {};

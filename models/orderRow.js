@@ -142,7 +142,7 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
                     }], function(err, availability) {
                         if (err)
                             return parallelCb(err);
-                        //console.log("tata");
+
                         //return console.log(availability);
                         parallelCb(null, availability);
                     });

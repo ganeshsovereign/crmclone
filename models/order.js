@@ -728,7 +728,6 @@ baseSchema.statics.getById = function(id, callback) {
             });
 
             //console.log(order.orderRows);
-
             return callback(err, order);
         });
 };
@@ -1527,7 +1526,7 @@ F.on('load', function() {
 
                                 allocatedOnRow = fullfillOnRow + availability;
 
-                                console.log("toto", availability);
+                                console.log(availability);
 
                                 if (!elem.product.info.productType.inventory) {
                                     //Not IN STOCK Managment
