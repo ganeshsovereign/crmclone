@@ -258,8 +258,8 @@ Object.prototype = {
             self.body.status.receivedById = self.user._id;
         }
 
-        if (self.body.Status == "VALIDATED" && !self.body.status.isInventory) {
-            //    isInventory = true;
+        if (self.body.Status == "VALIDATED" && !self.body.status.isInventory && self.body.status.isPacked) {
+            isInventory = true;
             //    self.body.Status = "DRAFT";
         }
 

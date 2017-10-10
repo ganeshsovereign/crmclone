@@ -1439,7 +1439,7 @@ F.on('load', function() {
                                 $match: {
                                     'orderRows.orderRowId': elem._id,
                                     _type: { $ne: 'stockReturns' },
-                                    "status.isShipped": { $ne: null }, // TODO Test !
+                                    "status.isPacked": { $ne: null }, // TODO Test !
                                     isremoved: { $ne: true }
                                 }
                             }, {

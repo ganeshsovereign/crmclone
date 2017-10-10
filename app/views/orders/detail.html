@@ -40,15 +40,15 @@
                                 <div class="portlet light bordered">
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <button ng-disabled="object.status.isShipped" ng-click="deliveryAction('VALIDATED','printed',object.ref)" class="btn" ng-class="{'default':!object.status.isPrinted, 'green' : object.status.isPrinted}"> @(orders:Printed) <i class="fa fa-print"></i></button>
+                                            <button ng-disabled="object.status.isPacked" ng-click="deliveryAction('VALIDATED','printed',object.ref)" class="btn" ng-class="{'default':!object.status.isPrinted, 'green' : object.status.isPrinted}"> @(orders:Printed) <i class="fa fa-print"></i></button>
                                             <span>{{object.status.isPrinted | date:'dd/MM/yyyy HH:mm'}}</span>
                                         </div>
                                         <div class="col-md-3">
-                                            <button ng-disabled="object.status.isShipped" class="btn" ng-click="deliveryAction('VALIDATED','picked',object.ref)" class="btn" ng-class="{'default':!object.status.isPicked, 'green' : object.status.isPicked}"> @(orders:Picked) <i class="fa fa-check-square"></i></button>
+                                            <button ng-disabled="object.status.isPacked" class="btn" ng-click="deliveryAction('VALIDATED','picked',object.ref)" class="btn" ng-class="{'default':!object.status.isPicked, 'green' : object.status.isPicked}"> @(orders:Picked) <i class="fa fa-check-square"></i></button>
                                             <span>{{object.status.isPicked | date:'dd/MM/yyyy HH:mm'}}</span>
                                         </div>
                                         <div class="col-md-3">
-                                            <button ng-disabled="object.status.isShipped" class="btn" ng-click="deliveryAction('VALIDATED','packed',object.ref)" class="btn" ng-class="{'default':!object.status.isPacked, 'green' : object.status.isPacked}"> @(orders:Packed) <i class="fa fa-archive"></i></button>
+                                            <button ng-disabled="object.status.isPacked" class="btn" ng-click="deliveryAction('VALIDATED','packed',object.ref)" class="btn" ng-class="{'default':!object.status.isPacked, 'green' : object.status.isPacked}"> @(orders:Packed) <i class="fa fa-archive"></i></button>
                                             <span>{{object.status.isPacked | date:'dd/MM/yyyy HH:mm'}}</span>
                                         </div>
                                         <div class="col-md-3">
