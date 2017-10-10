@@ -273,6 +273,132 @@ var orderCustomerSchema = new Schema({
         shippingStatus: { type: String, default: 'NOR', enum: ['NOR', 'NOT', 'NOA', 'ALL'] }
     }
 });
+
+orderCustomerSchema.methods.setAllocated = function(newRows, callback) {
+    if (!newRows || !newRows.length)
+        return callback();
+
+    const Availability = MODEL('productsAvailability').Schema;
+
+    async.eachSeries(newRows, function(elem, eachCb) {
+
+        var lastSum = elem.qty;
+        var isFilled;
+
+        //console.log(elem);
+
+        Availability.find({
+            warehouse: elem.warehouse,
+            product: elem.product
+        }, function(err, avalabilities) {
+            if (err)
+                return eachCb(err);
+
+            if (avalabilities.length) {
+                async.each(avalabilities, function(availability, cb) {
+                    var allocated = 0;
+                    var resultOnHand;
+                    var existedRow = {
+                        qty: 0
+                    };
+
+                    var allOnHand;
+
+                    availability.orderRows.forEach(function(orderRow) {
+                        if (orderRow.orderRowId.toString() === elem._id.toString())
+                            existedRow = orderRow;
+                        else
+                            allocated += orderRow.qty;
+                    });
+
+                    if (isFilled && elem.qty)
+                        return cb();
+
+
+                    allOnHand = availability.onHand + existedRow.qty;
+
+                    if (!allOnHand)
+                        return cb();
+
+
+                    resultOnHand = allOnHand - lastSum;
+
+                    if (resultOnHand < 0) {
+                        lastSum = Math.abs(resultOnHand);
+                        resultOnHand = 0;
+                    } else
+                        isFilled = true;
+
+
+                    if (existedRow.orderRowId) {
+
+                        if (!elem.qty) {
+                            Availability.update({ _id: availability._id }, {
+                                $inc: {
+                                    onHand: existedRow.qty
+                                },
+                                $pull: {
+                                    orderRows: { orderRowId: existedRow.orderRowId }
+                                }
+                            }, function(err) {
+                                if (err)
+                                    return cb(err);
+
+                                cb();
+                            });
+                        } else {
+                            Availability.update({
+                                _id: availability._id,
+                                'orderRows.orderRowId': existedRow.orderRowId
+                            }, {
+                                'orderRows.$.qty': resultOnHand ? lastSum : allOnHand,
+                                onHand: resultOnHand
+                            }, function(err) {
+                                if (err)
+                                    return cb(err);
+
+                                cb();
+                            });
+                        }
+
+                    } else if (elem.qty) {
+                        Availability.findByIdAndUpdate(availability._id, {
+                            $addToSet: {
+                                orderRows: {
+                                    orderRowId: elem._id,
+                                    qty: resultOnHand ? lastSum : allOnHand
+                                }
+                            },
+                            onHand: resultOnHand
+                        }, function(err) {
+                            if (err)
+                                return cb(err);
+
+                            cb();
+                        });
+                    } else {
+                        return cb();
+                    }
+
+                    /*setTimeout2('productInventory:' + availability.product.toString(), function() {
+                        F.functions.BusMQ.publish('inventory:update', null, { product: { _id: availability.product } });
+                    }, 5000);*/
+
+                }, function(err) {
+                    if (err)
+                        return eachCb(err);
+
+                    eachCb();
+                });
+            } else
+                eachCb();
+
+        });
+
+    }, callback);
+};
+
+
 var orderSupplierSchema = new Schema({
     offer: { type: ObjectId, ref: 'order' },
 
@@ -1526,7 +1652,7 @@ F.on('load', function() {
 
                                 allocatedOnRow = fullfillOnRow + availability;
 
-                                console.log(availability);
+                                //console.log(availability);
 
                                 if (!elem.product.info.productType.inventory) {
                                     //Not IN STOCK Managment
@@ -1539,7 +1665,7 @@ F.on('load', function() {
                                     return eahcCb();
                                 }
 
-                                console.log('allocated', allocatedOnRow);
+                                //console.log('allocated', allocatedOnRow);
 
                                 if (!allocatedOnRow) {
                                     // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
@@ -1636,11 +1762,13 @@ F.on('load', function() {
                                 //Force reload order
                                 //Force reload product
 
-                                F.functions.BusMQ.publish('notify:controllerAngular', null, {
-                                    route: 'order',
-                                    _id: el._id,
-                                    //message: "Commande " + el.ref + ' modifie.'
-                                });
+                                setTimeout2('notify:controllerAngular', function() {
+                                    F.functions.BusMQ.publish('notify:controllerAngular', null, {
+                                        route: 'order',
+                                        _id: el._id,
+                                        //message: "Commande " + el.ref + ' modifie.'
+                                    });
+                                }, 1000);
 
                                 wCb();
                             });

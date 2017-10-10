@@ -881,7 +881,7 @@ Object.prototype = {
     update: function(id) {
         var self = this;
         var OrderRowsModel = MODEL('orderRows').Schema;
-        var Availability = MODEL('productsAvailability').Schema;
+
         //console.log("update");
 
         if (self.query.quotation === 'true') {
@@ -1054,127 +1054,10 @@ Object.prototype = {
             function(order, newRows, wCb) {
 
                 //Allocated product order
-                if (order.Status !== "VALIDATED")
+                if (order.Status !== "VALIDATED" && order.Status !== 'PROCESSING')
                     return wCb(null, order);
 
-                async.eachSeries(newRows, function(elem, eachCb) {
-
-                    var lastSum = elem.qty;
-                    var isFilled;
-
-                    //console.log(elem);
-
-                    Availability.find({
-                        warehouse: elem.warehouse,
-                        product: elem.product
-                    }, function(err, avalabilities) {
-                        if (err)
-                            return eachCb(err);
-
-                        if (avalabilities.length) {
-                            async.each(avalabilities, function(availability, cb) {
-                                var allocated = 0;
-                                var resultOnHand;
-                                var existedRow = {
-                                    qty: 0
-                                };
-
-                                var allOnHand;
-
-                                availability.orderRows.forEach(function(orderRow) {
-                                    if (orderRow.orderRowId.toString() === elem._id.toString())
-                                        existedRow = orderRow;
-                                    else
-                                        allocated += orderRow.qty;
-                                });
-
-                                if (isFilled && elem.qty)
-                                    return cb();
-
-
-                                allOnHand = availability.onHand + existedRow.qty;
-
-                                if (!allOnHand)
-                                    return cb();
-
-
-                                resultOnHand = allOnHand - lastSum;
-
-                                if (resultOnHand < 0) {
-                                    lastSum = Math.abs(resultOnHand);
-                                    resultOnHand = 0;
-                                } else
-                                    isFilled = true;
-
-
-                                if (existedRow.orderRowId) {
-
-                                    if (!elem.qty) {
-                                        Availability.update({ _id: availability._id }, {
-                                            $inc: {
-                                                onHand: existedRow.qty
-                                            },
-                                            $pull: {
-                                                orderRows: { orderRowId: existedRow.orderRowId }
-                                            }
-                                        }, function(err) {
-                                            if (err)
-                                                return cb(err);
-
-                                            cb();
-                                        });
-                                    } else {
-                                        Availability.update({
-                                            _id: availability._id,
-                                            'orderRows.orderRowId': existedRow.orderRowId
-                                        }, {
-                                            'orderRows.$.qty': resultOnHand ? lastSum : allOnHand,
-                                            onHand: resultOnHand
-                                        }, function(err) {
-                                            if (err)
-                                                return cb(err);
-
-                                            cb();
-                                        });
-                                    }
-
-                                } else if (elem.qty) {
-                                    Availability.findByIdAndUpdate(availability._id, {
-                                        $addToSet: {
-                                            orderRows: {
-                                                orderRowId: elem._id,
-                                                qty: resultOnHand ? lastSum : allOnHand
-                                            }
-                                        },
-                                        onHand: resultOnHand
-                                    }, function(err) {
-                                        if (err)
-                                            return cb(err);
-
-                                        cb();
-                                    });
-                                } else {
-                                    cb();
-                                }
-
-
-
-                                setTimeout2('productInventory:' + availability.product.toString(), function() {
-                                    F.functions.BusMQ.publish('inventory:update', null, { product: { _id: availability.product } });
-                                }, 5000);
-
-                            }, function(err) {
-                                if (err)
-                                    return eachCb(err);
-
-                                eachCb();
-                            });
-                        } else
-                            eachCb();
-
-                    });
-
-                }, function(err) {
+                order.setAllocated(newRows, function(err) {
                     if (err)
                         return wCb(err);
 

@@ -1081,3 +1081,36 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
 
 exports.Schema = mongoose.model('productsAvailability', AvailabilitySchema);
 exports.name = "productsAvailability";
+
+F.on('load', function() {
+    F.functions.BusMQ.subscribe('inventory:update', function(data) {
+        // Refresh allocated order
+
+        //console.log(data);
+        console.log("Update emit inventory product", data);
+
+        if (!data.product || !data.product._id)
+            return;
+
+
+        const Order = MODEL('order').Schema.OrderCustomer;
+        const OrderRowsModel = MODEL('orderRows').Schema;
+
+        Order.find({ Status: { $in: ["VALIDATED", "PROCESSING"] }, isremoved: { $ne: true } },
+            function(err, orders) {
+                if (err || !orders)
+                    return;
+
+                async.forEach(orders, function(order, eCb) {
+                    OrderRowsModel.find({ order: order._id, product: data.product._id }, function(err, rows) {
+                        order.setAllocated(rows, function(err) {
+                            F.functions.BusMQ.publish('order:recalculateStatus', null, { order: { _id: order._id } });
+                        });
+                    });
+                }, function(err) {
+
+                });
+            });
+
+    });
+});
