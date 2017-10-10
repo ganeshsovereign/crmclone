@@ -916,7 +916,7 @@ F.on('load', function() {
                 }
 
                 function dropCollectionEnd(employees, aCb) {
-                    var collectionName = ['Societe', 'Societe.Version', 'users', 'Mysoc', 'PriceLevel'];
+                    var collectionName = ['Societe.Version', 'users', 'Mysoc', 'PriceLevel'];
 
                     _.each(collectionName, function(collection) {
                         mongoose.connection.db.dropCollection(collection, function(err, result) {
@@ -3874,6 +3874,80 @@ F.on('load', function() {
                             return console.log(err);
 
                         console.log("ToManage updated to {0}".format(0.519));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            },
+            // 0.520 : check delivery address Customers
+            function(conf, wCb) {
+                if (conf.version >= 0.520)
+                    return wCb(null, conf);
+
+                function checkDelivery(aCb) {
+                    console.log("checkShippingAddress");
+
+                    const Model = MODEL('Customers').Schema;
+
+                    mongoose.connection.db.collection('Societe', function(err, collection) {
+                        collection.find().toArray(function(err, societes) {
+                            if (err)
+                                return console.log(err);
+
+                            async.forEachLimit(societes, 100, function(societe, eCb) {
+                                Model.findById(societe._id, "shippingAddress deliveryAddressId", function(err, customer) {
+                                    if (customer.shippingAddress.length === societe.addresses.length)
+                                        return eCb();
+
+                                    for (var i = 1; i < societe.addresses.length; i++) {
+                                        customer.shippingAddress[i] = {
+                                            _id: societe.addresses[i]._id,
+                                            "Status": societe.addresses[i].Status,
+                                            "contact": {
+                                                "fax": "",
+                                                "mobile": "",
+                                                "phone": "",
+                                                "name": ""
+                                            },
+                                            "name": societe.addresses[i].name,
+                                            "country": "FR",
+                                            "zip": societe.addresses[i].zip,
+                                            "state": "",
+                                            "city": societe.addresses[i].town,
+                                            "street": societe.addresses[i].address
+                                        };
+                                    }
+
+                                    customer.deliveryAddressId = societe.deliveryAddressId;
+
+                                    Model.findByIdAndUpdate(societe._id, customer, eCb);
+                                });
+                            }, aCb);
+                        });
+                    });
+                }
+
+                function dropCollectionEnd(aCb) {
+                    var collectionName = ['Societe'];
+
+                    _.each(collectionName, function(collection) {
+                        mongoose.connection.db.dropCollection(collection, function(err, result) {
+                            console.log(result);
+                        });
+                    });
+
+                    aCb(null);
+                }
+
+                async.waterfall([checkDelivery, dropCollectionEnd], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.520 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.520));
                         wCb(err, doc.values);
                         //wCb(err, conf);
                     });
