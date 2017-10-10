@@ -28,6 +28,7 @@ var queuesList = [
     'inventory:update',
     'invoice:recalculateStatus',
     'order:recalculateStatus',
+    'order:sendDelivery',
     'product:update',
     'product:updateDirectCost',
     'product:updateAttributes',

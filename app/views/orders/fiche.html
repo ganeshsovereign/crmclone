@@ -202,6 +202,11 @@
                     </a>
                 </li>-->
                 <li>
+                    <a href="#" ng-show="object.Status == 'VALIDATED' && login.rights.delivery.validate && object.status.isShipped == null" data-ng-click="changeStatus('DRAFT')">
+                        <i class="fa fa-history"></i> @(ReOpen)
+                    </a>
+                </li>
+                <li>
                     <a href="#" data-ng-click="clone()">
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>

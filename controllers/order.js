@@ -1157,10 +1157,11 @@ Object.prototype = {
                                     cb();
                                 }
 
+
+
                                 setTimeout2('productInventory:' + availability.product.toString(), function() {
                                     F.functions.BusMQ.publish('inventory:update', null, { product: { _id: availability.product } });
                                 }, 5000);
-
 
                             }, function(err) {
                                 if (err)
@@ -1176,6 +1177,12 @@ Object.prototype = {
                 }, function(err) {
                     if (err)
                         return wCb(err);
+
+                    // Send to logistic and create first delivery
+                    setTimeout2('orderSendDelivery:' + order._id.toString(), function() {
+                        F.functions.BusMQ.publish('order:sendDelivery', self.user._id, { order: { _id: order._id } });
+                    }, 1000);
+
                     order.Status = "PROCESSING";
                     wCb(null, order);
                 });

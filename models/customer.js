@@ -31,6 +31,7 @@ var getUrl = function(url) {
 };
 
 var addressSchema = new Schema({
+    //_id needed for shipping
     street: { type: String, default: '' },
     city: { type: String, default: '' },
     state: { type: String, default: '' },

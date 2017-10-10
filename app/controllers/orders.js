@@ -491,8 +491,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             //return console.log($scope.object);
             $scope.update(function(object) {
                 // Automatic create the first delivery
-                if (object.Status == 'PROCESSING')
-                    $scope.createDelivery();
+                //if (object.Status == 'PROCESSING')
+                //    $scope.createDelivery();
+                $scope.findOne();
             });
         };
 
@@ -657,10 +658,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
             //create new order
             delivery.$save(function(response) {
-                $scope.object.Status = 'PROCESSING';
-                $scope.object.$update(function(object) {
-                    $rootScope.$state.go(go, { id: response._id });
-                });
+                //$scope.object.Status = 'PROCESSING';
+                //$scope.object.$update(function(object) {
+                $rootScope.$state.go(go, { id: response._id });
+                //});
             });
         };
 
@@ -702,10 +703,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
             //create new stockreturn
             stockReturn.$save(function(response) {
-                $scope.object.Status = 'PROCESSING';
-                $scope.object.$update(function(object) {
-                    $rootScope.$state.go(go, { id: response._id });
-                });
+                //$scope.object.Status = 'PROCESSING';
+                //$scope.object.$update(function(object) {
+                $rootScope.$state.go(go, { id: response._id });
+                //});
             });
         };
         /*var modalInstance = $modal.open({

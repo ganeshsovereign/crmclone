@@ -259,8 +259,8 @@ Object.prototype = {
         }
 
         if (self.body.Status == "VALIDATED" && !self.body.status.isInventory) {
-            isInventory = true;
-            self.body.Status = "DRAFT";
+            //    isInventory = true;
+            //    self.body.Status = "DRAFT";
         }
 
         if (!self.body.createdBy)

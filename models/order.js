@@ -1439,7 +1439,7 @@ F.on('load', function() {
                                 $match: {
                                     'orderRows.orderRowId': elem._id,
                                     _type: { $ne: 'stockReturns' },
-                                    //Status: { $ne: "DRAFT" },
+                                    Status: { $ne: "DRAFT" },
                                     isremoved: { $ne: true }
                                 }
                             }, {
@@ -1640,6 +1640,55 @@ F.on('load', function() {
         ], function(err) {
             if (err)
                 return console.log(err);
+        });
+    });
+
+    F.functions.BusMQ.subscribe('order:sendDelivery', function(data) {
+        //const OrderRows = MODEL('orderRows').Schema;
+        var ObjectId = MODULE('utils').ObjectId;
+
+        const OrderModel = exports.Schema.OrderCustomer;
+        const DeliveryModel = exports.Schema.GoodsOutNote;
+
+        //console.log(data);
+        console.log("Update emit order sendFirstDelivery", data);
+        OrderModel.findOne({ _id: data.order._id, isremoved: { $ne: true } }, function(err, order) {
+            if (err || !order)
+                return;
+
+            var object = order.toObject();
+
+            DeliveryModel.findOne({ order: order._id }, function(err, delivery) {
+                if (err || delivery)
+                    return; //already exist
+
+                var id = object._id;
+                object.order = object._id;
+                delete object._id;
+                delete object.Status;
+                delete object.latex;
+                delete object.datec;
+                delete object.datel;
+                delete object.createdAt;
+                delete object.updatedAt;
+                delete object.ref;
+                delete object.history;
+                delete object._type;
+                delete object.status;
+
+                delivery = new DeliveryModel(object);
+
+                delivery.editedBy = data.userId;
+                delivery.createdBy = data.userId;
+
+                //return console.log(delivery);
+                delivery.save(function(err, doc) {
+                    if (err)
+                        return console.log(err);
+
+                    F.functions.BusMQ.publish('order:recalculateStatus', data.userId, { order: { _id: order._id } });
+                });
+            });
         });
     });
 });
