@@ -1663,7 +1663,7 @@ F.on('load', function() {
 
         //console.log(data);
         console.log("Update emit order sendFirstDelivery", data);
-        OrderModel.findOne({ _id: data.order._id, isremoved: { $ne: true } }, function(err, order) {
+        OrderModel.findOne({ _id: data.order._id, isremoved: { $ne: true }, Status: "PROCESSING" }, function(err, order) {
             if (err || !order)
                 return;
 
