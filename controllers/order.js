@@ -1054,7 +1054,7 @@ Object.prototype = {
             function(order, newRows, wCb) {
 
                 //Allocated product order
-                if (order.Status !== "INVENTORY")
+                if (order.Status !== "VALIDATED")
                     return wCb(null, order);
 
                 async.eachSeries(newRows, function(elem, eachCb) {
@@ -1183,7 +1183,7 @@ Object.prototype = {
                         F.functions.BusMQ.publish('order:sendDelivery', self.user._id, { order: { _id: order._id } });
                     }, 1000);
 
-                    order.Status = "VALIDATED";
+                    //order.Status = "VALIDATED";
                     wCb(null, order);
                 });
             }
