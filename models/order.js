@@ -1439,7 +1439,7 @@ F.on('load', function() {
                                 $match: {
                                     'orderRows.orderRowId': elem._id,
                                     _type: { $ne: 'stockReturns' },
-                                    Status: { $ne: "DRAFT" },
+                                    "status.isShipped": { $ne: null }, // TODO Test !
                                     isremoved: { $ne: true }
                                 }
                             }, {
@@ -1484,7 +1484,7 @@ F.on('load', function() {
                                 if (!docs || !docs.length) {
 
                                     if (!stockStatus.fulfillStatus)
-                                        stockStatus.fulfillStatus = 'NOA';
+                                        stockStatus.fulfillStatus = 'NOT';
 
                                     stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') || (stockStatus.fulfillStatus === 'ALL') ? 'NOA' : 'NOT';
                                     stockStatus.shippingStatus = (stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL') ? 'NOA' : 'NOT';
@@ -1512,7 +1512,7 @@ F.on('load', function() {
                                         stockStatus.shippingStatus = ((stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL')) ? 'NOA' : 'NOT';
 
 
-                                    docs.forEach(function(el) {
+                                    docs.forEach(function(el) { // TODO used shippedDocs ???
                                         fullfillOnRow += el.qty;
                                     });
 
@@ -1531,11 +1531,15 @@ F.on('load', function() {
                                 if (!elem.product.info.productType.inventory) {
                                     //Not IN STOCK Managment
                                     // Allocated ALL
-                                    stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'NOT')) ? stockStatus.allocateStatus : 'ALL';
+
+                                    if (!stockStatus.allocateStatus)
+                                        stockStatus.allocateStatus = "ALL";
+                                    //else
+                                    //    stockStatus.allocateStatus = ((stockStatus.allocateStatus === 'NOA') || (stockStatus.allocateStatus === 'NOT')) ? stockStatus.allocateStatus : 'ALL';
                                     return eahcCb();
                                 }
 
-                                console.log(allocatedOnRow);
+                                console.log('allocated', allocatedOnRow);
 
                                 if (!allocatedOnRow) {
                                     // stockStatus.allocateStatus = stockStatus.allocateStatus || 'NOA';
@@ -1543,13 +1547,20 @@ F.on('load', function() {
                                     return eahcCb();
                                 }
 
-                                if (allocatedOnRow < elem.qty) {
+                                if (allocatedOnRow !== elem.qty) { // Before <
                                     stockStatus.allocateStatus = 'NOA';
                                     return eahcCb();
                                 }
 
-                                stockStatus.allocateStatus = stockStatus.allocateStatus && (stockStatus.allocateStatus === 'NOA') ? 'NOA' : 'ALL';
+
+                                if (!stockStatus.allocateStatus || stockStatus.allocateStatus == 'ALL') {
+                                    stockStatus.allocateStatus = 'ALL';
+                                    return eahcCb();
+                                }
+
+                                stockStatus.allocateStatus = 'NOA';
                                 return eahcCb();
+
                             });
                         });
 

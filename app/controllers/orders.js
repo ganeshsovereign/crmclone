@@ -1257,6 +1257,26 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 });
 
         };
+
+        $scope.createDeliveries = function() {
+            //return console.log($scope.grid);
+            var grid = [];
+
+            angular.forEach($scope.grid, function(value, key) {
+                Orders.order.get({
+                    Id: key
+                }, function(object) {
+                    if (!object)
+                        return;
+
+                    if (object.Status !== 'VALIDATED')
+                        return;
+
+                    object.Status = "PROCESSING";
+                    object.$update(function(response) {});
+                });
+            }, grid);
+        };
     }
 ]);
 

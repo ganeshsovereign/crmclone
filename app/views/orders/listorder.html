@@ -24,6 +24,11 @@
                                         @(PrintList) </a>
                     </li>
                     <li class="divider"></li>
+                    <li ng-show="login.rights.delivery.create">
+                        <a ng-show="login.rights.order.createDelivery" ng-confirm-click="@(orders:ConfirmProcessing)" confirmed-click="createDeliveries()">
+                            <i class="fa fa-external-link-square"></i> @(orders:Processing)
+                        </a>
+                    </li>
                     <li ng-show="login.rights.delivery.createBills">
                         <a ng-confirm-click="@(orders:ConfirmBillOrders)" ng-confirm-title="@(orders:BillOrders)" confirmed-click="createBills()">
                             <i class="fa fa-money"></i> @(orders:CreateBills)

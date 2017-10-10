@@ -1183,7 +1183,7 @@ Object.prototype = {
                         F.functions.BusMQ.publish('order:sendDelivery', self.user._id, { order: { _id: order._id } });
                     }, 1000);
 
-                    order.Status = "PROCESSING";
+                    order.Status = "VALIDATED";
                     wCb(null, order);
                 });
             }
