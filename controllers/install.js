@@ -4020,7 +4020,7 @@ F.on('load', function() {
 
                                 async.parallel([
                                     function(pCb) {
-                                        DeliveryModel.find({ order: order._id, isremoved: { $ne: true }, Status: "DRAFT" }, pCb);
+                                        DeliveryModel.find({ order: order._id, isremoved: { $ne: true } }, pCb);
                                     },
                                     function(pCb) {
                                         BillModel.find({ orders: order._id, isremoved: { $ne: true } }, pCb);

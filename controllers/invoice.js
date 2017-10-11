@@ -947,7 +947,7 @@ Object.prototype = {
             select: "supplier dater journalId ref"
         };
 
-        //console.log(options);
+        console.log(options);
 
         async.parallel({
             status: function(cb) {
@@ -1526,7 +1526,7 @@ Object.prototype = {
                 if (!bill)
                     return cb();
 
-                bill.Status = 'VALIDATED';
+                bill.Status = 'NOT_PAID';
                 BillModel.setInvoiceNumber(bill, function(err, invoice) {
                     if (err)
                         return cb(err);
