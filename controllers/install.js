@@ -3370,6 +3370,9 @@ F.on('load', function() {
                         if (err)
                             return console.log(err);
 
+                        if (!seq)
+                            return aCb();
+
                         seq = new SeqModel({
                             _id: "INVOICE_SUPPLIER",
                             seq: seq.seq
