@@ -1611,8 +1611,6 @@ F.on('load', function() {
 
                                 if (!docs || !docs.length) {
 
-                                    console.log("titi", elem.qty);
-
                                     if (!stockStatus.fulfillStatus)
                                         stockStatus.fulfillStatus = 'NOT';
 
@@ -1648,7 +1646,7 @@ F.on('load', function() {
                                             fullfillOnRow += el.qty;
                                     });
 
-                                    console.log("test", fullfillOnRow, elem.qty);
+                                    //console.log("test", fullfillOnRow, elem.qty);
 
                                     if (fullfillOnRow !== elem.qty)
                                         stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'NOT';

@@ -3997,6 +3997,64 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
+            },
+            // 0.522 : checkBill and checkDeliveries
+            function(conf, wCb) {
+                if (conf.version >= 0.522)
+                    return wCb(null, conf);
+
+                function checkOrder(aCb) {
+                    console.log("checkOrder");
+
+                    const Model = MODEL('order').Schema.OrderCustomer;
+                    const DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+                    const BillModel = MODEL('invoice').Schema;
+
+                    Model.find({ Status: { $in: ["PROCESSING", "BILLED"] }, datedl: { $gte: moment().subtract(1, 'day').toDate() }, isremoved: { $ne: true } })
+                        .exec(function(err, orders) {
+                            if (err || !orders)
+                                return;
+
+                            console.log(orders.length);
+                            async.forEach(orders, function(order, eCb) {
+
+                                async.parallel([
+                                    function(pCb) {
+                                        DeliveryModel.find({ order: order._id, isremoved: { $ne: true }, Status: "DRAFT" }, pCb);
+                                    },
+                                    function(pCb) {
+                                        BillModel.find({ orders: order._id, isremoved: { $ne: true } }, pCb);
+                                    }
+                                ], function(err, results) {
+                                    if (err)
+                                        return console.log(err);
+
+                                    if (!results[0].length || !results[1].length)
+                                        console.log("order : ", order._id);
+
+                                    eCb();
+                                });
+
+                            }, function(err) {
+                                aCb();
+                            });
+                        });
+
+                }
+
+                async.waterfall([checkOrder], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.521 }, { new: true }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.521));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
             }
         ],
         function(err, doc) {
