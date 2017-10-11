@@ -92,7 +92,7 @@
                                             </div>
 
                                             <div ng-if="object.order" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static" id="RefOrderShort"> <a ui-sref="order.show({id:object.order._id})">{{object.order.ref}}</a> </div>
+                                                <div class="form-control form-control-static" id="RefOrderShort"> <a ui-sref="order.show({id:object.order._id})">{{object.order.ref}}</a> (HT {{object.order.total_ht | currency}})</div>
                                                 <label for="RefOrderShort">@(orders:RefOrderShort)</label>
                                             </div>
 
@@ -102,7 +102,7 @@
                                             </div>
 
                                             <div ng-if="object.orders" ng-repeat="order in object.orders" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static" id="RefOrderShort"> <a ui-sref="order.show({id:order._id})">{{order.ref}}</a> </div>
+                                                <div class="form-control form-control-static" id="RefOrderShort"> <a ui-sref="order.show({id:order._id})">{{order.ref}}</a> (HT {{order.total_ht | currency}}) </div>
                                                 <label for="RefOrderShort">@(orders:RefOrderShort)</label>
                                             </div>
 
@@ -179,7 +179,7 @@
                                             </div>
 
                                             <div ng-if="object.invoices.length" class="form-group form-md-line-input">
-                                                <div ng-repeat="invoice in object.invoices" class="form-control form-control-static" id="invoice"> <a ui-sref="bill.show({id:invoice._id})">{{invoice.ref}}</a> <span class="label label-sm ribbon-color-default {{invoice._status.css}}"> {{invoice._status.name}}</span></div>
+                                                <div ng-repeat="invoice in object.invoices" class="form-control form-control-static" id="invoice"> <a ui-sref="bill.show({id:invoice._id})">{{invoice.ref}}</a> <span class="label label-sm ribbon-color-default {{invoice._status.css}}"> {{invoice._status.name}}</span> (HT {{invoice.total_ht | currency}})</div>
                                                 <label for="invoice">@(orders:Bills)</label>
                                             </div>
                                         </div>

@@ -1730,7 +1730,7 @@ Object.prototype = {
                     }], pCb);*/
                 },
                 invoices: function(pCb) {
-                    BillModel.find({ orders: id, isremoved: { $ne: true } }, "_id ref Status", pCb);
+                    BillModel.find({ orders: id, isremoved: { $ne: true } }, "_id ref Status total_ht", pCb);
                 }
             },
             function(err, result) {
