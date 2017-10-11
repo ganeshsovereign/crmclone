@@ -2087,7 +2087,7 @@ Object.prototype = {
         if (self.query.oldId)
             query = { oldId: self.query.oldId };
 
-        console.log(query);
+        //console.log(query);
 
         /* if (req.query.filter)
          SocieteModel.search({query: req.query.filter}, function (err, result) {
@@ -2387,12 +2387,12 @@ Object.prototype = {
     },
     show: function(id) {
         var self = this;
-        if (self.user.rights.societe.read)
-            return societe(id, function(societe) {
-                self.json(societe);
-            });
+        //if (self.user.rights.societe.read)
+        return societe(id, function(societe) {
+            self.json(societe);
+        });
 
-        return self.throw403(); // access forbidden
+        //return self.throw403(); // access forbidden
 
     },
     count: function() {
