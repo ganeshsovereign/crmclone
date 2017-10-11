@@ -2399,7 +2399,7 @@ Object.prototype = {
                     var new_data = {};
                     // Iterate over data
                     elems.map(function(obj) {
-                        //console.log(obj._id);
+                        console.log(obj._id);
 
                         // Create new object from old
                         if (!new_data[obj._id.product.info.SKU])
@@ -2420,7 +2420,7 @@ Object.prototype = {
                         else {
                             new_data[obj._id.product.info.SKU].month[obj._id.month].qty += obj.qty;
                             new_data[obj._id.product.info.SKU].month[obj._id.month].weight += obj.weight;
-                            new_data[obj._id.info.SKU].month[obj._id.month].total_ht += obj.total_ht;
+                            new_data[obj._id.product.info.SKU].month[obj._id.month].total_ht += obj.total_ht;
                         }
 
                         new_data[obj._id.product.info.SKU].month[obj._id.month] = {
