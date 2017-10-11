@@ -1607,7 +1607,11 @@ F.on('load', function() {
 
                                 availability = availability && availability.length ? availability[0].allocated : 0;
 
+
+
                                 if (!docs || !docs.length) {
+
+                                    console.log("titi", elem.qty);
 
                                     if (!stockStatus.fulfillStatus)
                                         stockStatus.fulfillStatus = 'NOT';
@@ -1626,7 +1630,8 @@ F.on('load', function() {
 
                                     if (shippedDocs.length) {
                                         shippedDocs.forEach(function(el) {
-                                            shippedOnRow += el.qty;
+                                            if (el.qty)
+                                                shippedOnRow += el.qty;
                                         });
 
                                         if (shippedOnRow !== elem.qty)
@@ -1638,14 +1643,19 @@ F.on('load', function() {
                                         stockStatus.shippingStatus = ((stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL')) ? 'NOA' : 'NOT';
 
 
-                                    docs.forEach(function(el) { // TODO used shippedDocs ???
-                                        fullfillOnRow += el.qty;
+                                    docs.forEach(function(el) {
+                                        if (el.qty)
+                                            fullfillOnRow += el.qty;
                                     });
 
+                                    console.log("test", fullfillOnRow, elem.qty);
+
                                     if (fullfillOnRow !== elem.qty)
-                                        stockStatus.fulfillStatus = 'NOA';
+                                        stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'NOT';
+                                    else if (!stockStatus.fulfillStatus || stockStatus.fulfillStatus == 'ALL')
+                                        stockStatus.fulfillStatus = 'ALL';
                                     else
-                                        stockStatus.fulfillStatus = (stockStatus.fulfillStatus === 'NOA') ? 'NOA' : 'ALL';
+                                        stockStatus.fulfillStatus = 'NOA';
 
                                     //console.log(stockStatus);
                                 }

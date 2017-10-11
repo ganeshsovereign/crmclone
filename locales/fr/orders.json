@@ -857,5 +857,8 @@
     "PurchaseRequests": "Demande d'achats",
     "ListOfPurchases": "Liste des demandes d'achats",
     "Purchases": "Achats",
-    "NewQuotation": "Nouvelle demande d'achats"
+    "NewQuotation": "Nouvelle demande d'achats",
+    "StatusAllocated": "Etat stock",
+    "StatusFilfull": "Etat préparation",
+    "StatusShipping": "Etat expédition"
 }

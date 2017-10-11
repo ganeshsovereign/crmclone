@@ -1053,19 +1053,19 @@ Object.prototype = {
                     });
             },
             function(order, newRows, wCb) {
+                // Send to logistic and create first delivery
+                if (order.Status == "PROCESSING")
+                    setTimeout2('orderSendDelivery:' + order._id.toString(), function() {
+                        F.functions.BusMQ.publish('order:sendDelivery', self.user._id, { order: { _id: order._id } });
+                    }, 1000);
 
                 //Allocated product order
-                if (order.Status !== "VALIDATED" && order.Status !== 'PROCESSING')
+                if (order.Status !== "VALIDATED")
                     return wCb(null, order);
 
                 order.setAllocated(newRows, function(err) {
                     if (err)
                         return wCb(err);
-
-                    // Send to logistic and create first delivery
-                    setTimeout2('orderSendDelivery:' + order._id.toString(), function() {
-                        F.functions.BusMQ.publish('order:sendDelivery', self.user._id, { order: { _id: order._id } });
-                    }, 1000);
 
                     //order.Status = "VALIDATED";
                     wCb(null, order);
@@ -1409,6 +1409,11 @@ Object.prototype = {
                 var OrderModel = MODEL('order').Schema.OrderCustomer;
         }
 
+
+        var DeliveryModel = MODEL('order').Schema.Order;
+
+        var BillModel = MODEL('invoice').Schema;
+
         var ObjectId = MODULE('utils').ObjectId;
 
         /*departmentSearcher = function(waterfallCallback) {
@@ -1619,7 +1624,8 @@ Object.prototype = {
                     OrderModel.getById(id, pCb);
                 },
                 deliveries: function(pCb) {
-                    OrderModel.aggregate([{
+                    DeliveryModel.find({ order: id, isremoved: { $ne: true }, _type: { $in: ['GoodsOutNote', 'GoodsInNote', 'stockReturns'] } }, "_id ref Status", pCb);
+                    /*DeliveryModel.aggregate([{
                         $match: { _id: ObjectId(id) }
                     }, {
                         $project: {
@@ -1721,7 +1727,10 @@ Object.prototype = {
                         $sort: {
                             'product.info.SKU': 1
                         }
-                    }], pCb);
+                    }], pCb);*/
+                },
+                invoices: function(pCb) {
+                    BillModel.find({ orders: id, isremoved: { $ne: true } }, "_id ref Status", pCb);
                 }
             },
             function(err, result) {
@@ -1733,6 +1742,9 @@ Object.prototype = {
 
                 //result.order = result.order.toObject();
                 result.order.deliveries = result.deliveries;
+                result.order.invoices = result.invoices;
+
+                //console.log(result.order);
 
                 self.json(result.order);
             });

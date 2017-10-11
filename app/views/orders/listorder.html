@@ -95,9 +95,31 @@
                                             <label>@(Status)</label>
                                             <select ng-model="search.Status.value[0]" id="Status" ng-options="s.id as s.label for s in dict.fk_order_status.values" class="form-control input-sm"></select>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label for="Status">@(RefCustomer)</label>
+                                            <input ng-model="search.ref_client.value" class="form-control input-sm" />
+                                        </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label>@(orders:StatusAllocated)</label>
+                                            <select ng-model="search.allocated.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>@(orders:StatusFilfull)</label>
+                                            <select ng-model="search.fulfill.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>@(orders:StatusShipping)</label>
+                                            <select ng-model="search.shipping.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+
 
 
                                     </div>
@@ -178,9 +200,9 @@
                             <th>@(RefCustomer)</th>
                             <th table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Commercial)"></th>
                             <th table-sort='datedl' ng-model="sort" name="@(DeliveryDate)"></th>
-                            <th>@(TotalHT)</th>
-                            <th>@(TotalTTC)</th>
-                            <th>@(AmountPaid)</th>
+                            <th table-sort='total_ht' ng-model="sort" name="@(TotalHT)"></th>
+                            <th table-sort='total_ttc' ng-model="sort" name="@(TotalTTC)"></th>
+                            <th table-sort='total_paid' ng-model="sort" name="@(AmountPaid)"></th>
                             <th>@(Status)</th>
                             <th></th>
                             <th>@(DateCreation)</th>

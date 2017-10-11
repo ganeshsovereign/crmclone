@@ -3964,7 +3964,7 @@ F.on('load', function() {
                     const Order = MODEL('order').Schema.OrderCustomer;
                     const OrderRowsModel = MODEL('orderRows').Schema;
 
-                    Order.find({ Status: { $in: ["VALIDATED", "PROCESSING"] }, isremoved: { $ne: true } },
+                    Order.find({ Status: { $in: ["VALIDATED"] }, isremoved: { $ne: true } },
                         function(err, orders) {
                             if (err || !orders)
                                 return;

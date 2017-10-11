@@ -982,6 +982,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
         $scope.dict = {};
         $scope.search = {
             ref: { key: 'ref', value: "", type: 'regex' },
+            ref_client: { key: 'ref_client', value: "", type: 'regex' },
             entity: {
                 key: 'entity',
                 value: [$rootScope.login.entity],
@@ -990,6 +991,9 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             supplier: { key: 'supplier', value: [], type: '' },
             salesPerson: { key: 'salesPerson', value: [], type: '' },
             Status: { key: 'Status', value: [], type: 'string' },
+            allocated: { key: 'status.allocateStatus', value: [], type: 'string' },
+            fulfill: { key: 'status.fulfillStatus', value: [], type: 'string' },
+            shipping: { key: 'status.shippingStatus', value: [], type: 'string' },
         };
 
         $scope.page = {
@@ -1044,7 +1048,13 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             $scope.opened = true;
         };
 
-        $scope.$dict = {};
+        $scope.$dict = {
+            status: [
+                { id: "ALL", name: "Complet" },
+                { id: "NOA", name: "Partiel" },
+                { id: "NOT", name: "Aucun" },
+            ]
+        };
 
         $rootScope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')

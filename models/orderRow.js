@@ -156,7 +156,7 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
                             'orderRows.orderRowId': elem._id,
                             _type: forSales ? 'GoodsOutNote' : 'GoodsInNote',
                             isremoved: { $ne: true },
-                            'status.isInventory': { $ne: null },
+                            'status.isPacked': { $ne: null },
                             archived: { $ne: true }
                         }
                     }, {
@@ -293,7 +293,8 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
 
                     if (goodsNotes && goodsNotes.length) {
                         goodsNotes.forEach(function(el) {
-                            elem.fulfilled += el.qty;
+                            if (el.qty)
+                                elem.fulfilled += el.qty;
                         });
                     }
                     populateDocs.push(elem);
