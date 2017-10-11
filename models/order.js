@@ -380,9 +380,9 @@ orderCustomerSchema.methods.setAllocated = function(newRows, callback) {
                         return cb();
                     }
 
-                    /*setTimeout2('productInventory:' + availability.product.toString(), function() {
+                    setTimeout2('productInventory:' + availability.product.toString(), function() {
                         F.functions.BusMQ.publish('inventory:update', null, { product: { _id: availability.product } });
-                    }, 5000);*/
+                    }, 5000);
 
                 }, function(err) {
                     if (err)
@@ -1768,7 +1768,7 @@ F.on('load', function() {
                                         _id: el._id,
                                         //message: "Commande " + el.ref + ' modifie.'
                                     });
-                                }, 1000);
+                                }, 500);
 
                                 wCb();
                             });

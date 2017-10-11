@@ -202,10 +202,11 @@ Object.prototype = {
 
         //return console.log(filterObject);
 
-        if (self.query.sort)
+        if (self.query.sort) {
             sort = JSON.parse(self.query.sort);
-        else
-            sort = { datedl: -1, ID: -1 };
+            sort._id = 1;
+        } else
+            sort = { datedl: -1, _id: 1 };
 
         if (contentType !== 'order' && contentType !== 'integrationUnlinkedOrders') {
             Order = MODEL('order').Schema.OrderSupplier;

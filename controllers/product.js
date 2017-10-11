@@ -5785,6 +5785,31 @@ StockCorrection.prototype = {
                 self.json(doc);
             }
 
+            function allocateOrders(productId) {
+                // Refresh allocate all order Customer waiting
+                const Order = MODEL('order').Schema.OrderCustomer;
+                const OrderRowsModel = MODEL('orderRows').Schema;
+
+                Order.find({ Status: { $in: ["VALIDATED", "PROCESSING"] }, isremoved: { $ne: true } },
+                    function(err, orders) {
+                        if (err || !orders)
+                            return eachCb(err);
+
+                        async.forEach(orders, function(order, eCb) {
+                            OrderRowsModel.find({ order: order._id, product: productId }, function(err, rows) {
+                                order.setAllocated(rows, function(err) {
+                                    setTimeout2('orderRecalculateStatus:' + order._id.toString(), function() {
+                                        F.functions.BusMQ.publish('order:recalculateStatus', null, { order: { _id: order._id } });
+                                    }, 5000);
+                                });
+                            });
+                        }, function(err) {
+                            if (err)
+                                console.log(err);
+                        });
+                    });
+            }
+
             async.each(body.orderRows, function(elem, eachCb) {
                 var options;
 
@@ -5796,7 +5821,7 @@ StockCorrection.prototype = {
 
                     Availability.find(options, function(err, docs) {
 
-                        var lastQuantity = elem.qty;
+                        var lastqty = elem.qty;
 
                         if (err)
                             return eachCb(err);
@@ -5807,13 +5832,13 @@ StockCorrection.prototype = {
                             async.each(docs, function(doc, eachChildCb) {
                                 var optionsEach;
 
-                                if (lastQuantity > 0)
+                                if (lastqty > 0)
                                     return eachChildCb();
 
 
-                                lastQuantity += doc.onHand;
+                                lastqty += doc.onHand;
 
-                                if ((!lastQuantity || lastQuantity < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
+                                if ((!lastqty || lastqty < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
                                     optionsEach = {
                                         query: {
                                             _id: doc._id
@@ -5830,7 +5855,7 @@ StockCorrection.prototype = {
                                 } else {
                                     optionsEach = {
                                         body: {
-                                            onHand: lastQuantity
+                                            onHand: lastqty
                                         },
 
                                         query: {
@@ -5850,6 +5875,8 @@ StockCorrection.prototype = {
                                     return eachCb(err);
 
                                 eachCb();
+                                // Refresh allocate all order Customer waiting
+                                allocateOrders(elem.product);
                                 F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
                             });
                         } else
@@ -5871,6 +5898,8 @@ StockCorrection.prototype = {
                             return eachCb(err);
 
                         eachCb();
+                        // Refresh allocate all order Customer waiting
+                        allocateOrders(elem.product);
                         F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
                     });
                 }
@@ -5879,16 +5908,16 @@ StockCorrection.prototype = {
 
         });
     },
-    allocate: function() {
+    /*allocate: function() {
         var self = this;
         var body = self.body;
         var Availability = MODEL('productsAvailability').Schema;
-        var GoodsOutNote = MODEL('orders').Schema.GoodsOutNote;
+        var GoodsOutNote = MODEL('order').Schema.GoodsOutNote;
         var orderId = body.order;
 
         async.each(body.data, function(elem, eachCb) {
 
-            var lastSum = elem.quantity;
+            var lastSum = elem.qty;
             var isFilled;
 
             Availability.find({
@@ -5903,7 +5932,7 @@ StockCorrection.prototype = {
                         var allocated = 0;
                         var resultOnHand;
                         var existedRow = {
-                            quantity: 0
+                            qty: 0
                         };
 
                         var allOnHand;
@@ -5912,13 +5941,13 @@ StockCorrection.prototype = {
                             if (orderRow.orderRowId.toJSON() === elem.orderRowId)
                                 existedRow = orderRow;
                             else
-                                allocated += orderRow.quantity;
+                                allocated += orderRow.qty;
                         });
 
-                        if (isFilled && elem.quantity)
+                        if (isFilled && elem.qty)
                             return cb();
 
-                        allOnHand = availability.onHand + existedRow.quantity;
+                        allOnHand = availability.onHand + existedRow.qty;
 
                         if (!allOnHand)
                             return cb();
@@ -5933,10 +5962,10 @@ StockCorrection.prototype = {
 
                         if (existedRow.orderRowId) {
 
-                            if (!elem.quantity)
+                            if (!elem.qty)
                                 Availability.update({ _id: availability._id }, {
                                     $inc: {
-                                        onHand: existedRow.quantity
+                                        onHand: existedRow.qty
                                     },
                                     $pull: {
                                         orderRows: { orderRowId: existedRow.orderRowId }
@@ -5952,7 +5981,7 @@ StockCorrection.prototype = {
                                     _id: availability._id,
                                     'orderRows.orderRowId': existedRow.orderRowId
                                 }, {
-                                    'orderRows.$.quantity': resultOnHand ? lastSum : allOnHand,
+                                    'orderRows.$.qty': resultOnHand ? lastSum : allOnHand,
                                     onHand: resultOnHand
                                 }, function(err) {
                                     if (err) {
@@ -5962,12 +5991,12 @@ StockCorrection.prototype = {
                                 });
 
 
-                        } else if (elem.quantity) {
+                        } else if (elem.qty) {
                             Availability.findByIdAndUpdate(availability._id, {
                                 $addToSet: {
                                     orderRows: {
                                         orderRowId: elem.orderRowId,
-                                        quantity: resultOnHand ? lastSum : allOnHand
+                                        qty: resultOnHand ? lastSum : allOnHand
                                     }
                                 },
                                 onHand: resultOnHand
@@ -5999,7 +6028,7 @@ StockCorrection.prototype = {
             self.json({ success: 'Products updated' });
         });
 
-    },
+    },*/
 
     getCorrections: function() {
         var self = this;
@@ -6397,7 +6426,7 @@ StockInventory.prototype = {
                                 id: existedAvailability._id,
                                 body: {
                                     $inc: {
-                                        onHand: elem.quantity
+                                        onHand: elem.qty
                                     }
                                 }
                             }, callback);
@@ -6408,7 +6437,7 @@ StockInventory.prototype = {
                                     location: elem.location,
                                     goodsInNote: doc.goodsInNote,
                                     warehouse: doc.warehouse,
-                                    onHand: elem.quantity,
+                                    onHand: elem.qty,
                                     cost: doc.cost,
                                     isJob: false
                                 }
@@ -6496,7 +6525,7 @@ StockReturn.prototype = {
 
                     Availability.find(options, function(err, docs) {
 
-                        var lastQuantity = elem.qty;
+                        var lastqty = elem.qty;
 
                         if (err)
                             return eachCb(err);
@@ -6507,13 +6536,13 @@ StockReturn.prototype = {
                             async.each(docs, function(doc, eachChildCb) {
                                 var optionsEach;
 
-                                if (lastQuantity > 0)
+                                if (lastqty > 0)
                                     return eachChildCb();
 
 
-                                lastQuantity += doc.onHand;
+                                lastqty += doc.onHand;
 
-                                if ((!lastQuantity || lastQuantity < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
+                                if ((!lastqty || lastqty < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
                                     optionsEach = {
                                         query: {
                                             _id: doc._id
@@ -6530,7 +6559,7 @@ StockReturn.prototype = {
                                 } else {
                                     optionsEach = {
                                         body: {
-                                            onHand: lastQuantity
+                                            onHand: lastqty
                                         },
 
                                         query: {
@@ -6664,7 +6693,7 @@ StockReturn.prototype = {
 
                                 Availability.find(options, function(err, docs) {
 
-                                    var lastQuantity = elem.qty;
+                                    var lastqty = elem.qty;
 
                                     if (err)
                                         return eachCb(err);
@@ -6675,13 +6704,13 @@ StockReturn.prototype = {
                                         async.each(docs, function(doc, eachChildCb) {
                                             var optionsEach;
 
-                                            if (lastQuantity > 0)
+                                            if (lastqty > 0)
                                                 return eachChildCb();
 
 
-                                            lastQuantity += doc.onHand;
+                                            lastqty += doc.onHand;
 
-                                            if ((!lastQuantity || lastQuantity < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
+                                            if ((!lastqty || lastqty < 0) && !doc.orderRows.length && !doc.goodsOutNotes.length) {
                                                 optionsEach = {
                                                     query: {
                                                         _id: doc._id
@@ -6698,7 +6727,7 @@ StockReturn.prototype = {
                                             } else {
                                                 optionsEach = {
                                                     body: {
-                                                        onHand: lastQuantity
+                                                        onHand: lastqty
                                                     },
 
                                                     query: {

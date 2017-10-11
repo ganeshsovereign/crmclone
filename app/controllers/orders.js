@@ -972,8 +972,8 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
     }
 ]);
 
-MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'Orders',
-    function($scope, $rootScope, $http, $modal, $filter, $timeout, Orders) {
+MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
+    function($scope, $rootScope, $http, $modal, $filter, $timeout, superCache, Orders) {
 
         //var grid = new Datatable();
         var user = $rootScope.login;
@@ -1000,6 +1000,12 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
         $scope.sort = { 'datedl': -1 };
 
+        if (typeof superCache.get("OrderListController") !== "undefined") {
+            $scope.page = superCache.get("OrderListController").page;
+            $scope.search = superCache.get("OrderListController").search;
+            $scope.sort = superCache.get("OrderListController").sort;
+        }
+
         /*$scope.loadAutocomplete = function(query, url) {
             return $http({
                 method: 'POST',
@@ -1018,6 +1024,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
         };*/
 
         $scope.resetFilter = function() {
+            superCache.removeAll();
             $rootScope.$state.reload();
         }
 
@@ -1202,6 +1209,12 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             });
         }*/
         $scope.find = function() {
+
+            superCache.put("OrderListController", {
+                sort: $scope.sort,
+                search: $scope.search,
+                page: $scope.page
+            });
 
             Metronic.blockUI({
                 target: '.waiting',
