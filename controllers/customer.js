@@ -168,7 +168,7 @@ exports.install = function() {
 
     // list for autocomplete
     F.route('/erp/api/societe/autocomplete', function() {
-        //console.dir(req.body.filter);
+        //console.dir(this.body);
         var SocieteModel = MODEL('Customers').Schema;
         var self = this;
 

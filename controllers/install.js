@@ -3956,48 +3956,48 @@ F.on('load', function() {
                     });
                 });
             },
-            // 0.521 : check delivery address Customers
-            /*function(conf, wCb) {
+            // 0.521 : contact refresh link
+            function(conf, wCb) {
                 if (conf.version >= 0.521)
                     return wCb(null, conf);
 
-                function checkDelivery(aCb) {
-                    console.log("checkShippingAddress");
+                function checkContact(aCb) {
+                    console.log("checkContact");
 
-                    const Order = MODEL('order').Schema.OrderCustomer;
-                    const OrderRowsModel = MODEL('orderRows').Schema;
+                    const CustomerModel = MODEL('Customers').Schema;
 
-                    Order.find({ Status: { $in: ["VALIDATED"] }, isremoved: { $ne: true } },
-                        function(err, orders) {
-                            if (err || !orders)
+                    CustomerModel.find({ type: "Person", company: { $ne: null } })
+                        .populate("company", "name")
+                        .exec(function(err, contacts) {
+                            if (err || !contacts)
                                 return;
 
-                            async.forEach(orders, function(order, eCb) {
-                                OrderRowsModel.find({ order: order._id, product: "5853f7cb968ef84857abd6ad" }, function(err, rows) {
-                                    order.setAllocated(rows, function(err) {
-                                        F.functions.BusMQ.publish('order:recalculateStatus', null, { order: { _id: order._id } });
-                                    });
-                                });
-                            }, function(err) {
+                            async.forEach(contacts, function(contact, eCb) {
+                                if (!contact.company)
+                                    contact.update({ $set: { company: null } }, function(err, doc) {});
+                                eCb();
 
+                            }, function(err) {
+                                aCb();
                             });
                         });
-                    aCb();
+
                 }
 
-                async.waterfall([checkDelivery], function(err) {
+                async.waterfall([checkContact], function(err) {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', { 'values.version': 0.520 }, { new: true }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.521 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
-                        console.log("ToManage updated to {0}".format(0.520));
+                        console.log("ToManage updated to {0}".format(0.521));
                         wCb(err, doc.values);
                         //wCb(err, conf);
                     });
-                });*/
+                });
+            }
         ],
         function(err, doc) {
             console.log("End update");

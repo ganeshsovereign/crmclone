@@ -1629,18 +1629,17 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
 
     $scope.etat = { id: "ST_ENABLE", name: "Actif" };
     // Init
-    $scope.$on('$includeContentLoaded', function() {
-
-        $http({
-            method: 'GET',
-            url: '/erp/api/dict',
-            params: {
-                dictName: ["fk_job", "fk_hobbies", "fk_civilite", "fk_user_status"]
-            }
-        }).success(function(data, status) {
-            $scope.dict = data;
-        });
+    $http({
+        method: 'GET',
+        url: '/erp/api/dict',
+        params: {
+            dictName: ["fk_job", "fk_hobbies", "fk_civilite", "fk_user_status"]
+        }
+    }).success(function(data, status) {
+        $scope.dict = data;
+        console.log(data);
     });
+
     $scope.$on('$viewContentLoaded', function() {
         // initialize core components
         Metronic.initAjax();
@@ -1666,16 +1665,6 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
                 $scope.contact.town = societe.town;
 
             });
-
-        $http({
-            method: 'GET',
-            url: '/erp/api/dict',
-            params: {
-                dictName: ["fk_job", "fk_hobbies", "fk_civilite", "fk_user_status"]
-            }
-        }).success(function(data, status) {
-            $scope.dict = data;
-        });
 
         if ($rootScope.$stateParams.Status) {
             $scope.status_id = $rootScope.$stateParams.Status;
@@ -1896,11 +1885,13 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
     var ModalContactCtrl = function($scope, $modalInstance, options) {
         $scope.create = false;
         $scope.dict = options.dict;
+        console.log(options.dict);
 
         $scope.contact = {
             type: 'Person',
             salesPurchases: {
-                isActive: true
+                isActive: true,
+                isCutomer: false
             },
             company: options.supplier._id,
             name: {},
@@ -1925,15 +1916,6 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
             $scope.create = true;
         }
 
-        $scope.delete = function(contact) {
-            $http({
-                method: 'DELETE',
-                url: '/erp/api/societe/' + contact._id
-            }).success(function(data, status) {
-                $scope.contact.splice(index, 1);
-            });
-        };
-
         $scope.ok = function() {
             var contact = new Societes($scope.contact);
             contact.$save(function(response) {
@@ -1949,7 +1931,7 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
     $scope.addContact = function() {
 
         var modalInstance = $modal.open({
-            templateUrl: 'addContact.html',
+            templateUrl: '/templates/contact/modal/addContact.html',
             controller: ModalContactCtrl,
             //windowClass: "steps",
             resolve: {
@@ -1965,6 +1947,17 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
         modalInstance.result.then(function(contact) {
             $scope.find($scope.societe._id);
         }, function() {});
+    };
+
+    $scope.delete = function(contactId) {
+        Societes.get({
+            Id: contactId
+        }, function(contact) {
+            contact.company = null;
+            contact.$update(function(response) {
+                $scope.find($scope.societe._id);
+            });
+        });
     };
 
 

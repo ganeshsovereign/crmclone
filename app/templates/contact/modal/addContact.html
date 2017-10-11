@@ -94,6 +94,7 @@
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn blue" type="button" ng-hide="" ng-click="createNewContact()">@(Create) @(companies:Contact)<i class="fa fa-check"></i></button>
+    <button class="btn blue" type="button" ng-hide="create" ng-click="createNewContact()">@(Create) @(companies:Contact)<i class="fa fa-check"></i></button>
+    <button class="btn blue" type="button" ng-show="create" ng-click="ok()">@(Create) @(companies:Contact)<i class="fa fa-check"></i></button>
     <button class="btn red" type="button" ng-click="cancel()">@(Cancel)<i class="fa fa-times"></i></button>
 </div>
