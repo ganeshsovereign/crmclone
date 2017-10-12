@@ -335,8 +335,10 @@ billSchema.statics.setInvoiceNumber = function(invoice, callback) {
     var SeqModel = MODEL('Sequence').Schema;
     var EntityModel = MODEL('entity').Schema;
 
-    if (!invoice || invoice.Status == 'DRAFT' || invoice.total_ttc === 0)
+    if (!invoice || invoice.Status == 'DRAFT' || invoice.total_ttc === 0) {
+        invoice.Status = 'DRAFT';
         return callback(null, invoice);
+    }
 
     if (invoice.ref.substr(0, 4) !== "PROV")
         return callback(null, invoice);
