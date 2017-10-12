@@ -2243,7 +2243,7 @@ Object.prototype = {
         });
 
         OrderModel.aggregate([
-                { "$match": { Status: "PROCESSING", _id: { $in: list } } },
+                { "$match": { Status: "PROCESSING", _id: { $in: list }, total_ttc: { $ne: 0 } } },
                 {
                     "$project": {
                         _id: 1,
