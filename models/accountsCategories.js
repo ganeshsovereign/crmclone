@@ -7,8 +7,7 @@ var mongoose = require('mongoose'),
     timestamps = require('mongoose-timestamp'),
     _ = require('lodash'),
     async = require('async'),
-    tree = require('mongoose-path-tree'),
-    streamWorker = require('mongoose-path-tree/node_modules/stream-worker'),
+    tree = require('mongoose-mpath'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId;
 

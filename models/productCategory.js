@@ -7,8 +7,7 @@ var mongoose = require('mongoose'),
     timestamps = require('mongoose-timestamp'),
     _ = require('lodash'),
     async = require('async'),
-    tree = require('mongoose-path-tree'),
-    streamWorker = require('mongoose-path-tree/node_modules/stream-worker'),
+    tree = require('mongoose-mpath'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -228,17 +227,17 @@ CategorySchema.statics.updateFullName = function(id, cb) {
                     async.each(docs, function(doc, done) {
                         var newUrl = category.langs[0].linker + doc.langs[0].linker.substr(previousUrl.length);
                         Model.findByIdAndUpdate(doc._id, { $set: { 'langs.0.linker': newUrl } }, done);
-                        F.functions.BusMQ.publish('product:updateCategory', null, { productCategory: doc });
+                        F.emit('product:updateCategory', { userId: null, productCategory: { _id: doc._id.toString() } });
                     }, function() {
                         Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
-                        F.functions.BusMQ.publish('product:updateCategory', null, { productCategory: { _id: id } });
+                        F.emit('product:updateCategory', { userId: null, productCategory: { _id: id.toString() } });
                     });
                 });
 
             if (!err)
                 Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
 
-            F.functions.BusMQ.publish('product:updateCategory', null, { productCategory: { _id: id } });
+            F.emit('product:updateCategory', { userId: null, productCategory: { _id: id.toString() } });
 
         });
 };

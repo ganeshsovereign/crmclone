@@ -869,7 +869,7 @@ Object.prototype = {
                             });
                         }
 
-                        F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: order._id } });
+                        F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: order._id.toString() } });
 
                         self.json(order);
                     });
@@ -1056,7 +1056,7 @@ Object.prototype = {
                 // Send to logistic and create first delivery
                 if (order.Status == "PROCESSING")
                     setTimeout2('orderSendDelivery:' + order._id.toString(), function() {
-                        F.functions.BusMQ.publish('order:sendDelivery', self.user._id, { order: { _id: order._id } });
+                        F.emit('order:sendDelivery', { userId: self.user._id.toString(), order: { _id: order._id.toString() } });
                     }, 1000);
 
                 //Allocated product order
@@ -1095,7 +1095,7 @@ Object.prototype = {
                 }
 
                 if (rows.length)
-                    F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: doc._id } });
+                    F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: doc._id.toString() } });
 
                 //console.log(doc);
                 doc = doc.toObject();

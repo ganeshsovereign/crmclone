@@ -2516,8 +2516,9 @@ Object.prototype = {
 
             // Emit to refresh priceList from parent
             setTimeout2('customer:update_' + societe._id.toString(), function() {
-                F.functions.BusMQ.publish('customer:update', (self.user ? self.user._id : null), {
-                    customer: societe
+                F.emit('customer:update', {
+                    userId: (self.user ? self.user._id.toString() : null),
+                    customer: societe.toJSON()
                 });
             }, 500);
 

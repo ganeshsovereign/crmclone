@@ -2390,7 +2390,7 @@ Object.prototype = {
                 var options = {
                     path: '_id.product',
                     model: 'product',
-                    select: "info weight pack",
+                    select: "info weight pack packing",
                     populate: { path: 'pack.id', select: "info unit weight" }
                 };
                 OrderModel.populate(docs, options, function(err, elems) {
@@ -2399,7 +2399,7 @@ Object.prototype = {
                     var new_data = {};
                     // Iterate over data
                     elems.map(function(obj) {
-                        console.log(obj._id);
+                        //console.log(obj._id);
 
                         // Create new object from old
                         if (!new_data[obj._id.product.info.SKU])
@@ -2413,22 +2413,22 @@ Object.prototype = {
                         if (!new_data[obj._id.product.info.SKU].month[obj._id.month])
                             new_data[obj._id.product.info.SKU].month[obj._id.month] = {
                                 'month': obj._id.month,
-                                'qty': obj.qty,
+                                'qty': obj.qty * (obj._id.product.packing || 1),
                                 'weight': obj.weight,
                                 'total_ht': obj.total_ht
                             };
                         else {
-                            new_data[obj._id.product.info.SKU].month[obj._id.month].qty += obj.qty;
+                            new_data[obj._id.product.info.SKU].month[obj._id.month].qty += obj.qty * (obj._id.product.packing || 1);
                             new_data[obj._id.product.info.SKU].month[obj._id.month].weight += obj.weight;
                             new_data[obj._id.product.info.SKU].month[obj._id.month].total_ht += obj.total_ht;
                         }
 
-                        new_data[obj._id.product.info.SKU].month[obj._id.month] = {
+                        /*new_data[obj._id.product.info.SKU].month[obj._id.month] = {
                             'month': obj._id.month,
                             'qty': obj.qty,
                             'weight': obj.weight,
                             'total_ht': obj.total_ht
-                        };
+                        };*/
 
                         for (var i = 0, len = obj._id.product.pack.length; i < len; i++) {
                             var product = obj._id.product.pack[i];
@@ -3174,7 +3174,8 @@ PricesList.prototype = {
                                 //Recalcul product prices
                                 ProductPricesModel.refreshByIdCoefPrice(price._id, { product: price.product, familyCoef: price.familyCoef }, function(err, price) {
                                     if (err)
-                                        F.functions.BusMQ.publish('notify:user', [self.user._id.toString()], {
+                                        F.emit('notify:user', {
+                                            userId: [self.user._id.toString()],
                                             title: "Erreur recalcul du prix sur Coef",
                                             message: {
                                                 body: err.error,
@@ -3207,7 +3208,8 @@ PricesList.prototype = {
                                     //Recalcul product prices
                                     ProductPricesModel.refreshByIdCoefPrice(doc._id, { product: price.product, familyCoef: price.familyCoef }, function(err, price) {
                                         if (err)
-                                            F.functions.BusMQ.publish('notify:user', [self.user._id.toString()], {
+                                            F.emit('notify:user', {
+                                                userId: [self.user._id.toString()],
                                                 title: "Erreur recalcul du prix sur Coef",
                                                 message: {
                                                     body: err.error,
@@ -3230,7 +3232,8 @@ PricesList.prototype = {
                 if (err)
                     return console.log(err);
 
-                F.functions.BusMQ.publish('notify:user', [self.user._id.toString()], {
+                F.emit('notify:user', {
+                    userId: [self.user._id.toString()],
                     title: "Recalcul du/des prix sur Coef Ok",
                     message: {
                         body: "Liste de prix mise a jour",
@@ -3711,8 +3714,10 @@ Prices.prototype = {
 
                         //Emit product update
                         setTimeout2('product:' + doc._id.toString(), function() {
-                            F.functions.BusMQ.emit('product:update', self.user._id, { product: { _id: doc._id } });
-                            F.functions.BusMQ.publish('product:update', self.user._id, { product: { _id: doc._id } });
+                            F.emit('product:update', {
+                                userId: self.user._id.toString(),
+                                product: { _id: doc._id.toString() }
+                            });
                         }, 1000);
 
                         wCb(null, productPrice);
@@ -3732,8 +3737,9 @@ Prices.prototype = {
 
                 // Emit to refresh priceList from parent
                 setTimeout2('productPrices:updatePrice_' + doc.priceLists._id.toString(), function() {
-                    F.functions.BusMQ.emit('productPrices:updatePrice', self.user._id, {
-                        price: doc
+                    F.emit('productPrices:updatePrice', {
+                        userId: self.user._id.toString(),
+                        price: { _id: doc._id.toString() }
                     });
                 }, 500);
 
@@ -4585,7 +4591,7 @@ ProductFamily.prototype = {
                             return aCb(err);
 
                         setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
-                            F.functions.BusMQ.emit('productFamily:coefUpdate', self.user._id, { family: family, productFamilyCoef: doc }); //Ok worflow
+                            F.emit('productFamily:coefUpdate', { userId: self.user._id.toString(), family: family, productFamilyCoef: doc }); //Ok worflow
                         }, 500);
                         aCb();
 
@@ -4765,7 +4771,7 @@ ProductFamily.prototype = {
                                     return eCb(err);
 
                                 setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
-                                    F.functions.BusMQ.emit('productFamily:coefUpdate', self.user._id, { family: family, productFamilyCoef: doc });
+                                    F.emit('productFamily:coefUpdate', { userId: self.user._id.toString(), family: family, productFamilyCoef: doc });
                                 }, 500);
 
                                 eCb();
@@ -4780,7 +4786,11 @@ ProductFamily.prototype = {
                                 return eCb(err);
 
                             setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
-                                F.functions.BusMQ.emit('productFamily:coefUpdate', self.user._id, { family: family, productFamilyCoef: doc });
+                                F.emit('productFamily:coefUpdate', {
+                                    userId: self.user._id.toString(),
+                                    family: family,
+                                    productFamilyCoef: doc
+                                });
                             }, 500);
 
                             eCb();
@@ -4866,7 +4876,7 @@ ProductFamily.prototype = {
                 }
 
                 setTimeout2('productFamily:update_' + family._id.toString(), function() {
-                    F.functions.BusMQ.emit('productFamily:update', self.user._id, { family: family }); // Ok in worflow
+                    F.emit('productFamily:update', { userId: self.user._id.toString(), family: family }); // Ok in worflow
                 }, 500);
 
                 //console.log(doc);
@@ -5214,7 +5224,7 @@ ProductAttributes.prototype = {
         var currentOptions;
 
         setTimeout2('product:' + id.toString(), function() {
-            F.functions.BusMQ.publish('product:updateAttributes', self.user._id, { productAttribut: { _id: id } });
+            F.emit('product:updateAttributes', { userId: self.user._id.toString(), productAttribut: { _id: id.toString() } });
         }, 1000);
 
         ProductAttributesModel.findByIdAndUpdate(_id, body, { new: true }, function(err, doc) {
@@ -5799,7 +5809,7 @@ StockCorrection.prototype = {
                             OrderRowsModel.find({ order: order._id, product: productId }, function(err, rows) {
                                 order.setAllocated(rows, function(err) {
                                     setTimeout2('orderRecalculateStatus:' + order._id.toString(), function() {
-                                        F.functions.BusMQ.publish('order:recalculateStatus', null, { order: { _id: order._id } });
+                                        F.emit('order:recalculateStatus', { userId: null, order: { _id: order._id.toString() } });
                                     }, 5000);
                                 });
                             });
@@ -5877,7 +5887,7 @@ StockCorrection.prototype = {
                                 eachCb();
                                 // Refresh allocate all order Customer waiting
                                 allocateOrders(elem.product);
-                                F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                                F.emit('inventory:update', { userId: null, product: { _id: elem.product._id.toString() } });
                             });
                         } else
                             eachCb();
@@ -5900,7 +5910,10 @@ StockCorrection.prototype = {
                         eachCb();
                         // Refresh allocate all order Customer waiting
                         allocateOrders(elem.product);
-                        F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                        F.emit('inventory:update', {
+                            userId: null,
+                            product: { _id: elem.product._id.toString() }
+                        });
                     });
                 }
 
@@ -6024,7 +6037,7 @@ StockCorrection.prototype = {
                 return self.throw500(err);
 
             //event.emit('recalculateStatus', req, orderId, next);
-            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: orderId } });
+            F.emit('order:recalculateStatus', {userId : self.user._id.toString(),  order: { _id: orderId.toString() } });
             self.json({ success: 'Products updated' });
         });
 
@@ -6579,7 +6592,7 @@ StockReturn.prototype = {
                                     return eachCb(err);
 
                                 eachCb();
-                                F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                                F.emit('inventory:update', { userId: null, product: { _id: elem.product._id.toString() } });
                             });
                         } else
                             eachCb();
@@ -6600,7 +6613,7 @@ StockReturn.prototype = {
                             return eachCb(err);
 
                         eachCb();
-                        F.functions.BusMQ.publish('inventory:update', null, { product: elem.product });
+                        F.emit('inventory:update', { userId: null, product: { _id: elem.product._id.toString() } });
                     });
                 }
 
@@ -6747,7 +6760,7 @@ StockReturn.prototype = {
                                                 return eachCb(err);
 
                                             eachCb();
-                                            F.functions.BusMQ.publish('inventory:update', null, { product: { _id: elem.product } });
+                                            F.emit('inventory:update', { userId: null, product: { _id: elem.product.toString() } });
                                         });
                                     } else
                                         eachCb();
@@ -6768,7 +6781,7 @@ StockReturn.prototype = {
                                         return eachCb(err);
 
                                     eachCb();
-                                    F.functions.BusMQ.publish('inventory:update', null, { product: { _id: elem.product } });
+                                    F.emit('inventory:update', { userId: null, product: { _id: elem.product.toString() } });
                                 });
                             }
 

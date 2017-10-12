@@ -29,3 +29,4 @@ productImages/*.*
 uploads/
 dump/tm1
 packages/*.package
+flow/

@@ -655,13 +655,12 @@ productSchema.pre('save', function(next) {
 
     if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
-        F.functions.BusMQ.emit('product:updateDirectCost', self.editedBy, { product: { _id: self._id } });
+        F.emit('product:updateDirectCost', { userId: self.editedBy.toString(), product: { _id: self._id.toString() } });
     }, 500);
 
     //Emit product update
     setTimeout2('product:' + this._id.toString(), function() {
-        F.functions.BusMQ.emit('product:update', self.editedBy, { product: { _id: self._id } });
-        F.functions.BusMQ.publish('product:update', self.editedBy, { product: { _id: self._id } });
+        F.emit('product:update', { userId: self.editedBy.toString(), product: { _id: self._id.toString() } });
     }, 1000);
 
 

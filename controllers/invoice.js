@@ -304,7 +304,7 @@ Object.prototype = {
                         });
                     }
 
-                    F.functions.BusMQ.publish('invoice:recalculateStatus', self.user._id, { invoice: { _id: doc._id } });
+                    F.emit('invoice:recalculateStatus', { userId: self.user._id.toString(), invoice: { _id: doc._id.toString() } });
 
                     //console.log(doc);
                     doc = doc.toObject();

@@ -225,8 +225,10 @@ productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callbac
 
                         //Emit product update
                         setTimeout2('product:' + doc._id.toString(), function() {
-                            F.functions.BusMQ.emit('product:update', null, { product: { _id: doc._id } });
-                            F.functions.BusMQ.publish('product:update', null, { product: { _id: doc._id } });
+                            F.emit('product:update', {
+                                userId: null,
+                                product: { _id: doc._id.toString() }
+                            });
                         }, 1000);
 
                         callback(null, productPrice);

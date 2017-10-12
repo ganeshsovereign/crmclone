@@ -542,75 +542,73 @@ billSchema.virtual('amount').get(function() {
 exports.Schema = mongoose.model('invoice', billSchema, 'Invoices');
 exports.name = 'invoice';
 
-F.on('load', function() {
-    // Refresh pack prices from directCost
-    F.functions.BusMQ.subscribe('invoice:recalculateStatus', function(data) {
-        const BillModel = MODEL('invoice').Schema;
-        const TransactionModel = MODEL('transaction').Schema;
-        const ObjectId = MODULE('utils').ObjectId;
+F.on('invoice:recalculateStatus', function(data) {
+    var userId = data.userId;
+    const BillModel = MODEL('invoice').Schema;
+    const TransactionModel = MODEL('transaction').Schema;
+    const ObjectId = MODULE('utils').ObjectId;
 
-        //console.log(data);
-        console.log("Update emit invoice", data);
+    //console.log(data);
+    console.log("Update emit invoice", data);
 
-        if (!data.invoice || !data.invoice._id)
+    if (!data.invoice || !data.invoice._id)
+        return;
+
+    BillModel.findById(data.invoice._id, "_id Status isremoved total_ttc", function(err, bill) {
+        if (err)
+            return console.log(err);
+
+        if (!bill)
+            return console.log("No bill found");
+
+        if (bill.isremoved)
+            return BillModel.update({ _id: bill._id }, { $set: { updatedAt: new Date(), total_ttc: 0, total_paid: 0, total_ht: 0 } }, function(err, doc) {
+                if (err)
+                    return console.log(err);
+            });
+
+        if (bill.Status == "DRAFT")
             return;
 
-        BillModel.findById(data.invoice._id, "_id Status isremoved total_ttc", function(err, bill) {
-            if (err)
-                return console.log(err);
+        TransactionModel.aggregate([{
+                $match: { "meta.bills.invoice": ObjectId(data.invoice._id), voided: false, $or: [{ "meta.bank": { $ne: null } }, { "meta.isWaiting": true }], }
+            }, {
+                $unwind: {
+                    path: '$meta.bills'
+                }
+            }, {
+                $match: { "meta.bills.invoice": ObjectId(data.invoice._id) }
+            }, {
+                $group: { _id: null, amount: { $sum: "$meta.bills.amount" } }
+            }],
+            function(err, doc) {
+                if (err)
+                    return console.log(err);
 
-            if (!bill)
-                return console.log("No bill found");
+                console.log(doc);
 
-            if (bill.isremoved)
-                return BillModel.update({ _id: bill._id }, { $set: { updatedAt: new Date(), total_ttc: 0, total_paid: 0, total_ht: 0 } }, function(err, doc) {
-                    if (err)
-                        return console.log(err);
-                });
-
-            if (bill.Status == "DRAFT")
-                return;
-
-            TransactionModel.aggregate([{
-                    $match: { "meta.bills.invoice": ObjectId(data.invoice._id), voided: false, $or: [{ "meta.bank": { $ne: null } }, { "meta.isWaiting": true }], }
-                }, {
-                    $unwind: {
-                        path: '$meta.bills'
-                    }
-                }, {
-                    $match: { "meta.bills.invoice": ObjectId(data.invoice._id) }
-                }, {
-                    $group: { _id: null, amount: { $sum: "$meta.bills.amount" } }
-                }],
-                function(err, doc) {
-                    if (err)
-                        return console.log(err);
-
-                    console.log(doc);
-
-                    if (!doc || doc.length == 0)
-                        return BillModel.update({ _id: bill._id }, { $set: { Status: "NOT_PAID", updatedAt: new Date(), total_paid: 0 } }, function(err, doc) {
-                            if (err)
-                                return console.log(err);
-                        });
-
-
-                    let payment = doc[0].amount;
-                    console.log(payment);
-
-                    var status = "STARTED";
-                    if (round(payment, 2) >= round(bill.total_ttc, 2))
-                        status = "PAID";
-
-                    if (round(payment, 2) == 0)
-                        status = "NOT_PAID";
-
-                    BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date(), total_paid: payment } }, function(err, doc) {
+                if (!doc || doc.length == 0)
+                    return BillModel.update({ _id: bill._id }, { $set: { Status: "NOT_PAID", updatedAt: new Date(), total_paid: 0 } }, function(err, doc) {
                         if (err)
                             return console.log(err);
-                        console.log(doc);
                     });
+
+
+                let payment = doc[0].amount;
+                console.log(payment);
+
+                var status = "STARTED";
+                if (round(payment, 2) >= round(bill.total_ttc, 2))
+                    status = "PAID";
+
+                if (round(payment, 2) == 0)
+                    status = "NOT_PAID";
+
+                BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date(), total_paid: payment } }, function(err, doc) {
+                    if (err)
+                        return console.log(err);
+                    console.log(doc);
                 });
-        });
+            });
     });
 });

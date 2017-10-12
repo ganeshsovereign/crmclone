@@ -703,7 +703,7 @@ Object.prototype = {
                     });
                 }
 
-                F.functions.BusMQ.publish('product:updateCategory', self.user._id, { productCategory: { _id: id } });
+                F.emit('product:updateCategory', { userId: self.user._id.toString(), productCategory: { _id: id.toString() } });
 
                 //console.log(doc);
                 var doc = {};

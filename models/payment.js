@@ -510,7 +510,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             //console.log("bill", invoice);
 
                             if (invoice && invoice._id) {
-                                F.functions.BusMQ.publish('invoice:recalculateStatus', user._id, { invoice: { _id: invoice._id } });
+                                F.emit('invoice:recalculateStatus', { userId: user._id.toString(), invoice: { _id: invoice._id.toString() } });
                                 return cb();
                             }
 
@@ -531,7 +531,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             //console.log("bill supplier", invoice);
 
                             if (invoice && invoice._id) {
-                                F.functions.BusMQ.publish('invoice:recalculateStatus', user._id, { invoice: { _id: invoice._id } });
+                                F.emit('invoice:recalculateStatus', { userId: user._id.toString(), invoice: { _id: invoice._id.toString() } });
                                 return cb();
                             }
 

@@ -56,7 +56,10 @@ function websocket() {
 
 
 
-    F.functions.BusMQ.subscribe('notify:controllerAngular', function(notify) {
+    F.on('notify:controllerAngular', function(data) {
+        var userId = data.userId;
+        var notify = data;
+
         self.send({ type: 'refresh', data: notify }, function(id, client) {
             //send to all
             return true;
@@ -66,17 +69,20 @@ function websocket() {
             self.send({ type: 'go', data: notify }, function(id, client) {
             //send to all
             //console.log(client);
-            return (notify.userId.indexOf(client.alias) >= 0);
+            return (userId.indexOf(client.alias) >= 0);
         });
 
 
     });
 
-    F.functions.BusMQ.subscribe('notify:user', function(notify) {
+    F.on('notify:user', function(data) {
+        var userId = data.userId;
+        var notify = data;
+
         // send text notification
         self.send({ type: 'notify', message: notify, date: new Date() }, function(id, client) {
             // send only to users in notify.users Array
-            return (notify.userId.indexOf(client.alias) >= 0);
+            return (userId.indexOf(client.alias) >= 0);
         });
     });
 

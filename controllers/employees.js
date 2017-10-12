@@ -2467,7 +2467,7 @@ Object.prototype = {
 
 
                 if (data.dateBirth || data.hired)
-                    F.functions.BusMQ.publish('employee:recalculate', self.user._id, {});
+                    F.emit('employee:recalculate', { userId: self.user._id.toString() });
                 //    event.emit('recalculate', self, null, next);
 
 
@@ -2502,7 +2502,7 @@ Object.prototype = {
 
                 }
 
-                F.functions.BusMQ.publish('employee:recollectVacationDash', self.user._id, {});
+                F.emit('employee:recollectVacationDash', { userId: self.user._id.toString() });
 
                 result = result.toObject();
                 result.successNotify = {
@@ -2528,7 +2528,7 @@ Object.prototype = {
                 }
 
                 // TODO add check if salary report need update
-                F.functions.BusMQ.publish('payroll:composeSalaryReport', self.user._id, { data: id });
+                F.emit('payroll:composeSalaryReport', { userId: self.user._id.toString(), data: id.toString() });
                 //payrollHandler.composeSalaryReport(self);
             });
         }

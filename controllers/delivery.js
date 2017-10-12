@@ -329,7 +329,7 @@ Object.prototype = {
                         },
                         function(doc, wCb) {
                             //if (doc.forSales == true)
-                            //F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: doc });
+                            //F.emit('order:recalculateStatus', {userId:  self.user._id.toString(), order: doc.toJSON(() });
 
                             //update inventory IN
 
@@ -353,7 +353,7 @@ Object.prototype = {
                                             return wCb(err);
 
                                         if (result && result.order)
-                                            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: result.order._id } });
+                                            F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: result.order._id.toString() } });
 
                                         doc.status.isInventory = new Date();
                                         doc.save(function(err, doc) {
@@ -421,7 +421,7 @@ Object.prototype = {
                                                 return wCb(err);
 
                                             if (result && result.order)
-                                                F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: result.order });
+                                                F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: result.order._id.toString() } });
 
                                             doc.orderRows = rows;
 
@@ -479,12 +479,14 @@ Object.prototype = {
                                 });
                             }
 
-                            F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: doc.order } });
+                            F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: doc.order.toString() } });
 
+                            F.emit('order:update', { userId: self.user._id.toString(), order: { _id: doc._id.toString() } });
 
-                            F.functions.BusMQ.publish('notify:controllerAngular', null, {
+                            F.emit('notify:controllerAngular', {
+                                userId: null,
                                 route: 'delivery',
-                                _id: doc._id,
+                                _id: doc._id.toString(),
                                 message: "Livraison " + doc.ref + ' modifie.'
                             });
 
@@ -592,7 +594,7 @@ Object.prototype = {
                                     return self.throw500(err);
                                 console.log(result);
 
-                                F.functions.BusMQ.publish('order:recalculateStatus', self.user._id, { order: { _id: goodsNote.order._id } });
+                                F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: goodsNote.order._id.toString() } });
 
                                 cb();
                             });
