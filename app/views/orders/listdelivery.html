@@ -25,6 +25,11 @@
                     </li>
                     <li class="divider"></li>
                     <li>
+                        <a href="#" ng-click="changeStatus('VALIDATED','id')"><i class="fa fa-check"></i> 
+                            @(orders:ValidateDeliveryReceipt) </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
                         <a ng-show="login.rights.delivery.read" ng-click="openUrl('/erp/api/delivery/pdf/', 'id')" target="_blank">
                             <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
                         </a>
@@ -38,17 +43,12 @@
                             <i class="fa fa-file-excel-o"></i> @(CSV Mouvements)</a>
                     </li>
                     <li class="divider">
-                        <li>
-                            <a href="#" ng-click="changeStatus('VALIDATED','id')"><i class="fa fa-check"></i> 
-                            @(orders:ValidateDeliveryReceipt) </a>
-                        </li>
-                        <li class="divider">
-                        </li>
-                        <li>
-                            <a href="#" class="font-red" ng-show="login.rights.delivery.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les bons de livraison ?">
-                                <i class="fa fa-trash-o font-red"></i> @(Delete)
-                            </a>
-                        </li>
+                    </li>
+                    <li>
+                        <a href="#" class="font-red" ng-show="login.rights.delivery.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les bons de livraison ?">
+                            <i class="fa fa-trash-o font-red"></i> @(Delete)
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

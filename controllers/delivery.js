@@ -56,11 +56,6 @@ exports.install = function() {
     // recupere la liste des courses pour verification
     F.route('/erp/api/delivery/billing', billing.read, ['authorize']);
 
-    // Valid les BL en bloc
-    F.route('/erp/api/delivery/validate', object.validAll, ['post', 'json', 'authorize']);
-    // Genere la facturation des BL en groupe
-    F.route('/erp/api/delivery/billing', billing.createAll, ['post', 'json', 'authorize']);
-
     F.route('/erp/api/delivery/billing/ca', billing.familyCA, ['authorize']);
 
     F.route('/erp/api/delivery', object.create, ['post', 'json', 'authorize'], 512);
@@ -487,7 +482,7 @@ Object.prototype = {
                                 userId: null,
                                 route: 'delivery',
                                 _id: doc._id.toString(),
-                                message: "Livraison " + doc.ref + ' modifie.'
+                                message: "Livraison " + doc.ref + ' modifiee.'
                             });
 
                             //console.log(doc);
@@ -1112,23 +1107,6 @@ Object.prototype = {
         });
         self.res.setHeader('x-filename', 'mouvements.csv');
         self.stream('application/text', stream, "mouvements.csv");
-    },
-    validAll: function() {
-        var self = this;
-
-        if (!self.body.id)
-            return self.json({});
-
-        var DeliveryModel = MODEL('delivery').Schema;
-
-        DeliveryModel.update({ Status: "DRAFT", _id: { $in: self.body.id } }, { $set: { Status: 'SEND', updatedAt: new Date } }, { upsert: false, multi: true },
-            function(err, doc) {
-                if (err)
-                    return self.throw500(err);
-
-                self.json({});
-
-            });
     },
     caFamily: function() {
         var self = this;

@@ -840,7 +840,7 @@ Object.prototype = {
                             return callback(err);
 
                         //already exported
-                        if ((bill.Status !== 'NOT_PAID' && bill.Status !== 'VALIDATED') || bill.journalId.length > 0)
+                        if (bill.Status !== 'NOT_PAID' || bill.journalId.length > 0)
                             return callback(null);
 
                         async.parallel([

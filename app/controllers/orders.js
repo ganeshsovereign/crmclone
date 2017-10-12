@@ -1303,8 +1303,8 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
     }
 ]);
 
-MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
-    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
+MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout', 'Orders',
+    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout, Orders) {
 
         var grid = new Datatable();
         var user = $rootScope.login;
@@ -1551,6 +1551,29 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
             }).error(function(data) {
                 console.log(data);
             });
+        };
+
+        $scope.changeStatus = function(Status, id) {
+            // ChangeStatus multi-deliveries
+            if (!grid)
+                return;
+
+            var localgrid = [];
+
+            angular.forEach(grid.getSelectedRows(), function(value) {
+                Orders.delivery.get({
+                    Id: value
+                }, function(object) {
+                    if (!object)
+                        return;
+
+                    if (object.Status !== 'DRAFT')
+                        return;
+
+                    object.Status = "VALIDATED";
+                    object.$update(function(response) {});
+                });
+            }, localgrid);
         };
     }
 ]);
@@ -1816,7 +1839,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         };
 
         $scope.changeStatus = function(Status, id) {
-
             // ChangeStatus multi-bills
             if (!grid)
                 return;
