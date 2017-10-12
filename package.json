@@ -41,7 +41,6 @@
         "mongoose-timestamp": "0.5.0",
         "mongoose-version": "^1.1.0",
         "node-gyp": "^3.4.0",
-        "node-raphael": "git://github.com/sdneon/node-raphael.git#master",
         "numeral": "^2.0.1",
         "odt": "latest",
         "passport": "latest",
