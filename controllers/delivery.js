@@ -72,6 +72,7 @@ function Object() {}
 Object.prototype = {
     show: function(id) {
         var self = this;
+        const BillModel = MODEL('invoice').Schema;
 
         if (self.query.stockReturn === 'true') {
             if (self.query.forSales == "false")
@@ -87,12 +88,34 @@ Object.prototype = {
         }
 
 
-        DeliveryModel.getById(id, function(err, delivery) {
-            if (err)
-                return self.throw500(err);
+        async.waterfall([
+                function(wCb) {
+                    DeliveryModel.getById(id, wCb);
+                },
+                function(delivery, wCb) {
+                    if (!delivery)
+                        return wCb();
 
-            self.json(delivery);
-        });
+                    BillModel.findOne({ orders: delivery.order, isremoved: { $ne: true }, Status: { $ne: "DRAFT" } }, "_id ref Status total_ht", function(err, bill) {
+                        if (err)
+                            return wCb(err);
+
+                        if (bill)
+                            delivery.bill = bill;
+
+                        wCb(null, delivery);
+                    });
+                }
+            ],
+            function(err, result) {
+                if (err)
+                    return self.throw500(err);
+
+                if (!result)
+                    return self.throw404();
+
+                self.json(result);
+            });
     },
     create: function() {
         var self = this;
@@ -253,9 +276,22 @@ Object.prototype = {
             self.body.status.receivedById = self.user._id;
         }
 
-        if (self.body.Status == "VALIDATED" && !self.body.status.isInventory && self.body.status.isPacked) {
+        if (self.body.Status == "VALIDATED" && !self.body.status.isInventory) {
             isInventory = true;
-            //    self.body.Status = "DRAFT";
+        }
+
+        // CANCEL DELIVERY
+        if (self.body.Status == "DRAFT" && self.body.status.isInventory) {
+            //cancelled inventory
+            return DeliveryModel.cancelInventories({
+                    ids: [self.body._id]
+                },
+                function(err, doc) {
+                    if (err)
+                        return self.throw500(err);
+
+                    self.json({});
+                });
         }
 
         if (!self.body.createdBy)
@@ -864,9 +900,23 @@ Object.prototype = {
 
 
         DeliveryModel.getById(ref, function(err, doc) {
+
+            if (doc.status.isPrinted == null) {
+                doc.status.isPrinted = new Date();
+                doc.status.printedById = self.user._id;
+                DeliveryModel.findByIdAndUpdate(doc._id, doc, function(err, doc) {});
+            }
+
             createDelivery(doc, function(err, tex) {
                 if (err)
                     return console.log(err);
+
+                F.emit('notify:controllerAngular', {
+                    userId: self.user._id,
+                    route: 'delivery',
+                    _id: doc._id.toString(),
+                    message: "Livraison " + doc.ref + ' modifiee.'
+                });
 
                 self.res.setHeader('Content-type', 'application/pdf');
                 self.res.setHeader('x-filename', doc.ref.replace('/', '_') + ".pdf");
@@ -903,6 +953,12 @@ Object.prototype = {
 
                 async.forEachLimit(deliveries, 30, function(delivery, cb) {
                     DeliveryModel.getById(delivery._id, function(err, delivery) {
+
+                        if (delivery.status.isPrinted == null) {
+                            delivery.status.isPrinted = new Date();
+                            delivery.status.printedById = self.user._id;
+                            DeliveryModel.findByIdAndUpdate(delivery._id, delivery, function(err, doc) {});
+                        }
 
                         createDelivery(delivery, function(err, tex) {
                             if (err)
@@ -943,6 +999,13 @@ Object.prototype = {
 
                     //console.log(texOutput);
 
+                    F.emit('notify:controllerAngular', {
+                        userId: null,
+                        route: 'delivery'
+                            // _id: doc._id.toString(),
+                            //message: "Livraison " + doc.ref + ' modifiee.'
+                    });
+
                     self.res.setHeader('Content-type', 'application/pdf');
                     self.res.setHeader('x-filename', 'deliveries.pdf');
                     Latex.Template(null, entity)
@@ -953,7 +1016,7 @@ Object.prototype = {
                         .compile("main", texOutput)
                         .pipe(self.res)
                         .on('close', function() {
-                            console.log('documents written');
+                            //console.log('documents written');
                         });
                 });
             });

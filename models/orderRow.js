@@ -156,7 +156,7 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
                             'orderRows.orderRowId': elem._id,
                             _type: forSales ? 'GoodsOutNote' : 'GoodsInNote',
                             isremoved: { $ne: true },
-                            'status.isPacked': { $ne: null },
+                            'status.isInventory': { $ne: null },
                             archived: { $ne: true }
                         }
                     }, {

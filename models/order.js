@@ -934,6 +934,90 @@ var goodsOutNoteSchema = new Schema({
     archived: { type: Boolean, default: false }
 });
 
+goodsOutNoteSchema.statics.cancelInventories = function(options, callback) {
+    var GoodsOutNoteModel = this;
+    const Availability = MODEL('productsAvailability').Schema;
+    var ids = options.ids || [];
+    var isMO = options.isManufacturing || false;
+    var orderType = 'order';
+
+    if (isMO)
+        orderType = 'manufacturingOrder';
+
+
+    async.each(ids, function(id, cb) {
+        GoodsOutNoteModel.findById(id).populate(orderType).exec(function(err, goodsNote) {
+            var options;
+
+            if (err)
+                return cb(err);
+
+            if (goodsNote && goodsNote[orderType]) {
+                async.each(goodsNote.orderRows, function(goodsOrderRow, callback) {
+
+                    var query = goodsNote[orderType].project ? {
+                        product: goodsOrderRow.product,
+                        warehouse: goodsNote.warehouse
+                    } : {
+                        'goodsOutNotes.goodsNoteId': goodsNote._id,
+                        product: goodsOrderRow.product,
+                        warehouse: goodsNote.warehouse
+                    };
+
+                    Availability.updateByQuery({
+                        query: query,
+
+                        body: {
+                            $inc: {
+                                onHand: goodsOrderRow.qty
+                            },
+
+                            $pull: {
+                                goodsOutNotes: { goodsNoteId: goodsNote._id }
+                            }
+                        }
+                    }, function(err) {
+                        if (err)
+                            return callback(err);
+
+
+                        options = {
+                            query: {
+                                'sourceDocument.model': 'goodsOutNote',
+                                'sourceDocument._id': id
+                            }
+                        };
+
+                        //JournalEntryService.remove(options);
+
+                        callback();
+                    });
+                }, function(err) {
+                    if (err)
+                        return cb(err);
+
+                    F.emit('order:recalculateStatus', { order: { _id: goodsNote[orderType]._id.toString() } });
+                    cb();
+                });
+
+            } else {
+                cb();
+            }
+        });
+    }, function(err) {
+        if (err) {
+            return callback(err);
+        }
+
+        GoodsOutNoteModel.update({ _id: { $in: ids } }, { $set: { Status: "DRAFT", 'status.isInventory': null } }, { multi: true }, function(err, result) {
+            if (err)
+                return callback(err);
+
+            callback();
+        });
+    });
+};
+
 var goodsInNoteSchema = new Schema({
 
     status: {
@@ -1565,7 +1649,7 @@ F.on('order:recalculateStatus', function(data) {
                             $match: {
                                 'orderRows.orderRowId': elem._id,
                                 _type: { $ne: 'stockReturns' },
-                                "status.isPacked": { $ne: null }, // TODO Test !
+                                "status.isInventory": { $ne: null },
                                 isremoved: { $ne: true }
                             }
                         }, {

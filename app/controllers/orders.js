@@ -506,16 +506,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 $scope.object.Status = status;
 
             switch (field) {
-                case 'printed':
-                    if ($scope.object.status.isPrinted == null) {
-                        $scope.object.status.isPrinted = new Date();
-                        $scope.object.status.printedById = $rootScope.login._id;
-                    } else {
-                        $scope.object.status.isPrinted = null;
-                        $scope.object.status.printedById = null;
-                        return $scope.update();
-                    }
-                    break;
                 case 'picked':
                     if ($scope.object.status.isPicked == null) {
                         $scope.object.status.isPicked = new Date();
@@ -588,47 +578,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 return;
             }
 
-            if (field == 'printed')
-                $scope.update(function(err, object) {
-                    //var myWindow = $window.open('/erp/api/delivery/pdf/' + url, '_blank');
-                    //myWindow.document.write(table);
-                    //myWindow.print();
-
-                    //return
-                    $http({
-                        method: 'GET',
-                        url: '/erp/api/delivery/pdf/' + ref,
-                        responseType: 'arraybuffer'
-                    }).success(function(data, status, headers) {
-                        headers = headers();
-
-                        var filename = headers['x-filename'];
-                        var contentType = headers['content-type'];
-
-                        var linkElement = document.createElement('a');
-                        try {
-                            var blob = new Blob([data], { type: contentType });
-                            var url = window.URL.createObjectURL(blob);
-
-                            linkElement.setAttribute('href', url);
-                            //linkElement.setAttribute('target', '_blank');
-                            linkElement.setAttribute("download", filename);
-
-                            var clickEvent = new MouseEvent("click", {
-                                "view": window,
-                                "bubbles": true,
-                                "cancelable": false
-                            });
-                            linkElement.dispatchEvent(clickEvent);
-                        } catch (ex) {
-                            console.log(ex);
-                        }
-                    }).error(function(data) {
-                        console.log(data);
-                    });
-                });
-            else
-                $scope.update();
+            $scope.update();
 
         };
 
