@@ -50,7 +50,7 @@ var FilterMapper = function() {
                 return elem;
             });
 
-        //console.log(values, type);
+        console.log(values, type);
 
         switch (type) {
             case 'ObjectId':

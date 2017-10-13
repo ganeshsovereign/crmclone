@@ -145,7 +145,7 @@
 
             "sellFamily": {
                 "displayName": "products:Family",
-                "backend": "sellFamily",
+                "backend": "sellFamily"
             },
 
             "name": {
