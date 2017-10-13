@@ -105,23 +105,29 @@
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label>@(orders:StatusAllocated)</label>
-                                            <select ng-model="search.allocated.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
+                                            <select ng-model="search.allocationStatus.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
                                         </div>
 
                                         <div class="form-group">
                                             <label>@(orders:StatusFilfull)</label>
-                                            <select ng-model="search.fulfill.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
+                                            <select ng-model="search.fulfilledStatus.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
                                         </div>
 
                                         <div class="form-group">
                                             <label>@(orders:StatusShipping)</label>
-                                            <select ng-model="search.shipping.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
+                                            <select ng-model="search.shippingStatus.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>@(DateCreation)</label>
+                                            <div report-date-range ng-model="search.datedl.value" class="btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
+                                        </div>
 
-
-
+                                        <div class="form-group">
+                                            <label>@(orders:DeliveryDate)</label>
+                                            <div report-date-range ng-model="search.datedl.value" class="btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
+                                        </div>
                                     </div>
                                 </div>
 

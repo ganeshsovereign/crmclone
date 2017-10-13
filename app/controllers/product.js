@@ -1029,13 +1029,13 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
 
         $scope.dict = {};
         $scope.search = {
-            ref: { key: 'ref', value: "" },
-            name: { key: 'name', value: "" },
-            Status: { key: 'Status', value: [] },
-            sellFamily: { key: 'sellFamily', value: [] },
-            isActive: { key: 'isActive', value: true },
-            isSell: { key: 'isSell', value: true },
-            isBuy: { key: 'isBuy', value: false },
+            ref: { value: "" },
+            name: { value: "" },
+            Status: { value: [] },
+            sellFamily: { value: [] },
+            isActive: { value: true },
+            isSell: { value: true },
+            isBuy: { value: false },
         };
 
         $scope.page = {

@@ -185,14 +185,14 @@ Object.prototype = {
             matchObject['ref'] = { $regex: regExp };
         }
 
-        filter = _.filter(filter, function(elem) {
-            return elem.value.length;
-        });
+        console.log(filter);
 
-        if (!filter || filter.length == 1)
+        if (filter && filter.Status.value[0] == "LIST") {
+            filter.Status.value = [];
             filterObject.Status = { $ne: "BILLED" };
+        }
 
-        //console.log(filter);
+
 
         filterObject.$and = [];
 
@@ -200,7 +200,7 @@ Object.prototype = {
             filterObject.$and.push(filterMapper.mapFilter(filter, { contentType: contentType })); // caseFilter(filter);
         }
 
-        //return console.log(filterObject);
+        //return console.log(filterObject.$and[0].$and[0].$or);
 
         if (self.query.sort) {
             sort = JSON.parse(self.query.sort);

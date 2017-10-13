@@ -50,7 +50,7 @@ var FilterMapper = function() {
                 return elem;
             });
 
-        console.log(values, type);
+        //console.log(values, type);
 
         switch (type) {
             case 'ObjectId':
@@ -73,13 +73,13 @@ var FilterMapper = function() {
                 }
 
                 if (values[0]) {
-                    startDate = moment(new Date(values[0])).startOf('day');
-                    result[_operator[0]] = new Date(startDate);
+                    startDate = moment(new Date(values[0])).startOf('day').toDate();
+                    result[_operator[0]] = startDate;
                 }
 
                 if (values[1]) {
-                    endDate = moment(new Date(values[1])).endOf('day');
-                    result[_operator[1] || _operator[0]] = new Date(endDate);
+                    endDate = moment(new Date(values[1])).endOf('day').toDate();
+                    result[_operator[1] || _operator[0]] = endDate;
                 }
 
                 break;
@@ -154,6 +154,7 @@ var FilterMapper = function() {
                 filterValues = filterObject.value;
 
                 filterConstantsByName = filterConstants[filterName] || {};
+
                 filterType = !!filterObject.type ? filterObject.type : filterConstantsByName.type || 'ObjectId';
                 filterBackend = filterConstantsByName.backend || filterObject.key || filterObject.backend;
 
@@ -163,7 +164,7 @@ var FilterMapper = function() {
                     });
                 } else if (contentType === 'Products' && filterBackend === 'job') {
                     filterResObject.job = { $exists: false };
-                } else if (filterValues !== null && (filterName !== 'startDate' || filterName !== 'endDate')) {
+                } else if (filterValues && (filterName !== 'startDate' || filterName !== 'endDate')) {
                     if (filterBackend) {
                         if (typeof filterBackend === 'string') {
                             key = suffix ? filterBackend + '.' + suffix : filterBackend;
@@ -176,7 +177,7 @@ var FilterMapper = function() {
                             $orArray = [];
 
                             _.map(filterBackend, function(keysObject) {
-                                console.log(keysObject);
+                                //console.log(keysObject);
                                 var resObj = andState ? filterResObject : {};
 
                                 resObj[keysObject.key] = convertType(filterValues, filterType, keysObject.operator);

@@ -662,8 +662,8 @@ small {
 }
 
 .page-bar .page-toolbar .date {
-    zoom: 110%;
-    padding-top: 3px;
+    padding-top: 7px;
+    padding-bottom: 7px;
 }
 
 .form .form-actions.right,

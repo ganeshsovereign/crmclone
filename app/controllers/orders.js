@@ -931,19 +931,30 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
         $scope.dict = {};
         $scope.search = {
-            ref: { key: 'ref', value: "", type: 'regex' },
-            ref_client: { key: 'ref_client', value: "", type: 'regex' },
+            ref: { value: "" },
+            ref_client: { value: "" },
             entity: {
-                key: 'entity',
+
                 value: [$rootScope.login.entity],
-                type: 'string'
             },
-            supplier: { key: 'supplier', value: [], type: '' },
-            salesPerson: { key: 'salesPerson', value: [], type: '' },
-            Status: { key: 'Status', value: [], type: 'string' },
-            allocated: { key: 'status.allocateStatus', value: [], type: 'string' },
-            fulfill: { key: 'status.fulfillStatus', value: [], type: 'string' },
-            shipping: { key: 'status.shippingStatus', value: [], type: 'string' },
+            supplier: { value: [] },
+            salesPerson: { value: [] },
+            Status: { value: ["LIST"] },
+            allocationStatus: { value: [] },
+            fulfilledStatus: { value: [] },
+            shippingStatus: { value: [] },
+            datedl: {
+                value: {
+                    start: moment("2010").startOf('year').toDate(),
+                    end: moment("2027").endOf('year').toDate()
+                }
+            },
+            datec: {
+                value: {
+                    start: moment("2010").startOf('year').toDate(),
+                    end: moment("2027").endOf('year').toDate()
+                }
+            },
         };
 
         $scope.page = {
