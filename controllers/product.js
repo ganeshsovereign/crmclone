@@ -1151,20 +1151,27 @@ Object.prototype = {
     getByViewType: function getProductsFilter() {
         var self = this;
         var mid = self.query.contentType === 'salesProduct' ? 65 : 58;
-        var Product;
         var query = self.query || {};
         var quickSearch = query.quickSearch;
-        var matchObject = {};
+        var matchObject = {
+            isremoved: { $ne: true },
+        };
         var regExp;
-        var filter = query.filter;
+        var filter = query.filter && JSON.parse(query.filter) || {};
         var contentType = query.contentType;
-        var optionsObject = { $and: [] };
+
+        const FilterMapper = MODULE('helper').filterMapper;
+        var filterMapper = new FilterMapper();
+
+        var optionsObject = {
+            $and: []
+        };
         var doNotShowImage = query.doNotGetImage || false;
         var sort = {};
         var accessRollSearcher;
         var contentSearcher;
         var waterfallTasks;
-        var paginationObject = pageHelper(query);
+        var paginationObject = MODULE('helper').page(self.query);
         var limit = paginationObject.limit;
         var skip = paginationObject.skip;
         var channelLinksMatch = {};
@@ -1184,13 +1191,13 @@ Object.prototype = {
             delete filter.productId;
         }
 
-        Product = MODEL('product').Schema;
+        const Product = MODEL('product').Schema;
 
         if (self.query.sort) {
             sort = JSON.parse(self.query.sort);
-            sort._id = 1;
+            sort['data._id'] = 1;
         } else
-            sort = { createdAt: -1, _id: 1 };
+            sort = { 'data.info.SKU': 1, 'data._id': 1 };
 
         if (filter && filter.channelLinks) {
             channelObjectIds = filter.channelLinks.value.objectID();
@@ -1206,9 +1213,11 @@ Object.prototype = {
         }
         // optionsObject.$and.push({job: null});
 
-        if (query.filter && typeof query.filter === 'object') {
+        if (filter && typeof filter === 'object') {
             optionsObject.$and.push(filterMapper.mapFilter(filter, { contentType: contentType }));
         }
+
+        console.log(optionsObject.$and);
 
         accessRollSearcher = function(cb) {
             const accessRoll = MODULE('helper').accessRoll;
@@ -1239,6 +1248,18 @@ Object.prototype = {
                 }, {
                     $unwind: {
                         path: '$ProductTypes',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $lookup: {
+                        from: 'productFamily',
+                        localField: 'products.sellFamily',
+                        foreignField: '_id',
+                        as: 'ProductFamily'
+                    }
+                }, {
+                    $unwind: {
+                        path: '$ProductFamily',
                         preserveNullAndEmptyArrays: true
                     }
                 }, {
@@ -1282,6 +1303,7 @@ Object.prototype = {
 
                         variantsCount: { $first: '$variantsCount' },
                         ProductTypes: { $first: '$ProductTypes' },
+                        ProductFamily: { $first: '$ProductFamily' },
                         products: { $first: '$products' },
                         image: { $first: '$image' },
                         count: { $first: '$count' }
@@ -1321,6 +1343,7 @@ Object.prototype = {
                         variants: { $push: '$variants' },
                         count: { $first: '$count' },
                         ProductTypes: { $first: '$ProductTypes' },
+                        ProductFamily: { $first: '$ProductFamily' },
                         productCategories: { $first: '$productCategories' },
                         products: { $first: '$products' },
                         variantsCount: { $first: '$variantsCount' }
@@ -1331,17 +1354,24 @@ Object.prototype = {
                         data: {
                             _id: '$products._id',
                             info: '$products.info',
+                            Status: '$products.Status',
                             bundles: '$products.bundles',
                             inventory: '$products.inventory',
                             name: '$products.name',
                             imageSrc: '$products.image.imageSrc',
                             isBundle: '$products.isBundle',
-                            ProductTypesId: '$ProductTypes._id',
-                            ProductTypesName: '$ProductTypes.name',
+                            ProductTypes: '$ProductTypes',
+                            //ProductTypesName: '$ProductTypes.name',
                             ProductCategories: '$productCategories',
                             variants: '$variants',
                             createdBy: '$products.createdBy',
                             groupId: '$products.groupId',
+                            prices: '$products.prices',
+                            weight: '$products.weight',
+                            rating: '$products.rating',
+                            updatedAt: '$products.updatedAt',
+                            directCost: '$products.directCost',
+                            ProductFamily: '$ProductFamily',
                             variantsCount: {
                                 $filter: {
                                     input: '$variantsCount',
@@ -1366,18 +1396,25 @@ Object.prototype = {
                         data: {
                             _id: '$data._id',
                             info: '$data.info',
+                            Status: '$data.Status',
                             bundles: '$data.bundles',
                             inventory: '$data.inventory',
                             name: '$data.name',
                             imageSrc: '$data.imageSrc',
                             isBundle: '$data.isBundle',
-                            ProductTypesId: '$data.ProductTypesId',
-                            ProductTypesName: '$data.ProductTypesName',
+                            ProductTypes: '$data.ProductTypes',
+                            //ProductTypesName: '$data.ProductTypesName',
                             ProductCategories: '$data.ProductCategories',
                             variants: '$data.variants',
                             createdBy: '$data.createdBy',
                             images: '$data.images',
                             groupId: '$data.groupId',
+                            prices: '$data.prices',
+                            weight: '$data.weight',
+                            rating: '$data.rating',
+                            updatedAt: '$data.updatedAt',
+                            directCost: '$data.directCost',
+                            ProductFamily: '$data.ProductFamily',
                             variantsCount: { $arrayElemAt: ['$data.variantsCount', 0] }
                         }
                     }
@@ -1558,13 +1595,15 @@ Object.prototype = {
                         data: {
                             _id: '$products._id',
                             info: '$products.info',
+                            Status: '$products.Status',
                             bundles: '$products.bundles',
                             inventory: '$products.inventory',
                             name: '$products.name',
                             imageSrc: '$products.image.imageSrc',
                             isBundle: '$products.isBundle',
-                            ProductTypesId: '$ProductTypes._id',
-                            ProductTypesName: '$ProductTypes.name',
+                            ProductTypes: "$ProductTypes",
+                            //ProductTypesId: '$ProductTypes._id',
+                            //ProductTypesName: '$ProductTypes.name',
                             ProductCategories: '$productCategories',
                             variants: '$variants',
                             createdBy: '$products.createdBy',
@@ -1594,13 +1633,14 @@ Object.prototype = {
                         data: {
                             _id: '$data._id',
                             info: '$data.info',
+                            Status: '$data.Status',
                             bundles: '$data.bundles',
                             inventory: '$data.inventory',
                             name: '$data.name',
                             imageSrc: '$data.imageSrc',
                             isBundle: '$data.isBundle',
-                            ProductTypesId: '$data.ProductTypesId',
-                            ProductTypesName: '$data.ProductTypesName',
+                            ProductTypes: '$data.ProductTypes',
+                            //ProductTypesName: '$data.ProductTypesName',
                             ProductCategories: '$data.ProductCategories',
                             variants: '$data.variants',
                             createdBy: '$data.createdBy',
@@ -1663,7 +1703,7 @@ Object.prototype = {
             aggregation = Product.aggregate(matchAggregationArray);
 
             aggregation.options = {
-                allowDiskUse: true
+                //allowDiskUse: true
             };
 
             aggregation.exec(function(err, res) {
@@ -1681,6 +1721,17 @@ Object.prototype = {
                     };
                 } else {
                     resultData = res[0];
+                    var status = MODEL('product').Status;
+
+                    resultData.data = _.map(resultData.data, function(line) {
+
+                        line._status = (status.values[line.Status] ? {
+                            css: status.values[line.Status].cssClass,
+                            name: i18n.t(status.lang + ":" + status.values[line.Status].label)
+                        } : { name: line.Status });
+
+                        return line;
+                    });
 
                     for (i; i < resultData.data.length; i++) {
                         /*console.log(doNotShowImage);
@@ -1710,6 +1761,8 @@ Object.prototype = {
         async.waterfall(waterfallTasks, function(err, products) {
             if (err)
                 return self.throw500(err);
+
+
 
             self.json(products);
         });

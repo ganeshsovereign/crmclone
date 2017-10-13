@@ -89,12 +89,13 @@ var FilterMapper = function() {
                 });
                 break;
             case 'boolean':
-                result[_operator] = _.map(values, function(element) {
+                /*result[_operator] = _.map(values, function(element) {
                     return element === 'true';
-                });
+                });*/
+                result = (values == true);
                 break;
             case 'regex':
-                result = { $regex: new RegExp(values.toLowerCase()), $options: "xgi" };
+                result = { $regex: new RegExp(values.toLowerCase()), $options: "gi" };
                 break;
             case 'letter':
                 result = new RegExp('^[' + values.toLowerCase() + values.toUpperCase() + '].*');
@@ -130,7 +131,7 @@ var FilterMapper = function() {
         var key;
         var i;
 
-        //return console.log(filter, options, F.global.filters[contentType]);
+        //console.log(filter, options, F.global.filters[contentType]);
 
         var $orArray;
 
@@ -143,10 +144,14 @@ var FilterMapper = function() {
 
             if (filterNames.indexOf(filterName) !== -1) {
                 filterObject = filter[filterName];
-                filterValues = filterObject.value || [];
 
-                if (filterValues.length == 0)
+                if (typeof filterObject.value == 'object' && filterObject.value.length === 0)
                     continue;
+
+                if (typeof filterObject.value == 'string' && filterObject.value.length === 0)
+                    continue;
+
+                filterValues = filterObject.value;
 
                 filterConstantsByName = filterConstants[filterName] || {};
                 filterType = !!filterObject.type ? filterObject.type : filterConstantsByName.type || 'ObjectId';
@@ -158,7 +163,7 @@ var FilterMapper = function() {
                     });
                 } else if (contentType === 'Products' && filterBackend === 'job') {
                     filterResObject.job = { $exists: false };
-                } else if (filterValues && (filterName !== 'startDate' || filterName !== 'endDate')) {
+                } else if (filterValues !== null && (filterName !== 'startDate' || filterName !== 'endDate')) {
                     if (filterBackend) {
                         if (typeof filterBackend === 'string') {
                             key = suffix ? filterBackend + '.' + suffix : filterBackend;
@@ -171,6 +176,7 @@ var FilterMapper = function() {
                             $orArray = [];
 
                             _.map(filterBackend, function(keysObject) {
+                                console.log(keysObject);
                                 var resObj = andState ? filterResObject : {};
 
                                 resObj[keysObject.key] = convertType(filterValues, filterType, keysObject.operator);

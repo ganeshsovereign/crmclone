@@ -134,5 +134,56 @@
                 }
             }
         }
+    },
+    "filters": {
+        "salesProduct": {
+            "Status": {
+                "displayName": "Status",
+                "backend": "Status",
+                "type": "string"
+            },
+
+            "sellFamily": {
+                "displayName": "products:Family",
+                "backend": "sellFamily",
+            },
+
+            "name": {
+                "displayName": "Name",
+                "backend": "info.langs.name",
+                "type": "regex"
+            },
+
+            "ref": {
+                "displayName": "Ref",
+                "backend": "info.SKU",
+                "type": "regex"
+            },
+
+            "date": {
+                "type": "date",
+                "backend": {
+                    "key": "updateAt",
+                    "operator": ["$gte", "$lte"]
+                }
+            },
+
+            "isSell": {
+                "type": "boolean",
+                "backend": "isSell"
+            },
+
+            "isBuy": {
+                "backend": "isBuy",
+                "type": "boolean"
+            },
+
+            "isActive": {
+                "backend": "info.isActive",
+                "type": "boolean"
+            },
+
+            "array": ["Status", "name", "date", "isSell", "isBuy", "isActive"]
+        }
     }
 }

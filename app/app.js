@@ -1227,7 +1227,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             data: {
                 pageTitle: 'Liste des produits / services'
             },
-            controller: "ProductController"
+            controller: "ProductListController"
         })
         .state('product.show', {
             url: "/{id:[0-9a-z]{24}}",

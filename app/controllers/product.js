@@ -1029,19 +1029,13 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
 
         $scope.dict = {};
         $scope.search = {
-            ref: { key: 'ref', value: "", type: 'regex' },
-            ref_client: { key: 'ref_client', value: "", type: 'regex' },
-            entity: {
-                key: 'entity',
-                value: [$rootScope.login.entity],
-                type: 'string'
-            },
-            supplier: { key: 'supplier', value: [], type: '' },
-            salesPerson: { key: 'salesPerson', value: [], type: '' },
-            Status: { key: 'Status', value: [], type: 'string' },
-            allocated: { key: 'status.allocateStatus', value: [], type: 'string' },
-            fulfill: { key: 'status.fulfillStatus', value: [], type: 'string' },
-            shipping: { key: 'status.shippingStatus', value: [], type: 'string' },
+            ref: { key: 'ref', value: "" },
+            name: { key: 'name', value: "" },
+            Status: { key: 'Status', value: [] },
+            sellFamily: { key: 'sellFamily', value: [] },
+            isActive: { key: 'isActive', value: true },
+            isSell: { key: 'isSell', value: true },
+            isBuy: { key: 'isBuy', value: false },
         };
 
         $scope.page = {
@@ -1050,7 +1044,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             total: 0
         };
 
-        $scope.sort = { 'info.SKU': 1 };
+        $scope.sort = { 'data.info.SKU': 1 };
 
         if (typeof superCache.get("ProductListController") !== "undefined") {
             $scope.page = superCache.get("ProductListController").page;
@@ -1066,9 +1060,9 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
         $scope.checkedAll = function() {
             if (!this.checkAll)
                 this.grid = {};
-            for (var i = 0; i < $scope.orders.length; i++)
+            for (var i = 0; i < $scope.products.length; i++)
                 if (this.checkAll)
-                    this.grid[$scope.orders[i]._id] = true;
+                    this.grid[$scope.products[i]._id] = true;
         }
 
 
@@ -1115,6 +1109,14 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
                 //console.log(data);
             });*/
 
+            $http({
+                method: 'GET',
+                url: '/erp/api/product/family',
+                params: { isCost: false }
+            }).success(function(data, status) {
+                $scope.sellFamilies = data.data;
+            });
+
 
             $scope.find();
         });
@@ -1147,7 +1149,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             var query = {
                 filter: $scope.search,
                 viewType: 'list',
-                contentType: 'product',
+                contentType: 'salesProduct',
                 limit: $scope.page.limit,
                 page: $scope.page.page,
                 sort: this.sort
@@ -1155,7 +1157,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
 
             //console.log(query);
 
-            Orders.order.query(query, function(data, status) {
+            Products.query(query, function(data, status) {
                 console.log("products", data);
                 $scope.page.total = data.total;
                 $scope.products = data.data;

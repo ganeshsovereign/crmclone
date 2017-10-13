@@ -29,11 +29,11 @@
                         <a href="#" ng-click="refreshAllProducts()"><i class="fa fa-refresh"></i> 
                                         Force @(Refresh) </a>
                     </li>
-                    <li>
+                    <!--<li>
                         <a href="#" ng-show="login.rights.product.create" data-ng-click="updatePrices()">
                             <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
                         </a>
-                    </li>
+                    </li>-->
                     <!--    <li>
                                         <a href="#">
                                             @(Delete) </a>
@@ -47,26 +47,7 @@
         </div>
     </div>
 
-    <!--<div>
-        <script type="text/ng-template" id="myModalPrice.html">
-            <div class="modal-header">
-                <h4 class="no-margin-bottom">Modifier les prix</h4>
-            </div>
-            <div class="modal-body">
-
-                <p class="button-height inline-medium-label">
-                    <label for="coef">Coefficient multiplicateur</label>
-                    <input id="coef" required data-ng-model="coef" type="number" min="0.01" step="any" class="form-control">
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" ng-click="cancel()" class="btn btn-warning btn-sm">@(Cancel)</button>
-                <button type="button" ng-click="ok()" class="btn btn-info btn-sm">@(Apply)</button>
-
-            </div>
-        </script>-->
-
-    <div class="portlet light portlet-form bordered">
+    <div class="portlet light portlet-form bordered waiting">
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-cubes"></i>
@@ -74,107 +55,197 @@
             </div>
             <div class="actions">
                 <button class="btn blue" ui-sref="product.create">@(Add) <i class="fa fa-plus"></i></button>
-                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="family=null;find();"><i class="fa fa-refresh"></i></button>
+                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find(true)"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
+        <div class="tools">
+        </div>
         <div class="portlet-body">
-            <div class="table-toolbar">
-                <div class="row hidden-print">
-                    <div class="form-group form-md-line-input">
-                        <div class="col-md-3">
-                            <div class="form-group form-md-line-input ">
-                                <select ng-model="type" ng-change="setCache('type', type); find();" id="Status" ng-options="s.id as s.name for s in types" class="form-control"></select>
-                                <label for="Status">@(Status)</label>
+            <div class="row hidden-print">
+                <div class="col-md-9">
+                    <div class="portlet light bg-inverse">
+                        <div class="portlet-body">
+                            <form ng-submit="find()">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="Status">@(Ref)</label>
+                                            <input ng-model="search.ref.value" class="form-control input-sm" ng-change="find()" />
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="Status">@(Name)</label>
+                                            <input ng-model="search.name.value" class="form-control input-sm" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@(products:Family)</label>
+                                            <select ng-model="search.sellFamily.value[0]" id="Status" ng-options="s._id as s.name for s in sellFamilies" class="form-control input-sm"></select>
+                                        </div>
+
+                                        <!--<div class="form-group">
+                                            <label for="Status">@(companies:Entity)</label>
+                                            <select ng-show="login.multiEntities" ng-model="search.entity.value[0]" ng-options="s.id as s.name for s in entityList" class="form-control input-sm"></select>
+                                        </div>-->
+
+                                        <div class="form-group">
+                                            <label>@(Status)</label>
+                                            <select ng-model="search.Status.value[0]" id="Status" ng-options="s.id as s.name for s in types" class="form-control input-sm"></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+
+                                        <div class="form-group form-md-checkboxes">
+                                            <label>@(Status)</label>
+                                            <div class="md-checkbox-list">
+                                                <div class="md-checkbox has-success">
+                                                    <input type="checkbox" id="isActive" class="md-check" ng-model="search.isActive.value" ng-checked="search.isActive.value" ng-change="find()">
+                                                    <label for="isActive">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> @(Activated)</label>
+                                                </div>
+                                                <div class="md-checkbox">
+                                                    <input type="checkbox" id="isSell" class="md-check" ng-model="search.isSell.value" ng-checked="search.isSell.value" ng-change="find()">
+                                                    <label for="isSell">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> @(products:Status.OnSell)</label>
+                                                </div>
+
+                                                <div class="md-checkbox">
+                                                    <input type="checkbox" id="isBuy" class="md-check" ng-model="search.isBuy.value" ng-checked="search.isBuy.value" ng-change="find()">
+                                                    <label for="isBuy">
+                                                        <span></span>
+                                                        <span class="check"></span>
+                                                        <span class="box"></span> @(products:Status.OnBuy)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+
+
+
+                                    </div>
+                                </div>
+
+                                <div class="form-actions right no-padding">
+                                    <button type="button" class="btn btn-sm default" ng-click="resetFilter()">@(Reset)</button>
+                                    <button type="submit" class="btn btn-sm green">@(Search)</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+                <!--<div class="col-md-3">
+                    <div class="portlet mt-element-ribbon light portlet-fit bordered ">
+                        <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase ">
+                            <div class="ribbon-sub ribbon-bookmark "></div>
+                            <i class="fa fa-pause "></i>
+                        </div>
+                        <div class="portlet-title ">
+                            <div class="caption ">
+                                <i class=" icon-control-pause font-yellow-crusta "></i>
+                                <span class="caption-subject font-yellow-crusta bold uppercase ">Totaux</span>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group form-md-line-input ">
-                                <select class="table-group-action-input form-control" ng-model="family" ng-options="s._id as s.name for s in sellFamilies" ng-change="find();"></select>
-                                <label for="FamilyProducts">@(products:Family)</label>
+                        <div class="portlet-body ">
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(Qty)</div>
+                                <div class="col-md-7 value  ng-binding">{{totalAll.count}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(TotalHT)</div>
+                                <div class="col-md-7 value  ng-binding">{{totalAll.total_ht | currency}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name bold ">@(TotalTTC)</div>
+                                <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc | currency}}</div>
+                            </div>
+                            <hr>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name">@(AmountPaid)</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.total_paid | currency}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name bold ">@(AmountToPaid)</div>
+                                <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc - totalAll.total_paid | currency}}</div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
-        </div>
 
-        <div class="dataTables_wrapper table-responsive">
-            <div class="col-md-12">
-                <table class="table table-striped dataTable table-hover" id="productList">
+            <table-pagination ng-model="page"></table-pagination>
+            <div class="no-footer table-responsive">
+                <table class="table table-striped table-hover table-condensed no-footer">
+                    <colgroup>
+                        <col width="42px">
+                        <col width="50px">
+                        <col width="14%">
+                        <col width="8%">
+                        <col width="10%">
+                        <col width="12%">
+                        <col width="8%">
+                        <col width="8%">
+                        <col width="8%">
+                        <col width="80px">
+                        <col width="100px">
+                        <col width="10%">
+                    </colgroup>
                     <thead>
                         <tr role="row" class="heading">
-                            <th width="2%">
-                                <input type="checkbox" class="group-checkable" />
+                            <th class="text-center">
+                                <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" ng-click="checkedAll()" />
                             </th>
                             <th>@(Pictures)</th>
-                            <th>@(Ref)</th>
+                            <th table-sort='data.info.SKU' ng-model="sort" name="@(Ref)"></th>
                             <th>@(Type)</th>
                             <th>@(Name)</th>
-                            <th>@(TotalHTsell)</th>
-                            <th>@(TotalHTbuy)</th>
-                            <th>@(Weight)</th>
-                            <th>@(DateModificationShort)</th>
-                            <th>@(Rating)</th>
+                            <th table-sort='data.prices.pu_ht' ng-model="sort" name="@(TotalHTsell)"></th>
+                            <th table-sort='data.directCost' ng-model="sort" name="@(TotalHTbuy)"></th>
+                            <th table-sort='data.weight' ng-model="sort" name="@(Weight)"></th>
+                            <th table-sort='data.updatedAt' ng-model="sort" name="@(DateModificationShort)"></th>
+                            <th table-sort='data.rating.total' ng-model="sort" name="@(Rating)"></th>
                             <th>@(Status)</th>
                             <th>@(Family)</th>
                         </tr>
-                        <!--<tr role="row" class="filter">
-                            <td>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="ref">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="societe_name">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="contact_name">
-                            </td>
-                            <td>
-                                <div class="input-group date date-picker margin-bottom-5" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="order_date_from" placeholder="From">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
-                                    </span>
-                                </div>
-                                <div class="input-group date date-picker" data-date-format="dd/mm/yyyy">
-                                    <input type="text" class="form-control form-filter input-sm" readonly name="order_date_to" placeholder="To">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-sm default" type="button"><i class="fa fa-calendar"></i></button>
-                                    </span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="margin-bottom-5">
-                                    <input type="text" class="form-control form-filter input-sm" name="order_price_from" placeholder="From"/>
-                                </div>
-                                <input type="text" class="form-control form-filter input-sm" name="order_price_to" placeholder="To"/>
-                            </td>
-                            <td>
-                                <select name="order_status" class="form-control form-filter input-sm">
-                                    <option value="">Select...</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="closed">Closed</option>
-                                    <option value="hold">On Hold</option>
-                                    <option value="fraud">Fraud</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-filter input-sm" name="order_ship_to">
-                            </td>
-                            <td>
-                            </td>
-                            
-                            <td>
-                                <div class="margin-bottom-5">
-                                    <button class="btn btn-sm yellow filter-submit margin-bottom"><i class="fa fa-search"></i> Search</button>
-                                </div>
-                                <button class="btn btn-sm red filter-cancel"><i class="fa fa-times"></i> Reset</button>
-                            </td>
-                        </tr>-->
                     </thead>
+                    <tbody>
+                        <tr ng-repeat="line in products">
+                            <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
+                            <td ui-sref="product.show({id:line._id})">
+                                <img ng-if="line.imageSrc" width="32" height="32" ng-src="/erp/api/images/bank/xs/{{line.imageSrc.imageSrc}}" />
+                                <img ng-hide="line.imageSrc" width="32" height="32" src="/assets/admin/layout/img/nophoto.jpg" />
+                            </td>
+                            <td ui-sref="product.show({id:line._id})"><a class=" with-tooltip " ui-sref="product.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.info.SKU}}</a></td>
+                            <td ui-sref="product.show({id:line._id})">
+                                {{line.ProductTypes.langs[_language].name}}
+                            </td>
+                            <td ui-sref="product.show({id:line._id})">{{line.info.langs[_language].name}}</td>
+                            <td ui-sref="product.show({id:line._id})" class="text-right">{{line.prices.pu_ht | number:3}}</td>
+                            <td ui-sref="product.show({id:line._id})" class="text-right" ng-class="{'text-danger':!line.directCost}">{{line.directCost | number:3}}</td>
+                            <td ui-sref="product.show({id:line._id})" class="text-right"><span ng-if="line.weight">{{line.weight | number:3}} kg</span></td>
+                            <td ui-sref="product.show({id:line._id})">{{line.updatedAt| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="product.show({id:line._id})">
+                                <progressbar animate="false" value="line.rating.total *100" type="info"><b>{{line.rating.total * 100}}%</b></progressbar>
+                            </td>
+                            <td ui-sref="product.show({id:line._id})">
+                                <span class="label label-sm {{line._status.css}} "> {{line._status.name}}</span>
+                            </td>
+                            <td ui-sref="product.show({id:line._id})">
+                                {{line.ProductFamily.langs[_language].name}}
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
+            <table-pagination ng-model="page"></table-pagination>
         </div>
     </div>
 </div>
