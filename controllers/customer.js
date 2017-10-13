@@ -197,9 +197,9 @@ exports.install = function() {
             'isremoved': { $ne: true },
             $and: [{
                 "$or": [{
-                    'name.last': new RegExp(filter, "gi")
+                    'name.last': { $regex: new RegExp(filter), $options: "xgi" }
                 }, {
-                    'name.first': new RegExp(filter, "gi")
+                    'name.first': { $regex: new RegExp(filter), $options: "xgi" }
                 }, {
                     'salesPurchases.ref': new RegExp(self.body.filter.filters[0].value, "i")
                 }]

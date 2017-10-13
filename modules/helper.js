@@ -94,7 +94,7 @@ var FilterMapper = function() {
                 });
                 break;
             case 'regex':
-                result = new RegExp(values.toLowerCase(), "gi");
+                result = { $regex: new RegExp(values.toLowerCase()), $options: "xgi" };
                 break;
             case 'letter':
                 result = new RegExp('^[' + values.toLowerCase() + values.toUpperCase() + '].*');

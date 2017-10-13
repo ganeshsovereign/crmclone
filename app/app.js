@@ -624,7 +624,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('offer.show.detail', {
-            url: "/detail",
             templateUrl: "/views/orders/detail.html",
             data: { pageTitle: 'Devis' }
         })
@@ -660,7 +659,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('order.show.detail', {
-            url: "/detail",
             templateUrl: "/views/orders/detail.html",
             data: { pageTitle: 'Commande' }
         })
@@ -697,7 +695,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('delivery.show.detail', {
-            url: "/detail",
             templateUrl: "/views/orders/detail.html",
             data: { pageTitle: 'Bon de livraison' }
         })
@@ -733,7 +730,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('bill.show.detail', {
-            url: "/detail",
             templateUrl: "/views/orders/detail.html",
             data: { pageTitle: 'Facture client' }
         })
@@ -784,7 +780,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('ordersupplier.show.detail', {
-            url: "/detail",
             templateUrl: "/views/suppliers/detail.html",
             data: { pageTitle: 'Commande' }
         })
@@ -820,7 +815,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('billsupplier.show.detail', {
-            url: "/detail",
             templateUrl: "/views/suppliers/detail.html",
             data: { pageTitle: 'Facture' }
         })
@@ -872,7 +866,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('offersupplier.show.detail', {
-            url: "/detail",
             templateUrl: "/views/suppliers/detail.html",
             data: { pageTitle: 'Devis' }
         })
@@ -909,7 +902,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('deliverysupplier.show.detail', {
-            url: "/detail",
             templateUrl: "/views/suppliers/detail.html",
             data: { pageTitle: 'Bon de livraison' }
         })
@@ -946,7 +938,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('ordersfab.show.detail', {
-            url: "/ordersfab",
             templateUrl: "/views/ordersfab/detail.html",
             data: { pageTitle: 'Ordre de fabrication' }
         })
@@ -992,7 +983,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "OrdersController"
         })
         .state('stockreturn.show.detail', {
-            url: "/detail",
             templateUrl: "/views/orders/detail.html",
             data: { pageTitle: 'Bon de retour' },
             controller: "OrdersController"
@@ -1114,19 +1104,18 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "SocieteController"
         })
         .state('societe.show.company', {
-            url: "/company",
             templateUrl: "/views/company/company.html",
             data: {
                 pageTitle: 'Fiche societe'
             }
         })
-        .state('societe.show.person', {
+        /*.state('societe.show.person', {
             url: "/person",
             templateUrl: "/views/company/company.html", //TODO company > person
             data: {
                 pageTitle: 'Fiche societe'
             }
-        })
+        })*/
         .state('societe.show.commercial', {
             url: "/commercial",
             templateUrl: "/views/company/commercial.html",
@@ -1209,7 +1198,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "ContactController"
         })
         .state('contact.show', {
-            parent: "contact",
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/contact/fiche.html",
             data: {
@@ -1242,8 +1230,8 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "ProductController"
         })
         .state('product.show', {
-            parent: "product",
             url: "/{id:[0-9a-z]{24}}",
+            //abstract: true,
             templateUrl: "/views/product/fiche.html",
             data: {
                 pageTitle: 'Fiche produit / service'
@@ -1389,7 +1377,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         // information
         .state("product.show.informations", {
-            url: "/informations",
             templateUrl: "/views/product/informations.html",
             data: { pageTitle: 'Informations - Product' }
         })
@@ -1865,7 +1852,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "EmployeeController"
         })
         .state('employee.show', {
-            parent: "employee",
             url: "/{id:[0-9a-z]{24}}",
             templateUrl: "/views/employees/fiche.html",
             data: {
@@ -1884,7 +1870,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
         })
         // Main
         .state("employee.show.main", {
-            url: "/main",
             templateUrl: "/views/employees/main.html",
             data: {
                 pageTitle: 'Main'

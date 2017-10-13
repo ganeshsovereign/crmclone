@@ -1020,6 +1020,156 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
 }]);
 
+MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Products',
+    function($scope, $rootScope, $http, $modal, $filter, $timeout, superCache, Products) {
+
+        //var grid = new Datatable();
+        var user = $rootScope.login;
+        $scope.grid = {};
+
+        $scope.dict = {};
+        $scope.search = {
+            ref: { key: 'ref', value: "", type: 'regex' },
+            ref_client: { key: 'ref_client', value: "", type: 'regex' },
+            entity: {
+                key: 'entity',
+                value: [$rootScope.login.entity],
+                type: 'string'
+            },
+            supplier: { key: 'supplier', value: [], type: '' },
+            salesPerson: { key: 'salesPerson', value: [], type: '' },
+            Status: { key: 'Status', value: [], type: 'string' },
+            allocated: { key: 'status.allocateStatus', value: [], type: 'string' },
+            fulfill: { key: 'status.fulfillStatus', value: [], type: 'string' },
+            shipping: { key: 'status.shippingStatus', value: [], type: 'string' },
+        };
+
+        $scope.page = {
+            limit: 25,
+            page: 1,
+            total: 0
+        };
+
+        $scope.sort = { 'info.SKU': 1 };
+
+        if (typeof superCache.get("ProductListController") !== "undefined") {
+            $scope.page = superCache.get("ProductListController").page;
+            $scope.search = superCache.get("ProductListController").search;
+            $scope.sort = superCache.get("ProductListController").sort;
+        }
+
+        $scope.resetFilter = function() {
+            superCache.removeAll();
+            $rootScope.$state.reload();
+        }
+
+        $scope.checkedAll = function() {
+            if (!this.checkAll)
+                this.grid = {};
+            for (var i = 0; i < $scope.orders.length; i++)
+                if (this.checkAll)
+                    this.grid[$scope.orders[i]._id] = true;
+        }
+
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = true;
+        };
+
+        $scope.$dict = {};
+
+        $rootScope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('product') < 0)
+                return;
+
+            $scope.find();
+        });
+
+        // Init
+        $scope.$on('$viewContentLoaded', function() {
+            // initialize core components
+            Metronic.initAjax();
+
+            // set default layout mode
+            $rootScope.settings.layout.pageSidebarClosed = true;
+            $rootScope.settings.layout.pageBodySolid = false;
+
+            /*var dict = [];
+            $http({
+                method: 'GET',
+                url: '/erp/api/dict',
+                params: {
+                    dictName: dict
+                }
+            }).success(function(data, status) {
+                $scope.dict = data;
+                //console.log(data);
+            });*/
+
+
+            $scope.find();
+        });
+
+        $scope.showStatus = function(idx, dict) {
+            if (!($scope.dict[dict] && $scope.order[idx]))
+                return;
+            var selected = $filter('filter')($scope.dict[dict].values, {
+                id: $scope.order[idx]
+            });
+            return ($scope.order[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
+        };
+
+
+        $scope.find = function() {
+
+            superCache.put("ProductListController", {
+                sort: $scope.sort,
+                search: $scope.search,
+                page: $scope.page
+            });
+
+            Metronic.blockUI({
+                target: '.waiting',
+                animate: false,
+                boxed: true,
+                overlayColor: 'gray'
+            });
+
+            var query = {
+                filter: $scope.search,
+                viewType: 'list',
+                contentType: 'product',
+                limit: $scope.page.limit,
+                page: $scope.page.page,
+                sort: this.sort
+            };
+
+            //console.log(query);
+
+            Orders.order.query(query, function(data, status) {
+                console.log("products", data);
+                $scope.page.total = data.total;
+                $scope.products = data.data;
+                $scope.totalAll = data.totalAll;
+
+                $timeout(function() {
+                    Metronic.unblockUI('.waiting');
+                }, 0);
+            });
+
+        };
+    }
+]);
+
 MetronicApp.controller('ProductBarCodeController', ['$scope', '$routeParams', 'Global', '$http', function($scope, $routeParams, Global, $http) {
     $scope.global = Global;
 
