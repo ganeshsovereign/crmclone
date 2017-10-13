@@ -939,20 +939,20 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             },
             supplier: { value: [] },
             salesPerson: { value: [] },
-            Status: { value: ["LIST"] },
+            Status: { value: ["NEW"] },
             allocationStatus: { value: [] },
             fulfilledStatus: { value: [] },
             shippingStatus: { value: [] },
             datedl: {
                 value: {
-                    start: moment("2010").startOf('year').toDate(),
-                    end: moment("2027").endOf('year').toDate()
+                    start: moment().startOf('year').toDate(),
+                    end: moment().endOf('year').toDate()
                 }
             },
             datec: {
                 value: {
-                    start: moment("2010").startOf('year').toDate(),
-                    end: moment("2027").endOf('year').toDate()
+                    start: moment().startOf('year').toDate(),
+                    end: moment().endOf('year').toDate()
                 }
             },
         };

@@ -187,9 +187,15 @@ Object.prototype = {
 
         //console.log(filter);
 
-        if (filter && filter.Status.value[0] == "LIST") {
+        //TODO refresh Status on angular
+        if (filter && filter.Status.value[0] == "NEW") {
             filter.Status.value = [];
             filterObject.Status = { $ne: "BILLED" };
+        }
+
+        if (filter && filter.Status.value[0] == "CLOSED") {
+            filter.Status.value[0] = "BILLED";
+            //filterObject.Status = { $ne: "BILLED" };
         }
 
 
