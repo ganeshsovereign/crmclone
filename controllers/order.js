@@ -185,7 +185,7 @@ Object.prototype = {
             matchObject['ref'] = { $regex: regExp };
         }
 
-        console.log(filter);
+        //console.log(filter);
 
         if (filter && filter.Status.value[0] == "LIST") {
             filter.Status.value = [];
