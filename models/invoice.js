@@ -587,7 +587,7 @@ F.on('invoice:recalculateStatus', function(data) {
                 if (err)
                     return console.log(err);
 
-                console.log(doc);
+                //console.log(doc);
 
                 if (!doc || doc.length == 0)
                     return BillModel.update({ _id: bill._id }, { $set: { Status: "NOT_PAID", updatedAt: new Date(), total_paid: 0 } }, function(err, doc) {
@@ -597,7 +597,7 @@ F.on('invoice:recalculateStatus', function(data) {
 
 
                 let payment = doc[0].amount;
-                console.log(payment);
+                //console.log(payment);
 
                 var status = "STARTED";
                 if (round(payment, 2) >= round(bill.total_ttc, 2))
@@ -609,7 +609,7 @@ F.on('invoice:recalculateStatus', function(data) {
                 BillModel.update({ _id: bill._id }, { $set: { Status: status, updatedAt: new Date(), total_paid: payment } }, function(err, doc) {
                     if (err)
                         return console.log(err);
-                    console.log(doc);
+                    //console.log(doc);
                 });
             });
     });
