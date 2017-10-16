@@ -1,0 +1,120 @@
+<!-- Date NOT USED -->
+<div ng-if-start="attribut.mode =='date'" class=" task-icon ">
+    <a href="javascript:; ">
+        <i class="fa fa-calendar "></i>
+    </a>
+</div>
+<div ng-if-end class="task-content ">
+    <h4 class="uppercase bold ">
+        <a href="javascript:; ">{{attribut.langs[0].name}}</a>
+    </h4>
+    <div class="row ">
+        <input date-input ng-model="product.attributs[attributMap[attribut._id]].value" /> </div>
+</div>
+
+<!-- Number -->
+<div ng-if="attribut.mode =='number'" class="task-content">
+    <label class="uppercase bold ">{{attribut.langs[0].name}} </label>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-inline" role="form">
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputEmail2">Min</label>
+                    <input type="number" placeholder="Min" min="{{attribut.minNumber}}" step="{{attribut.steps}}" max="{{attribut.maxNumber}}" class="form-control input-sm" ng-model="ngModel[attribut._id].value[0]"> </div>
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputPassword2">Max</label>
+                    <input type="number" placeholder="Max" min="{{attribut.minNumber}}" step="{{attribut.steps}}" max="{{attribut.maxNumber}}" class="form-control input-sm" ng-model="ngModel[attribut._id].value[1]"> </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Metric -->
+<div ng-if="attribut.mode =='metric'" class="task-content">
+    <label class="uppercase bold ">{{attribut.langs[0].name}} </label>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-inline" role="form">
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputEmail2">Min</label>
+                    <input type="number" placeholder="Min" min="{{attribut.minNumber}}" step="{{attribut.steps}}" max="{{attribut.maxNumber}}" class="form-control input-sm" ng-model="ngModel[attribut._id].value[0]"> </div>
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputPassword2">Max</label>
+                    <input type="number" placeholder="Max" min="{{attribut.minNumber}}" step="{{attribut.steps}}" max="{{attribut.maxNumber}}" class="form-control input-sm" ng-model="ngModel[attribut._id].value[1]"> </div>
+            </div>
+        </div>
+        <div class="col-md-4" ng-if="dict.fk_units">
+            <select class="form-control input-sm" ng-model="attribut.metricUnit" disabled ng-options="s.id as s.label for s in dict.fk_units.values"></select>
+        </div>
+    </div>
+</div>
+
+<!-- Min-Max -->
+<div ng-if="attribut.mode =='min-max'" class="task-content">
+    <label class="uppercase bold ">{{attribut.langs[0].name}} <small>(Min/Max)</small></label>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-inline" role="form">
+                <div class="form-group">
+                    <label class="sr-only" for="exampleInputEmail2">@(Number)</label>
+                    <input type="number" placeholder="@(Number)" min="{{attribut.minNumber}}" step="{{attribut.steps}}" max="{{attribut.maxNumber}}" class="form-control input-sm" ng-model="ngModel[attribut._id].value[0]"> </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Text -->
+
+<!-- Boolean-->
+<div ng-if-start="attribut.mode =='boolean'" class="task-icon ">
+    <a href="javascript:; ">
+        <i class="fa fa-toggle-on "></i>
+    </a>
+</div>
+<div ng-if-end class="task-content ">
+    <h4 class="uppercase bold ">
+        <a href="javascript:; ">{{attribut.langs[0].name}}</a>
+    </h4>
+    <div class="row ">
+        <div class="btn-group " data-toggle="buttons ">
+            <label class="btn btn-default active ">
+                                                <input type="radio " class="toggle ">Yes </label>
+            <label class="btn btn-default ">
+                                                <input type="radio " class="toggle "> No </label>
+        </div>
+    </div>
+</div>
+
+<!-- Select -->
+
+<div ng-if="attribut.mode =='select'" class="task-content">
+    <label class="uppercase bold ">{{attribut.langs[0].name}} <small>(Min/Max)</small></label>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="table-scrollable" style="height:140px;overflow:auto;">
+                <table class="table table-condensed table-hover">
+                    <tbody>
+                        <tr ng-repeat="value in attribut.values | filterToggleSelection : ngModel[attribut._id].value:false | orderBy:'code'">
+                            <td ng-click="toggleSelection(ngModel[attribut._id].value, value._id)">{{value.langs[0].value}} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-2" style="margin-top:50px;">
+            <a><i class="large fa fa-arrow-left"></i></a>
+            <a><i class="large fa fa-arrow-right"></i></a>
+        </div>
+        <div class="col-md-5">
+            <div class="table-scrollable" style="height:140px;overflow:auto;">
+                <table class="table table-condensed table-hover">
+                    <tbody>
+                        <tr ng-repeat="value in attribut.values | filterToggleSelection : ngModel[attribut._id].value:true | orderBy:'code'">
+                            <td ng-click="toggleSelection(ngModel[attribut._id].value, value._id)">{{value.langs[0].value}} </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

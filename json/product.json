@@ -169,13 +169,19 @@
             },
 
             "isSell": {
-                "type": "boolean",
-                "backend": "isSell"
+                "type": "checked",
+                "backend": "isSell",
+                "options": {
+                    "values": [true, false]
+                }
             },
 
             "isBuy": {
                 "backend": "isBuy",
-                "type": "boolean"
+                "type": "checked",
+                "options": {
+                    "values": [true, false]
+                }
             },
 
             "isActive": {

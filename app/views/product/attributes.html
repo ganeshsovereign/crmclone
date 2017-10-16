@@ -113,10 +113,11 @@
                                                             </h4>
                                                             <div class="row">
                                                                 <div class="col-md-4">
-                                                                    <input type="number" placeholder="Min" class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value.min" ng-change="product.attributes[attributeMap[attribute._id]].value.max = product.attributes[attributeMap[attribute._id]].value.min"/>
+                                                                    <input type="number" placeholder="Min" class="form-control" ng-model="product.attributes[attributeMap[attribute._id]].value.min" ng-change="product.attributes[attributeMap[attribute._id]].value.max = product.attributes[attributeMap[attribute._id]].value.min"
+                                                                    />
                                                                 </div>
                                                                 <div class="col-md-4">
-                                                                    <input type="number" placeholder="Max" class="form-control" min="{{product.attributes[attributeMap[attribute._id]].value.min}}" ng-model="product.attributes[attributeMap[attribute._id]].value.max"/>
+                                                                    <input type="number" placeholder="Max" class="form-control" min="{{product.attributes[attributeMap[attribute._id]].value.min}}" ng-model="product.attributes[attributeMap[attribute._id]].value.max" />
                                                                 </div>
                                                                 <div class="col-md-4" ng-show="attribute.metricUnit">
                                                                     <select class="form-control" ng-model="attribute.metricUnit" disabled ng-options="s.id as s.label for s in dict.fk_units.values"></select>

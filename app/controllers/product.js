@@ -1026,6 +1026,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
         //var grid = new Datatable();
         var user = $rootScope.login;
         $scope.grid = {};
+        $scope.openFilter = {};
 
         $scope.dict = {};
         $scope.search = {
@@ -1033,9 +1034,9 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             name: { value: "" },
             Status: { value: [] },
             sellFamily: { value: [] },
-            isActive: { value: true },
-            isSell: { value: true },
-            isBuy: { value: false },
+            isActive: { value: [true] },
+            isSell: { value: [true, true] },
+            isBuy: { value: [true, true] },
         };
 
         $scope.page = {
@@ -1071,6 +1072,13 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             $event.stopPropagation();
 
             $scope.opened = true;
+        };
+
+        $scope.doOpenFilter = function(key) {
+            if (!key)
+                return;
+
+            $scope.openFilter[key] = !$scope.openFilter[key];
         };
 
         $scope.$dict = {};
@@ -1115,10 +1123,13 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
                 params: { isCost: false }
             }).success(function(data, status) {
                 $scope.sellFamilies = data.data;
+                $scope.find();
+
+                $scope.loadAttibutFamily();
+
             });
 
 
-            $scope.find();
         });
 
         $scope.showStatus = function(idx, dict) {
@@ -1169,6 +1180,49 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             });
 
         };
+
+        $scope.loadAttibutFamily = function() {
+            if (!this.search.sellFamily.value[0])
+                return;
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/product/family/' + this.search.sellFamily.value[0]
+            }).success(function(data, status) {
+                $scope.productFamilyAttributes = data;
+
+                //console.log(data);
+
+                angular.forEach(data.opts, function(elem) {
+                    if (!$scope.search[elem._id])
+                        switch (elem.mode) {
+                            case 'select':
+                                $scope.search[elem._id] = {
+                                    value: [],
+                                    key: 'attributes',
+                                    options: {
+                                        key: 'options',
+                                        type: 'attribute',
+                                        attributeId: elem._id
+                                    }
+                                };
+                                break;
+                            default:
+                                $scope.search[elem._id] = {
+                                    value: [],
+                                    type: 'number',
+                                    key: 'attributes',
+                                    options: {
+                                        type: 'attribute',
+                                        attributeId: elem._id
+                                    },
+                                    operator: ["$gte", "$lte"]
+                                };
+                        }
+                });
+
+            });
+        }
     }
 ]);
 

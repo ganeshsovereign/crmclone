@@ -1217,7 +1217,7 @@ Object.prototype = {
             optionsObject.$and.push(filterMapper.mapFilter(filter, { contentType: contentType }));
         }
 
-        console.log(optionsObject.$and);
+        //console.log(optionsObject.$and);
 
         accessRollSearcher = function(cb) {
             const accessRoll = MODULE('helper').accessRoll;
@@ -4868,6 +4868,18 @@ ProductFamily.prototype = {
             }
         }, {
             $lookup: {
+                from: 'groupAttributes',
+                localField: 'options.group',
+                foreignField: '_id',
+                as: 'options.group'
+            }
+        }, {
+            $unwind: {
+                path: '$options.group',
+                preserveNullAndEmptyArrays: true
+            }
+        }, {
+            $lookup: {
                 from: 'ProductAttributesValues',
                 localField: 'options._id',
                 foreignField: 'optionId',
@@ -4890,6 +4902,17 @@ ProductFamily.prototype = {
                     langs: '$options.langs',
                     _id: '$options._id',
                     mode: '$options.mode',
+                    step: '$options.step',
+                    metricUnit: '$options.metricUnit',
+                    group: '$options.group',
+                    maxCharacters: '$options.maxCharacters',
+                    minCharacters: '$options.minCharacters',
+                    maxDate: '$options.maxDate',
+                    minDate: '$options.minDate',
+                    maxNumber: '$options.maxNumber',
+                    minNumber: '$options.minNumber',
+                    sequence: '$options.sequence',
+                    isWysiwyg: '$options.isWysiwyg',
                     values: '$optionsValue'
                 }
             }

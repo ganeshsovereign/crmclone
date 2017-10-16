@@ -62,12 +62,12 @@
         </div>
         <div class="portlet-body">
             <div class="row hidden-print">
-                <div class="col-md-9">
+                <div class="col-md-12">
                     <div class="portlet light bg-inverse">
                         <div class="portlet-body">
                             <form ng-submit="find()">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <div class="form-group">
                                             <label for="Status">@(Ref)</label>
                                             <input ng-model="search.ref.value" class="form-control input-sm" ng-change="find()" />
@@ -79,10 +79,10 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <div class="form-group">
                                             <label>@(products:Family)</label>
-                                            <select ng-model="search.sellFamily.value[0]" id="Status" ng-options="s._id as s.name for s in sellFamilies" class="form-control input-sm"></select>
+                                            <select ng-model="search.sellFamily.value[0]" id="Status" ng-options="s._id as s.name for s in sellFamilies" class="form-control input-sm" ng-change="loadAttibutFamily(); find();"></select>
                                         </div>
 
                                         <!--<div class="form-group">
@@ -98,38 +98,88 @@
 
                                     <div class="col-md-2">
 
-                                        <div class="form-group form-md-checkboxes">
-                                            <label>@(Status) (Uniquement)</label>
+                                        <div class="form-group">
+                                            <label>@(Status)</label>
                                             <div class="md-checkbox-list">
                                                 <div class="md-checkbox has-success">
-                                                    <input type="checkbox" id="isActive" class="md-check" ng-model="search.isActive.value" ng-checked="search.isActive.value" ng-change="find()">
+                                                    <input type="checkbox" id="isActive" class="md-check" ng-model="search.isActive.value[0]" ng-checked="search.isActive.value[0]" ng-change="find()">
                                                     <label for="isActive">
                                                             <span></span>
                                                             <span class="check"></span>
                                                             <span class="box"></span> @(Activated)</label>
                                                 </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>@(products:Status.OnSell)</label>
+                                            <div class="md-checkbox-inline">
                                                 <div class="md-checkbox">
-                                                    <input type="checkbox" id="isSell" class="md-check" ng-model="search.isSell.value" ng-checked="search.isSell.value" ng-change="find()">
-                                                    <label for="isSell">
-                                                            <span></span>
-                                                            <span class="check"></span>
-                                                            <span class="box"></span> @(products:Status.OnSell)</label>
+                                                    <input type="checkbox" id="isSellYes" class="md-check" ng-model="search.isSell.value[0]" ng-checked="search.isSell.value[0]" ng-change="find()">
+                                                    <label for="isSellYes">
+                                                                <span></span>
+                                                                <span class="check"></span>
+                                                                <span class="box"></span> @(Yes)</label>
                                                 </div>
 
                                                 <div class="md-checkbox">
-                                                    <input type="checkbox" id="isBuy" class="md-check" ng-model="search.isBuy.value" ng-checked="search.isBuy.value" ng-change="find()">
-                                                    <label for="isBuy">
-                                                        <span></span>
-                                                        <span class="check"></span>
-                                                        <span class="box"></span> @(products:Status.OnBuy)</label>
+                                                    <input type="checkbox" id="isSellNo" class="md-check" ng-model="search.isSell.value[1]" ng-checked="search.isSell.value[1]" ng-change="find()">
+                                                    <label for="isSellNo">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span> @(No)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>@(products:Status.OnBuy)</label>
+                                            <div class="md-checkbox-inline">
+                                                <div class="md-checkbox">
+                                                    <input type="checkbox" id="isBuyYes" class="md-check" ng-model="search.isBuy.value[0]" ng-checked="search.isBuy.value[0]" ng-change="find()">
+                                                    <label for="isBuyYes">
+                                                                    <span></span>
+                                                                    <span class="check"></span>
+                                                                    <span class="box"></span> @(Yes)</label>
+                                                </div>
+
+                                                <div class="md-checkbox">
+                                                    <input type="checkbox" id="isBuyNo" class="md-check" ng-model="search.isBuy.value[1]" ng-checked="search.isBuy.value[1]" ng-change="find()">
+                                                    <label for="isBuyNo">
+                                                                <span></span>
+                                                                <span class="check"></span>
+                                                                <span class="box"></span> @(No)</label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-
-
-
+                                    <div class="col-md-6">
+                                        <div class="mt-element-list">
+                                            <div class="mt-list-container list-todo" id="accordion1" role="tablist" aria-multiselectable="true">
+                                                <div class="row">
+                                                    <ul ng-repeat="(key, value) in productFamilyAttributes.opts | groupBy: 'group.langs[0].name'" class="col-md-6">
+                                                        <li class="mt-list-item">
+                                                            <div class="list-todo-item grey-gallery">
+                                                                <a class="list-toggle-container" ng-class="{collapsed : openFilter[key]}" ng-click="doOpenFilter(key)">
+                                                                    <div class=" list-toggle done uppercase">
+                                                                        <div class="list-toggle-title bold">{{key}}</div>
+                                                                        <div class="badge badge-default pull-right bold">{{value.length}}</div>
+                                                                    </div>
+                                                                </a>
+                                                                <div class="task-list panel-collapse collapse" ng-class="{in: openFilter[key]}">
+                                                                    <ul>
+                                                                        <li class="task-list-item" ng-repeat="attribut in value | orderBy: 'sequence'">
+                                                                            <product-attribut ng-model="search" attribut="attribut" type="filter"></product-attribut>
+                                                                        </li>
+                                                                    </ul>
+                                                                    <div class="task-footer bg-grey "></div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -143,38 +193,38 @@
 
                 </div>
                 <!--<div class="col-md-3">
-                    <div class="portlet mt-element-ribbon light portlet-fit bordered ">
-                        <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase ">
-                            <div class="ribbon-sub ribbon-bookmark "></div>
-                            <i class="fa fa-pause "></i>
+                    <div class="portlet mt-element-ribbon light portlet-fit bordered">
+                        <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase">
+                            <div class="ribbon-sub ribbon-bookmark"></div>
+                            <i class="fa fa-pause"></i>
                         </div>
-                        <div class="portlet-title ">
-                            <div class="caption ">
-                                <i class=" icon-control-pause font-yellow-crusta "></i>
-                                <span class="caption-subject font-yellow-crusta bold uppercase ">Totaux</span>
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class=" icon-control-pause font-yellow-crusta"></i>
+                                <span class="caption-subject font-yellow-crusta bold uppercase">Totaux</span>
                             </div>
                         </div>
-                        <div class="portlet-body ">
-                            <div class="row static-info align-reverse ">
-                                <div class="col-md-5 name ">@(Qty)</div>
-                                <div class="col-md-7 value  ng-binding">{{totalAll.count}}</div>
+                        <div class="portlet-body">
+                            <div class="row static-info align-reverse">
+                                <div class="col-md-5 name">@(Qty)</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.count}}</div>
                             </div>
-                            <div class="row static-info align-reverse ">
-                                <div class="col-md-5 name ">@(TotalHT)</div>
-                                <div class="col-md-7 value  ng-binding">{{totalAll.total_ht | currency}}</div>
+                            <div class="row static-info align-reverse">
+                                <div class="col-md-5 name">@(TotalHT)</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.total_ht | currency}}</div>
                             </div>
-                            <div class="row static-info align-reverse ">
-                                <div class="col-md-5 name bold ">@(TotalTTC)</div>
-                                <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc | currency}}</div>
+                            <div class="row static-info align-reverse">
+                                <div class="col-md-5 name bold">@(TotalTTC)</div>
+                                <div class="col-md-7 value bold ng-binding">{{totalAll.total_ttc | currency}}</div>
                             </div>
                             <hr>
-                            <div class="row static-info align-reverse ">
+                            <div class="row static-info align-reverse">
                                 <div class="col-md-5 name">@(AmountPaid)</div>
                                 <div class="col-md-7 value ng-binding">{{totalAll.total_paid | currency}}</div>
                             </div>
-                            <div class="row static-info align-reverse ">
-                                <div class="col-md-5 name bold ">@(AmountToPaid)</div>
-                                <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc - totalAll.total_paid | currency}}</div>
+                            <div class="row static-info align-reverse">
+                                <div class="col-md-5 name bold">@(AmountToPaid)</div>
+                                <div class="col-md-7 value bold ng-binding">{{totalAll.total_ttc - totalAll.total_paid | currency}}</div>
                             </div>
                         </div>
                     </div>
@@ -223,20 +273,20 @@
                                 <img ng-if="line.imageSrc" width="32" height="32" ng-src="/erp/api/images/bank/xs/{{line.imageSrc.imageSrc}}" />
                                 <img ng-hide="line.imageSrc" width="32" height="32" src="/assets/admin/layout/img/nophoto.jpg" />
                             </td>
-                            <td ui-sref="product.show({id:line._id})"><a class=" with-tooltip " ui-sref="product.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.info.SKU}}</a></td>
+                            <td ui-sref="product.show({id:line._id})"><a class=" with-tooltip" ui-sref="product.show({id:line._id})"><i class="fa fa-shopping-cart"></i> {{line.info.SKU}}</a></td>
                             <td ui-sref="product.show({id:line._id})">
                                 {{line.ProductTypes.langs[_language].name}}
                             </td>
                             <td ui-sref="product.show({id:line._id})">{{line.info.langs[_language].name}}</td>
                             <td ui-sref="product.show({id:line._id})" class="text-right">{{line.prices.pu_ht | number:3}}</td>
-                            <td ui-sref="product.show({id:line._id})" class="text-right" ng-class="{'text-danger':!line.directCost}">{{line.directCost | number:3}}</td>
+                            <td ui-sref="product.show({id:line._id})" class="text-right" ng-class="{ 'text-danger':!line.directCost}">{{line.directCost | number:3}}</td>
                             <td ui-sref="product.show({id:line._id})" class="text-right"><span ng-if="line.weight">{{line.weight | number:3}} kg</span></td>
                             <td ui-sref="product.show({id:line._id})">{{line.updatedAt| date:'dd/MM/yyyy'}}</td>
                             <td ui-sref="product.show({id:line._id})">
                                 <progressbar animate="false" value="line.rating.total *100" type="info"><b>{{line.rating.total * 100}}%</b></progressbar>
                             </td>
                             <td ui-sref="product.show({id:line._id})">
-                                <span class="label label-sm {{line._status.css}} "> {{line._status.name}}</span>
+                                <span class="label label-sm {{line._status.css}}"> {{line._status.name}}</span>
                             </td>
                             <td ui-sref="product.show({id:line._id})">
                                 {{line.ProductFamily.langs[_language].name}}

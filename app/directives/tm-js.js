@@ -1286,3 +1286,39 @@ MetronicApp.directive('tablePagination', [
         };
     }
 ]);
+
+MetronicApp.directive('productAttribut', ['$http',
+    function($http) {
+        return {
+            restrict: 'E',
+            require: 'ngModel',
+            scope: {
+                ngModel: '=',
+                attribut: '=',
+                type: "=?"
+            },
+            templateUrl: function(el, attr) {
+                if (attr.type == 'filter')
+                    return '/templates/core/productAttibutFilter.html';
+                return '/templates/core/productAttibutFilter.html';
+            },
+            link: function(scope) {
+                console.log(scope);
+
+                scope.toggleSelection = scope.$root.toggleSelection;
+
+                var dict = ["fk_units", "fk_tva"];
+
+                $http({
+                    method: 'GET',
+                    url: '/erp/api/dict',
+                    params: {
+                        dictName: dict
+                    }
+                }).success(function(data, status) {
+                    scope.dict = data;
+                });
+            }
+        };
+    }
+]);

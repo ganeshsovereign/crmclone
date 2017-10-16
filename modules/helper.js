@@ -32,11 +32,11 @@ var FilterMapper = function() {
     var startDate;
     var endDate;
 
-    function convertType(values, type, operator) {
+    function convertType(values, type, operator, options) {
         var result = {};
         var _operator = operator || '$in';
 
-        // console.log(values, type);
+        //console.log(values, type, operator, options);
 
         // ng-tags-inputs modules {_id : , name : }
         if (typeof values == 'object')
@@ -83,16 +83,40 @@ var FilterMapper = function() {
                 }
 
                 break;
-            case 'integer':
-                result[_operator] = _.map(values, function(element) {
-                    return parseInt(element, 10);
-                });
+            case 'number':
+                if (!Array.isArray(_operator)) {
+                    _operator = [_operator];
+                }
+
+                if (_operator.length == 1) {
+                    result[_operator] = values;
+                    break;
+                }
+
+                if (values[0])
+                    result[_operator[0]] = values[0];
+
+                if (values[1])
+                    result[_operator[1]] = values[1];
+
                 break;
             case 'boolean':
-                /*result[_operator] = _.map(values, function(element) {
-                    return element === 'true';
-                });*/
-                result = (values == true);
+                result[_operator] = _.map(values, function(element) {
+                    return (element === true);
+                });
+                break;
+
+            case 'checked':
+                result[_operator] = [];
+                //console.log(options);
+
+                for (var i = 0; i < values.length; i++) {
+                    if (values[i] === true) // checked true
+                        result[_operator].push(options.values[i]);
+                }
+
+                //console.log(result);
+
                 break;
             case 'regex':
                 result = { $regex: new RegExp(values.toLowerCase()), $options: "gi" };
@@ -102,6 +126,25 @@ var FilterMapper = function() {
                 break;
         }
 
+        if (options && options.type) {
+            const ObjectId = MODULE('utils').ObjectId;
+
+            //console.log(options);
+            switch (options.type) {
+                case 'attribute':
+                    const old_res = result;
+                    result = {};
+
+                    result['$elemMatch'] = {};
+                    result['$elemMatch'][options.key || 'value'] = old_res;
+                    result['$elemMatch'].attribute = ObjectId(options.attributeId);
+                    break;
+            }
+
+            //{$elemMatch : {attribute:ObjectId("59c2305d578ef43e209ef7c1"), value:{$gte :50, $lte:700} }}})
+        }
+
+        //console.log(result);
         return result;
     }
 
@@ -124,6 +167,7 @@ var FilterMapper = function() {
         var filterValues;
         var filterType;
         var filterBackend;
+        var filterOptions;
         var filterConstants = F.global.filters[contentType] || {};
         var filterConstantsByName;
         var filterObject;
@@ -157,22 +201,23 @@ var FilterMapper = function() {
 
                 filterType = !!filterObject.type ? filterObject.type : filterConstantsByName.type || 'ObjectId';
                 filterBackend = filterConstantsByName.backend || filterObject.key || filterObject.backend;
+                filterOptions = filterObject.options || filterConstantsByName.options;
 
                 if ((contentType === 'GoodsOutNote' || contentType === 'stockTransactions') && filterBackend === 'status') {
                     filterValues.forEach(function(el) {
                         filterResObject[filterBackend + '.' + el] = true;
                     });
-                } else if (contentType === 'Products' && filterBackend === 'job') {
+                } else
+                if (contentType === 'Products' && filterBackend === 'job') {
                     filterResObject.job = { $exists: false };
                 } else if (filterValues && (filterName !== 'startDate' || filterName !== 'endDate')) {
                     if (filterBackend) {
                         if (typeof filterBackend === 'string') {
                             key = suffix ? filterBackend + '.' + suffix : filterBackend;
-                            filterResObject[key] = convertType(filterValues, filterType);
+                            filterResObject[key] = convertType(filterValues, filterType, filterObject.operator, filterOptions);
                         } else {
-                            if (!Array.isArray(filterBackend)) {
+                            if (!Array.isArray(filterBackend))
                                 filterBackend = [filterBackend];
-                            }
 
                             $orArray = [];
 
@@ -180,7 +225,7 @@ var FilterMapper = function() {
                                 //console.log(keysObject);
                                 var resObj = andState ? filterResObject : {};
 
-                                resObj[keysObject.key] = convertType(filterValues, filterType, keysObject.operator);
+                                resObj[keysObject.key] = convertType(filterValues, filterType, filterObject.operator || keysObject.operator, filterOptions);
 
                                 if (!andState) {
                                     $orArray.push(resObj);
