@@ -568,6 +568,11 @@ h4 {
     margin: 0 0 25px;
 }
 
+.form-md-radios>label {
+    font-size: 12px;
+    color: #D6AB00;
+}
+
 .form-group.form-md-line-input .form-control~label {
     font-size: 12px;
     color: #D6AB00;

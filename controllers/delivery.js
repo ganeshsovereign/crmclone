@@ -302,6 +302,10 @@ Object.prototype = {
             rows[i].sequence = i;
 
 
+        //update shippingCost
+        if (self.body.Status !== 'SEND' && self.body.logisticMethod && self.body.logisticMethod.price)
+            self.body.shippingCost.logistic = self.body.logisticMethod.price;
+
         MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
             if (err) {
                 console.log(err);
@@ -325,6 +329,11 @@ Object.prototype = {
 
                 self.body.weight += self.body.orderRows[i].qty * self.body.orderRows[i].product.weight;
             }
+
+            // Add logistic weight
+            if (self.body.logisticMethod && self.body.logisticMethod.weight && self.body.Status !== 'SEND')
+                self.body.weight += self.body.logisticMethod.weight;
+
             //console.log(self.body.orderRows[i].qty);
 
             DeliveryModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, delivery) {
@@ -371,7 +380,7 @@ Object.prototype = {
                                 return wCb(null, doc);
 
                             return DeliveryModel.findById(doc._id)
-                                .populate('order', 'shippingMethod shippingExpenses')
+                                .populate('order', 'shippingMethod shippingExpenses logisticMethod')
                                 .exec(function(err, result) {
                                     if (err)
                                         return wCb(err);

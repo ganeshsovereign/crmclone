@@ -821,7 +821,7 @@ AvailabilitySchema.statics.deliverProducts = function(options, mainCb) {
             if (err)
                 return mainCb(err);
 
-            if (goodsOutNote.shippingCost) {
+            if (goodsOutNote.shippingCost.shipping) {
                 body = {
                     journal: null,
                     currency: {

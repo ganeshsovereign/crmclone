@@ -212,6 +212,15 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 //console.log(data);
             });
 
+            $http({
+                method: 'GET',
+                url: '/erp/api/logisticMethod/select'
+
+            }).success(function(data, status) {
+                $scope.$dict.logisticMethod = data.data;
+                //console.log(data);
+            });
+
 
 
             $scope.findOne();
@@ -537,7 +546,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             if (field == 'packed') {
                 var ModalCtrl = function($scope, $modalInstance, options) {
                     $scope.object = options.object;
-
+                    $scope.$dict = options.$dict;
 
                     $scope.ok = function() {
                         $modalInstance.close($scope.object);
@@ -554,7 +563,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     resolve: {
                         options: function() {
                             return {
-                                object: $scope.object
+                                object: $scope.object,
+                                $dict: $scope.$dict
                             };
                         }
                     }

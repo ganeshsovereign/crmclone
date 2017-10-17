@@ -1,9 +1,3 @@
-<!--<script type="text/ng-template" id="searchcompany.html">
-    <a>
-        <span ng-bind-html="match.model.code_client | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.name"></span>
-    </a>
-</script>-->
-
 <div class="alert alert-info" ng-if="object.tracking">
     <strong>Info!</strong> @(orders:TrackingNumber) : <strong>{{object.tracking}}</strong></div>
 
@@ -359,10 +353,16 @@
                         </div>
 
                         <div class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(orders:ShippingCost) : <span class="icon-pencil grey" ng-click="shippingCostS.$show()" ng-hide="shippingCostS.$visible"></span></div>
-                            <div class="col-md-7 value"><span editable-number="object.shippingCost" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shippingCostS">
-                                                {{object.shippingCost | currency}}
+                            <div class="col-md-5 name">@(orders:LogisticCost) : <span class="icon-pencil grey" ng-click="shippingCostL.$show()" ng-hide="shippingCostL.$visible"></span></div>
+                            <div class="col-md-7 value"><span editable-number="object.shippingCost.logistic" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shippingCostL">
+                                                {{object.shippingCost.logistic | currency}}
                                             </span></div>
+                        </div>
+                        <div class="row static-info align-reverse">
+                            <div class="col-md-5 name">@(orders:ShippingCost) : <span class="icon-pencil grey" ng-click="shippingCostS.$show()" ng-hide="shippingCostS.$visible"></span></div>
+                            <div class="col-md-7 value"><span editable-number="object.shippingCost.shipping" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shippingCostS">
+                                                    {{object.shippingCost.shipping | currency}}
+                                                </span></div>
                         </div>
 
                         <hr>

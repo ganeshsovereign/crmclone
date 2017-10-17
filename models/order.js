@@ -241,7 +241,6 @@ const baseSchema = new Schema({
     project: { type: ObjectId, ref: 'Project', default: null },
 
     shippingMethod: { type: ObjectId, ref: 'shippingMethod' },
-    shippingCost: { type: Number, default: 0 },
 
     //attachments: { type: Array, default: [] },
     files: { type: Array, default: [] },
@@ -586,6 +585,7 @@ baseSchema.statics.getById = function(id, callback) {
                     .populate('invoiceControl')
                     .populate('project', '_id name')
                     .populate('shippingMethod', '_id name')
+                    .populate('logisticMethod', '_id name weight price')
                     .populate('workflow', '_id name status')
                     .exec(wCb);
             },
@@ -929,6 +929,12 @@ var goodsOutNoteSchema = new Schema({
         printedById: { type: ObjectId, ref: 'Users', default: null }
     },
 
+    logisticMethod: { type: ObjectId, ref: 'logisticMethod' },
+    shippingCost: {
+        shipping: { type: Number, default: 0 },
+        logistic: { type: Number, default: 0 }
+    },
+
     boxes: { type: Number, default: 1 },
 
     archived: { type: Boolean, default: false }
@@ -1045,7 +1051,14 @@ var goodsInNoteSchema = new Schema({
         isDeleted: { type: Boolean, default: false },
 
         qty: Number
-    }]
+    }],
+
+    logisticMethod: { type: ObjectId, ref: 'logisticMethod' },
+    shippingCost: {
+        shipping: { type: Number, default: 0 },
+        logistic: { type: Number, default: 0 }
+    }
+
 });
 
 var stockCorrectionSchema = new Schema({
