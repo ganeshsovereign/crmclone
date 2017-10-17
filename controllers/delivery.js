@@ -1082,6 +1082,7 @@ Object.prototype = {
                     csv += ";" + delivery.address.city;
                     csv += ";" + MODULE('utils').printNumber(delivery.weight);
                     csv += ";" + delivery.ref;
+                    csv += ";" + delivery._id.toString();
 
                     tabCsv.push({ id: delivery.ref, csv: csv });
                     cb();
