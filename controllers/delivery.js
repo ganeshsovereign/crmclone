@@ -301,11 +301,6 @@ Object.prototype = {
         for (var i = 0; i < rows.length; i++)
             rows[i].sequence = i;
 
-
-        //update shippingCost
-        if (self.body.Status !== 'SEND' && self.body.logisticMethod && self.body.logisticMethod.price)
-            self.body.shippingCost.logistic = self.body.logisticMethod.price;
-
         MODULE('utils').sumTotal(rows, self.body.shipping, self.body.discount, self.body.supplier, function(err, result) {
             if (err) {
                 console.log(err);
@@ -330,132 +325,70 @@ Object.prototype = {
                 self.body.weight += self.body.orderRows[i].qty * self.body.orderRows[i].product.weight;
             }
 
-            // Add logistic weight
-            if (self.body.logisticMethod && self.body.logisticMethod.weight && self.body.Status !== 'SEND')
-                self.body.weight += self.body.logisticMethod.weight;
-
             //console.log(self.body.orderRows[i].qty);
 
-            DeliveryModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, delivery) {
-                if (err)
-                    return self.throw500(err);
+            DeliveryModel.findByIdAndUpdate(id, self.body, { new: true })
+                .populate('logisticMethod')
+                .exec(function(err, delivery) {
+                    if (err)
+                        return self.throw500(err);
 
-                //delivery = _.extend(delivery, self.body);
+                    // Add logistic weight
+                    if (delivery.logisticMethod && delivery.logisticMethod.weight && delivery.Status !== 'SEND')
+                        delivery.weight += delivery.logisticMethod.weight;
 
-                //delivery.editedBy = self.user._id;
-                async.waterfall([
-                        function(wCb) {
-                            // Delivery depend on other order
-                            if (delivery.order.toString() !== id || !rows.length)
-                                return wCb();
+                    //update shippingCost
+                    if (delivery.Status !== 'SEND' && delivery.logisticMethod && delivery.logisticMethod.price)
+                        delivery.shippingCost.logistic = delivery.logisticMethod.price;
 
-                            async.each(rows, function(orderRow, aCb) {
-                                orderRow.order = delivery._id;
+                    //delivery = _.extend(delivery, self.body);
 
-                                if (orderRow.isDeleted && !orderRow._id)
-                                    return aCb();
+                    //delivery.editedBy = self.user._id;
+                    async.waterfall([
+                            function(wCb) {
+                                // Delivery depend on other order
+                                if (delivery.order.toString() !== id || !rows.length)
+                                    return wCb();
 
-                                if (orderRow._id)
-                                    return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, aCb);
+                                async.each(rows, function(orderRow, aCb) {
+                                    orderRow.order = delivery._id;
 
-                                var orderRow = new OrderRowsModel(orderRow);
-                                orderRow.save(aCb);
-                            }, wCb);
-                        },
-                        function(wCb) {
-                            delivery.save(function(err, doc) {
-                                wCb(err, doc);
-                            });
-                        },
-                        function(doc, wCb) {
-                            //if (doc.forSales == true)
-                            //F.emit('order:recalculateStatus', {userId:  self.user._id.toString(), order: doc.toJSON(() });
+                                    if (orderRow.isDeleted && !orderRow._id)
+                                        return aCb();
 
-                            //update inventory IN
+                                    if (orderRow._id)
+                                        return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, aCb);
 
-                            if (doc.status.isInventory)
-                                return wCb(null, doc);
-
-                            if (!doc.status.isReceived)
-                                return wCb(null, doc);
-
-                            return DeliveryModel.findById(doc._id)
-                                .populate('order', 'shippingMethod shippingExpenses logisticMethod')
-                                .exec(function(err, result) {
-                                    if (err)
-                                        return wCb(err);
-
-                                    return Availability.receiveProducts({
-                                        uId: self.user._id,
-                                        goodsInNote: result.toObject()
-                                    }, function(err) {
-                                        if (err)
-                                            return wCb(err);
-
-                                        if (result && result.order)
-                                            F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: result.order._id.toString() } });
-
-                                        doc.status.isInventory = new Date();
-                                        doc.save(function(err, doc) {
-                                            if (err)
-                                                return wCb(err);
-
-                                            doc = doc.toObject();
-                                            doc.successNotify = {
-                                                title: "Success",
-                                                message: "Bon de reception cloture"
-                                            };
-
-                                            return wCb(null, doc);
-                                        });
-                                    });
+                                    var orderRow = new OrderRowsModel(orderRow);
+                                    orderRow.save(aCb);
+                                }, wCb);
+                            },
+                            function(wCb) {
+                                delivery.save(function(err, doc) {
+                                    wCb(err, doc);
                                 });
-                        },
-                        function(doc, wCb) {
-                            //update inventory OUT
-                            if (doc.status.isInventory)
-                                return wCb(null, doc);
+                            },
+                            function(doc, wCb) {
+                                //if (doc.forSales == true)
+                                //F.emit('order:recalculateStatus', {userId:  self.user._id.toString(), order: doc.toJSON(() });
 
-                            // return console.log(doc.status);
+                                //update inventory IN
 
-                            if (!isInventory)
-                                return wCb(null, doc);
+                                if (doc.status.isInventory)
+                                    return wCb(null, doc);
 
+                                if (!doc.status.isReceived)
+                                    return wCb(null, doc);
 
-                            return DeliveryModel.findById(doc._id)
-                                .populate('order', 'shippingMethod shippingExpenses')
-                                .populate({
-                                    path: "orderRows.product",
-                                    select: "info",
-                                    populate: { path: "info.productType" }
-                                })
-                                .exec(function(err, result) {
-                                    if (err)
-                                        return wCb(err);
-
-                                    //return console.log((result.orderRows));
-
-                                    result = result.toObject();
-                                    result.orderRows = _.filter(result.orderRows, function(elem) {
-                                        if (!elem.qty || elem.isDeleted)
-                                            return false;
-
-                                        return true;
-                                    });
-
-                                    //return console.log((result.orderRows));
-
-                                    return Availability.updateAvailableProducts({
-                                        doc: result
-                                    }, function(err, rows) {
+                                return DeliveryModel.findById(doc._id)
+                                    .populate('order', 'shippingMethod shippingExpenses logisticMethod')
+                                    .exec(function(err, result) {
                                         if (err)
                                             return wCb(err);
-                                        //console.log(rows);
-                                        result.orderRows = rows;
 
-                                        return Availability.deliverProducts({
+                                        return Availability.receiveProducts({
                                             uId: self.user._id,
-                                            goodsOutNote: result
+                                            goodsInNote: result.toObject()
                                         }, function(err) {
                                             if (err)
                                                 return wCb(err);
@@ -463,13 +396,7 @@ Object.prototype = {
                                             if (result && result.order)
                                                 F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: result.order._id.toString() } });
 
-                                            doc.orderRows = rows;
-
                                             doc.status.isInventory = new Date();
-                                            //doc.status.isShipped = new Date();
-                                            //doc.status.shippedById = self.user._id;
-                                            doc.Status = "VALIDATED";
-
                                             doc.save(function(err, doc) {
                                                 if (err)
                                                     return wCb(err);
@@ -477,40 +404,100 @@ Object.prototype = {
                                                 doc = doc.toObject();
                                                 doc.successNotify = {
                                                     title: "Success",
-                                                    message: "Bon de livraison cloture"
+                                                    message: "Bon de reception cloture"
                                                 };
 
                                                 return wCb(null, doc);
                                             });
                                         });
                                     });
-                                });
-                        }
-                    ],
-                    function(err, doc) {
-                        if (err) {
-                            console.log(err);
+                            },
+                            function(doc, wCb) {
+                                //update inventory OUT
+                                if (doc.status.isInventory)
+                                    return wCb(null, doc);
 
-                            delivery.update({
-                                'status.isPrinted': null,
-                                'status.isPacked': null,
-                                'status.isPicked': null
-                            }, function(err, doc) {});
+                                // return console.log(doc.status);
 
-                            return self.json({
-                                errorNotify: {
-                                    title: 'Erreur',
-                                    message: err
-                                }
-                            });
-                        }
+                                if (!isInventory)
+                                    return wCb(null, doc);
 
-                        if (doc.successNotify)
-                            return self.json(doc);
 
-                        delivery.save(function(err, doc) {
+                                return DeliveryModel.findById(doc._id)
+                                    .populate('order', 'shippingMethod shippingExpenses')
+                                    .populate({
+                                        path: "orderRows.product",
+                                        select: "info",
+                                        populate: { path: "info.productType" }
+                                    })
+                                    .exec(function(err, result) {
+                                        if (err)
+                                            return wCb(err);
+
+                                        //return console.log((result.orderRows));
+
+                                        result = result.toObject();
+                                        result.orderRows = _.filter(result.orderRows, function(elem) {
+                                            if (!elem.qty || elem.isDeleted)
+                                                return false;
+
+                                            return true;
+                                        });
+
+                                        //return console.log((result.orderRows));
+
+                                        return Availability.updateAvailableProducts({
+                                            doc: result
+                                        }, function(err, rows) {
+                                            if (err)
+                                                return wCb(err);
+                                            //console.log(rows);
+                                            result.orderRows = rows;
+
+                                            return Availability.deliverProducts({
+                                                uId: self.user._id,
+                                                goodsOutNote: result
+                                            }, function(err) {
+                                                if (err)
+                                                    return wCb(err);
+
+                                                if (result && result.order)
+                                                    F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: result.order._id.toString() } });
+
+                                                doc.orderRows = rows;
+
+                                                doc.status.isInventory = new Date();
+                                                //doc.status.isShipped = new Date();
+                                                //doc.status.shippedById = self.user._id;
+                                                doc.Status = "VALIDATED";
+
+                                                doc.save(function(err, doc) {
+                                                    if (err)
+                                                        return wCb(err);
+
+                                                    doc = doc.toObject();
+                                                    doc.successNotify = {
+                                                        title: "Success",
+                                                        message: "Bon de livraison cloture"
+                                                    };
+
+                                                    return wCb(null, doc);
+                                                });
+                                            });
+                                        });
+                                    });
+                            }
+                        ],
+                        function(err, doc) {
                             if (err) {
                                 console.log(err);
+
+                                delivery.update({
+                                    'status.isPrinted': null,
+                                    'status.isPacked': null,
+                                    'status.isPicked': null
+                                }, function(err, doc) {});
+
                                 return self.json({
                                     errorNotify: {
                                         title: 'Erreur',
@@ -519,27 +506,41 @@ Object.prototype = {
                                 });
                             }
 
-                            F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: doc.order.toString() } });
+                            if (doc.successNotify)
+                                return self.json(doc);
 
-                            F.emit('order:update', { userId: self.user._id.toString(), order: { _id: doc._id.toString() } });
+                            delivery.save(function(err, doc) {
+                                if (err) {
+                                    console.log(err);
+                                    return self.json({
+                                        errorNotify: {
+                                            title: 'Erreur',
+                                            message: err
+                                        }
+                                    });
+                                }
 
-                            F.emit('notify:controllerAngular', {
-                                userId: null,
-                                route: 'delivery',
-                                _id: doc._id.toString(),
-                                message: "Livraison " + doc.ref + ' modifiee.'
+                                F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: doc.order.toString() } });
+
+                                F.emit('order:update', { userId: self.user._id.toString(), order: { _id: doc._id.toString() } });
+
+                                F.emit('notify:controllerAngular', {
+                                    userId: null,
+                                    route: 'delivery',
+                                    _id: doc._id.toString(),
+                                    message: "Livraison " + doc.ref + ' modifiee.'
+                                });
+
+                                //console.log(doc);
+                                doc = doc.toObject();
+                                doc.successNotify = {
+                                    title: "Success",
+                                    message: "Bon de livraison enregistre"
+                                };
+                                self.json(doc);
                             });
-
-                            //console.log(doc);
-                            doc = doc.toObject();
-                            doc.successNotify = {
-                                title: "Success",
-                                message: "Bon de livraison enregistre"
-                            };
-                            self.json(doc);
                         });
-                    });
-            });
+                });
         });
     },
     destroyList: function(id) {
