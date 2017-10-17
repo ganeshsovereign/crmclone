@@ -1035,7 +1035,10 @@ Object.prototype = {
 
         var tabCsv = [];
 
-        DeliveryModel.find({ Status: "VALIDATED", _id: { $in: self.body.id } })
+        DeliveryModel.find({
+                Status: { $in: ["VALIDATED", "SEND"] },
+                _id: { $in: self.body.id }
+            })
             .populate("supplier", "name salesPurchases.ref")
             .populate("order", "ref ref_client total_ht datec")
             .populate({
