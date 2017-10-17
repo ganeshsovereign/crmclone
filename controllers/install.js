@@ -4088,7 +4088,7 @@ F.on('load', function() {
                 if (conf.version >= 0.6)
                     return wCb(null, conf);
 
-                function convertBillsSupplier(aCb) {
+                /*function convertBillsSupplier(aCb) {
                     const TransactionModel = MODEL('transaction').Schema;
 
                     console.log("convert compta Transaction meta billsSupplier");
@@ -4126,7 +4126,7 @@ F.on('load', function() {
                             }, aCb);
                         });
                     });
-                }
+                }*/
 
                 function convertBillSupplierRef(aCb) {
                     const TransactionModel = MODEL('transaction').Schema;
@@ -4204,7 +4204,7 @@ F.on('load', function() {
 
 
 
-                async.waterfall([convertBillsSupplier, convertBillSupplierRef, convertSupplierBills, dropCollectionEnd], function(err) {
+                async.waterfall([ /*convertBillsSupplier,*/ convertBillSupplierRef, convertSupplierBills, dropCollectionEnd], function(err) {
                     if (err)
                         return console.log(err);
 
@@ -4223,13 +4223,6 @@ F.on('load', function() {
             console.log("End update");
             if (err)
                 return console.log(err);
-
-            /*Dict.findByIdAndUpdate('const', { 'values.version': exports.version }, { new: true }, function(err, doc) {
-                if (err)
-                    return console.log(err);
-
-                console.log("ToManage updated to {0}".format(exports.version));
-            });*/
 
         });
 });

@@ -1473,7 +1473,7 @@ Object.prototype = {
                 if (!doc.length)
                     return self.json({ total: 0 });
 
-                console.log("totototot", doc);
+                //console.log("totototot", doc);
 
                 self.json({ total: doc[0].total_ht });
             });
