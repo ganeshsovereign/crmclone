@@ -1,5 +1,5 @@
-name                     : TM-js
-version                  : 0.5.001
+name                     : TM-CRM_ERP
+version                  : 0.6.0
 author                   : ToManage
 database                 : mongodb://127.0.0.1/mydatabase
 dateformatShort          : DD/MM/YYYY
