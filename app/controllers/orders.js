@@ -1591,7 +1591,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
 MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '$window', '$filter', '$timeout', 'superCache', 'Orders',
     function($scope, $rootScope, $http, $window, $filter, $timeout, superCache, Orders) {
 
-        // var grid = new Datatable();
+        var grid = new Datatable();
         var user = $rootScope.login;
 
         $scope.editable = false;

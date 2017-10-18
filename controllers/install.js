@@ -877,6 +877,8 @@ F.on('load', function() {
                                             //product.compta_sell_eu = doc.compta_sell_eu;
                                             //product.compta_sell_exp = doc.compta_sell_exp;
 
+                                            console.log(taxes, doc.tva_tx);
+
                                             product.taxes = [{
                                                 taxeId: _.find(taxes, _.matchesProperty('rate', doc.tva_tx))._id
                                             }];
