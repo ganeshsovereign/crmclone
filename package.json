@@ -60,12 +60,10 @@
         "xss-filters": "^1.2.6"
     },
     "devDependencies": {
-        "autoprefixer": "latest",
         "gulp": "latest",
         "gulp-change": "latest",
         "gulp-clean-css": "latest",
         "gulp-cssbeautify": "latest",
-        "gulp-csscomb": "latest",
         "gulp-header": "latest",
         "gulp-htmlmin": "latest",
         "gulp-ignore": "latest",
@@ -73,7 +71,6 @@
         "gulp-open": "latest",
         "gulp-plumber": "latest",
         "gulp-rename": "latest",
-        "gulp-uglify": "latest",
         "prettify": "latest"
     },
     "scripts": {
