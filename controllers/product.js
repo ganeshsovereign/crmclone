@@ -4112,7 +4112,8 @@ PricesList.prototype = {
                     ProductModel.aggregate([{
                         $match: {
                             'isSell': true,
-                            /*'info.isActive': true,*/ _id: (product ? ObjectId(product) : {
+                            /*'info.isActive': true,*/
+                            _id: (product ? ObjectId(product) : {
                                 $exists: 1
                             })
                         }

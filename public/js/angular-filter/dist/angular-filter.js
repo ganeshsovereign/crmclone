@@ -726,8 +726,7 @@
                 }
 
                 return !shallow ?
-                    flatten(collection, 0) :
-                    [].concat.apply([], collection);
+                    flatten(collection, 0) : [].concat.apply([], collection);
             }
         });
 
@@ -2402,8 +2401,7 @@
     angular.module('a8m.wrap', [])
         .filter('wrap', function() {
             return function(input, wrap, ends) {
-                return isString(input) && isDefined(wrap) ?
-                    [wrap, input, ends || wrap].join('') :
+                return isString(input) && isDefined(wrap) ? [wrap, input, ends || wrap].join('') :
                     input;
             }
         });
