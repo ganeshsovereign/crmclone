@@ -212,6 +212,11 @@ Object.prototype = {
 
         //console.log(filter);
 
+        if (filter && filter.salesPerson && filter.salesPerson.value.length)
+            filter.Status.value = [];
+        if (filter && filter.supplier && filter.supplier.value.length)
+            filter.Status.value = [];
+
 
         //TODO refresh Status on angular
         if (filter && filter.Status && filter.Status.value[0])
@@ -235,6 +240,9 @@ Object.prototype = {
                     filterObject.dater = {
                         $lte: moment().subtract(10, 'days').toDate()
                     };
+                    break;
+                case 'ALL':
+                    filter.Status.value = [];
                     break;
             }
 
@@ -354,6 +362,7 @@ Object.prototype = {
                         datec: 1,
                         ref_client: 1,
                         dater: 1,
+                        exported: { $size: "$journalId" },
                         entity: 1,
                         total_ttc: 1,
                         total_ht: 1,
@@ -455,6 +464,7 @@ Object.prototype = {
                         datec: 1,
                         ref_client: 1,
                         dater: 1,
+                        exported: 1,
                         entity: 1,
                         total_ttc: 1,
                         total_ht: 1,
@@ -500,6 +510,7 @@ Object.prototype = {
                         datec: 1,
                         ref_client: 1,
                         dater: 1,
+                        exported: 1,
                         entity: 1,
                         total_ttc: 1,
                         total_ht: 1,
@@ -539,6 +550,7 @@ Object.prototype = {
                         datec: 1,
                         ref_client: 1,
                         dater: 1,
+                        exported: 1,
                         entity: 1,
                         total_ttc: 1,
                         total_ht: 1,
@@ -568,6 +580,7 @@ Object.prototype = {
                         datec: 1,
                         ref_client: 1,
                         dater: 1,
+                        exported: 1,
                         entity: 1,
                         total_ttc: 1,
                         total_ht: 1,
@@ -636,7 +649,8 @@ Object.prototype = {
                         datec: '$root.datec',
                         ref_client: '$root.ref_client',
                         dater: '$root.dater',
-                        entity: '$root,entity',
+                        exported: '$root.exported',
+                        entity: '$root.entity',
                         total_ttc: '$root.total_ttc',
                         total_ht: '$root.total_ht',
                         total_paid: '$root.total_paid',
@@ -670,6 +684,7 @@ Object.prototype = {
                         datec: 1,
                         ref_client: 1,
                         dater: 1,
+                        exported: 1,
                         entity: 1,
                         total_ttc: 1,
                         total_ht: 1,
@@ -717,6 +732,9 @@ Object.prototype = {
                         },
                         dater: {
                             $first: '$dater'
+                        },
+                        exported: {
+                            $first: '$exported'
                         },
                         entity: {
                             $first: '$entity'
@@ -770,6 +788,7 @@ Object.prototype = {
                         datec: 1,
                         ref_client: 1,
                         dater: 1,
+                        exported: 1,
                         entity: 1,
                         total_ttc: 1,
                         total_ht: 1,

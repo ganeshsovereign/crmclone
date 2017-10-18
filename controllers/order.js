@@ -191,6 +191,11 @@ Object.prototype = {
 
         //console.log(filter);
 
+        if (filter && filter.salesPerson && filter.salesPerson.value.length)
+            filter.Status.value = [];
+        if (filter && filter.supplier && filter.supplier.value.length)
+            filter.Status.value = [];
+
         //TODO refresh Status on angular
         if (filter && filter.Status.value[0] == "NEW") {
             filter.Status.value = [];

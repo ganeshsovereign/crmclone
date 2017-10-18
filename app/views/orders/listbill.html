@@ -225,7 +225,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="line in orders">
+                        <tr ng-repeat="line in orders" ng-class="{'bg-grey-silver':line.exported}">
                             <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
                             <td ui-sref="order.show({id:line._id})"><a class=" with-tooltip " ui-sref="order.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
                             <td>
