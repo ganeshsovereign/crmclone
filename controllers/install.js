@@ -4774,6 +4774,64 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
+            },
+            // 0.61 : Memo in transaction for TVA
+            function(conf, wCb) {
+                if (conf.version >= 0.61)
+                    return wCb(null, conf);
+
+                function convertTransactionTVA(aCb) {
+                    const TransactionModel = MODEL('transaction').Schema;
+
+                    console.log("convert compta Transaction memo");
+                    TransactionModel.find({ memo: new RegExp('TVA', 'g') })
+                        .populate('meta.supplier', "name")
+                        .exec(function(err, docs) {
+                            if (err)
+                                return aCb(err);
+
+                            if (!docs || !docs.length)
+                                return aCb();
+
+                            async.forEach(docs, function(doc, eCb) {
+
+                                TransactionModel.update({
+                                        _id: doc._id
+                                    }, {
+                                        $set: {
+                                            "memo": doc.meta.supplier.fullName
+                                        }
+                                    },
+                                    function(err, res) {
+                                        if (err)
+                                            return eCb(err);
+
+                                        //doc.save(function(err, doc) {
+                                        return eCb(err);
+                                    });
+                            }, aCb);
+
+                        });
+
+                }
+
+                async.waterfall([convertTransactionTVA], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', {
+                        'values.version': 0.61
+                    }, {
+                        new: true
+                    }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.61));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
             }
         ],
         function(err, doc) {
