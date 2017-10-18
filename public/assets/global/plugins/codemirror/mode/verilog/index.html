@@ -75,24 +75,24 @@ endclass
 
 </textarea></div>
 
-    <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-            lineNumbers: true,
-            matchBrackets: true,
-            mode: {
-                name: "verilog",
-                noIndentKeywords: ["package"]
-            }
-        });
-    </script>
+<script>
+  var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    lineNumbers: true,
+    matchBrackets: true,
+    mode: {
+      name: "verilog",
+      noIndentKeywords: ["package"]
+    }
+  });
+</script>
 
-    <p>
-        Syntax highlighting and indentation for the Verilog and SystemVerilog languages (IEEE 1800).
-        <h2>Configuration options:</h2>
-        <ul>
-            <li><strong>noIndentKeywords</strong> - List of keywords which should not cause identation to increase. E.g. ["package", "module"]. Default: None</li>
-        </ul>
-    </p>
+<p>
+Syntax highlighting and indentation for the Verilog and SystemVerilog languages (IEEE 1800).
+<h2>Configuration options:</h2>
+  <ul>
+    <li><strong>noIndentKeywords</strong> - List of keywords which should not cause identation to increase. E.g. ["package", "module"]. Default: None</li>
+  </ul>
+</p>
 
-    <p><strong>MIME types defined:</strong> <code>text/x-verilog</code> and <code>text/x-systemverilog</code>.</p>
+<p><strong>MIME types defined:</strong> <code>text/x-verilog</code> and <code>text/x-systemverilog</code>.</p>
 </article>

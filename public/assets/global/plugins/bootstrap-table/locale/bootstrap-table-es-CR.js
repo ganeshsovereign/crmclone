@@ -2,35 +2,35 @@
  * Bootstrap Table Spanish (Costa Rica) translation
  * Author: Dennis Hernández (http://djhvscf.github.io/Blog/)
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['es-CR'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Cargando, por favor espere...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' registros por página';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Mostrando de ' + pageFrom + ' a ' + pageTo + ' registros de ' + totalRows + ' registros en total';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Buscar';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'No se encontraron registros';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Refrescar';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Alternar';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Columnas';
         },
-        formatAllRows: function() {
+        formatAllRows: function () {
             return 'Todo';
         }
     };

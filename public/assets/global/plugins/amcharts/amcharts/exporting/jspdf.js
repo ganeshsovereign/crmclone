@@ -36,67 +36,67 @@ Creates new jsPDF document object instance
 @returns {jsPDF}
 @name jsPDF
 */
-var jsPDF = (function() {
+var jsPDF = (function () {
     'use strict';
     /*jslint browser:true, plusplus: true, bitwise: true, nomen: true */
     /*global document: false, btoa, atob, zpipe, Uint8Array, ArrayBuffer, Blob, saveAs, adler32cs, Deflater */
 
-    // this will run on <=IE9, possibly some niche browsers
-    // new webkit-based, FireFox, IE10 already have native version of this.
+// this will run on <=IE9, possibly some niche browsers
+// new webkit-based, FireFox, IE10 already have native version of this.
     if (typeof btoa === 'undefined') {
-        window.btoa = function(data) {
-            // DO NOT ADD UTF8 ENCODING CODE HERE!!!!
+        window.btoa = function (data) {
+        // DO NOT ADD UTF8 ENCODING CODE HERE!!!!
 
-            // UTF8 encoding encodes bytes over char code 128
-            // and, essentially, turns an 8-bit binary streams
-            // (that base64 can deal with) into 7-bit binary streams.
-            // (by default server does not know that and does not recode the data back to 8bit)
-            // You destroy your data.
+        // UTF8 encoding encodes bytes over char code 128
+        // and, essentially, turns an 8-bit binary streams
+        // (that base64 can deal with) into 7-bit binary streams.
+        // (by default server does not know that and does not recode the data back to 8bit)
+        // You destroy your data.
 
-            // binary streams like jpeg image data etc, while stored in JavaScript strings,
-            // (which are 16bit arrays) are in 8bit format already.
-            // You do NOT need to char-encode that before base64 encoding.
+        // binary streams like jpeg image data etc, while stored in JavaScript strings,
+        // (which are 16bit arrays) are in 8bit format already.
+        // You do NOT need to char-encode that before base64 encoding.
 
-            // if you, by act of fate
-            // have string which has individual characters with code
-            // above 255 (pure unicode chars), encode that BEFORE you base64 here.
-            // you can use absolutely any approch there, as long as in the end,
-            // base64 gets an 8bit (char codes 0 - 255) stream.
-            // when you get it on the server after un-base64, you must
-            // UNencode it too, to get back to 16, 32bit or whatever original bin stream.
+        // if you, by act of fate
+        // have string which has individual characters with code
+        // above 255 (pure unicode chars), encode that BEFORE you base64 here.
+        // you can use absolutely any approch there, as long as in the end,
+        // base64 gets an 8bit (char codes 0 - 255) stream.
+        // when you get it on the server after un-base64, you must
+        // UNencode it too, to get back to 16, 32bit or whatever original bin stream.
 
-            // Note, Yes, JavaScript strings are, in most cases UCS-2 -
-            // 16-bit character arrays. This does not mean, however,
-            // that you always have to UTF8 it before base64.
-            // it means that if you have actual characters anywhere in
-            // that string that have char code above 255, you need to
-            // recode *entire* string from 16-bit (or 32bit) to 8-bit array.
-            // You can do binary split to UTF16 (BE or LE)
-            // you can do utf8, you can split the thing by hand and prepend BOM to it,
-            // but whatever you do, make sure you mirror the opposite on
-            // the server. If server does not expect to post-process un-base64
-            // 8-bit binary stream, think very very hard about messing around with encoding.
+        // Note, Yes, JavaScript strings are, in most cases UCS-2 -
+        // 16-bit character arrays. This does not mean, however,
+        // that you always have to UTF8 it before base64.
+        // it means that if you have actual characters anywhere in
+        // that string that have char code above 255, you need to
+        // recode *entire* string from 16-bit (or 32bit) to 8-bit array.
+        // You can do binary split to UTF16 (BE or LE)
+        // you can do utf8, you can split the thing by hand and prepend BOM to it,
+        // but whatever you do, make sure you mirror the opposite on
+        // the server. If server does not expect to post-process un-base64
+        // 8-bit binary stream, think very very hard about messing around with encoding.
 
-            // so, long story short:
-            // DO NOT ADD UTF8 ENCODING CODE HERE!!!!
+        // so, long story short:
+        // DO NOT ADD UTF8 ENCODING CODE HERE!!!!
 
-            /* @preserve
-            ====================================================================
-            base64 encoder
-            MIT, GPL
+        /* @preserve
+        ====================================================================
+        base64 encoder
+        MIT, GPL
 
-            version: 1109.2015
-            discuss at: http://phpjs.org/functions/base64_encode
-            +   original by: Tyler Akins (http://rumkin.com)
-            +   improved by: Bayron Guevara
-            +   improved by: Thunder.m
-            +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-            +   bugfixed by: Pellentesque Malesuada
-            +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-            +   improved by: Rafal Kukawski (http://kukawski.pl)
-            +                Daniel Dotsenko, Willow Systems Corp, willow-systems.com
-            ====================================================================
-            */
+        version: 1109.2015
+        discuss at: http://phpjs.org/functions/base64_encode
+        +   original by: Tyler Akins (http://rumkin.com)
+        +   improved by: Bayron Guevara
+        +   improved by: Thunder.m
+        +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        +   bugfixed by: Pellentesque Malesuada
+        +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        +   improved by: Rafal Kukawski (http://kukawski.pl)
+        +                Daniel Dotsenko, Willow Systems Corp, willow-systems.com
+        ====================================================================
+        */
 
             var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
                 b64a = b64.split(''),
@@ -138,24 +138,24 @@ var jsPDF = (function() {
     }
 
     if (typeof atob === 'undefined') {
-        window.atob = function(data) {
-            // http://kevin.vanzonneveld.net
-            // +   original by: Tyler Akins (http://rumkin.com)
-            // +   improved by: Thunder.m
-            // +      input by: Aman Gupta
-            // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-            // +   bugfixed by: Onno Marsman
-            // +   bugfixed by: Pellentesque Malesuada
-            // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-            // +      input by: Brett Zamir (http://brett-zamir.me)
-            // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-            // *     example 1: base64_decode('S2V2aW4gdmFuIFpvbm5ldmVsZA==');
-            // *     returns 1: 'Kevin van Zonneveld'
-            // mozilla has this native
-            // - but breaks in 2.0.0.12!
-            //if (typeof this.window['atob'] == 'function') {
-            //    return atob(data);
-            //}
+        window.atob = function (data) {
+        // http://kevin.vanzonneveld.net
+        // +   original by: Tyler Akins (http://rumkin.com)
+        // +   improved by: Thunder.m
+        // +      input by: Aman Gupta
+        // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // +   bugfixed by: Onno Marsman
+        // +   bugfixed by: Pellentesque Malesuada
+        // +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // +      input by: Brett Zamir (http://brett-zamir.me)
+        // +   bugfixed by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+        // *     example 1: base64_decode('S2V2aW4gdmFuIFpvbm5ldmVsZA==');
+        // *     returns 1: 'Kevin van Zonneveld'
+        // mozilla has this native
+        // - but breaks in 2.0.0.12!
+        //if (typeof this.window['atob'] == 'function') {
+        //    return atob(data);
+        //}
             var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
                 o1,
                 o2,
@@ -202,27 +202,26 @@ var jsPDF = (function() {
     }
 
     var getObjectLength = typeof Object.keys === 'function' ?
-        function(object) {
-            return Object.keys(object).length;
-        } :
-        function(object) {
-            var i = 0,
-                e;
-            for (e in object) {
-                if (object.hasOwnProperty(e)) {
-                    i++;
-                }
-            }
-            return i;
-        },
+                function (object) {
+                    return Object.keys(object).length;
+                } :
+                function (object) {
+                    var i = 0, e;
+                    for (e in object) {
+                        if (object.hasOwnProperty(e)) {
+                            i++;
+                        }
+                    }
+                    return i;
+                },
 
-        /**
-        PubSub implementation
+/**
+PubSub implementation
 
-        @class
-        @name PubSub
-        */
-        PubSub = function(context) {
+@class
+@name PubSub
+*/
+        PubSub = function (context) {
             /**  @preserve
             -----------------------------------------------------------------------------------------------
             JavaScript PubSub library
@@ -254,7 +253,7 @@ var jsPDF = (function() {
             @methodOf PubSub#
             @name publish
             */
-            this.publish = function(topic, args) {
+            this.publish = function (topic, args) {
                 if (this.topics[topic]) {
                     var currentTopic = this.topics[topic],
                         toremove = [],
@@ -262,7 +261,7 @@ var jsPDF = (function() {
                         i,
                         l,
                         pair,
-                        emptyFunc = function() {};
+                        emptyFunc = function () {};
                     args = Array.prototype.slice.call(arguments, 1);
                     for (i = 0, l = currentTopic.length; i < l; i++) {
                         pair = currentTopic[i]; // this is a [function, once_flag] array
@@ -289,11 +288,9 @@ var jsPDF = (function() {
             @methodOf PubSub#
             @name subscribe
             */
-            this.subscribe = function(topic, callback, once) {
+            this.subscribe = function (topic, callback, once) {
                 if (!this.topics[topic]) {
-                    this.topics[topic] = [
-                        [callback, once]
-                    ];
+                    this.topics[topic] = [[callback, once]];
                 } else {
                     this.topics[topic].push([callback, once]);
                 }
@@ -310,10 +307,9 @@ var jsPDF = (function() {
             @methodOf PubSub#
             @name unsubscribe
             */
-            this.unsubscribe = function(token) {
+            this.unsubscribe = function (token) {
                 if (this.topics[token.topic]) {
-                    var currentTopic = this.topics[token.topic],
-                        i, l;
+                    var currentTopic = this.topics[token.topic], i, l;
 
                     for (i = 0, l = currentTopic.length; i < l; i++) {
                         if (currentTopic[i][0] === token.callback) {
@@ -325,10 +321,10 @@ var jsPDF = (function() {
         };
 
 
-    /**
-    @constructor
-    @private
-    */
+/**
+@constructor
+@private
+*/
     function jsPDF(orientation, unit, format, compressPdf) { /** String orientation, String unit, String format, Boolean compressed */
 
         // Default parameter values
@@ -337,15 +333,9 @@ var jsPDF = (function() {
         } else {
             orientation = orientation.toString().toLowerCase();
         }
-        if (typeof unit === 'undefined') {
-            unit = 'mm';
-        }
-        if (typeof format === 'undefined') {
-            format = 'a4';
-        }
-        if (typeof compressPdf === 'undefined' && typeof zpipe === 'undefined') {
-            compressPdf = false;
-        }
+        if (typeof unit === 'undefined') { unit = 'mm'; }
+        if (typeof format === 'undefined') { format = 'a4'; }
+        if (typeof compressPdf === 'undefined' && typeof zpipe === 'undefined') { compressPdf = false; }
 
         var format_as_string = format.toString().toLowerCase(),
             version = '0.9.0rc2',
@@ -357,36 +347,36 @@ var jsPDF = (function() {
                 'a0': [2383.94, 3370.39],
                 'a1': [1683.78, 2383.94],
                 'a2': [1190.55, 1683.78],
-                'a3': [841.89, 1190.55],
-                'a4': [595.28, 841.89],
-                'a5': [419.53, 595.28],
-                'a6': [297.64, 419.53],
-                'a7': [209.76, 297.64],
-                'a8': [147.4, 209.76],
-                'a9': [104.88, 147.4],
-                'a10': [73.7, 104.88],
+                'a3': [841.89,  1190.55],
+                'a4': [595.28,  841.89],
+                'a5': [419.53,  595.28],
+                'a6': [297.64,  419.53],
+                'a7': [209.76,  297.64],
+                'a8': [147.4 ,  209.76],
+                'a9': [104.88,  147.4],
+                'a10': [73.7,  104.88],
                 'b0': [2834.65, 4008.19],
                 'b1': [2004.09, 2834.65],
                 'b2': [1417.32, 2004.09],
                 'b3': [1000.63, 1417.32],
-                'b4': [708.66, 1000.63],
-                'b5': [498.9, 708.66],
-                'b6': [354.33, 498.9],
-                'b7': [249.45, 354.33],
-                'b8': [175.75, 249.45],
-                'b9': [124.72, 175.75],
-                'b10': [87.87, 124.72],
+                'b4': [708.66,  1000.63],
+                'b5': [498.9,  708.66],
+                'b6': [354.33,  498.9],
+                'b7': [249.45,  354.33],
+                'b8': [175.75,  249.45],
+                'b9': [124.72,  175.75],
+                'b10': [87.87,  124.72],
                 'c0': [2599.37, 3676.54],
                 'c1': [1836.85, 2599.37],
                 'c2': [1298.27, 1836.85],
-                'c3': [918.43, 1298.27],
-                'c4': [649.13, 918.43],
-                'c5': [459.21, 649.13],
-                'c6': [323.15, 459.21],
-                'c7': [229.61, 323.15],
-                'c8': [161.57, 229.61],
-                'c9': [113.39, 161.57],
-                'c10': [79.37, 113.39],
+                'c3': [918.43,  1298.27],
+                'c4': [649.13,  918.43],
+                'c5': [459.21,  649.13],
+                'c6': [323.15,  459.21],
+                'c7': [229.61,  323.15],
+                'c8': [161.57,  229.61],
+                'c9': [113.39,  161.57],
+                'c10': [79.37,   113.39],
                 'letter': [612, 792],
                 'government-letter': [576, 756],
                 'legal': [612, 1008],
@@ -410,13 +400,7 @@ var jsPDF = (function() {
             pageHeight,
             pageWidth,
             k, // Scale factor
-            documentProperties = {
-                'title': '',
-                'subject': '',
-                'author': '',
-                'keywords': '',
-                'creator': ''
-            },
+            documentProperties = {'title': '', 'subject': '', 'author': '', 'keywords': '', 'creator': ''},
             lineCapID = 0,
             lineJoinID = 0,
             API = {},
@@ -427,15 +411,15 @@ var jsPDF = (function() {
             // Private functions
             /////////////////////
             // simplified (speedier) replacement for sprintf's %.2f conversion
-            f2 = function(number) {
+            f2 = function (number) {
                 return number.toFixed(2);
             },
             // simplified (speedier) replacement for sprintf's %.3f conversion
-            f3 = function(number) {
+            f3 = function (number) {
                 return number.toFixed(3);
             },
             // simplified (speedier) replacement for sprintf's %02d
-            padd2 = function(number) {
+            padd2 = function (number) {
                 var n = (number).toFixed(0);
                 if (number < 10) {
                     return '0' + n;
@@ -444,15 +428,15 @@ var jsPDF = (function() {
                 }
             },
             // simplified (speedier) replacement for sprintf's %02d
-            padd10 = function(number) {
+            padd10 = function (number) {
                 var n = (number).toFixed(0);
                 if (n.length < 10) {
-                    return new Array(11 - n.length).join('0') + n;
+                    return new Array( 11 - n.length ).join('0') + n;
                 } else {
                     return n;
                 }
             },
-            out = function(string) {
+            out = function (string) {
                 if (outToPages) { /* set by beginPage */
                     pages[page].push(string);
                 } else {
@@ -460,14 +444,14 @@ var jsPDF = (function() {
                     content_length += string.length + 1; // +1 is for '\n' that will be used to join contents of content
                 }
             },
-            newObject = function() {
+            newObject = function () {
                 // Begin a new object
                 objectNumber++;
                 offsets[objectNumber] = content_length;
                 out(objectNumber + ' 0 obj');
                 return objectNumber;
             },
-            putStream = function(str) {
+            putStream = function (str) {
                 out('stream');
                 out(str);
                 out('endstream');
@@ -476,7 +460,7 @@ var jsPDF = (function() {
             hPt,
             kids,
             i,
-            putPages = function() {
+            putPages = function () {
                 wPt = pageWidth * k;
                 hPt = pageHeight * k;
 
@@ -504,17 +488,16 @@ var jsPDF = (function() {
                         deflater.append(new Uint8Array(arr));
                         p = deflater.flush();
                         arr = [new Uint8Array([120, 156]), new Uint8Array(p),
-                            new Uint8Array([adler32 & 0xFF, (adler32 >> 8) & 0xFF, (adler32 >> 16) & 0xFF, (adler32 >> 24) & 0xFF])
-                        ];
+                               new Uint8Array([adler32 & 0xFF, (adler32 >> 8) & 0xFF, (adler32 >> 16) & 0xFF, (adler32 >> 24) & 0xFF])];
                         p = '';
                         for (i in arr) {
                             if (arr.hasOwnProperty(i)) {
                                 p += String.fromCharCode.apply(null, arr[i]);
                             }
                         }
-                        out('<</Length ' + p.length + ' /Filter [/FlateDecode]>>');
+                        out('<</Length ' + p.length  + ' /Filter [/FlateDecode]>>');
                     } else {
-                        out('<</Length ' + p.length + '>>');
+                        out('<</Length ' + p.length  + '>>');
                     }
                     putStream(p);
                     out('endobj');
@@ -532,7 +515,7 @@ var jsPDF = (function() {
                 out('>>');
                 out('endobj');
             },
-            putFont = function(font) {
+            putFont = function (font) {
                 font.objectNumber = newObject();
                 out('<</BaseFont/' + font.PostScriptName + '/Type/Font');
                 if (typeof font.encoding === 'string') {
@@ -541,7 +524,7 @@ var jsPDF = (function() {
                 out('/Subtype/Type1>>');
                 out('endobj');
             },
-            putFonts = function() {
+            putFonts = function () {
                 var fontKey;
                 for (fontKey in fonts) {
                     if (fonts.hasOwnProperty(fontKey)) {
@@ -549,11 +532,11 @@ var jsPDF = (function() {
                     }
                 }
             },
-            putXobjectDict = function() {
+            putXobjectDict = function () {
                 // Loop through images, or other data objects
                 events.publish('putXobjectDict');
             },
-            putResourceDictionary = function() {
+            putResourceDictionary = function () {
                 out('/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]');
                 out('/Font <<');
                 // Do this for each font, the '1' bit is the index of the font
@@ -568,7 +551,7 @@ var jsPDF = (function() {
                 putXobjectDict();
                 out('>>');
             },
-            putResources = function() {
+            putResources = function () {
                 putFonts();
                 events.publish('putResources');
                 // Resource dictionary
@@ -580,7 +563,7 @@ var jsPDF = (function() {
                 out('endobj');
                 events.publish('postPutResources');
             },
-            addToFontDictionary = function(fontKey, fontName, fontStyle) {
+            addToFontDictionary = function (fontKey, fontName, fontStyle) {
                 // this is mapping structure for quick font key lookup.
                 // returns the KEY of the font (ex: "F1") for a given pair of font name and type (ex: "Arial". "Italic")
                 var undef;
@@ -603,7 +586,7 @@ var jsPDF = (function() {
             @name FontObject
             */
             FontObject = {},
-            addFont = function(PostScriptName, fontName, fontStyle, encoding) {
+            addFont = function (PostScriptName, fontName, fontStyle, encoding) {
                 var fontKey = 'F' + (getObjectLength(fonts) + 1).toString(10),
                     // This is FontObject
                     font = fonts[fontKey] = {
@@ -622,7 +605,7 @@ var jsPDF = (function() {
 
                 return fontKey;
             },
-            addFonts = function() {
+            addFonts = function () {
 
                 var HELVETICA = "helvetica",
                     TIMES = "times",
@@ -663,10 +646,7 @@ var jsPDF = (function() {
                     addToFontDictionary(fontKey, parts[0], parts[1] || '');
                 }
 
-                events.publish('addFonts', {
-                    'fonts': fonts,
-                    'dictionary': fontmap
-                });
+                events.publish('addFonts', {'fonts': fonts, 'dictionary': fontmap});
             },
             /**
 
@@ -676,7 +656,7 @@ var jsPDF = (function() {
             @param flags {Object} Encoding flags.
             @returns {String} Encoded string
             */
-            to8bitStream = function(text, flags) {
+            to8bitStream = function (text, flags) {
                 /* PDF 1.3 spec:
                 "For text strings encoded in Unicode, the first two bytes must be 254 followed by
                 255, representing the Unicode byte order marker, U+FEFF. (This sequence conflicts
@@ -746,10 +726,10 @@ var jsPDF = (function() {
                 //   .widths = {0:width, code:width, ..., 'fof':divisor}
                 //   .kerning = {code:{previous_char_code:shift, ..., 'fof':-divisor},...}
                 if ((flags.autoencode || outputEncoding) &&
-                    fonts[activeFontKey].metadata &&
-                    fonts[activeFontKey].metadata[sourceEncoding] &&
-                    fonts[activeFontKey].metadata[sourceEncoding].encoding
-                ) {
+                        fonts[activeFontKey].metadata &&
+                        fonts[activeFontKey].metadata[sourceEncoding] &&
+                        fonts[activeFontKey].metadata[sourceEncoding].encoding
+                        ) {
                     encodingBlock = fonts[activeFontKey].metadata[sourceEncoding].encoding;
 
                     // each font has default encoding. Some have it clearly defined.
@@ -818,7 +798,7 @@ var jsPDF = (function() {
                 }
             },
             // Replace '/', '(', and ')' with pdf-safe versions
-            pdfEscape = function(text, flags) {
+            pdfEscape = function (text, flags) {
                 // doing to8bitStream does NOT make this PDF display unicode text. For that
                 // we also need to reference a unicode font and embed it - royal pain in the rear.
 
@@ -830,7 +810,7 @@ var jsPDF = (function() {
                 // This will allow immediate support for unicode in document properties strings.
                 return to8bitStream(text, flags).replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
             },
-            putInfo = function() {
+            putInfo = function () {
                 out('/Producer (jsPDF ' + version + ')');
                 if (documentProperties.title) {
                     out('/Title (' + pdfEscape(documentProperties.title) + ')');
@@ -848,7 +828,8 @@ var jsPDF = (function() {
                     out('/Creator (' + pdfEscape(documentProperties.creator) + ')');
                 }
                 var created = new Date();
-                out('/CreationDate (D:' + [
+                out('/CreationDate (D:' +
+                    [
                         created.getFullYear(),
                         padd2(created.getMonth() + 1),
                         padd2(created.getDate()),
@@ -857,9 +838,9 @@ var jsPDF = (function() {
                         padd2(created.getSeconds())
                     ].join('') +
                     ')'
-                );
+                    );
             },
-            putCatalog = function() {
+            putCatalog = function () {
                 out('/Type /Catalog');
                 out('/Pages 1 0 R');
                 // @TODO: Add zoom and layout modes
@@ -867,18 +848,18 @@ var jsPDF = (function() {
                 out('/PageLayout /OneColumn');
                 events.publish('putCatalog');
             },
-            putTrailer = function() {
+            putTrailer = function () {
                 out('/Size ' + (objectNumber + 1));
                 out('/Root ' + objectNumber + ' 0 R');
                 out('/Info ' + (objectNumber - 1) + ' 0 R');
             },
-            beginPage = function() {
+            beginPage = function () {
                 page++;
                 // Do dimension stuff
                 outToPages = true;
                 pages[page] = [];
             },
-            _addPage = function() {
+            _addPage = function () {
                 beginPage();
                 // Set line width
                 out(f2(lineWidth * k) + ' w');
@@ -891,9 +872,7 @@ var jsPDF = (function() {
                 if (lineJoinID !== 0) {
                     out(lineJoinID.toString(10) + ' j');
                 }
-                events.publish('addPage', {
-                    'pageNumber': page
-                });
+                events.publish('addPage', {'pageNumber': page});
             },
             /**
             Returns a document-specific font key - a label assigned to a
@@ -908,7 +887,7 @@ var jsPDF = (function() {
             @param fontStyle {String} can be undefined on "falthy" to indicate "use current"
             @returns {String} Font key.
             */
-            getFont = function(fontName, fontStyle) {
+            getFont = function (fontName, fontStyle) {
                 var key, undef;
 
                 if (fontName === undef) {
@@ -929,7 +908,7 @@ var jsPDF = (function() {
 
                 return key;
             },
-            buildDocument = function() {
+            buildDocument = function () {
 
                 outToPages = false; // switches out() to content
                 content = [];
@@ -957,8 +936,7 @@ var jsPDF = (function() {
                 out('endobj');
 
                 // Cross-ref
-                var o = content_length,
-                    i;
+                var o = content_length, i;
                 out('xref');
                 out('0 ' + (objectNumber + 1));
                 out('0000000000 65535 f ');
@@ -978,7 +956,7 @@ var jsPDF = (function() {
 
                 return content.join('\n');
             },
-            getStyle = function(style) {
+            getStyle = function (style) {
                 // see Path-Painting Operators of PDF spec
                 var op = 'S'; // stroke
                 if (style === 'F') {
@@ -1004,47 +982,45 @@ var jsPDF = (function() {
             @methodOf jsPDF#
             @name output
             */
-            output = function(type, options) {
+            output = function (type, options) {
                 var undef, data, length, array, i, blob;
                 switch (type) {
-                    case undef:
-                        return buildDocument();
-                    case 'save':
-                        if (navigator.getUserMedia) {
-                            if (window.URL === undefined) {
-                                return API.output('dataurlnewwindow');
-                            } else if (window.URL.createObjectURL === undefined) {
-                                return API.output('dataurlnewwindow');
-                            }
+                case undef:
+                    return buildDocument();
+                case 'save':
+                    if (navigator.getUserMedia) {
+                        if (window.URL === undefined) {
+                            return API.output('dataurlnewwindow');
+                        } else if (window.URL.createObjectURL === undefined) {
+                            return API.output('dataurlnewwindow');
                         }
-                        data = buildDocument();
+                    }
+                    data = buildDocument();
 
-                        // Need to add the file to BlobBuilder as a Uint8Array
-                        length = data.length;
-                        array = new Uint8Array(new ArrayBuffer(length));
+                    // Need to add the file to BlobBuilder as a Uint8Array
+                    length = data.length;
+                    array = new Uint8Array(new ArrayBuffer(length));
 
-                        for (i = 0; i < length; i++) {
-                            array[i] = data.charCodeAt(i);
-                        }
+                    for (i = 0; i < length; i++) {
+                        array[i] = data.charCodeAt(i);
+                    }
 
-                        blob = new Blob([array], {
-                            type: "application/pdf"
-                        });
+                    blob = new Blob([array], {type: "application/pdf"});
 
-                        saveAs(blob, options);
-                        break;
-                    case 'datauristring':
-                    case 'dataurlstring':
-                        return 'data:application/pdf;base64,' + btoa(buildDocument());
-                    case 'datauri':
-                    case 'dataurl':
-                        document.location.href = 'data:application/pdf;base64,' + btoa(buildDocument());
-                        break;
-                    case 'dataurlnewwindow':
-                        window.open('data:application/pdf;base64,' + btoa(buildDocument()));
-                        break;
-                    default:
-                        throw new Error('Output type "' + type + '" is not supported.');
+                    saveAs(blob, options);
+                    break;
+                case 'datauristring':
+                case 'dataurlstring':
+                    return 'data:application/pdf;base64,' + btoa(buildDocument());
+                case 'datauri':
+                case 'dataurl':
+                    document.location.href = 'data:application/pdf;base64,' + btoa(buildDocument());
+                    break;
+                case 'dataurlnewwindow':
+                    window.open('data:application/pdf;base64,' + btoa(buildDocument()));
+                    break;
+                default:
+                    throw new Error('Output type "' + type + '" is not supported.');
                 }
                 // @TODO: Add different output options
             };
@@ -1112,25 +1088,19 @@ var jsPDF = (function() {
             @param fontStyle {String} (Optional) Font's style variation name (Example:"Italic")
             @returns {FontObject}
             */
-            'getFont': function() {
-                return fonts[getFont.apply(API, arguments)];
-            },
-            'getFontSize': function() {
-                return activeFontSize;
-            },
-            'getLineHeight': function() {
-                return activeFontSize * lineHeightProportion;
-            },
+            'getFont': function () { return fonts[getFont.apply(API, arguments)]; },
+            'getFontSize': function () { return activeFontSize;    },
+            'getLineHeight': function () { return activeFontSize * lineHeightProportion;    },
             'btoa': btoa,
-            'write': function(string1, string2, string3, etc) {
+            'write': function (string1, string2, string3, etc) {
                 out(
                     arguments.length === 1 ? string1 : Array.prototype.join.call(arguments, ' ')
                 );
             },
-            'getCoordinateString': function(value) {
+            'getCoordinateString': function (value) {
                 return f2(value * k);
             },
-            'getVerticalCoordinateString': function(value) {
+            'getVerticalCoordinateString': function (value) {
                 return f2((pageHeight - value) * k);
             },
             'collections': {},
@@ -1144,16 +1114,11 @@ var jsPDF = (function() {
             // If default is "mm", k is the number that will turn number in 'mm' into 'points' number.
             // through multiplication.
             'scaleFactor': k,
-            'pageSize': {
-                'width': pageWidth,
-                'height': pageHeight
-            },
-            'output': function(type, options) {
+            'pageSize': {'width': pageWidth, 'height': pageHeight},
+            'output': function (type, options) {
                 return output(type, options);
             },
-            'getNumberOfPages': function() {
-                return pages.length - 1;
-            },
+            'getNumberOfPages': function () {return pages.length - 1; },
             'pages': pages
         };
 
@@ -1165,7 +1130,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name addPage
          */
-        API.addPage = function() {
+        API.addPage = function () {
             _addPage();
             return this;
         };
@@ -1181,7 +1146,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name text
          */
-        API.text = function(text, x, y, flags) {
+        API.text = function (text, x, y, flags) {
             /**
              * Inserts something like this into PDF
                 BT
@@ -1220,10 +1185,7 @@ var jsPDF = (function() {
             }
 
             if (typeof flags === 'undefined') {
-                flags = {
-                    'noBOM': true,
-                    'autoencode': true
-                };
+                flags = {'noBOM': true, 'autoencode': true};
             } else {
 
                 if (flags.noBOM === undef) {
@@ -1238,7 +1200,7 @@ var jsPDF = (function() {
 
             if (typeof text === 'string') {
                 str = pdfEscape(text, flags);
-            } else if (text instanceof Array) { /* Array */
+            } else if (text instanceof Array) {  /* Array */
                 // we don't want to destroy  original text array, so cloning it
                 newtext = text.concat();
                 // we do array.join('text that must not be PDFescaped")
@@ -1259,20 +1221,20 @@ var jsPDF = (function() {
             // - readers dealing smartly with brokenness of jsPDF's markup.
             out(
                 'BT\n/' +
-                activeFontKey + ' ' + activeFontSize + ' Tf\n' + // font face, style, size
-                (activeFontSize * lineHeightProportion) + ' TL\n' + // line spacing
-                textColor +
-                '\n' + f2(x * k) + ' ' + f2((pageHeight - y) * k) + ' Td\n(' +
-                str +
-                ') Tj\nET'
+                    activeFontKey + ' ' + activeFontSize + ' Tf\n' + // font face, style, size
+                    (activeFontSize * lineHeightProportion) + ' TL\n' + // line spacing
+                    textColor +
+                    '\n' + f2(x * k) + ' ' + f2((pageHeight - y) * k) + ' Td\n(' +
+                    str +
+                    ') Tj\nET'
             );
             return this;
         };
 
-        API.line = function(x1, y1, x2, y2) {
+        API.line = function (x1, y1, x2, y2) {
             out(
                 f2(x1 * k) + ' ' + f2((pageHeight - y1) * k) + ' m ' +
-                f2(x2 * k) + ' ' + f2((pageHeight - y2) * k) + ' l S'
+                    f2(x2 * k) + ' ' + f2((pageHeight - y2) * k) + ' l S'
             );
             return this;
         };
@@ -1296,7 +1258,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name lines
          */
-        API.lines = function(lines, x, y, scale, style, closed) {
+        API.lines = function (lines, x, y, scale, style, closed) {
             var undef, _first, _second, _third, scalex, scaley, i, l, leg, x2, y2, x3, y3, x4, y4;
 
             // Pre-August-2012 the order of arguments was function(x, y, lines, scale, style)
@@ -1346,11 +1308,11 @@ var jsPDF = (function() {
                     y4 = leg[5] * scaley + y4; // here last y4 was prior ending point
                     out(
                         f3(x2 * k) + ' ' +
-                        f3((pageHeight - y2) * k) + ' ' +
-                        f3(x3 * k) + ' ' +
-                        f3((pageHeight - y3) * k) + ' ' +
-                        f3(x4 * k) + ' ' +
-                        f3((pageHeight - y4) * k) + ' c'
+                            f3((pageHeight - y2) * k) + ' ' +
+                            f3(x3 * k) + ' ' +
+                            f3((pageHeight - y3) * k) + ' ' +
+                            f3(x4 * k) + ' ' +
+                            f3((pageHeight - y4) * k) + ' c'
                     );
                 }
             }
@@ -1377,7 +1339,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name rect
          */
-        API.rect = function(x, y, w, h, style) {
+        API.rect = function (x, y, w, h, style) {
             var op = getStyle(style);
             out([
                 f2(x * k),
@@ -1405,12 +1367,12 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name triangle
          */
-        API.triangle = function(x1, y1, x2, y2, x3, y3, style) {
+        API.triangle = function (x1, y1, x2, y2, x3, y3, style) {
             this.lines(
                 [
-                    [x2 - x1, y2 - y1], // vector to point 2
-                    [x3 - x2, y3 - y2], // vector to point 3
-                    [x1 - x3, y1 - y3] // closing vector back to point 1
+                    [ x2 - x1, y2 - y1 ], // vector to point 2
+                    [ x3 - x2, y3 - y2 ], // vector to point 3
+                    [ x1 - x3, y1 - y3 ] // closing vector back to point 1
                 ],
                 x1,
                 y1, // start of path
@@ -1436,18 +1398,18 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name roundedRect
         */
-        API.roundedRect = function(x, y, w, h, rx, ry, style) {
+        API.roundedRect = function (x, y, w, h, rx, ry, style) {
             var MyArc = 4 / 3 * (Math.SQRT2 - 1);
             this.lines(
                 [
-                    [(w - 2 * rx), 0],
-                    [(rx * MyArc), 0, rx, ry - (ry * MyArc), rx, ry],
-                    [0, (h - 2 * ry)],
-                    [0, (ry * MyArc), -(rx * MyArc), ry, -rx, ry],
-                    [(-w + 2 * rx), 0],
-                    [-(rx * MyArc), 0, -rx, -(ry * MyArc), -rx, -ry],
-                    [0, (-h + 2 * ry)],
-                    [0, -(ry * MyArc), (rx * MyArc), -ry, rx, -ry]
+                    [ (w - 2 * rx), 0 ],
+                    [ (rx * MyArc), 0, rx, ry - (ry * MyArc), rx, ry ],
+                    [ 0, (h - 2 * ry) ],
+                    [ 0, (ry * MyArc), -(rx * MyArc), ry, -rx, ry],
+                    [ (-w + 2 * rx), 0],
+                    [ -(rx * MyArc), 0, -rx, -(ry * MyArc), -rx, -ry],
+                    [ 0, (-h + 2 * ry)],
+                    [ 0, -(ry * MyArc), (rx * MyArc), -ry, rx, -ry]
                 ],
                 x + rx,
                 y, // start of path
@@ -1470,7 +1432,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name ellipse
          */
-        API.ellipse = function(x, y, rx, ry, style) {
+        API.ellipse = function (x, y, rx, ry, style) {
             var op = getStyle(style),
                 lx = 4 / 3 * (Math.SQRT2 - 1) * rx,
                 ly = 4 / 3 * (Math.SQRT2 - 1) * ry;
@@ -1530,7 +1492,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name circle
          */
-        API.circle = function(x, y, r, style) {
+        API.circle = function (x, y, r, style) {
             return this.ellipse(x, y, r, r, style);
         };
 
@@ -1543,7 +1505,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setProperties
          */
-        API.setProperties = function(properties) {
+        API.setProperties = function (properties) {
             // copying only those properties we can render.
             var property;
             for (property in documentProperties) {
@@ -1563,7 +1525,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setFontSize
          */
-        API.setFontSize = function(size) {
+        API.setFontSize = function (size) {
             activeFontSize = size;
             return this;
         };
@@ -1579,7 +1541,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setFont
          */
-        API.setFont = function(fontName, fontStyle) {
+        API.setFont = function (fontName, fontStyle) {
             activeFontKey = getFont(fontName, fontStyle);
             // if font is not found, the above line blows up and we never go further
             return this;
@@ -1596,7 +1558,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setFontStyle
          */
-        API.setFontStyle = API.setFontType = function(style) {
+        API.setFontStyle = API.setFontType = function (style) {
             var undef;
             activeFontKey = getFont(undef, style);
             // if font is not found, the above line blows up and we never go further
@@ -1613,7 +1575,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name getFontList
         */
-        API.getFontList = function() {
+        API.getFontList = function () {
             // TODO: iterate over fonts array or return copy of fontmap instead in case more are ever added.
             var list = {},
                 fontName,
@@ -1643,7 +1605,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setLineWidth
          */
-        API.setLineWidth = function(width) {
+        API.setLineWidth = function (width) {
             out((width * k).toFixed(2) + ' w');
             return this;
         };
@@ -1685,7 +1647,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setDrawColor
          */
-        API.setDrawColor = function(ch1, ch2, ch3, ch4) {
+        API.setDrawColor = function (ch1, ch2, ch3, ch4) {
             var color;
             if (ch2 === undefined || (ch4 === undefined && ch1 === ch2 === ch3)) {
                 // Gray color space.
@@ -1751,7 +1713,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setFillColor
          */
-        API.setFillColor = function(ch1, ch2, ch3, ch4) {
+        API.setFillColor = function (ch1, ch2, ch3, ch4) {
             var color;
 
             if (ch2 === undefined || (ch4 === undefined && ch1 === ch2 === ch3)) {
@@ -1794,10 +1756,10 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setTextColor
         */
-        API.setTextColor = function(r, g, b) {
+        API.setTextColor = function (r, g, b) {
             var patt = /#[0-9A-Fa-f]{6}/;
             if ((typeof r == 'string') && patt.test(r)) {
-                var hex = r.replace('#', '');
+                var hex = r.replace('#','');
                 var bigint = parseInt(hex, 16);
                 r = (bigint >> 16) & 255;
                 g = (bigint >> 8) & 255;
@@ -1847,7 +1809,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setLineCap
         */
-        API.setLineCap = function(style) {
+        API.setLineCap = function (style) {
             var id = this.CapJoinStyles[style];
             if (id === undefined) {
                 throw new Error("Line cap style of '" + style + "' is not recognized. See or extend .CapJoinStyles property for valid styles");
@@ -1868,7 +1830,7 @@ var jsPDF = (function() {
         @methodOf jsPDF#
         @name setLineJoin
         */
-        API.setLineJoin = function(style) {
+        API.setLineJoin = function (style) {
             var id = this.CapJoinStyles[style];
             if (id === undefined) {
                 throw new Error("Line join style of '" + style + "' is not recognized. See or extend .CapJoinStyles property for valid styles");
@@ -1891,7 +1853,7 @@ var jsPDF = (function() {
          * @methodOf jsPDF#
          * @name save
          */
-        API.save = function(filename) {
+        API.save = function (filename) {
             API.output('save', filename);
         };
 
@@ -1901,7 +1863,7 @@ var jsPDF = (function() {
         for (plugin in jsPDF.API) {
             if (jsPDF.API.hasOwnProperty(plugin)) {
                 if (plugin === 'events' && jsPDF.API.events.length) {
-                    (function(events, newEvents) {
+                    (function (events, newEvents) {
 
                         // jsPDF.API.events is a JS Array of Arrays
                         // where each Array is a pair of event name, handler
@@ -1920,9 +1882,11 @@ var jsPDF = (function() {
                             eventname = newEvents[i][0];
                             handler_and_args = newEvents[i][1];
                             events.subscribe.apply(
-                                events, [eventname].concat(
-                                    typeof handler_and_args === 'function' ? [handler_and_args] :
-                                    handler_and_args
+                                events,
+                                [eventname].concat(
+                                    typeof handler_and_args === 'function' ?
+                                            [ handler_and_args ] :
+                                            handler_and_args
                                 )
                             );
                         }
@@ -1948,34 +1912,32 @@ var jsPDF = (function() {
         return API;
     }
 
-    /**
-    jsPDF.API is a STATIC property of jsPDF class.
-    jsPDF.API is an object you can add methods and properties to.
-    The methods / properties you add will show up in new jsPDF objects.
+/**
+jsPDF.API is a STATIC property of jsPDF class.
+jsPDF.API is an object you can add methods and properties to.
+The methods / properties you add will show up in new jsPDF objects.
 
-    One property is prepopulated. It is the 'events' Object. Plugin authors can add topics, callbacks to this object. These will be reassigned to all new instances of jsPDF.
-    Examples:
-        jsPDF.API.events['initialized'] = function(){ 'this' is API object }
-        jsPDF.API.events['addFont'] = function(added_font_object){ 'this' is API object }
+One property is prepopulated. It is the 'events' Object. Plugin authors can add topics, callbacks to this object. These will be reassigned to all new instances of jsPDF.
+Examples:
+    jsPDF.API.events['initialized'] = function(){ 'this' is API object }
+    jsPDF.API.events['addFont'] = function(added_font_object){ 'this' is API object }
 
-    @static
-    @public
-    @memberOf jsPDF
-    @name API
+@static
+@public
+@memberOf jsPDF
+@name API
 
-    @example
-        jsPDF.API.mymethod = function(){
-            // 'this' will be ref to internal API object. see jsPDF source
-            // , so you can refer to built-in methods like so:
-            //     this.line(....)
-            //     this.text(....)
-        }
-        var pdfdoc = new jsPDF()
-        pdfdoc.mymethod() // <- !!!!!!
-    */
-    jsPDF.API = {
-        'events': []
-    };
+@example
+    jsPDF.API.mymethod = function(){
+        // 'this' will be ref to internal API object. see jsPDF source
+        // , so you can refer to built-in methods like so:
+        //     this.line(....)
+        //     this.text(....)
+    }
+    var pdfdoc = new jsPDF()
+    pdfdoc.mymethod() // <- !!!!!!
+*/
+    jsPDF.API = {'events': []};
 
     return jsPDF;
 }());

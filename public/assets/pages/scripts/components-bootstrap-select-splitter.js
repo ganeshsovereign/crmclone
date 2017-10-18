@@ -21,6 +21,6 @@ var ComponentsBootstrapSelectSplitter = function() {
 
 }();
 
-jQuery(document).ready(function() {
-    ComponentsBootstrapSelectSplitter.init();
+jQuery(document).ready(function() {    
+   ComponentsBootstrapSelectSplitter.init(); 
 });

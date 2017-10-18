@@ -1,7 +1,7 @@
 /**
 Custom module for you to write your own javascript functions
 **/
-var Custom = function() {
+var Custom = function () {
 
     // private functions & variables
 
@@ -13,12 +13,12 @@ var Custom = function() {
     return {
 
         //main function
-        init: function() {
+        init: function () {
             //initialize here something.            
         },
 
         //some helper function
-        doSomeStuff: function() {
+        doSomeStuff: function () {
             myFunc();
         }
 

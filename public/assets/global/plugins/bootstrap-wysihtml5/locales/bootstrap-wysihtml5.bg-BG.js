@@ -1,7 +1,7 @@
 /**
  * Bulgarian translation for bootstrap-wysihtml5
  */
-(function($) {
+(function($){
     $.fn.wysihtml5.locale["bg-BG"] = {
         font_styles: {
             normal: "Нормален текст",
@@ -46,3 +46,4 @@
         }
     };
 }(jQuery));
+

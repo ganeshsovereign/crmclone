@@ -1,46 +1,46 @@
-var ComponentsCodeEditors = function() {
-
-    var handleDemo1 = function() {
+var ComponentsCodeEditors = function () {
+    
+    var handleDemo1 = function () {
         var myTextArea = document.getElementById('code_editor_demo_1');
         var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
             lineNumbers: true,
             matchBrackets: true,
             styleActiveLine: true,
-            theme: "ambiance",
+            theme:"ambiance",
             mode: 'javascript'
         });
     }
 
-    var handleDemo2 = function() {
+    var handleDemo2 = function () {
         var myTextArea = document.getElementById('code_editor_demo_2');
         var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
             lineNumbers: true,
             matchBrackets: true,
             styleActiveLine: true,
-            theme: "material",
+            theme:"material",
             mode: 'css'
         });
     }
 
-    var handleDemo3 = function() {
+    var handleDemo3 = function () {
         var myTextArea = document.getElementById('code_editor_demo_3');
         var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
             lineNumbers: true,
             matchBrackets: true,
             styleActiveLine: true,
-            theme: "neat",
+            theme:"neat",
             mode: 'javascript',
             readOnly: true
         });
     }
 
-    var handleDemo4 = function() {
+    var handleDemo4 = function () {
         var myTextArea = document.getElementById('code_editor_demo_4');
         var myCodeMirror = CodeMirror.fromTextArea(myTextArea, {
             lineNumbers: true,
             matchBrackets: true,
             styleActiveLine: true,
-            theme: "neo",
+            theme:"neo",
             mode: 'css',
             readOnly: true
         });
@@ -49,7 +49,7 @@ var ComponentsCodeEditors = function() {
 
     return {
         //main function to initiate the module
-        init: function() {
+        init: function () {
             handleDemo1();
             handleDemo2();
             handleDemo3();
@@ -59,6 +59,6 @@ var ComponentsCodeEditors = function() {
 
 }();
 
-jQuery(document).ready(function() {
-    ComponentsCodeEditors.init();
+jQuery(document).ready(function() {    
+   ComponentsCodeEditors.init(); 
 });

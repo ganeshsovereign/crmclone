@@ -1,21 +1,21 @@
-var EcommerceOrdersView = function() {
+var EcommerceOrdersView = function () {
 
 
-    var handleInvoices = function() {
+    var handleInvoices = function () {
 
         var grid = new Datatable();
 
         grid.init({
             src: $("#datatable_invoices"),
-            onSuccess: function(grid) {
+            onSuccess: function (grid) {
                 // execute some code after table records loaded
             },
-            onError: function(grid) {
+            onError: function (grid) {
                 // execute some code on network or other general error  
             },
             loadingMessage: 'Loading...',
             dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
+                
                 // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
                 // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
                 // So when dropdowns used the scrollable div should be removed. 
@@ -36,7 +36,7 @@ var EcommerceOrdersView = function() {
         });
 
         // handle group actionsubmit button click
-        grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
             e.preventDefault();
             var action = $(".table-group-action-input", grid.getTableWrapper());
             if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
@@ -65,16 +65,16 @@ var EcommerceOrdersView = function() {
         });
     }
 
-    var handleCreditMemos = function() {
+    var handleCreditMemos = function () {
 
         var grid = new Datatable();
-
+        
         grid.init({
             src: $("#datatable_credit_memos"),
-            onSuccess: function(grid) {
+            onSuccess: function (grid) {
                 // execute some code after table records loaded
             },
-            onError: function(grid) {
+            onError: function (grid) {
                 // execute some code on network or other general error  
             },
             loadingMessage: 'Loading...',
@@ -105,16 +105,16 @@ var EcommerceOrdersView = function() {
 
     }
 
-    var handleShipment = function() {
+    var handleShipment = function () {
 
         var grid = new Datatable();
 
         grid.init({
             src: $("#datatable_shipment"),
-            onSuccess: function(grid) {
+            onSuccess: function (grid) {
                 // execute some code after table records loaded
             },
-            onError: function(grid) {
+            onError: function (grid) {
                 // execute some code on network or other general error  
             },
             loadingMessage: 'Loading...',
@@ -138,16 +138,16 @@ var EcommerceOrdersView = function() {
         });
     }
 
-    var handleHistory = function() {
+    var handleHistory = function () {
 
         var grid = new Datatable();
 
         grid.init({
             src: $("#datatable_history"),
-            onSuccess: function(grid) {
+            onSuccess: function (grid) {
                 // execute some code after table records loaded
             },
-            onError: function(grid) {
+            onError: function (grid) {
                 // execute some code on network or other general error  
             },
             loadingMessage: 'Loading...',
@@ -171,7 +171,7 @@ var EcommerceOrdersView = function() {
         });
 
         // handle group actionsubmit button click
-        grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
             e.preventDefault();
             var action = $(".table-group-action-input", grid.getTableWrapper());
             if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
@@ -200,7 +200,7 @@ var EcommerceOrdersView = function() {
         });
     }
 
-    var initPickers = function() {
+    var initPickers = function () {
         //init date pickers
         $('.date-picker').datepicker({
             rtl: Metronic.isRTL(),
@@ -219,7 +219,7 @@ var EcommerceOrdersView = function() {
     return {
 
         //main function to initiate the module
-        init: function() {
+        init: function () {
             initPickers();
 
             handleInvoices();

@@ -40,7 +40,8 @@
             "*university*dipl*mas*"]) { # If message header does not contain my address, # it's from a list. fileinto "spam"; # move to "spam" folder } else { # Move all other (non-company) mail to "personal" # folder. fileinto "personal"; } </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {});
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {});
     </script>
     <p>
         <strong>MIME types defined:</strong> <code>application/sieve</code>.</p>

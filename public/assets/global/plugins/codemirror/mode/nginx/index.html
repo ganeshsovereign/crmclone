@@ -15,7 +15,7 @@
     body {
         margin: 0em auto;
     }
-
+    
     .CodeMirror,
     .CodeMirror-scroll {
         height: 600px;
@@ -61,7 +61,8 @@
             HTTPS on; } } </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {});
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {});
     </script>
     <p>
         <strong>MIME types defined:</strong> <code>text/nginx</code>.</p>

@@ -172,9 +172,7 @@ Object.prototype = {
         var filter = data.filter && JSON.parse(data.filter) || {};
         var key;
         var filterObject = {
-            isremoved: {
-                $ne: true
-            }
+            isremoved: { $ne: true }
         };
         var optionsObject = {};
         var matchObject = {};
@@ -183,9 +181,7 @@ Object.prototype = {
 
         if (quickSearch) {
             regExp = new RegExp(quickSearch, 'ig');
-            matchObject['ref'] = {
-                $regex: regExp
-            };
+            matchObject['ref'] = { $regex: regExp };
         }
 
         //console.log(filter);
@@ -193,9 +189,7 @@ Object.prototype = {
         //TODO refresh Status on angular
         if (filter && filter.Status.value[0] == "NEW") {
             filter.Status.value = [];
-            filterObject.Status = {
-                $ne: "BILLED"
-            };
+            filterObject.Status = { $ne: "BILLED" };
         }
 
         if (filter && filter.Status.value[0] == "CLOSED") {
@@ -208,9 +202,7 @@ Object.prototype = {
         filterObject.$and = [];
 
         if (filter && typeof filter === 'object') {
-            filterObject.$and.push(filterMapper.mapFilter(filter, {
-                contentType: contentType
-            })); // caseFilter(filter);
+            filterObject.$and.push(filterMapper.mapFilter(filter, { contentType: contentType })); // caseFilter(filter);
         }
 
         //return console.log(filterObject.$and[0].$and[0].$or);
@@ -219,10 +211,7 @@ Object.prototype = {
             sort = JSON.parse(self.query.sort);
             sort._id = 1;
         } else
-            sort = {
-                datedl: -1,
-                _id: 1
-            };
+            sort = { datedl: -1, _id: 1 };
 
         if (contentType !== 'order' && contentType !== 'integrationUnlinkedOrders') {
             Order = MODEL('order').Schema.OrderSupplier;
@@ -233,15 +222,7 @@ Object.prototype = {
         }
 
         if (pastDue) {
-            optionsObject.$and.push({
-                expectedDate: {
-                    $gt: new Date(filter.date.value[1])
-                }
-            }, {
-                'workflow.status': {
-                    $ne: 'Done'
-                }
-            });
+            optionsObject.$and.push({ expectedDate: { $gt: new Date(filter.date.value[1]) } }, { 'workflow.status': { $ne: 'Done' } });
         }
 
         accessRollSearcher = function(cb) {
@@ -255,9 +236,8 @@ Object.prototype = {
             const ObjectId = MODULE('utils').ObjectId;
 
             var salesManagerMatch = {
-                $and: [{
-                        $eq: ['$$projectMember.projectPositionId', ObjectId("570e9a75785753b3f1d9c86e")]
-                    }, //CONSTANTS.SALESMANAGER
+                $and: [
+                    { $eq: ['$$projectMember.projectPositionId', ObjectId("570e9a75785753b3f1d9c86e")] }, //CONSTANTS.SALESMANAGER
                     {
                         $or: [{
                             $and: [{
@@ -291,11 +271,7 @@ Object.prototype = {
             newQueryObj.$and = [];
             //newQueryObj.$and.push(queryObject);
             //console.log(JSON.stringify(filterObject));
-            newQueryObj.$and.push({
-                _id: {
-                    $in: ids
-                }
-            });
+            newQueryObj.$and.push({ _id: { $in: ids } });
 
             Order.aggregate([{
                     $match: filterObject
@@ -397,24 +373,14 @@ Object.prototype = {
                                        },*/
                 {
                     $project: {
-                        workflow: {
-                            $arrayElemAt: ['$workflow', 0]
-                        },
-                        supplier: {
-                            $arrayElemAt: ['$supplier', 0]
-                        },
-                        'currency._id': {
-                            $arrayElemAt: ['$currency._id', 0]
-                        },
+                        workflow: { $arrayElemAt: ['$workflow', 0] },
+                        supplier: { $arrayElemAt: ['$supplier', 0] },
+                        'currency._id': { $arrayElemAt: ['$currency._id', 0] },
                         payments: 1,
                         'currency.rate': 1,
                         salesManagers: 1,
-                        channel: {
-                            $arrayElemAt: ['$channel', 0]
-                        },
-                        salesPerson: {
-                            $arrayElemAt: ['$salesPerson', 0]
-                        },
+                        channel: { $arrayElemAt: ['$channel', 0] },
+                        salesPerson: { $arrayElemAt: ['$salesPerson', 0] },
                         orderRows: 1,
                         paymentInfo: 1,
                         datec: 1,
@@ -432,14 +398,10 @@ Object.prototype = {
                     }
                 }, {
                     $project: {
-                        salesManager: {
-                            $arrayElemAt: ['$salesManagers', 0]
-                        },
+                        salesManager: { $arrayElemAt: ['$salesManagers', 0] },
                         supplier: {
                             _id: '$supplier._id',
-                            fullName: {
-                                $concat: ['$supplier.name.first', ' ', '$supplier.name.last']
-                            }
+                            fullName: { $concat: ['$supplier.name.first', ' ', '$supplier.name.last'] }
                         },
 
                         workflow: {
@@ -489,11 +451,7 @@ Object.prototype = {
                     }
                 }, {
                     $project: {
-                        salesPerson: {
-                            $ifNull: ['$salesPerson', {
-                                $arrayElemAt: ['$salesManager', 0]
-                            }]
-                        },
+                        salesPerson: { $ifNull: ['$salesPerson', { $arrayElemAt: ['$salesManager', 0] }] },
                         workflow: 1,
                         tempWorkflow: 1,
                         supplier: 1,
@@ -518,9 +476,7 @@ Object.prototype = {
                     $project: {
                         salesPerson: {
                             _id: '$salesPerson._id',
-                            fullName: {
-                                $concat: ['$salesPerson.name.first', ' ', '$salesPerson.name.last']
-                            }
+                            fullName: { $concat: ['$salesPerson.name.first', ' ', '$salesPerson.name.last'] }
                         },
                         workflow: 1,
                         tempWorkflow: 1,
@@ -543,19 +499,7 @@ Object.prototype = {
                         payments: 1,
                         removable: {
                             $cond: {
-                                if: {
-                                    $or: [{
-                                        $eq: ['$workflow.status', 'Done']
-                                    }, {
-                                        $eq: ['$tempWorkflow.status', 'Done']
-                                    }, {
-                                        $and: [{
-                                            $ne: ['$status.fulfillStatus', 'NOR']
-                                        }, {
-                                            $ne: ['$status.fulfillStatus', 'NOT']
-                                        }]
-                                    }]
-                                },
+                                if: { $or: [{ $eq: ['$workflow.status', 'Done'] }, { $eq: ['$tempWorkflow.status', 'Done'] }, { $and: [{ $ne: ['$status.fulfillStatus', 'NOR'] }, { $ne: ['$status.fulfillStatus', 'NOT'] }] }] },
                                 then: false,
                                 else: true
                             }
@@ -568,21 +512,11 @@ Object.prototype = {
                 {
                     $group: {
                         _id: null,
-                        total: {
-                            $sum: 1
-                        },
-                        total_ht: {
-                            $sum: "$total_ht"
-                        },
-                        total_ttc: {
-                            $sum: "$total_ttc"
-                        },
-                        total_paid: {
-                            $sum: "$total_paid"
-                        },
-                        root: {
-                            $push: '$$ROOT'
-                        }
+                        total: { $sum: 1 },
+                        total_ht: { $sum: "$total_ht" },
+                        total_ttc: { $sum: "$total_ttc" },
+                        total_paid: { $sum: "$total_paid" },
+                        root: { $push: '$$ROOT' }
                     }
                 }, {
                     $unwind: '$root'
@@ -642,79 +576,31 @@ Object.prototype = {
                         total: 1,
                         totalAll: 1,
                         'payments.currency': 1,
-                        'payments.paidAmount': {
-                            $cond: [{
-                                $eq: ['$payments.refund', true]
-                            }, {
-                                $multiply: ['$payments.paidAmount', -1]
-                            }, '$payments.paidAmount']
-                        }
+                        'payments.paidAmount': { $cond: [{ $eq: ['$payments.refund', true] }, { $multiply: ['$payments.paidAmount', -1] }, '$payments.paidAmount'] }
                     }
                 }, {
                     $group: {
                         _id: '$_id',
-                        salesPerson: {
-                            $first: '$salesPerson'
-                        },
-                        workflow: {
-                            $first: '$workflow'
-                        },
-                        supplier: {
-                            $first: '$supplier'
-                        },
-                        currency: {
-                            $first: '$currency'
-                        },
-                        paymentInfo: {
-                            $first: '$paymentInfo'
-                        },
-                        datec: {
-                            $first: '$datec'
-                        },
-                        ref_client: {
-                            $first: '$ref_client'
-                        },
-                        datedl: {
-                            $first: '$datedl'
-                        },
-                        total_ttc: {
-                            $first: '$total_ttc'
-                        },
-                        total_ht: {
-                            $first: '$total_ht'
-                        },
-                        total_paid: {
-                            $first: '$total_paid'
-                        },
-                        ID: {
-                            $first: '$ID'
-                        },
-                        Status: {
-                            $first: '$Status'
-                        },
-                        ref: {
-                            $first: '$ref'
-                        },
-                        status: {
-                            $first: '$status'
-                        },
-                        removable: {
-                            $first: '$removable'
-                        },
-                        channel: {
-                            $first: '$channel'
-                        },
-                        paymentsPaid: {
-                            $sum: {
-                                $divide: ['$payments.paidAmount', '$payments.currency.rate']
-                            }
-                        },
-                        total: {
-                            $first: '$total'
-                        },
-                        totalAll: {
-                            $first: '$totalAll'
-                        }
+                        salesPerson: { $first: '$salesPerson' },
+                        workflow: { $first: '$workflow' },
+                        supplier: { $first: '$supplier' },
+                        currency: { $first: '$currency' },
+                        paymentInfo: { $first: '$paymentInfo' },
+                        datec: { $first: '$datec' },
+                        ref_client: { $first: '$ref_client' },
+                        datedl: { $first: '$datedl' },
+                        total_ttc: { $first: '$total_ttc' },
+                        total_ht: { $first: '$total_ht' },
+                        total_paid: { $first: '$total_paid' },
+                        ID: { $first: '$ID' },
+                        Status: { $first: '$Status' },
+                        ref: { $first: '$ref' },
+                        status: { $first: '$status' },
+                        removable: { $first: '$removable' },
+                        channel: { $first: '$channel' },
+                        paymentsPaid: { $sum: { $divide: ['$payments.paidAmount', '$payments.currency.rate'] } },
+                        total: { $first: '$total' },
+                        totalAll: { $first: '$totalAll' }
                     }
                 }, {
                     $project: {
@@ -736,9 +622,7 @@ Object.prototype = {
                         removable: 1,
                         channel: 1,
                         paymentsPaid: 1,
-                        paymentBalance: {
-                            $subtract: ['$paymentInfo.total', '$paymentsPaid']
-                        },
+                        paymentBalance: { $subtract: ['$paymentInfo.total', '$paymentsPaid'] },
                         total: 1,
                         totalAll: 1
                     }
@@ -889,9 +773,7 @@ Object.prototype = {
                     if (order.warehouse)
                         return wCb();
 
-                    Model.findOne({
-                        main: true
-                    }, "_id", function(err, warehouse) {
+                    Model.findOne({ main: true }, "_id", function(err, warehouse) {
                         if (err)
                             return wCb(err);
 
@@ -992,12 +874,7 @@ Object.prototype = {
                             });
                         }
 
-                        F.emit('order:recalculateStatus', {
-                            userId: self.user._id.toString(),
-                            order: {
-                                _id: order._id.toString()
-                            }
-                        });
+                        F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: order._id.toString() } });
 
                         self.json(order);
                     });
@@ -1053,9 +930,7 @@ Object.prototype = {
                     if (elem.type != 'kit')
                         return true;
 
-                    OrderRowsModel.remove({
-                        _id: elem._id
-                    }, function(err, doc) {});
+                    OrderRowsModel.remove({ _id: elem._id }, function(err, doc) {});
                     return false;
 
                 });
@@ -1144,9 +1019,7 @@ Object.prototype = {
 
                 //return console.log(self.body);
 
-                OrderModel.findByIdAndUpdate(id, self.body, {
-                    new: true
-                }, wCb);
+                OrderModel.findByIdAndUpdate(id, self.body, { new: true }, wCb);
             },
             function(order, wCb) {
                 //order = _.extend(order, self.body);
@@ -1163,9 +1036,7 @@ Object.prototype = {
                             return aCb();
 
                         if (orderRow._id)
-                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, {
-                                new: true
-                            }, function(err, doc) {
+                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, { new: true }, function(err, doc) {
                                 if (err)
                                     return aCb(err);
                                 newRows.push(doc);
@@ -1190,12 +1061,7 @@ Object.prototype = {
                 // Send to logistic and create first delivery
                 if (order.Status == "PROCESSING")
                     setTimeout2('orderSendDelivery:' + order._id.toString(), function() {
-                        F.emit('order:sendDelivery', {
-                            userId: self.user._id.toString(),
-                            order: {
-                                _id: order._id.toString()
-                            }
-                        });
+                        F.emit('order:sendDelivery', { userId: self.user._id.toString(), order: { _id: order._id.toString() } });
                     }, 1000);
 
                 //Allocated product order
@@ -1213,13 +1079,7 @@ Object.prototype = {
         ], function(err, order) {
             if (err) {
                 console.log(err);
-                OrderModel.update({
-                    _id: id
-                }, {
-                    $set: {
-                        Status: 'DRAFT'
-                    }
-                }, function(err, doc) {});
+                OrderModel.update({ _id: id }, { $set: { Status: 'DRAFT' } }, function(err, doc) {});
                 return self.json({
                     errorNotify: {
                         title: 'Erreur',
@@ -1240,12 +1100,7 @@ Object.prototype = {
                 }
 
                 if (rows.length)
-                    F.emit('order:recalculateStatus', {
-                        userId: self.user._id.toString(),
-                        order: {
-                            _id: doc._id.toString()
-                        }
-                    });
+                    F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: doc._id.toString() } });
 
                 //console.log(doc);
                 doc = doc.toObject();
@@ -1279,25 +1134,11 @@ Object.prototype = {
 
         OrderModel.update({
             _id: id
-        }, {
-            $set: {
-                isremoved: true,
-                Status: 'CANCELED',
-                total_ht: 0,
-                total_ttc: 0,
-                total_tva: []
-            }
-        }, function(err) {
+        }, { $set: { isremoved: true, Status: 'CANCELED', total_ht: 0, total_ttc: 0, total_tva: [] } }, function(err) {
             if (err)
                 return self.throw500(err);
 
-            OrderRowsModel.update({
-                order: id
-            }, {
-                $set: {
-                    isDeleted: true
-                }
-            }, function(err) {
+            OrderRowsModel.update({ order: id }, { $set: { isDeleted: true } }, function(err) {
                 if (err)
                     return self.throw500(err);
                 self.json({});
@@ -1330,12 +1171,8 @@ Object.prototype = {
         var query = JSON.parse(self.body.query);
 
         var conditions = {
-            Status: {
-                $ne: "BILLED"
-            },
-            isremoved: {
-                $ne: true
-            }
+            Status: { $ne: "BILLED" },
+            isremoved: { $ne: true }
             //  forSales: true
         };
 
@@ -1378,13 +1215,8 @@ Object.prototype = {
             if (err)
                 console.log(err);
 
-            SocieteModel.populate(res, {
-                path: "datatable.data.supplier"
-            }, function(err, res) {
-                EmployeeModel.populate(res, {
-                    path: "datatable.data.salesPerson",
-                    select: "name"
-                }, function(err, res) {
+            SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
+                EmployeeModel.populate(res, { path: "datatable.data.salesPerson", select: "name" }, function(err, res) {
 
                     for (var i = 0, len = res.datatable.data.length; i < len; i++) {
                         var row = res.datatable.data[i];
@@ -1467,9 +1299,7 @@ Object.prototype = {
 
         var conditions = {
             // Status: { $ne: "CLOSED" },
-            isremoved: {
-                $ne: true
-            }
+            isremoved: { $ne: true }
             //  forSales: true
         };
 
@@ -1506,9 +1336,7 @@ Object.prototype = {
             if (err)
                 console.log(err);
 
-            SocieteModel.populate(res, {
-                path: "datatable.data.supplier"
-            }, function(err, res) {
+            SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
 
                 for (var i = 0, len = res.datatable.data.length; i < len; i++) {
                     var row = res.datatable.data[i];
@@ -1801,15 +1629,7 @@ Object.prototype = {
                     OrderModel.getById(id, pCb);
                 },
                 deliveries: function(pCb) {
-                    DeliveryModel.find({
-                        order: id,
-                        isremoved: {
-                            $ne: true
-                        },
-                        _type: {
-                            $in: ['GoodsOutNote', 'GoodsInNote', 'stockReturns']
-                        }
-                    }, "_id ref Status", pCb);
+                    DeliveryModel.find({ order: id, isremoved: { $ne: true }, _type: { $in: ['GoodsOutNote', 'GoodsInNote', 'stockReturns'] } }, "_id ref Status", pCb);
                     /*DeliveryModel.aggregate([{
                         $match: { _id: ObjectId(id) }
                     }, {
@@ -1915,12 +1735,7 @@ Object.prototype = {
                     }], pCb);*/
                 },
                 invoices: function(pCb) {
-                    BillModel.find({
-                        orders: id,
-                        isremoved: {
-                            $ne: true
-                        }
-                    }, "_id ref Status total_ht", pCb);
+                    BillModel.find({ orders: id, isremoved: { $ne: true } }, "_id ref Status total_ht", pCb);
                 }
             },
             function(err, result) {
@@ -2068,12 +1883,8 @@ Object.prototype = {
                 }
             }
 
-            SocieteModel.findOne({
-                _id: doc.supplier._id
-            }, function(err, societe) {
-                BankModel.findOne({
-                    _id: doc.bank_reglement
-                }, function(err, bank) {
+            SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
+                BankModel.findOne({ _id: doc.bank_reglement }, function(err, bank) {
                     if (bank)
                         var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
@@ -2163,10 +1974,7 @@ Object.prototype = {
                                     tva_tx: (doc.lines[i].total_taxes.length ? doc.lines[i].total_taxes[0].taxeId.rate : 0),
                                     pu_ht: doc.lines[i].pu_ht,
                                     discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
-                                    qty: {
-                                        value: doc.lines[i].qty,
-                                        unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U")
-                                    },
+                                    qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
                                     total_ht: doc.lines[i].total_ht
                                 });
 
@@ -2190,16 +1998,12 @@ Object.prototype = {
                         if (doc.lines[i].type == 'kit') {
                             tabLines[tabLines.length - 1].italic = true;
                             if (doc.lines[i + 1] && doc.lines[i + 1].type != 'kit')
-                                tabLines.push({
-                                    hline: 1
-                                });
+                                tabLines.push({ hline: 1 });
                         }
 
                         if (doc.lines[i].type == 'SUBTOTAL') {
                             tabLines[tabLines.length - 1].italic = true;
-                            tabLines.push({
-                                hline: 1
-                            });
+                            tabLines.push({ hline: 1 });
                         }
 
                         //tab_latex += " & \\specialcell[t]{\\\\" + "\\\\} & " +   + " & " + " & " +  "\\tabularnewline\n";
@@ -2328,10 +2132,7 @@ Object.prototype = {
                                 "type": "string",
                                 "value": societe.salesPurchases.ref
                             },
-                            "TITLE": {
-                                "type": "string",
-                                "value": title
-                            },
+                            "TITLE": { "type": "string", "value": title },
                             "REFCLIENT": {
                                 "type": "string",
                                 "value": doc.ref_client
@@ -2399,9 +2200,7 @@ Object.prototype = {
 
         var object = new Object();
 
-        OrderModel.findOne({
-            _id: id
-        }, function(err, order) {
+        OrderModel.findOne({ _id: id }, function(err, order) {
             if (err)
                 return self.throw500(err);
 
@@ -2448,17 +2247,8 @@ Object.prototype = {
             return mongoose.Types.ObjectId(id);
         });
 
-        OrderModel.aggregate([{
-                    "$match": {
-                        Status: "PROCESSING",
-                        _id: {
-                            $in: list
-                        },
-                        total_ttc: {
-                            $ne: 0
-                        }
-                    }
-                },
+        OrderModel.aggregate([
+                { "$match": { Status: "PROCESSING", _id: { $in: list }, total_ttc: { $ne: 0 } } },
                 {
                     "$project": {
                         _id: 1,
@@ -2499,13 +2289,7 @@ Object.prototype = {
                         shipping: 1,
                         salesPerson: 1,
                         ref: 1,
-                        "supplier": {
-                            $cond: {
-                                if: "$supplier.salesPurchases.cptBilling",
-                                then: "$supplier.salesPurchases.cptBilling",
-                                else: "$supplier._id"
-                            }
-                        }
+                        "supplier": { $cond: { if: "$supplier.salesPurchases.cptBilling", then: "$supplier.salesPurchases.cptBilling", else: "$supplier._id" } }
                     }
                 },
                 {
@@ -2519,22 +2303,8 @@ Object.prototype = {
                 /*{
                     $unwind: "$lines"
                 },*/
-                {
-                    "$sort": {
-                        datedl: 1
-                    }
-                },
-                {
-                    "$group": {
-                        "_id": {
-                            supplier: "$supplier",
-                            entity: "$entity"
-                        },
-                        "data": {
-                            "$push": "$$ROOT"
-                        }
-                    }
-                }
+                { "$sort": { datedl: 1 } },
+                { "$group": { "_id": { supplier: "$supplier", entity: "$entity" }, "data": { "$push": "$$ROOT" } } }
             ],
             function(err, docs) {
                 if (err)
@@ -2543,9 +2313,7 @@ Object.prototype = {
                 // Creation des factures
                 async.each(docs, function(client, callback) {
 
-                    SocieteModel.findOne({
-                        _id: client._id.supplier
-                    }, function(err, societe) {
+                    SocieteModel.findOne({ _id: client._id.supplier }, function(err, societe) {
 
                         var id = client.data[0]._id;
 
@@ -2621,13 +2389,7 @@ Object.prototype = {
 
                                 //console.log(bill);
                                 for (var i = 0; i < bill.orders.length; i++) {
-                                    OrderModel.update({
-                                        _id: bill.orders[i]
-                                    }, {
-                                        $set: {
-                                            Status: "BILLED"
-                                        }
-                                    }, function(err) {
+                                    OrderModel.update({ _id: bill.orders[i] }, { $set: { Status: "BILLED" } }, function(err) {
                                         if (err)
                                             console.log(err);
                                     });

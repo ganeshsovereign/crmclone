@@ -1,6 +1,6 @@
-var Timeline = function() {
+var Timeline = function () {
 
-    var mapPolygone = function() {
+    var mapPolygone = function () {
         var map = new GMaps({
             div: '#gmap_polygons',
             lat: -12.043333,
@@ -26,7 +26,7 @@ var Timeline = function() {
 
     return {
         //main function to initiate map samples
-        init: function() {
+        init: function () {
             mapPolygone();
         }
 

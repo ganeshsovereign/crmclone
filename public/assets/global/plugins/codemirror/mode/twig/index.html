@@ -38,8 +38,10 @@
             {% include "empty.twig" with { message: msg } %} {% endfor %} {% endblock %} </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-            mode: {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
+            mode:
+            {
                 name: "twig",
                 htmlMode: true
             }

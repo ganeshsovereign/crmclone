@@ -32,36 +32,13 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var channelLinksSchema = new Schema({
-    type: {
-        type: String,
-        default: ''
-    }, // product, image, order, customer, ...
-    image: {
-        type: ObjectId,
-        ref: 'Images',
-        index: true
-    },
-    product: {
-        type: ObjectId,
-        ref: 'product',
-        index: true
-    },
-    linkId: {
-        type: String,
-        default: null
-    }, // id for external object
-    channel: {
-        type: ObjectId,
-        ref: 'integrations'
-    },
-    isActive: {
-        type: Boolean,
-        default: true
-    },
-    creationDate: {
-        type: Date,
-        default: Date.now
-    }
+    type: { type: String, default: '' }, // product, image, order, customer, ...
+    image: { type: ObjectId, ref: 'Images', index: true },
+    product: { type: ObjectId, ref: 'product', index: true },
+    linkId: { type: String, default: null }, // id for external object
+    channel: { type: ObjectId, ref: 'integrations' },
+    isActive: { type: Boolean, default: true },
+    creationDate: { type: Date, default: Date.now }
 });
 
 
@@ -87,9 +64,7 @@ channelLinksSchema.statics.getChannelListFromId = function(options, callback) {
                     $filter: {
                         input: "$channels",
                         as: "channel",
-                        cond: {
-                            $eq: ["$$channel." + options.type, ObjectId(options.id)]
-                        }
+                        cond: { $eq: ["$$channel." + options.type, ObjectId(options.id)] }
                     }
                 }
             }
@@ -102,10 +77,7 @@ channelLinksSchema.statics.getChannelListFromId = function(options, callback) {
                 return elem.channels.length;
             });
 
-            callback(null, {
-                active: active,
-                data: docs
-            });
+            callback(null, { active: active, data: docs });
         });
 };
 

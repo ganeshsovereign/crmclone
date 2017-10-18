@@ -1,15 +1,15 @@
-var FormSamples = function() {
+var FormSamples = function () {
 
 
     return {
         //main function to initiate the module
-        init: function() {
+        init: function () {
 
             // use select2 dropdown instead of chosen as select2 works fine with bootstrap on responsive layouts.
             $('.select2_category').select2({
-                placeholder: "Select an option",
-                allowClear: true
-            });
+	            placeholder: "Select an option",
+	            allowClear: true
+	        });
 
             $('.select2_sample1').select2({
                 placeholder: "Select a State",
@@ -20,11 +20,10 @@ var FormSamples = function() {
                 placeholder: "Type to select an option",
                 allowClear: true,
                 minimumInputLength: 1,
-                query: function(query) {
+                query: function (query) {
                     var data = {
-                            results: []
-                        },
-                        i, j, s;
+                        results: []
+                    }, i, j, s;
                     for (i = 1; i < 5; i++) {
                         s = "";
                         for (j = 0; j < i; j++) {

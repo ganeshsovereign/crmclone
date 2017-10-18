@@ -1,9 +1,9 @@
-var UIDatepaginator = function() {
+var UIDatepaginator = function () {
 
     return {
 
         //main function to initiate the module
-        init: function() {
+        init: function () {
 
             //sample #1
             $('#datepaginator_sample_1').datepaginator();
@@ -21,16 +21,16 @@ var UIDatepaginator = function() {
             //sample #3
             $('#datepaginator_sample_4').datepaginator({
                 onSelectedDateChanged: function(event, date) {
-                    alert("Selected date: " + moment(date).format("Do, MMM YYYY"));
+                  alert("Selected date: " + moment(date).format("Do, MMM YYYY"));
                 }
             });
-
+            
         } // end init
 
     };
 
 }();
 
-jQuery(document).ready(function() {
-    UIDatepaginator.init();
+jQuery(document).ready(function() {    
+   UIDatepaginator.init();
 });

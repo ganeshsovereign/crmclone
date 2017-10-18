@@ -43,7 +43,8 @@
 	$h->{$1}=$$.' predefined variables'; $s2 =~ s/\-line//ox; $s1 =~ s[ line ] [ block ]ox; } 1; # numbers and comments __END__ something... </textarea>
     </div>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
             lineNumbers: true
         });
     </script>

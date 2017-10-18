@@ -8,7 +8,7 @@
 
 // Chinese Translation by Thinking Song
 
-(function($) {
+(function( $ ) {
     $.fn.gtreetable.defaults.languages['zh-CN'] = {
         save: '保存',
         cancel: '取消',
@@ -28,4 +28,4 @@
             onMoveAsRoot: '目标节点不能是根节点.'
         }
     };
-}(jQuery));
+}( jQuery ));

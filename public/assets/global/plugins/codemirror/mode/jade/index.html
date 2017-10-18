@@ -43,8 +43,10 @@
             a(href=spot.hash) ##{spot.hash} if spot.title span.title #{spot.title} if spot.desc div #{spot.desc} else h3 There are no spots currently available. </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-            mode: {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
+            mode:
+            {
                 name: "jade",
                 alignCDATA: true
             },

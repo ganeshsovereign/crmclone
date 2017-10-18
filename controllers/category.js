@@ -391,20 +391,13 @@ Object.prototype = {
         var CategoryModel = MODEL('productCategory').Schema;
         var ProductModel = MODEL('product').Schema;
         var query = {
-            isremoved: {
-                $ne: true
-            }
+            isremoved: { $ne: true }
         };
 
         async.parallel({
             categoriesCount: function(cb) {
-                ProductModel.aggregate([{
-                        $match: {
-                            "info.categories": {
-                                $ne: null
-                            }
-                        }
-                    },
+                ProductModel.aggregate([
+                    { $match: { "info.categories": { $ne: null } } },
                     {
                         $project: {
                             categories: '$info.categories'
@@ -417,9 +410,7 @@ Object.prototype = {
                     }, {
                         $group: {
                             _id: '$categories',
-                            count: {
-                                $sum: 1
-                            }
+                            count: { $sum: 1 }
                         }
                     }
                 ], cb);
@@ -427,9 +418,7 @@ Object.prototype = {
             categories: function(cb) {
                 CategoryModel.find(query)
                     .lean()
-                    .sort({
-                        idx: 1
-                    })
+                    .sort({ idx: 1 })
                     .exec(cb);
             }
         }, function(err, results) {
@@ -526,9 +515,7 @@ Object.prototype = {
         var parentId = MAINCONSTANTS.EXPENSESCAREGORY;
 
         ProductCategory
-            .find({
-                parent: objectId(parentId)
-            })
+            .find({ parent: objectId(parentId) })
             .sort({
                 fullName: 1,
                 nestingLevel: 1,
@@ -623,13 +610,9 @@ Object.prototype = {
         ProductCategory
             .find({
                 ancestors: {
-                    $elemMatch: {
-                        $eq: id
-                    }
+                    $elemMatch: { $eq: id }
                 }
-            }, {
-                _id: 1
-            }, function(err, result) {
+            }, { _id: 1 }, function(err, result) {
                 var ids = [];
 
                 if (err)
@@ -690,9 +673,7 @@ Object.prototype = {
 
         //console.log(data);
 
-        ProductCategory.findOneAndUpdate({
-            _id: _id
-        }, data, function(err, result) {
+        ProductCategory.findOneAndUpdate({ _id: _id }, data, function(err, result) {
             if (err || !result)
                 return self.throw500(err);
 
@@ -702,9 +683,7 @@ Object.prototype = {
                 return self.throw404();
 
             if (!self.query.isChangedLevel && !data.langs[0] && !data.langs[0].url == result.langs[0].url)
-                return self.json({
-                    success: 'Category updated success'
-                });
+                return self.json({ success: 'Category updated success' });
 
             async.waterfall([
                 function(cb) {
@@ -724,12 +703,7 @@ Object.prototype = {
                     });
                 }
 
-                F.emit('product:updateCategory', {
-                    userId: self.user._id.toString(),
-                    productCategory: {
-                        _id: id.toString()
-                    }
-                });
+                F.emit('product:updateCategory', { userId: self.user._id.toString(), productCategory: { _id: id.toString() } });
 
                 //console.log(doc);
                 var doc = {};
@@ -747,11 +721,7 @@ Object.prototype = {
         var _id = id;
         var parentId;
 
-        ProductCategory.findByIdAndUpdate(id, {
-            isremoved: true
-        }, {
-            new: true
-        }, function(err, result) {
+        ProductCategory.findByIdAndUpdate(id, { isremoved: true }, { new: true }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
@@ -774,9 +744,7 @@ Object.prototype = {
             if (err)
                 return self.throw500(err);
 
-            self.json({
-                data: docs
-            });
+            self.json({ data: docs });
         });
     }
 };

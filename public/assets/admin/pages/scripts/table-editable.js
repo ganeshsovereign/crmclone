@@ -1,6 +1,6 @@
-var TableEditable = function() {
+var TableEditable = function () {
 
-    var handleTable = function() {
+    var handleTable = function () {
 
         function restoreRow(oTable, nRow) {
             var aData = oTable.fnGetData(nRow);
@@ -91,7 +91,7 @@ var TableEditable = function() {
         var nEditing = null;
         var nNew = false;
 
-        $('#sample_editable_1_new').click(function(e) {
+        $('#sample_editable_1_new').click(function (e) {
             e.preventDefault();
 
             if (nNew && nEditing) {
@@ -105,7 +105,7 @@ var TableEditable = function() {
                     oTable.fnDeleteRow(nEditing); // cancel
                     nEditing = null;
                     nNew = false;
-
+                    
                     return;
                 }
             }
@@ -117,7 +117,7 @@ var TableEditable = function() {
             nNew = true;
         });
 
-        table.on('click', '.delete', function(e) {
+        table.on('click', '.delete', function (e) {
             e.preventDefault();
 
             if (confirm("Are you sure to delete this row ?") == false) {
@@ -129,7 +129,7 @@ var TableEditable = function() {
             alert("Deleted! Do not forget to do some ajax to sync with backend :)");
         });
 
-        table.on('click', '.cancel', function(e) {
+        table.on('click', '.cancel', function (e) {
             e.preventDefault();
             if (nNew) {
                 oTable.fnDeleteRow(nEditing);
@@ -141,7 +141,7 @@ var TableEditable = function() {
             }
         });
 
-        table.on('click', '.edit', function(e) {
+        table.on('click', '.edit', function (e) {
             e.preventDefault();
 
             /* Get the row as a parent of the link that was clicked on */
@@ -168,7 +168,7 @@ var TableEditable = function() {
     return {
 
         //main function to initiate the module
-        init: function() {
+        init: function () {
             handleTable();
         }
 

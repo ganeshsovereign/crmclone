@@ -12,7 +12,7 @@
     .CodeMirror {
         background: #f8f8f8;
     }
-
+    
     form {
         margin-bottom: .7em;
     }
@@ -47,8 +47,10 @@
             { outline: thin dotted; outline: 5px auto -webkit-focus-ring-color; outline-offset: -2px; } </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-            extraKeys: {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
+            extraKeys:
+            {
                 "Ctrl-Space": "autocomplete"
             },
             tabSize: 2

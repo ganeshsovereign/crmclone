@@ -2,35 +2,35 @@
  * Bootstrap Table Afrikaans translation
  * Author: Phillip Kruger <phillip.kruger@gmail.com>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['af-ZA'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Besig om te laai, wag asseblief ...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' rekords per bladsy';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Resultate ' + pageFrom + ' tot ' + pageTo + ' van ' + totalRows + ' rye';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Soek';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Geen rekords gevind nie';
         },
-        formatPaginationSwitch: function() {
+        formatPaginationSwitch: function () {
             return 'Wys/verberg bladsy nummering';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Herlaai';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Wissel';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Kolomme';
         }
     };

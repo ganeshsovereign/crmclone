@@ -142,23 +142,15 @@ var getGroupOption = function(userId, groupsId) {
 
     return {
         $or: [{
-                $and: [{
-                        whoCanRW: 'group'
-                    },
-                    {
-                        'groups.users': user
-                    }
+                $and: [
+                    { whoCanRW: 'group' },
+                    { 'groups.users': user }
                 ]
             },
             {
-                $and: [{
-                        whoCanRW: 'group'
-                    },
-                    {
-                        'groups.group': {
-                            $in: groups
-                        }
-                    }
+                $and: [
+                    { whoCanRW: 'group' },
+                    { 'groups.group': { $in: groups } }
                 ]
             }
         ]

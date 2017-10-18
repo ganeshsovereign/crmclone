@@ -1,10 +1,10 @@
-var UIButtons = function() {
+var UIButtons = function () {
 
-    var handleButtons = function() {
-        $('.demo-loading-btn').click(function() {
+    var handleButtons = function () {
+        $('.demo-loading-btn').click(function () {
             var btn = $(this)
             btn.button('loading')
-            setTimeout(function() {
+            setTimeout(function () {
                 btn.button('reset')
             }, 3000)
         });
@@ -12,7 +12,7 @@ var UIButtons = function() {
 
     return {
         //main function to initiate the module
-        init: function() {
+        init: function () {
             handleButtons();
         }
 
@@ -20,6 +20,6 @@ var UIButtons = function() {
 
 }();
 
-jQuery(document).ready(function() {
-    UIButtons.init();
+jQuery(document).ready(function() {    
+   UIButtons.init();
 });

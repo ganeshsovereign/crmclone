@@ -26,16 +26,9 @@ International Registered Trademark & Property of ToManage SAS
 //Orders service used for articles REST endpoint
 MetronicApp.factory("Orders", ['$resource', function($resource) {
     return {
-        offer: $resource('/erp/api/order/:Id?quotation=true', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        offer: $resource('/erp/api/order/:Id?quotation=true', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -43,16 +36,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        offerSupplier: $resource('/erp/api/order/:Id?forSales=false&quotation=true', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        offerSupplier: $resource('/erp/api/order/:Id?forSales=false&quotation=true', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -60,16 +46,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        order: $resource('/erp/api/order/:Id', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        order: $resource('/erp/api/order/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -77,16 +56,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        orderSupplier: $resource('/erp/api/order/:Id?forSales=false', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        orderSupplier: $resource('/erp/api/order/:Id?forSales=false', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -94,16 +66,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        delivery: $resource('/erp/api/delivery/:Id', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        delivery: $resource('/erp/api/delivery/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -117,16 +82,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        deliverySupplier: $resource('/erp/api/delivery/:Id?forSales=false', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        deliverySupplier: $resource('/erp/api/delivery/:Id?forSales=false', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -140,16 +98,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        bill: $resource('/erp/api/bill/:Id', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        bill: $resource('/erp/api/bill/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -157,16 +108,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        billSupplier: $resource('/erp/api/bill/:Id?forSales=false', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        billSupplier: $resource('/erp/api/bill/:Id?forSales=false', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -174,16 +118,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        ordersFab: $resource('/erp/api/ordersfab/:Id', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        ordersFab: $resource('/erp/api/ordersfab/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -191,16 +128,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        stockCorrection: $resource('/erp/api/product/warehouse/stockCorrection/:Id', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        stockCorrection: $resource('/erp/api/product/warehouse/stockCorrection/:Id', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {
@@ -208,16 +138,9 @@ MetronicApp.factory("Orders", ['$resource', function($resource) {
                 }
             }
         }),
-        stockReturn: $resource('/erp/api/delivery/:Id?&stockReturn=true', {
-            Id: '@_id'
-        }, {
-            update: {
-                method: 'PUT'
-            },
-            query: {
-                method: 'GET',
-                isArray: false
-            },
+        stockReturn: $resource('/erp/api/delivery/:Id?&stockReturn=true', { Id: '@_id' }, {
+            update: { method: 'PUT' },
+            query: { method: 'GET', isArray: false },
             clone: {
                 method: 'POST',
                 params: {

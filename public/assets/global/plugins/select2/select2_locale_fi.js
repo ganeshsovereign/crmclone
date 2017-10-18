@@ -1,27 +1,27 @@
 /**
  * Select2 Finnish translation
  */
-(function($) {
+(function ($) {
     "use strict";
     $.fn.select2.locales['fi'] = {
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return "Ei tuloksia";
         },
-        formatInputTooShort: function(input, min) {
+        formatInputTooShort: function (input, min) {
             var n = min - input.length;
             return "Ole hyvä ja anna " + n + " merkkiä lisää";
         },
-        formatInputTooLong: function(input, max) {
+        formatInputTooLong: function (input, max) {
             var n = input.length - max;
             return "Ole hyvä ja anna " + n + " merkkiä vähemmän";
         },
-        formatSelectionTooBig: function(limit) {
+        formatSelectionTooBig: function (limit) {
             return "Voit valita ainoastaan " + limit + " kpl";
         },
-        formatLoadMore: function(pageNumber) {
+        formatLoadMore: function (pageNumber) {
             return "Ladataan lisää tuloksia…";
         },
-        formatSearching: function() {
+        formatSearching: function () {
             return "Etsitään…";
         }
     };

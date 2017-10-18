@@ -43,7 +43,8 @@
             Cell #3 for 'rl' and 'd' &gt;&gt;+. Add 1 to Cell #5 gives us an exclamation point &gt;++. And finally a newline from Cell #6 </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
             lineNumbers: true,
             matchBrackets: true,
             mode: "text/x-brainfuck"

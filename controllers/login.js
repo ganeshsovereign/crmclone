@@ -90,9 +90,7 @@ function passport_login_local() {
         }, function(err) {});
 
 
-        return self.json({
-            success: true
-        });
+        return self.json({ success: true });
 
     })(self.req, self.res);
 }
@@ -133,9 +131,7 @@ function passport_login_twitter_callback() {
             return self.redirect('/login/twitter/');
 
         // self.json(self.user);
-        self.json({
-            name: self.user.displayName
-        });
+        self.json({ name: self.user.displayName });
     });
 
 }
@@ -250,19 +246,11 @@ function decrypt() {
 
     var session = F.decrypt(self.body.data, CONFIG('secret'));
 
-    sessionModel.findOne({
-        session: session.id
-    }, function(err, doc) {
+    sessionModel.findOne({ session: session.id }, function(err, doc) {
         //console.log(doc.value);
         if (doc && doc.value && doc.value.passport && doc.value.passport.user)
-            userModel.findOne({
-                _id: doc.value.passport.user
-            }, "-password -google", function(err, user) {
-                self.json({
-                    passport: {
-                        user: user
-                    }
-                });
+            userModel.findOne({ _id: doc.value.passport.user }, "-password -google", function(err, user) {
+                self.json({ passport: { user: user } });
             });
         else
             self.json({});

@@ -78,13 +78,7 @@ exports.install = function() {
         self.body.range = Math.trunc(self.body.range);
 
         if (self.body.price_level !== 'BASE')
-            return pricelevel.update({
-                'product': self.body._id,
-                price_level: self.body.price_level
-            }, {
-                range: self.body.range,
-                price: self.body.price
-            }, self.user, function(err, prices) {
+            return pricelevel.update({ 'product': self.body._id, price_level: self.body.price_level }, { range: self.body.range, price: self.body.price }, self.user, function(err, prices) {
                 //console.log(prices);
                 if (err)
                     return self.json({
@@ -105,18 +99,14 @@ exports.install = function() {
         var update = {};
 
         if (self.body.range == 1)
-            update = {
-                "prices.pu_ht": self.body.price
-            };
+            update = { "prices.pu_ht": self.body.price };
         else {
             var idx = "prices.pricesQty." + self.body.range.toString();
             update[idx] = self.body.price;
 
             //delete range
             if (self.body.price == 0)
-                update = {
-                    $unset: update
-                };
+                update = { $unset: update };
         }
 
         update.updatedAt = new Date();
@@ -125,11 +115,7 @@ exports.install = function() {
             name: self.user.name
         };
 
-        ProductModel.update({
-                '_id': self.body._id
-            }, update, {
-                upsert: false
-            },
+        ProductModel.update({ '_id': self.body._id }, update, { upsert: false },
             function(err, numberAffected, price) {
                 if (err)
                     return console.log(err);
@@ -159,12 +145,7 @@ exports.install = function() {
         var ProductModel = MODEL('product').Schema;
 
         if (self.body.price_level !== 'BASE')
-            return pricelevel.update({
-                'product': self.body._id,
-                price_level: self.body.price_level
-            }, {
-                discount: self.body.discount
-            }, self.user, function(err, prices) {
+            return pricelevel.update({ 'product': self.body._id, price_level: self.body.price_level }, { discount: self.body.discount }, self.user, function(err, prices) {
                 console.log(prices);
                 if (err)
                     return self.json({
@@ -192,11 +173,7 @@ exports.install = function() {
             name: self.user.name
         };
 
-        ProductModel.update({
-                '_id': self.body._id
-            }, update, {
-                upsert: false
-            },
+        ProductModel.update({ '_id': self.body._id }, update, { upsert: false },
             function(err, numberAffected, price) {
                 if (err)
                     return console.log(err);
@@ -329,18 +306,18 @@ exports.install = function() {
         console.log(req.body);
         if (req.body.checked) // add a product
             StorehouseModel.update({
-                name: req.body.stock.stock,
-                'subStock.name': req.body.stock.subStock
-            }, {
-                $addToSet: {
-                    'subStock.$.productId': req.body.product._id
-                }
-            }, function(err, doc) {
-                if (err)
-                    console.log(err);
-                console.log(doc);
-                res.send(200, {});
-            });
+            name: req.body.stock.stock,
+            'subStock.name': req.body.stock.subStock
+        }, {
+            $addToSet: {
+                'subStock.$.productId': req.body.product._id
+            }
+        }, function(err, doc) {
+            if (err)
+                console.log(err);
+            console.log(doc);
+            res.send(200, {});
+        });
         else
             StorehouseModel.update({
                 name: req.body.stock.stock,
@@ -534,9 +511,7 @@ exports.install = function() {
         async.each(self.body.id, function(id, cb) {
 
             if (self.body.price_level !== 'BASE')
-                return PriceLevelModel.findOne({
-                    _id: id
-                }, function(err, doc) {
+                return PriceLevelModel.findOne({ _id: id }, function(err, doc) {
                     if (err || !doc)
                         return cb(err);
 
@@ -559,9 +534,7 @@ exports.install = function() {
                     doc.save(cb);
                 });
 
-            ProductModel.findOne({
-                _id: id
-            }, function(err, doc) {
+            ProductModel.findOne({ _id: id }, function(err, doc) {
                 if (err || !doc)
                     return cb(err);
 
@@ -608,13 +581,8 @@ exports.install = function() {
         var ProductModel = MODEL('product').Schema;
 
         console.dir(self.body);
-        ProductModel.aggregate([{
-                '$match': {
-                    isremoved: {
-                        $ne: true
-                    }
-                }
-            },
+        ProductModel.aggregate([
+            { '$match': { isremoved: { $ne: true } } },
             {
                 '$group': {
                     _id: '$caFamily'
@@ -727,9 +695,7 @@ exports.install = function() {
                 ref: new RegExp(self.body.filter.filters[0].value, "i")
             };
 
-        query.isremoved = {
-            $ne: true
-        };
+        query.isremoved = { $ne: true };
 
         ProductModel.find(query, "_id ref", {
             limit: parseInt(self.body.take, 10)
@@ -748,7 +714,7 @@ exports.install = function() {
                     result[i].name = docs[i].ref;
                     result[i].id = docs[i]._id;
                 }
-            //console.log(result);
+                //console.log(result);
             return self.json(result);
         });
     }, ['post', 'json', 'authorize']);
@@ -873,23 +839,16 @@ function Product(id, cb) {
         .populate("bundles.id", "info directCost indirectCost taxes weight")
         .populate({
             path: 'info.productType'
-            //    populate: { path: "options" }
+                //    populate: { path: "options" }
         })
         .populate({
             path: 'sellFamily',
-            populate: {
-                path: "options",
-                populate: {
-                    path: "group"
-                }
-            }
+            populate: { path: "options", populate: { path: "group" } }
         })
         .populate({
             path: 'costFamily'
         })
-        .populate({
-            path: 'taxes.taxeId'
-        })
+        .populate({ path: 'taxes.taxeId' })
         .populate("suppliers.taxes.taxeId")
         .populate("createdBy", "username")
         .populate("editedBy", "username")
@@ -970,20 +929,12 @@ Object.prototype = {
             return self.json([]);
 
         var query = {
-            isremoved: {
-                $ne: true
-            },
+            isremoved: { $ne: true },
             'info.isActive': true,
             "$or": [{
-                'info.SKU': {
-                    $regex: new RegExp("^" + self.body.filter.filters[0].value),
-                    $options: "xgi"
-                }
+                'info.SKU': { $regex: new RegExp("^" + self.body.filter.filters[0].value), $options: "xgi" }
             }, {
-                'info.langs.name': {
-                    $regex: new RegExp(self.body.filter.filters[0].value),
-                    $options: "xgi"
-                }
+                'info.langs.name': { $regex: new RegExp(self.body.filter.filters[0].value), $options: "xgi" }
             }]
         };
 
@@ -1029,9 +980,7 @@ Object.prototype = {
 
                 const ProductFamilyModel = MODEL('productFamily').Schema;
 
-                ProductFamilyModel.findOne({
-                    'langs.name': self.body.family
-                }, wCb);
+                ProductFamilyModel.findOne({ 'langs.name': self.body.family }, wCb);
             },
             function(family, wCb) {
                 if (family)
@@ -1055,9 +1004,7 @@ Object.prototype = {
                             $filter: {
                                 input: "$suppliers",
                                 as: "supplier",
-                                cond: {
-                                    $eq: ["$$supplier.societe", ObjectId(self.body.supplier || self.query.supplier)]
-                                }
+                                cond: { $eq: ["$$supplier.societe", ObjectId(self.body.supplier || self.query.supplier)] }
                             }
                         }
                     }
@@ -1079,43 +1026,20 @@ Object.prototype = {
                         preserveNullAndEmptyArrays: true
                     }
                 }, {
-                    $sort: {
-                        _id: 1,
-                        'taxes.taxeId.sequence': 1
-                    }
+                    $sort: { _id: 1, 'taxes.taxeId.sequence': 1 }
                 }, {
                     $group: {
                         _id: "$_id",
-                        ref: {
-                            $first: "$ref"
-                        },
-                        dynForm: {
-                            $first: "$dynForm"
-                        },
-                        taxes: {
-                            $push: '$taxes'
-                        },
-                        units: {
-                            $first: "$units"
-                        },
-                        directCost: {
-                            $first: "$directCost"
-                        },
-                        indirectCost: {
-                            $first: "$indirectCost"
-                        },
-                        info: {
-                            $first: "$info"
-                        },
-                        size: {
-                            $first: "$size"
-                        },
-                        weight: {
-                            $first: "$weight"
-                        },
-                        suppliers: {
-                            $first: "$suppliers"
-                        }
+                        ref: { $first: "$ref" },
+                        dynForm: { $first: "$dynForm" },
+                        taxes: { $push: '$taxes' },
+                        units: { $first: "$units" },
+                        directCost: { $first: "$directCost" },
+                        indirectCost: { $first: "$indirectCost" },
+                        info: { $first: "$info" },
+                        size: { $first: "$size" },
+                        weight: { $first: "$weight" },
+                        suppliers: { $first: "$suppliers" }
                     }
                 }, {
                     $lookup: {
@@ -1160,13 +1084,9 @@ Object.prototype = {
                         size: 1,
                         weight: 1,
                         suppliers: 1,
-                        prices: {
-                            $arrayElemAt: ['$prices.prices', 0]
-                        },
+                        prices: { $arrayElemAt: ['$prices.prices', 0] },
                         discount: '$prices.discount',
-                        priceLists: {
-                            $arrayElemAt: ['$priceLists', 0]
-                        }
+                        priceLists: { $arrayElemAt: ['$priceLists', 0] }
                     }
                 }];
 
@@ -1207,9 +1127,7 @@ Object.prototype = {
                         $limit: self.body.take || self.query.take || 20
                     })
                 request.push({
-                    $sort: {
-                        'info.SKU': 1
-                    }
+                    $sort: { 'info.SKU': 1 }
                 });
 
                 //console.log(request);
@@ -1233,9 +1151,7 @@ Object.prototype = {
         var query = self.query || {};
         var quickSearch = query.quickSearch;
         var matchObject = {
-            isremoved: {
-                $ne: true
-            },
+            isremoved: { $ne: true },
         };
         var regExp;
         var filter = query.filter && JSON.parse(query.filter) || {};
@@ -1278,23 +1194,16 @@ Object.prototype = {
             sort = JSON.parse(self.query.sort);
             sort['data._id'] = 1;
         } else
-            sort = {
-                'data.info.SKU': 1,
-                'data._id': 1
-            };
+            sort = { 'data.info.SKU': 1, 'data._id': 1 };
 
         if (filter && filter.channelLinks) {
             channelObjectIds = filter.channelLinks.value.objectID();
             action = filter.channelLinks.type;
 
             if (action === 'unpublish' || action === 'unlink') {
-                channelLinksMatch[filter.channelLinks.key] = {
-                    $in: channelObjectIds
-                };
+                channelLinksMatch[filter.channelLinks.key] = { $in: channelObjectIds };
             } else if (action === 'publish') {
-                channelLinksMatch['channelLinks.channel'] = {
-                    $nin: channelObjectIds
-                };
+                channelLinksMatch['channelLinks.channel'] = { $nin: channelObjectIds };
             }
 
             delete filter.channelLinks;
@@ -1302,9 +1211,7 @@ Object.prototype = {
         // optionsObject.$and.push({job: null});
 
         if (filter && typeof filter === 'object') {
-            optionsObject.$and.push(filterMapper.mapFilter(filter, {
-                contentType: contentType
-            }));
+            optionsObject.$and.push(filterMapper.mapFilter(filter, { contentType: contentType }));
         }
 
         //console.log(optionsObject.$and);
@@ -1317,9 +1224,7 @@ Object.prototype = {
 
         if (quickSearch) {
             regExp = new RegExp(quickSearch, 'ig');
-            matchObject.name = {
-                $regex: regExp
-            };
+            matchObject.name = { $regex: regExp };
         }
 
         contentSearcher = function(productsIds, waterfallCallback) {
@@ -1327,11 +1232,7 @@ Object.prototype = {
             var matchAggregationArray = [];
             var aggregationArray;
 
-            optionsObject.$and.push({
-                _id: {
-                    $in: productsIds
-                }
-            });
+            optionsObject.$and.push({ _id: { $in: productsIds } });
 
             if (!toExpand) {
                 aggregationArray = [{
@@ -1397,24 +1298,12 @@ Object.prototype = {
                             }
                         },
 
-                        variantsCount: {
-                            $first: '$variantsCount'
-                        },
-                        ProductTypes: {
-                            $first: '$ProductTypes'
-                        },
-                        ProductFamily: {
-                            $first: '$ProductFamily'
-                        },
-                        products: {
-                            $first: '$products'
-                        },
-                        image: {
-                            $first: '$image'
-                        },
-                        count: {
-                            $first: '$count'
-                        }
+                        variantsCount: { $first: '$variantsCount' },
+                        ProductTypes: { $first: '$ProductTypes' },
+                        ProductFamily: { $first: '$ProductFamily' },
+                        products: { $first: '$products' },
+                        image: { $first: '$image' },
+                        count: { $first: '$count' }
                     }
                 }, {
                     $unwind: {
@@ -1448,27 +1337,13 @@ Object.prototype = {
                 }, {
                     $group: {
                         _id: '$products._id',
-                        variants: {
-                            $push: '$variants'
-                        },
-                        count: {
-                            $first: '$count'
-                        },
-                        ProductTypes: {
-                            $first: '$ProductTypes'
-                        },
-                        ProductFamily: {
-                            $first: '$ProductFamily'
-                        },
-                        productCategories: {
-                            $first: '$productCategories'
-                        },
-                        products: {
-                            $first: '$products'
-                        },
-                        variantsCount: {
-                            $first: '$variantsCount'
-                        }
+                        variants: { $push: '$variants' },
+                        count: { $first: '$count' },
+                        ProductTypes: { $first: '$ProductTypes' },
+                        ProductFamily: { $first: '$ProductFamily' },
+                        productCategories: { $first: '$productCategories' },
+                        products: { $first: '$products' },
+                        variantsCount: { $first: '$variantsCount' }
                     }
                 }, {
                     $project: {
@@ -1498,9 +1373,7 @@ Object.prototype = {
                                 $filter: {
                                     input: '$variantsCount',
                                     as: 'variant',
-                                    cond: {
-                                        $eq: ['$products.groupId', '$$variant.groupId']
-                                    }
+                                    cond: { $eq: ['$products.groupId', '$$variant.groupId'] }
                                 }
                             }
                         }
@@ -1539,9 +1412,7 @@ Object.prototype = {
                             updatedAt: '$data.updatedAt',
                             directCost: '$data.directCost',
                             ProductFamily: '$data.ProductFamily',
-                            variantsCount: {
-                                $arrayElemAt: ['$data.variantsCount', 0]
-                            }
+                            variantsCount: { $arrayElemAt: ['$data.variantsCount', 0] }
                         }
                     }
                 }, {
@@ -1551,12 +1422,8 @@ Object.prototype = {
                 }, {
                     $group: {
                         _id: '$count',
-                        total: {
-                            $first: '$count'
-                        },
-                        data: {
-                            $push: '$data'
-                        }
+                        total: { $first: '$count' },
+                        data: { $push: '$data' }
                     }
                 }, {
                     $project: {
@@ -1572,12 +1439,8 @@ Object.prototype = {
                 }, {
                     $group: {
                         _id: '$groupId',
-                        variantsCount: {
-                            $sum: 1
-                        },
-                        products: {
-                            $first: '$$ROOT'
-                        }
+                        variantsCount: { $sum: 1 },
+                        products: { $first: '$$ROOT' }
                     }
                 }, {
                     $group: {
@@ -1589,12 +1452,8 @@ Object.prototype = {
                             }
                         },
 
-                        count: {
-                            $sum: 1
-                        },
-                        products: {
-                            $push: '$products'
-                        }
+                        count: { $sum: 1 },
+                        products: { $push: '$products' }
                     }
                 }, {
                     $unwind: '$products'
@@ -1651,18 +1510,10 @@ Object.prototype = {
                             }
                         },
 
-                        variantsCount: {
-                            $first: '$variantsCount'
-                        },
-                        ProductTypes: {
-                            $first: '$ProductTypes'
-                        },
-                        products: {
-                            $first: '$products'
-                        },
-                        count: {
-                            $first: '$count'
-                        }
+                        variantsCount: { $first: '$variantsCount' },
+                        ProductTypes: { $first: '$ProductTypes' },
+                        products: { $first: '$products' },
+                        count: { $first: '$count' }
                     }
                 }, {
                     $unwind: {
@@ -1722,24 +1573,12 @@ Object.prototype = {
                 }, {
                     $group: {
                         _id: '$products._id',
-                        variants: {
-                            $push: '$variants'
-                        },
-                        count: {
-                            $first: '$count'
-                        },
-                        ProductTypes: {
-                            $first: '$ProductTypes'
-                        },
-                        productCategories: {
-                            $first: '$productCategories'
-                        },
-                        products: {
-                            $first: '$products'
-                        },
-                        variantsCount: {
-                            $first: '$variantsCount'
-                        },
+                        variants: { $push: '$variants' },
+                        count: { $first: '$count' },
+                        ProductTypes: { $first: '$ProductTypes' },
+                        productCategories: { $first: '$productCategories' },
+                        products: { $first: '$products' },
+                        variantsCount: { $first: '$variantsCount' },
                         channelLinks: {
                             $addToSet: {
                                 name: '$channelLinks.channelName',
@@ -1771,9 +1610,7 @@ Object.prototype = {
                                 $filter: {
                                     input: '$variantsCount',
                                     as: 'variant',
-                                    cond: {
-                                        $eq: ['$products.groupId', '$$variant.groupId']
-                                    }
+                                    cond: { $eq: ['$products.groupId', '$$variant.groupId'] }
                                 }
                             }
                         }
@@ -1806,9 +1643,7 @@ Object.prototype = {
                             createdBy: '$data.createdBy',
                             groupId: '$data.groupId',
                             channelLinks: '$data.channelLinks',
-                            variantsCount: {
-                                $arrayElemAt: ['$data.variantsCount', 0]
-                            },
+                            variantsCount: { $arrayElemAt: ['$data.variantsCount', 0] },
                         }
                     }
                 }, {
@@ -1818,12 +1653,8 @@ Object.prototype = {
                 }, {
                     $group: {
                         _id: '$count',
-                        total: {
-                            $first: '$count'
-                        },
-                        data: {
-                            $push: '$data'
-                        }
+                        total: { $first: '$count' },
+                        data: { $push: '$data' }
                     }
                 }, {
                     $project: {
@@ -1843,12 +1674,8 @@ Object.prototype = {
                     }, {
                         $group: {
                             _id: null,
-                            count: {
-                                $sum: 1
-                            },
-                            products: {
-                                $push: '$$ROOT'
-                            }
+                            count: { $sum: 1 },
+                            products: { $push: '$$ROOT' }
                         }
                     }, {
                         $unwind: '$products'
@@ -1859,12 +1686,8 @@ Object.prototype = {
                     }, {
                         $group: {
                             _id: null,
-                            count: {
-                                $sum: 1
-                            },
-                            products: {
-                                $push: '$$ROOT'
-                            }
+                            count: { $sum: 1 },
+                            products: { $push: '$$ROOT' }
                         }
                     }, {
                         $unwind: '$products'
@@ -1902,9 +1725,7 @@ Object.prototype = {
                         line._status = (status.values[line.Status] ? {
                             css: status.values[line.Status].cssClass,
                             name: i18n.t(status.lang + ":" + status.values[line.Status].label)
-                        } : {
-                            name: line.Status
-                        });
+                        } : { name: line.Status });
 
                         return line;
                     });
@@ -1948,12 +1769,7 @@ Object.prototype = {
         const ProductModel = MODEL('product').Schema;
         const ChannelLinkModel = MODEL('channelLinks').Schema;
 
-        ProductModel.find({
-            isremoved: {
-                $ne: true
-            },
-            'info.isActive': true
-        }, function(err, products) {
+        ProductModel.find({ isremoved: { $ne: true }, 'info.isActive': true }, function(err, products) {
             if (err) {
                 console.log("error refresh product", err);
                 return self.json({
@@ -2010,9 +1826,7 @@ Object.prototype = {
         //console.log(self.body);
 
         var conditions = {
-            isremoved: {
-                $ne: true
-            }
+            isremoved: { $ne: true }
         };
 
         if (!query.search.value) {
@@ -2055,15 +1869,9 @@ Object.prototype = {
             if (err)
                 console.log(err);
 
-            ProductTypesModel.populate(res, {
-                path: "datatable.data.info.productType"
-            }, function(err, res) {
-                ProductFamilyModel.populate(res, {
-                    path: "datatable.data.sellFamily"
-                }, function(err, res) {
-                    ProductImagesModel.populate(res, {
-                        path: "datatable.data.imageSrc"
-                    }, function(err, res) {
+            ProductTypesModel.populate(res, { path: "datatable.data.info.productType" }, function(err, res) {
+                ProductFamilyModel.populate(res, { path: "datatable.data.sellFamily" }, function(err, res) {
+                    ProductImagesModel.populate(res, { path: "datatable.data.imageSrc" }, function(err, res) {
 
 
                         //console.log(res);
@@ -2090,7 +1898,7 @@ Object.prototype = {
                                 res.datatable.data[i].directCost = '<span class="text-danger">Inconnu</span>';
 
                             if (res.datatable.data[i].info.isActive == false)
-                                // Add color line 
+                            // Add color line 
                                 res.datatable.data[i].DT_RowClass = "bg-red-haze";
                             // Add Pictures
                             if (row.imageSrc && row.imageSrc._id)
@@ -2164,10 +1972,7 @@ Object.prototype = {
             if (!product)
                 return self.json({});
 
-            ChannelLinkModel.getChannelListFromId({
-                type: 'product',
-                id: product._id
-            }, function(err, channels) {
+            ChannelLinkModel.getChannelListFromId({ type: 'product', id: product._id }, function(err, channels) {
                 if (err)
                     return self.throw500(err);
 
@@ -2241,11 +2046,7 @@ Object.prototype = {
                 }, {
                     $unwind: '$products'
                 }, {
-                    $match: {
-                        'products.isremoved': {
-                            $ne: true
-                        }
-                    }
+                    $match: { 'products.isremoved': { $ne: true } }
                 }, {
                     $unwind: {
                         path: '$products.bundles',
@@ -2313,81 +2114,31 @@ Object.prototype = {
                 }, {
                     $group: {
                         _id: '$_id',
-                        info: {
-                            $first: '$info'
-                        },
-                        name: {
-                            $first: '$name'
-                        },
-                        imageSrc: {
-                            $first: '$imageSrc'
-                        },
-                        isBundle: {
-                            $first: '$isBundle'
-                        },
-                        isVariant: {
-                            $first: '$isVariant'
-                        },
-                        inventory: {
-                            $first: '$inventory'
-                        },
-                        bundles: {
-                            $push: '$bundles'
-                        },
-                        prices: {
-                            $first: '$prices'
-                        },
-                        workflow: {
-                            $first: '$workflow'
-                        },
-                        whoCanRW: {
-                            $first: '$whoCanRW'
-                        },
-                        groups: {
-                            $first: '$groups'
-                        },
-                        createdAt: {
-                            $first: '$createdAt'
-                        },
-                        updatedAt: {
-                            $first: '$updatedAt'
-                        },
-                        createdBy: {
-                            $first: '$createdBy'
-                        },
-                        editedBy: {
-                            $first: '$editedBy'
-                        },
-                        attachments: {
-                            $first: '$attachments'
-                        },
-                        canBeSold: {
-                            $first: '$canBeSold'
-                        },
-                        canBeExpensed: {
-                            $first: '$canBeExpensed'
-                        },
-                        eventSubscription: {
-                            $first: '$eventSubscription'
-                        },
-                        canBePurchased: {
-                            $first: '$canBePurchased'
-                        },
-                        variants: {
-                            $first: '$variants'
-                        },
-                        groupId: {
-                            $first: '$groupId'
-                        },
-                        sellFamily: {
-                            $first: '$sellFamily'
-                        },
-                        packing: {
-                            $first: '$packing'
-                        },
-                        Status: {
-                            $first: '$Status'
-                        }
+                        info: { $first: '$info' },
+                        name: { $first: '$name' },
+                        imageSrc: { $first: '$imageSrc' },
+                        isBundle: { $first: '$isBundle' },
+                        isVariant: { $first: '$isVariant' },
+                        inventory: { $first: '$inventory' },
+                        bundles: { $push: '$bundles' },
+                        prices: { $first: '$prices' },
+                        workflow: { $first: '$workflow' },
+                        whoCanRW: { $first: '$whoCanRW' },
+                        groups: { $first: '$groups' },
+                        createdAt: { $first: '$createdAt' },
+                        updatedAt: { $first: '$updatedAt' },
+                        createdBy: { $first: '$createdBy' },
+                        editedBy: { $first: '$editedBy' },
+                        attachments: { $first: '$attachments' },
+                        canBeSold: { $first: '$canBeSold' },
+                        canBeExpensed: { $first: '$canBeExpensed' },
+                        eventSubscription: { $first: '$eventSubscription' },
+                        canBePurchased: { $first: '$canBePurchased' },
+                        variants: { $first: '$variants' },
+                        groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
+                        Status: { $first: '$Status' }
                     }
                 }, {
                     $lookup: {
@@ -2476,81 +2227,31 @@ Object.prototype = {
                 }, {
                     $group: {
                         _id: '$_id',
-                        pL: {
-                            $push: '$priceLists'
-                        },
-                        info: {
-                            $first: '$info'
-                        },
-                        name: {
-                            $first: '$name'
-                        },
-                        imageSrc: {
-                            $first: '$imageSrc'
-                        },
-                        isBundle: {
-                            $first: '$isBundle'
-                        },
-                        isVariant: {
-                            $first: '$isVariant'
-                        },
-                        inventory: {
-                            $first: '$inventory'
-                        },
-                        bundles: {
-                            $first: '$bundles'
-                        },
-                        prices: {
-                            $first: '$prices'
-                        },
-                        workflow: {
-                            $first: '$workflow'
-                        },
-                        whoCanRW: {
-                            $first: '$whoCanRW'
-                        },
-                        groups: {
-                            $first: '$groups'
-                        },
-                        createdAt: {
-                            $first: '$createdAt'
-                        },
-                        updatedAt: {
-                            $first: '$updatedAt'
-                        },
-                        createdBy: {
-                            $first: '$createdBy'
-                        },
-                        editedBy: {
-                            $first: '$editedBy'
-                        },
-                        attachments: {
-                            $first: '$attachments'
-                        },
-                        canBeSold: {
-                            $first: '$canBeSold'
-                        },
-                        canBeExpensed: {
-                            $first: '$canBeExpensed'
-                        },
-                        eventSubscription: {
-                            $first: '$eventSubscription'
-                        },
-                        canBePurchased: {
-                            $first: '$canBePurchased'
-                        },
-                        groupId: {
-                            $first: '$groupId'
-                        },
-                        sellFamily: {
-                            $first: '$sellFamily'
-                        },
-                        packing: {
-                            $first: '$packing'
-                        },
-                        variants: {
-                            $first: '$variants'
-                        },
+                        pL: { $push: '$priceLists' },
+                        info: { $first: '$info' },
+                        name: { $first: '$name' },
+                        imageSrc: { $first: '$imageSrc' },
+                        isBundle: { $first: '$isBundle' },
+                        isVariant: { $first: '$isVariant' },
+                        inventory: { $first: '$inventory' },
+                        bundles: { $first: '$bundles' },
+                        prices: { $first: '$prices' },
+                        workflow: { $first: '$workflow' },
+                        whoCanRW: { $first: '$whoCanRW' },
+                        groups: { $first: '$groups' },
+                        createdAt: { $first: '$createdAt' },
+                        updatedAt: { $first: '$updatedAt' },
+                        createdBy: { $first: '$createdBy' },
+                        editedBy: { $first: '$editedBy' },
+                        attachments: { $first: '$attachments' },
+                        canBeSold: { $first: '$canBeSold' },
+                        canBeExpensed: { $first: '$canBeExpensed' },
+                        eventSubscription: { $first: '$eventSubscription' },
+                        canBePurchased: { $first: '$canBePurchased' },
+                        groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
+                        variants: { $first: '$variants' },
                         categories: {
                             $addToSet: {
                                 _id: '$categories._id',
@@ -2558,9 +2259,7 @@ Object.prototype = {
                                 fullName: '$categories.fullName'
                             }
                         },
-                        Status: {
-                            $first: '$Status'
-                        }
+                        Status: { $first: '$Status' }
                     }
                 }, {
                     $unwind: {
@@ -2577,9 +2276,7 @@ Object.prototype = {
                 }, {
                     $project: {
                         _id: 1,
-                        variants: {
-                            $arrayElemAt: ['$variants', 0]
-                        },
+                        variants: { $arrayElemAt: ['$variants', 0] },
                         pL: 1,
                         info: 1,
                         name: 1,
@@ -2610,90 +2307,34 @@ Object.prototype = {
                 }, {
                     $group: {
                         _id: '$_id',
-                        variants: {
-                            $addToSet: '$variants'
-                        },
-                        variantsIds: {
-                            $addToSet: '$variants._id'
-                        },
-                        pL: {
-                            $first: '$pL'
-                        },
-                        info: {
-                            $first: '$info'
-                        },
-                        name: {
-                            $first: '$name'
-                        },
-                        imageSrc: {
-                            $first: '$imageSrc'
-                        },
-                        isBundle: {
-                            $first: '$isBundle'
-                        },
-                        isVariant: {
-                            $first: '$isVariant'
-                        },
-                        inventory: {
-                            $first: '$inventory'
-                        },
-                        bundles: {
-                            $first: '$bundles'
-                        },
-                        prices: {
-                            $first: '$prices'
-                        },
-                        workflow: {
-                            $first: '$workflow'
-                        },
-                        whoCanRW: {
-                            $first: '$whoCanRW'
-                        },
-                        groups: {
-                            $first: '$groups'
-                        },
-                        createdAt: {
-                            $first: '$createdAt'
-                        },
-                        updatedAt: {
-                            $first: '$updatedAt'
-                        },
-                        createdBy: {
-                            $first: '$createdBy'
-                        },
-                        editedBy: {
-                            $first: '$editedBy'
-                        },
-                        attachments: {
-                            $first: '$attachments'
-                        },
-                        canBeSold: {
-                            $first: '$canBeSold'
-                        },
-                        canBeExpensed: {
-                            $first: '$canBeExpensed'
-                        },
-                        eventSubscription: {
-                            $first: '$eventSubscription'
-                        },
-                        canBePurchased: {
-                            $first: '$canBePurchased'
-                        },
-                        groupId: {
-                            $first: '$groupId'
-                        },
-                        sellFamily: {
-                            $first: '$sellFamily'
-                        },
-                        packing: {
-                            $first: '$packing'
-                        },
-                        categories: {
-                            $first: '$categories'
-                        },
-                        Status: {
-                            $first: '$Status'
-                        }
+                        variants: { $addToSet: '$variants' },
+                        variantsIds: { $addToSet: '$variants._id' },
+                        pL: { $first: '$pL' },
+                        info: { $first: '$info' },
+                        name: { $first: '$name' },
+                        imageSrc: { $first: '$imageSrc' },
+                        isBundle: { $first: '$isBundle' },
+                        isVariant: { $first: '$isVariant' },
+                        inventory: { $first: '$inventory' },
+                        bundles: { $first: '$bundles' },
+                        prices: { $first: '$prices' },
+                        workflow: { $first: '$workflow' },
+                        whoCanRW: { $first: '$whoCanRW' },
+                        groups: { $first: '$groups' },
+                        createdAt: { $first: '$createdAt' },
+                        updatedAt: { $first: '$updatedAt' },
+                        createdBy: { $first: '$createdBy' },
+                        editedBy: { $first: '$editedBy' },
+                        attachments: { $first: '$attachments' },
+                        canBeSold: { $first: '$canBeSold' },
+                        canBeExpensed: { $first: '$canBeExpensed' },
+                        eventSubscription: { $first: '$eventSubscription' },
+                        canBePurchased: { $first: '$canBePurchased' },
+                        groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
+                        categories: { $first: '$categories' },
+                        Status: { $first: '$Status' }
                     }
                 },
                 {
@@ -2727,87 +2368,33 @@ Object.prototype = {
                 {
                     $group: {
                         _id: '$_id',
-                        variants: {
-                            $addToSet: '$variants'
-                        },
-                        variantsIds: {
-                            $first: '$variantsIds'
-                        },
-                        pL: {
-                            $first: '$pL'
-                        },
-                        info: {
-                            $first: '$info'
-                        },
-                        name: {
-                            $first: '$name'
-                        },
-                        imageSrc: {
-                            $first: '$imageSrc'
-                        },
-                        isBundle: {
-                            $first: '$isBundle'
-                        },
-                        isVariant: {
-                            $first: '$isVariant'
-                        },
-                        inventory: {
-                            $first: '$inventory'
-                        },
-                        bundles: {
-                            $first: '$bundles'
-                        },
-                        prices: {
-                            $first: '$prices'
-                        },
-                        workflow: {
-                            $first: '$workflow'
-                        },
-                        whoCanRW: {
-                            $first: '$whoCanRW'
-                        },
-                        groups: {
-                            $first: '$groups'
-                        },
-                        createdAt: {
-                            $first: '$createdAt'
-                        },
-                        updatedAt: {
-                            $first: '$updatedAt'
-                        },
-                        createdBy: {
-                            $first: '$createdBy'
-                        },
-                        editedBy: {
-                            $first: '$editedBy'
-                        },
-                        attachments: {
-                            $first: '$attachments'
-                        },
-                        canBeSold: {
-                            $first: '$canBeSold'
-                        },
-                        canBeExpensed: {
-                            $first: '$canBeExpensed'
-                        },
-                        eventSubscription: {
-                            $first: '$eventSubscription'
-                        },
-                        canBePurchased: {
-                            $first: '$canBePurchased'
-                        },
-                        groupId: {
-                            $first: '$groupId'
-                        },
-                        sellFamily: {
-                            $first: '$sellFamily'
-                        },
-                        packing: {
-                            $first: '$packing'
-                        },
-                        categories: {
-                            $first: '$categories'
-                        },
+                        variants: { $addToSet: '$variants' },
+                        variantsIds: { $first: '$variantsIds' },
+                        pL: { $first: '$pL' },
+                        info: { $first: '$info' },
+                        name: { $first: '$name' },
+                        imageSrc: { $first: '$imageSrc' },
+                        isBundle: { $first: '$isBundle' },
+                        isVariant: { $first: '$isVariant' },
+                        inventory: { $first: '$inventory' },
+                        bundles: { $first: '$bundles' },
+                        prices: { $first: '$prices' },
+                        workflow: { $first: '$workflow' },
+                        whoCanRW: { $first: '$whoCanRW' },
+                        groups: { $first: '$groups' },
+                        createdAt: { $first: '$createdAt' },
+                        updatedAt: { $first: '$updatedAt' },
+                        createdBy: { $first: '$createdBy' },
+                        editedBy: { $first: '$editedBy' },
+                        attachments: { $first: '$attachments' },
+                        canBeSold: { $first: '$canBeSold' },
+                        canBeExpensed: { $first: '$canBeExpensed' },
+                        eventSubscription: { $first: '$eventSubscription' },
+                        canBePurchased: { $first: '$canBePurchased' },
+                        groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
+                        categories: { $first: '$categories' },
                         channels: {
                             $addToSet: {
                                 _id: '$channelLinks._id',
@@ -2815,29 +2402,17 @@ Object.prototype = {
                                 type: '$channelLinks.type'
                             }
                         },
-                        Status: {
-                            $first: '$Status'
-                        }
+                        Status: { $first: '$Status' }
                     }
                 },
                 {
                     $group: {
                         _id: '$groupId',
-                        id: {
-                            $first: '$_id'
-                        },
-                        groupId: {
-                            $first: '$groupId'
-                        },
-                        sellFamily: {
-                            $first: '$sellFamily'
-                        },
-                        packing: {
-                            $first: '$packing'
-                        },
-                        variantsArray: {
-                            $push: '$$ROOT'
-                        }
+                        id: { $first: '$_id' },
+                        groupId: { $first: '$groupId' },
+                        sellFamily: { $first: '$sellFamily' },
+                        packing: { $first: '$packing' },
+                        variantsArray: { $push: '$$ROOT' }
                     }
                 },
                 {
@@ -2936,9 +2511,7 @@ Object.prototype = {
                             preserveNullAndEmptyArrays: true
                         }
                     }, {
-                        $match: {
-                            'product.groupId': groupId
-                        }
+                        $match: { 'product.groupId': groupId }
                     },
                     {
                         $project: {
@@ -2948,9 +2521,7 @@ Object.prototype = {
                                 $filter: {
                                     input: "$product.attributes",
                                     as: "item",
-                                    cond: {
-                                        $eq: ["$$item.attribute", "$_id"]
-                                    }
+                                    cond: { $eq: ["$$item.attribute", "$_id"] }
                                 }
                             }
                         }
@@ -2965,17 +2536,11 @@ Object.prototype = {
                             _id: 1,
                             variants: 1,
                             attributes: 1,
-                            sizeOptions: {
-                                $size: "$attributes.options"
-                            }
+                            sizeOptions: { $size: "$attributes.options" }
                         }
                     },
                     {
-                        $match: {
-                            sizeOptions: {
-                                $gte: 1
-                            }
-                        }
+                        $match: { sizeOptions: { $gte: 1 } }
                     }, {
                         $project: {
                             _id: 1,
@@ -3003,12 +2568,8 @@ Object.prototype = {
                     }, {
                         $group: {
                             _id: "$options._id",
-                            variants: {
-                                $first: "$variants"
-                            },
-                            options: {
-                                $first: "$options"
-                            }
+                            variants: { $first: "$variants" },
+                            options: { $first: "$options" }
                         }
                     }, {
                         $project: {
@@ -3019,12 +2580,8 @@ Object.prototype = {
                     }, {
                         $group: {
                             _id: "$_id",
-                            variant: {
-                                $first: "$variants"
-                            },
-                            values: {
-                                $addToSet: "$options"
-                            }
+                            variant: { $first: "$variants" },
+                            values: { $addToSet: "$options" }
                         }
                     }
                 ],
@@ -3042,12 +2599,7 @@ Object.prototype = {
         optionsIdsSearcher = function(product, waterfallCallback) {
             var groupId = product.groupId;
 
-            ProductModel.find({
-                groupId: groupId,
-                isremoved: {
-                    $ne: true
-                }
-            }, {
+            ProductModel.find({ groupId: groupId, isremoved: { $ne: true } }, {
                 _id: 1,
                 isVariant: 1,
                 variants: 1,
@@ -3120,10 +2672,7 @@ Object.prototype = {
             product.Status = "PREPARED";
 
             if (self.query.qty) { //newPacking product
-                product.info.SKU += "-L" + fixedWidthString(parseInt(self.query.qty), 3, {
-                    padding: '0',
-                    align: 'right'
-                });
+                product.info.SKU += "-L" + fixedWidthString(parseInt(self.query.qty), 3, { padding: '0', align: 'right' });
 
                 product.info.productType = "592c16b6270aa67a2793430f"; //mode conditonnement
 
@@ -3158,9 +2707,7 @@ Object.prototype = {
                     function(pCb) {
                         var PriceModel = MODEL('productPrices').Schema;
                         //clone prices
-                        PriceModel.find({
-                                product: doc._id
-                            })
+                        PriceModel.find({ product: doc._id })
                             .populate("priceLists")
                             .exec(function(err, prices) {
 
@@ -3188,9 +2735,7 @@ Object.prototype = {
                         //clone pictures
                         var ProductImagesModel = MODEL('productImages').Schema;
 
-                        ProductImagesModel.find({
-                            product: doc._id
-                        }, function(err, images) {
+                        ProductImagesModel.find({ product: doc._id }, function(err, images) {
                             if (!images || !images.length)
                                 return pCb();
 
@@ -3243,15 +2788,7 @@ Object.prototype = {
 
             if (self.body.isNewMaster) { //New master groupId for variants
                 self.body.groupId = product._id;
-                ProductModel.update({
-                    groupId: product.groupId
-                }, {
-                    $set: {
-                        groupId: product._id
-                    }
-                }, {
-                    multi: true
-                }, function(err, docs) {
+                ProductModel.update({ groupId: product.groupId }, { $set: { groupId: product._id } }, { multi: true }, function(err, docs) {
                     if (err)
                         console.log(err);
                 });
@@ -3294,20 +2831,14 @@ Object.prototype = {
         var PriceModel = MODEL('productPrices').Schema;
         var self = this;
 
-        PriceModel.remove({
-            'product': id
-        }, function(err) {
+        PriceModel.remove({ 'product': id }, function(err) {
             if (err)
                 return console.log(err);
 
 
             ProductModel.update({
                 _id: id
-            }, {
-                $set: {
-                    isremoved: true
-                }
-            }, function(err) {
+            }, { $set: { isremoved: true } }, function(err) {
                 if (err)
                     return self.throw500(err);
 
@@ -3331,16 +2862,9 @@ Object.prototype = {
 
         OrderModel.aggregate([{
                     $match: {
-                        datedl: {
-                            $gte: query.start_date,
-                            $lt: query.end_date
-                        },
-                        Status: {
-                            $nin: ['DRAFT', 'CANCELLED']
-                        },
-                        isremoved: {
-                            $ne: true
-                        }
+                        datedl: { $gte: query.start_date, $lt: query.end_date },
+                        Status: { $nin: ['DRAFT', 'CANCELLED'] },
+                        isremoved: { $ne: true }
                         //_type: { $in: [ /*"orderCustomer",*/ "GoodsOutNote"] }
                     }
                 },
@@ -3348,9 +2872,7 @@ Object.prototype = {
                     $project: {
                         _id: 1,
                         datedl: 1,
-                        month: {
-                            $month: "$datedl"
-                        },
+                        month: { $month: "$datedl" },
                         order: 1,
                         orderRows: 1,
                         /* ref: 1,
@@ -3380,9 +2902,7 @@ Object.prototype = {
                         _id: 1,
                         datedl: 1,
                         month: 1,
-                        lines: {
-                            $concatArrays: ["$lines", "$orderRows"]
-                        }
+                        lines: { $concatArrays: ["$lines", "$orderRows"] }
                     }
                 },
                 {
@@ -3407,43 +2927,11 @@ Object.prototype = {
                         preserveNullAndEmptyArrays: false
                     }
                 },
-                {
-                    $project: {
-                        _id: 1,
-                        datedl: 1,
-                        month: {
-                            $month: "$datedl"
-                        },
-                        'lines.qty': 1,
-                        'lines.product': 1,
-                        'lines.total_ht': 1
-                    }
-                },
-                {
-                    $group: {
-                        _id: {
-                            product: "$lines.product",
-                            month: "$month"
-                        },
-                        qty: {
-                            "$sum": "$lines.qty"
-                        },
-                        weight: {
-                            "$sum": "$lines.weight"
-                        },
-                        total_ht: {
-                            "$sum": "$lines.total_ht"
-                        }
-                    }
-                },
+                { $project: { _id: 1, datedl: 1, month: { $month: "$datedl" }, 'lines.qty': 1, 'lines.product': 1, 'lines.total_ht': 1 } },
+                { $group: { _id: { product: "$lines.product", month: "$month" }, qty: { "$sum": "$lines.qty" }, weight: { "$sum": "$lines.weight" }, total_ht: { "$sum": "$lines.total_ht" } } },
 
                 //{ $unwind: "$pack" },
-                {
-                    $sort: {
-                        "_id.product": 1,
-                        "_id.month": 1
-                    }
-                }
+                { $sort: { "_id.product": 1, "_id.month": 1 } }
                 //{ $sort: { ref: 1 } }
             ],
             function(err, docs) {
@@ -3463,10 +2951,7 @@ Object.prototype = {
                     path: '_id.product',
                     model: 'product',
                     select: "info weight pack packing",
-                    populate: {
-                        path: 'pack.id',
-                        select: "info unit weight"
-                    }
+                    populate: { path: 'pack.id', select: "info unit weight" }
                 };
                 OrderModel.populate(docs, options, function(err, elems) {
 
@@ -3521,7 +3006,7 @@ Object.prototype = {
                                     'month': obj._id.month,
                                     'qty': obj.qty * product.qty,
                                     'weight': obj.qty * product.qty * product.id.weight
-                                    //'total_ht': obj.total_ht * product.qty
+                                        //'total_ht': obj.total_ht * product.qty
                                 };
                             else {
                                 new_data[product.id.info.SKU].month[obj._id.month].qty += obj.qty * product.qty;
@@ -3678,9 +3163,7 @@ Object.prototype = {
 
         function findingOriginalProduct(wCb) {
             if (isNew) {
-                Product.findOneAndUpdate({
-                    _id: productId
-                }, {
+                Product.findOneAndUpdate({ _id: productId }, {
                     $set: {
                         variants: firstItem,
                         isVariant: true,
@@ -3703,9 +3186,7 @@ Object.prototype = {
                     wCb(null, modelJSON);
                 });
             } else {
-                Product.findOne({
-                    _id: productId
-                }, function(err, model) {
+                Product.findOne({ _id: productId }, function(err, model) {
                     if (err) {
                         return wCb(err);
                     }
@@ -3765,9 +3246,7 @@ Object.prototype = {
         }
 
         function createProductPrice(ids, wCb) {
-            ProductPrices.find({
-                product: productId
-            }, function(err, result) {
+            ProductPrices.find({ product: productId }, function(err, result) {
                 if (err) {
                     return wCb(err);
                 }
@@ -3802,10 +3281,7 @@ Object.prototype = {
                 return self.throw500(err);
 
 
-            self.json({
-                success: 'Variants created success',
-                id: variantProductId
-            });
+            self.json({ success: 'Variants created success', id: variantProductId });
         });
     },
     Tag: function() {
@@ -3828,18 +3304,14 @@ Object.prototype = {
             'info.langs.0.Tag': new RegExp(self.body.filter.filters[0].value, "gi")
         };
 
-        query.isremoved = {
-            $ne: true
-        };
+        query.isremoved = { $ne: true };
 
         ProductModel.aggregate([{
             $match: query
         }, {
             $project: {
                 _id: 1,
-                Tag: {
-                    $arrayElemAt: ['$info.langs', 0]
-                },
+                Tag: { $arrayElemAt: ['$info.langs', 0] },
             }
         }, {
             $project: {
@@ -3859,9 +3331,7 @@ Object.prototype = {
                 id: '$id'
             },
         }, {
-            $sort: {
-                id: 1
-            }
+            $sort: { id: 1 }
         }, {
             $limit: parseInt(self.body.take, 10)
         }], function(err, docs) {
@@ -3918,9 +3388,7 @@ PricesList.prototype = {
             }
         }, {
             $project: {
-                countCustomers: {
-                    $size: '$Customers'
-                },
+                countCustomers: { $size: '$Customers' },
                 priceListCode: 1,
                 name: 1,
                 currency: 1,
@@ -3935,12 +3403,8 @@ PricesList.prototype = {
         }, {
             $group: {
                 _id: null,
-                total: {
-                    $sum: 1
-                },
-                root: {
-                    $push: '$$ROOT'
-                }
+                total: { $sum: 1 },
+                root: { $push: '$$ROOT' }
             }
         }, {
             $unwind: '$root'
@@ -3951,9 +3415,7 @@ PricesList.prototype = {
                 data: {
                     _id: '$root._id',
                     priceListCode: '$root.priceListCode',
-                    name: {
-                        $concat: ['$root.name', ' - ', '$root.currency']
-                    },
+                    name: { $concat: ['$root.name', ' - ', '$root.currency'] },
                     currency: '$root.currency',
                     cost: '$root.cost',
                     defaultPriceList: '$root.defaultPriceList',
@@ -3974,12 +3436,8 @@ PricesList.prototype = {
         }, {
             $group: {
                 _id: null,
-                total: {
-                    $first: '$total'
-                },
-                data: {
-                    $push: '$data'
-                }
+                total: { $first: '$total' },
+                data: { $push: '$data' }
             }
         }, {
             $project: {
@@ -3995,43 +3453,31 @@ PricesList.prototype = {
             if (result && result.length)
                 return self.json(result[0]);
 
-            self.json({
-                data: []
-            });
+            self.json({ data: [] });
         });
     },
     readForSelect: function() {
         var self = this;
         var PriceListModel = MODEL('priceList').Schema;
-        var query = {
-            $or: []
-        };
+        var query = { $or: [] };
 
         if (self.query.cost && self.query.cost == 'true')
-            query.$or.push({
-                cost: true
-            });
+            query.$or.push({ cost: true });
         else
             query.cost = false;
 
         if (self.query.isGlobalDiscount && self.query.isGlobalDiscount == 'true')
-            query.$or.push({
-                isGlobalDiscount: true
-            });
+            query.$or.push({ isGlobalDiscount: true });
         else
             query.isGlobalDiscount = false;
 
         if (self.query.isCoef && self.query.isCoef == 'true')
-            query.$or.push({
-                isCoef: true
-            });
+            query.$or.push({ isCoef: true });
         else
             query.isCoef = false;
 
         if (self.query.isFixed && self.query.isFixed == 'true')
-            query.$or.push({
-                isFixed: true
-            });
+            query.$or.push({ isFixed: true });
 
         if (query.$or.length == 0)
             delete query.$or;
@@ -4042,11 +3488,7 @@ PricesList.prototype = {
         if (self.query.all)
             query = {};
 
-        var limit = {
-            sort: {
-                priceListCode: 1
-            }
-        };
+        var limit = { sort: { priceListCode: 1 } };
 
         PriceListModel.find(query, '', limit, function(err, docs) {
             if (err)
@@ -4073,9 +3515,7 @@ PricesList.prototype = {
         var self = this;
         var PriceListModel = MODEL('priceList').Schema;
 
-        PriceListModel.findByIdAndUpdate(id, self.body, {
-            new: true
-        }, function(err, doc) {
+        PriceListModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
             if (err) {
                 console.log(err);
                 return self.json({
@@ -4110,21 +3550,13 @@ PricesList.prototype = {
         async.waterfall([
                 function(wCb) {
                     ProductModel.aggregate([{
-                        $match: {
-                            'isSell': true,
-                            /*'info.isActive': true,*/
-                            _id: (product ? ObjectId(product) : {
-                                $exists: 1
-                            })
-                        }
+                        $match: { 'isSell': true, /*'info.isActive': true,*/ _id: (product ? ObjectId(product) : { $exists: 1 }) }
                     }, {
                         $project: {
                             _id: 1,
                             sellFamily: 1,
                             info: 1,
-                            totalCost: {
-                                $sum: ["$indirectCost", "$directCost"]
-                            },
+                            totalCost: { $sum: ["$indirectCost", "$directCost"] },
                             prices: 1,
                             pack: 1,
                             createdAt: 1
@@ -4149,18 +3581,12 @@ PricesList.prototype = {
                                 $filter: {
                                     input: "$productPrices",
                                     as: "price",
-                                    cond: {
-                                        $eq: ["$$price.priceLists", ObjectId(priceList)]
-                                    }
+                                    cond: { $eq: ["$$price.priceLists", ObjectId(priceList)] }
                                 }
                             }
                         }
                     }, {
-                        $match: {
-                            'productPrices': {
-                                $size: 0
-                            }
-                        }
+                        $match: { 'productPrices': { $size: 0 } }
                     }, {
                         $lookup: {
                             from: 'productFamily',
@@ -4192,9 +3618,7 @@ PricesList.prototype = {
                                 $filter: {
                                     input: "$familyCoef",
                                     as: "coef",
-                                    cond: {
-                                        $eq: ["$$coef.priceLists", ObjectId(priceList)]
-                                    }
+                                    cond: { $eq: ["$$coef.priceLists", ObjectId(priceList)] }
                                 }
                             }
                         }
@@ -4209,12 +3633,7 @@ PricesList.prototype = {
                 },
                 function(products, wCb) {
                     ProductPricesModel.aggregate([{
-                            $match: {
-                                priceLists: ObjectId(priceList),
-                                product: (product ? ObjectId(product) : {
-                                    $exists: 1
-                                })
-                            }
+                            $match: { priceLists: ObjectId(priceList), product: (product ? ObjectId(product) : { $exists: 1 }) }
                         },
                         {
                             $lookup: {
@@ -4229,9 +3648,7 @@ PricesList.prototype = {
                             }
                         },
                         {
-                            $match: {
-                                'priceLists.isCoef': true
-                            }
+                            $match: { 'priceLists.isCoef': true }
                         },
                         {
                             $lookup: {
@@ -4250,9 +3667,7 @@ PricesList.prototype = {
                                 priceLists: 1,
                                 'product._id': 1,
                                 'product.info': 1,
-                                'product.totalCost': {
-                                    $sum: ["$product.indirectCost", "$product.directCost"]
-                                },
+                                'product.totalCost': { $sum: ["$product.indirectCost", "$product.directCost"] },
                                 'product.prices': 1,
                                 'product.pack': 1,
                                 'product.createdAt': 1,
@@ -4293,9 +3708,7 @@ PricesList.prototype = {
                                     $filter: {
                                         input: "$familyCoef",
                                         as: "coef",
-                                        cond: {
-                                            $eq: ["$$coef.priceLists", "$priceLists._id"]
-                                        }
+                                        cond: { $eq: ["$$coef.priceLists", "$priceLists._id"] }
                                     }
                                 }
                             }
@@ -4319,10 +3732,7 @@ PricesList.prototype = {
                                 //console.log(price);
 
                                 //Recalcul product prices
-                                ProductPricesModel.refreshByIdCoefPrice(price._id, {
-                                    product: price.product,
-                                    familyCoef: price.familyCoef
-                                }, function(err, price) {
+                                ProductPricesModel.refreshByIdCoefPrice(price._id, { product: price.product, familyCoef: price.familyCoef }, function(err, price) {
                                     if (err)
                                         F.emit('notify:user', {
                                             userId: [self.user._id.toString()],
@@ -4356,10 +3766,7 @@ PricesList.prototype = {
                                         return aCb(err);
 
                                     //Recalcul product prices
-                                    ProductPricesModel.refreshByIdCoefPrice(doc._id, {
-                                        product: price.product,
-                                        familyCoef: price.familyCoef
-                                    }, function(err, price) {
+                                    ProductPricesModel.refreshByIdCoefPrice(doc._id, { product: price.product, familyCoef: price.familyCoef }, function(err, price) {
                                         if (err)
                                             F.emit('notify:user', {
                                                 userId: [self.user._id.toString()],
@@ -4416,19 +3823,13 @@ PricesList.prototype = {
 
         async.parallel([
             function(cb) {
-                PriceModel.remove({
-                    priceLists: id
-                }, cb);
+                PriceModel.remove({ priceLists: id }, cb);
             },
             function(cb) {
-                FamilyCoefModel.remove({
-                    priceLists: id
-                }, cb);
+                FamilyCoefModel.remove({ priceLists: id }, cb);
             },
             function(cb) {
-                PriceListModel.remove({
-                    _id: id
-                }, cb)
+                PriceListModel.remove({ _id: id }, cb)
             }
         ], function(err) {
             if (err)
@@ -4583,9 +3984,7 @@ Prices.prototype = {
         if (self.query.sort)
             sort = JSON.parse(self.query.sort);
         else
-            sort = {
-                'product.info.SKU': -1
-            };
+            sort = { 'product.info.SKU': -1 };
 
 
         //console.log(query, sort);
@@ -4613,9 +4012,7 @@ Prices.prototype = {
                         'product.info': 1,
                         'product.directCost': 1,
                         'product.indirectCost': 1,
-                        'product.totalCost': {
-                            $sum: ["$product.directCost", "$product.indirectCost"]
-                        },
+                        'product.totalCost': { $sum: ["$product.directCost", "$product.indirectCost"] },
                         'priceLists': 1,
                         updatedAt: 1,
                         prices: 1,
@@ -4643,9 +4040,7 @@ Prices.prototype = {
                             $filter: {
                                 input: "$priceLists",
                                 as: "priceList",
-                                cond: {
-                                    $eq: ["$$priceList.cost", cost]
-                                }
+                                cond: { $eq: ["$$priceList.cost", cost] }
                             }
                         },
                         updatedAt: 1,
@@ -4674,9 +4069,7 @@ Prices.prototype = {
             countQuery.push({
                 $group: {
                     _id: null,
-                    count: {
-                        $sum: 1
-                    }
+                    count: { $sum: 1 }
                 }
             });
             //console.log(countQuery);
@@ -4692,17 +4085,11 @@ Prices.prototype = {
         };
 
         var getData = function(pCb) {
-            queryNew.push({
-                $skip: skip
-            });
-            queryNew.push({
-                $limit: limit
-            });
+            queryNew.push({ $skip: skip });
+            queryNew.push({ $limit: limit });
 
             ProductPricesModel.aggregate(queryNew, function(err, prices) {
-                TaxesModel.populate(prices, {
-                    path: "product.taxes.taxeId"
-                }, function(err, prices) {
+                TaxesModel.populate(prices, { path: "product.taxes.taxeId" }, function(err, prices) {
                     if (err)
                         return pCb(err);
 
@@ -4861,9 +4248,7 @@ Prices.prototype = {
                     //if (self.body.type && self.body.type == 'QTY') {
                     // Just update one price in priceList
 
-                    ProductPricesModel.findByIdAndUpdate(id, self.body, {
-                        new: true
-                    }, function(err, doc) {
+                    ProductPricesModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
                         if (err)
                             return wCb(err);
 
@@ -4883,11 +4268,7 @@ Prices.prototype = {
                     if (!self.body.priceLists || self.body.priceLists.defaultPriceList != true || !self.body.prices.length)
                         return wCb(null, productPrice);
 
-                    ProductModel.findByIdAndUpdate(productPrice.product, {
-                        'prices.pu_ht': productPrice.prices[0].price
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    ProductModel.findByIdAndUpdate(productPrice.product, { 'prices.pu_ht': productPrice.prices[0].price }, { new: true }, function(err, doc) {
                         if (err)
                             return wCb(err);
 
@@ -4895,9 +4276,7 @@ Prices.prototype = {
                         setTimeout2('product:' + doc._id.toString(), function() {
                             F.emit('product:update', {
                                 userId: self.user._id.toString(),
-                                product: {
-                                    _id: doc._id.toString()
-                                }
+                                product: { _id: doc._id.toString() }
                             });
                         }, 1000);
 
@@ -4920,9 +4299,7 @@ Prices.prototype = {
                 setTimeout2('productPrices:updatePrice_' + doc.priceLists._id.toString(), function() {
                     F.emit('productPrices:updatePrice', {
                         userId: self.user._id.toString(),
-                        price: {
-                            _id: doc._id.toString()
-                        }
+                        price: { _id: doc._id.toString() }
                     });
                 }, 500);
 
@@ -5009,9 +4386,7 @@ Prices.prototype = {
                 limit: body.take
             })
             .populate("product", "_id label ref minPrice tva_tx caFamily units discount dynForm")
-            .sort({
-                ref: 1
-            })
+            .sort({ ref: 1 })
             .exec(function(err, prices) {
                 if (err) {
                     console.log("err : /api/product/price/autocomplete");
@@ -5139,10 +4514,7 @@ Prices.prototype = {
     findOne: function(id, price_level, callback) {
         var PriceLevelModel = MODEL('pricelevel').Schema;
 
-        PriceLevelModel.findOne({
-                price_level: price_level,
-                product: id
-            }, "product prices discount price_level")
+        PriceLevelModel.findOne({ price_level: price_level, product: id }, "product prices discount price_level")
             //.populate("product", "label ref minPrice tva_tx caFamily units discount dynForm")
             //.sort({ref: 1})
             .exec(function(err, price) {
@@ -5181,12 +4553,7 @@ Prices.prototype = {
 
         //console.log(refs);
 
-        PriceLevelModel.find({
-                price_level: price_level,
-                'product': {
-                    $in: refs
-                }
-            }, "product prices price_level")
+        PriceLevelModel.find({ price_level: price_level, 'product': { $in: refs } }, "product prices price_level")
             //.populate("product", "label ref minPrice tva_tx caFamily units discount dynForm")
             //.sort({ref: 1})
             .exec(function(err, prices) {
@@ -5252,10 +4619,7 @@ DynForm.prototype = {
 
         let data = self.body;
 
-        DynFormModel.calcul(data.product.info.productType.dynamic.name, {
-            data: data,
-            priceList: priceList
-        }, function(err, result) {
+        DynFormModel.calcul(data.product.info.productType.dynamic.name, { data: data, priceList: priceList }, function(err, result) {
             if (err)
                 console.log(err);
 
@@ -5275,9 +4639,7 @@ ProductTypes.prototype = {
 
         _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
 
-        ProductTypesModel.findOne({
-            _id: _id
-        }, function(err, result) {
+        ProductTypesModel.findOne({ _id: _id }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
@@ -5308,9 +4670,7 @@ ProductTypes.prototype = {
         }
 
         ProductTypesModel.aggregate([{
-            $match: {
-                isActive: true
-            }
+            $match: { isActive: true }
         }, {
             $lookup: {
                 from: 'Product',
@@ -5332,16 +4692,12 @@ ProductTypes.prototype = {
             }
         }, {
             $project: {
-                countProducts: {
-                    $size: '$Products'
-                },
+                countProducts: { $size: '$Products' },
                 name: '$langs',
                 inventory: '$inventory',
                 sequence: 1,
                 createdAt: '$createdAt',
-                opts: {
-                    $arrayElemAt: ['$productOptions', 0]
-                }
+                opts: { $arrayElemAt: ['$productOptions', 0] }
             }
         }, {
             $unwind: {
@@ -5355,34 +4711,18 @@ ProductTypes.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                options: {
-                    $push: '$opts'
-                },
-                name: {
-                    $first: '$name.name'
-                },
-                inventory: {
-                    $first: '$inventory'
-                },
-                sequence: {
-                    $first: '$sequence'
-                },
-                createdAt: {
-                    $first: '$createdAt'
-                },
-                countProducts: {
-                    $first: '$countProducts'
-                }
+                options: { $push: '$opts' },
+                name: { $first: '$name.name' },
+                inventory: { $first: '$inventory' },
+                sequence: { $first: '$sequence' },
+                createdAt: { $first: '$createdAt' },
+                countProducts: { $first: '$countProducts' }
             }
         }, {
             $group: {
                 _id: null,
-                total: {
-                    $sum: 1
-                },
-                root: {
-                    $push: '$$ROOT'
-                }
+                total: { $sum: 1 },
+                root: { $push: '$$ROOT' }
             }
         }, {
             $unwind: '$root'
@@ -5409,12 +4749,8 @@ ProductTypes.prototype = {
         }, {
             $group: {
                 _id: null,
-                total: {
-                    $first: '$total'
-                },
-                data: {
-                    $push: '$data'
-                }
+                total: { $first: '$total' },
+                data: { $push: '$data' }
             }
         }, {
             $project: {
@@ -5459,9 +4795,7 @@ ProductTypes.prototype = {
         var body = self.body;
         var currentOptions;
 
-        ProductTypesModel.findByIdAndUpdate(id, body, {
-            new: true
-        }, function(err, doc) {
+        ProductTypesModel.findByIdAndUpdate(id, body, { new: true }, function(err, doc) {
             if (err) {
                 console.log(err);
                 return self.json({
@@ -5486,11 +4820,7 @@ ProductTypes.prototype = {
         var self = this;
 
         var ProductTypesModel = MODEL('productTypes').Schema;
-        ProductTypesModel.findByIdAndUpdate(id, {
-            isActive: false
-        }, {
-            new: true
-        }, function(err, doc) {
+        ProductTypesModel.findByIdAndUpdate(id, { isActive: false }, { new: true }, function(err, doc) {
             if (err)
                 return self.throw500(err);
 
@@ -5515,9 +4845,7 @@ ProductFamily.prototype = {
         _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
 
         ProductFamilyModel.aggregate([{
-            $match: {
-                _id: MODULE('utils').ObjectId(_id)
-            }
+            $match: { _id: MODULE('utils').ObjectId(_id) }
         }, {
             $unwind: {
                 path: '$options',
@@ -5588,42 +4916,18 @@ ProductFamily.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                opts: {
-                    $push: '$opts'
-                },
-                langs: {
-                    $first: '$langs'
-                },
-                sequence: {
-                    $first: '$sequence'
-                },
-                indirectCostRate: {
-                    $first: '$indirectCostRate'
-                },
-                minMargin: {
-                    $first: '$minMargin'
-                },
-                discounts: {
-                    $first: '$discounts'
-                },
-                isCoef: {
-                    $first: '$isCoef'
-                },
-                isCost: {
-                    $first: '$isCost'
-                },
-                variants: {
-                    $first: '$variants'
-                },
-                familyCoef: {
-                    $first: '$familyCoef'
-                },
-                isActive: {
-                    $first: '$isActive'
-                },
-                accounts: {
-                    $first: '$accounts'
-                },
+                opts: { $push: '$opts' },
+                langs: { $first: '$langs' },
+                sequence: { $first: '$sequence' },
+                indirectCostRate: { $first: '$indirectCostRate' },
+                minMargin: { $first: '$minMargin' },
+                discounts: { $first: '$discounts' },
+                isCoef: { $first: '$isCoef' },
+                isCost: { $first: '$isCost' },
+                variants: { $first: '$variants' },
+                familyCoef: { $first: '$familyCoef' },
+                isActive: { $first: '$isActive' },
+                accounts: { $first: '$accounts' },
             }
         }, {
             $lookup: {
@@ -5652,42 +4956,18 @@ ProductFamily.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                opts: {
-                    $first: '$opts'
-                },
-                langs: {
-                    $first: '$langs'
-                },
-                sequence: {
-                    $first: '$sequence'
-                },
-                indirectCostRate: {
-                    $first: '$indirectCostRate'
-                },
-                minMargin: {
-                    $first: '$minMargin'
-                },
-                discounts: {
-                    $first: '$discounts'
-                },
-                isCoef: {
-                    $first: '$isCoef'
-                },
-                isCost: {
-                    $first: '$isCost'
-                },
-                variants: {
-                    $first: '$variants'
-                },
-                familyCoef: {
-                    $push: '$familyCoef'
-                },
-                isActive: {
-                    $first: '$isActive'
-                },
-                accounts: {
-                    $first: '$accounts'
-                },
+                opts: { $first: '$opts' },
+                langs: { $first: '$langs' },
+                sequence: { $first: '$sequence' },
+                indirectCostRate: { $first: '$indirectCostRate' },
+                minMargin: { $first: '$minMargin' },
+                discounts: { $first: '$discounts' },
+                isCoef: { $first: '$isCoef' },
+                isCost: { $first: '$isCost' },
+                variants: { $first: '$variants' },
+                familyCoef: { $push: '$familyCoef' },
+                isActive: { $first: '$isActive' },
+                accounts: { $first: '$accounts' },
             }
         }], function(err, result) {
             if (err)
@@ -5769,20 +5049,14 @@ ProductFamily.prototype = {
                 }
             }, {
                 $project: {
-                    countProducts: {
-                        $size: '$Products'
-                    },
-                    countCostProducts: {
-                        $size: '$costProducts'
-                    },
+                    countProducts: { $size: '$Products' },
+                    countCostProducts: { $size: '$costProducts' },
                     name: '$langs',
                     sequence: 1,
                     createdAt: '$createdAt',
                     indirectCostRate: 1,
                     isCost: 1,
-                    opts: {
-                        $arrayElemAt: ['$productOptions', 0]
-                    }
+                    opts: { $arrayElemAt: ['$productOptions', 0] }
                 }
             }, {
                 $unwind: {
@@ -5796,40 +5070,20 @@ ProductFamily.prototype = {
             }, {
                 $group: {
                     _id: '$_id',
-                    options: {
-                        $push: '$opts'
-                    },
-                    name: {
-                        $first: '$name.name'
-                    },
-                    sequence: {
-                        $first: '$sequence'
-                    },
-                    indirectCostRate: {
-                        $first: '$indirectCostRate'
-                    },
-                    isCost: {
-                        $first: '$isCost'
-                    },
-                    createdAt: {
-                        $first: '$createdAt'
-                    },
-                    countProducts: {
-                        $first: '$countProducts'
-                    },
-                    countCostProducts: {
-                        $first: '$countCostProducts'
-                    }
+                    options: { $push: '$opts' },
+                    name: { $first: '$name.name' },
+                    sequence: { $first: '$sequence' },
+                    indirectCostRate: { $first: '$indirectCostRate' },
+                    isCost: { $first: '$isCost' },
+                    createdAt: { $first: '$createdAt' },
+                    countProducts: { $first: '$countProducts' },
+                    countCostProducts: { $first: '$countCostProducts' }
                 }
             }, {
                 $group: {
                     _id: null,
-                    total: {
-                        $sum: 1
-                    },
-                    root: {
-                        $push: '$$ROOT'
-                    }
+                    total: { $sum: 1 },
+                    root: { $push: '$$ROOT' }
                 }
             }, {
                 $unwind: '$root'
@@ -5854,9 +5108,7 @@ ProductFamily.prototype = {
                             $sort: sortObj
                         },*/
             {
-                $sort: {
-                    'data.name': 1
-                }
+                $sort: { 'data.name': 1 }
             },
             /*{
                        $skip: skip
@@ -5866,12 +5118,8 @@ ProductFamily.prototype = {
             {
                 $group: {
                     _id: null,
-                    total: {
-                        $first: '$total'
-                    },
-                    data: {
-                        $push: '$data'
-                    }
+                    total: { $first: '$total' },
+                    data: { $push: '$data' }
                 }
             }, {
                 $project: {
@@ -5910,10 +5158,7 @@ ProductFamily.prototype = {
                 return self.throw500(err);
 
             //create default Coef to 1
-            PriceListModel.find({
-                isCoef: true,
-                cost: false
-            }, "_id", function(err, pricesList) {
+            PriceListModel.find({ isCoef: true, cost: false }, "_id", function(err, pricesList) {
                 if (err)
                     return self.throw500(err);
 
@@ -5929,11 +5174,7 @@ ProductFamily.prototype = {
                             return aCb(err);
 
                         setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
-                            F.emit('productFamily:coefUpdate', {
-                                userId: self.user._id.toString(),
-                                family: family,
-                                productFamilyCoef: doc
-                            }); //Ok worflow
+                            F.emit('productFamily:coefUpdate', { userId: self.user._id.toString(), family: family, productFamilyCoef: doc }); //Ok worflow
                         }, 500);
                         aCb();
 
@@ -5981,15 +5222,7 @@ ProductFamily.prototype = {
 
                 addedOptions = addedOptions.objectID();
 
-                ProductFamilyModel.findByIdAndUpdate(modelId, {
-                    $push: {
-                        options: {
-                            $each: addedOptions
-                        }
-                    }
-                }, {
-                    new: true
-                }, function(err, result) {
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { options: { $each: addedOptions } } }, { new: true }, function(err, result) {
                     if (err)
                         return pCb(err);
 
@@ -6003,15 +5236,7 @@ ProductFamily.prototype = {
 
                 addedVariants = addedVariants.objectID();
 
-                ProductFamilyModel.findByIdAndUpdate(modelId, {
-                    $push: {
-                        variants: {
-                            $each: addedVariants
-                        }
-                    }
-                }, {
-                    new: true
-                }, function(err, result) {
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $push: { variants: { $each: addedVariants } } }, { new: true }, function(err, result) {
                     if (err)
                         return pCb(err);
 
@@ -6026,12 +5251,7 @@ ProductFamily.prototype = {
                 let deleteOptions = deletedOptions;
                 deletedOptions = deletedOptions.objectID();
 
-                ProductModel.find({
-                    sellFamily: modelId,
-                    'attributes.attribute': {
-                        $in: deletedOptions
-                    }
-                }, function(err, docs) {
+                ProductModel.find({ sellFamily: modelId, 'attributes.attribute': { $in: deletedOptions } }, function(err, docs) {
                     if (!docs.length)
                         return;
 
@@ -6050,13 +5270,7 @@ ProductFamily.prototype = {
                     });
                 });
 
-                ProductFamilyModel.findByIdAndUpdate(modelId, {
-                    $pullAll: {
-                        options: deletedOptions
-                    }
-                }, {
-                    new: true
-                }, function(err, result) {
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { options: deletedOptions } }, { new: true }, function(err, result) {
                     if (err)
                         return pCb(err);
 
@@ -6073,9 +5287,7 @@ ProductFamily.prototype = {
 
                 //Todo remove all attributesValues form Attributes in variants !
 
-                ProductModel.find({
-                        sellFamily: modelId
-                    })
+                ProductModel.find({ sellFamily: modelId })
                     .populate("variants")
                     .exec(function(err, docs) {
                         if (err)
@@ -6104,13 +5316,7 @@ ProductFamily.prototype = {
                         });
                     });
 
-                ProductFamilyModel.findByIdAndUpdate(modelId, {
-                    $pullAll: {
-                        variants: deletedVariants
-                    }
-                }, {
-                    new: true
-                }, function(err, result) {
+                ProductFamilyModel.findByIdAndUpdate(modelId, { $pullAll: { variants: deletedVariants } }, { new: true }, function(err, result) {
                     if (err)
                         return pCb(err);
 
@@ -6124,10 +5330,7 @@ ProductFamily.prototype = {
 
                 //console.log(self.body.familyCoef);
 
-                PriceListModel.find({
-                    cost: false,
-                    isCoef: true
-                }, "_id", function(err, pricesList) {
+                PriceListModel.find({ cost: false, isCoef: true }, "_id", function(err, pricesList) {
                     if (err)
                         return pCb(err);
 
@@ -6151,11 +5354,7 @@ ProductFamily.prototype = {
                                     return eCb(err);
 
                                 setTimeout2('productFamily:coefUpdate_' + family._id.toString(), function() {
-                                    F.emit('productFamily:coefUpdate', {
-                                        userId: self.user._id.toString(),
-                                        family: family,
-                                        productFamilyCoef: doc
-                                    });
+                                    F.emit('productFamily:coefUpdate', { userId: self.user._id.toString(), family: family, productFamilyCoef: doc });
                                 }, 500);
 
                                 eCb();
@@ -6165,10 +5364,7 @@ ProductFamily.prototype = {
                         elem = elem[0];
 
                         // update the coef
-                        ProductFamilyCoefModel.findByIdAndUpdate(elem._id, {
-                            coef: elem.coef,
-                            editedBy: self.user._id
-                        }, function(err, doc) {
+                        ProductFamilyCoefModel.findByIdAndUpdate(elem._id, { coef: elem.coef, editedBy: self.user._id }, function(err, doc) {
                             if (err)
                                 return eCb(err);
 
@@ -6235,9 +5431,7 @@ ProductFamily.prototype = {
         body.options = _.compact(body.options);
         body.variants = _.compact(body.variants);
 
-        ProductFamilyModel.findByIdAndUpdate(_id, data, {
-            new: true
-        }, function(err, family) {
+        ProductFamilyModel.findByIdAndUpdate(_id, data, { new: true }, function(err, family) {
             if (err) {
                 console.log(err);
                 return self.json({
@@ -6253,10 +5447,7 @@ ProductFamily.prototype = {
                 variants: family.variants
             };
 
-            updateOptionsForProdTypes(_id, currentOptions, {
-                options: body.options,
-                variants: body.variants
-            }, ProductFamilyModel, family, function(err) {
+            updateOptionsForProdTypes(_id, currentOptions, { options: body.options, variants: body.variants }, ProductFamilyModel, family, function(err) {
                 if (err) {
                     console.log(err);
                     return self.json({
@@ -6268,10 +5459,7 @@ ProductFamily.prototype = {
                 }
 
                 setTimeout2('productFamily:update_' + family._id.toString(), function() {
-                    F.emit('productFamily:update', {
-                        userId: self.user._id.toString(),
-                        family: family
-                    }); // Ok in worflow
+                    F.emit('productFamily:update', { userId: self.user._id.toString(), family: family }); // Ok in worflow
                 }, 500);
 
                 //console.log(doc);
@@ -6290,9 +5478,7 @@ ProductFamily.prototype = {
         var ProductFamilyModel = MODEL('productFamily').Schema;
         var FamilyCoefModel = MODEL('productFamilyCoef').Schema;
 
-        ProductFamilyModel.remove({
-            _id: id
-        }, function(err, doc) {
+        ProductFamilyModel.remove({ _id: id }, function(err, doc) {
             if (err) {
                 console.log(err);
                 return self.json({
@@ -6303,9 +5489,7 @@ ProductFamily.prototype = {
                 });
             }
 
-            FamilyCoefModel.remove({
-                family: id
-            }, function(err, result) {
+            FamilyCoefModel.remove({ family: id }, function(err, result) {
                 if (err) {
                     console.log(err);
                     return self.json({
@@ -6364,9 +5548,7 @@ ProductFamily.prototype = {
                         $unwind: '$priceLists'
                     },
                     {
-                        $match: {
-                            'priceLists.isCoef': true
-                        }
+                        $match: { 'priceLists.isCoef': true }
                     },
                     {
                         $lookup: {
@@ -6383,42 +5565,26 @@ ProductFamily.prototype = {
                             priceListId: "$priceLists._id",
                             priceListName: "$priceLists.name",
                             familyId: "$family._id",
-                            familyName: {
-                                $arrayElemAt: ['$family.langs', 0]
-                            },
+                            familyName: { $arrayElemAt: ['$family.langs', 0] },
                             coef: 1
                         }
                     }, {
                         $group: {
                             _id: "$familyId",
-                            name: {
-                                $first: "$familyName.name"
-                            },
-                            priceLists: {
-                                $addToSet: {
-                                    _id: '$priceListId',
-                                    name: '$priceListName',
-                                    coef: "$coef"
-                                }
-                            }
+                            name: { $first: "$familyName.name" },
+                            priceLists: { $addToSet: { _id: '$priceListId', name: '$priceListName', coef: "$coef" } }
                         }
                     }
                 ], pCb);
 
             },
             column: function(pCb) {
-                PriceListModel.find({
-                    cost: false,
-                    isCoef: true
-                }, "_id name", function(err, docs) {
+                PriceListModel.find({ cost: false, isCoef: true }, "_id name", function(err, docs) {
                     if (err)
                         return pCb(err);
 
                     pCb(null, _.map(docs, function(elem) {
-                        return {
-                            _id: elem._id,
-                            name: elem.name
-                        }
+                        return { _id: elem._id, name: elem.name }
                     }));
                 });
             }
@@ -6495,9 +5661,7 @@ ProductFamily.prototype = {
                     return self.throw500(err);
 
                 //clone prices
-                FamilyCoefModel.find({
-                    family: doc._id
-                }, function(err, coefs) {
+                FamilyCoefModel.find({ family: doc._id }, function(err, coefs) {
 
                     async.each(coefs, function(coef, aCb) {
                             var newCoef = coef.toObject();
@@ -6539,9 +5703,7 @@ Taxes.prototype = {
             if (err)
                 return self.throw500(err);
 
-            self.json({
-                data: result
-            });
+            self.json({ data: result });
         });
     }
 };
@@ -6557,9 +5719,7 @@ ProductAttributes.prototype = {
         _id = _id && _id.length >= 24 ? MODULE('utils').ObjectId(_id) : null;
 
         ProductAttributesModel.aggregate([{
-            $match: {
-                _id: MODULE('utils').ObjectId(_id)
-            }
+            $match: { _id: MODULE('utils').ObjectId(_id) }
         }, {
             $lookup: {
                 from: 'ProductAttributesValues',
@@ -6614,9 +5774,7 @@ ProductAttributes.prototype = {
                 if (err)
                     return self.throw500(err);
 
-                self.json({
-                    data: result
-                });
+                self.json({ data: result });
             });
     },
     createProductAttributes: function() {
@@ -6649,17 +5807,10 @@ ProductAttributes.prototype = {
         var currentOptions;
 
         setTimeout2('product:' + id.toString(), function() {
-            F.emit('product:updateAttributes', {
-                userId: self.user._id.toString(),
-                productAttribut: {
-                    _id: id.toString()
-                }
-            });
+            F.emit('product:updateAttributes', { userId: self.user._id.toString(), productAttribut: { _id: id.toString() } });
         }, 1000);
 
-        ProductAttributesModel.findByIdAndUpdate(_id, body, {
-            new: true
-        }, function(err, doc) {
+        ProductAttributesModel.findByIdAndUpdate(_id, body, { new: true }, function(err, doc) {
             if (err)
                 return self.throw500(err);
 
@@ -6668,34 +5819,16 @@ ProductAttributes.prototype = {
 
             if (self.body.value && self.body.value._id)
                 if (self.body.value.remove)
-                    return ProductModel.update({
-                        variants: self.body.value._id
-                    }, {
-                        $pull: {
-                            variants: self.body.value._id
-                        }
-                    }, {
-                        multi: true
-                    }, function(err, doc) {
+                    return ProductModel.update({ variants: self.body.value._id }, { $pull: { variants: self.body.value._id } }, { multi: true }, function(err, doc) {
                         if (err)
                             return self.throw500(err);
 
 
-                        ProductModel.update({
-                            'attributes.options': self.body.value._id
-                        }, {
-                            $pull: {
-                                'attributes.$.options': self.body.value._id
-                            }
-                        }, {
-                            multi: true
-                        }, function(err, doc) {
+                        ProductModel.update({ 'attributes.options': self.body.value._id }, { $pull: { 'attributes.$.options': self.body.value._id } }, { multi: true }, function(err, doc) {
                             if (err)
                                 return self.throw500(err);
 
-                            ProductAttributesValuesModel.remove({
-                                _id: self.body.value._id
-                            }, function(err, doc) {
+                            ProductAttributesValuesModel.remove({ _id: self.body.value._id }, function(err, doc) {
                                 if (err)
                                     return self.throw500(err);
 
@@ -6704,9 +5837,7 @@ ProductAttributes.prototype = {
                         });
                     });
                 else
-                    return ProductAttributesValuesModel.findByIdAndUpdate(self.body.value._id, self.body.value, {
-                        new: true
-                    }, function(err, doc) {
+                    return ProductAttributesValuesModel.findByIdAndUpdate(self.body.value._id, self.body.value, { new: true }, function(err, doc) {
                         if (err)
                             return self.throw500(err);
 
@@ -6732,76 +5863,36 @@ ProductAttributes.prototype = {
         var ProductModel = MODEL('product').Schema;
         var ProductFamilyModel = MODEL('productFamily').Schema;
 
-        ProductAttributesValuesModel.find({
-            optionId: id
-        }, "_id", function(err, values) {
+        ProductAttributesValuesModel.find({ optionId: id }, "_id", function(err, values) {
             //get all values    
             values = _.map(values, function(elem) {
                 //Remove all variants
-                ProductModel.update({
-                    variants: elem._id
-                }, {
-                    $pull: {
-                        variants: elem._id
-                    }
-                }, {
-                    multi: true
-                }, function(err, doc) {
+                ProductModel.update({ variants: elem._id }, { $pull: { variants: elem._id } }, { multi: true }, function(err, doc) {
                     if (err)
                         console.log(err);
                 });
             });
 
             // Remove attributes in product
-            ProductModel.update({
-                'attributes.attribute': id
-            }, {
-                $pull: {
-                    'attributes': {
-                        'attribute': id
-                    }
-                }
-            }, {
-                multi: true
-            }, function(err, doc) {
+            ProductModel.update({ 'attributes.attribute': id }, { $pull: { 'attributes': { 'attribute': id } } }, { multi: true }, function(err, doc) {
                 if (err)
                     return self.throw500(err);
 
                 //suppress options attibutes in Family
-                ProductFamilyModel.update({
-                    'options': id
-                }, {
-                    $pull: {
-                        'options': id
-                    }
-                }, {
-                    multi: true
-                }, function(err, doc) {
+                ProductFamilyModel.update({ 'options': id }, { $pull: { 'options': id } }, { multi: true }, function(err, doc) {
                     if (err)
                         return self.throw500(err);
                     //suppress variants attibutes in Family
-                    ProductFamilyModel.update({
-                        'variants': id
-                    }, {
-                        $pull: {
-                            'variants': id
-                        }
-                    }, {
-                        multi: true
-                    }, function(err, doc) {
+                    ProductFamilyModel.update({ 'variants': id }, { $pull: { 'variants': id } }, { multi: true }, function(err, doc) {
                         if (err)
                             return self.throw500(err);
 
                         //remove all attributes values
-                        ProductAttributesValuesModel.remove({
-                            optionId: id
-                        }, function(err, doc) {
+                        ProductAttributesValuesModel.remove({ optionId: id }, function(err, doc) {
                             if (err)
                                 return self.throw500(err);
                             //suppress attribute
-                            ProductAttributesModel.remove({
-                                _id: id
-                            }, function(err, doc) {
+                            ProductAttributesModel.remove({ _id: id }, function(err, doc) {
                                 if (err)
                                     return self.throw500(err);
 
@@ -6817,11 +5908,7 @@ ProductAttributes.prototype = {
         var self = this;
         var GroupAttributes = MODEL('groupAttributes').Schema;
 
-        var limit = {
-            sort: {
-                code: 1
-            }
-        };
+        var limit = { sort: { code: 1 } };
 
         GroupAttributes.find({}, '', limit, function(err, docs) {
             if (err)
@@ -6841,9 +5928,7 @@ Warehouse.prototype = {
         var Model = MODEL('warehouse').Schema;
         var self = this;
         var ObjectId = MODULE('utils').ObjectId;
-        var query = (id ? {
-            _id: ObjectId(id)
-        } : {});
+        var query = (id ? { _id: ObjectId(id) } : {});
 
         Model.aggregate([{
             $match: query
@@ -6882,12 +5967,8 @@ Warehouse.prototype = {
             }
         }, {
             $project: {
-                account: {
-                    $arrayElemAt: ['$account', 0]
-                },
-                'locations.zone': {
-                    $arrayElemAt: ['$locations.zone', 0]
-                },
+                account: { $arrayElemAt: ['$account', 0] },
+                'locations.zone': { $arrayElemAt: ['$locations.zone', 0] },
                 'locations.name': 1,
                 'locations._id': 1,
                 name: 1,
@@ -6900,36 +5981,20 @@ Warehouse.prototype = {
         }, {
             $group: {
                 _id: '$locations.zone',
-                root: {
-                    $push: '$$ROOT'
-                }
+                root: { $push: '$$ROOT' }
             }
         }, {
             $unwind: '$root'
         }, {
             $group: {
                 _id: '$root.warehouseId',
-                account: {
-                    $first: '$root.account'
-                },
-                address: {
-                    $first: '$root.address'
-                },
-                main: {
-                    $first: '$root.main'
-                },
-                name: {
-                    $first: '$root.name'
-                },
-                isOwn: {
-                    $first: '$root.isOwn'
-                },
-                locations: {
-                    $addToSet: '$root.locations'
-                },
-                zones: {
-                    $first: '$root.zones'
-                }
+                account: { $first: '$root.account' },
+                address: { $first: '$root.address' },
+                main: { $first: '$root.main' },
+                name: { $first: '$root.name' },
+                isOwn: { $first: '$root.isOwn' },
+                locations: { $addToSet: '$root.locations' },
+                zones: { $first: '$root.zones' }
             }
         }], function(err, result) {
             if (err)
@@ -6939,9 +6004,7 @@ Warehouse.prototype = {
                 return self.json(result && result.length ? result[0] : {});
 
             //list all
-            self.json({
-                data: result
-            });
+            self.json({ data: result });
         });
     },
 
@@ -6986,20 +6049,14 @@ Warehouse.prototype = {
                     }
                 },
 
-                name: {
-                    $first: '$name'
-                },
-                main: {
-                    $first: '$main'
-                }
+                name: { $first: '$name' },
+                main: { $first: '$main' }
             }
         }], function(err, result) {
             if (err)
                 return self.throw500(err);
 
-            self.json({
-                data: result
-            });
+            self.json({ data: result });
         });
     },
 
@@ -7008,18 +6065,13 @@ Warehouse.prototype = {
         var self = this;
 
         query
-            .find({}, {
-                name: 1,
-                account: 1
-            })
+            .find({}, { name: 1, account: 1 })
             .find('main')
             .exec(function(err, result) {
                 if (err)
                     return self.throw500(err);
 
-                self.json({
-                    data: result
-                });
+                self.json({ data: result });
             });
     },
 
@@ -7029,16 +6081,12 @@ Warehouse.prototype = {
         var query = this.query || {};
 
         Model
-            .find(query, {
-                name: 1
-            })
+            .find(query, { name: 1 })
             .exec(function(err, result) {
                 if (err)
                     return self.throw500(err);
 
-                self.json({
-                    data: result
-                });
+                self.json({ data: result });
             });
     },
 
@@ -7051,20 +6099,14 @@ Warehouse.prototype = {
             findObject = self.query;
 
         if (findObject.warehouse && findObject.warehouse.length !== 24)
-            return self.json({
-                data: []
-            });
+            return self.json({ data: [] });
 
-        Model.find(findObject, {
-                name: 1
-            })
+        Model.find(findObject, { name: 1 })
             .exec(function(err, result) {
                 if (err)
                     return self.throw500(err);
 
-                self.json({
-                    data: result
-                });
+                self.json({ data: result });
             });
     },
 
@@ -7076,24 +6118,10 @@ Warehouse.prototype = {
         data.editedBy = self.user._id;
 
         if (data.main)
-            return Model.update({
-                _id: {
-                    $nin: [id]
-                }
-            }, {
-                $set: {
-                    main: false
-                }
-            }, {
-                multi: true
-            }, function(err, result) {
+            return Model.update({ _id: { $nin: [id] } }, { $set: { main: false } }, { multi: true }, function(err, result) {
                 delete data._id;
 
-                Model.findByIdAndUpdate(id, {
-                    $set: data
-                }, {
-                    new: true
-                }, function(err, result) {
+                Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
                     if (err)
                         return self.throw500(err);
 
@@ -7103,11 +6131,7 @@ Warehouse.prototype = {
 
         delete data._id;
 
-        Model.findByIdAndUpdate(id, {
-            $set: data
-        }, {
-            new: true
-        }, function(err, result) {
+        Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
@@ -7123,11 +6147,7 @@ Warehouse.prototype = {
 
         data.editedBy = self.user._id;
 
-        Model.findByIdAndUpdate(id, {
-            $set: data
-        }, {
-            new: true
-        }, function(err, result) {
+        Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
@@ -7135,9 +6155,7 @@ Warehouse.prototype = {
                 if (err)
                     return self.throw500(err);
 
-                self.json({
-                    data: result
-                });
+                self.json({ data: result });
             });
         });
     },
@@ -7149,17 +6167,11 @@ Warehouse.prototype = {
 
         data.editedBy = self.user._id;
 
-        Model.findByIdAndUpdate(id, {
-            $set: data
-        }, {
-            new: true
-        }, function(err, result) {
+        Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
-            self.json({
-                data: result
-            });
+            self.json({ data: result });
         });
     },
 
@@ -7182,14 +6194,7 @@ Warehouse.prototype = {
             if (!body.main)
                 return wCb();
 
-            Model.update({
-                main: true
-            }, {
-                main: false
-            }, {
-                multi: true,
-                upsert: true
-            }, function(err, result) {
+            Model.update({ main: true }, { main: false }, { multi: true, upsert: true }, function(err, result) {
                 if (err)
                     return wCb(err);
 
@@ -7204,17 +6209,7 @@ Warehouse.prototype = {
                 if (err)
                     return wCb(err);
 
-                Model.update({
-                    _id: {
-                        $nin: [result._id]
-                    }
-                }, {
-                    $set: {
-                        main: false
-                    }
-                }, {
-                    multi: true
-                }, function(err, result) {
+                Model.update({ _id: { $nin: [result._id] } }, { $set: { main: false } }, { multi: true }, function(err, result) {
 
                 });
 
@@ -7278,26 +6273,20 @@ Warehouse.prototype = {
         var productsAvailability = MODEL('productsAvailability').Schema;
         var self = this;
 
-        productsAvailability.find({
-            warehouse: id
-        }, function(err, result) {
+        productsAvailability.find({ warehouse: id }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
 
             if (!result.length)
-                return Model.remove({
-                    _id: id
-                }, function(err, result) {
+                return Model.remove({ _id: id }, function(err, result) {
                     if (err)
                         return self.throw500(err);
 
                     self.json(result);
                 });
 
-            self.json({
-                error: 'You can delete only empty Warehouse. Please, remove products first'
-            });
+            self.json({ error: 'You can delete only empty Warehouse. Please, remove products first' });
         });
     },
 
@@ -7305,9 +6294,7 @@ Warehouse.prototype = {
         var Model = MODEL('location').Schema;
         var self = this;
 
-        Model.remove({
-            _id: id
-        }, function(err, result) {
+        Model.remove({ _id: id }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
@@ -7320,21 +6307,11 @@ Warehouse.prototype = {
         var Location = MODEL('location').Schema;
         var self = this;
 
-        Model.remove({
-            _id: id
-        }, function(err, result) {
+        Model.remove({ _id: id }, function(err, result) {
             if (err)
                 return sel.throw500(err);
 
-            Location.update({
-                zone: id
-            }, {
-                $set: {
-                    zone: null
-                }
-            }, {
-                multi: true
-            }, function(err) {
+            Location.update({ zone: id }, { $set: { zone: null } }, { multi: true }, function(err) {
                 if (err)
                     return self.throw500(err);
 
@@ -7406,29 +6383,16 @@ StockCorrection.prototype = {
                 const Order = MODEL('order').Schema.OrderCustomer;
                 const OrderRowsModel = MODEL('orderRows').Schema;
 
-                Order.find({
-                        Status: "VALIDATED",
-                        isremoved: {
-                            $ne: true
-                        }
-                    },
+                Order.find({ Status: "VALIDATED", isremoved: { $ne: true } },
                     function(err, orders) {
                         if (err || !orders)
                             return eachCb(err);
 
                         async.forEach(orders, function(order, eCb) {
-                            OrderRowsModel.find({
-                                order: order._id,
-                                product: productId
-                            }, function(err, rows) {
+                            OrderRowsModel.find({ order: order._id, product: productId }, function(err, rows) {
                                 order.setAllocated(rows, function(err) {
                                     setTimeout2('orderRecalculateStatus:' + order._id.toString(), function() {
-                                        F.emit('order:recalculateStatus', {
-                                            userId: null,
-                                            order: {
-                                                _id: order._id.toString()
-                                            }
-                                        });
+                                        F.emit('order:recalculateStatus', { userId: null, order: { _id: order._id.toString() } });
                                     }, 5000);
                                 });
                             });
@@ -7473,11 +6437,7 @@ StockCorrection.prototype = {
                                             _id: doc._id
                                         },
 
-                                        body: {
-                                            $set: {
-                                                archived: true
-                                            }
-                                        },
+                                        body: { $set: { archived: true } },
                                     };
                                     Availability.updateByQuery(optionsEach, function(err, doc) {
                                         if (err)
@@ -7510,12 +6470,7 @@ StockCorrection.prototype = {
                                 eachCb();
                                 // Refresh allocate all order Customer waiting
                                 allocateOrders(elem.product);
-                                F.emit('inventory:update', {
-                                    userId: null,
-                                    product: {
-                                        _id: elem.product._id.toString()
-                                    }
-                                });
+                                F.emit('inventory:update', { userId: null, product: { _id: elem.product._id.toString() } });
                             });
                         } else
                             eachCb();
@@ -7540,9 +6495,7 @@ StockCorrection.prototype = {
                         allocateOrders(elem.product);
                         F.emit('inventory:update', {
                             userId: null,
-                            product: {
-                                _id: elem.product._id.toString()
-                            }
+                            product: { _id: elem.product._id.toString() }
                         });
                     });
                 }
@@ -7688,9 +6641,7 @@ StockCorrection.prototype = {
         var sort;
 
         obj.$and = [];
-        obj.$and.push({
-            _type: 'stockCorrections'
-        });
+        obj.$and.push({ _type: 'stockCorrections' });
 
         /*if (data && data.filter) {
 
@@ -7702,9 +6653,7 @@ StockCorrection.prototype = {
             data.sort[keys] = parseInt(data.sort[keys], 10);
             sort = data.sort;
         } else
-            sort = {
-                'createdAt': -1
-            };
+            sort = { 'createdAt': -1 };
 
         StockCorrectionModel.aggregate([{
                 $match: obj
@@ -7736,15 +6685,9 @@ StockCorrection.prototype = {
             {
                 $project: {
                     _id: 1,
-                    location: {
-                        $arrayElemAt: ['$location', 0]
-                    },
-                    warehouse: {
-                        $arrayElemAt: ['$warehouse', 0]
-                    },
-                    'createdBy': {
-                        $arrayElemAt: ['$createdBy', 0]
-                    },
+                    location: { $arrayElemAt: ['$location', 0] },
+                    warehouse: { $arrayElemAt: ['$warehouse', 0] },
+                    'createdBy': { $arrayElemAt: ['$createdBy', 0] },
                     'createdAt': 1,
                     description: 1
                 }
@@ -7752,12 +6695,8 @@ StockCorrection.prototype = {
             {
                 $group: {
                     _id: null,
-                    total: {
-                        $sum: 1
-                    },
-                    root: {
-                        $push: '$$ROOT'
-                    }
+                    total: { $sum: 1 },
+                    root: { $push: '$$ROOT' }
                 }
             },
             {
@@ -7859,9 +6798,7 @@ StockCorrection.prototype = {
                 }
             }, {
                 $project: {
-                    product: {
-                        $arrayElemAt: ['$product', 0]
-                    },
+                    product: { $arrayElemAt: ['$product', 0] },
                     warehouse: 1,
                     onHand: 1
                 }
@@ -7869,12 +6806,8 @@ StockCorrection.prototype = {
             }, {
                 $group: {
                     _id: '$warehouse',
-                    onHand: {
-                        $sum: '$onHand'
-                    },
-                    product: {
-                        $first: '$product'
-                    }
+                    onHand: { $sum: '$onHand' },
+                    product: { $first: '$product' }
                 }
             }], function(err, availability) {
                 if (err)
@@ -7903,9 +6836,7 @@ StockCorrection.prototype = {
             }, {
                 $group: {
                     _id: '$warehouse',
-                    onHand: {
-                        $sum: '$onHand'
-                    }
+                    onHand: { $sum: '$onHand' }
                 }
             }], function(err, availability) {
                 if (err)
@@ -7937,18 +6868,12 @@ StockCorrection.prototype = {
     bulkRemove: function() {
         var self = this;
         const StockCorrectionModel = MODEL('orders').Schema.stockCorrections;
-        var body = req.body || {
-            ids: []
-        };
+        var body = req.body || { ids: [] };
         var ids = body.ids;
 
         // todo some validation on ids array, like check for objectId
 
-        StockCorrectionModel.remove({
-            _id: {
-                $in: ids
-            }
-        }, function(err, removed) {
+        StockCorrectionModel.remove({ _id: { $in: ids } }, function(err, removed) {
             if (err)
                 return self.throw500(err);
 
@@ -7960,15 +6885,11 @@ StockCorrection.prototype = {
         var self = this;
         const StockCorrectionModel = MODEL('orders').Schema.stockCorrections;
 
-        StockCorrectionModel.findOneAndRemove({
-            _id: id
-        }, function(err, correction) {
+        StockCorrectionModel.findOneAndRemove({ _id: id }, function(err, correction) {
             if (err)
                 return self.throw500(err);
 
-            self.json({
-                success: correction
-            });
+            self.json({ success: correction });
         });
     }
 };
@@ -7999,10 +6920,8 @@ StockInventory.prototype = {
             data.sort[keys] = parseInt(data.sort[keys], 10);
             sort = data.sort;
         } else
-            //sort = { 'createdAt': -1 };
-            sort = {
-                'product.info.SKU': 1
-            };
+        //sort = { 'createdAt': -1 };
+            sort = { 'product.info.SKU': 1 };
 
         options = {
             sort: sort,
@@ -8052,9 +6971,7 @@ StockInventory.prototype = {
         var options = {
             body: body,
             id: id,
-            options: {
-                new: true
-            }
+            options: { new: true }
         };
 
         delete body.availabilities;
@@ -8069,19 +6986,11 @@ StockInventory.prototype = {
                     location: doc.location,
                     product: doc.product,
                     onHand: 0,
-                    goodsOutNotes: {
-                        $size: 0
-                    },
-                    orderRows: {
-                        $size: 0
-                    }
+                    goodsOutNotes: { $size: 0 },
+                    orderRows: { $size: 0 }
                 },
 
-                body: {
-                    $set: {
-                        archived: true
-                    }
-                }
+                body: { $set: { archived: true } }
             }, function(err) {
                 if (err)
                     return self.throw500(err);
@@ -8235,11 +7144,7 @@ StockReturn.prototype = {
                                             _id: doc._id
                                         },
 
-                                        body: {
-                                            $set: {
-                                                archived: true
-                                            }
-                                        },
+                                        body: { $set: { archived: true } },
                                     };
                                     Availability.updateByQuery(optionsEach, function(err, doc) {
                                         if (err)
@@ -8270,12 +7175,7 @@ StockReturn.prototype = {
                                     return eachCb(err);
 
                                 eachCb();
-                                F.emit('inventory:update', {
-                                    userId: null,
-                                    product: {
-                                        _id: elem.product._id.toString()
-                                    }
-                                });
+                                F.emit('inventory:update', { userId: null, product: { _id: elem.product._id.toString() } });
                             });
                         } else
                             eachCb();
@@ -8296,12 +7196,7 @@ StockReturn.prototype = {
                             return eachCb(err);
 
                         eachCb();
-                        F.emit('inventory:update', {
-                            userId: null,
-                            product: {
-                                _id: elem.product._id.toString()
-                            }
-                        });
+                        F.emit('inventory:update', { userId: null, product: { _id: elem.product._id.toString() } });
                     });
                 }
 
@@ -8346,9 +7241,7 @@ StockReturn.prototype = {
                     qty: 0 // The difference of the stock positive or negative
                 };
 
-                ProductModel.findOne({
-                    'info.SKU': row[0].trim()
-                }, "_id directCost", function(err, product) {
+                ProductModel.findOne({ 'info.SKU': row[0].trim() }, "_id directCost", function(err, product) {
                     if (err || !product)
                         return callback();
 
@@ -8419,11 +7312,7 @@ StockReturn.prototype = {
                                                         _id: doc._id
                                                     },
 
-                                                    body: {
-                                                        $set: {
-                                                            archived: true
-                                                        }
-                                                    },
+                                                    body: { $set: { archived: true } },
                                                 };
                                                 Availability.updateByQuery(optionsEach, function(err, doc) {
                                                     if (err)
@@ -8454,12 +7343,7 @@ StockReturn.prototype = {
                                                 return eachCb(err);
 
                                             eachCb();
-                                            F.emit('inventory:update', {
-                                                userId: null,
-                                                product: {
-                                                    _id: elem.product.toString()
-                                                }
-                                            });
+                                            F.emit('inventory:update', { userId: null, product: { _id: elem.product.toString() } });
                                         });
                                     } else
                                         eachCb();
@@ -8480,12 +7364,7 @@ StockReturn.prototype = {
                                         return eachCb(err);
 
                                     eachCb();
-                                    F.emit('inventory:update', {
-                                        userId: null,
-                                        product: {
-                                            _id: elem.product.toString()
-                                        }
-                                    });
+                                    F.emit('inventory:update', { userId: null, product: { _id: elem.product.toString() } });
                                 });
                             }
 
@@ -8494,9 +7373,7 @@ StockReturn.prototype = {
                         if (err)
                             return self.throw500(err);
 
-                        self.json({
-                            lines: count
-                        });
+                        self.json({ lines: count });
                     });
                 });
             });
@@ -8505,15 +7382,11 @@ StockReturn.prototype = {
         var self = this;
         const StockCorrectionModel = MODEL('orders').Schema.stockCorrections;
 
-        StockCorrectionModel.findOneAndRemove({
-            _id: id
-        }, function(err, correction) {
+        StockCorrectionModel.findOneAndRemove({ _id: id }, function(err, correction) {
             if (err)
                 return self.throw500(err);
 
-            self.json({
-                success: correction
-            });
+            self.json({ success: correction });
         });
     }
 };

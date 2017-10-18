@@ -1,34 +1,35 @@
 <html>
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- AmCharts includes -->
-    <script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
-    <script src="http://www.amcharts.com/lib/3/serial.js"></script>
-    <!-- Export plugin includes and styles -->
-    <script src="../export.js"></script>
-    <link type="text/css" href="../export.css" rel="stylesheet">
-    <script src="export.config.default.js"></script>
-    <style>
-        body,
-        html {
-            height: 100%;
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-            font-size: 11px;
-            font-family: Verdana;
-        }
-
-        #chartdiv {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-    <script type="text/javascript">
-        var chartData = [{
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- AmCharts includes -->
+        <script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
+        <script src="http://www.amcharts.com/lib/3/serial.js"></script>
+        <!-- Export plugin includes and styles -->
+        <script src="../export.js"></script>
+        <link type="text/css" href="../export.css" rel="stylesheet">
+        <script src="export.config.default.js"></script>
+        <style>
+            body,
+            html {
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+                font-size: 11px;
+                font-family: Verdana;
+            }
+            
+            #chartdiv {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <script type="text/javascript">
+            var chartData = [
+            {
                 "year": 2000,
                 "cars": 1587,
                 "motorcycles": 650,
@@ -141,21 +142,23 @@
                 "cars": 1159,
                 "motorcycles": 277,
                 "bicycles": 71
-            }
-        ];
-        var chart = AmCharts.makeChart("chartdiv", {
-            "type": "serial",
-            "dataProvider": chartData,
-            "rotate": false,
-            "marginTop": 10,
-            "marginRight": 70,
-            "categoryField": "year",
-            "categoryAxis": {
-                "gridAlpha": 0.07,
-                "axisColor": "#DADADA",
-                "startOnAxis": false,
-                "title": "Year",
-                "guides": [{
+            }];
+            var chart = AmCharts.makeChart("chartdiv",
+            {
+                "type": "serial",
+                "dataProvider": chartData,
+                "rotate": false,
+                "marginTop": 10,
+                "marginRight": 70,
+                "categoryField": "year",
+                "categoryAxis":
+                {
+                    "gridAlpha": 0.07,
+                    "axisColor": "#DADADA",
+                    "startOnAxis": false,
+                    "title": "Year",
+                    "guides": [
+                    {
                         "category": "2001",
                         "lineColor": "#CC0000",
                         "lineAlpha": 1,
@@ -172,15 +175,16 @@
                         "inside": true,
                         "labelRotation": 90,
                         "label": "motorcycle maintenance fee introduced"
-                    }
-                ]
-            },
-            "valueAxes": [{
-                "stackType": "regular",
-                "gridAlpha": 0.07,
-                "title": "Traffic incidents"
-            }],
-            "graphs": [{
+                    }]
+                },
+                "valueAxes": [
+                {
+                    "stackType": "regular",
+                    "gridAlpha": 0.07,
+                    "title": "Traffic incidents"
+                }],
+                "graphs": [
+                {
                     "id": "g1",
                     "type": "column",
                     "title": "Cars",
@@ -207,30 +211,32 @@
                     "lineAlpha": 0,
                     "fillAlphas": 0.6,
                     "balloonText": "<img src='images/bicycle.png' style='vertical-align:bottom; margin-right: 10px; width:28px; height:21px;'><span style='font-size:14px; color:#000000;'><b>[[value]]</b></span>"
-                }
-            ],
-            "legend": {
-                "position": "bottom",
-                "valueText": "[[value]]",
-                "valueWidth": 100,
-                "valueAlign": "left",
-                "equalWidths": false,
-                "periodValueText": "total: [[value.sum]]"
-            },
-            "chartCursor": {
-                "cursorAlpha": 0
-            },
-            "chartScrollbar": {
-                "color": "FFFFFF"
-            },
-            // this shows how externally included config file can be used
-            "export": AmCharts.exportCFG
-        });
-    </script>
-</head>
+                }],
+                "legend":
+                {
+                    "position": "bottom",
+                    "valueText": "[[value]]",
+                    "valueWidth": 100,
+                    "valueAlign": "left",
+                    "equalWidths": false,
+                    "periodValueText": "total: [[value.sum]]"
+                },
+                "chartCursor":
+                {
+                    "cursorAlpha": 0
+                },
+                "chartScrollbar":
+                {
+                    "color": "FFFFFF"
+                },
+                // this shows how externally included config file can be used
+                "export": AmCharts.exportCFG
+            });
+        </script>
+    </head>
 
-<body>
-    <div id="chartdiv"></div>
-</body>
+    <body>
+        <div id="chartdiv"></div>
+    </body>
 
 </html>

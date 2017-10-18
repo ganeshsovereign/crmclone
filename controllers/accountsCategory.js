@@ -79,13 +79,9 @@ Object.prototype = {
         var AccountsCategory = MODEL('accountsCategory').Schema;
 
         AccountsCategory
-            .findOne({
-                _id: id
-            })
+            .findOne({ _id: id })
             .populate('parent', 'name')
-            .sort({
-                'nestingLevel': 1
-            })
+            .sort({ 'nestingLevel': 1 })
             .exec(function(err, result) {
                 if (err)
                     return self.throw500(err);
@@ -101,16 +97,12 @@ Object.prototype = {
         AccountsCategory
             .find()
             .populate('parent', 'name')
-            .sort({
-                'nestingLevel': 1
-            })
+            .sort({ 'nestingLevel': 1 })
             .exec(function(err, result) {
                 if (err)
                     return self.throw500(err);
 
-                self.json({
-                    data: result
-                });
+                self.json({ data: result });
             });
     },
 
@@ -235,9 +227,7 @@ Object.prototype = {
 
         delete data.createdBy;
 
-        AccountsCategory.findOneAndUpdate({
-            _id: _id
-        }, data, function(err, result) {
+        AccountsCategory.findOneAndUpdate({ _id: _id }, data, function(err, result) {
             if (err)
                 return self.throw500(err);
 
@@ -293,16 +283,12 @@ Object.prototype = {
         var _id = id;
         var parentId;
 
-        AccountsCategory.findById(_id, {
-            productsCount: 1
-        }, function(err, result) {
+        AccountsCategory.findById(_id, { productsCount: 1 }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
             if (!result.productsCount) {
-                AccountsCategory.findOneAndRemove({
-                    _id: _id
-                }, function(err, result) {
+                AccountsCategory.findOneAndRemove({ _id: _id }, function(err, result) {
                     if (err)
                         return self.throw500(err);
 
@@ -312,16 +298,12 @@ Object.prototype = {
                         if (err)
                             return self.throw500(err);
 
-                        self.json({
-                            data: result
-                        });
+                        self.json({ data: result });
                     });
 
                 });
             } else
-                self.throw400({
-                    error: "You can't delete this Category until it has Charts of Account"
-                });
+                self.throw400({ error: "You can't delete this Category until it has Charts of Account" });
 
         });
     }

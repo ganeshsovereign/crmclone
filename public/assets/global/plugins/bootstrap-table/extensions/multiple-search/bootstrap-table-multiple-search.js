@@ -4,7 +4,7 @@
  * @version: v1.0.0
  */
 
-! function($) {
+!function ($) {
 
     'use strict';
 
@@ -15,7 +15,7 @@
     var BootstrapTable = $.fn.bootstrapTable.Constructor,
         _initSearch = BootstrapTable.prototype.initSearch;
 
-    BootstrapTable.prototype.initSearch = function() {
+    BootstrapTable.prototype.initSearch = function () {
         if (this.options.multipleSearch) {
             var strArray = this.searchText.split(" "),
                 that = this,
@@ -27,7 +27,7 @@
             } else {
                 for (var i = 0; i < strArray.length; i++) {
                     var str = strArray[i].trim();
-                    dataFiltered = str ? $.grep(dataFiltered.length === 0 ? this.options.data : dataFiltered, function(item, i) {
+                    dataFiltered = str ? $.grep(dataFiltered.length === 0 ? this.options.data : dataFiltered, function (item, i) {
                         for (var key in item) {
                             key = $.isNumeric(key) ? parseInt(key, 10) : key;
                             var value = item[key],

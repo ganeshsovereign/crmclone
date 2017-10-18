@@ -1,6 +1,6 @@
-var TableDatatablesButtons = function() {
+var TableDatatablesButtons = function () {
 
-    var initTable1 = function() {
+    var initTable1 = function () {
         var table = $('#sample_1');
 
         var oTable = table.dataTable({
@@ -26,31 +26,13 @@ var TableDatatablesButtons = function() {
             //},
 
 
-            buttons: [{
-                    extend: 'print',
-                    className: 'btn dark btn-outline'
-                },
-                {
-                    extend: 'copy',
-                    className: 'btn red btn-outline'
-                },
-                {
-                    extend: 'pdf',
-                    className: 'btn green btn-outline'
-                },
-                {
-                    extend: 'excel',
-                    className: 'btn yellow btn-outline '
-                },
-                {
-                    extend: 'csv',
-                    className: 'btn purple btn-outline '
-                },
-                {
-                    extend: 'colvis',
-                    className: 'btn dark btn-outline',
-                    text: 'Columns'
-                }
+            buttons: [
+                { extend: 'print', className: 'btn dark btn-outline' },
+                { extend: 'copy', className: 'btn red btn-outline' },
+                { extend: 'pdf', className: 'btn green btn-outline' },
+                { extend: 'excel', className: 'btn yellow btn-outline ' },
+                { extend: 'csv', className: 'btn purple btn-outline ' },
+                { extend: 'colvis', className: 'btn dark btn-outline', text: 'Columns'}
             ],
 
             // setup responsive extension: http://datatables.net/extensions/responsive/
@@ -59,7 +41,7 @@ var TableDatatablesButtons = function() {
             "order": [
                 [0, 'asc']
             ],
-
+            
             "lengthMenu": [
                 [5, 10, 15, 20, -1],
                 [5, 10, 15, 20, "All"] // change per page values here
@@ -76,7 +58,7 @@ var TableDatatablesButtons = function() {
         });
     }
 
-    var initTable2 = function() {
+    var initTable2 = function () {
         var table = $('#sample_2');
 
         var oTable = table.dataTable({
@@ -101,30 +83,16 @@ var TableDatatablesButtons = function() {
             //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
             //},
 
-            buttons: [{
-                    extend: 'print',
-                    className: 'btn default'
-                },
-                {
-                    extend: 'copy',
-                    className: 'btn default'
-                },
-                {
-                    extend: 'pdf',
-                    className: 'btn default'
-                },
-                {
-                    extend: 'excel',
-                    className: 'btn default'
-                },
-                {
-                    extend: 'csv',
-                    className: 'btn default'
-                },
+            buttons: [
+                { extend: 'print', className: 'btn default' },
+                { extend: 'copy', className: 'btn default' },
+                { extend: 'pdf', className: 'btn default' },
+                { extend: 'excel', className: 'btn default' },
+                { extend: 'csv', className: 'btn default' },
                 {
                     text: 'Reload',
                     className: 'btn default',
-                    action: function(e, dt, node, config) {
+                    action: function ( e, dt, node, config ) {
                         //dt.ajax.reload();
                         alert('Custom Button');
                     }
@@ -134,7 +102,7 @@ var TableDatatablesButtons = function() {
             "order": [
                 [0, 'asc']
             ],
-
+            
             "lengthMenu": [
                 [5, 10, 15, 20, -1],
                 [5, 10, 15, 20, "All"] // change per page values here
@@ -154,7 +122,7 @@ var TableDatatablesButtons = function() {
     return {
 
         //main function to initiate the module
-        init: function() {
+        init: function () {
 
             if (!jQuery().dataTable) {
                 return;

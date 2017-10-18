@@ -10,7 +10,7 @@
  * Russian translation by Dunaevsky Maxim
  * ========================================================= */
 
-(function($) {
+(function ($) {
     $.fn.gtreetable.defaults.languages.ru = {
         save: 'Сохранить',
         cancel: 'Отмена',
@@ -28,6 +28,6 @@
             onNewRootNotAllowed: 'Создание новых узлов в корне запрещено.',
             onMoveInDescendant: 'Целевой узел не может быть потомком.',
             onMoveAsRoot: 'Целевой узел не может быть корневым.'
-        }
+        }                
     };
 }(jQuery));

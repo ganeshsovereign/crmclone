@@ -69,9 +69,7 @@ F.on('load', function() {
                 if (conf.version !== null)
                     return wCb(null, conf);
 
-                Dict.remove({
-                    _id: 'const'
-                }, function(err, doc) {
+                Dict.remove({ _id: 'const' }, function(err, doc) {
                     //Migrate from before 0.5
                     wCb('You need to import dump/update database in your {0} database'.format(CONFIG('database')));
                     F.kill();
@@ -175,9 +173,7 @@ F.on('load', function() {
                     var EmployeeModel = MODEL('Employees').Schema;
 
                     mongoose.connection.db.collection('users', function(err, collection) {
-                        collection.find({
-                            _type: 'hr'
-                        }).toArray(function(err, users) {
+                        collection.find({ _type: 'hr' }).toArray(function(err, users) {
                             if (err)
                                 return console.log(err);
 
@@ -192,9 +188,7 @@ F.on('load', function() {
                                 if (!user.email)
                                     return eCb();
 
-                                UserModel.findOne({
-                                    username: user.username
-                                }, function(err, newUser) {
+                                UserModel.findOne({ username: user.username }, function(err, newUser) {
                                     if (!newUser)
                                         newUser = new UserModel();
 
@@ -214,9 +208,7 @@ F.on('load', function() {
                                         if (err)
                                             return eCb(err);
 
-                                        EmployeeModel.findOne({
-                                            relatedUser: doc._id
-                                        }, function(err, employee) {
+                                        EmployeeModel.findOne({ relatedUser: doc._id }, function(err, employee) {
                                             if (err)
                                                 return eCb(err);
 
@@ -292,10 +284,7 @@ F.on('load', function() {
                                 PriceListModel.find({}, "_id priceListCode", function(err, docs) {
                                     var priceLists = [];
                                     priceLists = _.map(docs, function(doc) {
-                                        return ({
-                                            name: doc.priceListCode,
-                                            _id: doc._id.toString()
-                                        });
+                                        return ({ name: doc.priceListCode, _id: doc._id.toString() });
                                     });
 
                                     aCb(null, priceLists);
@@ -310,9 +299,7 @@ F.on('load', function() {
                                 if (!pricelevel)
                                     return eCb();
 
-                                PriceListModel.findOne({
-                                    priceListCode: pricelevel
-                                }, function(err, priceList) {
+                                PriceListModel.findOne({ priceListCode: pricelevel }, function(err, priceList) {
                                     if (err)
                                         return eCb(err);
 
@@ -423,9 +410,7 @@ F.on('load', function() {
                                 if (societe == null)
                                     return eCb();
 
-                                CustomerModel.findOne({
-                                    _id: societe._id
-                                }, function(err, customer) {
+                                CustomerModel.findOne({ _id: societe._id }, function(err, customer) {
                                     if (!customer)
                                         customer = new CustomerModel();
 
@@ -552,9 +537,7 @@ F.on('load', function() {
                                         if (err)
                                             return eCb(err);
 
-                                        collection.remove({
-                                            _id: societe._id
-                                        }, function(err, res) {});
+                                        collection.remove({ _id: societe._id }, function(err, res) {});
 
                                         eCb();
                                     });
@@ -580,9 +563,7 @@ F.on('load', function() {
                         if (err || !collection)
                             return aCb();
 
-                        collection.find({
-                            _type: 'contact'
-                        }).toArray(function(err, contacts) {
+                        collection.find({ _type: 'contact' }).toArray(function(err, contacts) {
                             if (err)
                                 return console.log(err);
 
@@ -646,9 +627,7 @@ F.on('load', function() {
                                     if (err)
                                         console.log(err);
 
-                                    collection.remove({
-                                        _id: contact._id
-                                    }, function(err, res) {});
+                                    collection.remove({ _id: contact._id }, function(err, res) {});
 
                                     cb();
                                 });
@@ -681,9 +660,7 @@ F.on('load', function() {
                                 if (!doc)
                                     return eCb();
 
-                                ProductFamilyModel.findOne({
-                                    "langs.name": doc
-                                }, function(err, family) {
+                                ProductFamilyModel.findOne({ "langs.name": doc }, function(err, family) {
                                     if (err)
                                         return eCb(err);
 
@@ -738,18 +715,8 @@ F.on('load', function() {
                     mongoose.connection.db.collection('Product', function(err, collection) {
                         async.waterfall([
                             function(sCb) {
-                                collection.update({
-                                    'suppliers.societe': {}
-                                }, {
-                                    $unset: {
-                                        "suppliers.$.societe": 1
-                                    }
-                                }, function(err, docs) {});
-                                collection.find({
-                                    'suppliers.societe.name': {
-                                        $ne: null
-                                    }
-                                }).toArray(function(err, docs) {
+                                collection.update({ 'suppliers.societe': {} }, { $unset: { "suppliers.$.societe": 1 } }, function(err, docs) {});
+                                collection.find({ 'suppliers.societe.name': { $ne: null } }).toArray(function(err, docs) {
                                     if (err)
                                         return sCb(err);
 
@@ -764,16 +731,7 @@ F.on('load', function() {
                                                     doc.suppliers[i].societe = MODULE('utils').ObjectId(doc.suppliers[i].societe.id);
                                             }
 
-                                        collection.update({
-                                            _id: doc._id
-                                        }, {
-                                            $set: {
-                                                "suppliers": doc.suppliers
-                                            }
-                                        }, {
-                                            upsert: false,
-                                            multi: false
-                                        }, eCb);
+                                        collection.update({ _id: doc._id }, { $set: { "suppliers": doc.suppliers } }, { upsert: false, multi: false }, eCb);
                                     }, sCb);
                                 });
                             },
@@ -793,24 +751,9 @@ F.on('load', function() {
 
                                     //change Defaut TVA
                                     if (tva_mode == 'payment')
-                                        return TaxesModel.findOneAndUpdate({
-                                            isDefault: true
-                                        }, {
-                                            isDefault: false
-                                        }, function(err, doc) {
-                                            TaxesModel.findOneAndUpdate({
-                                                isOnPaid: true,
-                                                rate: 20
-                                            }, {
-                                                isDefault: true
-                                            }, function(err, doc) {
-                                                TaxesModel.find({
-                                                    $or: [{
-                                                        isOnPaid: true
-                                                    }, {
-                                                        rate: 0
-                                                    }]
-                                                }, function(err, taxes) {
+                                        return TaxesModel.findOneAndUpdate({ isDefault: true }, { isDefault: false }, function(err, doc) {
+                                            TaxesModel.findOneAndUpdate({ isOnPaid: true, rate: 20 }, { isDefault: true }, function(err, doc) {
+                                                TaxesModel.find({ $or: [{ isOnPaid: true }, { rate: 0 }] }, function(err, taxes) {
                                                     if (err)
                                                         return sCb(err);
 
@@ -820,9 +763,7 @@ F.on('load', function() {
                                         });
 
 
-                                    TaxesModel.find({
-                                        isOnPaid: false
-                                    }, function(err, taxes) {
+                                    TaxesModel.find({ isOnPaid: false }, function(err, taxes) {
                                         if (err)
                                             return sCb(err);
 
@@ -845,9 +786,7 @@ F.on('load', function() {
                                         if (doc.info && doc.info.SKU)
                                             return eCb();
 
-                                        ProductModel.findOne({
-                                            _id: doc._id
-                                        }, function(err, product) {
+                                        ProductModel.findOne({ _id: doc._id }, function(err, product) {
                                             product.groupId = product._id.toString();
                                             product.info.langs = [{
                                                 lang: "fr",
@@ -877,9 +816,7 @@ F.on('load', function() {
                                             //product.compta_sell_eu = doc.compta_sell_eu;
                                             //product.compta_sell_exp = doc.compta_sell_exp;
 
-                                            product.taxes = [{
-                                                taxeId: _.find(taxes, _.matchesProperty('rate', doc.tva_tx))._id
-                                            }];
+                                            product.taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', doc.tva_tx))._id }];
 
                                             if (doc.Status == "SELL")
                                                 product.isSell = true;
@@ -918,16 +855,11 @@ F.on('load', function() {
 
 
                                             // Add default price to BASE priceList
-                                            PriceListModel.findOne({
-                                                priceListCode: "BASE"
-                                            }, function(err, priceList) {
+                                            PriceListModel.findOne({ priceListCode: "BASE" }, function(err, priceList) {
                                                 if (!priceList)
                                                     return console.log("PriceList notfound");
 
-                                                ProductPricesModel.findOne({
-                                                    priceLists: priceList._id,
-                                                    product: product._id
-                                                }, function(err, price) {
+                                                ProductPricesModel.findOne({ priceLists: priceList._id, product: product._id }, function(err, price) {
                                                     if (!price)
                                                         price = new ProductPricesModel({
                                                             priceLists: priceList._id,
@@ -960,16 +892,11 @@ F.on('load', function() {
 
                                             // Add default price to SP priceList
                                             if (product.isBuy)
-                                                PriceListModel.findOne({
-                                                    priceListCode: "SP"
-                                                }, function(err, priceList) {
+                                                PriceListModel.findOne({ priceListCode: "SP" }, function(err, priceList) {
                                                     if (!priceList)
                                                         return console.log("PriceList notfound");
 
-                                                    ProductPricesModel.findOne({
-                                                        priceLists: priceList._id,
-                                                        product: product._id
-                                                    }, function(err, price) {
+                                                    ProductPricesModel.findOne({ priceLists: priceList._id, product: product._id }, function(err, price) {
                                                         if (!price)
                                                             price = new ProductPricesModel({
                                                                 priceLists: priceList._id,
@@ -1027,11 +954,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.501
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.501 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -1073,11 +996,7 @@ F.on('load', function() {
                                 if (_.isEmpty(set))
                                     return;
 
-                                collection.update({
-                                    _id: doc._id
-                                }, {
-                                    $set: set
-                                }, function(err, doc) {
+                                collection.update({ _id: doc._id }, { $set: set }, function(err, doc) {
                                     if (err || !doc)
                                         return console.log("Impossible de creer offer ", err);
                                 });
@@ -1111,11 +1030,7 @@ F.on('load', function() {
                                 if (_.isEmpty(set))
                                     return;
 
-                                collection.update({
-                                    _id: doc._id
-                                }, {
-                                    $set: set
-                                }, function(err, doc) {
+                                collection.update({ _id: doc._id }, { $set: set }, function(err, doc) {
                                     if (err || !doc)
                                         return console.log("Impossible de creer order ", err);
                                 });
@@ -1229,16 +1144,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({
-                            $or: [{
-                                isOnPaid: (tva_mode == 'payment')
-                            }, {
-                                rate: 0
-                            }],
-                            isFixValue: {
-                                $ne: true
-                            }
-                        }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -1287,11 +1193,7 @@ F.on('load', function() {
 
                     console.log("convert customer orders");
                     mongoose.connection.db.collection('Commande', function(err, collection) {
-                        collection.find({
-                            isremoved: {
-                                $ne: true
-                            }
-                        }).toArray(function(err, orders) {
+                        collection.find({ isremoved: { $ne: true } }).toArray(function(err, orders) {
                             if (err)
                                 return console.log(err);
 
@@ -1395,10 +1297,7 @@ F.on('load', function() {
 
                                                     async.eachOfSeries(order.lines, function(line, i, cb) {
                                                         //console.log(line);
-                                                        OrderRowsModel.findOne({
-                                                            sequence: i,
-                                                            order: doc._id
-                                                        }, function(err, newLine) {
+                                                        OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
 
                                                             line.product = line.product.id;
                                                             line.order = doc._id;
@@ -1406,9 +1305,7 @@ F.on('load', function() {
                                                             line.sequence = i;
 
                                                             if (line.tva_tx)
-                                                                line.total_taxes = [{
-                                                                    taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id
-                                                                }];
+                                                                line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
                                                             //return console.log(line);
 
@@ -1429,9 +1326,7 @@ F.on('load', function() {
                                                         if (err)
                                                             return sCb(err);
 
-                                                        OrderRowsModel.find({
-                                                                order: doc._id
-                                                            })
+                                                        OrderRowsModel.find({ order: doc._id })
                                                             .populate("product")
                                                             .exec(function(err, lines) {
                                                                 sCb(err, lines, doc);
@@ -1468,9 +1363,7 @@ F.on('load', function() {
 
                                                     //return console.log(result);
 
-                                                    OrderModel.findByIdAndUpdate(newOrder._id, result, {
-                                                        new: true
-                                                    }, function(err, doc) {
+                                                    OrderModel.findByIdAndUpdate(newOrder._id, result, { new: true }, function(err, doc) {
                                                         sCb(err, doc, rows)
                                                     });
                                                 },
@@ -1489,9 +1382,7 @@ F.on('load', function() {
                                                                 return aCb();
 
 
-                                                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, {
-                                                                new: true
-                                                            }, function(err, doc) {
+                                                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, { new: true }, function(err, doc) {
                                                                 if (err)
                                                                     return aCb(err);
                                                                 newRows.push(doc);
@@ -1535,11 +1426,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.502
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.502 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -1596,16 +1483,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({
-                            $or: [{
-                                isOnPaid: (tva_mode == 'payment')
-                            }, {
-                                rate: 0
-                            }],
-                            isFixValue: {
-                                $ne: true
-                            }
-                        }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -1719,10 +1597,7 @@ F.on('load', function() {
 
                                                     async.eachOfSeries(order.lines, function(line, i, cb) {
                                                         //console.log(line);
-                                                        OrderRowsModel.findOne({
-                                                            sequence: i,
-                                                            order: doc._id
-                                                        }, function(err, newLine) {
+                                                        OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
 
                                                             if (line.product)
                                                                 line.product = line.product.id;
@@ -1731,9 +1606,7 @@ F.on('load', function() {
                                                             delete line._id;
                                                             line.sequence = i;
                                                             if (line.tva_tx)
-                                                                line.total_taxes = [{
-                                                                    taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id
-                                                                }];
+                                                                line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
                                                             //return console.log(line);
 
@@ -1754,9 +1627,7 @@ F.on('load', function() {
                                                         if (err)
                                                             return sCb(err);
 
-                                                        OrderRowsModel.find({
-                                                                order: doc._id
-                                                            })
+                                                        OrderRowsModel.find({ order: doc._id })
                                                             .populate("product")
                                                             .exec(function(err, lines) {
                                                                 sCb(err, lines, doc);
@@ -1791,9 +1662,7 @@ F.on('load', function() {
 
                                                     //return console.log(result);
 
-                                                    OrderModel.findByIdAndUpdate(newOrder._id, result, {
-                                                        new: true
-                                                    }, function(err, doc) {
+                                                    OrderModel.findByIdAndUpdate(newOrder._id, result, { new: true }, function(err, doc) {
                                                         sCb(err, doc, rows)
                                                     });
                                                 },
@@ -1812,9 +1681,7 @@ F.on('load', function() {
                                                                 return aCb();
 
 
-                                                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, {
-                                                                new: true
-                                                            }, function(err, doc) {
+                                                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, { new: true }, function(err, doc) {
                                                                 if (err)
                                                                     return aCb(err);
                                                                 newRows.push(doc);
@@ -1858,11 +1725,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.503
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.503 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -1903,11 +1766,7 @@ F.on('load', function() {
                                 if (_.isEmpty(set))
                                     return;
 
-                                collection.update({
-                                    _id: doc._id
-                                }, {
-                                    $set: set
-                                }, function(err, doc) {
+                                collection.update({ _id: doc._id }, { $set: set }, function(err, doc) {
                                     if (err || !doc)
                                         return console.log("Impossible de creer BillSupplier ", err);
                                 });
@@ -1979,16 +1838,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({
-                            $or: [{
-                                isOnPaid: (tva_mode == 'payment')
-                            }, {
-                                rate: 0
-                            }],
-                            isFixValue: {
-                                $ne: true
-                            }
-                        }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -2097,10 +1947,7 @@ F.on('load', function() {
 
                                                     async.eachOfSeries(order.lines, function(line, i, cb) {
                                                         //console.log(line);
-                                                        OrderRowsModel.findOne({
-                                                            sequence: i,
-                                                            order: doc._id
-                                                        }, function(err, newLine) {
+                                                        OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
 
                                                             line.product = line.product.id;
                                                             line.order = doc._id;
@@ -2108,9 +1955,7 @@ F.on('load', function() {
                                                             line.sequence = i;
 
                                                             if (line.tva_tx)
-                                                                line.total_taxes = [{
-                                                                    taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id
-                                                                }];
+                                                                line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
                                                             //return console.log(line);
 
@@ -2131,9 +1976,7 @@ F.on('load', function() {
                                                         if (err)
                                                             return sCb(err);
 
-                                                        OrderRowsModel.find({
-                                                                order: doc._id
-                                                            })
+                                                        OrderRowsModel.find({ order: doc._id })
                                                             .populate("product")
                                                             .exec(function(err, lines) {
                                                                 sCb(err, lines, doc);
@@ -2169,9 +2012,7 @@ F.on('load', function() {
 
                                                     //return console.log(result);
 
-                                                    OrderModel.findByIdAndUpdate(newOrder._id, result, {
-                                                        new: true
-                                                    }, function(err, doc) {
+                                                    OrderModel.findByIdAndUpdate(newOrder._id, result, { new: true }, function(err, doc) {
                                                         sCb(err, doc, rows)
                                                     });
                                                 },
@@ -2190,9 +2031,7 @@ F.on('load', function() {
                                                                 return aCb();
 
 
-                                                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, {
-                                                                new: true
-                                                            }, function(err, doc) {
+                                                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, { new: true }, function(err, doc) {
                                                                 if (err)
                                                                     return aCb(err);
                                                                 newRows.push(doc);
@@ -2236,11 +2075,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.504
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.504 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -2297,16 +2132,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({
-                            $or: [{
-                                isOnPaid: (tva_mode == 'payment')
-                            }, {
-                                rate: 0
-                            }],
-                            isFixValue: {
-                                $ne: true
-                            }
-                        }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -2426,9 +2252,7 @@ F.on('load', function() {
                                                             if (line.tva_tx == null)
                                                                 line.tva_tx = 0;
                                                             //console.log(line.tva_tx);
-                                                            line.total_taxes = [{
-                                                                taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id
-                                                            }];
+                                                            line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
                                                             //return console.log(line);
 
@@ -2486,9 +2310,7 @@ F.on('load', function() {
 
                                                     //return console.log(newBill.lines, result);
 
-                                                    BillModel.findByIdAndUpdate(newBill._id, result, {
-                                                        new: true
-                                                    }, function(err, doc) {
+                                                    BillModel.findByIdAndUpdate(newBill._id, result, { new: true }, function(err, doc) {
                                                         sCb(err, doc, rows)
                                                     });
                                                 }
@@ -2521,11 +2343,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.505
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.505 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -2566,11 +2384,7 @@ F.on('load', function() {
                                 if (_.isEmpty(set))
                                     return;
 
-                                collection.update({
-                                    _id: doc._id
-                                }, {
-                                    $set: set
-                                }, function(err, doc) {
+                                collection.update({ _id: doc._id }, { $set: set }, function(err, doc) {
                                     if (err || !doc)
                                         return console.log("Impossible de creer BillSupplier ", err);
                                 });
@@ -2642,16 +2456,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({
-                            $or: [{
-                                isOnPaid: (tva_mode == 'payment')
-                            }, {
-                                rate: 0
-                            }],
-                            isFixValue: {
-                                $ne: true
-                            }
-                        }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -2773,9 +2578,7 @@ F.on('load', function() {
                                                             if (line.tva_tx === null)
                                                                 line.tva_tx = 0;
 
-                                                            line.total_taxes = [{
-                                                                taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id
-                                                            }];
+                                                            line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
                                                             //return console.log(line);
 
@@ -2837,9 +2640,7 @@ F.on('load', function() {
 
                                                     //return console.log(newBill.lines, result);
 
-                                                    BillModel.findByIdAndUpdate(newBill._id, result, {
-                                                        new: true
-                                                    }, function(err, doc) {
+                                                    BillModel.findByIdAndUpdate(newBill._id, result, { new: true }, function(err, doc) {
                                                         sCb(err, doc, rows)
                                                     });
                                                 }
@@ -2872,11 +2673,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.506
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.506 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -2897,26 +2694,14 @@ F.on('load', function() {
                     const OrderModel = MODEL('order').Schema.OrderCustomer;
 
                     //Select only objectId()
-                    OrderModel.update({
-                        Status: 'CLOSED'
-                    }, {
-                        $set: {
-                            Status: "BILLED"
-                        }
-                    }, {
-                        multi: true
-                    }, aCb);
+                    OrderModel.update({ Status: 'CLOSED' }, { $set: { Status: "BILLED" } }, { multi: true }, aCb);
                 }
 
                 async.waterfall([convertStatus], function(err) {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.508
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.508 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -2937,9 +2722,7 @@ F.on('load', function() {
                     const ProductModel = MODEL('product').Schema;
 
                     //Select only objectId()
-                    ProductModel.find({
-                        costFamily: null
-                    }, function(err, docs) {
+                    ProductModel.find({ costFamily: null }, function(err, docs) {
                         if (err)
                             return aCb(err);
 
@@ -2955,11 +2738,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.509
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.509 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -2979,10 +2758,7 @@ F.on('load', function() {
                     console.log("refresh ID bill supplier");
                     const BillSupplierModel = MODEL('invoice').Schema;
 
-                    BillSupplierModel.find({
-                        forSales: false,
-                        ID: null
-                    }, function(err, docs) {
+                    BillSupplierModel.find({ forSales: false, ID: null }, function(err, docs) {
                         if (err)
                             return aCb(err);
 
@@ -2999,11 +2775,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.510
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.510 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -3060,16 +2832,7 @@ F.on('load', function() {
 
                         let tva_mode = entity.tva_mode || 'invoice';
 
-                        TaxesModel.find({
-                            $or: [{
-                                isOnPaid: (tva_mode == 'payment')
-                            }, {
-                                rate: 0
-                            }],
-                            isFixValue: {
-                                $ne: true
-                            }
-                        }, function(err, taxes) {
+                        TaxesModel.find({ $or: [{ isOnPaid: (tva_mode == 'payment') }, { rate: 0 }], isFixValue: { $ne: true } }, function(err, taxes) {
                             if (err)
                                 return aCb(err);
 
@@ -3173,10 +2936,7 @@ F.on('load', function() {
 
                                                     async.eachOfSeries(delivery.lines, function(line, i, cb) {
                                                         //console.log(line);
-                                                        OrderRowsModel.findOne({
-                                                            sequence: i,
-                                                            order: doc._id
-                                                        }, function(err, newLine) {
+                                                        OrderRowsModel.findOne({ sequence: i, order: doc._id }, function(err, newLine) {
 
                                                             line.product = line.product.id;
                                                             line.order = doc._id;
@@ -3184,9 +2944,7 @@ F.on('load', function() {
                                                             line.sequence = i;
 
                                                             if (line.tva_tx)
-                                                                line.total_taxes = [{
-                                                                    taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id
-                                                                }];
+                                                                line.total_taxes = [{ taxeId: _.find(taxes, _.matchesProperty('rate', line.tva_tx))._id }];
 
                                                             //return console.log(line);
 
@@ -3207,9 +2965,7 @@ F.on('load', function() {
                                                         if (err)
                                                             return sCb(err);
 
-                                                        OrderRowsModel.find({
-                                                                order: doc._id
-                                                            })
+                                                        OrderRowsModel.find({ order: doc._id })
                                                             .populate("product")
                                                             .exec(function(err, lines) {
                                                                 sCb(err, lines, doc);
@@ -3247,9 +3003,7 @@ F.on('load', function() {
 
                                                     //return console.log(result);
 
-                                                    DeliveryModel.findByIdAndUpdate(newOrder._id, result, {
-                                                        new: true
-                                                    }, function(err, doc) {
+                                                    DeliveryModel.findByIdAndUpdate(newOrder._id, result, { new: true }, function(err, doc) {
                                                         sCb(err, doc, rows)
                                                     });
                                                 },
@@ -3268,9 +3022,7 @@ F.on('load', function() {
                                                                 return aCb();
 
 
-                                                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, {
-                                                                new: true
-                                                            }, function(err, doc) {
+                                                            return OrderRowsModel.findByIdAndUpdate(orderRow._id, orderRow, { new: true }, function(err, doc) {
                                                                 if (err)
                                                                     return aCb(err);
                                                                 newRows.push(doc);
@@ -3316,11 +3068,7 @@ F.on('load', function() {
 
 
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.511
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.511 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -3344,11 +3092,7 @@ F.on('load', function() {
                             function(wCb) {
                                 console.log("convert compta Transaction meta societeId");
                                 mongoose.connection.db.collection('Transaction', function(err, collection) {
-                                    collection.find({
-                                        "meta.societeId": {
-                                            $ne: null
-                                        }
-                                    }).toArray(function(err, docs) {
+                                    collection.find({ "meta.societeId": { $ne: null } }).toArray(function(err, docs) {
                                         if (err)
                                             return wCb(err);
 
@@ -3362,25 +3106,12 @@ F.on('load', function() {
                                             //for (var i = 0, len = bills.length; i < len; i++)
                                             //    bills[i].billId = bills[i].billId.toString();
 
-                                            TransactionModel.update({
-                                                    _id: doc._id
-                                                }, {
-                                                    $set: {
-                                                        "meta.supplier": doc.meta.societeId.toString()
-                                                    }
-                                                },
+                                            TransactionModel.update({ _id: doc._id }, { $set: { "meta.supplier": doc.meta.societeId.toString() } },
                                                 function(err, res) {
                                                     if (err)
                                                         return eCb(err);
 
-                                                    collection.update({
-                                                        _id: doc._id
-                                                    }, {
-                                                        $unset: {
-                                                            'meta.societeId': 1,
-                                                            'meta.societeName': 1
-                                                        }
-                                                    }, function(err, doc) {
+                                                    collection.update({ _id: doc._id }, { $unset: { 'meta.societeId': 1, 'meta.societeName': 1 } }, function(err, doc) {
 
                                                         //doc.save(function(err, doc) {
                                                         return eCb(err);
@@ -3393,11 +3124,7 @@ F.on('load', function() {
                             function(wCb) {
                                 console.log("convert compta Transaction meta billId");
                                 mongoose.connection.db.collection('Transaction', function(err, collection) {
-                                    collection.find({
-                                        "meta.billId": {
-                                            $ne: null
-                                        }
-                                    }).toArray(function(err, docs) {
+                                    collection.find({ "meta.billId": { $ne: null } }).toArray(function(err, docs) {
                                         if (err)
                                             return wCb(err);
 
@@ -3405,25 +3132,12 @@ F.on('load', function() {
                                             return wCb();
 
                                         async.forEach(docs, function(doc, eCb) {
-                                            TransactionModel.update({
-                                                    _id: doc._id
-                                                }, {
-                                                    $set: {
-                                                        "meta.invoice": doc.meta.billId.toString()
-                                                    }
-                                                },
+                                            TransactionModel.update({ _id: doc._id }, { $set: { "meta.invoice": doc.meta.billId.toString() } },
                                                 function(err, res) {
                                                     if (err)
                                                         return eCb(err);
 
-                                                    collection.update({
-                                                        _id: doc._id
-                                                    }, {
-                                                        $unset: {
-                                                            'meta.billId': 1,
-                                                            'meta.billRef': 1
-                                                        }
-                                                    }, function(err, doc) {
+                                                    collection.update({ _id: doc._id }, { $unset: { 'meta.billId': 1, 'meta.billRef': 1 } }, function(err, doc) {
 
                                                         //doc.save(function(err, doc) {
                                                         return eCb(err);
@@ -3437,11 +3151,7 @@ F.on('load', function() {
                             function(wCb) {
                                 console.log("convert compta Transaction meta billSupplierId");
                                 mongoose.connection.db.collection('Transaction', function(err, collection) {
-                                    collection.find({
-                                        "meta.billSupplierId": {
-                                            $ne: null
-                                        }
-                                    }).toArray(function(err, docs) {
+                                    collection.find({ "meta.billSupplierId": { $ne: null } }).toArray(function(err, docs) {
                                         if (err)
                                             return wCb(err);
 
@@ -3449,25 +3159,12 @@ F.on('load', function() {
                                             return wCb();
 
                                         async.forEach(docs, function(doc, eCb) {
-                                            TransactionModel.update({
-                                                    _id: doc._id
-                                                }, {
-                                                    $set: {
-                                                        "meta.invoice": doc.meta.billSupplierId.toString()
-                                                    }
-                                                },
+                                            TransactionModel.update({ _id: doc._id }, { $set: { "meta.invoice": doc.meta.billSupplierId.toString() } },
                                                 function(err, res) {
                                                     if (err)
                                                         return eCb(err);
 
-                                                    collection.update({
-                                                        _id: doc._id
-                                                    }, {
-                                                        $unset: {
-                                                            'meta.billSupplierId': 1,
-                                                            'meta.billSupplierRef': 1
-                                                        }
-                                                    }, function(err, doc) {
+                                                    collection.update({ _id: doc._id }, { $unset: { 'meta.billSupplierId': 1, 'meta.billSupplierRef': 1 } }, function(err, doc) {
 
                                                         //doc.save(function(err, doc) {
                                                         return eCb(err);
@@ -3481,11 +3178,7 @@ F.on('load', function() {
                             function(wCb) {
                                 console.log("convert compta Transaction meta productId");
                                 mongoose.connection.db.collection('Transaction', function(err, collection) {
-                                    collection.find({
-                                        "meta.productId": {
-                                            $ne: null
-                                        }
-                                    }).toArray(function(err, docs) {
+                                    collection.find({ "meta.productId": { $ne: null } }).toArray(function(err, docs) {
                                         if (err)
                                             return wCb(err);
 
@@ -3493,25 +3186,12 @@ F.on('load', function() {
                                             return wCb();
 
                                         async.forEach(docs, function(doc, eCb) {
-                                            TransactionModel.update({
-                                                    _id: doc._id
-                                                }, {
-                                                    $set: {
-                                                        "meta.product": doc.meta.productId.toString()
-                                                    }
-                                                },
+                                            TransactionModel.update({ _id: doc._id }, { $set: { "meta.product": doc.meta.productId.toString() } },
                                                 function(err, res) {
                                                     if (err)
                                                         return eCb(err);
 
-                                                    collection.update({
-                                                        _id: doc._id
-                                                    }, {
-                                                        $unset: {
-                                                            'meta.productId': 1,
-                                                            'meta.productRef': 1
-                                                        }
-                                                    }, function(err, doc) {
+                                                    collection.update({ _id: doc._id }, { $unset: { 'meta.productId': 1, 'meta.productRef': 1 } }, function(err, doc) {
 
                                                         //doc.save(function(err, doc) {
                                                         return eCb(err);
@@ -3526,11 +3206,7 @@ F.on('load', function() {
                                 //TODO TVA-TX ?
                                 console.log("convert compta Transaction meta bills");
                                 mongoose.connection.db.collection('Transaction', function(err, collection) {
-                                    collection.find({
-                                        "meta.bills.billId": {
-                                            $ne: null
-                                        }
-                                    }).toArray(function(err, docs) {
+                                    collection.find({ "meta.bills.billId": { $ne: null } }).toArray(function(err, docs) {
                                         if (err)
                                             return wCb(err);
 
@@ -3551,13 +3227,7 @@ F.on('load', function() {
 
                                             //console.log(bills);
 
-                                            TransactionModel.update({
-                                                _id: doc._id
-                                            }, {
-                                                $set: {
-                                                    "meta.bills": bills
-                                                }
-                                            }, function(err, doc) {
+                                            TransactionModel.update({ _id: doc._id }, { $set: { "meta.bills": bills } }, function(err, doc) {
 
                                                 //doc.save(function(err, doc) {
                                                 return eCb(err);
@@ -3569,11 +3239,7 @@ F.on('load', function() {
                             function(wCb) {
                                 console.log("convert compta Transaction meta billsSupplier");
                                 mongoose.connection.db.collection('Transaction', function(err, collection) {
-                                    collection.find({
-                                        "meta.billsSupplier": {
-                                            $ne: null
-                                        }
-                                    }).toArray(function(err, docs) {
+                                    collection.find({ "meta.billsSupplier": { $ne: null } }).toArray(function(err, docs) {
                                         if (err)
                                             return wCb(err);
 
@@ -3588,13 +3254,7 @@ F.on('load', function() {
                                                     amount: bill.amount,
                                                     invoice: bill.billSupplierId.toString()
                                                 };
-                                                TransactionModel.update({
-                                                    _id: doc._id
-                                                }, {
-                                                    $addToSet: {
-                                                        "meta.bills": newBill
-                                                    }
-                                                }, function(err, doc) {
+                                                TransactionModel.update({ _id: doc._id }, { $addToSet: { "meta.bills": newBill } }, function(err, doc) {
 
                                                     //doc.save(function(err, doc) {
                                                     if (err)
@@ -3603,13 +3263,7 @@ F.on('load', function() {
                                                 });
                                             }, function(err) {
 
-                                                collection.update({
-                                                    _id: doc._id
-                                                }, {
-                                                    $unset: {
-                                                        "meta.billsSupplier": 1
-                                                    }
-                                                }, function(err, doc) {
+                                                collection.update({ _id: doc._id }, { $unset: { "meta.billsSupplier": 1 } }, function(err, doc) {
 
                                                     //doc.save(function(err, doc) {
                                                     return eCb(err);
@@ -3629,11 +3283,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.512
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.512 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -3727,11 +3377,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.513
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.513 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -3793,11 +3439,7 @@ F.on('load', function() {
                     const TransactionModel = MODEL('transaction').Schema;
 
                     //Select only objectId()
-                    TransactionModel.find({
-                        "meta.supplier": {
-                            $type: 2
-                        }
-                    }, function(err, docs) {
+                    TransactionModel.find({ "meta.supplier": { $type: 2 } }, function(err, docs) {
                         if (err)
                             return console.log(err);
 
@@ -3805,11 +3447,7 @@ F.on('load', function() {
 
                             //console.log(bills);
 
-                            doc.update({
-                                $set: {
-                                    "meta.supplier": ObjectId(doc.meta.supplier)
-                                }
-                            }, function(err, doc) {
+                            doc.update({ $set: { "meta.supplier": ObjectId(doc.meta.supplier) } }, function(err, doc) {
                                 if (err)
                                     console.log(err);
                             });
@@ -3825,11 +3463,7 @@ F.on('load', function() {
                     const TransactionModel = MODEL('transaction').Schema;
 
                     //Select only objectId()
-                    TransactionModel.find({
-                        "meta.bills.invoice": {
-                            $type: 2
-                        }
-                    }, function(err, docs) {
+                    TransactionModel.find({ "meta.bills.invoice": { $type: 2 } }, function(err, docs) {
                         if (err)
                             return console.log(err);
 
@@ -3843,11 +3477,7 @@ F.on('load', function() {
 
                             //console.log(bills);
 
-                            doc.update({
-                                $set: {
-                                    "meta.bills": bills
-                                }
-                            }, function(err, doc) {
+                            doc.update({ $set: { "meta.bills": bills } }, function(err, doc) {
 
                                 //doc.save(function(err, doc) {
                                 if (err)
@@ -3865,11 +3495,7 @@ F.on('load', function() {
                     const TransactionModel = MODEL('transaction').Schema;
 
                     //Select only objectId()
-                    TransactionModel.find({
-                        "meta.bank": {
-                            $type: 2
-                        }
-                    }, function(err, docs) {
+                    TransactionModel.find({ "meta.bank": { $type: 2 } }, function(err, docs) {
                         if (err)
                             return console.log(err);
 
@@ -3877,11 +3503,7 @@ F.on('load', function() {
 
                             //console.log(bills);
 
-                            doc.update({
-                                $set: {
-                                    "meta.bank": ObjectId(doc.meta.bank)
-                                }
-                            }, function(err, doc) {
+                            doc.update({ $set: { "meta.bank": ObjectId(doc.meta.bank) } }, function(err, doc) {
                                 if (err)
                                     console.log(err);
                             });
@@ -3897,11 +3519,7 @@ F.on('load', function() {
                     const TransactionModel = MODEL('transaction').Schema;
 
                     //Select only objectId()
-                    TransactionModel.find({
-                        "meta.product": {
-                            $type: 2
-                        }
-                    }, function(err, docs) {
+                    TransactionModel.find({ "meta.product": { $type: 2 } }, function(err, docs) {
                         if (err)
                             return console.log(err);
 
@@ -3909,11 +3527,7 @@ F.on('load', function() {
 
                             //console.log(bills);
 
-                            doc.update({
-                                $set: {
-                                    "meta.product": ObjectId(doc.meta.product)
-                                }
-                            }, function(err, doc) {
+                            doc.update({ $set: { "meta.product": ObjectId(doc.meta.product) } }, function(err, doc) {
                                 if (err)
                                     console.log(err);
                             });
@@ -3929,11 +3543,7 @@ F.on('load', function() {
                     const TransactionModel = MODEL('transaction').Schema;
 
                     //Select only objectId()
-                    TransactionModel.find({
-                            "meta.invoice": {
-                                $ne: null
-                            }
-                        })
+                    TransactionModel.find({ "meta.invoice": { $ne: null } })
                         .populate("meta.invoice")
                         .exec(function(err, docs) {
                             if (err)
@@ -3948,14 +3558,7 @@ F.on('load', function() {
                                     amount: doc.meta.invoice.total_paid
                                 }];
 
-                                doc.update({
-                                    $unset: {
-                                        "meta.invoice": 1
-                                    },
-                                    $set: {
-                                        "meta.bills": bills
-                                    }
-                                }, function(err, doc) {
+                                doc.update({ $unset: { "meta.invoice": 1 }, $set: { "meta.bills": bills } }, function(err, doc) {
                                     if (err)
                                         console.log(err);
                                 });
@@ -3970,11 +3573,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.514
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.514 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -4126,11 +3725,7 @@ F.on('load', function() {
                     const ObjectId = MODULE('utils').ObjectId;
 
                     mongoose.connection.db.collection('Journal', function(err, collection) {
-                        collection.find({
-                            author: {
-                                $type: 3
-                            }
-                        }).toArray(function(err, docs) {
+                        collection.find({ author: { $type: 3 } }).toArray(function(err, docs) {
                             if (err)
                                 return console.log(err);
 
@@ -4144,12 +3739,8 @@ F.on('load', function() {
 
                                 console.log(ObjectId(doc.author._id));
 
-                                JournalModel.update({
-                                        _id: doc._id
-                                    }, {
-                                        $set: {
-                                            author: ObjectId(doc.author._id)
-                                        }
+                                JournalModel.update({ _id: doc._id }, {
+                                        $set: { author: ObjectId(doc.author._id) }
                                     },
                                     function(err, doc) {
 
@@ -4165,11 +3756,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.516
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.516 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -4189,18 +3776,9 @@ F.on('load', function() {
                     const ObjectId = MODULE('utils').ObjectId;
 
                     mongoose.connection.db.collection('Orders', function(err, collection) {
-                        collection.update({
-                                date_livraison: {
-                                    $exists: true
-                                }
-                            }, {
-                                $rename: {
-                                    date_livraison: "datedl"
-                                }
-                            }, {
-                                multi: true,
-                                upsert: false
-                            },
+                        collection.update({ date_livraison: { $exists: true } }, {
+                                $rename: { date_livraison: "datedl" }
+                            }, { multi: true, upsert: false },
                             function(err, doc) {
                                 return aCb(err);
                             });
@@ -4224,15 +3802,7 @@ F.on('load', function() {
                                 if (delivery == null)
                                     return eCb();
 
-                                DeliveryModel.update({
-                                    _id: delivery._id
-                                }, {
-                                    $set: {
-                                        datedl: delivery.datedl
-                                    }
-                                }, {
-                                    upsert: false
-                                }, eCb);
+                                DeliveryModel.update({ _id: delivery._id }, { $set: { datedl: delivery.datedl } }, { upsert: false }, eCb);
                             }, aCb);
                         });
                     });
@@ -4254,11 +3824,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.517
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.517 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -4287,10 +3853,7 @@ F.on('load', function() {
                                     "owner": null
                                 }
                             }
-                        }, {
-                            multi: true,
-                            upsert: false
-                        },
+                        }, { multi: true, upsert: false },
                         function(err, doc) {
                             return aCb(err);
                         });
@@ -4310,10 +3873,7 @@ F.on('load', function() {
                                     "owner": null
                                 }
                             }
-                        }, {
-                            multi: true,
-                            upsert: false
-                        },
+                        }, { multi: true, upsert: false },
                         function(err, doc) {
                             return aCb(err);
                         });
@@ -4324,16 +3884,11 @@ F.on('load', function() {
 
                     const Model = MODEL('Customers').Schema;
 
-                    Model.update({
-                            'name.first': null
-                        }, {
+                    Model.update({ 'name.first': null }, {
                             $set: {
                                 'name.first': ""
                             }
-                        }, {
-                            multi: true,
-                            upsert: false
-                        },
+                        }, { multi: true, upsert: false },
                         function(err, doc) {
                             return aCb(err);
                         });
@@ -4344,9 +3899,7 @@ F.on('load', function() {
 
                     const Model = MODEL('order').Schema.Order;
 
-                    Model.find({
-                        datedl: null
-                    }, "_id datec", function(err, docs) {
+                    Model.find({ datedl: null }, "_id datec", function(err, docs) {
                         if (err)
                             return aCb(err);
 
@@ -4354,16 +3907,11 @@ F.on('load', function() {
                             return aCb();
 
                         docs.forEach(function(line) {
-                            Model.update({
-                                    _id: line._id
-                                }, {
+                            Model.update({ _id: line._id }, {
                                     $set: {
                                         datedl: line.datec
                                     }
-                                }, {
-                                    multi: false,
-                                    upsert: false
-                                },
+                                }, { multi: false, upsert: false },
                                 function(err, doc) {});
                         });
                         aCb();
@@ -4374,11 +3922,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.519
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.519 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -4452,11 +3996,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.520
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.520 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -4476,12 +4016,7 @@ F.on('load', function() {
 
                     const CustomerModel = MODEL('Customers').Schema;
 
-                    CustomerModel.find({
-                            type: "Person",
-                            company: {
-                                $ne: null
-                            }
-                        })
+                    CustomerModel.find({ type: "Person", company: { $ne: null } })
                         .populate("company", "name")
                         .exec(function(err, contacts) {
                             if (err || !contacts)
@@ -4489,11 +4024,7 @@ F.on('load', function() {
 
                             async.forEach(contacts, function(contact, eCb) {
                                 if (!contact.company)
-                                    contact.update({
-                                        $set: {
-                                            company: null
-                                        }
-                                    }, function(err, doc) {});
+                                    contact.update({ $set: { company: null } }, function(err, doc) {});
                                 eCb();
 
                             }, function(err) {
@@ -4507,11 +4038,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.521
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.521 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -4533,17 +4060,7 @@ F.on('load', function() {
                     const DeliveryModel = MODEL('order').Schema.GoodsOutNote;
                     const BillModel = MODEL('invoice').Schema;
 
-                    Model.find({
-                            Status: {
-                                $in: ["PROCESSING", "BILLED"]
-                            },
-                            datedl: {
-                                $gte: moment().subtract(1, 'day').toDate()
-                            },
-                            isremoved: {
-                                $ne: true
-                            }
-                        })
+                    Model.find({ Status: { $in: ["PROCESSING", "BILLED"] }, datedl: { $gte: moment().subtract(1, 'day').toDate() }, isremoved: { $ne: true } })
                         .exec(function(err, orders) {
                             if (err || !orders)
                                 return;
@@ -4553,20 +4070,10 @@ F.on('load', function() {
 
                                 async.parallel([
                                     function(pCb) {
-                                        DeliveryModel.find({
-                                            order: order._id,
-                                            isremoved: {
-                                                $ne: true
-                                            }
-                                        }, pCb);
+                                        DeliveryModel.find({ order: order._id, isremoved: { $ne: true } }, pCb);
                                     },
                                     function(pCb) {
-                                        BillModel.find({
-                                            orders: order._id,
-                                            isremoved: {
-                                                $ne: true
-                                            }
-                                        }, pCb);
+                                        BillModel.find({ orders: order._id, isremoved: { $ne: true } }, pCb);
                                     }
                                 ], function(err, results) {
                                     if (err)
@@ -4589,11 +4096,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.521
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.521 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -4653,11 +4156,7 @@ F.on('load', function() {
 
                     console.log("convert compta Transaction meta billSupplierId");
                     mongoose.connection.db.collection('Transaction', function(err, collection) {
-                        collection.find({
-                            "meta.billSupplierId": {
-                                $ne: null
-                            }
-                        }).toArray(function(err, docs) {
+                        collection.find({ "meta.billSupplierId": { $ne: null } }).toArray(function(err, docs) {
                             if (err)
                                 return aCb(err);
 
@@ -4666,25 +4165,12 @@ F.on('load', function() {
 
                             async.forEach(docs, function(doc, eCb) {
 
-                                TransactionModel.update({
-                                        _id: doc._id
-                                    }, {
-                                        $set: {
-                                            "meta.invoice": doc.meta.billSupplierId.toString()
-                                        }
-                                    },
+                                TransactionModel.update({ _id: doc._id }, { $set: { "meta.invoice": doc.meta.billSupplierId.toString() } },
                                     function(err, res) {
                                         if (err)
                                             return eCb(err);
 
-                                        collection.update({
-                                            _id: doc._id
-                                        }, {
-                                            $unset: {
-                                                'meta.billSupplierId': 1,
-                                                'meta.billSupplierRef': 1
-                                            }
-                                        }, function(err, doc) {
+                                        collection.update({ _id: doc._id }, { $unset: { 'meta.billSupplierId': 1, 'meta.billSupplierRef': 1 } }, function(err, doc) {
 
                                             //doc.save(function(err, doc) {
                                             return eCb(err);
@@ -4700,11 +4186,7 @@ F.on('load', function() {
                 function convertSupplierBills(aCb) {
                     const TransactionModel = MODEL('transaction').Schema;
 
-                    TransactionModel.find({
-                            "meta.invoice": {
-                                $ne: null
-                            }
-                        })
+                    TransactionModel.find({ "meta.invoice": { $ne: null } })
                         .populate("meta.invoice")
                         .exec(function(err, docs) {
                             if (err)
@@ -4719,23 +4201,11 @@ F.on('load', function() {
                                     amount: doc.meta.invoice.total_paid
                                 }];
 
-                                doc.update({
-                                    $unset: {
-                                        "meta.invoice": 1
-                                    },
-                                    $set: {
-                                        "meta.bills": bills
-                                    }
-                                }, function(err, doc) {
+                                doc.update({ $unset: { "meta.invoice": 1 }, $set: { "meta.bills": bills } }, function(err, doc) {
                                     if (err)
                                         console.log(err);
 
-                                    F.emit("invoice:recalculateStatus", {
-                                        invoice: {
-                                            _id: bills[0].invoice
-                                        },
-                                        userId: null
-                                    });
+                                    F.emit("invoice:recalculateStatus", { invoice: { _id: bills[0].invoice }, userId: null });
                                 });
                             });
 
@@ -4761,11 +4231,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
-                        'values.version': 0.6
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    Dict.findByIdAndUpdate('const', { 'values.version': 0.6 }, { new: true }, function(err, doc) {
                         if (err)
                             return console.log(err);
 
@@ -4798,11 +4264,7 @@ function Install() {
         //if(self.query.entity)
         //    query.entity = self.query.entity;
 
-        BankModel.find(query, "", {
-            sort: {
-                journalId: 1
-            }
-        }, function(err, doc) {
+        BankModel.find(query, "", { sort: { journalId: 1 } }, function(err, doc) {
             if (err)
                 return self.throw500(err);
 

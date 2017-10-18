@@ -63,21 +63,26 @@
         </script> {assign var=foo value=[1,2,3]} {assign var=foo value=['y'=>'yellow','b'=>'blue']} {assign var=foo value=[1,[9,8],3]} {$foo=$bar+2} {* a comment *} {$foo.bar=1} {* another comment *} {$foo = myfunct(($x+$y)*3)} {$foo = strlen($bar)} {$foo.bar.baz=1},
         {$foo[]=1} Smarty "dot" syntax (note: embedded {} are used to address ambiguities): {$foo.a.b.c} => $foo['a']['b']['c'] {$foo.a.$b.c} => $foo['a'][$b]['c'] {$foo.a.{$b+4}.c} => $foo['a'][$b+4]['c'] {$foo.a.{$b.c}} => $foo['a'][$b['c']] {$object->method1($x)->method2($y)}</textarea>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
             lineNumbers: true,
             mode: "smarty"
         });
-        var editor = CodeMirror.fromTextArea(document.getElementById("code2"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code2"),
+        {
             lineNumbers: true,
-            mode: {
+            mode:
+            {
                 name: "smarty",
                 leftDelimiter: "{--",
                 rightDelimiter: "--}"
             }
         });
-        var editor = CodeMirror.fromTextArea(document.getElementById("code3"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code3"),
+        {
             lineNumbers: true,
-            mode: {
+            mode:
+            {
                 name: "smarty",
                 version: 3,
                 baseMode: "text/html"

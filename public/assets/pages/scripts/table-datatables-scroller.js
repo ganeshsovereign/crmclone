@@ -1,6 +1,6 @@
-var TableDatatablesScroller = function() {
+var TableDatatablesScroller = function () {
 
-    var initTable1 = function() {
+    var initTable1 = function () {
         var table = $('#sample_1');
 
         var oTable = table.dataTable({
@@ -26,31 +26,23 @@ var TableDatatablesScroller = function() {
             //},
 
             // setup buttons extension: http://datatables.net/extensions/buttons/
-            buttons: [{
-                    extend: 'print',
-                    className: 'btn dark btn-outline'
-                },
-                {
-                    extend: 'pdf',
-                    className: 'btn green btn-outline'
-                },
-                {
-                    extend: 'csv',
-                    className: 'btn purple btn-outline '
-                }
+            buttons: [
+                { extend: 'print', className: 'btn dark btn-outline' },
+                { extend: 'pdf', className: 'btn green btn-outline' },
+                { extend: 'csv', className: 'btn purple btn-outline ' }
             ],
 
             // scroller extension: http://datatables.net/extensions/scroller/
-            scrollY: 300,
-            deferRender: true,
-            scroller: true,
+            scrollY:        300,
+            deferRender:    true,
+            scroller:       true,
 
-            stateSave: true,
+            stateSave:      true,
 
             "order": [
                 [0, 'asc']
             ],
-
+            
             "lengthMenu": [
                 [10, 15, 20, -1],
                 [10, 15, 20, "All"] // change per page values here
@@ -67,7 +59,7 @@ var TableDatatablesScroller = function() {
         });
     }
 
-    var initTable2 = function() {
+    var initTable2 = function () {
         var table = $('#sample_2');
 
         var oTable = table.dataTable({
@@ -92,39 +84,31 @@ var TableDatatablesScroller = function() {
             //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
             //},
 
-            buttons: [{
-                    extend: 'print',
-                    className: 'btn default'
-                },
-                {
-                    extend: 'pdf',
-                    className: 'btn default'
-                },
-                {
-                    extend: 'csv',
-                    className: 'btn default'
-                }
+            buttons: [
+                { extend: 'print', className: 'btn default' },
+                { extend: 'pdf', className: 'btn default' },
+                { extend: 'csv', className: 'btn default' }
             ],
 
             // scroller extension: http://datatables.net/extensions/scroller/
             serverSide: true,
             ordering: false,
             searching: false,
-            ajax: function(data, callback, settings) {
+            ajax: function ( data, callback, settings ) {
                 var out = [];
-
-                for (var i = data.start, ien = data.start + data.length; i < ien; i++) {
-                    out.push([i + '-1', i + '-2', i + '-3', i + '-4', i + '-5']);
+     
+                for ( var i=data.start, ien=data.start+data.length ; i<ien ; i++ ) {
+                    out.push( [ i+'-1', i+'-2', i+'-3', i+'-4', i+'-5' ] );
                 }
-
-                setTimeout(function() {
-                    callback({
+     
+                setTimeout( function () {
+                    callback( {
                         draw: data.draw,
                         data: out,
                         recordsTotal: 5000000,
                         recordsFiltered: 5000000
-                    });
-                }, 50);
+                    } );
+                }, 50 );
             },
             scrollY: 400,
             scroller: {
@@ -135,7 +119,7 @@ var TableDatatablesScroller = function() {
         });
     }
 
-    var initTable3 = function() {
+    var initTable3 = function () {
         var table = $('#sample_3');
 
         var oTable = table.dataTable({
@@ -161,34 +145,26 @@ var TableDatatablesScroller = function() {
             //},
 
             // setup buttons extension: http://datatables.net/extensions/buttons/
-            buttons: [{
-                    extend: 'print',
-                    className: 'btn dark btn-outline'
-                },
-                {
-                    extend: 'pdf',
-                    className: 'btn green btn-outline'
-                },
-                {
-                    extend: 'csv',
-                    className: 'btn purple btn-outline '
-                }
+            buttons: [
+                { extend: 'print', className: 'btn dark btn-outline' },
+                { extend: 'pdf', className: 'btn green btn-outline' },
+                { extend: 'csv', className: 'btn purple btn-outline ' }
             ],
 
             // scroller extension: http://datatables.net/extensions/scroller/
-            scrollY: 300,
-            deferRender: true,
-            scroller: true,
-            deferRender: true,
-            scrollX: true,
-            scrollCollapse: true,
+            scrollY:        300,
+            deferRender:    true,
+            scroller:       true,
+            deferRender:    true,
+            scrollX:        true,
+            scrollCollapse: true,        
 
-            stateSave: true,
+            stateSave:      true,
 
             "order": [
                 [0, 'asc']
             ],
-
+            
             "lengthMenu": [
                 [10, 15, 20, -1],
                 [10, 15, 20, "All"] // change per page values here
@@ -205,7 +181,7 @@ var TableDatatablesScroller = function() {
         });
     }
 
-    var initTable4 = function() {
+    var initTable4 = function () {
         var table = $('#sample_4');
 
         var oTable = table.dataTable({
@@ -231,32 +207,24 @@ var TableDatatablesScroller = function() {
             //},
 
             // setup buttons extension: http://datatables.net/extensions/buttons/
-            buttons: [{
-                    extend: 'print',
-                    className: 'btn dark btn-outline'
-                },
-                {
-                    extend: 'pdf',
-                    className: 'btn green btn-outline'
-                },
-                {
-                    extend: 'csv',
-                    className: 'btn purple btn-outline '
-                }
+            buttons: [
+                { extend: 'print', className: 'btn dark btn-outline' },
+                { extend: 'pdf', className: 'btn green btn-outline' },
+                { extend: 'csv', className: 'btn purple btn-outline ' }
             ],
 
             // scroller extension: http://datatables.net/extensions/scroller/
-            scrollY: 300,
-            deferRender: true,
-            scroller: true,
-            deferRender: true,
-            scrollX: true,
-            scrollCollapse: true,
+            scrollY:        300,
+            deferRender:    true,
+            scroller:       true,
+            deferRender:    true,
+            scrollX:        true,
+            scrollCollapse: true,      
 
             "order": [
                 [0, 'asc']
             ],
-
+            
             "lengthMenu": [
                 [10, 15, 20, -1],
                 [10, 15, 20, "All"] // change per page values here
@@ -276,7 +244,7 @@ var TableDatatablesScroller = function() {
     return {
 
         //main function to initiate the module
-        init: function() {
+        init: function () {
 
             if (!jQuery().dataTable) {
                 return;

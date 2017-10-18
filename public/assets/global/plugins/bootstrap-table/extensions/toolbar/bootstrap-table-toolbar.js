@@ -5,7 +5,7 @@
  * @update Dennis Hernández <http://djhvscf.github.io/Blog>
  */
 
-! function($) {
+!function($) {
     'use strict';
 
     var firstLoad = false;
@@ -36,9 +36,9 @@
 
             $('#avdSearchModalContent' + "_" + that.options.idTable).append(vFormAvd.join(''));
 
-            $('#' + that.options.idForm).off('keyup blur', 'input').on('keyup blur', 'input', function(event) {
+            $('#' + that.options.idForm).off('keyup blur', 'input').on('keyup blur', 'input', function (event) {
                 clearTimeout(timeoutId);
-                timeoutId = setTimeout(function() {
+                timeoutId = setTimeout(function () {
                     that.onColumnAdvancedSearch(event);
                 }, that.options.searchTimeOut);
             });
@@ -83,7 +83,7 @@
         idForm: 'advancedSearch',
         actionForm: '',
         idTable: undefined,
-        onColumnAdvancedSearch: function(field, text) {
+        onColumnAdvancedSearch: function (field, text) {
             return false;
         }
     });
@@ -108,7 +108,7 @@
     $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales);
 
     var BootstrapTable = $.fn.bootstrapTable.Constructor,
-        _initToolbar = BootstrapTable.prototype.initToolbar,
+        _initToolbar = BootstrapTable.prototype.initToolbar,        
         _load = BootstrapTable.prototype.load,
         _initSearch = BootstrapTable.prototype.initSearch;
 
@@ -156,15 +156,13 @@
             if (!firstLoad) {
                 var height = parseInt($(".bootstrap-table").height());
                 height += 10;
-                $("#" + this.options.idTable).bootstrapTable("resetView", {
-                    height: height
-                });
+                $("#" + this.options.idTable).bootstrapTable("resetView", {height: height});
                 firstLoad = true;
             }
         }
     };
 
-    BootstrapTable.prototype.initSearch = function() {
+    BootstrapTable.prototype.initSearch = function () {
         _initSearch.apply(this, Array.prototype.slice.apply(arguments));
 
         if (!this.options.advancedSearch) {
@@ -174,16 +172,17 @@
         var that = this;
         var fp = $.isEmptyObject(this.filterColumnsPartial) ? null : this.filterColumnsPartial;
 
-        this.data = fp ? $.grep(this.data, function(item, i) {
+        this.data = fp ? $.grep(this.data, function (item, i) {
             for (var key in fp) {
                 var fval = fp[key].toLowerCase();
                 var value = item[key];
                 value = $.fn.bootstrapTable.utils.calculateObjectValue(that.header,
-                    that.header.formatters[$.inArray(key, that.header.fields)], [value, item, i], value);
+                    that.header.formatters[$.inArray(key, that.header.fields)],
+                    [value, item, i], value);
 
                 if (!($.inArray(key, that.header.fields) !== -1 &&
-                        (typeof value === 'string' || typeof value === 'number') &&
-                        (value + '').toLowerCase().indexOf(fval) !== -1)) {
+                    (typeof value === 'string' || typeof value === 'number') &&
+                    (value + '').toLowerCase().indexOf(fval) !== -1)) {
                     return false;
                 }
             }
@@ -191,7 +190,7 @@
         }) : this.data;
     };
 
-    BootstrapTable.prototype.onColumnAdvancedSearch = function(event) {
+    BootstrapTable.prototype.onColumnAdvancedSearch = function (event) {
         var text = $.trim($(event.currentTarget).val());
         var $field = $(event.currentTarget)[0].id;
 

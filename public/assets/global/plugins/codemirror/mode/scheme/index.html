@@ -41,7 +41,8 @@
             (car (remain input))) (cond ((match-pattern (r-cdr input) pattern)) (else (match-pattern-any (r-cdr input) pattern)))))) (let ((retval (match-pattern-any input (car pattern)))) (if retval (f-cons (accum-any) retval) #f)))))) </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {});
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {});
     </script>
     <p>
         <strong>MIME types defined:</strong> <code>text/x-scheme</code>.</p>

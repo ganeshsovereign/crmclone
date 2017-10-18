@@ -36,18 +36,11 @@ var nationalitySchema = new Schema({
     _id: String,
     langs: [{
         _id: false,
-        name: {
-            type: String,
-            default: ''
-        }
+        name: { type: String, default: '' }
     }],
 }, {
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    },
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true },
     collection: 'nationality'
 });
 

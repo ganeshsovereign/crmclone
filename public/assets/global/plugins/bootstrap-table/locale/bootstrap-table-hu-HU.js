@@ -2,38 +2,38 @@
  * Bootstrap Table Hungarian translation
  * Author: Nagy Gergely <info@nagygergely.eu>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['hu-HU'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Betöltés, kérem várjon...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' rekord per oldal';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Megjelenítve ' + pageFrom + ' - ' + pageTo + ' / ' + totalRows + ' összesen';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Keresés';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Nincs találat';
         },
-        formatPaginationSwitch: function() {
+        formatPaginationSwitch: function () {
             return 'Lapozó elrejtése/megjelenítése';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Frissítés';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Összecsuk/Kinyit';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Oszlopok';
         },
-        formatAllRows: function() {
+        formatAllRows: function () {
             return 'Összes';
         }
     };

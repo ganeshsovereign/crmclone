@@ -35,143 +35,51 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var CategorySchema = new Schema({
-    name: {
-        type: String
-    }, //Meta Title
-    fullName: {
-        type: String,
-        default: 'All'
-    },
+    name: { type: String }, //Meta Title
+    fullName: { type: String, default: 'All' },
     //parent: { type: ObjectId, ref: 'productCategory', default: null },
     // child: [{ type: ObjectId, default: null }],
-    users: [{
-        type: ObjectId,
-        ref: 'Users',
-        default: null
-    }],
-    createdBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users'
-    },
-    editedBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users'
-    },
+    users: [{ type: ObjectId, ref: 'Users', default: null }],
+    createdBy: { type: Schema.Types.ObjectId, ref: 'Users' },
+    editedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 
-    isremoved: {
-        type: Boolean,
-        default: false
-    },
+    isremoved: { type: Boolean, default: false },
 
-    enabled: {
-        type: Boolean,
-        default: true
-    },
+    enabled: { type: Boolean, default: true },
     entity: [String],
-    idx: {
-        type: Number,
-        default: 0
-    }, //order in array for nodes
+    idx: { type: Number, default: 0 }, //order in array for nodes
 
     langs: [{
         _id: false,
-        name: {
-            type: String,
-            default: 'All',
-            unique: true
-        },
+        name: { type: String, default: 'All', unique: true },
         meta: {
-            title: {
-                type: String,
-                default: ''
-            },
-            description: {
-                type: String,
-                default: ''
-            }
+            title: { type: String, default: '' },
+            description: { type: String, default: '' }
         },
-        body: {
-            type: String,
-            default: ""
-        }, // Description HTML
+        body: { type: String, default: "" }, // Description HTML
 
-        Tag: {
-            type: [],
-            set: MODULE('utils').setTags
-        },
+        Tag: { type: [], set: MODULE('utils').setTags },
 
-        url: {
-            type: String,
-            unique: true,
-            require: true,
-            set: MODULE('utils').setLink
-        }, // SEO URL short link
-        linker: {
-            type: String,
-            default: ''
-        } // Full Link with tree        
+        url: { type: String, unique: true, require: true, set: MODULE('utils').setLink }, // SEO URL short link
+        linker: { type: String, default: '' } // Full Link with tree        
     }],
 
-    nestingLevel: {
-        type: Number,
-        default: 0
-    },
-    sequence: {
-        type: Number,
-        default: 0
-    },
-    main: {
-        type: Boolean,
-        default: false
-    },
-    removable: {
-        type: Boolean,
-        default: true
-    },
+    nestingLevel: { type: Number, default: 0 },
+    sequence: { type: Number, default: 0 },
+    main: { type: Boolean, default: false },
+    removable: { type: Boolean, default: true },
     channels: [{
         _id: false,
-        channel: {
-            type: Schema.Types.ObjectId,
-            ref: 'integrations',
-            default: null
-        },
+        channel: { type: Schema.Types.ObjectId, ref: 'integrations', default: null },
         integrationId: String
     }],
-    groups: [{
-        type: ObjectId,
-        ref: 'groupCategory',
-        default: null
-    }],
-    taxesAccount: {
-        type: ObjectId,
-        ref: 'chartOfAccount',
-        default: null
-    },
-    debitAccount: {
-        type: ObjectId,
-        ref: 'chartOfAccount',
-        default: null
-    },
-    creditAccount: {
-        type: ObjectId,
-        ref: 'chartOfAccount',
-        default: null
-    },
-    bankExpensesAccount: {
-        type: ObjectId,
-        ref: 'chartOfAccount',
-        default: null
-    },
-    otherIncome: {
-        type: ObjectId,
-        ref: 'chartOfAccount',
-        default: null
-    },
-    otherLoss: {
-        type: ObjectId,
-        ref: 'chartOfAccount',
-        default: null
-    }
+    groups: [{ type: ObjectId, ref: 'groupCategory', default: null }],
+    taxesAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
+    debitAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
+    creditAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
+    bankExpensesAccount: { type: ObjectId, ref: 'chartOfAccount', default: null },
+    otherIncome: { type: ObjectId, ref: 'chartOfAccount', default: null },
+    otherLoss: { type: ObjectId, ref: 'chartOfAccount', default: null }
 });
 
 CategorySchema.plugin(tree, {
@@ -189,16 +97,7 @@ CategorySchema.statics.updateParentsCategory = function(newCategoryId, parentId,
     var ProductModel = MODEL('product').Schema;
 
     if (modifier === 'remove')
-        return ProductModel.update({
-            'info.categories': newCategoryId
-        }, {
-            $pull: {
-                'info.categories': newCategoryId
-            }
-        }, {
-            upsert: false,
-            multi: true
-        }, function(err, doc) {
+        return ProductModel.update({ 'info.categories': newCategoryId }, { $pull: { 'info.categories': newCategoryId } }, { upsert: false, multi: true }, function(err, doc) {
             if (err)
                 return callback(err);
 
@@ -228,19 +127,13 @@ CategorySchema.statics.updateParentsCategory = function(newCategoryId, parentId,
 CategorySchema.statics.updateNestingLevel = function(id, nestingLevel, callback) {
     var ProductCategory = this;
 
-    ProductCategory.find({
-        parent: id
-    }).exec(function(err, result) {
+    ProductCategory.find({ parent: id }).exec(function(err, result) {
         var n = 0;
         if (result.length !== 0)
             return result.forEach(function(item) {
                 n++;
 
-                ProductCategory.findByIdAndUpdate(item._id, {
-                    nestingLevel: nestingLevel + 1
-                }, {
-                    new: true
-                }, function(err, res) {
+                ProductCategory.findByIdAndUpdate(item._id, { nestingLevel: nestingLevel + 1 }, { new: true }, function(err, res) {
                     if (result.length === n)
                         ProductCategory.updateNestingLevel(res._id, res.nestingLevel + 1, callback);
                     else
@@ -275,19 +168,10 @@ CategorySchema.statics.updateSequence = function(model, sequenceField, start, en
                 end -= 1;
 
             objChange = {};
-            objFind = {
-                parent: parentDepartmentStart
-            };
-            objFind[sequenceField] = {
-                $gte: start,
-                $lte: end
-            };
+            objFind = { parent: parentDepartmentStart };
+            objFind[sequenceField] = { $gte: start, $lte: end };
             objChange[sequenceField] = inc;
-            query = model.update(objFind, {
-                $inc: objChange
-            }, {
-                multi: true
-            });
+            query = model.update(objFind, { $inc: objChange }, { multi: true });
             query.exec(function(err, res) {
                 if (callback)
                     callback((inc === -1) ? end : start);
@@ -295,9 +179,7 @@ CategorySchema.statics.updateSequence = function(model, sequenceField, start, en
             });
         } else {
             if (isCreate) {
-                query = model.count({
-                    parent: parentDepartmentStart
-                }).exec(function(err, res) {
+                query = model.count({ parent: parentDepartmentStart }).exec(function(err, res) {
                     if (callback)
                         callback(res);
 
@@ -305,18 +187,10 @@ CategorySchema.statics.updateSequence = function(model, sequenceField, start, en
             }
             if (isDelete) {
                 objChange = {};
-                objFind = {
-                    parent: parentDepartmentStart
-                };
-                objFind[sequenceField] = {
-                    $gt: start
-                };
+                objFind = { parent: parentDepartmentStart };
+                objFind[sequenceField] = { $gt: start };
                 objChange[sequenceField] = -1;
-                query = model.update(objFind, {
-                    $inc: objChange
-                }, {
-                    multi: true
-                });
+                query = model.update(objFind, { $inc: objChange }, { multi: true });
                 query.exec(function(err, res) {
                     if (callback)
                         callback(res);
@@ -326,31 +200,15 @@ CategorySchema.statics.updateSequence = function(model, sequenceField, start, en
         }
     } else { // nbetween workflow
         objChange = {};
-        objFind = {
-            parent: parentDepartmentStart
-        };
-        objFind[sequenceField] = {
-            $gte: start
-        };
+        objFind = { parent: parentDepartmentStart };
+        objFind[sequenceField] = { $gte: start };
         objChange[sequenceField] = -1;
-        query = model.update(objFind, {
-            $inc: objChange
-        }, {
-            multi: true
-        });
+        query = model.update(objFind, { $inc: objChange }, { multi: true });
         query.exec();
-        objFind = {
-            parent: parentDepartmentEnd
-        };
-        objFind[sequenceField] = {
-            $gte: end
-        };
+        objFind = { parent: parentDepartmentEnd };
+        objFind[sequenceField] = { $gte: end };
         objChange[sequenceField] = 1;
-        query = model.update(objFind, {
-            $inc: objChange
-        }, {
-            multi: true
-        });
+        query = model.update(objFind, { $inc: objChange }, { multi: true });
         query.exec(function() {
             if (callback)
                 callback(end);
@@ -385,63 +243,24 @@ CategorySchema.statics.updateFullName = function(id, cb) {
 
             // When the parent is changed we must rewrite all children paths as well
             if (previousUrl)
-                return Model.find({
-                    'langs.linker': {
-                        '$regex': '^' + previousUrl + '[/]'
-                    }
-                }, function(err, docs) {
+                return Model.find({ 'langs.linker': { '$regex': '^' + previousUrl + '[/]' } }, function(err, docs) {
                     if (err)
                         return cb(err);
 
                     async.each(docs, function(doc, done) {
                         var newUrl = category.langs[0].linker + doc.langs[0].linker.substr(previousUrl.length);
-                        Model.findByIdAndUpdate(doc._id, {
-                            $set: {
-                                'langs.0.linker': newUrl
-                            }
-                        }, done);
-                        F.emit('product:updateCategory', {
-                            userId: null,
-                            productCategory: {
-                                _id: doc._id.toString()
-                            }
-                        });
+                        Model.findByIdAndUpdate(doc._id, { $set: { 'langs.0.linker': newUrl } }, done);
+                        F.emit('product:updateCategory', { userId: null, productCategory: { _id: doc._id.toString() } });
                     }, function() {
-                        Model.findByIdAndUpdate(id, {
-                            $set: {
-                                fullName: fullName,
-                                'langs.0.linker': category.langs[0].linker,
-                                path: path
-                            }
-                        }, {
-                            new: true
-                        }, cb);
-                        F.emit('product:updateCategory', {
-                            userId: null,
-                            productCategory: {
-                                _id: id.toString()
-                            }
-                        });
+                        Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
+                        F.emit('product:updateCategory', { userId: null, productCategory: { _id: id.toString() } });
                     });
                 });
 
             if (!err)
-                Model.findByIdAndUpdate(id, {
-                    $set: {
-                        fullName: fullName,
-                        'langs.0.linker': category.langs[0].linker,
-                        path: path
-                    }
-                }, {
-                    new: true
-                }, cb);
+                Model.findByIdAndUpdate(id, { $set: { fullName: fullName, 'langs.0.linker': category.langs[0].linker, path: path } }, { new: true }, cb);
 
-            F.emit('product:updateCategory', {
-                userId: null,
-                productCategory: {
-                    _id: id.toString()
-                }
-            });
+            F.emit('product:updateCategory', { userId: null, productCategory: { _id: id.toString() } });
 
         });
 };
@@ -451,20 +270,11 @@ CategorySchema.statics.removeAllChild = function(id, callback) {
     var Product = MODEL('product').Schema;
 
     ProductCategory.find({
-        $or: [{
-                ancestors: {
-                    $elemMatch: {
-                        $eq: id
-                    }
-                }
-            },
-            {
-                _id: id
-            }
+        $or: [
+            { ancestors: { $elemMatch: { $eq: id } } },
+            { _id: id }
         ]
-    }, {
-        _id: 1
-    }, function(err, result) {
+    }, { _id: 1 }, function(err, result) {
         var ids;
 
         if (err)
@@ -473,11 +283,7 @@ CategorySchema.statics.removeAllChild = function(id, callback) {
         ids = _.pluck(result, '_id');
 
         function deleteCategories(parCb) {
-            ProductCategory.remove({
-                _id: {
-                    $in: ids
-                }
-            }, function(err) {
+            ProductCategory.remove({ _id: { $in: ids } }, function(err) {
                 if (err)
                     return parCb(err);
 

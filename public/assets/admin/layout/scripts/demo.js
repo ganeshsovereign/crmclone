@@ -41,7 +41,7 @@ var Demo = function() {
                 $('.scroll-to-top').insertAfter('.page-footer');
             }
 
-            $(".top-menu > .navbar-nav > li.dropdown").removeClass("dropdown-dark");
+             $(".top-menu > .navbar-nav > li.dropdown").removeClass("dropdown-dark");
 
             $('body > .container').remove();
         };
@@ -268,18 +268,18 @@ var Demo = function() {
         //main function to initiate the theme
         init: function() {
             // handles style customer tool
-            handleTheme();
-
+            handleTheme(); 
+            
             // handle layout style change
             $('.theme-panel .layout-style-option').change(function() {
-                setThemeStyle($(this).val());
+                 setThemeStyle($(this).val());
             });
 
             // set layout style from cookie
             if ($.cookie && $.cookie('layout-style-option') === 'rounded') {
                 setThemeStyle($.cookie('layout-style-option'));
                 $('.theme-panel .layout-style-option').val($.cookie('layout-style-option'));
-            }
+            }            
         }
     };
 

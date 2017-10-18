@@ -2,32 +2,32 @@
  * Bootstrap Table Ukrainian translation
  * Author: Vitaliy Timchenko <vitaliy.timchenko@gmail.com>
  */
-(function($) {
+ (function ($) {
     'use strict';
-
+    
     $.fn.bootstrapTable.locales['uk-UA'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Завантаження, будь ласка, зачекайте...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' записів на сторінку';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Показано з ' + pageFrom + ' по ' + pageTo + '. Всього: ' + totalRows;
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Пошук';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Не знайдено жодного запису';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Оновити';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Змінити';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Стовпці';
         }
     };

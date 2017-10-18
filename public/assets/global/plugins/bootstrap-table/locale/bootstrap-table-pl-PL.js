@@ -2,32 +2,32 @@
  * Bootstrap Table Polish translation
  * Author: zergu <michal.zagdan @ gmail com>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['pl-PL'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Ładowanie, proszę czekać...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' rekordów na stronę';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Wyświetlanie rekordów od ' + pageFrom + ' do ' + pageTo + ' z ' + totalRows;
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Szukaj';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Niestety, nic nie znaleziono';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Odśwież';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Przełącz';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Kolumny';
         }
     };

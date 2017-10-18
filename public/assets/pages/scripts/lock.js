@@ -1,8 +1,9 @@
-var Lock = function() {
+var Lock = function () {
 
     return {
         //main function to initiate the module
-        init: function() {}
+        init: function () {
+        }
 
     };
 

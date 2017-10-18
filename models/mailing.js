@@ -39,16 +39,10 @@ var mailingSchema = new Schema({
     object: String,
     message: String,
     author: {
-        id: {
-            type: String,
-            ref: 'User'
-        },
+        id: {type: String, ref: 'User'},
         name: String
     },
-    createAt: {
-        type: Date,
-        default: Date.now
-    }
+    createAt: {type: Date, default: Date.now}
 });
 
 exports.Schema = mongoose.model('Mailing', mailingSchema);

@@ -2,23 +2,23 @@
  * Bootstrap Table Portuguese Portugal Translation
  * Author: Burnspirit<burnspirit@gmail.com>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['pt-PT'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'A carregar, aguarde...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' registos por página';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'A mostrar ' + pageFrom + ' até ' + pageTo + ' de ' + totalRows + ' linhas';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Pesquisa';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Nenhum registo encontrado';
         }
     };

@@ -38,74 +38,29 @@ var setRound3 = MODULE('utils').setRound3;
 
 var priceSchema = new Schema({
     _id: false,
-    count: {
-        type: Number,
-        default: 0
-    },
-    price: {
-        type: Number,
-        default: 0,
-        set: setRound3
-    }, // pu_ht
-    coef: {
-        type: Number,
-        default: 1,
-        set: setRound3
-    }, //TODO REMOVE ???
-    coefTotal: {
-        type: Number,
-        default: 1
-    } //Sum coef * familyCoef //TODO REMOVE ???
+    count: { type: Number, default: 0 },
+    price: { type: Number, default: 0, set: setRound3 }, // pu_ht
+    coef: { type: Number, default: 1, set: setRound3 }, //TODO REMOVE ???
+    coefTotal: { type: Number, default: 1 } //Sum coef * familyCoef //TODO REMOVE ???
 }, {
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 var productPricesSchema = new Schema({
-    priceLists: {
-        type: ObjectId,
-        ref: 'priceList'
-    },
-    product: {
-        type: ObjectId,
-        ref: 'product'
-    },
+    priceLists: { type: ObjectId, ref: 'priceList' },
+    product: { type: ObjectId, ref: 'product' },
     prices: [priceSchema],
-    discount: {
-        type: Number,
-        default: 0
-    },
-    qtyMin: {
-        type: Number,
-        default: 0
-    },
-    qtyMax: {
-        type: Number
-    },
-    createdBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'rh',
-        default: null
-    },
-    editedBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'rh',
-        default: null
-    }
+    discount: { type: Number, default: 0 },
+    qtyMin: { type: Number, default: 0 },
+    qtyMax: { type: Number },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null },
+    editedBy: { type: Schema.Types.ObjectId, ref: 'rh', default: null }
 });
 
 productPricesSchema.plugin(timestamps);
 
-productPricesSchema.index({
-    priceLists: 1,
-    product: 1
-}, {
-    unique: true
-});
+productPricesSchema.index({ priceLists: 1, product: 1 }, { unique: true });
 
 /*productPricesSchema.pre('save', function(next) {
     var self = this;
@@ -228,9 +183,7 @@ productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callbac
             error: 'Error family configuration : no discount ' + options.product.sellFamily.langs[0].name,
             url: {
                 module: 'product.family.show',
-                params: {
-                    Id: options.product.sellFamily._id
-                }
+                params: { Id: options.product.sellFamily._id }
             }
         });
 
@@ -242,10 +195,7 @@ productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callbac
                 if (!options.priceList)
                     return wCb("Empty priceList");
 
-                ProductFamilyCoefModel.findOne({
-                    priceLists: options.priceList._id,
-                    family: product.sellFamily._id
-                }, function(err, family) {
+                ProductFamilyCoefModel.findOne({ priceLists: options.priceList._id, family: product.sellFamily._id }, function(err, family) {
                     if (err)
                         return wCb(err);
                     if (!family || !family.coef)
@@ -253,9 +203,7 @@ productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callbac
                             error: 'Error family configuration : no coef ' + options.product.sellFamily.langs[0].name,
                             url: {
                                 module: 'product.family.show',
-                                params: {
-                                    Id: options.product.sellFamily._id
-                                }
+                                params: { Id: options.product.sellFamily._id }
                             }
                         });
 
@@ -278,20 +226,12 @@ productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callbac
             if (err) {
                 if (typeof err == 'object')
                     return callback(err);
-                else return callback({
-                    error: err
-                });
+                else return callback({ error: err });
             }
 
-            self.findByIdAndUpdate(id, {
-                prices: prices
-            }, {
-                new: true
-            }, function(err, productPrice) {
+            self.findByIdAndUpdate(id, { prices: prices }, { new: true }, function(err, productPrice) {
                 if (err)
-                    return callback({
-                        error: err.toString()
-                    });
+                    return callback({ error: err.toString() });
 
                 if (!productPrice || !productPrice._id)
                     return callback('No pricing create!');
@@ -302,11 +242,7 @@ productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callbac
                     if (productPrice.priceLists.defaultPriceList != true || !productPrice.prices.length)
                         return callback(null, productPrice);
 
-                    ProductModel.findByIdAndUpdate(productPrice.product, {
-                        'prices.pu_ht': productPrice.prices[0].price
-                    }, {
-                        new: true
-                    }, function(err, doc) {
+                    ProductModel.findByIdAndUpdate(productPrice.product, { 'prices.pu_ht': productPrice.prices[0].price }, { new: true }, function(err, doc) {
                         if (err)
                             return callback(err);
 
@@ -314,9 +250,7 @@ productPricesSchema.statics.refreshByIdCoefPrice = function(id, options, callbac
                         setTimeout2('product:' + doc._id.toString(), function() {
                             F.emit('product:update', {
                                 userId: null,
-                                product: {
-                                    _id: doc._id.toString()
-                                }
+                                product: { _id: doc._id.toString() }
                             });
                         }, 1000);
 
@@ -372,10 +306,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
                 });
             },
             function(priceLists, discount, wCb) {
-                self.findOne({
-                        product: options.product,
-                        priceLists: priceLists
-                    })
+                self.findOne({ product: options.product, priceLists: priceLists })
                     .populate("priceLists")
                     .exec(function(err, doc) {
                         if (err)
@@ -395,10 +326,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
                             if (!priceList.parent)
                                 return wCb("No parent priceList");
 
-                            return self.findOne({
-                                    product: options.product,
-                                    priceLists: priceList.parent
-                                })
+                            return self.findOne({ product: options.product, priceLists: priceList.parent })
                                 .populate("priceLists")
                                 .exec(function(err, doc2) {
                                     if (err)
@@ -414,10 +342,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
                                         if (!priceList || !priceList.parent)
                                             return wCb("Error no parent price");
 
-                                        return self.findOne({
-                                                product: options.product,
-                                                priceLists: priceList.parent
-                                            })
+                                        return self.findOne({ product: options.product, priceLists: priceList.parent })
                                             .populate("priceLists")
                                             .exec(function(err, doc3) {
                                                 if (err)
@@ -472,14 +397,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
             }
 
             if (!doc)
-                return callback(null, {
-                    ok: false,
-                    pu_ht: 0,
-                    discount: 0,
-                    qtyMin: null,
-                    qtyMax: null,
-                    isFixed: false
-                });
+                return callback(null, { ok: false, pu_ht: 0, discount: 0, qtyMin: null, qtyMax: null, isFixed: false });
 
             //console.log(doc, options);
             Pricebreak.set(doc.prices);
@@ -489,15 +407,7 @@ productPricesSchema.statics.findPrice = function(options, fields, callback) {
             if (discount)
                 pu_ht = round(pu_ht * (1 - discount / 100), 3);
 
-            callback(null, {
-                priceList: doc.priceLists.priceListCode,
-                ok: true,
-                isFixed: doc.priceLists.isFixed,
-                pu_ht: pu_ht,
-                discount: doc.discount || 0,
-                qtyMin: doc.qtyMin,
-                qtyMax: doc.qtyMax
-            });
+            callback(null, { priceList: doc.priceLists.priceListCode, ok: true, isFixed: doc.priceLists.isFixed, pu_ht: pu_ht, discount: doc.discount || 0, qtyMin: doc.qtyMin, qtyMax: doc.qtyMax });
         });
 
 };
@@ -520,9 +430,7 @@ F.on('load', function() {
         switch (channel) {
             case 'product:updateDirectCost':
                 if (data.product._id)
-                    ProductPricesModel.find({
-                        'product': data.product._id
-                    })
+                    ProductPricesModel.find({ 'product': data.product._id })
                     //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                     .populate("priceLists")
                     .exec(function(err, pricesList) {
@@ -571,13 +479,9 @@ F.on('load', function() {
                     return;
 
                 //Delete old PriceList
-                ProductPricesModel.remove({
-                    priceLists: data.data._id
-                }, function(err, doc) {
+                ProductPricesModel.remove({ priceLists: data.data._id }, function(err, doc) {
                     //Load parent priceList
-                    ProductPricesModel.find({
-                        priceLists: data.data.parent
-                    }, function(err, docs) {
+                    ProductPricesModel.find({ priceLists: data.data.parent }, function(err, docs) {
                         docs.forEach(function(elem) {
                             elem = elem.toObject();
                             delete elem._id;
@@ -616,10 +520,7 @@ F.on('load', function() {
                 if (!data.data || !data.data.priceLists)
                     return;
 
-                PriceListModel.find({
-                    isGlobalDiscount: true,
-                    parent: data.data.priceLists
-                }, function(err, docs) {
+                PriceListModel.find({ isGlobalDiscount: true, parent: data.data.priceLists }, function(err, docs) {
                     if (err || !docs || !docs.length)
                         return;
 
@@ -629,10 +530,7 @@ F.on('load', function() {
                         if (!data.data.product)
                             return;
 
-                        ProductPricesModel.remove({
-                            priceLists: priceList._id,
-                            product: data.data.product
-                        }, function(err, doc) {
+                        ProductPricesModel.remove({ priceLists: priceList._id, product: data.data.product }, function(err, doc) {
                             //Load parent priceList
 
                             var elem = data.data;

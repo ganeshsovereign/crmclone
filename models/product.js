@@ -42,46 +42,24 @@ var setRound3 = MODULE('utils').setRound3;
 
 var supplierPriceSchema = new Schema({
     _id: false,
-    societe: {
-        type: Schema.Types.ObjectId,
-        ref: 'Customers'
-    },
+    societe: { type: Schema.Types.ObjectId, ref: 'Customers' },
     ref: String,
     taxes: [{
         _id: false,
-        taxeId: {
-            type: Schema.Types.ObjectId,
-            ref: 'taxes'
-        },
-        value: {
-            type: Number
-        } //for ecotaxe
+        taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        value: { type: Number } //for ecotaxe
     }],
     minQty: Number,
-    replenishmentTime: {
-        type: Number,
-        default: 0
-    }, // delai de reappro en jr
+    replenishmentTime: { type: Number, default: 0 }, // delai de reappro en jr
     prices: {
-        currency: {
-            type: String,
-            ref: 'currency',
-            default: 'EUR'
-        },
-        pu_ht: {
-            type: Number,
-            default: 0
-        } // For base price
+        currency: { type: String, ref: 'currency', default: 'EUR' },
+        pu_ht: { type: Number, default: 0 } // For base price
         //pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
     packing: Number //conditionement
 }, {
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 
@@ -99,51 +77,19 @@ var maxlength = [255, 'The value of path `{PATH}` (`{VALUE}`) exceeds the maximu
 
 var LangSchema = new Schema({
     _id: false,
-    description: {
-        type: String,
-        default: ''
-    }, //Bill Offer Delivery Order
-    shortDescription: {
-        type: String,
-        default: ''
-    }, // Resume ecommerce
-    body: {
-        type: String,
-        default: ''
-    }, // HTML ecommerce
-    name: {
-        type: String,
-        default: ''
-    },
+    description: { type: String, default: '' }, //Bill Offer Delivery Order
+    shortDescription: { type: String, default: '' }, // Resume ecommerce
+    body: { type: String, default: '' }, // HTML ecommerce
+    name: { type: String, default: '' },
     meta: {
-        title: {
-            type: String,
-            default: '',
-            trim: true
-        },
-        description: {
-            type: String,
-            default: '',
-            trim: true,
-            maxlength: maxlength
-        }
+        title: { type: String, default: '', trim: true },
+        description: { type: String, default: '', trim: true, maxlength: maxlength }
     },
-    linker: {
-        type: String,
-        sparse: true,
-        set: MODULE('utils').setLink
-    }, // SEO URL
-    Tag: {
-        type: [],
-        set: MODULE('utils').setTags
-    }
+    linker: { type: String, sparse: true, set: MODULE('utils').setLink }, // SEO URL
+    Tag: { type: [], set: MODULE('utils').setTags }
 }, {
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 LangSchema.pre('save', function(next) {
@@ -158,70 +104,26 @@ LangSchema.pre('save', function(next) {
 
 var product = {
     _id: false,
-    id: {
-        type: Schema.Types.ObjectId,
-        ref: 'product'
-    },
-    qty: {
-        type: Number,
-        default: 0
-    }
+    id: { type: Schema.Types.ObjectId, ref: 'product' },
+    qty: { type: Number, default: 0 }
 };
 
 var productSchema = new Schema({
-    isSell: {
-        type: Boolean,
-        default: true
-    },
-    isBuy: {
-        type: Boolean,
-        default: false
-    },
-    isBundle: {
-        type: Boolean,
-        default: false
-    },
-    isPackaging: {
-        type: Boolean,
-        default: false
-    },
-    isVariant: {
-        type: Boolean,
-        default: false
-    },
-    isValidated: {
-        type: Boolean,
-        default: false
-    }, //Integration publication
-    groupId: {
-        type: String,
-        default: null
-    },
+    isSell: { type: Boolean, default: true },
+    isBuy: { type: Boolean, default: false },
+    isBundle: { type: Boolean, default: false },
+    isPackaging: { type: Boolean, default: false },
+    isVariant: { type: Boolean, default: false },
+    isValidated: { type: Boolean, default: false }, //Integration publication
+    groupId: { type: String, default: null },
     //  job: { type: Schema.Types.ObjectId, ref: 'jobs', default: null },
-    canBeSold: {
-        type: Boolean,
-        default: true
-    },
-    canBeExpensed: {
-        type: Boolean,
-        default: true
-    },
-    eventSubscription: {
-        type: Boolean,
-        default: true
-    },
+    canBeSold: { type: Boolean, default: true },
+    canBeExpensed: { type: Boolean, default: true },
+    eventSubscription: { type: Boolean, default: true },
 
-    onlyWeb: {
-        type: Boolean
-    },
-    istop: {
-        type: Boolean,
-        default: false
-    },
-    ischat: {
-        type: Boolean,
-        default: false
-    },
+    onlyWeb: { type: Boolean },
+    istop: { type: Boolean, default: false },
+    ischat: { type: Boolean, default: false },
     imageSrc: {
         type: Schema.Types.ObjectId,
         ref: 'Images'
@@ -232,161 +134,62 @@ var productSchema = new Schema({
     oldId: String, // Only for import migration
 
     //ref: { type: String, required: true, unique: true, uppercase: true }, //TODO Remove
-    name: {
-        type: String,
-        default: ''
-    },
-    ID: {
-        type: Number,
-        unique: true
-    },
-    isremoved: {
-        type: Boolean,
-        default: false
-    },
+    name: { type: String, default: '' },
+    ID: { type: Number, unique: true },
+    isremoved: { type: Boolean, default: false },
 
     info: {
-        productType: {
-            type: Schema.Types.ObjectId,
-            ref: 'productTypes',
-            default: null
-        },
-        isActive: {
-            type: Boolean,
-            default: true
-        },
-        autoBarCode: {
-            type: Boolean,
-            default: false
-        },
+        productType: { type: Schema.Types.ObjectId, ref: 'productTypes', default: null },
+        isActive: { type: Boolean, default: true },
+        autoBarCode: { type: Boolean, default: false },
         //barCode: { type: String, index: true, uppercase: true, sparse: true },
-        aclCode: {
-            type: String,
-            uppercase: true
-        },
-        SKU: {
-            type: String,
-            unique: true,
-            require: true
-        },
-        UPC: {
-            type: String,
-            default: null
-        },
-        ISBN: {
-            type: String,
-            default: null
-        },
-        EAN: {
-            type: String,
-            default: null,
-            index: true,
-            uppercase: true,
-            sparse: true
-        },
+        aclCode: { type: String, uppercase: true },
+        SKU: { type: String, unique: true, require: true },
+        UPC: { type: String, default: null },
+        ISBN: { type: String, default: null },
+        EAN: { type: String, default: null, index: true, uppercase: true, sparse: true },
 
-        brand: {
-            type: Schema.Types.ObjectId,
-            ref: 'Brand',
-            default: null
-        },
-        categories: [{
-            type: Schema.Types.ObjectId,
-            ref: 'productCategory'
-        }],
+        brand: { type: Schema.Types.ObjectId, ref: 'Brand', default: null },
+        categories: [{ type: Schema.Types.ObjectId, ref: 'productCategory' }],
 
-        notePrivate: {
-            type: String
-        },
+        notePrivate: { type: String },
 
         /* PIM transaltion */
         langs: [LangSchema]
-        /* need to Add  alt des images TODO */
+            /* need to Add  alt des images TODO */
 
 
     },
 
-    compta_buy: {
-        type: String,
-        set: MODULE('utils').setAccount,
-        trim: true
-    },
-    compta_buy_eu: {
-        type: String,
-        set: MODULE('utils').setAccount,
-        trim: true
-    },
-    compta_buy_exp: {
-        type: String,
-        set: MODULE('utils').setAccount,
-        trim: true
-    },
-    compta_sell: {
-        type: String,
-        set: MODULE('utils').setAccount,
-        trim: true
-    },
-    compta_sell_eu: {
-        type: String,
-        set: MODULE('utils').setAccount,
-        trim: true
-    },
-    compta_sell_exp: {
-        type: String,
-        set: MODULE('utils').setAccount,
-        trim: true
-    },
+    compta_buy: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_buy_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell_eu: { type: String, set: MODULE('utils').setAccount, trim: true },
+    compta_sell_exp: { type: String, set: MODULE('utils').setAccount, trim: true },
 
     inventory: {
         langs: [{
             _id: false,
-            availableLater: {
-                type: String,
-                default: ''
-            }
+            availableLater: { type: String, default: '' }
         }],
-        minStockLevel: {
-            type: Number,
-            default: 0
-        },
-        maxStockLevel: {
-            type: Number
-        },
-        stockTimeLimit: {
-            type: Number,
-            default: 360
-        }
+        minStockLevel: { type: Number, default: 0 },
+        maxStockLevel: { type: Number },
+        stockTimeLimit: { type: Number, default: 360 }
     },
-    packing: {
-        type: Number,
-        default: 1
-    }, //conditonnement
+    packing: { type: Number, default: 1 }, //conditonnement
 
-    variants: [{
-        type: Schema.Types.ObjectId,
-        ref: 'productAttibutesValues'
-    }],
+    variants: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }],
     attributes: [{
         _id: false,
-        attribute: {
-            type: Schema.Types.ObjectId,
-            ref: 'productAttributes'
-        },
-        value: {
-            type: Schema.Types.Mixed
-        }, // Not for select
-        options: [{
-            type: Schema.Types.ObjectId,
-            ref: 'productAttibutesValues'
-        }],
+        attribute: { type: Schema.Types.ObjectId, ref: 'productAttributes' },
+        value: { type: Schema.Types.Mixed }, // Not for select
+        options: [{ type: Schema.Types.ObjectId, ref: 'productAttibutesValues' }],
 
         //product_feacture_value if value != null
         channels: [{
             _id: false,
-            channel: {
-                type: Schema.Types.ObjectId,
-                ref: 'integrations'
-            },
+            channel: { type: Schema.Types.ObjectId, ref: 'integrations' },
             integrationId: String
         }]
     }],
@@ -396,80 +199,37 @@ var productSchema = new Schema({
 
     search: [String],
 
-    workflow: {
-        type: Schema.Types.ObjectId,
-        ref: 'workflows',
-        default: null
-    },
-    whoCanRW: {
-        type: String,
-        enum: ['owner', 'group', 'everyOne'],
-        default: 'everyOne'
-    },
+    workflow: { type: Schema.Types.ObjectId, ref: 'workflows', default: null },
+    whoCanRW: { type: String, enum: ['owner', 'group', 'everyOne'], default: 'everyOne' },
 
     groups: {
-        owner: {
-            type: Schema.Types.ObjectId,
-            ref: 'Users',
-            default: null
-        },
-        users: [{
-            type: Schema.Types.ObjectId,
-            ref: 'Users',
-            default: null
-        }],
-        group: [{
-            type: Schema.Types.ObjectId,
-            ref: 'Department',
-            default: null
-        }]
+        owner: { type: Schema.Types.ObjectId, ref: 'Users', default: null },
+        users: [{ type: Schema.Types.ObjectId, ref: 'Users', default: null }],
+        group: [{ type: Schema.Types.ObjectId, ref: 'Department', default: null }]
     },
 
-    createdBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users'
-    },
-    editedBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users'
-    },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'Users' },
+    editedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
 
 
-    externalId: {
-        type: String,
-        default: ''
-    },
+    externalId: { type: String, default: '' },
 
-    files: {
-        type: Array,
-        default: []
-    },
-    attachments: {
-        type: Array,
-        default: []
-    },
+    files: { type: Array, default: [] },
+    attachments: { type: Array, default: [] },
 
     //label: { type: String, default: "" },
     //description: { type: String, default: "" },
     //body: { type: String, default: "" }, // Description For SEO
 
     //type: { type: String, default: 'PRODUCT' },
-    Status: {
-        type: String,
-        default: 'DISABLED'
-    },
+    Status: { type: String, default: 'DISABLED' },
     //enabled: { type: Boolean, default: true },
     //ischat: { type: Boolean, default: false },
     //negociate: { type: Number, default: 0 }, // 0 is no negociate
     taxes: [{
         _id: false,
-        taxeId: {
-            type: Schema.Types.ObjectId,
-            ref: 'taxes'
-        },
-        value: {
-            type: Number
-        } // sample ecotax
+        taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
+        value: { type: Number } // sample ecotax
     }],
     //tva_tx: { type: Number, default: 20 },
     //datec: { type: Date, default: Date.now },
@@ -478,33 +238,17 @@ var productSchema = new Schema({
 
     // price model just for list product
     prices: {
-        pu_ht: {
-            type: Number,
-            default: 0
-        }, // For base price
+        pu_ht: { type: Number, default: 0 }, // For base price
         //pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
     },
 
-    template: {
-        type: String
-    },
+    template: { type: String },
     dynForm: String,
 
-    sellFamily: {
-        type: Schema.Types.ObjectId,
-        ref: 'productFamily',
-        require: true
-    },
-    costFamily: {
-        type: Schema.Types.ObjectId,
-        ref: 'productFamily',
-        default: '59b791bdf8604049aefea737'
-    },
+    sellFamily: { type: Schema.Types.ObjectId, ref: 'productFamily', require: true },
+    costFamily: { type: Schema.Types.ObjectId, ref: 'productFamily', default: '59b791bdf8604049aefea737' },
 
-    units: {
-        type: String,
-        default: "unit"
-    },
+    units: { type: String, default: "unit" },
 
     /*size: {
         length: { type: Number, default: 0 },
@@ -513,10 +257,7 @@ var productSchema = new Schema({
         dimension: { type: String, default: 'cm' },
         
     },MOVE TO ATTRIBUTES */
-    weight: {
-        type: Number,
-        default: 0
-    }, // Poids en kg
+    weight: { type: Number, default: 0 }, // Poids en kg
 
     // TODO Remove old model stock
     /*stock: {
@@ -529,68 +270,32 @@ var productSchema = new Schema({
     suppliers: [supplierPriceSchema],
 
     /******** VAD Method **************/
-    directCost: {
-        type: Number,
-        default: 0
-    }, //Total MP
-    indirectCost: {
-        type: Number,
-        default: 0
-    }, //Total Effort
+    directCost: { type: Number, default: 0 }, //Total MP
+    indirectCost: { type: Number, default: 0 }, //Total Effort
     /**********************************/
 
     optional: Schema.Types.Mixed, // TODO Remove ?
 
     // For color and % good quality of information
     rating: {
-        marketing: {
-            type: Number,
-            default: 0,
-            set: setRound3
-        },
-        attributes: {
-            type: Number,
-            default: 0,
-            set: setRound3
-        },
-        ecommerce: {
-            type: Number,
-            default: 0,
-            set: setRound3
-        },
-        images: {
-            type: Number,
-            default: 0,
-            set: setRound3
-        },
-        categories: {
-            type: Number,
-            default: 0,
-            set: setRound3
-        },
-        total: {
-            type: Number,
-            default: 0,
-            set: setRound3
-        }
+        marketing: { type: Number, default: 0, set: setRound3 },
+        attributes: { type: Number, default: 0, set: setRound3 },
+        ecommerce: { type: Number, default: 0, set: setRound3 },
+        images: { type: Number, default: 0, set: setRound3 },
+        categories: { type: Number, default: 0, set: setRound3 },
+        total: { type: Number, default: 0, set: setRound3 }
     }
 
 }, {
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 productSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
     var gridfs = INCLUDE(CONFIG('storing-files'));
-    productSchema.plugin(gridfs.pluginGridFs, {
-        root: "Product"
-    });
+    productSchema.plugin(gridfs.pluginGridFs, { root: "Product" });
 }
 
 productSchema.statics.next = function(options, callback) {
@@ -599,14 +304,10 @@ productSchema.statics.next = function(options, callback) {
     this.find({
             _id: {
                 $gt: options._id,
-                isremove: {
-                    $ne: true
-                }
+                isremove: { $ne: true }
             }
         })
-        .sort({
-            'info.SKU': 1
-        })
+        .sort({ 'info.SKU': 1 })
         .limit(1)
         .exec(callback);
 };
@@ -617,14 +318,10 @@ productSchema.statics.previous = function(options, callback) {
     this.find({
             _id: {
                 $gt: options._id,
-                isremove: {
-                    $ne: true
-                }
+                isremove: { $ne: true }
             }
         })
-        .sort({
-            'info.SKU': -1
-        })
+        .sort({ 'info.SKU': -1 })
         .limit(1)
         .exec(callback);
 };
@@ -651,12 +348,8 @@ productSchema.statics.query = function(options, callback) {
 
     var query = {
         enabled: true,
-        Status: {
-            $in: ['SELL', 'SELLBUY']
-        },
-        'prices.pu_ht': {
-            $gt: 0
-        }
+        Status: { $in: ['SELL', 'SELLBUY'] },
+        'prices.pu_ht': { $gt: 0 }
     };
 
     if (options.category)
@@ -667,9 +360,7 @@ productSchema.statics.query = function(options, callback) {
     //    builder.in('search', options.search.keywords(true, true));
     if (options.id) {
         if (typeof options.id === 'object')
-            options.id = {
-                '$in': options.id
-            };
+            options.id = { '$in': options.id };
         query._id = options.id;
     }
     if (options.skip)
@@ -949,7 +640,7 @@ productSchema.pre('save', function(next) {
                         });
             }
 
-        //console.log(this);
+            //console.log(this);
 
         if (this.directCost != directCost)
             this.directCost = directCost;
@@ -987,22 +678,12 @@ productSchema.pre('save', function(next) {
 
     if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
-            F.emit('product:updateDirectCost', {
-                userId: self.editedBy.toString(),
-                product: {
-                    _id: self._id.toString()
-                }
-            });
-        }, 500);
+        F.emit('product:updateDirectCost', { userId: self.editedBy.toString(), product: { _id: self._id.toString() } });
+    }, 500);
 
     //Emit product update
     setTimeout2('product:' + this._id.toString(), function() {
-        F.emit('product:update', {
-            userId: self.editedBy.toString(),
-            product: {
-                _id: self._id.toString()
-            }
-        });
+        F.emit('product:update', { userId: self.editedBy.toString(), product: { _id: self._id.toString() } });
     }, 1000);
 
 
@@ -1026,10 +707,7 @@ productSchema.pre('save', function(next) {
 });
 
 var dict = {};
-Dict.dict({
-    dictName: ['fk_product_status', 'fk_units'],
-    object: true
-}, function(err, doc) {
+Dict.dict({ dictName: ['fk_product_status', 'fk_units'], object: true }, function(err, doc) {
     if (err) {
         console.log(err);
         return;

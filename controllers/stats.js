@@ -56,12 +56,8 @@ Object.prototype = {
         var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
         var queryCA = {
-            Status: {
-                '$ne': 'DRAFT'
-            },
-            isremoved: {
-                $ne: true
-            },
+            Status: { '$ne': 'DRAFT' },
+            isremoved: { $ne: true },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').toDate(),
                 '$lt': moment(self.query.end).endOf('day').toDate()
@@ -69,12 +65,8 @@ Object.prototype = {
             forSales: (self.query.forSales === 'false' ? false : true)
         };
         var queryCAN_1 = {
-            Status: {
-                '$ne': 'DRAFT'
-            },
-            isremoved: {
-                $ne: true
-            },
+            Status: { '$ne': 'DRAFT' },
+            isremoved: { $ne: true },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').subtract(1, 'year').toDate(),
                 '$lt': moment(self.query.end).endOf('day').subtract(1, 'year').toDate()
@@ -94,26 +86,11 @@ Object.prototype = {
         var ca = {};
         async.parallel({
                 caN: function(cb) {
-                    BillModel.aggregate([{
-                            $match: queryCA
-                        },
-                        {
-                            $unwind: "$lines"
-                        },
-                        {
-                            $match: {
-                                'lines.product': {
-                                    $ne: null
-                                }
-                            }
-                        },
-                        {
-                            $project: {
-                                _id: 0,
-                                lines: 1,
-                                entity: 1
-                            }
-                        },
+                    BillModel.aggregate([
+                        { $match: queryCA },
+                        { $unwind: "$lines" },
+                        { $match: { 'lines.product': { $ne: null } } },
+                        { $project: { _id: 0, lines: 1, entity: 1 } },
                         {
                             $lookup: {
                                 from: 'Product',
@@ -122,9 +99,7 @@ Object.prototype = {
                                 as: 'lines.product'
                             }
                         },
-                        {
-                            $unwind: "$lines.product"
-                        },
+                        { $unwind: "$lines.product" },
                         {
                             $project: {
                                 entity: 1,
@@ -134,17 +109,7 @@ Object.prototype = {
                                 'lines.product.costFamily': 1
                             }
                         },
-                        {
-                            $group: {
-                                _id: {
-                                    familyId: "$lines.product." + (self.query.forSales === 'false' ? "costFamily" : "sellFamily"),
-                                    entity: "$entity"
-                                },
-                                caN: {
-                                    "$sum": "$lines.total_ht"
-                                }
-                            }
-                        },
+                        { $group: { _id: { familyId: "$lines.product." + (self.query.forSales === 'false' ? "costFamily" : "sellFamily"), entity: "$entity" }, caN: { "$sum": "$lines.total_ht" } } },
                         {
                             $lookup: {
                                 from: 'productFamily',
@@ -153,9 +118,7 @@ Object.prototype = {
                                 as: 'family'
                             }
                         },
-                        {
-                            $unwind: "$family"
-                        }
+                        { $unwind: "$family" }
                     ], function(err, doc) {
                         if (err)
                             return cb(err);
@@ -169,26 +132,11 @@ Object.prototype = {
                     });
                 },
                 caN_1: function(cb) {
-                    BillModel.aggregate([{
-                            $match: queryCAN_1
-                        },
-                        {
-                            $unwind: "$lines"
-                        },
-                        {
-                            $match: {
-                                'lines.product': {
-                                    $ne: null
-                                }
-                            }
-                        },
-                        {
-                            $project: {
-                                _id: 0,
-                                lines: 1,
-                                entity: 1
-                            }
-                        },
+                    BillModel.aggregate([
+                        { $match: queryCAN_1 },
+                        { $unwind: "$lines" },
+                        { $match: { 'lines.product': { $ne: null } } },
+                        { $project: { _id: 0, lines: 1, entity: 1 } },
                         {
                             $lookup: {
                                 from: 'Product',
@@ -197,9 +145,7 @@ Object.prototype = {
                                 as: 'lines.product'
                             }
                         },
-                        {
-                            $unwind: "$lines.product"
-                        },
+                        { $unwind: "$lines.product" },
                         {
                             $project: {
                                 entity: 1,
@@ -209,17 +155,7 @@ Object.prototype = {
                                 'lines.product.costFamily': 1
                             }
                         },
-                        {
-                            $group: {
-                                _id: {
-                                    familyId: "$lines.product." + (self.query.forSales === 'false' ? "costFamily" : "sellFamily"),
-                                    entity: "$entity"
-                                },
-                                caN_1: {
-                                    "$sum": "$lines.total_ht"
-                                }
-                            }
-                        },
+                        { $group: { _id: { familyId: "$lines.product." + (self.query.forSales === 'false' ? "costFamily" : "sellFamily"), entity: "$entity" }, caN_1: { "$sum": "$lines.total_ht" } } },
                         {
                             $lookup: {
                                 from: 'productFamily',
@@ -228,9 +164,7 @@ Object.prototype = {
                                 as: 'family'
                             }
                         },
-                        {
-                            $unwind: "$family"
-                        }
+                        { $unwind: "$family" }
                     ], function(err, doc) {
                         if (err)
                             return cb(err);
@@ -385,9 +319,7 @@ Object.prototype = {
         var self = this;
         var BillModel = MODEL('invoice').Schema;
         var queryCA = {
-            Status: {
-                '$ne': 'DRAFT'
-            },
+            Status: { '$ne': 'DRAFT' },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').toDate(),
                 '$lt': moment(self.query.end).endOf('day').toDate()
@@ -395,9 +327,7 @@ Object.prototype = {
             forSales: true
         };
         var queryCAN_1 = {
-            Status: {
-                '$ne': 'DRAFT'
-            },
+            Status: { '$ne': 'DRAFT' },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').subtract(1, 'year').toDate(),
                 '$lt': moment(self.query.end).endOf('day').subtract(1, 'year').toDate()
@@ -411,24 +341,10 @@ Object.prototype = {
 
         async.parallel({
             caN: function(cb) {
-                BillModel.aggregate([{
-                        $match: queryCA
-                    },
-                    {
-                        $project: {
-                            _id: 1,
-                            total_ht: 1,
-                            entity: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: "$entity",
-                            caN: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: queryCA },
+                    { $project: { _id: 1, total_ht: 1, entity: 1 } },
+                    { $group: { _id: "$entity", caN: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (err)
                         return cb(err);
@@ -440,24 +356,10 @@ Object.prototype = {
                 });
             },
             caN_1: function(cb) {
-                BillModel.aggregate([{
-                        $match: queryCAN_1
-                    },
-                    {
-                        $project: {
-                            _id: 1,
-                            total_ht: 1,
-                            entity: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: "$entity",
-                            caN_1: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: queryCAN_1 },
+                    { $project: { _id: 1, total_ht: 1, entity: 1 } },
+                    { $group: { _id: "$entity", caN_1: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (err)
                         return cb(err);
@@ -528,45 +430,18 @@ Object.prototype = {
                 var dateEnd = moment().endOf('year');
 
                 var query = {
-                    Status: {
-                        '$ne': 'DRAFT'
-                    },
-                    datec: {
-                        '$gte': dateStart.toDate(),
-                        '$lt': dateEnd.toDate()
-                    },
+                    Status: { '$ne': 'DRAFT' },
+                    datec: { '$gte': dateStart.toDate(), '$lt': dateEnd.toDate() },
                     forSales: true
                 };
 
                 if (!self.user.multiEntities)
                     query.entity = self.user.entity;
 
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            year: {
-                                $year: "$datec"
-                            },
-                            month: {
-                                $month: "$datec"
-                            },
-                            total_ht: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: {
-                                year: "$year",
-                                month: "$month"
-                            },
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, year: { $year: "$datec" }, month: { $month: "$datec" }, total_ht: 1 } },
+                    { $group: { _id: { year: "$year", month: "$month" }, total_ht: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (err)
                         return console.log(err);
@@ -661,10 +536,7 @@ Object.prototype = {
                     // Start with month
                     for (var i = 0, len = 12; i < len; i++) {
                         var elem = {
-                            date: moment().set({
-                                'year': dateEnd.year(),
-                                'month': i
-                            }).startOf('month').endOf('day').format("YYYY-MM-DD")
+                            date: moment().set({ 'year': dateEnd.year(), 'month': i }).startOf('month').endOf('day').format("YYYY-MM-DD")
                         };
                         chartData.push(elem);
                     }
@@ -672,10 +544,7 @@ Object.prototype = {
 
                     for (var i = 0, len = doc.length; i < len; i++) {
                         var elem = {
-                            date: moment().set({
-                                'year': 2016,
-                                'month': doc[i]._id.month - 1
-                            }).startOf('month').endOf('day').format("YYYY-MM-DD"),
+                            date: moment().set({ 'year': 2016, 'month': doc[i]._id.month - 1 }).startOf('month').endOf('day').format("YYYY-MM-DD"),
                             total_ht: self.module('utils').round(doc[i].total_ht, 0)
                         };
 
@@ -703,36 +572,18 @@ Object.prototype = {
             },
             ca: function(cb) {
                 var query = {
-                    Status: {
-                        '$ne': 'DRAFT'
-                    },
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
-                    },
+                    Status: { '$ne': 'DRAFT' },
+                    datec: { '$gte': dateStart, '$lt': dateEnd },
                     forSales: true
                 };
 
                 if (!self.user.multiEntities)
                     query.entity = self.user.entity;
 
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            total_ht: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: null,
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, total_ht: 1 } },
+                    { $group: { _id: null, total_ht: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (err)
                         return console.log(err);
@@ -746,13 +597,8 @@ Object.prototype = {
             },
             charges: function(cb) {
                 var query = {
-                    Status: {
-                        '$ne': 'DRAFT'
-                    },
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
-                    },
+                    Status: { '$ne': 'DRAFT' },
+                    datec: { '$gte': dateStart, '$lt': dateEnd },
                     forSales: false
                 };
 
@@ -760,27 +606,10 @@ Object.prototype = {
                     query.entity = self.user.entity;
 
 
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            total_ht: 1,
-                            supplier: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: "$supplier.id",
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            },
-                            name: {
-                                $addToSet: "$supplier.name"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, total_ht: 1, supplier: 1 } },
+                    { $group: { _id: "$supplier.id", total_ht: { "$sum": "$total_ht" }, name: { $addToSet: "$supplier.name" } } }
                 ], function(err, doc) {
                     if (err)
                         return console.log(err);
@@ -799,9 +628,7 @@ Object.prototype = {
                         if (data == null)
                             return callback();
 
-                        SocieteModel.findOne({
-                            _id: data._id
-                        }, "fournisseur", function(err, societe) {
+                        SocieteModel.findOne({ _id: data._id }, "fournisseur", function(err, societe) {
                             if (societe && societe.fournisseur === "SUBCONTRACTOR")
                                 result.subcontractor.push(data);
                             else
@@ -839,7 +666,7 @@ Object.prototype = {
                     start_date: dateStart,
                     end_date: dateEnd,
                     perPage: 100
-                    //societeName: 'ADHOC STOCK'
+                        //societeName: 'ADHOC STOCK'
                 }).then(function(data) {
                     cb(null, data.balance);
                 });
@@ -874,21 +701,10 @@ Object.prototype = {
         var ca = {};
 
         var query = {
-            Status: {
-                '$nin': ['DRAFT', 'CANCELED']
-            },
-            $or: [{
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
-                    }
-                },
-                {
-                    datec: {
-                        '$gte': dateStartN1,
-                        '$lt': dateEndN1
-                    }
-                }
+            Status: { '$nin': ['DRAFT', 'CANCELED'] },
+            $or: [
+                { datec: { '$gte': dateStart, '$lt': dateEnd } },
+                { datec: { '$gte': dateStartN1, '$lt': dateEndN1 } }
             ], // Date de facture
             forSales: true
         };
@@ -896,28 +712,13 @@ Object.prototype = {
         if (self.query.entity)
             query.entity = self.query.entity;
 
-        BillModel.aggregate([{
-                $match: query
-            },
-            {
-                $project: {
-                    _id: 1,
-                    supplier: 1,
-                    total_ht: 1,
-                    year: {
-                        $year: '$datec'
-                    }
-                }
-            },
+        BillModel.aggregate([
+            { $match: query },
+            { $project: { _id: 1, supplier: 1, total_ht: 1, year: { $year: '$datec' } } },
             {
                 $group: {
-                    _id: {
-                        id: "$supplier",
-                        year: "$year"
-                    },
-                    total_ht: {
-                        "$sum": "$total_ht"
-                    }
+                    _id: { id: "$supplier", year: "$year" },
+                    total_ht: { "$sum": "$total_ht" }
                 }
             },
             {
@@ -930,12 +731,7 @@ Object.prototype = {
             }, {
                 $unwind: "$supplier"
             },
-            {
-                $sort: {
-                    '_id.year': -1,
-                    total_ht: -1
-                }
-            }
+            { $sort: { '_id.year': -1, total_ht: -1 } }
         ], function(err, doc) {
             if (err)
                 return console.log(err);
@@ -970,9 +766,7 @@ Object.prototype = {
                 }
             }
 
-            self.json({
-                data: res
-            });
+            self.json({ data: res });
         });
     },
     caCommercial: function() {
@@ -985,13 +779,8 @@ Object.prototype = {
         var ca = {};
 
         var query = {
-            Status: {
-                '$ne': 'DRAFT'
-            },
-            datec: {
-                '$gte': dateStart,
-                '$lt': dateEnd
-            },
+            Status: { '$ne': 'DRAFT' },
+            datec: { '$gte': dateStart, '$lt': dateEnd },
             forSales: true
         };
 
@@ -1002,31 +791,11 @@ Object.prototype = {
 
         async.parallel({
             data: function(cb) {
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $match: {
-                            "salesPerson": {
-                                $ne: null
-                            }
-                        }
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            salesPerson: 1,
-                            total_ht: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: "$salesPerson",
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    },
+                BillModel.aggregate([
+                    { $match: query },
+                    { $match: { "salesPerson": { $ne: null } } },
+                    { $project: { _id: 0, salesPerson: 1, total_ht: 1 } },
+                    { $group: { _id: "$salesPerson", total_ht: { "$sum": "$total_ht" } } },
                     {
                         $lookup: {
                             from: 'Employees',
@@ -1038,31 +807,14 @@ Object.prototype = {
                     {
                         $unwind: "$salesPerson"
                     },
-                    {
-                        $sort: {
-                            'salesPerson.name.last': 1
-                        }
-                    }
+                    { $sort: { 'salesPerson.name.last': 1 } }
                 ], cb);
             },
             total: function(cb) {
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            total_ht: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: null,
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, total_ht: 1 } },
+                    { $group: { _id: null, total_ht: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (doc.length)
                         return cb(err, doc[0].total_ht);
@@ -1086,17 +838,10 @@ Object.prototype = {
         var dateEnd = moment(self.query.end).endOf('day').toDate();
 
         var query = {
-            Status: {
-                '$ne': 'DRAFT'
-            },
-            datec: {
-                '$gte': dateStart,
-                '$lte': dateEnd
-            },
+            Status: { '$ne': 'DRAFT' },
+            datec: { '$gte': dateStart, '$lte': dateEnd },
             forSales: true,
-            isremoved: {
-                $ne: true
-            }
+            isremoved: { $ne: true }
         };
 
         //console.log(self.query);
@@ -1108,52 +853,18 @@ Object.prototype = {
         if (self.query.commercial)
             commercial["salesPerson"] = self.query.commercial;
         else
-            commercial["salesPerson"] = {
-                $ne: null
-            };
+            commercial["salesPerson"] = { $ne: null };
         //return self.json([]);
 
         console.log(commercial, query);
 
         async.waterfall([
             function(cb) {
-                BillModel.aggregate([{
-                        $match: {
-                            $and: [query, commercial]
-                        }
-                    },
-                    {
-                        $unwind: "$lines"
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            salesPerson: 1,
-                            supplier: 1,
-                            total_ht: 1,
-                            lines: 1,
-                            datec: 1,
-                            month: {
-                                $month: "$datec"
-                            },
-                            year: {
-                                $year: "$datec"
-                            }
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: {
-                                salesPerson: "$salesPerson",
-                                year: "$year",
-                                month: "$month",
-                                productId: "$lines.product"
-                            },
-                            total_ht: {
-                                "$sum": "$lines.total_ht"
-                            }
-                        }
-                    },
+                BillModel.aggregate([
+                    { $match: { $and: [query, commercial] } },
+                    { $unwind: "$lines" },
+                    { $project: { _id: 0, salesPerson: 1, supplier: 1, total_ht: 1, lines: 1, datec: 1, month: { $month: "$datec" }, year: { $year: "$datec" } } },
+                    { $group: { _id: { salesPerson: "$salesPerson", year: "$year", month: "$month", productId: "$lines.product" }, total_ht: { "$sum": "$lines.total_ht" } } },
                     {
                         $lookup: {
                             from: 'Product',
@@ -1173,24 +884,8 @@ Object.prototype = {
                             'product.sellFamily': 1,
                         }
                     }, {
-                        $group: {
-                            _id: {
-                                salesPerson: "$_id.salesPerson",
-                                year: "$_id.year",
-                                month: "$_id.month",
-                                familyId: "$product.sellFamily"
-                            },
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }, {
-                        $sort: {
-                            "_id.salesPerson": 1,
-                            "_id.year": 1,
-                            "_id.month": 1
-                        }
-                    }
+                        $group: { _id: { salesPerson: "$_id.salesPerson", year: "$_id.year", month: "$_id.month", familyId: "$product.sellFamily" }, total_ht: { "$sum": "$total_ht" } }
+                    }, { $sort: { "_id.salesPerson": 1, "_id.year": 1, "_id.month": 1 } }
                 ], function(err, doc) {
                     if (err)
                         return cb(err);
@@ -1293,16 +988,9 @@ Object.prototype = {
         var dateEnd = moment(self.query.end).endOf('day').toDate();
 
         var query = {
-            Status: {
-                '$ne': 'DRAFT'
-            },
-            isremoved: {
-                $ne: true
-            },
-            datec: {
-                '$gte': dateStart,
-                '$lte': dateEnd
-            }
+            Status: { '$ne': 'DRAFT' },
+            isremoved: { $ne: true },
+            datec: { '$gte': dateStart, '$lte': dateEnd }
         };
 
         if (self.query.entity)
@@ -1313,18 +1001,13 @@ Object.prototype = {
         if (self.query.commercial)
             commercial["salesPerson"] = ObjectId(self.query.commercial);
         else
-            commercial["salesPerson"] = {
-                $ne: null
-            };
+            commercial["salesPerson"] = { $ne: null };
         //return self.json([]);
 
         //console.log(commercial, query);
-        BillModel.aggregate([{
-                $match: query
-            },
-            {
-                $unwind: "$lines"
-            },
+        BillModel.aggregate([
+            { $match: query },
+            { $unwind: "$lines" },
             {
                 $project: {
                     _id: 0,
@@ -1335,12 +1018,8 @@ Object.prototype = {
                     lines: 1,
                     ref: 1,
                     qty: "$lines.qty",
-                    month: {
-                        $month: "$datec"
-                    },
-                    year: {
-                        $year: "$datec"
-                    },
+                    month: { $month: "$datec" },
+                    year: { $year: "$datec" },
                     datec: 1
                 }
             },
@@ -1387,13 +1066,9 @@ Object.prototype = {
             {
                 $project: {
                     _id: 0,
-                    salesPerson: {
-                        "$concat": ['$salesPerson.name.last', " ", '$salesPerson.name.first']
-                    },
+                    salesPerson: { "$concat": ['$salesPerson.name.last', " ", '$salesPerson.name.first'] },
                     supplier_id: "$supplier._id",
-                    supplier_name: {
-                        "$concat": ["$supplier.name.last", " (", "$supplier.salesPurchases.ref", ")"]
-                    },
+                    supplier_name: { "$concat": ["$supplier.name.last", " (", "$supplier.salesPurchases.ref", ")"] },
                     total_ht: 1,
                     discount: 1,
                     //lines: 1,
@@ -1401,17 +1076,10 @@ Object.prototype = {
                     qty: 1,
                     month: 1,
                     year: 1,
-                    datec: {
-                        $dateToString: {
-                            format: "%d/%m/%Y",
-                            date: "$datec"
-                        }
-                    },
+                    datec: { $dateToString: { format: "%d/%m/%Y", date: "$datec" } },
                     productId: "$product._id",
                     productName: "$product.info.SKU",
-                    family: {
-                        $arrayElemAt: ["$family.langs", 0]
-                    }
+                    family: { $arrayElemAt: ["$family.langs", 0] }
                 }
             },
             /* {
@@ -1440,7 +1108,7 @@ Object.prototype = {
                     //_id: 1,
                     "supplier_name": 1,
                     ref: 1
-                    // family: 1,
+                        // family: 1,
                 }
             }
         ], function(err, docs) {
@@ -1641,36 +1309,17 @@ function(err) {
 
         var query = {
             Status: 'NOT_PAID',
-            dater: {
-                '$lte': moment().subtract(10, 'day').toDate()
-            },
+            dater: { '$lte': moment().subtract(10, 'day').toDate() },
             forSales: true
         };
 
         if (!self.user.multiEntities)
             query.entity = self.user.entity;
 
-        BillModel.aggregate([{
-                $match: query
-            },
-            {
-                $project: {
-                    _id: 1,
-                    total_ttc: 1,
-                    entity: 1
-                }
-            },
-            {
-                $group: {
-                    _id: "$entity",
-                    total: {
-                        "$sum": "$total_ttc"
-                    },
-                    cpt: {
-                        "$sum": 1
-                    }
-                }
-            }
+        BillModel.aggregate([
+            { $match: query },
+            { $project: { _id: 1, total_ttc: 1, entity: 1 } },
+            { $group: { _id: "$entity", total: { "$sum": "$total_ttc" }, cpt: { "$sum": 1 } } }
         ], function(err, doc) {
             if (err)
                 return console.log(err);
@@ -1701,36 +1350,18 @@ function(err) {
         async.parallel({
             ca: function(cb) {
                 var query = {
-                    Status: {
-                        '$ne': 'DRAFT'
-                    },
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
-                    },
+                    Status: { '$ne': 'DRAFT' },
+                    datec: { '$gte': dateStart, '$lt': dateEnd },
                     forSales: true
                 };
 
                 if (!self.user.multiEntities)
                     query.entity = self.user.entity;
 
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            total_ht: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: null,
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, total_ht: 1 } },
+                    { $group: { _id: null, total_ht: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (err)
                         return console.log(err);
@@ -1744,13 +1375,8 @@ function(err) {
             },
             charges: function(cb) {
                 var query = {
-                    Status: {
-                        '$ne': 'DRAFT'
-                    },
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
-                    },
+                    Status: { '$ne': 'DRAFT' },
+                    datec: { '$gte': dateStart, '$lt': dateEnd },
                     forSales: false
                 };
 
@@ -1758,27 +1384,10 @@ function(err) {
                     query.entity = self.user.entity;
 
 
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            total_ht: 1,
-                            supplier: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: "$supplier.id",
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            },
-                            name: {
-                                $addToSet: "$supplier.name"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, total_ht: 1, supplier: 1 } },
+                    { $group: { _id: "$supplier.id", total_ht: { "$sum": "$total_ht" }, name: { $addToSet: "$supplier.name" } } }
                 ], function(err, doc) {
                     if (err)
                         return console.log(err);
@@ -1797,9 +1406,7 @@ function(err) {
                         if (data == null)
                             return callback();
 
-                        SocieteModel.findOne({
-                            _id: data._id
-                        }, "fournisseur", function(err, societe) {
+                        SocieteModel.findOne({ _id: data._id }, "fournisseur", function(err, societe) {
                             if (societe && societe.fournisseur === "SUBCONTRACTOR")
                                 result.subcontractor.push(data);
                             else
@@ -1837,7 +1444,7 @@ function(err) {
                     start_date: dateStart,
                     end_date: dateEnd,
                     perPage: 100
-                    //societeName: 'ADHOC STOCK'
+                        //societeName: 'ADHOC STOCK'
                 }).then(function(data) {
                     cb(null, data.balance);
                 });
@@ -2058,9 +1665,7 @@ function(err) {
         var self = this;
         var BillModel = MODEL('invoice').Schema;
         var queryCH = {
-            Status: {
-                '$ne': 'DRAFT'
-            },
+            Status: { '$ne': 'DRAFT' },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').toDate(),
                 '$lt': moment(self.query.end).endOf('day').toDate()
@@ -2068,9 +1673,7 @@ function(err) {
             forSales: false
         };
         var queryCHN_1 = {
-            Status: {
-                '$ne': 'DRAFT'
-            },
+            Status: { '$ne': 'DRAFT' },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').subtract(1, 'year').toDate(),
                 '$lt': moment(self.query.end).endOf('day').subtract(1, 'year').toDate()
@@ -2084,24 +1687,10 @@ function(err) {
 
         async.parallel({
             chN: function(cb) {
-                BillModel.aggregate([{
-                        $match: queryCH
-                    },
-                    {
-                        $project: {
-                            _id: 1,
-                            total_ht: 1,
-                            entity: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: "$entity",
-                            chN: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: queryCH },
+                    { $project: { _id: 1, total_ht: 1, entity: 1 } },
+                    { $group: { _id: "$entity", chN: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (err)
                         return cb(err);
@@ -2113,24 +1702,10 @@ function(err) {
                 });
             },
             chN_1: function(cb) {
-                BillModel.aggregate([{
-                        $match: queryCHN_1
-                    },
-                    {
-                        $project: {
-                            _id: 1,
-                            total_ht: 1,
-                            entity: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: "$entity",
-                            chN_1: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: queryCHN_1 },
+                    { $project: { _id: 1, total_ht: 1, entity: 1 } },
+                    { $group: { _id: "$entity", chN_1: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (err)
                         return cb(err);
@@ -2201,45 +1776,18 @@ function(err) {
                 var dateEnd = moment().endOf('year');
 
                 var query = {
-                    Status: {
-                        '$ne': 'DRAFT'
-                    },
-                    datec: {
-                        '$gte': dateStart.toDate(),
-                        '$lt': dateEnd.toDate()
-                    },
+                    Status: { '$ne': 'DRAFT' },
+                    datec: { '$gte': dateStart.toDate(), '$lt': dateEnd.toDate() },
                     forSales: false
                 };
 
                 if (!self.user.multiEntities)
                     query.entity = self.user.entity;
 
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            year: {
-                                $year: "$datec"
-                            },
-                            month: {
-                                $month: "$datec"
-                            },
-                            total_ht: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: {
-                                year: "$year",
-                                month: "$month"
-                            },
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, year: { $year: "$datec" }, month: { $month: "$datec" }, total_ht: 1 } },
+                    { $group: { _id: { year: "$year", month: "$month" }, total_ht: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (err)
                         return console.log(err);
@@ -2334,10 +1882,7 @@ function(err) {
                     // Start with month
                     for (var i = 0, len = 12; i < len; i++) {
                         var elem = {
-                            date: moment().set({
-                                'year': dateEnd.year(),
-                                'month': i
-                            }).startOf('month').endOf('day').format("YYYY-MM-DD")
+                            date: moment().set({ 'year': dateEnd.year(), 'month': i }).startOf('month').endOf('day').format("YYYY-MM-DD")
                         };
                         chartData.push(elem);
                     }
@@ -2345,10 +1890,7 @@ function(err) {
 
                     for (var i = 0, len = doc.length; i < len; i++) {
                         var elem = {
-                            date: moment().set({
-                                'year': 2016,
-                                'month': doc[i]._id.month - 1
-                            }).startOf('month').endOf('day').format("YYYY-MM-DD"),
+                            date: moment().set({ 'year': 2016, 'month': doc[i]._id.month - 1 }).startOf('month').endOf('day').format("YYYY-MM-DD"),
                             total_ht: self.module('utils').round(doc[i].total_ht, 0)
                         };
 
@@ -2377,36 +1919,18 @@ function(err) {
             ca: function(cb) {
                 const BillModel = MODEL('invoice').Schema;
                 var query = {
-                    Status: {
-                        '$ne': 'DRAFT'
-                    },
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
-                    },
+                    Status: { '$ne': 'DRAFT' },
+                    datec: { '$gte': dateStart, '$lt': dateEnd },
                     forSales: true
                 };
 
                 if (!self.user.multiEntities)
                     query.entity = self.user.entity;
 
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            total_ht: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: null,
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, total_ht: 1 } },
+                    { $group: { _id: null, total_ht: { "$sum": "$total_ht" } } }
                 ], function(err, doc) {
                     if (err)
                         return console.log(err);
@@ -2421,13 +1945,8 @@ function(err) {
             charges: function(cb) {
                 const BillModel = MODEL('invoice').Schema;
                 var query = {
-                    Status: {
-                        '$ne': 'DRAFT'
-                    },
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
-                    },
+                    Status: { '$ne': 'DRAFT' },
+                    datec: { '$gte': dateStart, '$lt': dateEnd },
                     forSales: false
                 };
 
@@ -2435,27 +1954,10 @@ function(err) {
                     query.entity = self.user.entity;
 
 
-                BillModel.aggregate([{
-                        $match: query
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            total_ht: 1,
-                            supplier: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: "$supplier.id",
-                            total_ht: {
-                                "$sum": "$total_ht"
-                            },
-                            name: {
-                                $addToSet: "$supplier.name"
-                            }
-                        }
-                    }
+                BillModel.aggregate([
+                    { $match: query },
+                    { $project: { _id: 0, total_ht: 1, supplier: 1 } },
+                    { $group: { _id: "$supplier.id", total_ht: { "$sum": "$total_ht" }, name: { $addToSet: "$supplier.name" } } }
                 ], function(err, doc) {
                     if (err)
                         return console.log(err);
@@ -2474,9 +1976,7 @@ function(err) {
                         if (data == null)
                             return callback();
 
-                        SocieteModel.findOne({
-                            _id: data._id
-                        }, "fournisseur", function(err, societe) {
+                        SocieteModel.findOne({ _id: data._id }, "fournisseur", function(err, societe) {
                             if (societe && societe.fournisseur === "SUBCONTRACTOR")
                                 result.subcontractor.push(data);
                             else
@@ -2514,7 +2014,7 @@ function(err) {
                     start_date: dateStart,
                     end_date: dateEnd,
                     perPage: 100
-                    //societeName: 'ADHOC STOCK'
+                        //societeName: 'ADHOC STOCK'
                 }).then(function(data) {
                     cb(null, data.balance);
                 });

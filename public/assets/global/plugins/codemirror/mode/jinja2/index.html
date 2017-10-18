@@ -39,8 +39,10 @@
             }} {{ path(&#39;_home&#39;, { &#39;section&#39;: app.request.get(&#39;section&#39;), &#39;boolean&#39;: true, &#39;number&#39;: 55.33 }) }} {% include (&#39;test.incl.html.twig&#39;) %} </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-            mode: {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
+            mode:
+            {
                 name: "jinja2",
                 htmlMode: true
             }

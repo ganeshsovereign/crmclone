@@ -62,14 +62,9 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     $scope.variantesLines = [];
     $scope.variantsArray = [];
 
-    $scope.billingModes = [{
-            id: "QTY",
-            label: "Quantité"
-        },
-        {
-            id: "MONTH",
-            label: "Abonnement mensuel"
-        }
+    $scope.billingModes = [
+        { id: "QTY", label: "Quantité" },
+        { id: "MONTH", label: "Abonnement mensuel" }
     ];
 
     var grid = new Datatable();
@@ -88,10 +83,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             if (data.data._id == $rootScope.$stateParams.id) {
                 $scope.findOne();
                 if (data.data.message)
-                    toastr.warning(data.data.message, 'Notification serveur', {
-                        timeOut: 500,
-                        progressBar: true
-                    });
+                    toastr.warning(data.data.message, 'Notification serveur', { timeOut: 500, progressBar: true });
             }
     });
 
@@ -119,18 +111,9 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         $scope.validRef = isValide;
     };
 
-    $scope.types = [{
-            name: "A la vente",
-            id: "SELL"
-        },
-        {
-            name: "A l'achat",
-            id: "BUY"
-        },
-        {
-            name: "Tous",
-            id: "ALL"
-        }
+    $scope.types = [{ name: "A la vente", id: "SELL" },
+        { name: "A l'achat", id: "BUY" },
+        { name: "Tous", id: "ALL" }
     ];
 
     $scope.type = "SELL";
@@ -154,7 +137,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             $scope.dict = data;
 
             if (!$rootScope.$stateParams.id)
-                // Is a list
+            // Is a list
                 initDatatable();
         });
 
@@ -169,9 +152,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         $http({
             method: 'GET',
             url: '/erp/api/product/family',
-            params: {
-                isCost: false
-            }
+            params: { isCost: false }
         }).success(function(data, status) {
             $scope.sellFamilies = data.data;
         });
@@ -179,9 +160,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         $http({
             method: 'GET',
             url: '/erp/api/product/family',
-            params: {
-                isCost: true
-            }
+            params: { isCost: true }
         }).success(function(data, status) {
             $scope.costFamilies = data.data;
         });
@@ -197,9 +176,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         $http({
             method: 'GET',
             url: '/erp/api/product/prices/priceslist/select',
-            params: {
-                cost: false
-            }
+            params: { cost: false }
         }).success(function(data) {
             $scope.pricesLists = data.data;
         });
@@ -212,9 +189,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         if (product.new) {
             product = new Products(this.product);
             product.$save(function(response) {
-                $rootScope.$state.go("product.show", {
-                    id: response._id
-                });
+                $rootScope.$state.go("product.show", { id: response._id });
             });
             return;
         }
@@ -293,9 +268,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     };*/
 
     $scope.clone = function(qty) {
-        $scope.product.$clone({
-            qty: qty
-        }, function(response) {
+        $scope.product.$clone({ qty: qty }, function(response) {
             $rootScope.$state.go('product.show', {
                 id: response._id
             });
@@ -718,10 +691,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
         if (collection[1])
             for (var elem1 in collection[1].values) {
-                thead[0].push({
-                    colspan: (collection[2] ? collection[2].values.length : ''),
-                    value: collection[1].values[elem1].code
-                });
+                thead[0].push({ colspan: (collection[2] ? collection[2].values.length : ''), value: collection[1].values[elem1].code });
             }
 
         if (collection[2]) {
@@ -731,10 +701,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
             for (var elem1 in collection[1].values) {
                 for (var elem2 in collection[2].values) {
-                    thead[1].push({
-                        colspan: '',
-                        value: collection[2].values[elem2].code
-                    });
+                    thead[1].push({ colspan: '', value: collection[2].values[elem2].code });
                 }
             }
         }
@@ -747,9 +714,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                     collection[3].values.forEach(function(elem0, index2) {
 
                         //<tr>
-                        var aline = {
-                            col: []
-                        };
+                        var aline = { col: [] };
                         aline.index2 = index2;
                         aline.rowspan = (collection[3] ? collection[3].values.length : '');
                         aline.elem3 = elem3.code;
@@ -761,11 +726,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                                     collection[2].values.forEach(function(elem2) {
                                         var varId = [elem3._id, elem2._id, elem1._id, elem0._id].sort();
                                         var html = true;
-                                        aline.col.push({
-                                            html: html,
-                                            id: varId.join('/'),
-                                            values: varId
-                                        });
+                                        aline.col.push({ html: html, id: varId.join('/'), values: varId });
                                     });
                                 }
                             })
@@ -775,9 +736,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                     });
                 } else {
                     //<tr>
-                    var aline = {
-                        col: []
-                    };
+                    var aline = { col: [] };
                     aline.elem0 = elem3.code;
 
                     if (collection[1]) {
@@ -786,32 +745,20 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                                 collection[2].values.forEach(function(elem1) {
                                     var varId = [elem3._id, elem2._id, elem1._id].sort();
                                     var html = true;
-                                    aline.col.push({
-                                        html: html,
-                                        id: varId.join('/'),
-                                        values: varId
-                                    });
+                                    aline.col.push({ html: html, id: varId.join('/'), values: varId });
                                 });
                             });
                         } else {
                             collection[1].values.forEach(function(elem2) {
                                 var varId = [elem3._id, elem2._id].sort();
                                 var html = true;
-                                aline.col.push({
-                                    html: html,
-                                    id: varId.join('/'),
-                                    values: varId
-                                });
+                                aline.col.push({ html: html, id: varId.join('/'), values: varId });
                             });
                         }
                     } else {
                         var html = true;
                         var varId = elem3._id;
-                        aline.col.push({
-                            html: html,
-                            id: varId,
-                            values: [elem3._id]
-                        });
+                        aline.col.push({ html: html, id: varId, values: [elem3._id] });
                     }
                     //</tr>
                     lines.push(aline);
@@ -958,10 +905,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
             $scope.save = function() {
                 //console.log($scope.data.id);
-                $modalInstance.close({
-                    _id: $scope.data,
-                    qty: $scope.qty
-                });
+                $modalInstance.close({ _id: $scope.data, qty: $scope.qty });
             }; // end save
 
             $scope.hitEnter = function(evt) {
@@ -1061,11 +1005,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     };
 
     $scope.addProductToChannel = function(id, channel) {
-        $http.post('/erp/api/channel/product', {
-            product: id,
-            channel: channel._id,
-            type: 'product'
-        }).then(function(res) {
+        $http.post('/erp/api/channel/product', { product: id, channel: channel._id, type: 'product' }).then(function(res) {
             channel.channels.push(res.data);
         });
     };
@@ -1087,27 +1027,13 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
 
         $scope.dict = {};
         $scope.search = {
-            ref: {
-                value: ""
-            },
-            name: {
-                value: ""
-            },
-            Status: {
-                value: []
-            },
-            sellFamily: {
-                value: []
-            },
-            isActive: {
-                value: [true]
-            },
-            isSell: {
-                value: [true, true]
-            },
-            isBuy: {
-                value: [true, true]
-            },
+            ref: { value: "" },
+            name: { value: "" },
+            Status: { value: [] },
+            sellFamily: { value: [] },
+            isActive: { value: [true] },
+            isSell: { value: [true, true] },
+            isBuy: { value: [true, true] },
         };
 
         $scope.page = {
@@ -1116,9 +1042,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             total: 0
         };
 
-        $scope.sort = {
-            'data.info.SKU': 1
-        };
+        $scope.sort = { 'data.info.SKU': 1 };
 
         if (typeof superCache.get("ProductListController") !== "undefined") {
             $scope.page = superCache.get("ProductListController").page;
@@ -1193,9 +1117,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             $http({
                 method: 'GET',
                 url: '/erp/api/product/family',
-                params: {
-                    isCost: false
-                }
+                params: { isCost: false }
             }).success(function(data, status) {
                 $scope.sellFamilies = data.data;
                 $scope.find();
@@ -1397,9 +1319,7 @@ MetronicApp.controller('ProductBarCodeController', ['$scope', '$routeParams', 'G
             pageSize: '5',
             filter: {
                 logic: 'and',
-                filters: [{
-                    value: val
-                }]
+                filters: [{ value: val }]
             }
         }).then(function(res) {
             return res.data;
@@ -1490,9 +1410,7 @@ MetronicApp.controller('LineController', ['$scope', '$http', '$modalInstance', '
             supplier: options.supplier,
             filter: {
                 logic: 'and',
-                filters: [{
-                    value: val
-                }]
+                filters: [{ value: val }]
             }
         }).then(function(res) {
             //console.log(res.data);
@@ -1549,9 +1467,7 @@ MetronicApp.controller('DynFormController', ['$scope', '$http', '$modalInstance'
             family: family || object.product.family || object.optional.caFamily,
             filter: {
                 logic: 'and',
-                filters: [{
-                    value: val
-                }]
+                filters: [{ value: val }]
             }
         }).then(function(res) {
             console.log(res.data);
@@ -1590,12 +1506,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
             $http({
                 method: 'GET',
                 url: '/erp/api/product/prices/priceslist/select',
-                params: {
-                    cost: (cost === false ? false : true),
-                    isGlobalDiscount: false,
-                    isCoef: true,
-                    isFixed: true
-                }
+                params: { cost: (cost === false ? false : true), isGlobalDiscount: false, isCoef: true, isFixed: true }
             }).success(function(data, status) {
                 $scope.pricesLists = data.data;
                 console.log("PriceLists", data);
@@ -1619,9 +1530,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
         total: 0
     };
 
-    $scope.sort = {
-        'product.info.SKU': 1
-    };
+    $scope.sort = { 'product.info.SKU': 1 };
 
 
 
@@ -1715,10 +1624,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
         $http({
             method: 'PUT',
             url: '/erp/api/product/prices/priceslist/refreshCoef',
-            params: {
-                priceList: (priceList ? priceList._id : null),
-                product: (product ? product._id : null)
-            },
+            params: { priceList: (priceList ? priceList._id : null), product: (product ? product._id : null) },
             data: {}
         }).success(function(data, status) {
             $scope.find();
@@ -1816,9 +1722,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
                 pageSize: 5,
                 filter: {
                     logic: 'and',
-                    filters: [{
-                        value: val
-                    }]
+                    filters: [{ value: val }]
                 }
             }).then(function(res) {
                 return res.data;
@@ -1831,10 +1735,7 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
                 cost: true
             };
         else
-            params = {
-                isCoef: true,
-                isFixed: true
-            };
+            params = { isCoef: true, isFixed: true };
 
 
         $http({
@@ -2007,9 +1908,7 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
     $scope.productImages = [];
     $scope.search = "";
 
-    var uploader = $scope.uploader = new FileUploader({
-        autoUpload: true
-    });
+    var uploader = $scope.uploader = new FileUploader({ autoUpload: true });
     uploader.url = '/erp/api/images/bank';
 
     $scope.refreshDirectory = function() {
@@ -2046,11 +1945,7 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
         //console.log(product);
         var images = new Files.bank();
 
-        images.$query({
-            filter: this.search,
-            limit: $scope.page.limit,
-            page: $scope.page.page
-        }, function(data) {
+        images.$query({ filter: this.search, limit: $scope.page.limit, page: $scope.page.page }, function(data) {
             $scope.page.total = data.total;
             $scope.images = data.data;
         });
@@ -2059,9 +1954,7 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
             $scope.product = product;
             var imagesProduct = new Files.productImages();
 
-            imagesProduct.$get({
-                Id: product._id
-            }, function(data) {
+            imagesProduct.$get({ Id: product._id }, function(data) {
                 //console.log(data);
                 $scope.productImages = data.id;
             });
@@ -2170,9 +2063,7 @@ MetronicApp.controller('ProductImagesController', ['$scope', '$rootScope', '$htt
     $scope.find = function() {
         var images = new Files.productImages();
 
-        images.$get({
-            Id: $scope.product._id
-        }, function(data) {
+        images.$get({ Id: $scope.product._id }, function(data) {
             console.log(data);
             $scope.images = data.data;
         });
@@ -2274,9 +2165,7 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
         $http({
             method: 'GET',
             url: '/erp/api/product/warehouse/location/select',
-            params: {
-                warehouse: self.object.warehouse._id
-            }
+            params: { warehouse: self.object.warehouse._id }
 
         }).success(function(data, status) {
             $scope.$dict.location = data.data;
@@ -2298,11 +2187,7 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
             overlayColor: 'none'
         });
 
-        var query = {
-            filter: this.search,
-            limit: $scope.page.limit,
-            page: $scope.page.page
-        };
+        var query = { filter: this.search, limit: $scope.page.limit, page: $scope.page.page };
 
         var obj = new Object();
         obj.$query(query, function(data) {
@@ -2386,10 +2271,7 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
 
     $scope.find = function() {
 
-        var query = {
-            limit: $scope.page.limit,
-            page: $scope.page.page
-        };
+        var query = { limit: $scope.page.limit, page: $scope.page.page };
         $http({
             method: 'GET',
             url: '/erp/api/product/stockInventory',

@@ -2,11 +2,14 @@
  METRONIC MATERIAL DESIGN STYLE COMPONENTS 
 ******************************************/
 
+
 /* Cubic Bezier Transition */
+
 
 /***
 General reset
 ***/
+
 
 /* Set default body */
 
@@ -18,6 +21,7 @@ body {
     direction: "ltr";
     font-size: 14px;
 }
+
 
 /*
  Internet Explorer 10 doesn't differentiate device width from viewport width, and thus doesn't 
@@ -44,6 +48,7 @@ body {
 @viewport {
     width: device-width;
 }
+
 
 /*
  Internet Explorer 10 doesn't differentiate device width from viewport width, 
@@ -1101,6 +1106,7 @@ fieldset[disabled] .form-group.form-md-line-input .form-control {
     margin-right: 0;
 }
 
+
 /* bubble animation */
 
 @-webkit-keyframes growCircle {
@@ -1354,6 +1360,7 @@ fieldset[disabled] .form-group.form-md-line-input .form-control {
     margin-right: 0;
 }
 
+
 /* bubble animation */
 
 @-webkit-keyframes growCircleRadio {
@@ -1392,15 +1399,18 @@ fieldset[disabled] .form-group.form-md-line-input .form-control {
     }
 }
 
+
 /***
 General typography
 ***/
+
 
 /* Links */
 
 a:hover {
     cursor: pointer;
 }
+
 
 /* Primary Link */
 
@@ -1420,6 +1430,7 @@ p {
 label {
     font-weight: normal;
 }
+
 
 /* Headings */
 
@@ -1457,6 +1468,7 @@ h6 {
     font-size: 12px;
 }
 
+
 /* Headings helper text */
 
 h1 small,
@@ -1467,6 +1479,7 @@ h5 small,
 h6 small {
     color: #444444;
 }
+
 
 /* Block headings */
 
@@ -1479,6 +1492,7 @@ h6.block {
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
 
 /* Links */
 
@@ -1497,6 +1511,7 @@ a:active {
     outline: 0;
 }
 
+
 /* Horizontal break */
 
 hr {
@@ -1506,11 +1521,13 @@ hr {
     border-bottom: 0;
 }
 
+
 /* Unstyled List */
 
 .list-unstyled li>.list-unstyled {
     margin-left: 25px;
 }
+
 
 /* Code */
 
@@ -1520,6 +1537,7 @@ code {
     -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
+
 
 /* Disabled Navigation Link */
 
@@ -1538,9 +1556,11 @@ code {
     cursor: not-allowed !important;
 }
 
+
 /***
 Utilities
 ***/
+
 
 /* Rounded Element */
 
@@ -1555,6 +1575,7 @@ Utilities
 .rounded-4 {
     border-radius: 4px !important;
 }
+
 
 /* Circle Element */
 
@@ -1581,6 +1602,7 @@ Utilities
 .rounded {
     border-radius: 50% !important;
 }
+
 
 /* General utilities */
 
@@ -1661,6 +1683,7 @@ Utilities
     text-align: right;
 }
 
+
 /* Margin and padding utilities */
 
 .no-space {
@@ -1724,6 +1747,7 @@ Utilities
     margin-right: 10px !important;
 }
 
+
 /* IE8 & IE9 mode utilities */
 
 .visible-ie8 {
@@ -1758,6 +1782,7 @@ Utilities
     display: none !important;
 }
 
+
 /***
 Responsive Utils
 ***/
@@ -1779,6 +1804,7 @@ Responsive Utils
         display: none;
     }
 }
+
 
 /***
 Demo Utils
@@ -1811,6 +1837,7 @@ Demo Utils
     padding: 20px 0;
 }
 
+
 /***
 Users
 ***/
@@ -1832,6 +1859,7 @@ Users
     font-weight: 300;
     font-size: 11px;
 }
+
 
 /***
 Custom vertical inline menu
@@ -1924,6 +1952,7 @@ Custom vertical inline menu
     }
 }
 
+
 /***
 Separated List
 ***/
@@ -1945,6 +1974,7 @@ Separated List
         margin-bottom: 20px;
     }
 }
+
 
 /***
 Number & Chart Stats
@@ -2019,6 +2049,7 @@ Number & Chart Stats
     float: left;
 }
 
+
 /***
 General User Record Listing
 ***/
@@ -2086,6 +2117,7 @@ General User Record Listing
     color: #96a5aa;
 }
 
+
 /***
 File dropzone
 ***/
@@ -2099,6 +2131,7 @@ File dropzone
 .file-drop-zone.file-drop-zone-over {
     border-color: #aaa;
 }
+
 
 /***
 Fontawesome Icons
@@ -2115,6 +2148,7 @@ Fontawesome Icons
     line-height: 14px;
     -webkit-font-smoothing: antialiased;
 }
+
 
 /* Make font awesome icons fixed width */
 
@@ -2150,6 +2184,7 @@ li [class*=" icon-"].icon-large {
     width: 1.5625em;
 }
 
+
 /* Icon states */
 
 .icon-state-default {
@@ -2172,6 +2207,7 @@ li [class*=" icon-"].icon-large {
     color: #ed6b75;
 }
 
+
 /***
 Font Awesome 4.x Demo
 ***/
@@ -2192,6 +2228,7 @@ Font Awesome 4.x Demo
     cursor: pointer;
     background: #eee;
 }
+
 
 /***
 Simple Line Icons Demo
@@ -2223,6 +2260,7 @@ Simple Line Icons Demo
         width: 33.333%;
     }
 }
+
 
 /*** 
 Glyphicons Demo
@@ -2277,6 +2315,7 @@ Glyphicons Demo
     }
 }
 
+
 /***
 Customized Bootstrap Alerts
 ***/
@@ -2301,6 +2340,7 @@ Customized Bootstrap Alerts
     border-radius: 2px;
     border-width: 0;
 }
+
 
 /***
 Custom Bootstrap Badges
@@ -2335,6 +2375,7 @@ Custom Bootstrap Badges
     width: 8px;
 }
 
+
 /* Badge variants */
 
 .badge-default {
@@ -2367,12 +2408,14 @@ Custom Bootstrap Badges
     background-image: none;
 }
 
+
 /* Fix badge position for navs */
 
 .nav.nav-pills>li>a>.badge,
 .nav.nav-stacked>li>a>.badge {
     margin-top: -2px;
 }
+
 
 /***
 Dropdown Menu Badges
@@ -2403,6 +2446,7 @@ Dropdown Menu Badges
     font-size: 10px !important;
 }
 
+
 /***
 Custom buttons based on bootstrap SASS
 ***/
@@ -2418,6 +2462,7 @@ Custom buttons based on bootstrap SASS
 .btn:not(.btn-sm):not(.btn-lg) {
     line-height: 1.44;
 }
+
 
 /***
 Custom color buttons 
@@ -7733,6 +7778,7 @@ fieldset[disabled] .btn.purple-soft:not(.btn-outline).focus {
     border-color: transparent;
 }
 
+
 /* Circle Buttons */
 
 .btn-circle {
@@ -7856,6 +7902,7 @@ fieldset[disabled] .btn.purple-soft:not(.btn-outline).focus {
     margin-right: 0;
 }
 
+
 /***
 Image Carousel
 ***/
@@ -7938,6 +7985,7 @@ Image Carousel
     margin: 0;
 }
 
+
 /***
 Charts and statistics
 ***/
@@ -7952,6 +8000,7 @@ Charts and statistics
     font-size: 14px;
 }
 
+
 /***
 Statistic lists
 ***/
@@ -7962,6 +8011,7 @@ Statistic lists
     margin-right: 10px;
     margin-top: 3px;
 }
+
 
 /***
 Chart tooltips
@@ -7981,6 +8031,7 @@ Chart tooltips
     margin-bottom: 2px;
 }
 
+
 /***
 Mini chart containers
 ***/
@@ -7989,6 +8040,7 @@ Mini chart containers
 .line-chart {
     display: none;
 }
+
 
 /***
 Chats
@@ -8144,6 +8196,7 @@ Chats
     transition: all 0.3s;
 }
 
+
 /***
 Customized Bootstrap Close Icon 
 ***/
@@ -8160,9 +8213,11 @@ Customized Bootstrap Close Icon
     background-image: url("../img/remove-icon-small.png") !important;
 }
 
+
 /***
 Customized Bootstrap Dropdowns
 ***/
+
 
 /***
 Dropdowns
@@ -8172,6 +8227,7 @@ Dropdowns
 .dropdown.open>.dropdown-toggle {
     border-color: #ddd;
 }
+
 
 /***
 Dropdown Menu
@@ -8314,6 +8370,7 @@ Dropdown Menu
     display: none;
 }
 
+
 /* Dropdown submenu support for Bootsrap 3 */
 
 .dropdown-submenu {
@@ -8410,6 +8467,7 @@ Dropdown Menu
     }
 }
 
+
 /***
 Dropdown Checkboxes
 ***/
@@ -8446,6 +8504,7 @@ Dropdown Checkboxes
     margin-right: 3px;
 }
 
+
 /*rtl:ignore*/
 
 .dropdown-menu {
@@ -8475,6 +8534,7 @@ Dropdown Checkboxes
     opacity: 1;
     filter: alpha(opacity=100);
 }
+
 
 /*--------------------------------------------------
     [Dropdown Menu v2]
@@ -8602,6 +8662,7 @@ Dropdown Checkboxes
     left: auto;
 }
 
+
 /***
 System feeds
 ***/
@@ -8687,9 +8748,11 @@ System feeds
     color: #c1cbd0;
 }
 
+
 /***
 Form Layouts
 ****/
+
 
 /* Static info */
 
@@ -8711,6 +8774,7 @@ Form Layouts
     text-align: right;
 }
 
+
 /* Help blocks */
 
 .help-block {
@@ -8728,6 +8792,7 @@ Form Layouts
 .form-inline input {
     margin-bottom: 0px !important;
 }
+
 
 /* Control Label */
 
@@ -8871,6 +8936,7 @@ Form Layouts
     margin-right: 20px;
 }
 
+
 /* Checkboxes */
 
 .checkbox,
@@ -8895,6 +8961,7 @@ Form Layouts
     padding-left: 0;
 }
 
+
 /* Radio buttons */
 
 .radio-list>label {
@@ -8909,6 +8976,7 @@ Form Layouts
     padding-left: 0;
 }
 
+
 /* Radio buttons in horizontal forms */
 
 .form-horizontal .radio-list .radio {
@@ -8922,6 +8990,7 @@ Form Layouts
 .form-horizontal .radio>span {
     margin-top: 2px;
 }
+
 
 /* Rows seperated form layout */
 
@@ -8953,6 +9022,7 @@ Form Layouts
     padding-left: 15px !important;
     padding-right: 15px !important;
 }
+
 
 /* Form bordered */
 
@@ -9015,6 +9085,7 @@ Form Layouts
     }
 }
 
+
 /* Horizontal bordered form */
 
 .form .form-horizontal.form-bordered.form-row-stripped .form-group:nth-child(even) {
@@ -9037,6 +9108,7 @@ Form Layouts
     background-color: #fcfcfc;
 }
 
+
 /* Horizontal form small input issue */
 
 .form-horizontal .form-group .input-sm {
@@ -9046,6 +9118,7 @@ Form Layouts
 .form-horizontal .form-group .form-control-static {
     margin-top: 1px;
 }
+
 
 /***
 Forms
@@ -9063,6 +9136,7 @@ Forms
 .input-group-addon>i {
     color: #c5cdda;
 }
+
 
 /***
 Custom color buttons 
@@ -9780,6 +9854,7 @@ Custom color buttons
     width: 45px !important;
 }
 
+
 /* Form uneditable input */
 
 .uneditable-input {
@@ -9801,6 +9876,7 @@ Custom color buttons
     display: inline-block;
     margin: 0;
 }
+
 
 /* Form input sizing */
 
@@ -9865,6 +9941,7 @@ Custom color buttons
         width: 300px !important;
     }
 }
+
 
 /* Circle Inputs */
 
@@ -10119,6 +10196,7 @@ td>.mt-checkbox.mt-checkbox-single {
     margin-right: 0;
 }
 
+
 /***
 Custom icon buttons
 ***/
@@ -10213,6 +10291,7 @@ Custom icon buttons
     text-decoration: none;
 }
 
+
 /***
 Input icons
 ***/
@@ -10299,6 +10378,7 @@ Input icons
     font-size: 13px;
 }
 
+
 /***
 Customized Bootstrap Labels
 ***/
@@ -10325,6 +10405,7 @@ h5 .label,
 h6 .label {
     font-size: 75%;
 }
+
 
 /* Labels variants */
 
@@ -10382,6 +10463,7 @@ h6 .label {
     background-color: #e73d4a;
 }
 
+
 /***
 Iconic labels
 ***/
@@ -10401,6 +10483,7 @@ Iconic labels
 .ie9 .label.label-icon {
     padding: 3px 0px 3px 3px;
 }
+
 
 /***
 Text states
@@ -10453,9 +10536,11 @@ Text states
     padding: 3px 0 3px 3px !important;
 }
 
+
 /***
 Customized List Group
 ***/
+
 
 /* Contextual variants */
 
@@ -10605,6 +10690,7 @@ Customized List Group
     border-color: #e73d4a;
 }
 
+
 /***
 UI Loading
 ***/
@@ -10733,6 +10819,7 @@ UI Loading
     animation-delay: -0.16s;
 }
 
+
 /***
 Metro icons
 ***/
@@ -10760,6 +10847,7 @@ Metro icons
     background-repeat: no-repeat;
 }
 
+
 /* large icons */
 
 .btn.m-icon-big {
@@ -10778,6 +10866,7 @@ Metro icons
     margin-left: 0px;
 }
 
+
 /* default icons */
 
 .btn.m-icon {
@@ -10792,11 +10881,13 @@ Metro icons
     padding: 7px 10px 7px 6px;
 }
 
+
 /* white icon */
 
 .m-icon-white {
     background-image: url(../img/syncfusion-icons-white.png);
 }
+
 
 /*  Misc */
 
@@ -10831,6 +10922,7 @@ Metro icons
 .m-icon-big-swapup {
     background-position: -78px -28px;
 }
+
 
 /***
 Customized Bootstrap Modal 
@@ -10909,6 +11001,7 @@ body[ng-controller] .modal {
     z-index: 10050;
 }
 
+
 /* Full width modal */
 
 .modal-full.modal-dialog {
@@ -10942,6 +11035,7 @@ body[ng-controller] .modal {
     opacity: 0.2;
     filter: alpha(opacity=20);
 }
+
 
 /***
 Notes
@@ -11084,6 +11178,7 @@ Notes
     border: 0;
 }
 
+
 /***
 Customized Bootstrap Pagination
 ***/
@@ -11099,6 +11194,7 @@ Customized Bootstrap Pagination
 .pagination.pagination-circle>li:last-child>a {
     border-radius: 0 25px 25px 0 !important;
 }
+
 
 /***
 Customized Bootstrap Panels
@@ -11139,6 +11235,7 @@ Customized Bootstrap Panels
     background-position: right 12px;
 }
 
+
 /***
 Accordions
 ***/
@@ -11161,9 +11258,11 @@ Accordions
     border: 0;
 }
 
+
 /***
 Customized Bootstrap Popover
 ***/
+
 
 /*rtl:ignore*/
 
@@ -11174,6 +11273,7 @@ Customized Bootstrap Popover
 .popover .popover-title {
     margin: 0 !important;
 }
+
 
 /*rtl:ignore*/
 
@@ -11201,15 +11301,18 @@ Customized Bootstrap Popover
     display: none !important;
 }
 
+
 /***
 Portlets
 ***/
+
 
 /* Full Screen portlet mode */
 
 .page-portlet-fullscreen {
     overflow: hidden;
 }
+
 
 /* Basic portlet */
 
@@ -11497,13 +11600,16 @@ Portlets
     margin-bottom: 0;
 }
 
+
 /* Portlet background colors */
+
 
 /* Side bordered portlet */
 
 .portlet.bordered>.portlet-title {
     border-bottom: 0;
 }
+
 
 /* Solid colored portlet */
 
@@ -11529,11 +11635,13 @@ Portlets
     padding: 14px 0 6px 0;
 }
 
+
 /* Solid bordered portlet */
 
 .portlet.solid.bordered>.portlet-title {
     margin-bottom: 10px;
 }
+
 
 /* Box portlet */
 
@@ -11584,6 +11692,7 @@ Portlets
     background-color: #fff;
     padding: 15px;
 }
+
 
 /* Light Portlet */
 
@@ -11751,6 +11860,7 @@ Portlets
     margin-bottom: 0px;
 }
 
+
 /* Reverse aligned tabs */
 
 .tabs-reversed>li {
@@ -11761,6 +11871,7 @@ Portlets
 .tabs-reversed>li>a {
     margin-right: 0;
 }
+
 
 /* jQuery UI Draggable Portlets */
 
@@ -11792,6 +11903,7 @@ Portlets
 .portlet {
     box-shadow: 0px 2px 3px 2px rgba(0, 0, 0, 0.03);
 }
+
 
 /***
 Custom colored portlets 
@@ -16517,6 +16629,7 @@ Custom colored portlets
     color: #edebf2;
 }
 
+
 /***
 Customized Progress Bars
 ***/
@@ -16538,6 +16651,7 @@ Customized Progress Bars
 .page-md .progress {
     text-indent: -99999px;
 }
+
 
 /* Custom colors */
 
@@ -16844,6 +16958,7 @@ Customized Progress Bars
 .progress.progress-sm {
     height: 6px;
 }
+
 
 /***
 Dashboard Stats
@@ -18670,6 +18785,7 @@ Dashboard Stats
     margin-bottom: 0px;
 }
 
+
 /***
 Dashboard Stats 2
 ***/
@@ -18767,6 +18883,7 @@ Dashboard Stats 2
     display: inline-block;
 }
 
+
 /***
 Text Stats
 ***/
@@ -18787,6 +18904,7 @@ Text Stats
         margin-top: 20px;
     }
 }
+
 
 /***
 Social Icons
@@ -18999,6 +19117,7 @@ Social Icons
     border-radius: 25px !important;
 }
 
+
 /***
 Inline Social Icons
 ***/
@@ -19186,6 +19305,7 @@ Inline Social Icons
     opacity: 1;
 }
 
+
 /***
 Scrollable Tables
 ***/
@@ -19252,6 +19372,7 @@ Scrollable Tables
     border-bottom: 0;
 }
 
+
 /***
 Customized Bootstrap Tables
 ***/
@@ -19268,6 +19389,7 @@ Customized Bootstrap Tables
 .table td .img-responsive {
     width: 100%;
 }
+
 
 /***
 Responsive Flip Scroll Tables
@@ -19375,6 +19497,7 @@ Responsive Flip Scroll Tables
     }
 }
 
+
 /***
 Custom tables
 ***/
@@ -19475,6 +19598,7 @@ Custom tables
     }
 }
 
+
 /***
 Light Table
 ***/
@@ -19538,9 +19662,11 @@ Light Table
     background: #f3f4f6 !important;
 }
 
+
 /***
 Customized Bootstrap Tabs 
 ***/
+
 
 /* Tabs and pills */
 
@@ -19585,6 +19711,7 @@ Customized Bootstrap Tabs
     border-color: transparent;
 }
 
+
 /* Left and right tabs */
 
 .tabs-right.nav-tabs,
@@ -19602,6 +19729,7 @@ Customized Bootstrap Tabs
     margin-right: 0;
     margin-bottom: 3px;
 }
+
 
 /* Left tabs */
 
@@ -19635,6 +19763,7 @@ Customized Bootstrap Tabs
     *border-right-color: #ffffff;
 }
 
+
 /* Right tabs */
 
 .tabs-right.nav-tabs {
@@ -19666,6 +19795,7 @@ Customized Bootstrap Tabs
     border-color: #ddd #ddd #ddd transparent;
     *border-left-color: #ffffff;
 }
+
 
 /* Below tabs */
 
@@ -19711,9 +19841,11 @@ Customized Bootstrap Tabs
     border-color: transparent #ddd #ddd #ddd !important;
 }
 
+
 /***
 Custom tabs
 ***/
+
 
 /* In BS3.0.0 tabbable class was removed. We had to added it back */
 
@@ -19985,6 +20117,7 @@ Custom tabs
     background: #ffffff;
 }
 
+
 /***
 Tiles(new in v1.1.1)
 ***/
@@ -20229,6 +20362,7 @@ Tiles(new in v1.1.1)
     margin-right: 10px;
 }
 
+
 /***
 Custimized Bootstrap Wells
 ***/
@@ -20246,9 +20380,11 @@ Custimized Bootstrap Wells
     border-radius: 2px;
 }
 
+
 /*--------------------------------------------------
 	[Widgets]
 ----------------------------------------------------*/
+
 
 /*** Widget Background Colors ***/
 
@@ -20303,6 +20439,7 @@ Custimized Bootstrap Wells
 .widget-bg-color-tw {
     background: #55acee;
 }
+
 
 /*** Widget Title Colors ***/
 
@@ -20362,6 +20499,7 @@ Custimized Bootstrap Wells
     overflow: hidden;
 }
 
+
 /*** Widget Carousel ***/
 
 .widget-carousel .carousel-indicators {
@@ -20377,6 +20515,7 @@ Custimized Bootstrap Wells
 .widget-carousel .carousel-indicators-red>li.active {
     background: #f36a5a;
 }
+
 
 /*** Widget Gradient ***/
 
@@ -20433,6 +20572,7 @@ Custimized Bootstrap Wells
     text-decoration: none;
 }
 
+
 /*** Widget Gradient ***/
 
 .widget-wrap-img {
@@ -20454,6 +20594,7 @@ Custimized Bootstrap Wells
     bottom: 0;
     right: 0;
 }
+
 
 /*** Widget Tab ***/
 
@@ -20529,6 +20670,7 @@ Custimized Bootstrap Wells
     margin-bottom: 17px !important;
 }
 
+
 /*** Widget News ***/
 
 .widget-news {
@@ -20566,6 +20708,7 @@ Custimized Bootstrap Wells
 .widget-news .widget-news-right-body p {
     font-size: 13px;
 }
+
 
 /*** Widget Thumb ***/
 
@@ -20621,6 +20764,7 @@ Custimized Bootstrap Wells
     color: #3e4f5e;
 }
 
+
 /*** Widget Socials ***/
 
 .widget-socials {
@@ -20666,11 +20810,13 @@ Custimized Bootstrap Wells
     color: #3686c3;
 }
 
+
 /*** Widget Comments ***/
 
 .widget-comments {
     min-height: 420px;
 }
+
 
 /*** Widget Media ***/
 
@@ -20763,6 +20909,7 @@ Custimized Bootstrap Wells
     color: #7e8c9e;
 }
 
+
 /*** Widget Blog ***/
 
 .widget-blog {
@@ -20823,6 +20970,7 @@ Custimized Bootstrap Wells
     text-decoration: none;
 }
 
+
 /*** Widget Progress ***/
 
 .widget-progress {
@@ -20846,6 +20994,7 @@ Custimized Bootstrap Wells
     background: rgba(255, 255, 255, 0.2);
     margin-bottom: 0;
 }
+
 
 /*** Widget Gradient ***/
 
@@ -20894,6 +21043,7 @@ Custimized Bootstrap Wells
     color: #a1afbb;
 }
 
+
 /* Widget Map for max-width 480px */
 
 @media (max-width: 480px) {
@@ -20905,6 +21055,7 @@ Custimized Bootstrap Wells
         margin-bottom: 10px;
     }
 }
+
 
 /*** Widget Subscribe ***/
 
@@ -20951,6 +21102,7 @@ Custimized Bootstrap Wells
     content: "\201C";
 }
 
+
 /* Widget Subscribe for media queries */
 
 @media (max-width: 767px) {
@@ -20980,6 +21132,7 @@ Custimized Bootstrap Wells
     }
 }
 
+
 /*--------------------------------------------------
     [Material Design]
 ----------------------------------------------------*/
@@ -20992,6 +21145,7 @@ Custimized Bootstrap Wells
 .page-md .widget-blog {
     box-shadow: 0px 2px 3px 2px rgba(0, 0, 0, 0.03);
 }
+
 
 /***
 AngularJS Basic Animations
@@ -21160,6 +21314,7 @@ AngularJS Basic Animations
         margin: 0px 0;
     }
 }
+
 
 /***
 Timeline 
@@ -21362,6 +21517,7 @@ Timeline
         top: 17px;
     }
 }
+
 
 /***
 Timeline 2
@@ -21663,9 +21819,11 @@ Timeline 2
     }
 }
 
+
 /***
 Horizontal Timeline 
 ***/
+
 
 /* PLUGIN CSS */
 
@@ -22020,6 +22178,7 @@ Horizontal Timeline
     }
 }
 
+
 /* METRONIC EXTENDED CSS */
 
 .mt-timeline-horizontal {
@@ -22210,6 +22369,7 @@ Horizontal Timeline
         margin: 0 !important;
     }
 }
+
 
 /***
 Tasks Widget 
@@ -28924,6 +29084,7 @@ Tasks Widget
     transform: translate3d(0, 0, 0);
 }
 
+
 /***
 Custom color buttons 
 ***/
@@ -33057,6 +33218,7 @@ Custom color buttons
 .border-right-after-purple-soft:after {
     border-right-color: #8877a9 !important;
 }
+
 
 /***
 Color library demo

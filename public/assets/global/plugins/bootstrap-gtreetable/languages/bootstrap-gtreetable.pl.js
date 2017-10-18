@@ -6,7 +6,7 @@
  * Licensed under MIT (https://github.com/gilek/bootstrap-gtreetable/blob/master/LICENSE)
  * ========================================================= */
 
-(function($) {
+(function( $ ) {
     $.fn.gtreetable.defaults.languages.pl = {
         save: 'Zapisz',
         cancel: 'Anuluj',
@@ -23,7 +23,7 @@
             onDelete: 'Czy na pewno?',
             onNewRootNotAllowed: 'Dodawania nowego węzła głównego jest zabronione.',
             onMoveInDescendant: 'Wezeł nadrzędny nie może być potomnym.',
-            onMoveAsRoot: 'Przenosiny jako węzeł główny jest zabronione.'
+            onMoveAsRoot: 'Przenosiny jako węzeł główny jest zabronione.'          
         }
     };
-}(jQuery));
+}( jQuery ));

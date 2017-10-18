@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Toastr
  * Copyright 2012-2014 John Papa and Hans Fjällemark.
  * All Rights Reserved.
@@ -9,10 +9,9 @@
  * ARIA Support: Greta Krafsig
  * Project: https://github.com/CodeSeven/toastr
  */
-;
-(function(define) {
-    define(['jquery'], function($) {
-        return (function() {
+; (function (define) {
+    define(['jquery'], function ($) {
+        return (function () {
             var $container;
             var listener;
             var toastId = 0;
@@ -52,14 +51,12 @@
             }
 
             function getContainer(options, create) {
-                if (!options) {
-                    options = getOptions();
-                }
+                if (!options) { options = getOptions(); }
                 $container = $('#' + options.containerId);
                 if ($container.length) {
                     return $container;
                 }
-                if (create) {
+                if(create) {
                     $container = createContainer(options);
                 }
                 return $container;
@@ -101,9 +98,7 @@
 
             function clear($toastElement) {
                 var options = getOptions();
-                if (!$container) {
-                    getContainer(options);
-                }
+                if (!$container) { getContainer(options); }
                 if (!clearToast($toastElement, options)) {
                     clearContainer(options);
                 }
@@ -111,9 +106,7 @@
 
             function remove($toastElement) {
                 var options = getOptions();
-                if (!$container) {
-                    getContainer(options);
-                }
+                if (!$container) { getContainer(options); }
                 if ($toastElement && $(':focus', $toastElement).length === 0) {
                     removeToast($toastElement);
                     return;
@@ -126,21 +119,19 @@
 
             //#region Internal Methods
 
-            function clearContainer(options) {
+            function clearContainer(options){
                 var toastsToClear = $container.children();
                 for (var i = toastsToClear.length - 1; i >= 0; i--) {
                     clearToast($(toastsToClear[i]), options);
                 };
             }
 
-            function clearToast($toastElement, options) {
+            function clearToast($toastElement, options){
                 if ($toastElement && $(':focus', $toastElement).length === 0) {
                     $toastElement[options.hideMethod]({
                         duration: options.hideDuration,
                         easing: options.hideEasing,
-                        complete: function() {
-                            removeToast($toastElement);
-                        }
+                        complete: function () { removeToast($toastElement); }
                     });
                     return true;
                 }
@@ -194,9 +185,7 @@
             }
 
             function publish(args) {
-                if (!listener) {
-                    return;
-                }
+                if (!listener) { return; }
                 listener(args);
             }
 
@@ -204,15 +193,16 @@
                 var options = getOptions(),
                     iconClass = map.iconClass || options.iconClass;
 
-                if (options.preventDuplicates) {
-                    if (map.message === previousToast) {
+                if(options.preventDuplicates){
+                    if(map.message === previousToast){
                         return;
-                    } else {
+                    }
+                    else{
                         previousToast = map.message;
                     }
                 }
 
-                if (typeof(map.optionsOverride) !== 'undefined') {
+                if (typeof (map.optionsOverride) !== 'undefined') {
                     options = $.extend(options, map.optionsOverride);
                     iconClass = map.optionsOverride.iconClass || iconClass;
                 }
@@ -260,11 +250,9 @@
                 }
 
 
-                $toastElement[options.showMethod]({
-                    duration: options.showDuration,
-                    easing: options.showEasing,
-                    complete: options.onShown
-                });
+                $toastElement[options.showMethod](
+                    { duration: options.showDuration, easing: options.showEasing, complete: options.onShown }
+                );
 
                 if (options.timeOut > 0) {
                     intervalId = setTimeout(hideToast, options.timeOut);
@@ -276,10 +264,10 @@
                 }
 
                 if (options.closeButton && $closeElement) {
-                    $closeElement.click(function(event) {
-                        if (event.stopPropagation) {
+                    $closeElement.click(function (event) {
+                        if( event.stopPropagation ) {
                             event.stopPropagation();
-                        } else if (event.cancelBubble !== undefined && event.cancelBubble !== true) {
+                        } else if( event.cancelBubble !== undefined && event.cancelBubble !== true ) {
                             event.cancelBubble = true;
                         }
                         hideToast(true);
@@ -287,7 +275,7 @@
                 }
 
                 if (options.onclick) {
-                    $toastElement.click(function() {
+                    $toastElement.click(function () {
                         options.onclick();
                         hideToast();
                     });
@@ -308,7 +296,7 @@
                     return $toastElement[options.hideMethod]({
                         duration: options.hideDuration,
                         easing: options.hideEasing,
-                        complete: function() {
+                        complete: function () {
                             removeToast($toastElement);
                             if (options.onHidden && response.state !== 'hidden') {
                                 options.onHidden();
@@ -328,10 +316,9 @@
 
                 function stickAround() {
                     clearTimeout(intervalId);
-                    $toastElement.stop(true, true)[options.showMethod]({
-                        duration: options.showDuration,
-                        easing: options.showEasing
-                    });
+                    $toastElement.stop(true, true)[options.showMethod](
+                        { duration: options.showDuration, easing: options.showEasing }
+                    );
                 }
             }
 
@@ -340,9 +327,7 @@
             }
 
             function removeToast($toastElement) {
-                if (!$container) {
-                    $container = getContainer();
-                }
+                if (!$container) { $container = getContainer(); }
                 if ($toastElement.is(':visible')) {
                     return;
                 }
@@ -356,7 +341,7 @@
 
         })();
     });
-}(typeof define === 'function' && define.amd ? define : function(deps, factory) {
+}(typeof define === 'function' && define.amd ? define : function (deps, factory) {
     if (typeof module !== 'undefined' && module.exports) { //Node
         module.exports = factory(require('jquery'));
     } else {

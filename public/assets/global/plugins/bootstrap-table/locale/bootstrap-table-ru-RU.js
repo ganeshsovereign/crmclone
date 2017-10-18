@@ -2,31 +2,31 @@
  * Bootstrap Table Russian translation
  * Author: Dunaevsky Maxim <dunmaksim@yandex.ru>
  */
-(function($) {
+(function ($) {
     'use strict';
     $.fn.bootstrapTable.locales['ru-RU'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Пожалуйста, подождите, идёт загрузка...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' записей на страницу';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Записи с ' + pageFrom + ' по ' + pageTo + ' из ' + totalRows;
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Поиск';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Ничего не найдено';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Обновить';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Переключить';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Колонки';
         }
     };

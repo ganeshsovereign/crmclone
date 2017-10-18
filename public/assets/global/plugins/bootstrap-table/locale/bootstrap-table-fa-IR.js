@@ -2,38 +2,38 @@
  * Bootstrap Table Persian translation
  * Author: MJ Vakili <mjv.1989@Gmail.com>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['fa-IR'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'در حال بارگذاری, لطفا صبر کنید...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' رکورد در صفحه';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'نمایش ' + pageFrom + ' تا ' + pageTo + ' از ' + totalRows + ' ردیف';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'جستجو';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'رکوردی یافت نشد.';
         },
-        formatPaginationSwitch: function() {
+        formatPaginationSwitch: function () {
             return 'نمایش/مخفی صفحه بندی';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'به روز رسانی';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'تغییر نمایش';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'سطر ها';
         },
-        formatAllRows: function() {
+        formatAllRows: function () {
             return 'همه';
         }
     };

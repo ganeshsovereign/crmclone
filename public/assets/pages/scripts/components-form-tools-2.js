@@ -1,153 +1,132 @@
-var ComponentsFormTools = function() {
+var ComponentsFormTools = function () {
 
     var handleTwitterTypeahead = function() {
 
         // Example #1
         // instantiate the bloodhound suggestion engine
         var numbers = new Bloodhound({
-            datumTokenizer: function(d) {
-                return Bloodhound.tokenizers.whitespace(d.num);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: [{
-                    num: 'metronic'
-                },
-                {
-                    num: 'keenthemes'
-                },
-                {
-                    num: 'metronic theme'
-                },
-                {
-                    num: 'metronic template'
-                },
-                {
-                    num: 'keenthemes team'
-                }
-            ]
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.num); },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          local: [
+            { num: 'metronic' },
+            { num: 'keenthemes' },
+            { num: 'metronic theme' },
+            { num: 'metronic template' },
+            { num: 'keenthemes team' }
+          ]
         });
-
+         
         // initialize the bloodhound suggestion engine
         numbers.initialize();
-
+         
         // instantiate the typeahead UI
         if (App.isRTL()) {
-            $('#typeahead_example_1').attr("dir", "rtl");
+          $('#typeahead_example_1').attr("dir", "rtl");  
         }
         $('#typeahead_example_1').typeahead(null, {
-            displayKey: 'num',
-            hint: (App.isRTL() ? false : true),
-            source: numbers.ttAdapter()
+          displayKey: 'num',
+          hint: (App.isRTL() ? false : true),
+          source: numbers.ttAdapter()
         });
 
         // Example #2
         var countries = new Bloodhound({
-            datumTokenizer: function(d) {
-                return Bloodhound.tokenizers.whitespace(d.name);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            limit: 10,
-            prefetch: {
-                url: '../demo/typeahead_countries.json',
-                filter: function(list) {
-                    return $.map(list, function(country) {
-                        return {
-                            name: country
-                        };
-                    });
-                }
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.name); },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          limit: 10,
+          prefetch: {
+            url: '../demo/typeahead_countries.json',
+            filter: function(list) {
+              return $.map(list, function(country) { return { name: country }; });
             }
+          }
         });
-
+ 
         countries.initialize();
-
+         
         if (App.isRTL()) {
-            $('#typeahead_example_2').attr("dir", "rtl");
-        }
+          $('#typeahead_example_2').attr("dir", "rtl");  
+        } 
         $('#typeahead_example_2').typeahead(null, {
-            name: 'typeahead_example_2',
-            displayKey: 'name',
-            hint: (App.isRTL() ? false : true),
-            source: countries.ttAdapter()
+          name: 'typeahead_example_2',
+          displayKey: 'name',
+          hint: (App.isRTL() ? false : true),
+          source: countries.ttAdapter()
         });
 
         // Example #3
         var custom = new Bloodhound({
-            datumTokenizer: function(d) {
-                return d.tokens;
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            remote: '../demo/typeahead_custom.php?query=%QUERY'
+          datumTokenizer: function(d) { return d.tokens; },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          remote: '../demo/typeahead_custom.php?query=%QUERY'
         });
-
+         
         custom.initialize();
-
+         
         if (App.isRTL()) {
-            $('#typeahead_example_3').attr("dir", "rtl");
-        }
+          $('#typeahead_example_3').attr("dir", "rtl");  
+        }  
         $('#typeahead_example_3').typeahead(null, {
-            name: 'datypeahead_example_3',
-            displayKey: 'value',
-            source: custom.ttAdapter(),
-            hint: (App.isRTL() ? false : true),
-            templates: {
-                suggestion: Handlebars.compile([
-                    '<div class="media">',
+          name: 'datypeahead_example_3',
+          displayKey: 'value',
+          source: custom.ttAdapter(),
+          hint: (App.isRTL() ? false : true),
+          templates: {
+            suggestion: Handlebars.compile([
+              '<div class="media">',
                     '<div class="pull-left">',
-                    '<div class="media-object">',
-                    '<img src="{{img}}" width="50" height="50"/>',
-                    '</div>',
+                        '<div class="media-object">',
+                            '<img src="{{img}}" width="50" height="50"/>',
+                        '</div>',
                     '</div>',
                     '<div class="media-body">',
-                    '<h4 class="media-heading">{{value}}</h4>',
-                    '<p>{{desc}}</p>',
+                        '<h4 class="media-heading">{{value}}</h4>',
+                        '<p>{{desc}}</p>',
                     '</div>',
-                    '</div>',
-                ].join(''))
-            }
+              '</div>',
+            ].join(''))
+          }
         });
 
         // Example #4
 
         var nba = new Bloodhound({
-            datumTokenizer: function(d) {
-                return Bloodhound.tokenizers.whitespace(d.team);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: '../demo/typeahead_nba.json'
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.team); },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          prefetch: '../demo/typeahead_nba.json'
         });
-
+         
         var nhl = new Bloodhound({
-            datumTokenizer: function(d) {
-                return Bloodhound.tokenizers.whitespace(d.team);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: '../demo/typeahead_nhl.json'
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.team); },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          prefetch: '../demo/typeahead_nhl.json'
         });
-
+         
         nba.initialize();
         nhl.initialize();
-
+         
         if (App.isRTL()) {
-            $('#typeahead_example_4').attr("dir", "rtl");
+          $('#typeahead_example_4').attr("dir", "rtl");  
         }
         $('#typeahead_example_4').typeahead({
-            hint: (App.isRTL() ? false : true),
-            highlight: true
-        }, {
-            name: 'nba',
-            displayKey: 'team',
-            source: nba.ttAdapter(),
-            templates: {
+          hint: (App.isRTL() ? false : true),
+          highlight: true
+        },
+        {
+          name: 'nba',
+          displayKey: 'team',
+          source: nba.ttAdapter(),
+          templates: {
                 header: '<h3>NBA Teams</h3>'
-            }
-        }, {
-            name: 'nhl',
-            displayKey: 'team',
-            source: nhl.ttAdapter(),
-            templates: {
+          }
+        },
+        {
+          name: 'nhl',
+          displayKey: 'team',
+          source: nhl.ttAdapter(),
+          templates: {
                 header: '<h3>NHL Teams</h3>'
-            }
+          }
         });
 
     }
@@ -157,165 +136,144 @@ var ComponentsFormTools = function() {
         // Example #1
         // instantiate the bloodhound suggestion engine
         var numbers = new Bloodhound({
-            datumTokenizer: function(d) {
-                return Bloodhound.tokenizers.whitespace(d.num);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            local: [{
-                    num: 'metronic'
-                },
-                {
-                    num: 'keenthemes'
-                },
-                {
-                    num: 'metronic theme'
-                },
-                {
-                    num: 'metronic template'
-                },
-                {
-                    num: 'keenthemes team'
-                }
-            ]
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.num); },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          local: [
+            { num: 'metronic' },
+            { num: 'keenthemes' },
+            { num: 'metronic theme' },
+            { num: 'metronic template' },
+            { num: 'keenthemes team' }
+          ]
         });
-
+         
         // initialize the bloodhound suggestion engine
         numbers.initialize();
-
+         
         // instantiate the typeahead UI
         if (App.isRTL()) {
-            $('#typeahead_example_modal_1').attr("dir", "rtl");
+          $('#typeahead_example_modal_1').attr("dir", "rtl");  
         }
         $('#typeahead_example_modal_1').typeahead(null, {
-            displayKey: 'num',
-            hint: (App.isRTL() ? false : true),
-            source: numbers.ttAdapter()
+          displayKey: 'num',
+          hint: (App.isRTL() ? false : true),
+          source: numbers.ttAdapter()
         });
 
         // Example #2
         var countries = new Bloodhound({
-            datumTokenizer: function(d) {
-                return Bloodhound.tokenizers.whitespace(d.name);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            limit: 10,
-            prefetch: {
-                url: '../demo/typeahead_countries.json',
-                filter: function(list) {
-                    return $.map(list, function(country) {
-                        return {
-                            name: country
-                        };
-                    });
-                }
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.name); },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          limit: 10,
+          prefetch: {
+            url: '../demo/typeahead_countries.json',
+            filter: function(list) {
+              return $.map(list, function(country) { return { name: country }; });
             }
+          }
         });
-
+ 
         countries.initialize();
-
+         
         if (App.isRTL()) {
-            $('#typeahead_example_modal_2').attr("dir", "rtl");
+          $('#typeahead_example_modal_2').attr("dir", "rtl");  
         }
         $('#typeahead_example_modal_2').typeahead(null, {
-            name: 'typeahead_example_modal_2',
-            displayKey: 'name',
-            hint: (App.isRTL() ? false : true),
-            source: countries.ttAdapter()
+          name: 'typeahead_example_modal_2',
+          displayKey: 'name',
+          hint: (App.isRTL() ? false : true),
+          source: countries.ttAdapter()
         });
 
         // Example #3
         var custom = new Bloodhound({
-            datumTokenizer: function(d) {
-                return d.tokens;
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            remote: '../demo/typeahead_custom.php?query=%QUERY'
+          datumTokenizer: function(d) { return d.tokens; },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          remote: '../demo/typeahead_custom.php?query=%QUERY'
         });
-
+         
         custom.initialize();
-
+         
         if (App.isRTL()) {
-            $('#typeahead_example_modal_3').attr("dir", "rtl");
+          $('#typeahead_example_modal_3').attr("dir", "rtl");  
         }
         $('#typeahead_example_modal_3').typeahead(null, {
-            name: 'datypeahead_example_modal_3',
-            displayKey: 'value',
-            hint: (App.isRTL() ? false : true),
-            source: custom.ttAdapter(),
-            templates: {
-                suggestion: Handlebars.compile([
-                    '<div class="media">',
+          name: 'datypeahead_example_modal_3',
+          displayKey: 'value',
+          hint: (App.isRTL() ? false : true),
+          source: custom.ttAdapter(),
+          templates: {
+            suggestion: Handlebars.compile([
+              '<div class="media">',
                     '<div class="pull-left">',
-                    '<div class="media-object">',
-                    '<img src="{{img}}" width="50" height="50"/>',
-                    '</div>',
+                        '<div class="media-object">',
+                            '<img src="{{img}}" width="50" height="50"/>',
+                        '</div>',
                     '</div>',
                     '<div class="media-body">',
-                    '<h4 class="media-heading">{{value}}</h4>',
-                    '<p>{{desc}}</p>',
+                        '<h4 class="media-heading">{{value}}</h4>',
+                        '<p>{{desc}}</p>',
                     '</div>',
-                    '</div>',
-                ].join(''))
-            }
+              '</div>',
+            ].join(''))
+          }
         });
 
         // Example #4
 
         var nba = new Bloodhound({
-            datumTokenizer: function(d) {
-                return Bloodhound.tokenizers.whitespace(d.team);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            limit: 3,
-            prefetch: '../demo/typeahead_nba.json'
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.team); },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          limit: 3,
+          prefetch: '../demo/typeahead_nba.json'
         });
-
+         
         var nhl = new Bloodhound({
-            datumTokenizer: function(d) {
-                return Bloodhound.tokenizers.whitespace(d.team);
-            },
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            limit: 3,
-            prefetch: '../demo/typeahead_nhl.json'
+          datumTokenizer: function(d) { return Bloodhound.tokenizers.whitespace(d.team); },
+          queryTokenizer: Bloodhound.tokenizers.whitespace,
+          limit: 3,
+          prefetch: '../demo/typeahead_nhl.json'
         });
-
+         
         nba.initialize();
         nhl.initialize();
-
+         
         $('#typeahead_example_modal_4').typeahead({
             hint: (App.isRTL() ? false : true),
             highlight: true
-        }, {
-            name: 'nba',
-            displayKey: 'team',
-            source: nba.ttAdapter(),
-            templates: {
+        },
+        {
+          name: 'nba',
+          displayKey: 'team',
+          source: nba.ttAdapter(),
+          templates: {
                 header: '<h3>NBA Teams</h3>'
-            }
-        }, {
-            name: 'nhl',
-            displayKey: 'team',
-            source: nhl.ttAdapter(),
-            templates: {
+          }
+        },
+        {
+          name: 'nhl',
+          displayKey: 'team',
+          source: nhl.ttAdapter(),
+          templates: {
                 header: '<h3>NHL Teams</h3>'
-            }
+          }
         });
 
     }
 
     var handleBootstrapSwitch = function() {
 
-        $('.switch-radio1').on('switch-change', function() {
+        $('.switch-radio1').on('switch-change', function () {
             $('.switch-radio1').bootstrapSwitch('toggleRadioState');
         });
 
         // or
-        $('.switch-radio1').on('switch-change', function() {
+        $('.switch-radio1').on('switch-change', function () {
             $('.switch-radio1').bootstrapSwitch('toggleRadioStateAllowUncheck');
         });
 
         // or
-        $('.switch-radio1').on('switch-change', function() {
+        $('.switch-radio1').on('switch-change', function () {
             $('.switch-radio1').bootstrapSwitch('toggleRadioStateAllowUncheck', false);
         });
 
@@ -323,7 +281,7 @@ var ComponentsFormTools = function() {
 
     var handleBootstrapTouchSpin = function() {
 
-        $("#touchspin_demo1").TouchSpin({
+        $("#touchspin_demo1").TouchSpin({          
             buttondown_class: 'btn green',
             buttonup_class: 'btn green',
             min: -1000000000,
@@ -331,8 +289,8 @@ var ComponentsFormTools = function() {
             stepinterval: 50,
             maxboostedstep: 10000000,
             prefix: '$'
-        });
-
+        }); 
+        
         $("#touchspin_demo2").TouchSpin({
             buttondown_class: 'btn blue',
             buttonup_class: 'btn blue',
@@ -343,9 +301,9 @@ var ComponentsFormTools = function() {
             boostat: 5,
             maxboostedstep: 10,
             postfix: '%'
-        });
+        });         
 
-        $("#touchspin_demo3").TouchSpin({
+        $("#touchspin_demo3").TouchSpin({          
             buttondown_class: 'btn green',
             buttonup_class: 'btn green',
             prefix: "$",
@@ -357,7 +315,7 @@ var ComponentsFormTools = function() {
         $('#maxlength_defaultconfig').maxlength({
             limitReachedClass: "label label-danger",
         })
-
+    
         $('#maxlength_thresholdconfig').maxlength({
             limitReachedClass: "label label-danger",
             threshold: 20
@@ -385,31 +343,20 @@ var ComponentsFormTools = function() {
         });
     }
 
-    var handleSpinners = function() {
+    var handleSpinners = function () {
         $('#spinner1').spinner();
-        $('#spinner2').spinner({
-            disabled: true
-        });
-        $('#spinner3').spinner({
-            value: 0,
-            min: 0,
-            max: 10
-        });
-        $('#spinner4').spinner({
-            value: 0,
-            step: 5,
-            min: 0,
-            max: 200
-        });
+        $('#spinner2').spinner({disabled: true});
+        $('#spinner3').spinner({value:0, min: 0, max: 10});
+        $('#spinner4').spinner({value:0, step: 5, min: 0, max: 200});
     }
-
-    var handleTagsInput = function() {
+    
+    var handleTagsInput = function () {
         if (!jQuery().tagsInput) {
             return;
         }
         $('#tags_1').tagsInput({
             width: 'auto',
-            'onAddTag': function() {
+            'onAddTag': function () {
                 //alert(1);
             },
         });
@@ -417,9 +364,9 @@ var ComponentsFormTools = function() {
             width: 300
         });
     }
-
-    var handleInputMasks = function() {
-
+    
+    var handleInputMasks = function () {
+        
         $("#mask_date").inputmask("d/m/y", {
             autoUnmask: true
         }); //direct mask        
@@ -459,18 +406,18 @@ var ComponentsFormTools = function() {
         }); //default
     }
 
-    var handleIPAddressInput = function() {
+    var handleIPAddressInput = function () {
         $('#input_ipv4').ipAddress();
         $('#input_ipv6').ipAddress({
             v: 6
         });
     }
 
-    var handlePasswordStrengthChecker = function() {
+    var handlePasswordStrengthChecker = function () {
         var initialized = false;
         var input = $("#password_strength");
 
-        input.keydown(function() {
+        input.keydown(function () {
             if (initialized === false) {
                 // set base options
                 input.pwstrength({
@@ -481,7 +428,7 @@ var ComponentsFormTools = function() {
                 });
 
                 // add your own rule to calculate the password strength
-                input.pwstrength("addRule", "demoRule", function(options, word, score) {
+                input.pwstrength("addRule", "demoRule", function (options, word, score) {
                     return word.match(/[a-z].[0-9]/) && score;
                 }, 10, true);
 
@@ -491,10 +438,10 @@ var ComponentsFormTools = function() {
         });
     }
 
-    var handleUsernameAvailabilityChecker1 = function() {
+    var handleUsernameAvailabilityChecker1 = function () {
         var input = $("#username1_input");
 
-        $("#username1_checker").click(function(e) {
+        $("#username1_checker").click(function (e) {
             var pop = $(this);
 
             if (input.val() === "") {
@@ -527,7 +474,7 @@ var ComponentsFormTools = function() {
 
             $.post('../demo/username_checker.php', {
                 username: input.val()
-            }, function(res) {
+            }, function (res) {
                 btn.attr('disabled', false);
 
                 input.attr("readonly", false).
@@ -566,8 +513,8 @@ var ComponentsFormTools = function() {
         });
     }
 
-    var handleUsernameAvailabilityChecker2 = function() {
-        $("#username2_input").change(function() {
+    var handleUsernameAvailabilityChecker2 = function () {
+        $("#username2_input").change(function () {
             var input = $(this);
 
             if (input.val() === "") {
@@ -583,7 +530,7 @@ var ComponentsFormTools = function() {
 
             $.post('../demo/username_checker.php', {
                 username: input.val()
-            }, function(res) {
+            }, function (res) {
                 input.attr("readonly", false).
                 attr("disabled", false).
                 removeClass("spinner");
@@ -619,7 +566,7 @@ var ComponentsFormTools = function() {
 
     return {
         //main function to initiate the module
-        init: function() {
+        init: function () {
             handleTwitterTypeahead();
             handleTwitterTypeaheadModal();
 

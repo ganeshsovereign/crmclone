@@ -56,9 +56,7 @@ var UIBlockUI = function() {
         });
 
         $('#blockui_sample_2_3').click(function() {
-            App.startPageLoading({
-                message: 'Please wait...'
-            });
+            App.startPageLoading({message: 'Please wait...'});
 
             window.setTimeout(function() {
                 App.stopPageLoading();
@@ -66,9 +64,7 @@ var UIBlockUI = function() {
         });
 
         $('#blockui_sample_2_4').click(function() {
-            App.startPageLoading({
-                animate: true
-            });
+            App.startPageLoading({animate: true});
 
             window.setTimeout(function() {
                 App.stopPageLoading();
@@ -169,6 +165,6 @@ var UIBlockUI = function() {
 
 }();
 
-jQuery(document).ready(function() {
-    UIBlockUI.init();
+jQuery(document).ready(function() {    
+   UIBlockUI.init();
 });

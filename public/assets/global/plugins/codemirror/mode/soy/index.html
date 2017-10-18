@@ -45,7 +45,8 @@
                 <em>{$score} points</em> {else} no score {/if} </div> {/template} {template .alertHelloWorld kind="js"} alert('Hello World'); {/template} </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
             lineNumbers: true,
             matchBrackets: true,
             mode: "text/x-soy",

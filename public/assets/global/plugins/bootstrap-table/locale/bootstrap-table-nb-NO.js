@@ -2,32 +2,32 @@
  * Bootstrap Table norwegian translation
  * Author: Jim Nordbø, jim@nordb.no
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['nb-NO'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Oppdaterer, vennligst vent...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' poster pr side';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Viser ' + pageFrom + ' til ' + pageTo + ' av ' + totalRows + ' rekker';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Søk';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Ingen poster funnet';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Oppdater';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Endre';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Kolonner';
         }
     };

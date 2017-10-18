@@ -95,15 +95,7 @@ Object.prototype = {
                     if (!delivery)
                         return wCb();
 
-                    BillModel.findOne({
-                        orders: delivery.order,
-                        isremoved: {
-                            $ne: true
-                        },
-                        Status: {
-                            $ne: "DRAFT"
-                        }
-                    }, "_id ref Status total_ht", function(err, bill) {
+                    BillModel.findOne({ orders: delivery.order, isremoved: { $ne: true }, Status: { $ne: "DRAFT" } }, "_id ref Status total_ht", function(err, bill) {
                         if (err)
                             return wCb(err);
 
@@ -227,31 +219,31 @@ Object.prototype = {
 
                 if (orderOld) //duplicate lines only if pricing Delivery
                     return async.each(rows, function(orderRow, aCb) {
-                            orderRow.order = order._id;
+                        orderRow.order = order._id;
 
-                            if (orderRow.isDeleted && !orderRow._id)
-                                return aCb();
+                        if (orderRow.isDeleted && !orderRow._id)
+                            return aCb();
 
-                            delete orderRow._id;
-                            delete orderRow.__v;
-                            delete orderRow.createdAt;
+                        delete orderRow._id;
+                        delete orderRow.__v;
+                        delete orderRow.createdAt;
 
-                            var orderRow = new OrderRowsModel(orderRow);
-                            orderRow.save(aCb);
-                        },
-                        function(err) {
-                            if (err) {
-                                console.log(err);
-                                return self.json({
-                                    errorNotify: {
-                                        title: 'Erreur',
-                                        message: err
-                                    }
-                                });
-                            }
+                        var orderRow = new OrderRowsModel(orderRow);
+                        orderRow.save(aCb);
+                    },
+                    function(err) {
+                        if (err) {
+                            console.log(err);
+                            return self.json({
+                                errorNotify: {
+                                    title: 'Erreur',
+                                    message: err
+                                }
+                            });
+                        }
 
-                            self.json(doc);
-                        });
+                        self.json(doc);
+                    });
 
                 self.json(doc);
             });
@@ -334,9 +326,7 @@ Object.prototype = {
 
             //console.log(self.body.orderRows[i].qty);
 
-            DeliveryModel.findByIdAndUpdate(id, self.body, {
-                    new: true
-                })
+            DeliveryModel.findByIdAndUpdate(id, self.body, { new: true })
                 .populate('logisticMethod')
                 .exec(function(err, delivery) {
                     if (err)
@@ -403,12 +393,7 @@ Object.prototype = {
                                                 return wCb(err);
 
                                             if (result && result.order)
-                                                F.emit('order:recalculateStatus', {
-                                                    userId: self.user._id.toString(),
-                                                    order: {
-                                                        _id: result.order._id.toString()
-                                                    }
-                                                });
+                                                F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: result.order._id.toString() } });
 
                                             doc.status.isInventory = new Date();
                                             doc.save(function(err, doc) {
@@ -442,9 +427,7 @@ Object.prototype = {
                                     .populate({
                                         path: "orderRows.product",
                                         select: "info",
-                                        populate: {
-                                            path: "info.productType"
-                                        }
+                                        populate: { path: "info.productType" }
                                     })
                                     .exec(function(err, result) {
                                         if (err)
@@ -478,12 +461,7 @@ Object.prototype = {
                                                     return wCb(err);
 
                                                 if (result && result.order)
-                                                    F.emit('order:recalculateStatus', {
-                                                        userId: self.user._id.toString(),
-                                                        order: {
-                                                            _id: result.order._id.toString()
-                                                        }
-                                                    });
+                                                    F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: result.order._id.toString() } });
 
                                                 doc.orderRows = rows;
 
@@ -541,19 +519,9 @@ Object.prototype = {
                                     });
                                 }
 
-                                F.emit('order:recalculateStatus', {
-                                    userId: self.user._id.toString(),
-                                    order: {
-                                        _id: doc.order.toString()
-                                    }
-                                });
+                                F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: doc.order.toString() } });
 
-                                F.emit('order:update', {
-                                    userId: self.user._id.toString(),
-                                    order: {
-                                        _id: doc._id.toString()
-                                    }
-                                });
+                                F.emit('order:update', { userId: self.user._id.toString(), order: { _id: doc._id.toString() } });
 
                                 F.emit('notify:controllerAngular', {
                                     userId: null,
@@ -639,9 +607,7 @@ Object.prototype = {
                                     },
 
                                     $pull: {
-                                        goodsOutNotes: {
-                                            goodsNoteId: goodsNote._id
-                                        }
+                                        goodsOutNotes: { goodsNoteId: goodsNote._id }
                                     }
                                 }
                             }, function(err) {
@@ -663,24 +629,12 @@ Object.prototype = {
                             if (err)
                                 return cb(err);
 
-                            DeliveryModel.findByIdAndUpdate(goodsNote._id, {
-                                isremoved: true,
-                                Status: 'CANCELED',
-                                total_ht: 0,
-                                total_ttc: 0,
-                                total_tva: [],
-                                orderRows: []
-                            }, function(err, result) {
+                            DeliveryModel.findByIdAndUpdate(goodsNote._id, { isremoved: true, Status: 'CANCELED', total_ht: 0, total_ttc: 0, total_tva: [], orderRows: [] }, function(err, result) {
                                 if (err)
                                     return self.throw500(err);
                                 console.log(result);
 
-                                F.emit('order:recalculateStatus', {
-                                    userId: self.user._id.toString(),
-                                    order: {
-                                        _id: goodsNote.order._id.toString()
-                                    }
-                                });
+                                F.emit('order:recalculateStatus', { userId: self.user._id.toString(), order: { _id: goodsNote.order._id.toString() } });
 
                                 cb();
                             });
@@ -721,12 +675,8 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            Status: {
-                $nin: ["BILLED", "SEND"]
-            },
-            isremoved: {
-                $ne: true
-            }
+            Status: { $nin: ["BILLED", "SEND"] },
+            isremoved: { $ne: true }
             // forSales: true
         };
 
@@ -765,14 +715,8 @@ Object.prototype = {
                 console.log(err);
 
             //console.log(res);
-            SocieteModel.populate(res, {
-                path: "datatable.data.supplier",
-                select: "_id name"
-            }, function(err, res) {
-                OrderModel.populate(res, {
-                    path: "datatable.data.order",
-                    select: " _id ref"
-                }, function(err, res) {
+            SocieteModel.populate(res, { path: "datatable.data.supplier", select: "_id name" }, function(err, res) {
+                OrderModel.populate(res, { path: "datatable.data.order", select: " _id ref" }, function(err, res) {
 
                     for (var i = 0, len = res.datatable.data.length; i < len; i++) {
                         var row = res.datatable.data[i];
@@ -862,12 +806,8 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            Status: {
-                $ne: "BILLED"
-            },
-            isremoved: {
-                $ne: true
-            },
+            Status: { $ne: "BILLED" },
+            isremoved: { $ne: true },
             //  forSales: true
         };
 
@@ -905,9 +845,7 @@ Object.prototype = {
                 console.log(err);
 
             //console.log(res);
-            SocieteModel.populate(res, {
-                path: "datatable.data.supplier"
-            }, function(err, res) {
+            SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
 
                 for (var i = 0, len = res.datatable.data.length; i < len; i++) {
                     var row = res.datatable.data[i];
@@ -1014,20 +952,13 @@ Object.prototype = {
 
         var tabTex = [];
 
-        DeliveryModel.find({
-                Status: "VALIDATED",
-                _id: {
-                    $in: self.body.id
-                }
-            })
+        DeliveryModel.find({ Status: "VALIDATED", _id: { $in: self.body.id } })
             .exec(function(err, deliveries) {
                 if (err)
                     return console.log(err);
 
                 if (!deliveries.length)
-                    return self.json({
-                        error: "No deliveries"
-                    });
+                    return self.json({ error: "No deliveries" });
 
                 async.forEachLimit(deliveries, 30, function(delivery, cb) {
                     DeliveryModel.getById(delivery._id, function(err, delivery) {
@@ -1043,10 +974,7 @@ Object.prototype = {
                                 return cb(err);
                             //console.log(tex);
 
-                            tabTex.push({
-                                id: delivery.ref,
-                                tex: tex
-                            });
+                            tabTex.push({ id: delivery.ref, tex: tex });
                             cb();
                         });
                     });
@@ -1083,8 +1011,8 @@ Object.prototype = {
                     F.emit('notify:controllerAngular', {
                         userId: null,
                         route: 'delivery'
-                        // _id: doc._id.toString(),
-                        //message: "Livraison " + doc.ref + ' modifiee.'
+                            // _id: doc._id.toString(),
+                            //message: "Livraison " + doc.ref + ' modifiee.'
                     });
 
                     self.res.setHeader('Content-type', 'application/pdf');
@@ -1117,34 +1045,23 @@ Object.prototype = {
         var tabCsv = [];
 
         DeliveryModel.find({
-                Status: {
-                    $in: "VALIDATED"
-                },
-                'status.isPacked': {
-                    $ne: null
-                },
-                _id: {
-                    $in: self.body.id
-                }
+                Status: { $in: "VALIDATED" },
+                'status.isPacked': { $ne: null },
+                _id: { $in: self.body.id }
             })
             .populate("supplier", "name salesPurchases.ref")
             .populate("order", "ref ref_client total_ht datec")
             .populate({
                 path: "lines.product",
                 select: "ref name label weight pack",
-                populate: {
-                    path: 'pack',
-                    select: "ref name label unit"
-                }
+                populate: { path: 'pack', select: "ref name label unit" }
             })
             .exec(function(err, deliveries) {
                 if (err)
                     return console.log(err);
 
                 if (!deliveries.length)
-                    return self.json({
-                        error: "No deliveries"
-                    });
+                    return self.json({ error: "No deliveries" });
 
                 async.each(deliveries, function(delivery, cb) {
                     var csv = "";
@@ -1167,10 +1084,7 @@ Object.prototype = {
                     csv += ";" + delivery.ref;
                     csv += ";" + delivery._id.toString();
 
-                    tabCsv.push({
-                        id: delivery.ref,
-                        csv: csv
-                    });
+                    tabCsv.push({ id: delivery.ref, csv: csv });
                     cb();
 
                 }, function(err) {
@@ -1219,34 +1133,11 @@ Object.prototype = {
 
         var tabCsv = [];
 
-        DeliveryModel.aggregate([{
-                $match: {
-                    Status: "VALIDATED",
-                    isremoved: {
-                        $ne: true
-                    },
-                    _id: {
-                        $in: self.body.id
-                    }
-                }
-            },
-            {
-                $unwind: "$orderRows"
-            },
-            {
-                $project: {
-                    _id: 0,
-                    orderRows: 1
-                }
-            },
-            {
-                $group: {
-                    _id: "$orderRows.product",
-                    qty: {
-                        "$sum": "$orderRows.qty"
-                    }
-                }
-            }
+        DeliveryModel.aggregate([
+            { $match: { Status: "VALIDATED", isremoved: { $ne: true }, _id: { $in: self.body.id } } },
+            { $unwind: "$orderRows" },
+            { $project: { _id: 0, orderRows: 1 } },
+            { $group: { _id: "$orderRows.product", qty: { "$sum": "$orderRows.qty" } } }
         ], function(err, deliveries) {
             if (err)
                 return console.log(err);
@@ -1255,19 +1146,14 @@ Object.prototype = {
                 return stream.emit('end');
 
             async.each(deliveries, function(delivery, cb) {
-                ProductModel.findOne({
-                    _id: delivery._id
-                }, "info", function(err, product) {
+                ProductModel.findOne({ _id: delivery._id }, "info", function(err, product) {
                     var csv = "";
 
                     csv += product.info.SKU;
                     csv += ";" + product.info.langs[0].name;
                     csv += ";" + delivery.qty;
 
-                    tabCsv.push({
-                        id: product.info.SKU,
-                        csv: csv
-                    });
+                    tabCsv.push({ id: product.info.SKU, csv: csv });
                     cb();
                 });
 
@@ -1313,57 +1199,33 @@ Object.prototype = {
 
         async.parallel({
             caFamily: function(cb) {
-                DeliveryModel.aggregate([{
-                        $match: {
-                            Status: {
-                                '$ne': 'DRAFT'
-                            },
-                            entity: self.user.entity,
-                            datec: {
-                                '$gte': dateStart,
-                                '$lt': dateEnd
-                            }
+                    DeliveryModel.aggregate([
+                        { $match: { Status: { '$ne': 'DRAFT' }, entity: self.user.entity, datec: { '$gte': dateStart, '$lt': dateEnd } } },
+                        { $unwind: "$lines" },
+                        { $project: { _id: 0, lines: 1 } },
+                        { $group: { _id: "$lines.product.name", total_ht: { "$sum": "$lines.total_ht" } } }
+                    ], function(err, doc) {
+                        if (err) {
+                            return cb(err);
                         }
-                    },
-                    {
-                        $unwind: "$lines"
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            lines: 1
-                        }
-                    },
-                    {
-                        $group: {
-                            _id: "$lines.product.name",
-                            total_ht: {
-                                "$sum": "$lines.total_ht"
-                            }
-                        }
-                    }
-                ], function(err, doc) {
-                    if (err) {
-                        return cb(err);
-                    }
 
-                    //console.log(doc);
-                    cb(null, doc);
-                });
-            }
-            /*familles: function(cb) {
-             CoursesModel.aggregate([
-             {$match: {Status: {'$ne': 'REFUSED'}, total_ht: {'$gt': 0}, date_enlevement: {'$gte': dateStart, '$lt': dateEnd}}},
-             {$project: {_id: 0, type: 1, total_ht: 1}},
-             {$group: {_id: "$type", sum: {"$sum": "$total_ht"}}}
-             ], function(err, doc) {
-             if (doc.length == 0)
-             return cb(0);
-             
-             //console.log(doc);
-             cb(null, doc);
-             });
-             }*/
+                        //console.log(doc);
+                        cb(null, doc);
+                    });
+                }
+                /*familles: function(cb) {
+                 CoursesModel.aggregate([
+                 {$match: {Status: {'$ne': 'REFUSED'}, total_ht: {'$gt': 0}, date_enlevement: {'$gte': dateStart, '$lt': dateEnd}}},
+                 {$project: {_id: 0, type: 1, total_ht: 1}},
+                 {$group: {_id: "$type", sum: {"$sum": "$total_ht"}}}
+                 ], function(err, doc) {
+                 if (doc.length == 0)
+                 return cb(0);
+                 
+                 //console.log(doc);
+                 cb(null, doc);
+                 });
+                 }*/
         }, function(err, results) {
             if (err)
                 return console.log(err);
@@ -1371,9 +1233,7 @@ Object.prototype = {
             //console.log(results);
             async.each(results.caFamily, function(product, callback) {
                 //console.log(product);
-                ProductModel.findOne({
-                    ref: product._id
-                }, function(err, doc) {
+                ProductModel.findOne({ ref: product._id }, function(err, doc) {
                     if (!doc)
                         console.log(product);
 
@@ -1410,27 +1270,10 @@ Object.prototype = {
 
         var ca = {};
 
-        DeliveryModel.aggregate([{
-                $match: self.body.query
-            },
-            {
-                $project: {
-                    _id: 0,
-                    total_ht: 1,
-                    total_ht_subcontractors: 1
-                }
-            },
-            {
-                $group: {
-                    _id: null,
-                    total_ht: {
-                        "$sum": "$total_ht"
-                    },
-                    total_ht_subcontractors: {
-                        "$sum": "$total_ht_subcontractors"
-                    }
-                }
-            }
+        DeliveryModel.aggregate([
+            { $match: self.body.query },
+            { $project: { _id: 0, total_ht: 1, total_ht_subcontractors: 1 } },
+            { $group: { _id: null, total_ht: { "$sum": "$total_ht" }, total_ht_subcontractors: { "$sum": "$total_ht_subcontractors" } } }
         ], function(err, doc) {
             if (err) {
                 return console.log(err);
@@ -1447,9 +1290,7 @@ Object.prototype = {
 
         var object = new Object();
 
-        DeliveryModel.findOne({
-            _id: id
-        }, function(err, delivery) {
+        DeliveryModel.findOne({ _id: id }, function(err, delivery) {
             if (err)
                 return self.throw500(err);
 
@@ -1499,30 +1340,21 @@ Billing.prototype = {
             project[fields[i].trim()] = 1;
         }
 
-        DeliveryModel.aggregate([{
-                    $match: {
-                        Status: "SEND",
-                        entity: self.query.entity,
-                        datedl: {
-                            $lte: new Date(self.query.dateEnd)
-                        }
-                    }
-                },
-                {
-                    $project: project
-                }
+        DeliveryModel.aggregate([
+                { $match: { Status: "SEND", entity: self.query.entity, datedl: { $lte: new Date(self.query.dateEnd) } } },
+                { $project: project }
             ])
             .unwind('lines')
 
-            //.populate("orders", "ref ref_client total_ht")
-            .exec(function(err, docs) {
-                if (err)
-                    return console.log(err);
+        //.populate("orders", "ref ref_client total_ht")
+        .exec(function(err, docs) {
+            if (err)
+                return console.log(err);
 
-                //console.log(docs);
-                result.GroupBL = docs;
-                self.json(result);
-            });
+            //console.log(docs);
+            result.GroupBL = docs;
+            self.json(result);
+        });
     },
     create: function(id, self) {
         var DeliveryModel = MODEL('delivery').Schema;
@@ -1580,17 +1412,9 @@ Billing.prototype = {
 
             // Add lines to supplier
             if (delivery.subcontractors.length > 0) {
-                DeliveryModel.aggregate([{
-                        '$match': {
-                            _id: delivery._id,
-                            total_ht_subcontractors: {
-                                '$gt': 0
-                            }
-                        }
-                    },
-                    {
-                        '$unwind': "$subcontractors"
-                    },
+                DeliveryModel.aggregate([
+                    { '$match': { _id: delivery._id, total_ht_subcontractors: { '$gt': 0 } } },
+                    { '$unwind': "$subcontractors" },
                     {
                         '$group': {
                             _id: {
@@ -1604,12 +1428,8 @@ Billing.prototype = {
                                     name: "$ref"
                                 }
                             },
-                            lines: {
-                                '$addToSet': '$subcontractors'
-                            },
-                            total_soustraitant: {
-                                '$sum': "$total_ht_subcontractors"
-                            }
+                            lines: { '$addToSet': '$subcontractors' },
+                            total_soustraitant: { '$sum': "$total_ht_subcontractors" }
                         }
                     }
                 ], function(err, docs) {
@@ -1618,14 +1438,7 @@ Billing.prototype = {
 
                     async.each(docs, function(doc, cb) {
                         //console.log(doc);
-                        FactureSupplierModel.findOne({
-                            Status: "DRAFT",
-                            "supplier.id": doc._id.fournisseur.id
-                        }, {}, {
-                            sort: {
-                                'createdAt': -1
-                            }
-                        }, function(err, billSupplier) {
+                        FactureSupplierModel.findOne({ Status: "DRAFT", "supplier.id": doc._id.fournisseur.id }, {}, { sort: { 'createdAt': -1 } }, function(err, billSupplier) {
                             if (err)
                                 return cb(err);
 
@@ -1701,42 +1514,12 @@ Billing.prototype = {
             return mongoose.Types.ObjectId(id);
         });
 
-        DeliveryModel.aggregate([{
-                "$match": {
-                    Status: "SEND",
-                    _id: {
-                        $in: list
-                    }
-                }
-            },
-            {
-                "$project": {
-                    "datec": 1,
-                    datedl: 1,
-                    entity: 1,
-                    "shipping": 1,
-                    "lines": 1,
-                    "ref": 1,
-                    "societe": "$client.cptBilling"
-                }
-            },
-            {
-                "$sort": {
-                    datedl: 1
-                }
-            },
+        DeliveryModel.aggregate([
+            { "$match": { Status: "SEND", _id: { $in: list } } },
+            { "$project": { "datec": 1, datedl: 1, entity: 1, "shipping": 1, "lines": 1, "ref": 1, "societe": "$client.cptBilling" } },
+            { "$sort": { datedl: 1 } },
             //{"$unwind": "$lines"},
-            {
-                "$group": {
-                    "_id": {
-                        societe: "$societe.id",
-                        entity: "$entity"
-                    },
-                    "data": {
-                        "$push": "$$ROOT"
-                    }
-                }
-            }
+            { "$group": { "_id": { societe: "$societe.id", entity: "$entity" }, "data": { "$push": "$$ROOT" } } }
         ], function(err, docs) {
             if (err)
                 return console.log(err);
@@ -1746,9 +1529,7 @@ Billing.prototype = {
             // Creation des factures
             async.each(docs, function(client, callback) {
 
-                SocieteModel.findOne({
-                    _id: client._id.societe
-                }, function(err, societe) {
+                SocieteModel.findOne({ _id: client._id.societe }, function(err, societe) {
 
                     var datec = new Date();
 
@@ -1809,13 +1590,7 @@ Billing.prototype = {
 
                         //console.log(bill);
                         for (var i = 0; i < bill.deliveries.length; i++) {
-                            DeliveryModel.update({
-                                _id: bill.deliveries[i]
-                            }, {
-                                $set: {
-                                    Status: "BILLED"
-                                }
-                            }, function(err) {
+                            DeliveryModel.update({ _id: bill.deliveries[i] }, { $set: { Status: "BILLED" } }, function(err) {
                                 if (err)
                                     console.log(err);
                             });
@@ -1887,18 +1662,7 @@ Billing.prototype = {
                      });
                      */
 
-                    CoursesModel.find({
-                        Status: {
-                            '$ne': 'REFUSED'
-                        },
-                        date_enlevement: {
-                            '$gte': dateStart
-                        }
-                    }, {
-                        total_ht: 1,
-                        type: 1,
-                        date_enlevement: 1
-                    }, function(err, docs) {
+                    CoursesModel.find({ Status: { '$ne': 'REFUSED' }, date_enlevement: { '$gte': dateStart } }, { total_ht: 1, type: 1, date_enlevement: 1 }, function(err, docs) {
                         if (err)
                             console.log(err);
 
@@ -1933,17 +1697,7 @@ Billing.prototype = {
                      total_ht: {$sum: "$total_ht"}}
                      }
                      ], function(err, docs) {*/
-                    CoursesModel.find({
-                            Status: {
-                                '$ne': 'REFUSED'
-                            },
-                            date_enlevement: {
-                                '$gte': dateStart
-                            }
-                        }, {
-                            total_ht: 1,
-                            date_enlevement: 1
-                        },
+                    CoursesModel.find({ Status: { '$ne': 'REFUSED' }, date_enlevement: { '$gte': dateStart } }, { total_ht: 1, date_enlevement: 1 },
                         function(err, docs) {
                             for (var i = 0; i < docs.length; i++) {
                                 result.total[docs[i].date_enlevement.getMonth()] += docs[i].total_ht;
@@ -1974,17 +1728,7 @@ Billing.prototype = {
                      total_ht: {$sum: "$total_ht"}
                      }
                      }*/
-                    CoursesModel.find({
-                            Status: {
-                                '$ne': 'REFUSED'
-                            },
-                            date_enlevement: {
-                                '$gte': dateStart
-                            }
-                        }, {
-                            total_ht: 1,
-                            date_enlevement: 1
-                        },
+                    CoursesModel.find({ Status: { '$ne': 'REFUSED' }, date_enlevement: { '$gte': dateStart } }, { total_ht: 1, date_enlevement: 1 },
                         function(err, docs) {
                             for (var i = 0; i < docs.length; i++) {
                                 result[docs[i].date_enlevement.getMonth()] += docs[i].total_ht;
@@ -1996,28 +1740,12 @@ Billing.prototype = {
                 caTotalfamily: function(cb) {
                     var result = [];
 
-                    CoursesModel.aggregate([{
-                            $match: {
-                                Status: {
-                                    '$ne': 'REFUSED'
-                                },
-                                date_enlevement: {
-                                    '$gte': dateStart
-                                }
-                            }
-                        },
-                        {
-                            $project: {
-                                total_ht: 1,
-                                type: 1,
-                                date_enlevement: 1
-                            }
-                        }, {
+                    CoursesModel.aggregate([
+                        { $match: { Status: { '$ne': 'REFUSED' }, date_enlevement: { '$gte': dateStart } } },
+                        { $project: { total_ht: 1, type: 1, date_enlevement: 1 } }, {
                             $group: {
                                 _id: "$type",
-                                total_ht: {
-                                    $sum: "$total_ht"
-                                }
+                                total_ht: { $sum: "$total_ht" }
                             }
                         }
                     ], function(err, docs) {
@@ -2143,9 +1871,7 @@ function createDelivery(doc, callback) {
 
     //console.log(doc);
 
-    Dict.extrafield({
-        extrafieldName: 'BonLivraison'
-    }, function(err, doc) {
+    Dict.extrafield({ extrafieldName: 'BonLivraison' }, function(err, doc) {
         if (err) {
             console.log(err);
             return;
@@ -2164,32 +1890,17 @@ function createDelivery(doc, callback) {
         model = "stockreturn.tex";
 
 
-    SocieteModel.findOne({
-        _id: doc.supplier._id
-    }, function(err, societe) {
+    SocieteModel.findOne({ _id: doc.supplier._id }, function(err, societe) {
 
         // Array of lines
         var tabLines = [];
 
         tabLines.push({
-            keys: [{
-                    key: "ref",
-                    type: "string"
-                },
-                {
-                    key: "description",
-                    type: "area"
-                },
-                {
-                    key: "qty_order",
-                    type: "number",
-                    precision: 0
-                },
-                {
-                    key: "qty",
-                    type: "number",
-                    precision: 0
-                }
+            keys: [
+                { key: "ref", type: "string" },
+                { key: "description", type: "area" },
+                { key: "qty_order", type: "number", precision: 0 },
+                { key: "qty", type: "number", precision: 0 }
             ]
         });
 
@@ -2197,19 +1908,14 @@ function createDelivery(doc, callback) {
             //console.log(doc.orderRows[i]);
 
             //console.log(doc.lines[i]);
-            let orderRow = _.findWhere(doc.orderRows, {
-                orderRowId: doc.lines[i]._id
-            })
+            let orderRow = _.findWhere(doc.orderRows, { orderRowId: doc.lines[i]._id })
 
             if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0 && orderRow && orderRow.qty != null)
                 tabLines.push({
                     ref: doc.lines[i].product.info.SKU.substring(0, 12),
                     description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
                     qty_order: doc.lines[i].qty,
-                    qty: {
-                        value: orderRow.qty,
-                        unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U")
-                    }
+                    qty: { value: orderRow.qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") }
                 });
 
             /*if (doc.lines[i].product.id.pack && doc.lines[i].product.id.pack.length) {
@@ -2271,19 +1977,10 @@ function createDelivery(doc, callback) {
         var barcode = code + "-" + moment(doc.datedl).format("YY") + "0-"; + doc.ref.split('-')[1].replace('_', '-');
         var split = doc.ref.replace('/', '-').split('-');
         if (split.length == 2) //BL1607-02020-32
-            barcode += "00" + fixedWidthString(doc.ID, 6, {
-                padding: '0',
-                align: 'right'
-            });
+            barcode += "00" + fixedWidthString(doc.ID, 6, { padding: '0', align: 'right' });
         else { // BL1607-120202
-            barcode += fixedWidthString(doc.ID, 6, {
-                padding: '0',
-                align: 'right'
-            });
-            barcode += "-" + fixedWidthString(split[2], 2, {
-                padding: '0',
-                align: 'right'
-            });
+            barcode += fixedWidthString(doc.ID, 6, { padding: '0', align: 'right' });
+            barcode += "-" + fixedWidthString(split[2], 2, { padding: '0', align: 'right' });
         }
 
         barcode += '-' + isbn(barcode);
@@ -2335,18 +2032,9 @@ function createDelivery(doc, callback) {
                     "value": societe.salesPurchases.code_client
                 },
                 //"TITLE": {"type": "string", "value": doc.title},
-                "REFCLIENT": {
-                    "type": "string",
-                    "value": doc.ref_client
-                },
-                "DELIVERYMODE": {
-                    "type": "string",
-                    "value": doc.delivery_mode
-                },
-                "BARCODE": {
-                    type: "string",
-                    value: barcode
-                },
+                "REFCLIENT": { "type": "string", "value": doc.ref_client },
+                "DELIVERYMODE": { "type": "string", "value": doc.delivery_mode },
+                "BARCODE": { type: "string", value: barcode },
                 "DATEC": {
                     "type": "date",
                     "value": doc.datec,
@@ -2357,10 +2045,7 @@ function createDelivery(doc, callback) {
                     "value": doc.datedl,
                     "format": CONFIG('dateformatShort')
                 },
-                "ORDER": {
-                    "type": "string",
-                    "value": (doc.order && doc.order.ref ? doc.order.ref : "-")
-                },
+                "ORDER": { "type": "string", "value": (doc.order && doc.order.ref ? doc.order.ref : "-") },
                 "NOTES": {
                     "type": "area",
                     "value": (doc.notes.length ? doc.notes[0].note : "")
@@ -2383,17 +2068,11 @@ function createDelivery2(doc, callback) {
 
     var discount = false;
     var cond_reglement_code = {};
-    Dict.dict({
-        dictName: "fk_payment_term",
-        object: true
-    }, function(err, docs) {
+    Dict.dict({ dictName: "fk_payment_term", object: true }, function(err, docs) {
         cond_reglement_code = docs;
     });
     var mode_reglement_code = {};
-    Dict.dict({
-        dictName: "fk_paiement",
-        object: true
-    }, function(err, docs) {
+    Dict.dict({ dictName: "fk_paiement", object: true }, function(err, docs) {
         mode_reglement_code = docs;
     });
 
@@ -2402,20 +2081,16 @@ function createDelivery2(doc, callback) {
     if (CONFIG('delivery.type') == "NOPRICE")
         model = "NOPRICE";
     else
-        // check if discount
+    // check if discount
         for (var i = 0; i < doc.lines.length; i++) {
-            if (doc.lines[i].discount > 0) {
-                model = "DISCOUNT";
-                break;
-            }
+        if (doc.lines[i].discount > 0) {
+            model = "DISCOUNT";
+            break;
         }
+    }
 
-    SocieteModel.findOne({
-        _id: doc.supplier.id
-    }, function(err, societe) {
-        BankModel.findOne({
-            ref: societe.bank_reglement
-        }, function(err, bank) {
+    SocieteModel.findOne({ _id: doc.supplier.id }, function(err, societe) {
+        BankModel.findOne({ ref: societe.bank_reglement }, function(err, bank) {
             if (bank)
                 var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
@@ -2425,88 +2100,38 @@ function createDelivery2(doc, callback) {
             switch (model) {
                 case "DISCOUNT":
                     tabLines.push({
-                        keys: [{
-                                key: "ref",
-                                type: "string"
-                            },
-                            {
-                                key: "description",
-                                type: "area"
-                            },
-                            {
-                                key: "tva_tx",
-                                type: "string"
-                            },
-                            {
-                                key: "pu_ht",
-                                type: "number",
-                                precision: 3
-                            },
-                            {
-                                key: "discount",
-                                type: "string"
-                            },
-                            {
-                                key: "qty",
-                                type: "number",
-                                precision: 3
-                            },
-                            {
-                                key: "total_ht",
-                                type: "euro"
-                            }
+                        keys: [
+                            { key: "ref", type: "string" },
+                            { key: "description", type: "area" },
+                            { key: "tva_tx", type: "string" },
+                            { key: "pu_ht", type: "number", precision: 3 },
+                            { key: "discount", type: "string" },
+                            { key: "qty", type: "number", precision: 3 },
+                            { key: "total_ht", type: "euro" }
                         ]
                     });
                     break;
                 case "NOPRICE":
                     tabLines.push({
-                        keys: [{
-                                key: "ref",
-                                type: "string"
-                            },
-                            {
-                                key: "description",
-                                type: "area"
-                            },
+                        keys: [
+                            { key: "ref", type: "string" },
+                            { key: "description", type: "area" },
                             //{key: "tva_tx", type: "string"},
                             //{key: "pu_ht", type: "number", precision: 3},
-                            {
-                                key: "qty",
-                                type: "number",
-                                precision: 3
-                            },
+                            { key: "qty", type: "number", precision: 3 },
                             //{key: "total_ht", type: "euro"}
                         ]
                     });
                     break;
                 default: //PRICE
                     tabLines.push({
-                        keys: [{
-                                key: "ref",
-                                type: "string"
-                            },
-                            {
-                                key: "description",
-                                type: "area"
-                            },
-                            {
-                                key: "tva_tx",
-                                type: "string"
-                            },
-                            {
-                                key: "pu_ht",
-                                type: "number",
-                                precision: 3
-                            },
-                            {
-                                key: "qty",
-                                type: "number",
-                                precision: 3
-                            },
-                            {
-                                key: "total_ht",
-                                type: "euro"
-                            }
+                        keys: [
+                            { key: "ref", type: "string" },
+                            { key: "description", type: "area" },
+                            { key: "tva_tx", type: "string" },
+                            { key: "pu_ht", type: "number", precision: 3 },
+                            { key: "qty", type: "number", precision: 3 },
+                            { key: "total_ht", type: "euro" }
                         ]
                     });
             }
@@ -2549,23 +2174,16 @@ function createDelivery2(doc, callback) {
 
                 if (doc.lines[i].type == 'SUBTOTAL') {
                     tabLines[tabLines.length - 1].italic = true;
-                    tabLines.push({
-                        hline: 1
-                    });
+                    tabLines.push({ hline: 1 });
                 }
                 //tab_latex += " & \\specialcell[t]{\\\\" + "\\\\} & " +   + " & " + " & " +  "\\tabularnewline\n";
             }
 
             // Array of totals
             var tabTotal = [{
-                keys: [{
-                        key: "label",
-                        type: "string"
-                    },
-                    {
-                        key: "total",
-                        type: "euro"
-                    }
+                keys: [
+                    { key: "label", type: "string" },
+                    { key: "total", type: "euro" }
                 ]
             }];
 
@@ -2690,18 +2308,9 @@ function createDelivery2(doc, callback) {
                         "value": societe.salesPurchases.code_client
                     },
                     //"TITLE": {"type": "string", "value": doc.title},
-                    "REFCLIENT": {
-                        "type": "string",
-                        "value": doc.ref_client
-                    },
-                    "PERIOD": {
-                        "type": "string",
-                        "value": period
-                    },
-                    "DELIVERYMODE": {
-                        "type": "string",
-                        "value": doc.delivery_mode
-                    },
+                    "REFCLIENT": { "type": "string", "value": doc.ref_client },
+                    "PERIOD": { "type": "string", "value": period },
+                    "DELIVERYMODE": { "type": "string", "value": doc.delivery_mode },
                     "DATEEXP": {
                         "type": "date",
                         "value": doc.datedl,
@@ -2712,33 +2321,21 @@ function createDelivery2(doc, callback) {
                         "value": doc.datec,
                         "format": CONFIG('dateformatShort')
                     },
-                    "REGLEMENT": {
-                        "type": "string",
-                        "value": cond_reglement_code.values[doc.cond_reglement_code].label
-                    },
-                    "PAID": {
-                        "type": "string",
-                        "value": mode_reglement_code.values[doc.mode_reglement_code].label
-                    },
-                    "ORDER": {
-                        "type": "string",
-                        "value": (doc.order && doc.order.ref ? doc.order.ref : "-")
-                    },
+                    "REGLEMENT": { "type": "string", "value": cond_reglement_code.values[doc.cond_reglement_code].label },
+                    "PAID": { "type": "string", "value": mode_reglement_code.values[doc.mode_reglement_code].label },
+                    "ORDER": { "type": "string", "value": (doc.order && doc.order.ref ? doc.order.ref : "-") },
                     "NOTES": {
                         "type": "string",
                         "value": (doc.notes.length ? doc.notes[0].note : "")
                     },
-                    "BK": {
-                        "type": "area",
-                        "value": reglement
-                    },
+                    "BK": { "type": "area", "value": reglement },
                     "TABULAR": tabLines,
                     //"TOTAL": tabTotal,
                     "TOTALQTY": tabTotalQty
-                    //"APAYER": {
-                    //    "type": "euro",
-                    //    "value": doc.total_ttc || 0
-                    //}
+                        //"APAYER": {
+                        //    "type": "euro",
+                        //    "value": doc.total_ttc || 0
+                        //}
                 })
                 .on('error', callback)
                 .finalize(function(tex) {

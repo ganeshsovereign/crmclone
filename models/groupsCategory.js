@@ -31,22 +31,13 @@ var mongoose = require('mongoose'),
 
 var GroupCategoriesSchema = new Schema({
     name: String,
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
+    createdAt: { type: Date, default: Date.now },
     channels: [{
         _id: false,
-        channel: {
-            type: Schema.Types.ObjectId,
-            ref: 'integrations',
-            default: null
-        },
+        channel: { type: Schema.Types.ObjectId, ref: 'integrations', default: null },
         integrationId: String
     }]
-}, {
-    collection: 'groupCategory'
-});
+}, { collection: 'groupCategory' });
 
 exports.Schema = mongoose.model('groupCategory', GroupCategoriesSchema);
 exports.name = "groupCategory";

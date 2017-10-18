@@ -41,10 +41,7 @@ var ContactModel = MODEL('Customers').Schema;
 var Dict = INCLUDE('dict');
 
 var actioncomm = {};
-Dict.dict({
-    dictName: "fk_actioncomm",
-    object: true
-}, function(err, docs) {
+Dict.dict({ dictName: "fk_actioncomm", object: true }, function(err, docs) {
     if (err) {
         console.log(err);
         return;
@@ -77,69 +74,35 @@ function query(params) {
 
     switch (params.query.type) {
         case 'MYTASK':
-            query.$or = [{
-                    'usertodo.id': params.user
-                },
-                {
-                    'author.id': params.user,
-                    archived: false
-                }
+            query.$or = [
+                { 'usertodo.id': params.user },
+                { 'author.id': params.user, archived: false }
             ];
             break;
         case 'ALLTASK':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': null
-                },
-                {
-                    'author.id': params.user,
-                    archived: false
-                },
-                {
-                    entity: params.query.entity,
-                    archived: false
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': null },
+                { 'author.id': params.user, archived: false },
+                { entity: params.query.entity, archived: false }
             ];
             break;
         case 'MYARCHIVED':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': {
-                        $ne: null
-                    }
-                },
-                {
-                    'author.id': params.user,
-                    archived: true
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': { $ne: null } },
+                { 'author.id': params.user, archived: true }
             ];
             break;
         case 'ARCHIVED':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': {
-                        $ne: null
-                    }
-                },
-                {
-                    'author.id': params.user,
-                    archived: true
-                },
-                {
-                    entity: params.query.entity,
-                    archived: true
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': { $ne: null } },
+                { 'author.id': params.user, archived: true },
+                { entity: params.query.entity, archived: true }
             ];
             break;
         case 'TODAYMYRDV': // For rdv list in menu
             query['usertodo.id'] = params.user;
-            query.type = {
-                $in: actioncomm.event
-            };
-            query.datep = {
-                $gte: new Date().setHours(0, 0, 0),
-                $lte: new Date().setHours(23, 59, 59)
-            };
+            query.type = { $in: actioncomm.event };
+            query.datep = { $gte: new Date().setHours(0, 0, 0), $lte: new Date().setHours(23, 59, 59) };
             return TaskModel.find(query, params.fields, callback);
             break;
         default: //'ARCHIVED':
@@ -238,22 +201,14 @@ function readTask(params, callback) {
     switch (params.query) {
         case 'MYTASK':
 
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': null
-                },
-                {
-                    'author.id': params.user,
-                    archived: false
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': null },
+                { 'author.id': params.user, archived: false }
             ];
 
             if (params.group)
                 try {
-                    query.$or.push({
-                        'group.name': JSON.parse(params.group),
-                        archived: false
-                    });
+                    query.$or.push({ 'group.name': JSON.parse(params.group), archived: false });
                 } catch (e) {
                     //query.$or.push({group: params.group});
                 }
@@ -271,59 +226,29 @@ function readTask(params, callback) {
 
             break;
         case 'ALLTASK':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': null
-                },
-                {
-                    'author.id': params.user,
-                    archived: false
-                },
-                {
-                    entity: params.entity,
-                    archived: false
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': null },
+                { 'author.id': params.user, archived: false },
+                { entity: params.entity, archived: false }
             ];
             break;
         case 'MYARCHIVED':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': {
-                        $ne: null
-                    }
-                },
-                {
-                    'author.id': params.user,
-                    archived: true
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': { $ne: null } },
+                { 'author.id': params.user, archived: true }
             ];
             break;
         case 'ARCHIVED':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': {
-                        $ne: null
-                    }
-                },
-                {
-                    'author.id': params.user,
-                    archived: true
-                },
-                {
-                    entity: params.entity,
-                    archived: true
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': { $ne: null } },
+                { 'author.id': params.user, archived: true },
+                { entity: params.entity, archived: true }
             ];
             break;
         case 'TODAYMYRDV': // For rdv list in menu
             query['usertodo.id'] = params.user;
-            query.type = {
-                $in: actioncomm.event
-            };
-            query.datep = {
-                $gte: new Date().setHours(0, 0, 0),
-                $lte: new Date().setHours(23, 59, 59)
-            };
+            query.type = { $in: actioncomm.event };
+            query.datep = { $gte: new Date().setHours(0, 0, 0), $lte: new Date().setHours(23, 59, 59) };
             return TaskModel.find(query, params.fields, callback);
             break;
         default: //'ARCHIVED':
@@ -331,11 +256,7 @@ function readTask(params, callback) {
     }
 
     //console.log(query);
-    TaskModel.find(query, params.fields, {
-        skip: parseInt(params.skip, 10) * parseInt(params.limit, 10) || 0,
-        limit: params.limit || 100,
-        sort: JSON.parse(params.sort)
-    }, callback);
+    TaskModel.find(query, params.fields, { skip: parseInt(params.skip, 10) * parseInt(params.limit, 10) || 0, limit: params.limit || 100, sort: JSON.parse(params.sort) }, callback);
 }
 
 function countTask(params, callback) {
@@ -356,59 +277,29 @@ function countTask(params, callback) {
 
     switch (params.query) {
         case 'MYTASK':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': null
-                },
-                {
-                    'author.id': params.user,
-                    archived: false
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': null },
+                { 'author.id': params.user, archived: false }
             ];
             break;
         case 'ALLTASK':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': null
-                },
-                {
-                    'author.id': params.user,
-                    archived: false
-                },
-                {
-                    entity: params.entity,
-                    archived: false
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': null },
+                { 'author.id': params.user, archived: false },
+                { entity: params.entity, archived: false }
             ];
             break;
         case 'MYARCHIVED':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': {
-                        $ne: null
-                    }
-                },
-                {
-                    'author.id': params.user,
-                    archived: true
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': { $ne: null } },
+                { 'author.id': params.user, archived: true }
             ];
             break;
         case 'ARCHIVED':
-            query.$or = [{
-                    'usertodo.id': params.user,
-                    'userdone.id': {
-                        $ne: null
-                    }
-                },
-                {
-                    'author.id': params.user,
-                    archived: true
-                },
-                {
-                    entity: params.entity,
-                    archived: true
-                }
+            query.$or = [
+                { 'usertodo.id': params.user, 'userdone.id': { $ne: null } },
+                { 'author.id': params.user, archived: true },
+                { entity: params.entity, archived: true }
             ];
             break;
         default: //'ARCHIVED':
@@ -421,37 +312,15 @@ function countTask(params, callback) {
 function countGroupTask(user, callback) {
 
     var query = {
-        "group.name": {
-            $in: user.groups
-        },
+        "group.name": { $in: user.groups },
         archived: false
     };
 
-    TaskModel.aggregate([{
-            $match: query
-        },
-        {
-            $project: {
-                _id: 1,
-                group: 1
-            }
-        },
-        {
-            $group: {
-                _id: "$group.id",
-                count: {
-                    "$sum": 1
-                },
-                name: {
-                    $addToSet: "$group.name"
-                }
-            }
-        },
-        {
-            $sort: {
-                _id: -1
-            }
-        }
+    TaskModel.aggregate([
+        { $match: query },
+        { $project: { _id: 1, group: 1 } },
+        { $group: { _id: "$group.id", count: { "$sum": 1 }, name: { $addToSet: "$group.name" } } },
+        { $sort: { _id: -1 } }
     ], callback);
 }
 
@@ -463,17 +332,13 @@ function createTask(task, user, socket, callback) {
             if (!(task.societe && task.societe.id))
                 return cb(null, {});
 
-            SocieteModel.findOne({
-                _id: task.societe.id
-            }, cb);
+            SocieteModel.findOne({ _id: task.societe.id }, cb);
         },
         contact: function(cb) {
             if (!(task.contact && task.contact.id))
                 return cb(null, {});
 
-            ContactModel.findOne({
-                _id: task.contact.id
-            }, cb);
+            ContactModel.findOne({ _id: task.contact.id }, cb);
         }
     }, function(err, result) {
         if (err)
@@ -576,15 +441,8 @@ function createTask(task, user, socket, callback) {
                 });
 
             //refresh tasklist and counter on users
-            socket.emit('task', {
-                type: 'create',
-                data: task
-            });
-            socket.emit('publish', {
-                type: 'create',
-                data: task,
-                uid: []
-            }); // Send to SymeosNet
+            socket.emit('task', { type: 'create', data: task });
+            socket.emit('publish', { type: 'create', data: task, uid: [] }); // Send to SymeosNet
         });
     });
 }
@@ -696,35 +554,22 @@ function updateTask(oldTask, newTask, user, socket, callback) {
 
 
         //refresh tasklist and counter on users
-        socket.emit('task', {
-            type: 'update',
-            data: task
-        });
-        socket.emit('publish', {
-            type: 'update',
-            data: task,
-            uid: []
-        }); // Send to SymeosNet
+        socket.emit('task', { type: 'update', data: task });
+        socket.emit('publish', { type: 'update', data: task, uid: [] }); // Send to SymeosNet
     });
 }
 
 function removeTask(id, callback) {
     if (typeof id === 'array')
         TaskModel.remove({
-            _id: {
-                $in: id
-            }
+            _id: { $in: id }
         }, callback);
     else
-        TaskModel.remove({
-            _id: id
-        }, callback);
+        TaskModel.remove({ _id: id }, callback);
 }
 
 function getTask(id, callback) {
-    TaskModel.findOne({
-        _id: id
-    }, callback);
+    TaskModel.findOne({ _id: id }, callback);
 }
 
 /*function refreshTask(socket) {

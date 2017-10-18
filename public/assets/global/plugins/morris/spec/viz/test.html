@@ -13,23 +13,28 @@
             margin: 0;
             background-color: white;
         }
-
+        
         #chart {
             width: 500px;
             height: 300px;
         }
     </style>
     <script>
-        function bridge(e) {
+        function bridge(e)
+        {
             window.alert(JSON.stringify(e));
         }
-        window.snapshot = function() {
-            bridge({
+        window.snapshot = function()
+        {
+            bridge(
+            {
                 fn: "snapshot"
             });
         };
-        window.mousemove = function(x, y) {
-            bridge({
+        window.mousemove = function(x, y)
+        {
+            bridge(
+            {
                 fn: "mousemove",
                 x: x,
                 y: y

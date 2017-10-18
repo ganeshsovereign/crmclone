@@ -1,12 +1,12 @@
 /*!
- * jquery.inputmask.extensions.js
- * http://github.com/RobinHerbots/jquery.inputmask
- * Copyright (c) 2010 - 2014 Robin Herbots
- * Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php)
- * Version: 3.1.34
- */
-! function(factory) {
-    "function" == typeof define && define.amd ? define(["jquery", "./jquery.inputmask"], factory) : factory(jQuery);
+* jquery.inputmask.extensions.js
+* http://github.com/RobinHerbots/jquery.inputmask
+* Copyright (c) 2010 - 2014 Robin Herbots
+* Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php)
+* Version: 3.1.34
+*/
+!function(factory) {
+    "function" == typeof define && define.amd ? define([ "jquery", "./jquery.inputmask" ], factory) : factory(jQuery);
 }(function($) {
     return $.extend($.inputmask.defaults.definitions, {
         A: {
@@ -51,8 +51,8 @@
                                         j + 1 - chrs.length > 0 && (tmp = maskset.buffer.join("").substring(0, j + 1 - chrs.length) + "" + tmp);
                                         var isValid = opts.regex["urlpre" + (j + 1)].test(tmp);
                                         if (!strict && !isValid) {
-                                            for (pos -= j, k = 0; k < opts.defaultPrefix.length; k++) maskset.buffer[pos] = opts.defaultPrefix[k],
-                                                pos++;
+                                            for (pos -= j, k = 0; k < opts.defaultPrefix.length; k++) maskset.buffer[pos] = opts.defaultPrefix[k], 
+                                            pos++;
                                             for (k = 0; k < tmp.length - 1; k++) maskset.buffer[pos] = tmp[k], pos++;
                                             return {
                                                 pos: pos
@@ -81,9 +81,9 @@
             definitions: {
                 i: {
                     validator: function(chrs, maskset, pos) {
-                        return pos - 1 > -1 && "." != maskset.buffer[pos - 1] ? (chrs = maskset.buffer[pos - 1] + chrs,
-                                chrs = pos - 2 > -1 && "." != maskset.buffer[pos - 2] ? maskset.buffer[pos - 2] + chrs : "0" + chrs) : chrs = "00" + chrs,
-                            new RegExp("25[0-5]|2[0-4][0-9]|[01][0-9][0-9]").test(chrs);
+                        return pos - 1 > -1 && "." != maskset.buffer[pos - 1] ? (chrs = maskset.buffer[pos - 1] + chrs, 
+                        chrs = pos - 2 > -1 && "." != maskset.buffer[pos - 2] ? maskset.buffer[pos - 2] + chrs : "0" + chrs) : chrs = "00" + chrs, 
+                        new RegExp("25[0-5]|2[0-4][0-9]|[01][0-9][0-9]").test(chrs);
                     },
                     cardinality: 1
                 }

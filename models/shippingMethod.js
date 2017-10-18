@@ -32,40 +32,16 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var shippingMethodSchema = new Schema({
-    seq: {
-        type: Number,
-        default: 1
-    },
-    isremoved: {
-        type: Boolean,
-        default: false
-    },
-    name: {
-        type: String,
-        default: ''
-    },
-    code: {
-        type: String,
-        default: ''
-    },
-    price: {
-        type: Number,
-        default: 0
-    },
+    seq: { type: Number, default: 1 },
+    isremoved: { type: Boolean, default: false },
+    name: { type: String, default: '' },
+    code: { type: String, default: '' },
+    price: { type: Number, default: 0 },
     countries: [String],
     breaks: [Number],
-    breakType: {
-        type: String,
-        default: ''
-    },
-    account: {
-        type: ObjectId,
-        ref: 'chartOfAccount',
-        default: null
-    }
-}, {
-    collection: 'shippingMethod'
-});
+    breakType: { type: String, default: '' },
+    account: { type: ObjectId, ref: 'chartOfAccount', default: null }
+}, { collection: 'shippingMethod' });
 
 shippingMethodSchema.plugin(timestamps);
 

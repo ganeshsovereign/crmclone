@@ -67,9 +67,7 @@ Object.prototype = {
             if (err)
                 return self.throw500(err);
 
-            self.json({
-                count: count
-            });
+            self.json({ count: count });
         });
     },
     countgroup: function() {
@@ -128,9 +126,7 @@ Object.prototype = {
             if (err)
                 return self.throw500(err);
 
-            F.functions.EE.emit('task', {
-                type: 'delete'
-            });
+            F.functions.EE.emit('task', { type: 'delete' });
             self.json({});
         });
     },
@@ -156,9 +152,7 @@ Object.prototype = {
             if (err)
                 return self.throw500(err);
 
-            F.functions.EE.emit('task', {
-                type: 'delete'
-            });
+            F.functions.EE.emit('task', { type: 'delete' });
             self.json({});
         });
     },
@@ -189,10 +183,7 @@ Object.prototype = {
 
         //console.log(paramsDatatable);
 
-        var query = Task.query({
-            query: self.query,
-            user: self.user._id
-        });
+        var query = Task.query({ query: self.query, user: self.user._id });
 
         //console.log(query);
 

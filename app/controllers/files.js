@@ -29,9 +29,7 @@ MetronicApp.controller('FileCtrl', ['$scope', '$rootScope', '$http', 'FileUpload
 
         $scope.files = [];
 
-        var uploader = $scope.uploader = new FileUploader({
-            autoUpload: true
-        });
+        var uploader = $scope.uploader = new FileUploader({ autoUpload: true });
 
         $scope.init = function(model, object) {
             uploader.url = '/erp/api/file/' + model + '/' + object._id;

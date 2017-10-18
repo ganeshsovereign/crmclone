@@ -1,6 +1,6 @@
-var MapsGoogle = function() {
+var MapsGoogle = function () {
 
-    var mapBasic = function() {
+    var mapBasic = function () {
         new GMaps({
             div: '#gmap_basic',
             lat: -12.043333,
@@ -8,21 +8,21 @@ var MapsGoogle = function() {
         });
     }
 
-    var mapMarker = function() {
+    var mapMarker = function () {
         var map = new GMaps({
             div: '#gmap_marker',
-            lat: -51.38739,
-            lng: -6.187181,
+           lat: -51.38739,
+                lng: -6.187181,
         });
         map.addMarker({
-            lat: -51.38739,
-            lng: -6.187181,
+           lat: -51.38739,
+                lng: -6.187181,
             title: 'Lima',
             details: {
                 database_id: 42,
                 author: 'HPNeo'
             },
-            click: function(e) {
+            click: function (e) {
                 if (console.log) console.log(e);
                 alert('You clicked in this marker');
             }
@@ -38,12 +38,12 @@ var MapsGoogle = function() {
         map.setZoom(5);
     }
 
-    var mapPolylines = function() {
+    var mapPolylines = function () {
         var map = new GMaps({
             div: '#gmap_polylines',
             lat: -12.043333,
             lng: -77.028333,
-            click: function(e) {
+            click: function (e) {
                 console.log(e);
             }
         });
@@ -67,7 +67,7 @@ var MapsGoogle = function() {
         });
     }
 
-    var mapGeolocation = function() {
+    var mapGeolocation = function () {
 
         var map = new GMaps({
             div: '#gmap_geo',
@@ -76,22 +76,22 @@ var MapsGoogle = function() {
         });
 
         GMaps.geolocate({
-            success: function(position) {
+            success: function (position) {
                 map.setCenter(position.coords.latitude, position.coords.longitude);
             },
-            error: function(error) {
+            error: function (error) {
                 alert('Geolocation failed: ' + error.message);
             },
-            not_supported: function() {
+            not_supported: function () {
                 alert("Your browser does not support geolocation");
             },
-            always: function() {
+            always: function () {
                 //alert("Geolocation Done!");
             }
         });
     }
 
-    var mapGeocoding = function() {
+    var mapGeocoding = function () {
 
         var map = new GMaps({
             div: '#gmap_geocoding',
@@ -99,11 +99,11 @@ var MapsGoogle = function() {
             lng: -77.028333
         });
 
-        var handleAction = function() {
+        var handleAction = function () {
             var text = $.trim($('#gmap_geocoding_address').val());
             GMaps.geocode({
                 address: text,
-                callback: function(results, status) {
+                callback: function (results, status) {
                     if (status == 'OK') {
                         var latlng = results[0].geometry.location;
                         map.setCenter(latlng.lat(), latlng.lng());
@@ -117,12 +117,12 @@ var MapsGoogle = function() {
             });
         }
 
-        $('#gmap_geocoding_btn').click(function(e) {
+        $('#gmap_geocoding_btn').click(function (e) {
             e.preventDefault();
             handleAction();
         });
 
-        $("#gmap_geocoding_address").keypress(function(e) {
+        $("#gmap_geocoding_address").keypress(function (e) {
             var keycode = (e.keyCode ? e.keyCode : e.which);
             if (keycode == '13') {
                 e.preventDefault();
@@ -132,7 +132,7 @@ var MapsGoogle = function() {
 
     }
 
-    var mapPolygone = function() {
+    var mapPolygone = function () {
         var map = new GMaps({
             div: '#gmap_polygons',
             lat: -12.043333,
@@ -156,23 +156,23 @@ var MapsGoogle = function() {
         });
     }
 
-    var mapRoutes = function() {
+    var mapRoutes = function () {
 
         var map = new GMaps({
             div: '#gmap_routes',
             lat: -12.043333,
             lng: -77.028333
         });
-        $('#gmap_routes_start').click(function(e) {
+        $('#gmap_routes_start').click(function (e) {
             e.preventDefault();
             App.scrollTo($(this), 400);
             map.travelRoute({
                 origin: [-12.044012922866312, -77.02470665341184],
                 destination: [-12.090814532191756, -77.02271108990476],
                 travelMode: 'driving',
-                step: function(e) {
+                step: function (e) {
                     $('#gmap_routes_instructions').append('<li>' + e.instructions + '</li>');
-                    $('#gmap_routes_instructions li:eq(' + e.step_number + ')').delay(800 * e.step_number).fadeIn(500, function() {
+                    $('#gmap_routes_instructions li:eq(' + e.step_number + ')').delay(800 * e.step_number).fadeIn(500, function () {
                         map.setCenter(e.end_location.lat(), e.end_location.lng());
                         map.drawPolyline({
                             path: e.path,
@@ -188,7 +188,7 @@ var MapsGoogle = function() {
 
     return {
         //main function to initiate map samples
-        init: function() {
+        init: function () {
             mapBasic();
             mapMarker();
             mapGeolocation();

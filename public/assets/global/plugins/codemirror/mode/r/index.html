@@ -10,21 +10,21 @@
         border-top: 1px solid silver;
         border-bottom: 1px solid silver;
     }
-
+    
     .cm-s-default span.cm-semi {
         color: blue;
         font-weight: bold;
     }
-
+    
     .cm-s-default span.cm-dollar {
         color: orange;
         font-weight: bold;
     }
-
+    
     .cm-s-default span.cm-arrow {
         color: brown;
     }
-
+    
     .cm-s-default span.cm-arg-is {
         color: brown;
     }
@@ -60,7 +60,8 @@
                 in a function is, by default, what is # returned. So you could equally just say: powerful <- function(x) {list(x2=x*x, x3=x*x*x, x4=x*x*x*x)} </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {});
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {});
     </script>
     <p>
         <strong>MIME types defined:</strong> <code>text/x-rsrc</code>.</p>

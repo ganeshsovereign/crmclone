@@ -2,32 +2,32 @@
  * Bootstrap Table Slovak translation
  * Author: Jozef Dúc<jozef.d13@gmail.com>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['sk-SK'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Prosím čakajte ...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' záznamov na stranu';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Zobrazená ' + pageFrom + '. - ' + pageTo + '. položka z celkových ' + totalRows;
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Vyhľadávanie';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Nenájdená žiadne vyhovujúca položka';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Obnoviť';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Prepni';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Stĺpce';
         }
     };

@@ -68,9 +68,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                     $http({
                         method: 'GET',
                         url: '/erp/api/product/warehouse/location/select',
-                        params: {
-                            warehouse: scope.warehouse._id
-                        }
+                        params: { warehouse: scope.warehouse._id }
                     }).success(function(data, status) {
                         //console.log(data);
                         scope.locations = data.data;
@@ -104,7 +102,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                                     unit: data.units,
                                     dynForm: data.dynForm,
                                     weight: data.weight
-                                    //family: data.product.id.caFamily
+                                        //family: data.product.id.caFamily
                                 },
                                 description: (lines[i].description ? lines[i].description : data.info.langs[0].description),
                                 isNew: (lines[i]._id ? false : true),
@@ -151,10 +149,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                         $http({
                             method: 'GET',
                             url: '/erp/api/product/warehouse/getAvailability',
-                            params: {
-                                warehouse: scope.warehouse,
-                                product: line.product._id
-                            }
+                            params: { warehouse: scope.warehouse, product: line.product._id }
                         }).success(function(data, status) {
                             line.onHand = data.onHand;
                         });
@@ -404,17 +399,11 @@ MetronicApp.directive('productStockLines', ['$http',
                     $http({
                         method: 'GET',
                         url: '/erp/api/product/warehouse/getAvailability',
-                        params: {
-                            location: scope.location._id,
-                            product: lines[i].product._id
-                        }
+                        params: { location: scope.location._id, product: lines[i].product._id }
                     }).success(function(data, status) {
                         console.log(data);
 
-                        lines[i] = angular.extend(lines[i], {
-                            onHand: data.onHand || 0,
-                            newOnHand: data.onHand || 0
-                        });
+                        lines[i] = angular.extend(lines[i], { onHand: data.onHand || 0, newOnHand: data.onHand || 0 });
                     });
                 };
 

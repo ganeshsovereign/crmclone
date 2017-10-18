@@ -28,8 +28,7 @@ table.treetable tr.selected {
 }
 
 table.treetable tr span.indenter a {
-    outline: none;
-    /* Expander shows outline after upgrading to 3.0 (#141) */
+    outline: none; /* Expander shows outline after upgrading to 3.0 (#141) */
 }
 
 table.treetable tr.collapsed.selected span.indenter a {

@@ -33,13 +33,7 @@ var USERAGENT = 20;
 // expireSession in minutes
 
 function Users() {
-    this.options = {
-        cookie: '__user',
-        secret: 'a4e13bCbb9',
-        expireSession: 10,
-        expireCookie: 10,
-        autoLogin: true
-    };
+    this.options = { cookie: '__user', secret: 'a4e13bCbb9', expireSession: 10, expireCookie: 10, autoLogin: true };
     this.online = 0;
     this.users = {};
 }
@@ -48,9 +42,7 @@ Users.prototype = new events.EventEmitter;
 Users.prototype.onAuthorize = null;
 
 Users.prototype.usage = function() {
-    return {
-        online: this.online
-    };
+    return { online: this.online };
 };
 
 Users.prototype.authorize = function(req, res, flags, callback) {
@@ -100,10 +92,7 @@ Users.prototype.authorize = function(req, res, flags, callback) {
         }
 
         req.user = user;
-        self.users[id] = {
-            user: user,
-            expire: new Date().add('m', self.options.expireSession)
-        };
+        self.users[id] = { user: user, expire: new Date().add('m', self.options.expireSession) };
         self.emit('login', id, user);
         self.refresh();
         callback(true);
@@ -121,10 +110,7 @@ Users.prototype.login = function(controller, id, user, expire) {
 
     if (user) {
         id = id.toString();
-        self.users[id] = {
-            user: user,
-            expire: utils.isDate(expire) ? expire : new Date().add('m', expire || self.options.expireSession).getTime()
-        };
+        self.users[id] = { user: user, expire: utils.isDate(expire) ? expire : new Date().add('m', expire || self.options.expireSession).getTime() };
         self.refresh();
         self.emit('login', id, user);
     }

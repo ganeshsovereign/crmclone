@@ -323,12 +323,12 @@
                 .append($('<td>').text(text))
                 .append($('<td>').append($('<select class="form-control multi-sort-name">')))
                 .append($('<td>').append($('<select class="form-control multi-sort-order">')))
-            );
+        );
 
         var $multiSortName = this.$sortModal.find('.multi-sort-name').last(),
             $multiSortOrder = this.$sortModal.find('.multi-sort-order').last();
 
-        $.each(this.columns, function(i, column) {
+        $.each(this.columns, function (i, column) {
             if (column.sortable === false || column.visible === false) {
                 return true;
             }

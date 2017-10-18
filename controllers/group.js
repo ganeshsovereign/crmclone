@@ -75,9 +75,7 @@ function Object() {}
 
 Object.prototype = {
     userGroupId: function(req, res, next, id) {
-        UserGroupModel.findOne({
-            _id: id
-        }, function(err, doc) {
+        UserGroupModel.findOne({ _id: id }, function(err, doc) {
             if (err)
                 return next(err);
             if (!doc)
@@ -108,13 +106,7 @@ Object.prototype = {
                             counter = counter + 1;
                     }
 
-                    userGroup.push({
-                        _id: group._id,
-                        id: group._id,
-                        name: group.name,
-                        count: counter,
-                        description: group.notes
-                    });
+                    userGroup.push({ _id: group._id, id: group._id, name: group.name, count: counter, description: group.notes });
                 });
 
                 //console.log(userGroup);
@@ -129,9 +121,7 @@ Object.prototype = {
 
         var id = "group:" + req.query.name;
 
-        UserGroupModel.findOne({
-            _id: id
-        }, "name", function(err, doc) {
+        UserGroupModel.findOne({ _id: id }, "name", function(err, doc) {
             if (err)
                 return next(err);
             if (!doc)
@@ -150,9 +140,7 @@ Object.prototype = {
 
         var group = self.query.group;
 
-        UserModel.find({
-            groupe: group
-        }, function(err, doc) {
+        UserModel.find({ groupe: group }, function(err, doc) {
             if (err)
                 return self.throw500(err);
             if (!doc)
@@ -172,11 +160,7 @@ Object.prototype = {
 
         var group = self.query.group;
 
-        UserModel.find({
-            groupe: {
-                $nin: [group]
-            }
-        }, "_id lastname firstname", function(err, doc) {
+        UserModel.find({ groupe: { $nin: [group] } }, "_id lastname firstname", function(err, doc) {
             if (err)
                 return self.throw500(err);
             if (!doc)
@@ -193,13 +177,7 @@ Object.prototype = {
         var user = self.query.user;
         var groupe = self.query.groupe;
 
-        UserModel.update({
-            _id: user
-        }, {
-            $set: {
-                groupe: groupe
-            }
-        }, function(err, doc) {
+        UserModel.update({ _id: user }, { $set: { groupe: groupe } }, function(err, doc) {
             if (err)
                 return self.throw500(err);
             self.json(doc);
@@ -223,9 +201,7 @@ Object.prototype = {
         var self = this;
         var UserGroupModel = MODEL('group').Schema;
 
-        UserGroupModel.findOne({
-            _id: id
-        }, function(err, doc) {
+        UserGroupModel.findOne({ _id: id }, function(err, doc) {
             if (err)
                 return self.throw500(err);
             if (!doc)
@@ -253,11 +229,7 @@ Object.prototype = {
         var UserGroupModel = self.query.group;
         var UserModel = MODEL('Users').Schema;
 
-        UserModel.update({
-            _id: user
-        }, {
-            groupe: null
-        }, function(err, doc) {
+        UserModel.update({ _id: user }, { groupe: null }, function(err, doc) {
             if (err)
                 return self.throw500(err);
             self.json(doc);
@@ -271,9 +243,7 @@ Object.prototype = {
         self.body.updatedAt = new Date();
         self.body.editedBy = self.user._id;
 
-        UserGroupModel.findByIdAndUpdate(id, self.body, {
-            new: true
-        }, function(err, doc) {
+        UserGroupModel.findByIdAndUpdate(id, self.body, { new: true }, function(err, doc) {
 
             if (err)
                 return self.json({
@@ -312,9 +282,7 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            isremoved: {
-                $ne: true
-            }
+            isremoved: { $ne: true }
         };
 
         if (!query.search.value) {
@@ -328,7 +296,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions
-            //select: ""
+                //select: ""
         };
 
         //console.log(options);

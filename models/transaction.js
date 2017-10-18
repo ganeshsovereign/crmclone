@@ -53,52 +53,23 @@ var TransationSchema = new Schema({
         bills: [{
             _id: false,
             amount: Number,
-            invoice: {
-                type: Schema.Types.ObjectId,
-                ref: 'invoice'
-            }
+            invoice: { type: Schema.Types.ObjectId, ref: 'invoice' }
         }],
-        invoice: {
-            type: Schema.Types.ObjectId,
-            ref: 'invoice'
-        }, // TODO remove after v0.514
-        product: {
-            type: Schema.Types.ObjectId,
-            ref: 'product'
-        },
-        bank: {
-            type: Schema.Types.ObjectId,
-            ref: 'bank'
-        },
-        supplier: {
-            type: Schema.Types.ObjectId,
-            ref: 'Customers'
-        },
+        invoice: { type: Schema.Types.ObjectId, ref: 'invoice' }, // TODO remove after v0.514
+        product: { type: Schema.Types.ObjectId, ref: 'product' },
+        bank: { type: Schema.Types.ObjectId, ref: 'bank' },
+        supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
         pieceAccounting: String,
-        type: {
-            type: String
-        },
-        tax: {
-            type: Schema.Types.ObjectId,
-            ref: 'taxes'
-        }
+        type: { type: String },
+        tax: { type: Schema.Types.ObjectId, ref: 'taxes' }
     },
 
-    datetime: {
-        type: Date,
-        set: setDate
-    },
+    datetime: { type: Date, set: setDate },
     account_path: [String],
-    accounts: {
-        type: String,
-        set: setAccount
-    },
+    accounts: { type: String, set: setAccount },
     book: String,
     //entity: {type: String, required: true},
-    memo: {
-        type: String,
-        uppercase: true
-    },
+    memo: { type: String, uppercase: true },
     _journal: {
         type: Schema.Types.ObjectId,
         ref: 'Medici_Journal'
@@ -119,16 +90,10 @@ var TransationSchema = new Schema({
     },
     exported: Date, // Date of export
     reconcilliation: Date, //Only for rapprochement in bank
-    seq: {
-        type: String
-    } /*Numero de piece*/
+    seq: { type: String } /*Numero de piece*/
 }, {
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 exports.Schema = mongoose.model('Transaction', TransationSchema, 'Transaction');

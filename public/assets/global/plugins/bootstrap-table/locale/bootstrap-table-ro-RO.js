@@ -2,38 +2,38 @@
  * Bootstrap Table Romanian translation
  * Author: cristake <cristianiosif@me.com>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['ro-RO'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Se incarca, va rugam asteptati...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' inregistrari pe pagina';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Arata de la ' + pageFrom + ' pana la ' + pageTo + ' din ' + totalRows + ' randuri';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Cauta';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Nu au fost gasite inregistrari';
         },
-        formatPaginationSwitch: function() {
+        formatPaginationSwitch: function () {
             return 'Ascunde/Arata paginatia';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Reincarca';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Comuta';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Coloane';
         },
-        formatAllRows: function() {
+        formatAllRows: function () {
             return 'Toate';
         }
     };

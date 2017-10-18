@@ -38,7 +38,8 @@
             Hello" button.onclick = function() { alert(greeter.greet()) } document.body.appendChild(button) </textarea>
     </div>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
             lineNumbers: true,
             matchBrackets: true,
             mode: "text/typescript"

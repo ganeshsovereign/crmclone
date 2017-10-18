@@ -231,6 +231,6 @@ var EcommerceDashboard = function() {
 
 }();
 
-jQuery(document).ready(function() {
-    EcommerceDashboard.init();
+jQuery(document).ready(function() {    
+   EcommerceDashboard.init();
 });

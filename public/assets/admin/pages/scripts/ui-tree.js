@@ -1,26 +1,26 @@
-var UITree = function() {
+var UITree = function () {
 
-    var handleSample1 = function() {
+    var handleSample1 = function () {
 
         $('#tree_1').jstree({
-            "core": {
-                "themes": {
+            "core" : {
+                "themes" : {
                     "responsive": false
-                }
+                }            
             },
-            "types": {
-                "default": {
-                    "icon": "fa fa-folder icon-state-warning icon-lg"
+            "types" : {
+                "default" : {
+                    "icon" : "fa fa-folder icon-state-warning icon-lg"
                 },
-                "file": {
-                    "icon": "fa fa-file icon-state-warning icon-lg"
+                "file" : {
+                    "icon" : "fa fa-file icon-state-warning icon-lg"
                 }
             },
             "plugins": ["types"]
         });
 
         // handle link clicks in tree nodes(support target="_blank" as well)
-        $('#tree_1').on('select_node.jstree', function(e, data) {
+        $('#tree_1').on('select_node.jstree', function(e,data) { 
             var link = $('#' + data.selected).find('a');
             if (link.attr("href") != "#" && link.attr("href") != "javascript:;" && link.attr("href") != "") {
                 if (link.attr("target") == "_blank") {
@@ -32,13 +32,13 @@ var UITree = function() {
         });
     }
 
-    var handleSample2 = function() {
+    var handleSample2 = function () {
         $('#tree_2').jstree({
             'plugins': ["wholerow", "checkbox", "types"],
             'core': {
-                "themes": {
+                "themes" : {
                     "responsive": false
-                },
+                },    
                 'data': [{
                         "text": "Same but with checkboxes",
                         "children": [{
@@ -51,7 +51,7 @@ var UITree = function() {
                             "icon": "fa fa-warning icon-state-danger"
                         }, {
                             "text": "initially open",
-                            "icon": "fa fa-folder icon-state-default",
+                            "icon" : "fa fa-folder icon-state-default",
                             "state": {
                                 "opened": true
                             },
@@ -70,12 +70,12 @@ var UITree = function() {
                     "And wholerow selection"
                 ]
             },
-            "types": {
-                "default": {
-                    "icon": "fa fa-folder icon-state-warning icon-lg"
+            "types" : {
+                "default" : {
+                    "icon" : "fa fa-folder icon-state-warning icon-lg"
                 },
-                "file": {
-                    "icon": "fa fa-file icon-state-warning icon-lg"
+                "file" : {
+                    "icon" : "fa fa-file icon-state-warning icon-lg"
                 }
             }
         });
@@ -84,12 +84,12 @@ var UITree = function() {
     var contextualMenuSample = function() {
 
         $("#tree_3").jstree({
-            "core": {
-                "themes": {
+            "core" : {
+                "themes" : {
                     "responsive": false
-                },
+                }, 
                 // so that create works
-                "check_callback": true,
+                "check_callback" : true,
                 'data': [{
                         "text": "Parent Node",
                         "children": [{
@@ -102,14 +102,13 @@ var UITree = function() {
                             "icon": "fa fa-warning icon-state-danger"
                         }, {
                             "text": "Initially open",
-                            "icon": "fa fa-folder icon-state-success",
+                            "icon" : "fa fa-folder icon-state-success",
                             "state": {
                                 "opened": true
                             },
-                            "children": [{
-                                "text": "Another node",
-                                "icon": "fa fa-file icon-state-warning"
-                            }]
+                            "children": [
+                                {"text": "Another node", "icon" : "fa fa-file icon-state-warning"}
+                            ]
                         }, {
                             "text": "Another Custom Icon",
                             "icon": "fa fa-warning icon-state-warning"
@@ -122,88 +121,68 @@ var UITree = function() {
                         }, {
                             "text": "Sub Nodes",
                             "icon": "fa fa-folder icon-state-danger",
-                            "children": [{
-                                    "text": "Item 1",
-                                    "icon": "fa fa-file icon-state-warning"
-                                },
-                                {
-                                    "text": "Item 2",
-                                    "icon": "fa fa-file icon-state-success"
-                                },
-                                {
-                                    "text": "Item 3",
-                                    "icon": "fa fa-file icon-state-default"
-                                },
-                                {
-                                    "text": "Item 4",
-                                    "icon": "fa fa-file icon-state-danger"
-                                },
-                                {
-                                    "text": "Item 5",
-                                    "icon": "fa fa-file icon-state-info"
-                                }
+                            "children": [
+                                {"text": "Item 1", "icon" : "fa fa-file icon-state-warning"},
+                                {"text": "Item 2", "icon" : "fa fa-file icon-state-success"},
+                                {"text": "Item 3", "icon" : "fa fa-file icon-state-default"},
+                                {"text": "Item 4", "icon" : "fa fa-file icon-state-danger"},
+                                {"text": "Item 5", "icon" : "fa fa-file icon-state-info"}
                             ]
                         }]
                     },
                     "Another Node"
                 ]
             },
-            "types": {
-                "default": {
-                    "icon": "fa fa-folder icon-state-warning icon-lg"
+            "types" : {
+                "default" : {
+                    "icon" : "fa fa-folder icon-state-warning icon-lg"
                 },
-                "file": {
-                    "icon": "fa fa-file icon-state-warning icon-lg"
+                "file" : {
+                    "icon" : "fa fa-file icon-state-warning icon-lg"
                 }
             },
-            "state": {
-                "key": "demo2"
-            },
-            "plugins": ["contextmenu", "dnd", "state", "types"]
+            "state" : { "key" : "demo2" },
+            "plugins" : [ "contextmenu", "dnd", "state", "types" ]
         });
-
+    
     }
 
-    var ajaxTreeSample = function() {
+     var ajaxTreeSample = function() {
 
         $("#tree_4").jstree({
-            "core": {
-                "themes": {
+            "core" : {
+                "themes" : {
                     "responsive": false
-                },
+                }, 
                 // so that create works
-                "check_callback": true,
-                'data': {
-                    'url': function(node) {
-                        return 'demo/jstree_ajax_data.php';
+                "check_callback" : true,
+                'data' : {
+                    'url' : function (node) {
+                      return 'demo/jstree_ajax_data.php';
                     },
-                    'data': function(node) {
-                        return {
-                            'parent': node.id
-                        };
+                    'data' : function (node) {
+                      return { 'parent' : node.id };
                     }
                 }
             },
-            "types": {
-                "default": {
-                    "icon": "fa fa-folder icon-state-warning icon-lg"
+            "types" : {
+                "default" : {
+                    "icon" : "fa fa-folder icon-state-warning icon-lg"
                 },
-                "file": {
-                    "icon": "fa fa-file icon-state-warning icon-lg"
+                "file" : {
+                    "icon" : "fa fa-file icon-state-warning icon-lg"
                 }
             },
-            "state": {
-                "key": "demo3"
-            },
-            "plugins": ["dnd", "state", "types"]
+            "state" : { "key" : "demo3" },
+            "plugins" : [ "dnd", "state", "types" ]
         });
-
+    
     }
 
 
     return {
         //main function to initiate the module
-        init: function() {
+        init: function () {
 
             handleSample1();
             handleSample2();

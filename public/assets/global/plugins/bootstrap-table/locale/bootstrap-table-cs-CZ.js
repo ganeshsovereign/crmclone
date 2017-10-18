@@ -3,38 +3,38 @@
  * Author: Lukas Kral (monarcha@seznam.cz)
  * Author: Jakub Svestka <svestka1999@gmail.com>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['cs-CZ'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Čekejte, prosím...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' položek na stránku';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Zobrazena ' + pageFrom + '. - ' + pageTo + '. položka z celkových ' + totalRows;
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Vyhledávání';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Nenalezena žádná vyhovující položka';
         },
-        formatPaginationSwitch: function() {
+        formatPaginationSwitch: function () {
             return 'Skrýt/Zobrazit stránkování';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Aktualizovat';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Přepni';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Sloupce';
         },
-        formatAllRows: function() {
+        formatAllRows: function () {
             return 'Vše';
         }
     };

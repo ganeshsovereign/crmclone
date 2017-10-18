@@ -1,6 +1,6 @@
-var EcommerceOrders = function() {
+var EcommerceOrders = function () {
 
-    var initPickers = function() {
+    var initPickers = function () {
         //init date pickers
         $('.date-picker').datepicker({
             rtl: Metronic.isRTL(),
@@ -8,16 +8,16 @@ var EcommerceOrders = function() {
         });
     }
 
-    var handleOrders = function() {
+    var handleOrders = function () {
 
         var grid = new Datatable();
 
         grid.init({
             src: $("#datatable_orders"),
-            onSuccess: function(grid) {
+            onSuccess: function (grid) {
                 // execute some code after table records loaded
             },
-            onError: function(grid) {
+            onError: function (grid) {
                 // execute some code on network or other general error  
             },
             loadingMessage: 'Loading...',
@@ -42,7 +42,7 @@ var EcommerceOrders = function() {
         });
 
         // handle group actionsubmit button click
-        grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
             e.preventDefault();
             var action = $(".table-group-action-input", grid.getTableWrapper());
             if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
@@ -75,7 +75,7 @@ var EcommerceOrders = function() {
     return {
 
         //main function to initiate the module
-        init: function() {
+        init: function () {
 
             initPickers();
             handleOrders();

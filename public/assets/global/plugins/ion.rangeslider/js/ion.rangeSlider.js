@@ -1,4 +1,4 @@
-// Ion.RangeSlider
+﻿// Ion.RangeSlider
 // version 2.0.13 Build: 335
 // © Denis Ineshin, 2015
 // https://github.com/IonDen
@@ -10,8 +10,7 @@
 // http://ionden.com/a/plugins/licence-en.html
 // =====================================================================================================================
 
-;
-(function($, document, window, navigator, undefined) {
+;(function ($, document, window, navigator, undefined) {
     "use strict";
 
     // =================================================================================================================
@@ -20,7 +19,7 @@
     var plugin_count = 0;
 
     // IE8 fix
-    var is_old_ie = (function() {
+    var is_old_ie = (function () {
         var n = navigator.userAgent,
             r = /msie\s\d+/i,
             v;
@@ -33,7 +32,7 @@
             }
         }
         return false;
-    }());
+    } ());
     if (!Function.prototype.bind) {
         Function.prototype.bind = function bind(that) {
 
@@ -45,11 +44,11 @@
             }
 
             var args = slice.call(arguments, 1),
-                bound = function() {
+                bound = function () {
 
                     if (this instanceof bound) {
 
-                        var F = function() {};
+                        var F = function(){};
                         F.prototype = target.prototype;
                         var self = new F();
 
@@ -146,7 +145,7 @@
      * @param plugin_count {number}
      * @constructor
      */
-    var IonRangeSlider = function(input, options, plugin_count) {
+    var IonRangeSlider = function (input, options, plugin_count) {
         this.VERSION = "2.0.13";
         this.input = input;
         this.plugin_count = plugin_count;
@@ -401,7 +400,7 @@
     };
 
     IonRangeSlider.prototype = {
-        init: function(is_update) {
+        init: function (is_update) {
             this.coords.p_step = this.options.step / ((this.options.max - this.options.min) / 100);
             this.target = "base";
 
@@ -426,7 +425,7 @@
             this.updateScene();
         },
 
-        append: function() {
+        append: function () {
             var container_html = '<span class="irs js-irs-' + this.plugin_count + '"></span>';
             this.$cache.input.before(container_html);
             this.$cache.input.prop("readonly", true);
@@ -479,7 +478,7 @@
             }
         },
 
-        setTopHandler: function() {
+        setTopHandler: function () {
             var min = this.options.min,
                 max = this.options.max,
                 from = this.options.from,
@@ -492,12 +491,12 @@
             }
         },
 
-        appendDisableMask: function() {
+        appendDisableMask: function () {
             this.$cache.cont.append(disable_html);
             this.$cache.cont.addClass("irs-disabled");
         },
 
-        remove: function() {
+        remove: function () {
             this.$cache.cont.remove();
             this.$cache.cont = null;
 
@@ -523,7 +522,7 @@
             cancelAnimationFrame(this.raf_id);
         },
 
-        bindEvents: function() {
+        bindEvents: function () {
             this.$cache.body.on("touchmove.irs_" + this.plugin_count, this.pointerMove.bind(this));
             this.$cache.body.on("mousemove.irs_" + this.plugin_count, this.pointerMove.bind(this));
 
@@ -579,7 +578,7 @@
             }
         },
 
-        pointerMove: function(e) {
+        pointerMove: function (e) {
             if (!this.dragging) {
                 return;
             }
@@ -590,7 +589,7 @@
             this.calc();
         },
 
-        pointerUp: function(e) {
+        pointerUp: function (e) {
             if (this.current_plugin !== this.plugin_count) {
                 return;
             }
@@ -619,7 +618,7 @@
             this.updateScene();
         },
 
-        changeLevel: function(target) {
+        changeLevel: function (target) {
             switch (target) {
                 case "single":
                     this.coords.p_gap = this.toFixed(this.coords.p_pointer - this.coords.p_single);
@@ -645,7 +644,7 @@
             }
         },
 
-        pointerDown: function(target, e) {
+        pointerDown: function (target, e) {
             e.preventDefault();
             var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
             if (e.button === 2) {
@@ -673,7 +672,7 @@
             this.updateScene();
         },
 
-        pointerClick: function(target, e) {
+        pointerClick: function (target, e) {
             e.preventDefault();
             var x = e.pageX || e.originalEvent.touches && e.originalEvent.touches[0].pageX;
             if (e.button === 2) {
@@ -693,7 +692,7 @@
             this.$cache.line.trigger("focus");
         },
 
-        key: function(target, e) {
+        key: function (target, e) {
             if (this.current_plugin !== this.plugin_count || e.altKey || e.ctrlKey || e.shiftKey || e.metaKey) {
                 return;
             }
@@ -721,7 +720,7 @@
 
         // Move by key. Beta
         // TODO: refactor than have plenty of time
-        moveByKey: function(right) {
+        moveByKey: function (right) {
             var p = this.coords.p_pointer;
 
             if (right) {
@@ -735,7 +734,7 @@
             this.calc();
         },
 
-        setMinMax: function() {
+        setMinMax: function () {
             if (!this.options) {
                 return;
             }
@@ -763,7 +762,7 @@
         // =============================================================================================================
         // Calculations
 
-        calc: function(update) {
+        calc: function (update) {
             if (!this.options) {
                 return;
             }
@@ -914,13 +913,13 @@
             this.calcLabels();
         },
 
-        calcPointer: function() {
+        calcPointer: function () {
             if (!this.coords.w_rs) {
                 this.coords.p_pointer = 0;
                 return;
             }
 
-            if (this.coords.x_pointer < 0 || isNaN(this.coords.x_pointer)) {
+            if (this.coords.x_pointer < 0 || isNaN(this.coords.x_pointer)  ) {
                 this.coords.x_pointer = 0;
             } else if (this.coords.x_pointer > this.coords.w_rs) {
                 this.coords.x_pointer = this.coords.w_rs;
@@ -929,7 +928,7 @@
             this.coords.p_pointer = this.toFixed(this.coords.x_pointer / this.coords.w_rs * 100);
         },
 
-        chooseHandle: function(real_x) {
+        chooseHandle: function (real_x) {
             if (this.options.type === "single") {
                 return "single";
             } else {
@@ -942,7 +941,7 @@
             }
         },
 
-        calcMinMax: function() {
+        calcMinMax: function () {
             if (!this.coords.w_rs) {
                 return;
             }
@@ -951,7 +950,7 @@
             this.labels.p_max = this.labels.w_max / this.coords.w_rs * 100;
         },
 
-        calcLabels: function() {
+        calcLabels: function () {
             if (!this.coords.w_rs || this.options.hide_from_to) {
                 return;
             }
@@ -991,7 +990,7 @@
         // =============================================================================================================
         // Drawings
 
-        updateScene: function() {
+        updateScene: function () {
             if (this.raf_id) {
                 cancelAnimationFrame(this.raf_id);
                 this.raf_id = null;
@@ -1013,7 +1012,7 @@
             }
         },
 
-        drawHandles: function() {
+        drawHandles: function () {
             this.coords.w_rs = this.$cache.rs.outerWidth(false);
 
             if (!this.coords.w_rs) {
@@ -1116,28 +1115,28 @@
         },
 
         // callbacks
-        callOnStart: function() {
+        callOnStart: function () {
             if (this.options.onStart && typeof this.options.onStart === "function") {
                 this.options.onStart(this.result);
             }
         },
-        callOnChange: function() {
+        callOnChange: function () {
             if (this.options.onChange && typeof this.options.onChange === "function") {
                 this.options.onChange(this.result);
             }
         },
-        callOnFinish: function() {
+        callOnFinish: function () {
             if (this.options.onFinish && typeof this.options.onFinish === "function") {
                 this.options.onFinish(this.result);
             }
         },
-        callOnUpdate: function() {
+        callOnUpdate: function () {
             if (this.options.onUpdate && typeof this.options.onUpdate === "function") {
                 this.options.onUpdate(this.result);
             }
         },
 
-        drawLabels: function() {
+        drawLabels: function () {
             if (!this.options) {
                 return;
             }
@@ -1254,7 +1253,7 @@
             }
         },
 
-        drawShadow: function() {
+        drawShadow: function () {
             var o = this.options,
                 c = this.$cache,
 
@@ -1318,18 +1317,18 @@
         // =============================================================================================================
         // Service methods
 
-        toggleInput: function() {
+        toggleInput: function () {
             this.$cache.input.toggleClass("irs-hidden-input");
         },
 
-        calcPercent: function(num) {
+        calcPercent: function (num) {
             var w = (this.options.max - this.options.min) / 100,
                 percent = (num - this.options.min) / w;
 
             return this.toFixed(percent);
         },
 
-        calcReal: function(percent) {
+        calcReal: function (percent) {
             var min = this.options.min,
                 max = this.options.max,
                 min_decimals = min.toString().split(".")[1],
@@ -1396,7 +1395,7 @@
             return result;
         },
 
-        calcWithStep: function(percent) {
+        calcWithStep: function (percent) {
             var rounded = Math.round(percent / this.coords.p_step) * this.coords.p_step;
 
             if (rounded > 100) {
@@ -1409,7 +1408,7 @@
             return this.toFixed(rounded);
         },
 
-        checkMinInterval: function(p_current, p_next, type) {
+        checkMinInterval: function (p_current, p_next, type) {
             var o = this.options,
                 current,
                 next;
@@ -1438,7 +1437,7 @@
             return this.calcPercent(current);
         },
 
-        checkMaxInterval: function(p_current, p_next, type) {
+        checkMaxInterval: function (p_current, p_next, type) {
             var o = this.options,
                 current,
                 next;
@@ -1467,7 +1466,7 @@
             return this.calcPercent(current);
         },
 
-        checkDiapason: function(p_num, min, max) {
+        checkDiapason: function (p_num, min, max) {
             var num = this.calcReal(p_num),
                 o = this.options;
 
@@ -1490,12 +1489,12 @@
             return this.calcPercent(num);
         },
 
-        toFixed: function(num) {
+        toFixed: function (num) {
             num = num.toFixed(9);
             return +num;
         },
 
-        _prettify: function(num) {
+        _prettify: function (num) {
             if (!this.options.prettify_enabled) {
                 return num;
             }
@@ -1507,12 +1506,12 @@
             }
         },
 
-        prettify: function(num) {
+        prettify: function (num) {
             var n = num.toString();
             return n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, "$1" + this.options.prettify_separator);
         },
 
-        checkEdges: function(left, width) {
+        checkEdges: function (left, width) {
             if (!this.options.force_edges) {
                 return this.toFixed(left);
             }
@@ -1526,7 +1525,7 @@
             return this.toFixed(left);
         },
 
-        validate: function() {
+        validate: function () {
             var o = this.options,
                 r = this.result,
                 v = o.values,
@@ -1671,7 +1670,7 @@
             }
         },
 
-        decorate: function(num, original) {
+        decorate: function (num, original) {
             var decorated = "",
                 o = this.options;
 
@@ -1702,7 +1701,7 @@
             return decorated;
         },
 
-        updateFrom: function() {
+        updateFrom: function () {
             this.result.from = this.options.from;
             this.result.from_percent = this.calcPercent(this.result.from);
             if (this.options.values) {
@@ -1710,7 +1709,7 @@
             }
         },
 
-        updateTo: function() {
+        updateTo: function () {
             this.result.to = this.options.to;
             this.result.to_percent = this.calcPercent(this.result.to);
             if (this.options.values) {
@@ -1718,7 +1717,7 @@
             }
         },
 
-        updateResult: function() {
+        updateResult: function () {
             this.result.min = this.options.min;
             this.result.max = this.options.max;
             this.updateFrom();
@@ -1729,7 +1728,7 @@
         // =============================================================================================================
         // Grid
 
-        appendGrid: function() {
+        appendGrid: function () {
             if (!this.options.grid) {
                 return;
             }
@@ -1821,7 +1820,7 @@
             this.cacheGridLabels();
         },
 
-        cacheGridLabels: function() {
+        cacheGridLabels: function () {
             var $label, i,
                 num = this.coords.big_num;
 
@@ -1833,9 +1832,8 @@
             this.calcGridLabels();
         },
 
-        calcGridLabels: function() {
-            var i, label, start = [],
-                finish = [],
+        calcGridLabels: function () {
+            var i, label, start = [], finish = [],
                 num = this.coords.big_num;
 
             for (i = 0; i < num; i++) {
@@ -1874,7 +1872,7 @@
 
         // Collisions Calc Beta
         // TODO: Refactor then have plenty of time
-        calcGridCollision: function(step, start, finish) {
+        calcGridCollision: function (step, start, finish) {
             var i, next_i, label,
                 num = this.coords.big_num;
 
@@ -1894,7 +1892,7 @@
             }
         },
 
-        calcGridMargin: function() {
+        calcGridMargin: function () {
             if (!this.options.grid_margin) {
                 return;
             }
@@ -1909,7 +1907,7 @@
             } else {
                 this.coords.w_handle = this.$cache.s_from.outerWidth(false);
             }
-            this.coords.p_handle = this.toFixed(this.coords.w_handle / this.coords.w_rs * 100);
+            this.coords.p_handle = this.toFixed(this.coords.w_handle  / this.coords.w_rs * 100);
             this.coords.grid_gap = this.toFixed((this.coords.p_handle / 2) - 0.1);
 
             this.$cache.grid[0].style.width = this.toFixed(100 - this.coords.p_handle) + "%";
@@ -1921,7 +1919,7 @@
         // =============================================================================================================
         // Public methods
 
-        update: function(options) {
+        update: function (options) {
             if (!this.input) {
                 return;
             }
@@ -1940,7 +1938,7 @@
             this.init(true);
         },
 
-        reset: function() {
+        reset: function () {
             if (!this.input) {
                 return;
             }
@@ -1949,7 +1947,7 @@
             this.update();
         },
 
-        destroy: function() {
+        destroy: function () {
             if (!this.input) {
                 return;
             }
@@ -1964,7 +1962,7 @@
         }
     };
 
-    $.fn.ionRangeSlider = function(options) {
+    $.fn.ionRangeSlider = function (options) {
         return this.each(function() {
             if (!$.data(this, "ionRangeSlider")) {
                 $.data(this, "ionRangeSlider", new IonRangeSlider(this, options, plugin_count++));
@@ -1985,19 +1983,17 @@
     (function() {
         var lastTime = 0;
         var vendors = ['ms', 'moz', 'webkit', 'o'];
-        for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-            window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-            window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] ||
-                window[vendors[x] + 'CancelRequestAnimationFrame'];
+        for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+            window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+            window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+                || window[vendors[x]+'CancelRequestAnimationFrame'];
         }
 
         if (!window.requestAnimationFrame)
             window.requestAnimationFrame = function(callback, element) {
                 var currTime = new Date().getTime();
                 var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-                var id = window.setTimeout(function() {
-                        callback(currTime + timeToCall);
-                    },
+                var id = window.setTimeout(function() { callback(currTime + timeToCall); },
                     timeToCall);
                 lastTime = currTime + timeToCall;
                 return id;
@@ -2009,4 +2005,4 @@
             };
     }());
 
-}(jQuery, document, window, navigator));
+} (jQuery, document, window, navigator));

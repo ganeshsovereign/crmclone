@@ -2,38 +2,38 @@
  * Bootstrap Table Malay translation
  * Author: Azamshul Azizy <azamshul@gmail.com>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['ms-MY'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Permintaan sedang dimuatkan. Sila tunggu sebentar...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' rekod setiap muka surat';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Sedang memaparkan rekod ' + pageFrom + ' hingga ' + pageTo + ' daripada jumlah ' + totalRows + ' rekod';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Cari';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Tiada rekod yang menyamai permintaan';
         },
-        formatPaginationSwitch: function() {
+        formatPaginationSwitch: function () {
             return 'Tunjuk/sembunyi muka surat';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Muatsemula';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Tukar';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'Lajur';
         },
-        formatAllRows: function() {
+        formatAllRows: function () {
             return 'Semua';
         }
     };

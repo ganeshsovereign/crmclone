@@ -360,7 +360,7 @@ var ChartsFlotcharts = function() {
                         for (j = 0; j < series.data.length; ++j)
                             if (series.data[j][0] > pos.x) break;
 
-                        // now interpolate
+                            // now interpolate
                         var y, p1 = series.data[j - 1],
                             p2 = series.data[j];
 

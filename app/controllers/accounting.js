@@ -310,7 +310,7 @@ MetronicApp.controller('AccountingController', ['$scope', '$rootScope', '$http',
         if (data >= $scope.minDate && data <= $scope.maxDate)
             return true;
         else
-            //console.log(data);
+        //console.log(data);
             return "Erreur : date incorrecte";
     };
 

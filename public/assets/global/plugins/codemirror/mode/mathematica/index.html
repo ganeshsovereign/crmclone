@@ -39,7 +39,8 @@
         i], {i, 1, m}]; uv = Table[Subscript[u, i], {i, 0, n}]; (* Konstruiere Ideal polys. *) If[m == 0, polys = Q.uv, polys = Join[p, Q.uv - Transpose[Outer[D, p, xv]].lv] ]; (* Eliminiere die ersten n + 1 + m Variablen xv und lv aus dem Ideal polys.
         *) vars = Join[xv, lv]; dual = GroebnerBasis[polys, uv, vars]; (* Ersetze u mit x im Ergebnis. *) ReplaceAll[dual, Rule[u, x]] ] ] </textarea>
     <script>
-        var mathematicaEditor = CodeMirror.fromTextArea(document.getElementById('mathematicaCode'), {
+        var mathematicaEditor = CodeMirror.fromTextArea(document.getElementById('mathematicaCode'),
+        {
             mode: 'text/x-mathematica',
             lineNumbers: true,
             matchBrackets: true

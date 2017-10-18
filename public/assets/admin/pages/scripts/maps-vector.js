@@ -1,6 +1,6 @@
-var MapsVector = function() {
+var MapsVector = function () {
 
-    var setMap = function(name) {
+    var setMap = function (name) {
         var data = {
             map: 'world_en',
             backgroundColor: null,
@@ -17,13 +17,13 @@ var MapsVector = function() {
             selectedColor: '#c9dfaf',
             selectedRegion: null,
             showTooltip: true,
-            onRegionOver: function(event, code) {
+            onRegionOver: function (event, code) {
                 //sample to interact with map
                 if (code == 'ca') {
                     event.preventDefault();
                 }
             },
-            onRegionClick: function(element, code, region) {
+            onRegionClick: function (element, code, region) {
                 //sample to interact with map
                 var message = 'You clicked "' + region + '" which has the code: ' + code.toUpperCase();
                 alert(message);
@@ -42,7 +42,7 @@ var MapsVector = function() {
 
     return {
         //main function to initiate map samples
-        init: function() {
+        init: function () {
             setMap("world");
             setMap("usa");
             setMap("europe");
@@ -50,7 +50,7 @@ var MapsVector = function() {
             setMap("germany");
 
             // redraw maps on window or content resized 
-            Metronic.addResizeHandler(function() {
+            Metronic.addResizeHandler(function(){
                 setMap("world");
                 setMap("usa");
                 setMap("europe");

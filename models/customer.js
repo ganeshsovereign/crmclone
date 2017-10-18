@@ -36,10 +36,7 @@ var mongoose = require('mongoose'),
 
 var DataTable = require('mongoose-datatable');
 
-DataTable.configure({
-    verbose: false,
-    debug: false
-});
+DataTable.configure({ verbose: false, debug: false });
 mongoose.plugin(DataTable.init);
 
 var Dict = INCLUDE('dict');
@@ -58,78 +55,27 @@ var getUrl = function(url) {
 
 var addressSchema = new Schema({
     //_id needed for shipping
-    street: {
-        type: String,
-        default: ''
-    },
-    city: {
-        type: String,
-        default: ''
-    },
-    state: {
-        type: String,
-        default: ''
-    },
-    zip: {
-        type: String,
-        default: ''
-    },
-    country: {
-        type: String,
-        ref: 'countries',
-        default: 'FR'
-    },
-    name: {
-        type: String,
-        trim: true,
-        uppercase: true,
-        default: ''
-    },
+    street: { type: String, default: '' },
+    city: { type: String, default: '' },
+    state: { type: String, default: '' },
+    zip: { type: String, default: '' },
+    country: { type: String, ref: 'countries', default: 'FR' },
+    name: { type: String, trim: true, uppercase: true, default: '' },
     contact: {
-        name: {
-            type: String,
-            default: ''
-        },
-        phone: {
-            type: String,
-            set: MODULE('utils').setPhone,
-            default: ""
-        },
-        mobile: {
-            type: String,
-            set: MODULE('utils').setPhone,
-            default: ""
-        },
-        fax: {
-            type: String,
-            set: MODULE('utils').setPhone,
-            default: ""
-        },
-        email: {
-            type: String,
-            lowercase: true,
-            trim: true,
-            index: true
-        }
+        name: { type: String, default: '' },
+        phone: { type: String, set: MODULE('utils').setPhone, default: "" },
+        mobile: { type: String, set: MODULE('utils').setPhone, default: "" },
+        fax: { type: String, set: MODULE('utils').setPhone, default: "" },
+        email: { type: String, lowercase: true, trim: true, index: true }
     },
-    Status: {
-        type: String,
-        default: 'ENABLE'
-    }
+    Status: { type: String, default: 'ENABLE' }
 }, {
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 var statusAddressList = {};
-Dict.dict({
-    dictName: 'fk_user_status',
-    object: true
-}, function(err, doc) {
+Dict.dict({ dictName: 'fk_user_status', object: true }, function(err, doc) {
     if (err) {
         console.log(err);
         return;
@@ -248,123 +194,50 @@ addressSchema.virtual('status')
 
 var customerSchema = new Schema({
     isremoved: Boolean,
-    type: {
-        type: String,
-        default: 'Company',
-        enum: ['Person', 'Company']
-    },
-    isOwn: {
-        type: Boolean,
-        default: false
-    },
-    isHidden: {
-        type: Boolean,
-        default: false
-    },
+    type: { type: String, default: 'Company', enum: ['Person', 'Company'] },
+    isOwn: { type: Boolean, default: false },
+    isHidden: { type: Boolean, default: false },
 
     name: {
         civilite: String, // DICT civilite
-        first: {
-            type: String,
-            tirm: true,
-            default: ''
-        },
-        last: {
-            type: String,
-            trim: true,
-            uppercase: true,
-            default: 'DEMO'
-        } // Company name
+        first: { type: String, tirm: true, default: '' },
+        last: { type: String, trim: true, uppercase: true, default: 'DEMO' } // Company name
     },
 
-    Status: {
-        type: String,
-        default: 'ST_NEVER'
-    }, // TODO virtual
+    Status: { type: String, default: 'ST_NEVER' }, // TODO virtual
 
     dateBirth: Date,
 
     imageSrc: {
         type: Schema.Types.ObjectId
-        //    ref: 'Images',
+            //    ref: 'Images',
     },
 
     emails: [{
         _id: false,
-        type: {
-            type: String,
-            default: "pro"
-        }, //billing, delivery...
-        email: {
-            type: String,
-            lowercase: true,
-            trim: true,
-            index: true
-        }
+        type: { type: String, default: "pro" }, //billing, delivery...
+        email: { type: String, lowercase: true, trim: true, index: true }
     }],
-    newsletter: {
-        type: Boolean,
-        default: false
-    }, //newsletter
-    sendEmailing: {
-        type: Boolean,
-        default: true
-    }, //sendEmailing
-    sendSMS: {
-        type: Boolean,
-        default: true
-    }, //sendSMS
-    company: {
-        type: ObjectId,
-        ref: 'Customers',
-        default: null
-    },
-    department: {
-        type: ObjectId,
-        ref: 'Department',
-        default: null
-    },
-    timezone: {
-        type: String,
-        default: 'UTC'
-    },
+    newsletter: { type: Boolean, default: false }, //newsletter
+    sendEmailing: { type: Boolean, default: true }, //sendEmailing
+    sendSMS: { type: Boolean, default: true }, //sendSMS
+    company: { type: ObjectId, ref: 'Customers', default: null },
+    department: { type: ObjectId, ref: 'Department', default: null },
+    timezone: { type: String, default: 'UTC' },
 
     address: addressSchema,
 
     shippingAddress: [addressSchema], // list of deliveries address
-    deliveryAddressId: {
-        type: Schema.Types.ObjectId
-    }, // id of default address in addresses
+    deliveryAddressId: { type: Schema.Types.ObjectId }, // id of default address in addresses
 
-    url: {
-        type: String,
-        get: getUrl
-    }, //website
-    jobPosition: {
-        type: String,
-        default: ''
-    },
-    skype: {
-        type: String,
-        default: ''
-    },
+    url: { type: String, get: getUrl }, //website
+    jobPosition: { type: String, default: '' },
+    skype: { type: String, default: '' },
 
     phones: {
-        phone: {
-            type: String,
-            set: MODULE('utils').setPhone,
-            default: ''
-        },
-        mobile: {
-            type: String,
-            set: MODULE('utils').setPhone,
-            default: ''
-        },
-        fax: {
-            type: String,
-            set: MODULE('utils').setPhone,
-            default: ''
-        }
+        phone: { type: String, set: MODULE('utils').setPhone, default: '' },
+        mobile: { type: String, set: MODULE('utils').setPhone, default: '' },
+        fax: { type: String, set: MODULE('utils').setPhone, default: '' }
     },
 
     //contacts: { type: Array, default: [] },
@@ -372,289 +245,112 @@ var customerSchema = new Schema({
     internalNotes: {
         new: String,
         old: String,
-        author: {
-            type: ObjectId,
-            ref: 'Users'
-        },
-        datec: {
-            type: Date,
-            default: Date.now
-        }
+        author: { type: ObjectId, ref: 'Users' },
+        datec: { type: Date, default: Date.now }
     },
-    title: {
-        type: String,
-        default: ''
-    },
+    title: { type: String, default: '' },
 
     salesPurchases: {
-        isGeneric: {
-            type: Boolean,
-            default: false
-        }, // Generalist account
-        isProspect: {
-            type: Boolean,
-            default: false
-        },
-        isCustomer: {
-            type: Boolean,
-            default: true
-        },
-        isSupplier: {
-            type: Boolean,
-            default: false
-        },
-        isSubcontractor: {
-            type: Boolean,
-            default: false
-        }, //fournisseur
-        salesPerson: {
-            type: ObjectId,
-            ref: 'Employees'
-        }, //commercial_id
-        salesTeam: {
-            type: ObjectId,
-            ref: 'Department'
-        },
-        implementedBy: {
-            type: ObjectId,
-            ref: 'Customers'
-        },
-        isActive: {
-            type: Boolean,
-            default: true
-        },
-        ref: {
-            type: String,
-            trim: true,
-            uppercase: true,
-            sparse: true
-        }, //code_client or code_fournisseur
-        language: {
-            type: Number,
-            default: 0
-        },
-        receiveMessages: {
-            type: Number,
-            default: 0
-        },
-        cptBilling: {
-            type: Schema.Types.ObjectId,
-            ref: 'Customers'
-        },
-        priceList: {
-            type: Schema.Types.ObjectId,
-            require: true,
-            ref: 'priceList',
-            default: "58c962f7d3e1802b17fe95a4"
-        }, //price_level
+        isGeneric: { type: Boolean, default: false }, // Generalist account
+        isProspect: { type: Boolean, default: false },
+        isCustomer: { type: Boolean, default: true },
+        isSupplier: { type: Boolean, default: false },
+        isSubcontractor: { type: Boolean, default: false }, //fournisseur
+        salesPerson: { type: ObjectId, ref: 'Employees' }, //commercial_id
+        salesTeam: { type: ObjectId, ref: 'Department' },
+        implementedBy: { type: ObjectId, ref: 'Customers' },
+        isActive: { type: Boolean, default: true },
+        ref: { type: String, trim: true, uppercase: true, sparse: true }, //code_client or code_fournisseur
+        language: { type: Number, default: 0 },
+        receiveMessages: { type: Number, default: 0 },
+        cptBilling: { type: Schema.Types.ObjectId, ref: 'Customers' },
+        priceList: { type: Schema.Types.ObjectId, require: true, ref: 'priceList', default: "58c962f7d3e1802b17fe95a4" }, //price_level
         //prospectlevel: { type: String, default: 'PL_NONE' },
 
-        cond_reglement: {
-            type: String,
-            default: 'RECEP'
-        },
-        mode_reglement: {
-            type: String,
-            default: 'CHQ'
-        },
-        bank_reglement: {
-            type: ObjectId,
-            ref: 'bank'
-        },
-        VATIsUsed: {
-            type: Boolean,
-            default: true
-        },
+        cond_reglement: { type: String, default: 'RECEP' },
+        mode_reglement: { type: String, default: 'CHQ' },
+        bank_reglement: { type: ObjectId, ref: 'bank' },
+        VATIsUsed: { type: Boolean, default: true },
 
         rival: [String], //concurrent
 
-        customerAccount: {
-            type: String,
-            set: MODULE('utils').setAccount,
-            trim: true,
-            uppercase: true
-        }, //code_compta
-        supplierAccount: {
-            type: String,
-            set: MODULE('utils').setAccount,
-            trim: true,
-            uppercase: true
-        } //code_compta_fournisseur
+        customerAccount: { type: String, set: MODULE('utils').setAccount, trim: true, uppercase: true }, //code_compta
+        supplierAccount: { type: String, set: MODULE('utils').setAccount, trim: true, uppercase: true } //code_compta_fournisseur
     },
 
     iban: {
-        bank: {
-            type: String,
-            uppercase: true,
-            trim: true
-        },
-        id: {
-            type: String,
-            set: MODULE('utils').setNoSpace,
-            uppercase: true,
-            trim: true
-        }, //FR76........
-        bic: {
-            type: String,
-            set: MODULE('utils').setNoSpace,
-            uppercase: true,
-            trim: true
-        } //BIC / SWIFT TODO old swift
+        bank: { type: String, uppercase: true, trim: true },
+        id: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true }, //FR76........
+        bic: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true } //BIC / SWIFT TODO old swift
     },
 
-    entity: [{
-        type: String,
-        trim: true
-    }],
+    entity: [{ type: String, trim: true }],
 
-    relatedUser: {
-        type: ObjectId,
-        ref: 'Users',
-        default: null
-    },
-    color: {
-        type: String,
-        default: '#4d5a75'
-    },
+    relatedUser: { type: ObjectId, ref: 'Users', default: null },
+    color: { type: String, default: '#4d5a75' },
 
     social: {
-        FB: {
-            type: String,
-            default: ''
-        },
-        LI: {
-            type: String,
-            default: ''
-        },
-        TW: {
-            type: String,
-            default: ''
-        }
+        FB: { type: String, default: '' },
+        LI: { type: String, default: '' },
+        TW: { type: String, default: '' }
     },
 
-    whoCanRW: {
-        type: String,
-        enum: ['owner', 'group', 'everyOne'],
-        default: 'everyOne'
-    },
+    whoCanRW: { type: String, enum: ['owner', 'group', 'everyOne'], default: 'everyOne' },
 
     groups: {
-        owner: {
-            type: ObjectId,
-            ref: 'Users'
-        },
-        users: [{
-            type: ObjectId,
-            ref: 'Users'
-        }],
-        group: [{
-            type: ObjectId,
-            ref: 'Department'
-        }]
+        owner: { type: ObjectId, ref: 'Users' },
+        users: [{ type: ObjectId, ref: 'Users' }],
+        group: [{ type: ObjectId, ref: 'Department' }]
     },
 
     notes: [{
         _id: false,
         note: String,
         title: String,
-        task: {
-            type: ObjectId,
-            ref: 'DealTasks'
-        },
+        task: { type: ObjectId, ref: 'DealTasks' },
         attachment: {},
-        datec: {
-            type: Date,
-            default: Date.now
-        },
-        author: {
-            type: ObjectId,
-            ref: 'Users'
-        },
-        css: {
-            type: String,
-            default: "note-info"
-        }
+        datec: { type: Date, default: Date.now },
+        author: { type: ObjectId, ref: 'Users' },
+        css: { type: String, default: "note-info" }
     }],
 
-    files: {
-        type: Array,
-        default: []
-    },
-    history: {
-        type: Array,
-        default: []
-    },
+    files: { type: Array, default: [] },
+    history: { type: Array, default: [] },
 
-    createdBy: {
-        type: ObjectId,
-        ref: 'Users'
-    },
+    createdBy: { type: ObjectId, ref: 'Users' },
 
-    editedBy: {
-        type: ObjectId,
-        ref: 'Users'
-    },
+    editedBy: { type: ObjectId, ref: 'Users' },
 
     companyInfo: {
-        brand: {
-            type: String,
-            default: ''
-        }, // Old caFamily
-        size: {
-            type: String,
-            default: 'EF0'
-        }, // effectif_id
-        industry: {
-            type: ObjectId,
-            ref: 'Industries'
-        }, //brand
+        brand: { type: String, default: '' }, // Old caFamily
+        size: { type: String, default: 'EF0' }, // effectif_id
+        industry: { type: ObjectId, ref: 'Industries' }, //brand
         idprof1: String, // SIREN
-        idprof2: {
-            type: String
-        }, // SIRET
+        idprof2: { type: String }, // SIRET
         idprof3: String, // NAF
         idprof4: String,
         idprof5: String,
         idprof6: String, // TVA Intra
-        category: {
-            type: Schema.Types.ObjectId,
-            ref: 'accountsCategories'
-        }, //typent_id
+        category: { type: Schema.Types.ObjectId, ref: 'accountsCategories' }, //typent_id
         forme_juridique: String,
-        capital: {
-            type: Number,
-            default: 0
-        },
+        capital: { type: Number, default: 0 },
         //importExport: String, // null (no internal country), EUROP (Import/Export in EUROPE), INTER (Import/Export international) TODO Remove
-        Tag: {
-            type: [],
-            set: MODULE('utils').setTags
-        }
+        Tag: { type: [], set: MODULE('utils').setTags }
     },
 
     contactInfo: {
         soncas: [String],
         hobbies: [String],
-        sex: {
-            type: String,
-            default: "H"
-        }
+        sex: { type: String, default: "H" }
     },
 
-    ID: {
-        type: Number,
-        unique: true
-    },
+    ID: { type: Number, unique: true },
     oldId: String // only use for migration
 
 }, {
     collection: 'Customers',
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 customerSchema.path('salesPurchases.customerAccount').validate(function(v) {
@@ -737,26 +433,17 @@ customerSchema.pre('save', function(next) {
 });
 
 var statusList = {};
-Dict.dict({
-    dictName: "fk_stcomm",
-    object: true
-}, function(err, docs) {
+Dict.dict({ dictName: "fk_stcomm", object: true }, function(err, docs) {
     statusList = docs;
 });
 
 var prospectLevelList = {};
-Dict.dict({
-    dictName: "fk_prospectlevel",
-    object: true
-}, function(err, docs) {
+Dict.dict({ dictName: "fk_prospectlevel", object: true }, function(err, docs) {
     prospectLevelList = docs;
 });
 
 var segmentationList = {};
-Dict.dict({
-    dictName: "fk_segmentation",
-    object: true
-}, function(err, docs) {
+Dict.dict({ dictName: "fk_segmentation", object: true }, function(err, docs) {
     if (docs) {
         segmentationList = docs.values;
     }
@@ -910,25 +597,16 @@ customerSchema.virtual('sha1')
         return CryptoJS.SHA1(CONFIG('sha1-secret') + email.toUpperCase()).toString();
     });
 
-customerSchema.index({
-    name: 'text',
-    zip: 'text',
-    Tag: 'text'
-});
+customerSchema.index({ name: 'text', zip: 'text', Tag: 'text' });
 
 customerSchema.plugin(timestamps);
 
 if (CONFIG('storing-files')) {
     var gridfs = INCLUDE(CONFIG('storing-files'));
-    customerSchema.plugin(gridfs.pluginGridFs, {
-        root: "Customers"
-    });
+    customerSchema.plugin(gridfs.pluginGridFs, { root: "Customers" });
 }
 
-customerSchema.plugin(version, {
-    collection: 'Customers.Version',
-    strategy: 'collection'
-});
+customerSchema.plugin(version, { collection: 'Customers.Version', strategy: 'collection' });
 
 /**
  * Methods

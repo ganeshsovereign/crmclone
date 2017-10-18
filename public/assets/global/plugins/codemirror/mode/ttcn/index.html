@@ -41,7 +41,8 @@
             template Message expectedInviteMsg modifies expectedErrorMsg := { header := inviteType }; template Message expectedAcceptMsg modifies expectedErrorMsg := { header := acceptType }; } with { encode "BER:1997" } </textarea>
     </div>
     <script>
-        var ttcnEditor = CodeMirror.fromTextArea(document.getElementById("ttcn-code"), {
+        var ttcnEditor = CodeMirror.fromTextArea(document.getElementById("ttcn-code"),
+        {
             lineNumbers: true,
             matchBrackets: true,
             mode: "text/x-ttcn"

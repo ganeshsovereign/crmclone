@@ -55,7 +55,8 @@
                 haltdef NickNamesAdd $6 $+($network,$address($6,2)) } Raw 315:*: { if ($($+(%,ialupdateCheck,$network),2)) haltdef } </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
             theme: "twilight",
             lineNumbers: true,
             matchBrackets: true,

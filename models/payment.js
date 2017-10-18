@@ -49,101 +49,49 @@ var setDate = MODULE('utils').setDate;
 
 var linesSchema = new Schema({
     _id: false,
-    supplier: {
-        type: Schema.Types.ObjectId,
-        ref: 'Customers'
-    },
+    supplier: { type: Schema.Types.ObjectId, ref: 'Customers' },
     bills: [{
         _id: false,
-        invoice: {
-            type: Schema.Types.ObjectId,
-            ref: 'invoice'
-        },
+        invoice: { type: Schema.Types.ObjectId, ref: 'invoice' },
         amount: Number
     }],
     //bill: { type: Schema.Types.ObjectId, ref: 'bill' },
-    dater: {
-        type: Date,
-        set: setDate
-    }, // date de règlement
-    amount: {
-        type: Number,
-        default: 0,
-        set: setPrice
-    },
-    journalId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Journal'
-    }, // Id transactions for accounting 
+    dater: { type: Date, set: setDate }, // date de règlement
+    amount: { type: Number, default: 0, set: setPrice },
+    journalId: { type: Schema.Types.ObjectId, ref: 'Journal' }, // Id transactions for accounting 
     Status: String, // NotUsed
     isRejected: Boolean,
     memo: String // Reason reject
 }, {
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 
 var paymentSchema = new Schema({
     ref: String, //ref with SEQ
     seq: Number,
-    datec: {
-        type: Date,
-        default: Date.now,
-        set: setDate
-    },
-    dater: {
-        type: Date,
-        set: setDate
-    }, // Date de valeur in bank
+    datec: { type: Date, default: Date.now, set: setDate },
+    dater: { type: Date, set: setDate }, // Date de valeur in bank
     lines: [linesSchema],
-    Status: {
-        type: String,
-        default: 'DRAFT'
-    },
+    Status: { type: String, default: 'DRAFT' },
     total_amount: Number,
-    mode_reglement: {
-        type: String,
-        default: null
-    },
-    bank_reglement: {
-        type: Schema.Types.ObjectId,
-        ref: 'bank'
-    },
+    mode_reglement: { type: String, default: null },
+    bank_reglement: { type: Schema.Types.ObjectId, ref: 'bank' },
     journalId: [Schema.Types.ObjectId], // Id transactions for accounting
-    createdBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users'
-    },
-    editedBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'Users'
-    },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'Users' },
+    editedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
     history: [{
-        date: {
-            type: Date,
-            default: Date.now
-        },
-        createdBy: {
-            type: Schema.Types.ObjectId,
-            ref: 'Users'
-        },
+        date: { type: Date, default: Date.now },
+        createdBy: { type: Schema.Types.ObjectId, ref: 'Users' },
         mode: String, //email, order, alert, new, ...
         Status: String,
         msg: String
     }]
 }, {
     collection: "Payment",
-    toObject: {
-        virtuals: true
-    },
-    toJSON: {
-        virtuals: true
-    }
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 paymentSchema.plugin(timestamps);
@@ -209,14 +157,8 @@ paymentSchema.statics.getById = function(id, callback) {
     //console.log(query);
 
     this.findOne(query)
-        .populate({
-            path: "lines.supplier",
-            select: "_id name iban salesPurchases"
-        })
-        .populate({
-            path: 'lines.bills.invoice',
-            select: '_id ref total_ttc total_tva total_paid supplier journalId'
-        })
+        .populate({ path: "lines.supplier", select: "_id name iban salesPurchases" })
+        .populate({ path: 'lines.bills.invoice', select: '_id ref total_ttc total_tva total_paid supplier journalId' })
         .populate("bank_reglement", "name_bank ref account_number code_bank journalId code_counter compta_bank")
         .exec(callback);
 };
@@ -245,9 +187,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
     var myBookOD = new Book();
 
     if (body.mode === "Receipt" && body.mode_reglement_code == 'CHQ') // Receive a CHQ
-        body.bank = {
-            journalId: "RG"
-        }; // Reglement
+        body.bank = { journalId: "RG" }; // Reglement
 
     if (!body.bank.journalId)
         return callback('Journal de banque absent. Voir la configuration de la banque');
@@ -393,55 +333,55 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             //Migrate TVA to final account
                             if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
                                 for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
-                                    // No TVA
-                                    if (bill.total_taxes[j].value == 0)
-                                        continue;
+                                // No TVA
+                                if (bill.total_taxes[j].value == 0)
+                                    continue;
 
-                                    // TVA on payment
-                                    if (bill.total_taxes[j].taxeId.isOnPaid == false)
-                                        continue;
+                                // TVA on payment
+                                if (bill.total_taxes[j].taxeId.isOnPaid == false)
+                                    continue;
 
-                                    if (bill.total_taxes[j].value > 0) {
-                                        entryOD.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                        entryOD.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                    } else {
-                                        // Si avoir
-                                        entryOD.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                        entryOD.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                    }
+                                if (bill.total_taxes[j].value > 0) {
+                                    entryOD.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entryOD.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                } else {
+                                    // Si avoir
+                                    entryOD.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entryOD.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
                                 }
+                            }
 
                             aCb();
                         });
@@ -496,57 +436,57 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
                                 for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
 
-                                    if (bill.total_taxes[j].value == 0)
-                                        continue;
+                                if (bill.total_taxes[j].value == 0)
+                                    continue;
 
-                                    //console.log(bill.total_taxes[j]);
+                                //console.log(bill.total_taxes[j]);
 
-                                    // TVA on payment
-                                    if (bill.total_taxes[j].taxeId.isOnPaid == false)
-                                        continue;
+                                // TVA on payment
+                                if (bill.total_taxes[j].taxeId.isOnPaid == false)
+                                    continue;
 
-                                    // TVA on payment
-                                    if (bill.total_taxes[j].value > 0) {
-                                        entryOD.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                        entryOD.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                    } else {
-                                        // Si avoir
-                                        entryOD.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                        entryOD.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                    }
+                                // TVA on payment
+                                if (bill.total_taxes[j].value > 0) {
+                                    entryOD.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entryOD.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                } else {
+                                    // Si avoir
+                                    entryOD.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entryOD.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
                                 }
+                            }
 
                             aCb();
                         });
@@ -593,12 +533,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             //console.log("bill", invoice);
 
                             if (invoice && invoice._id) {
-                                F.emit('invoice:recalculateStatus', {
-                                    userId: user._id.toString(),
-                                    invoice: {
-                                        _id: invoice._id.toString()
-                                    }
-                                });
+                                F.emit('invoice:recalculateStatus', { userId: user._id.toString(), invoice: { _id: invoice._id.toString() } });
                                 return cb();
                             }
 
@@ -619,12 +554,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             //console.log("bill supplier", invoice);
 
                             if (invoice && invoice._id) {
-                                F.emit('invoice:recalculateStatus', {
-                                    userId: user._id.toString(),
-                                    invoice: {
-                                        _id: invoice._id.toString()
-                                    }
-                                });
+                                F.emit('invoice:recalculateStatus', { userId: user._id.toString(), invoice: { _id: invoice._id.toString() } });
                                 return cb();
                             }
 

@@ -42,7 +42,8 @@
                         <http://www.w3.org/2000/01/sw/>; foaf:based_near [ geo:lat "34.0736111" ; geo:lon "-118.3994444" ] </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
             mode: "text/turtle",
             matchBrackets: true
         });

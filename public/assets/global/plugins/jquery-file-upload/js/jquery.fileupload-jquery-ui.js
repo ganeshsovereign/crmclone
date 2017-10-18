@@ -12,7 +12,7 @@
 /* jshint nomen:false */
 /* global define, require, window */
 
-(function(factory) {
+(function (factory) {
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
@@ -24,16 +24,16 @@
         // Browser globals:
         factory(window.jQuery);
     }
-}(function($) {
+}(function ($) {
     'use strict';
 
     $.widget('blueimp.fileupload', $.blueimp.fileupload, {
 
         options: {
-            processdone: function(e, data) {
+            processdone: function (e, data) {
                 data.context.find('.start').button('enable');
             },
-            progress: function(e, data) {
+            progress: function (e, data) {
                 if (data.context) {
                     data.context.find('.progress').progressbar(
                         'option',
@@ -42,7 +42,7 @@
                     );
                 }
             },
-            progressall: function(e, data) {
+            progressall: function (e, data) {
                 var $this = $(this);
                 $this.find('.fileupload-progress')
                     .find('.progress').progressbar(
@@ -50,30 +50,26 @@
                         'value',
                         parseInt(data.loaded / data.total * 100, 10)
                     ).end()
-                    .find('.progress-extended').each(function() {
+                    .find('.progress-extended').each(function () {
                         $(this).html(
                             ($this.data('blueimp-fileupload') ||
-                                $this.data('fileupload'))
-                            ._renderExtendedProgress(data)
+                                    $this.data('fileupload'))
+                                ._renderExtendedProgress(data)
                         );
                     });
             }
         },
 
-        _renderUpload: function(func, files) {
+        _renderUpload: function (func, files) {
             var node = this._super(func, files),
                 showIconText = $(window).width() > 480;
             node.find('.progress').empty().progressbar();
             node.find('.start').button({
-                icons: {
-                    primary: 'ui-icon-circle-arrow-e'
-                },
+                icons: {primary: 'ui-icon-circle-arrow-e'},
                 text: showIconText
             });
             node.find('.cancel').button({
-                icons: {
-                    primary: 'ui-icon-cancel'
-                },
+                icons: {primary: 'ui-icon-cancel'},
                 text: showIconText
             });
             if (node.hasClass('fade')) {
@@ -82,13 +78,11 @@
             return node;
         },
 
-        _renderDownload: function(func, files) {
+        _renderDownload: function (func, files) {
             var node = this._super(func, files),
                 showIconText = $(window).width() > 480;
             node.find('.delete').button({
-                icons: {
-                    primary: 'ui-icon-trash'
-                },
+                icons: {primary: 'ui-icon-trash'},
                 text: showIconText
             });
             if (node.hasClass('fade')) {
@@ -97,18 +91,18 @@
             return node;
         },
 
-        _startHandler: function(e) {
+        _startHandler: function (e) {
             $(e.currentTarget).button('disable');
             this._super(e);
         },
 
-        _transition: function(node) {
+        _transition: function (node) {
             var deferred = $.Deferred();
             if (node.hasClass('fade')) {
                 node.fadeToggle(
                     this.options.transitionDuration,
                     this.options.transitionEasing,
-                    function() {
+                    function () {
                         deferred.resolveWith(node);
                     }
                 );
@@ -118,45 +112,29 @@
             return deferred;
         },
 
-        _create: function() {
+        _create: function () {
             this._super();
             this.element
                 .find('.fileupload-buttonbar')
-                .find('.fileinput-button').each(function() {
+                .find('.fileinput-button').each(function () {
                     var input = $(this).find('input:file').detach();
                     $(this)
-                        .button({
-                            icons: {
-                                primary: 'ui-icon-plusthick'
-                            }
-                        })
+                        .button({icons: {primary: 'ui-icon-plusthick'}})
                         .append(input);
                 })
                 .end().find('.start')
-                .button({
-                    icons: {
-                        primary: 'ui-icon-circle-arrow-e'
-                    }
-                })
+                .button({icons: {primary: 'ui-icon-circle-arrow-e'}})
                 .end().find('.cancel')
-                .button({
-                    icons: {
-                        primary: 'ui-icon-cancel'
-                    }
-                })
+                .button({icons: {primary: 'ui-icon-cancel'}})
                 .end().find('.delete')
-                .button({
-                    icons: {
-                        primary: 'ui-icon-trash'
-                    }
-                })
+                .button({icons: {primary: 'ui-icon-trash'}})
                 .end().find('.progress').progressbar();
         },
 
-        _destroy: function() {
+        _destroy: function () {
             this.element
                 .find('.fileupload-buttonbar')
-                .find('.fileinput-button').each(function() {
+                .find('.fileinput-button').each(function () {
                     var input = $(this).find('input:file').detach();
                     $(this)
                         .button('destroy')

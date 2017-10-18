@@ -102,13 +102,9 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
         $scope.changeType = function() {
             if ($rootScope.$state.current.name == 'societe.list')
-                return $rootScope.$state.go('societe.list', {
-                    type: $scope.type
-                });
+                return $rootScope.$state.go('societe.list', { type: $scope.type });
 
-            return $rootScope.$state.go('societe.list_supplier', {
-                type: $scope.type
-            });
+            return $rootScope.$state.go('societe.list_supplier', { type: $scope.type });
         }
 
         if (typeof superCache.get("SocieteController.type") == "undefined")
@@ -210,9 +206,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             $http({
                 method: 'GET',
                 url: '/erp/api/product/prices/priceslist',
-                params: {
-                    cost: false
-                }
+                params: { cost: false }
             }).success(function(data) {
                 $scope.$dict.pricesLists = data.data;
             });
@@ -303,9 +297,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             societe.$save(function(response) {
                 //console.log(response);
-                $rootScope.$state.go("societe.show", {
-                    id: response._id
-                });
+                $rootScope.$state.go("societe.show", { id: response._id });
                 //$location.path("societe/" + response._id);
             });
         };
@@ -344,7 +336,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     else
                         return $rootScope.$state.go('societe.show.contact');
 
-                //console.log(societe);
+                    //console.log(societe);
 
                 $http({
                     method: 'GET',
@@ -1339,9 +1331,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 if (priceList) {
                     $scope.societe.salesPurchases.priceList = priceList
                     $scope.update(function(doc) {
-                        return $rootScope.$state.go('product.pricelist', {
-                            priceListId: priceList._id
-                        });
+                        return $rootScope.$state.go('product.pricelist', { priceListId: priceList._id });
                     });
                 }
                 //Save
@@ -1372,9 +1362,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             $http({
                 method: 'GET',
                 url: '/erp/api/product/prices/priceslist/select',
-                params: {
-                    isCoef: true
-                }
+                params: { isCoef: true }
             }).success(function(data) {
                 $scope.pricesLists = data.data;
 
@@ -1489,34 +1477,20 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
 
         var products = [{
                     description: 'Big Mac',
-                    options: [{
-                            description: 'Big Mac'
-                        },
-                        {
-                            description: 'Big Mac & Co'
-                        },
-                        {
-                            description: 'McRoyal'
-                        },
-                        {
-                            description: 'Hamburger'
-                        },
-                        {
-                            description: 'Cheeseburger'
-                        },
-                        {
-                            description: 'Double Cheeseburger'
-                        }
+                    options: [
+                        { description: 'Big Mac' },
+                        { description: 'Big Mac & Co' },
+                        { description: 'McRoyal' },
+                        { description: 'Hamburger' },
+                        { description: 'Cheeseburger' },
+                        { description: 'Double Cheeseburger' }
                     ]
                 },
                 {
                     description: 'Fried Potatoes',
-                    options: [{
-                            description: 'Fried Potatoes'
-                        },
-                        {
-                            description: 'Fried Onions'
-                        }
+                    options: [
+                        { description: 'Fried Potatoes' },
+                        { description: 'Fried Onions' }
                     ]
                 }
             ],
@@ -1591,9 +1565,7 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
         };
 
 
-        $scope.db = {
-            items: []
-        };
+        $scope.db = { items: [] };
         $scope.settings = {
             colHeaders: true,
             contextMenu: ['row_above', 'row_below', 'remove_row'],
@@ -1629,52 +1601,21 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
 
     var grid = new Datatable();
 
-    $scope.etats = [{
-            id: "ST_NEVER",
-            name: "Non déterminé"
-        },
-        {
-            id: "ST_ENABLE",
-            name: "Actif"
-        },
-        {
-            id: "ST_DISABLE",
-            name: "Inactif"
-        },
-        {
-            id: "ST_NO",
-            name: "Ne pas contacter"
-        },
-        {
-            id: "ALL",
-            name: "Tous"
-        }
+    $scope.etats = [
+        { id: "ST_NEVER", name: "Non déterminé" },
+        { id: "ST_ENABLE", name: "Actif" },
+        { id: "ST_DISABLE", name: "Inactif" },
+        { id: "ST_NO", name: "Ne pas contacter" },
+        { id: "ALL", name: "Tous" }
     ];
 
-    $scope.soncas = [{
-            value: "Sécurité",
-            text: 'Sécurité'
-        },
-        {
-            value: 'Orgueil',
-            text: 'Orgueil'
-        },
-        {
-            value: 'Nouveauté',
-            text: 'Nouveauté'
-        },
-        {
-            value: 'Confort',
-            text: 'Confort'
-        },
-        {
-            value: 'Argent',
-            text: 'Argent'
-        },
-        {
-            value: "Sympathique",
-            text: 'Sympathique'
-        }
+    $scope.soncas = [
+        { value: "Sécurité", text: 'Sécurité' },
+        { value: 'Orgueil', text: 'Orgueil' },
+        { value: 'Nouveauté', text: 'Nouveauté' },
+        { value: 'Confort', text: 'Confort' },
+        { value: 'Argent', text: 'Argent' },
+        { value: "Sympathique", text: 'Sympathique' }
     ];
 
     $scope.open = function($event) {
@@ -1684,10 +1625,7 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
         $scope.opened = true;
     };
 
-    $scope.etat = {
-        id: "ST_ENABLE",
-        name: "Actif"
-    };
+    $scope.etat = { id: "ST_ENABLE", name: "Actif" };
     // Init
     $http({
         method: 'GET',
@@ -1728,9 +1666,7 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
 
         if ($rootScope.$stateParams.Status) {
             $scope.status_id = $rootScope.$stateParams.Status;
-            initDatatable({
-                status_id: $scope.status_id
-            });
+            initDatatable({ status_id: $scope.status_id });
         } else
             initDatatable();
 
@@ -1782,13 +1718,9 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
         contact.$save(function(response) {
             //console.log(response);
             if (response.societe.id)
-                $rootScope.$state.go("societe.show", {
-                    id: response.societe.id
-                });
+                $rootScope.$state.go("societe.show", { id: response.societe.id });
             else
-                $rootScope.$state.go("contact.show", {
-                    id: response._id
-                });
+                $rootScope.$state.go("contact.show", { id: response._id });
         });
     };
 

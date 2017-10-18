@@ -72,9 +72,7 @@ MetronicApp.controller('BoxTemporaryController', ['$rootScope', '$scope', '$http
                     url: '/erp/api/delivery/statistic',
                     data: {
                         query: {
-                            Status: {
-                                '$in': ['DRAFT', 'SEND']
-                            },
+                            Status: { '$in': ['DRAFT', 'SEND'] },
                             entity: $rootScope.entity
                         }
                     }

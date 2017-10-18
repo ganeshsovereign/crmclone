@@ -45,11 +45,13 @@
             return true; } } else { var match = this.string.slice(this.pos).match(pattern); if (match &amp;&amp; consume !== false) this.pos += match[0].length; return match; } } }; </textarea>
     </div>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
             lineNumbers: true,
             matchBrackets: true,
             continueComments: "Enter",
-            extraKeys: {
+            extraKeys:
+            {
                 "Ctrl-Q": "toggleComment"
             }
         });

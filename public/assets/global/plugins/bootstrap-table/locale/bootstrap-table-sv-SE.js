@@ -2,32 +2,32 @@
  * Bootstrap Table Swedish translation
  * Author: C Bratt <bratt@inix.se>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['sv-SE'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Laddar, vänligen vänta...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' rader per sida';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Visa ' + pageFrom + ' till ' + pageTo + ' av ' + totalRows + ' rader';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Sök';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Inga matchande resultat funna.';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return 'Uppdatera';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'Skifta';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return 'kolumn';
         }
     };

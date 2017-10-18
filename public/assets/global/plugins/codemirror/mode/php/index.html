@@ -58,7 +58,8 @@ function hello($who) {
         </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
+        {
             lineNumbers: true,
             matchBrackets: true,
             mode: "application/x-httpd-php",

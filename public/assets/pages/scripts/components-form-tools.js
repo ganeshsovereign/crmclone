@@ -1,10 +1,10 @@
-var ComponentsFormTools = function() {
+var ComponentsFormTools = function () {
 
     var handleBootstrapMaxlength = function() {
         $('#maxlength_defaultconfig').maxlength({
             limitReachedClass: "label label-danger",
         })
-
+    
         $('#maxlength_thresholdconfig').maxlength({
             limitReachedClass: "label label-danger",
             threshold: 20
@@ -31,9 +31,9 @@ var ComponentsFormTools = function() {
             placement: App.isRTL() ? 'top-right' : 'top-left'
         });
     }
-
-    var handleInputMasks = function() {
-
+    
+    var handleInputMasks = function () {
+        
 
         $("#mask_date").inputmask("d/m/y", {
             autoUnmask: true
@@ -74,18 +74,18 @@ var ComponentsFormTools = function() {
         }); //default
     }
 
-    var handleIPAddressInput = function() {
+    var handleIPAddressInput = function () {
         $('#input_ipv4').ipAddress();
         $('#input_ipv6').ipAddress({
             v: 6
         });
     }
 
-    var handlePasswordStrengthChecker = function() {
+    var handlePasswordStrengthChecker = function () {
         var initialized = false;
         var input = $("#password_strength");
 
-        input.keydown(function() {
+        input.keydown(function () {
             if (initialized === false) {
                 // set base options
                 input.pwstrength({
@@ -96,7 +96,7 @@ var ComponentsFormTools = function() {
                 });
 
                 // add your own rule to calculate the password strength
-                input.pwstrength("addRule", "demoRule", function(options, word, score) {
+                input.pwstrength("addRule", "demoRule", function (options, word, score) {
                     return word.match(/[a-z].[0-9]/) && score;
                 }, 10, true);
 
@@ -106,10 +106,10 @@ var ComponentsFormTools = function() {
         });
     }
 
-    var handleUsernameAvailabilityChecker1 = function() {
+    var handleUsernameAvailabilityChecker1 = function () {
         var input = $("#username1_input");
 
-        $("#username1_checker").click(function(e) {
+        $("#username1_checker").click(function (e) {
             var pop = $(this);
 
             if (input.val() === "") {
@@ -142,7 +142,7 @@ var ComponentsFormTools = function() {
 
             $.post('../demo/username_checker.php', {
                 username: input.val()
-            }, function(res) {
+            }, function (res) {
                 btn.attr('disabled', false);
 
                 input.attr("readonly", false).
@@ -181,8 +181,8 @@ var ComponentsFormTools = function() {
         });
     }
 
-    var handleUsernameAvailabilityChecker2 = function() {
-        $("#username2_input").change(function() {
+    var handleUsernameAvailabilityChecker2 = function () {
+        $("#username2_input").change(function () {
             var input = $(this);
 
             if (input.val() === "") {
@@ -198,7 +198,7 @@ var ComponentsFormTools = function() {
 
             $.post('../demo/username_checker.php', {
                 username: input.val()
-            }, function(res) {
+            }, function (res) {
                 input.attr("readonly", false).
                 attr("disabled", false).
                 removeClass("spinner");
@@ -234,7 +234,7 @@ var ComponentsFormTools = function() {
 
     return {
         //main function to initiate the module
-        init: function() {
+        init: function () {
             handleBootstrapMaxlength();
             handleIPAddressInput();
             handlePasswordStrengthChecker();
@@ -246,7 +246,7 @@ var ComponentsFormTools = function() {
 
 }();
 
-if (App.isAngularJsApp() === false) {
+if (App.isAngularJsApp() === false) { 
     jQuery(document).ready(function() {
         ComponentsFormTools.init(); // init metronic core componets
     });

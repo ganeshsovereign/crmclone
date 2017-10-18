@@ -2,23 +2,23 @@
  * Bootstrap Table Greek translation
  * Author: giannisdallas
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['el-GR'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return 'Φορτώνει, παρακαλώ περιμένετε...';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return pageNumber + ' αποτελέσματα ανά σελίδα';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
             return 'Εμφανίζονται από την ' + pageFrom + ' ως την ' + pageTo + ' από σύνολο ' + totalRows + ' σειρών';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return 'Αναζητήστε';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return 'Δεν βρέθηκαν αποτελέσματα';
         }
     };

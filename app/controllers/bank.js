@@ -44,10 +44,7 @@ MetronicApp.controller('BankController', ['$rootScope', '$scope', '$http', '$fil
 
         });
 
-        $http({
-                method: 'GET',
-                url: 'api/entity/select'
-            })
+        $http({ method: 'GET', url: 'api/entity/select' })
             .success(function(data, status) {
                 $scope.entities = data;
                 $scope.entities.push({
@@ -82,21 +79,10 @@ MetronicApp.controller('BankController', ['$rootScope', '$scope', '$http', '$fil
         filterOptions: $scope.filterOptionsBank,
         enableColumnResize: true,
         i18n: 'fr',
-        columnDefs: [{
-                field: 'libelle',
-                displayName: 'Comptes courants',
-                cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/bank/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"right"}\'><span class="icon-home"></span> {{row.getProperty(col.field)}}</a></div>'
-            },
-            {
-                field: 'name_bank',
-                displayName: 'Banque',
-                width: '100px'
-            },
-            {
-                field: 'account_number',
-                displayName: 'Numero de compte',
-                width: '140px'
-            },
+        columnDefs: [
+            { field: 'libelle', displayName: 'Comptes courants', cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/bank/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"right"}\'><span class="icon-home"></span> {{row.getProperty(col.field)}}</a></div>' },
+            { field: 'name_bank', displayName: 'Banque', width: '100px' },
+            { field: 'account_number', displayName: 'Numero de compte', width: '140px' },
             {
                 field: 'acc_type.name',
                 displayName: 'Type',
@@ -108,12 +94,7 @@ MetronicApp.controller('BankController', ['$rootScope', '$scope', '$http', '$fil
                 width: '80px',
                 cellTemplate: '<div class="ngCellText align-center"><small class="tag {{row.getProperty(\'acc_status.css\')}} glossy">{{row.getProperty(col.field)}}</small></div>'
             },
-            {
-                field: 'balance',
-                displayName: 'Solde',
-                width: '80px',
-                cellFilter: "currency:''"
-            }
+            { field: 'balance', displayName: 'Solde', width: '80px', cellFilter: "currency:''" }
         ]
     };
 
@@ -141,43 +122,15 @@ MetronicApp.controller('BankController', ['$rootScope', '$scope', '$http', '$fil
         footerRowHeight: 50,
         enableColumnResize: true,
         cellClass: 'cellToolTip',
-        columnDefs: [{
-                field: 'date_transaction',
-                displayName: 'Date',
-                cellFilter: "date:'dd-MM-yyyy'"
-            },
-            {
-                field: 'value',
-                displayName: 'Valeur',
-                cellFilter: "date:'dd-MM-yyyy'"
-            },
-            {
-                field: 'trans_type.name',
-                displayName: 'type'
-            },
-            {
-                field: 'description',
-                displayName: 'Déscription'
-            },
-            {
-                field: 'third_party.name',
-                displayName: 'Tiers'
-            },
-            {
-                field: 'debit',
-                displayName: 'Debit',
-                cellFilter: "currency:''"
-            },
-            {
-                field: 'credit',
-                displayName: 'Credit',
-                cellFilter: "currency:''"
-            },
-            {
-                field: 'balance',
-                displayName: 'Solde',
-                cellFilter: "currency:''"
-            },
+        columnDefs: [
+            { field: 'date_transaction', displayName: 'Date', cellFilter: "date:'dd-MM-yyyy'" },
+            { field: 'value', displayName: 'Valeur', cellFilter: "date:'dd-MM-yyyy'" },
+            { field: 'trans_type.name', displayName: 'type' },
+            { field: 'description', displayName: 'Déscription' },
+            { field: 'third_party.name', displayName: 'Tiers' },
+            { field: 'debit', displayName: 'Debit', cellFilter: "currency:''" },
+            { field: 'credit', displayName: 'Credit', cellFilter: "currency:''" },
+            { field: 'balance', displayName: 'Solde', cellFilter: "currency:''" },
             {
                 field: 'bank_statement',
                 displayName: 'Relvé',
@@ -213,9 +166,7 @@ MetronicApp.controller('BankController', ['$rootScope', '$scope', '$http', '$fil
                 method: 'GET',
                 url: '/api/transaction',
                 params: {
-                    find: {
-                        "bank.id": bank._id
-                    }
+                    find: { "bank.id": bank._id }
                 }
             }).success(function(data, status) {
 
@@ -279,9 +230,7 @@ MetronicApp.controller('BankController', ['$rootScope', '$scope', '$http', '$fil
             pageSize: '5',
             filter: {
                 logic: 'and',
-                filters: [{
-                    value: val
-                }]
+                filters: [{ value: val }]
             }
         }).then(function(res) {
             return res.data;
@@ -446,9 +395,7 @@ MetronicApp.controller('BankController', ['$rootScope', '$scope', '$http', '$fil
         $rootScope.bank = bank;
         $rootScope.transactions = transactions;
         //$location.path("module/bank/rapprochement.html");
-        $location.path('module/bank/rapprochement.html').search({
-            bankId: bank._id
-        });
+        $location.path('module/bank/rapprochement.html').search({ bankId: bank._id });
 
     };
 
@@ -588,9 +535,7 @@ MetronicApp.controller('ReconciliationController', ['$scope', '$rootScope', '$ht
                 method: 'GET',
                 url: '/api/transaction/reconcile',
                 params: {
-                    find: {
-                        "bank.id": $scope.bank._id
-                    }
+                    find: { "bank.id": $scope.bank._id }
                 }
             }).success(function(data, status) {
                 $scope.transactions = data;
@@ -650,46 +595,15 @@ MetronicApp.controller('ReconciliationController', ['$scope', '$rootScope', '$ht
             row.changed = false;
         },
         plugins: [new ngGridSingleSelectionPlugin()],
-        columnDefs: [{
-                field: '_id',
-                displayName: 'Code Transaction',
-                visible: false
-            },
-            {
-                field: 'date_transaction',
-                displayName: 'Date',
-                cellFilter: "date:'dd-MM-yyyy'"
-            },
-            {
-                field: 'value',
-                displayName: 'Valeur',
-                cellFilter: "date:'dd-MM-yyyy'"
-            },
-            {
-                field: 'trans_type.name',
-                displayName: 'type'
-            },
-            {
-                field: 'description',
-                displayName: 'Déscription'
-            },
-            {
-                field: 'third_party.name',
-                width: "120px",
-                displayName: 'Tiers'
-            },
-            {
-                field: 'debit',
-                displayName: 'Debit',
-                width: "80px",
-                cellFilter: "currency:''"
-            },
-            {
-                field: 'credit',
-                displayName: 'Credit',
-                width: "80px",
-                cellFilter: "currency:''"
-            }
+        columnDefs: [
+            { field: '_id', displayName: 'Code Transaction', visible: false },
+            { field: 'date_transaction', displayName: 'Date', cellFilter: "date:'dd-MM-yyyy'" },
+            { field: 'value', displayName: 'Valeur', cellFilter: "date:'dd-MM-yyyy'" },
+            { field: 'trans_type.name', displayName: 'type' },
+            { field: 'description', displayName: 'Déscription' },
+            { field: 'third_party.name', width: "120px", displayName: 'Tiers' },
+            { field: 'debit', displayName: 'Debit', width: "80px", cellFilter: "currency:''" },
+            { field: 'credit', displayName: 'Credit', width: "80px", cellFilter: "currency:''" }
         ]
     };
 
@@ -875,9 +789,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
 
             if ($rootScope.$stateParams.societe) {
                 $scope.payment.supplier = $rootScope.$stateParams.societe;
-                $scope.find({
-                    _id: $rootScope.$stateParams.societe
-                });
+                $scope.find({ _id: $rootScope.$stateParams.societe });
             }
         } else {
             $scope.loadBank();
@@ -939,16 +851,8 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
                 params: {
                     find: {
                         "meta.supplier": params.supplier,
-                        "meta.bills": {
-                            $ne: null
-                        },
-                        $or: [{
-                            "meta.bank": {
-                                $ne: null
-                            }
-                        }, {
-                            "meta.isWaiting": true
-                        }],
+                        "meta.bills": { $ne: null },
+                        $or: [{ "meta.bank": { $ne: null } }, { "meta.isWaiting": true }],
                         voided: false
                     }
                 }
@@ -969,13 +873,9 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
         var payment = new Banks.payment(this.payment);
         payment.$save(function(response) {
             if ($rootScope.$state.current.name === 'bill.show.payment.create')
-                return $rootScope.$state.go("bill.show.payment", {
-                    reload: true
-                });
+                return $rootScope.$state.go("bill.show.payment", { reload: true });
             if ($rootScope.$state.current.name === 'billsupplier.show.payment.create')
-                return $rootScope.$state.go("billsupplier.show.payment", {
-                    reload: true
-                });
+                return $rootScope.$state.go("billsupplier.show.payment", { reload: true });
         });
     };
 
@@ -1148,11 +1048,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
             $http({
                 method: 'GET',
                 url: '/erp/api/bank/payment/bills',
-                params: {
-                    supplier: id,
-                    forSales: true,
-                    "query": "WAIT"
-                }
+                params: { supplier: id, forSales: true, "query": "WAIT" }
             }).success(function(data, status) {
                 $scope.payment.bills = data;
                 //console.log(bills);
@@ -1163,11 +1059,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
             $http({
                 method: 'GET',
                 url: '/erp/api/bank/payment/bills',
-                params: {
-                    supplier: id,
-                    forSales: false,
-                    "query": "WAIT"
-                }
+                params: { supplier: id, forSales: false, "query": "WAIT" }
             }).success(function(data, status) {
                 $scope.payment.bills_supplier = data;
                 //console.log(bills);
@@ -1182,13 +1074,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
             url: '/erp/api/bank/payment/',
             params: {
                 find: {
-                    $or: [{
-                        "meta.bank": {
-                            $ne: null
-                        }
-                    }, {
-                        "meta.isWaiting": true
-                    }],
+                    $or: [{ "meta.bank": { $ne: null } }, { "meta.isWaiting": true }],
                     "meta.bills.invoice": data,
                     voided: false
                 }
@@ -1262,9 +1148,7 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
 
         if ($rootScope.$stateParams.Status) {
             $scope.status_id = $rootScope.$stateParams.Status;
-            initDatatable({
-                status_id: $scope.status_id
-            });
+            initDatatable({ status_id: $scope.status_id });
         } else
             initDatatable();
 
@@ -1290,9 +1174,7 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
         //return console.log(group);
 
         group.$save(function(response) {
-            $rootScope.$state.go("payment.chq.show", {
-                id: response._id
-            });
+            $rootScope.$state.go("payment.chq.show", { id: response._id });
         });
     };
 
@@ -1308,9 +1190,7 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
     $scope.showStatus = function(val, dict) {
         if (!($scope.dict[dict] && $scope.group[val]))
             return;
-        var selected = $filter('filter')($scope.dict[dict].values, {
-            id: $scope.group[val]
-        });
+        var selected = $filter('filter')($scope.dict[dict].values, { id: $scope.group[val] });
 
         return ($scope.group[val] && selected && selected.length) ? selected[0].label : 'Non défini';
     };
@@ -1359,9 +1239,7 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
 
             var linkElement = document.createElement('a');
             try {
-                var blob = new Blob([data], {
-                    type: contentType
-                });
+                var blob = new Blob([data], { type: contentType });
                 var url = window.URL.createObjectURL(blob);
 
                 linkElement.setAttribute('href', url);
@@ -1528,18 +1406,14 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
             $scope.params.status_id = this.status_id;
             url = getUrl($scope.params);
         } else
-            url = getUrl({
-                status_id: this.status_id
-            });
+            url = getUrl({ status_id: this.status_id });
 
         grid.resetFilter(url);
     };
 
     $scope.changeStatus = function(Status) {
         $scope.group.Status = Status;
-        $scope.update({
-            Status: Status
-        });
+        $scope.update({ Status: Status });
     };
 
     // Classify PAID and closed bills

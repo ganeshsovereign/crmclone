@@ -1,12 +1,12 @@
-var UIAlertsApi = function() {
+var UIAlertsApi = function () {
 
-    var handleDemo = function() {
-        $('#alert_show').click(function() {
+    var handleDemo = function() {        
+        $('#alert_show').click(function(){
             App.alert({
                 container: $('#alert_container').val(), // alerts parent container(by default placed after the page breadcrumbs)
                 place: $('#alert_place').val(), // append or prepent in container 
-                type: $('#alert_type').val(), // alert's type
-                message: $('#alert_message').val(), // alert's message
+                type: $('#alert_type').val(),  // alert's type
+                message: $('#alert_message').val(),  // alert's message
                 close: $('#alert_close').is(":checked"), // make alert closable
                 reset: $('#alert_reset').is(":checked"), // close all previouse alerts first
                 focus: $('#alert_focus').is(":checked"), // auto scroll to the alert after shown
@@ -34,7 +34,7 @@ var UIAlertsApi = function() {
     return {
 
         //main function to initiate the module
-        init: function() {
+        init: function () {
             handleDemo();
             handleCode();
         }
@@ -42,6 +42,6 @@ var UIAlertsApi = function() {
 
 }();
 
-jQuery(document).ready(function() {
-    UIAlertsApi.init();
+jQuery(document).ready(function() {    
+   UIAlertsApi.init();
 });

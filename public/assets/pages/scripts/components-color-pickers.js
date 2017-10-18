@@ -1,6 +1,6 @@
 var ComponentsColorPickers = function() {
 
-    var handleColorPicker = function() {
+    var handleColorPicker = function () {
         if (!jQuery().colorpicker) {
             return;
         }
@@ -51,6 +51,6 @@ var ComponentsColorPickers = function() {
 
 }();
 
-jQuery(document).ready(function() {
-    ComponentsColorPickers.init();
+jQuery(document).ready(function() {    
+   ComponentsColorPickers.init(); 
 });

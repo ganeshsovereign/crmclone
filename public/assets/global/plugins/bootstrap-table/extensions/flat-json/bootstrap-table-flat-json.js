@@ -4,10 +4,10 @@
  * @version: v1.3.0
  */
 
-(function($) {
+(function ($) {
     'use strict';
 
-    var flat = function(element, that) {
+    var flat = function (element, that) {
         var result = {};
 
         function recurse(cur, prop) {
@@ -36,10 +36,10 @@
         return result;
     };
 
-    var flatHelper = function(data, that) {
+    var flatHelper = function (data, that) {
         var flatArray = [];
 
-        $.each(!$.isArray(data) ? [data] : data, function(i, element) {
+        $.each(!$.isArray(data) ? [data] : data, function (i, element) {
             flatArray.push(flat(element, that));
         });
         return flatArray;
@@ -53,7 +53,7 @@
     var BootstrapTable = $.fn.bootstrapTable.Constructor,
         _initData = BootstrapTable.prototype.initData;
 
-    BootstrapTable.prototype.initData = function(data, type) {
+    BootstrapTable.prototype.initData = function (data, type) {
         if (this.options.flat) {
             data = flatHelper(data ? data : this.options.data, this);
         }

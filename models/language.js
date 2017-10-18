@@ -34,18 +34,9 @@ var mongoose = require('mongoose'),
  */
 var LanguageSchema = mongoose.Schema({
     name: String,
-    code: {
-        type: String,
-        unique: true
-    },
-    idx: {
-        type: Number,
-        default: 0,
-        unique: true
-    },
-}, {
-    collection: 'languages'
-});
+    code: { type: String, unique: true },
+    idx: { type: Number, default: 0, unique: true },
+}, { collection: 'languages' });
 
 
 exports.Schema = mongoose.model('languages', LanguageSchema);

@@ -1,20 +1,20 @@
-var UIConfirmations = function() {
+var UIConfirmations = function () {
 
-    var handleSample = function() {
-
-        $('#bs_confirmation_demo_1').on('confirmed.bs.confirmation', function() {
+    var handleSample = function () {
+        
+        $('#bs_confirmation_demo_1').on('confirmed.bs.confirmation', function () {
             alert('You confirmed action #1');
         });
 
-        $('#bs_confirmation_demo_1').on('canceled.bs.confirmation', function() {
+        $('#bs_confirmation_demo_1').on('canceled.bs.confirmation', function () {
             alert('You canceled action #1');
-        });
+        });   
 
-        $('#bs_confirmation_demo_2').on('confirmed.bs.confirmation', function() {
+        $('#bs_confirmation_demo_2').on('confirmed.bs.confirmation', function () {
             alert('You confirmed action #2');
         });
 
-        $('#bs_confirmation_demo_2').on('canceled.bs.confirmation', function() {
+        $('#bs_confirmation_demo_2').on('canceled.bs.confirmation', function () {
             alert('You canceled action #2');
         });
     }
@@ -22,9 +22,9 @@ var UIConfirmations = function() {
 
     return {
         //main function to initiate the module
-        init: function() {
+        init: function () {
 
-            handleSample();
+           handleSample();
 
         }
 
@@ -32,6 +32,6 @@ var UIConfirmations = function() {
 
 }();
 
-jQuery(document).ready(function() {
-    UIConfirmations.init();
+jQuery(document).ready(function() {    
+   UIConfirmations.init();
 });

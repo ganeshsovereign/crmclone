@@ -120,9 +120,7 @@
                                 <tr ng-repeat="address in societe.shippingAddress">
                                     <td><input uniform ng-model="_idAddress" type="checkbox" name="id[]" ng-checked="societe.deliveryAddressId == address.id" ng-click="setDefaultDelivery(address.id)" /></td>
                                     <td> {{address.name}} </td>
-                                    <td>
-                                        <pre>{{ address.street ||  "Non defini" }}</pre>
-                                    </td>
+                                    <td><pre>{{ address.street ||  "Non defini" }}</pre></td>
                                     <td> {{address.zip}} </td>
                                     <td> {{address.city}} </td>
                                     <td>

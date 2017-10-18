@@ -2,38 +2,38 @@
  * Bootstrap Table Japanese translation
  * Author: Azamshul Azizy <azamshul@gmail.com>
  */
-(function($) {
+(function ($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['ja-JP'] = {
-        formatLoadingMessage: function() {
+        formatLoadingMessage: function () {
             return '読み込み中です。少々お待ちください。';
         },
-        formatRecordsPerPage: function(pageNumber) {
+        formatRecordsPerPage: function (pageNumber) {
             return 'ページ当たり最大' + pageNumber + '件';
         },
-        formatShowingRows: function(pageFrom, pageTo, totalRows) {
-            return '全' + totalRows + '件から、' + pageFrom + 'から' + pageTo + '件目まで表示しています';
+        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+            return '全' + totalRows + '件から、'+ pageFrom + 'から' + pageTo + '件目まで表示しています';
         },
-        formatSearch: function() {
+        formatSearch: function () {
             return '検索';
         },
-        formatNoMatches: function() {
+        formatNoMatches: function () {
             return '該当するレコードが見つかりません';
         },
-        formatPaginationSwitch: function() {
+        formatPaginationSwitch: function () {
             return 'ページ数を表示・非表示';
         },
-        formatRefresh: function() {
+        formatRefresh: function () {
             return '更新';
         },
-        formatToggle: function() {
+        formatToggle: function () {
             return 'トグル';
         },
-        formatColumns: function() {
+        formatColumns: function () {
             return '列';
         },
-        formatAllRows: function() {
+        formatAllRows: function () {
             return 'すべて';
         }
     };

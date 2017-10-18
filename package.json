@@ -62,10 +62,16 @@
     "devDependencies": {
         "gulp": "latest",
         "gulp-change": "latest",
+        "gulp-clean-css": "latest",
+        "gulp-cssbeautify": "latest",
         "gulp-header-license": "latest",
         "gulp-htmlmin": "latest",
+        "gulp-ignore": "latest",
         "gulp-jsbeautifier": "latest",
-        "gulp-rename": "latest"
+        "gulp-open": "latest",
+        "gulp-plumber": "latest",
+        "gulp-rename": "latest",
+        "prettify": "latest"
     },
     "scripts": {
         "test-jshint": "jshint ./app/**/**.js",
