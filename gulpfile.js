@@ -3,26 +3,10 @@ var gulp = require('gulp');
 
 //Plugins
 var //rename = require('gulp-rename'),
-    plumber = require('gulp-plumber'),
-    cssbeautify = require('gulp-cssbeautify'),
     license = require('gulp-header-license'),
     fs = require('fs'),
-    beautifier = require('gulp-jsbeautifier'),
-    gulpignore = require('gulp-ignore');
-//-----------------------//
+    beautifier = require('gulp-jsbeautifier');
 
-
-// Task css = CSScomb style formatter + beautify-css (reindent and reformat css) + autoprefixer prefix css (source -> destination)
-gulp.task('css', function() {
-    return gulp.src(['./public/*.css', '!./**/*.min.css'])
-        .pipe(plumber({}))
-        .pipe(cssbeautify({
-            indent: '  ',
-            openbrace: 'separate-line',
-            autosemicolon: true
-        }))
-        .pipe(gulp.dest('./dist'));
-});
 
 //Header on file JS & CSS 
 gulp.task('license', function() {
@@ -51,4 +35,4 @@ gulp.task('beautifier', function() {
 
 // Task default
 
-gulp.task('default', ['license']);
+gulp.task('default', ['license', 'beautifier']);
