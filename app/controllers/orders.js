@@ -238,7 +238,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 if (data.data._id == $rootScope.$stateParams.id) {
                     $scope.findOne();
                     if (data.data.message)
-                        toastr.warning(data.data.message, 'Notification serveur', { timeOut: 500, progressBar: true });
+                        toastr.warning(data.data.message, 'Notification serveur', {
+                            timeOut: 500,
+                            progressBar: true
+                        });
                 }
         });
 
@@ -329,7 +332,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
                 //automatic redirect if it's a supplier
                 if (object.forSales == false && current[0].indexOf("supplier") < 0)
-                    return $rootScope.$state.go(current[0] + "supplier" + ".show", { id: object._id });
+                    return $rootScope.$state.go(current[0] + "supplier" + ".show", {
+                        id: object._id
+                    });
 
                 //on utilise idLine pour definir la ligne produit que nous voulons supprimer
                 if ($scope.object.lines)
@@ -460,7 +465,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.object.Status = 'SIGNED';
                     $scope.object.orders.push(response._id);
                     $scope.object.$update(function(object) {
-                        $rootScope.$state.go(go, { id: response._id });
+                        $rootScope.$state.go(go, {
+                            id: response._id
+                        });
                     });
                 });
             });
@@ -487,7 +494,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             order.$save(function(response) {
                 $scope.object.Status = 'BILLED';
                 $scope.object.$update(function(object) {
-                    $rootScope.$state.go("bill.show", { id: response._id });
+                    $rootScope.$state.go("bill.show", {
+                        id: response._id
+                    });
                 });
             });
         };
@@ -617,7 +626,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             delivery.$save(function(response) {
                 //$scope.object.Status = 'PROCESSING';
                 //$scope.object.$update(function(object) {
-                $rootScope.$state.go(go, { id: response._id });
+                $rootScope.$state.go(go, {
+                    id: response._id
+                });
                 //});
             });
         };
@@ -662,7 +673,9 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             stockReturn.$save(function(response) {
                 //$scope.object.Status = 'PROCESSING';
                 //$scope.object.$update(function(object) {
-                $rootScope.$state.go(go, { id: response._id });
+                $rootScope.$state.go(go, {
+                    id: response._id
+                });
                 //});
             });
         };
@@ -938,18 +951,34 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
         $scope.dict = {};
         $scope.search = {
-            ref: { value: "" },
-            ref_client: { value: "" },
+            ref: {
+                value: ""
+            },
+            ref_client: {
+                value: ""
+            },
             entity: {
 
                 value: [$rootScope.login.entity],
             },
-            supplier: { value: [] },
-            salesPerson: { value: [] },
-            Status: { value: ["NEW"] },
-            allocationStatus: { value: [] },
-            fulfilledStatus: { value: [] },
-            shippingStatus: { value: [] },
+            supplier: {
+                value: []
+            },
+            salesPerson: {
+                value: []
+            },
+            Status: {
+                value: ["NEW"]
+            },
+            allocationStatus: {
+                value: []
+            },
+            fulfilledStatus: {
+                value: []
+            },
+            shippingStatus: {
+                value: []
+            },
             datedl: {
                 value: {
                     start: moment().startOf('year').toDate(),
@@ -970,7 +999,9 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             total: 0
         };
 
-        $scope.sort = { 'datedl': -1 };
+        $scope.sort = {
+            'datedl': -1
+        };
 
         if (typeof superCache.get("OrderListController") !== "undefined") {
             $scope.page = superCache.get("OrderListController").page;
@@ -1017,10 +1048,18 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
         };
 
         $scope.$dict = {
-            status: [
-                { id: "ALL", name: "Complet" },
-                { id: "NOA", name: "Partiel" },
-                { id: "NOT", name: "Aucun" },
+            status: [{
+                    id: "ALL",
+                    name: "Complet"
+                },
+                {
+                    id: "NOA",
+                    name: "Partiel"
+                },
+                {
+                    id: "NOT",
+                    name: "Aucun"
+                },
             ]
         };
 
@@ -1501,7 +1540,9 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
 
                 var linkElement = document.createElement('a');
                 try {
-                    var blob = new Blob([data], { type: contentType });
+                    var blob = new Blob([data], {
+                        type: contentType
+                    });
                     var url = window.URL.createObjectURL(blob);
 
                     linkElement.setAttribute('href', url);
@@ -1657,7 +1698,9 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
                 var linkElement = document.createElement('a');
                 try {
-                    var blob = new Blob([data], { type: contentType });
+                    var blob = new Blob([data], {
+                        type: contentType
+                    });
                     var url = window.URL.createObjectURL(blob);
 
                     linkElement.setAttribute('href', url);
@@ -1801,7 +1844,9 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 $scope.params.status_id = this.status_id;
                 url = getUrl($scope.params);
             } else
-                url = getUrl({ status_id: this.status_id });
+                url = getUrl({
+                    status_id: this.status_id
+                });
 
             grid.resetFilter(url);
         };
@@ -2671,7 +2716,9 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
 
                 var linkElement = document.createElement('a');
                 try {
-                    var blob = new Blob([data], { type: contentType });
+                    var blob = new Blob([data], {
+                        type: contentType
+                    });
                     var url = window.URL.createObjectURL(blob);
 
                     linkElement.setAttribute('href', url);
@@ -2815,7 +2862,9 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
                 $scope.params.status_id = this.status_id;
                 url = getUrl($scope.params);
             } else
-                url = getUrl({ status_id: this.status_id });
+                url = getUrl({
+                    status_id: this.status_id
+                });
 
             grid.resetFilter(url);
         };

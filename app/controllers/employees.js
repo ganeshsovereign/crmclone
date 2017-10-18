@@ -108,7 +108,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
 
         if ($rootScope.$stateParams.Status) {
             $scope.status_id = $rootScope.$stateParams.Status;
-            initDatatable({ status_id: $scope.status_id });
+            initDatatable({
+                status_id: $scope.status_id
+            });
         } else
             initDatatable();
 
@@ -149,14 +151,18 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
         var employee = new Employees(this.employee);
         //console.log(employee);
         employee.$save(function(response) {
-            $rootScope.$state.go("employee.show", { id: response._id });
+            $rootScope.$state.go("employee.show", {
+                id: response._id
+            });
         });
     };
 
     $scope.showStatus = function(val, dict) {
         if (!($scope.dict[dict] && $scope.employee[val]))
             return;
-        var selected = $filter('filter')($scope.dict[dict].values, { id: $scope.employee[val] });
+        var selected = $filter('filter')($scope.dict[dict].values, {
+            id: $scope.employee[val]
+        });
 
         return ($scope.employee[val] && selected && selected.length) ? selected[0].label : 'Non défini';
     };
@@ -207,7 +213,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
                 method: 'GET',
                 url: 'api/ticket',
                 params: {
-                    find: { "linked.id": employee._id },
+                    find: {
+                        "linked.id": employee._id
+                    },
                     fields: "name ref updatedAt percentage Status task"
                 }
             }).success(function(data, status) {
@@ -342,7 +350,9 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
             $scope.params.status_id = this.status_id;
             url = getUrl($scope.params);
         } else
-            url = getUrl({ status_id: this.status_id });
+            url = getUrl({
+                status_id: this.status_id
+            });
 
         grid.resetFilter(url);
     };
@@ -360,21 +370,40 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     $scope.gridOptionsTicket = {
         data: 'tickets',
         enableRowSelection: false,
-        sortInfo: { fields: ["updatedAt"], directions: ["desc"] },
+        sortInfo: {
+            fields: ["updatedAt"],
+            directions: ["desc"]
+        },
         filterOptions: $scope.filterOptionsTicket,
         i18n: 'fr',
         enableColumnResize: true,
-        columnDefs: [
-            { field: 'name', displayName: 'Titre', cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/ticket/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"right"}\' title=\'{{row.getProperty("task")}}\'><span class="icon-ticket"></span> {{row.getProperty(col.field)}}</a>' },
-            { field: 'ref', displayName: 'Id' },
-            { field: 'percentage', displayName: 'Etat', cellTemplate: '<div class="ngCellText"><progressbar class="progress-striped thin" value="row.getProperty(col.field)" type="success"></progressbar></div>' },
-            { field: 'updatedAt', displayName: 'Dernière MAJ', cellFilter: "date:'dd-MM-yyyy HH:mm:ss'" }
+        columnDefs: [{
+                field: 'name',
+                displayName: 'Titre',
+                cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/ticket/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"right"}\' title=\'{{row.getProperty("task")}}\'><span class="icon-ticket"></span> {{row.getProperty(col.field)}}</a>'
+            },
+            {
+                field: 'ref',
+                displayName: 'Id'
+            },
+            {
+                field: 'percentage',
+                displayName: 'Etat',
+                cellTemplate: '<div class="ngCellText"><progressbar class="progress-striped thin" value="row.getProperty(col.field)" type="success"></progressbar></div>'
+            },
+            {
+                field: 'updatedAt',
+                displayName: 'Dernière MAJ',
+                cellFilter: "date:'dd-MM-yyyy HH:mm:ss'"
+            }
         ]
     };
 
     $scope.changeStatus = function(Status) {
         $scope.employee.Status = Status;
-        $scope.update({ Status: Status });
+        $scope.update({
+            Status: Status
+        });
     };
 
     $scope.checkemployeesExist = function(data) {

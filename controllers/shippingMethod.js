@@ -62,7 +62,11 @@ Shipping.prototype = {
         //if(self.query.entity)
         //    query.entity = self.query.entity;
 
-        BankModel.find(query, "", { sort: { journalId: 1 } }, function(err, doc) {
+        BankModel.find(query, "", {
+            sort: {
+                journalId: 1
+            }
+        }, function(err, doc) {
             if (err)
                 return self.throw500(err);
 
@@ -112,7 +116,9 @@ Shipping.prototype = {
             if (err)
                 return self.throw500(err);
 
-            self.json({ data: result });
+            self.json({
+                data: result
+            });
         });
     },
 
@@ -121,7 +127,9 @@ Shipping.prototype = {
         var self = this;
         var body = self.body || {};
 
-        ShippingMethodModel.findByIdAndUpdate(id, body, { new: true }, function(err, result) {
+        ShippingMethodModel.findByIdAndUpdate(id, body, {
+            new: true
+        }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
@@ -133,7 +141,11 @@ Shipping.prototype = {
         var ShippingMethodModel = MODEL('shippingMethod').Schema;
         var self = this;
 
-        ShippingMethodModel.findByIdAndUpdate(id, { isremoved: true }, { new: true }, function(err, result) {
+        ShippingMethodModel.findByIdAndUpdate(id, {
+            isremoved: true
+        }, {
+            new: true
+        }, function(err, result) {
             if (err)
                 return self.throw500(err);
 

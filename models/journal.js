@@ -38,15 +38,23 @@ var setDate = MODULE('utils').setDate;
  * Article Schema
  */
 var JournalSchema = new Schema({
-    datetime: { type: Date, set: setDate },
+    datetime: {
+        type: Date,
+        set: setDate
+    },
     memo: {
         type: String,
         default: '',
         uppercase: true
     },
-    _transactions: [{ type: Schema.Types.ObjectId, ref: 'transaction' }],
+    _transactions: [{
+        type: Schema.Types.ObjectId,
+        ref: 'transaction'
+    }],
     book: String,
-    entity: { type: String },
+    entity: {
+        type: String
+    },
     voided: {
         type: Boolean,
         default: false
@@ -57,12 +65,21 @@ var JournalSchema = new Schema({
         default: true
     },
     exported: Date, // Date of export
-    seq: { type: String }, // Numero de piece comptable
+    seq: {
+        type: String
+    }, // Numero de piece comptable
     reconcilliation: Date, // Dte of rapprochement bank (date de valeur)
-    author: { type: ObjectId, ref: 'Users' }
+    author: {
+        type: ObjectId,
+        ref: 'Users'
+    }
 }, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
+    toObject: {
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
+    }
 });
 
 JournalSchema.methods["void"] = function(book, reason) {

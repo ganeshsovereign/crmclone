@@ -1,300 +1,351 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html style="">
-    <head>
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-        <title>Le&Co | @{model.title}</title>
-        <style type="text/css">
-            html { -webkit-text-size-adjust:none; -ms-text-size-adjust: none;}
-            @media only screen and (max-device-width: 680px), only screen and (max-width: 680px) { 
-                *[class="table_width_100"] {
-                    width: 96% !important;
-                }
-                *[class="border-right_mob"] {
-                    border-right: 1px solid #dddddd;
-                }
-                *[class="mob_100"] {
-                    width: 100% !important;
-                }
-                *[class="mob_center"] {
-                    text-align: center !important;
-                    padding: 0 !important;
-                }
-                *[class="mob_center_bl"] {
-                    float: none !important;
-                    display: block !important;
-                    margin: 0px auto;
-                }	
-                .iage_footer a {
-                    text-decoration: none;
-                    color: #929ca8;
-                }
-                img.mob_display_none {
-                    width: 0px !important;
-                    height: 0px !important;
-                    display: none !important;
-                }
-                img.mob_width_50 {
-                    width: 40% !important;
-                    height: auto !important;
-                }
-                img.mob_width_80 {
-                    width: 80% !important;
-                    height: auto !important;
-                }
-                img.mob_width_80_center {
-                    width: 80% !important;
-                    height: auto !important;
-                    margin: 0px auto;
-                }
-                .img_margin_bottom {
-                    font-size: 0;
-                    height: 25px;
-                    line-height: 25px;
-                }
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Le&Co | @{model.title}</title>
+    <style type="text/css">
+        html {
+            -webkit-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+        }
+
+        @media only screen and (max-device-width: 680px),
+        only screen and (max-width: 680px) {
+            *[class="table_width_100"] {
+                width: 96% !important;
             }
-            .table_width_100 {
-                width: 680px;
+            *[class="border-right_mob"] {
+                border-right: 1px solid #dddddd;
             }
-            .btn.focus, .btn:focus, .btn:hover {
-                color: #333;
+            *[class="mob_100"] {
+                width: 100% !important;
+            }
+            *[class="mob_center"] {
+                text-align: center !important;
+                padding: 0 !important;
+            }
+            *[class="mob_center_bl"] {
+                float: none !important;
+                display: block !important;
+                margin: 0px auto;
+            }
+            .iage_footer a {
                 text-decoration: none;
+                color: #929ca8;
             }
-            .btn {
-                display: inline-block;
-                padding: 6px 12px;
-                margin-bottom: 0;
-                font-size: 14px;
-                font-weight: 400;
-                line-height: 1.42857143;
-                text-align: center;
-                white-space: nowrap;
-                vertical-align: middle;
-                -ms-touch-action: manipulation;
-                touch-action: manipulation;
-                cursor: pointer;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-                background-image: none;
-                border: 1px solid transparent;
-                border-radius: 4px;
+            img.mob_display_none {
+                width: 0px !important;
+                height: 0px !important;
+                display: none !important;
             }
-            .btn-danger {
-                color: #fff;
-                background-color: #F3565D;
-                border-color: #f13e46;
+            img.mob_width_50 {
+                width: 40% !important;
+                height: auto !important;
             }
-            .btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger.active {
-                color: #fff;
-                background-color: #f1353d;
-                border-color: #ec111b;
+            img.mob_width_80 {
+                width: 80% !important;
+                height: auto !important;
             }
-        </style>
-    </head>
-    <body style="margin: 0px; padding: 0px;">
-        <div align="center" class="notification" id="mailsub">
-            <table border="0" cellpadding="0" cellspacing="0" style="min-width: 320px;" width="100%">
-                <tr>
-                    <td align="center" bgcolor="#eff3f8">
-                        <!--[if gte mso 10]>
+            img.mob_width_80_center {
+                width: 80% !important;
+                height: auto !important;
+                margin: 0px auto;
+            }
+            .img_margin_bottom {
+                font-size: 0;
+                height: 25px;
+                line-height: 25px;
+            }
+        }
+
+        .table_width_100 {
+            width: 680px;
+        }
+
+        .btn.focus,
+        .btn:focus,
+        .btn:hover {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -ms-touch-action: manipulation;
+            touch-action: manipulation;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #F3565D;
+            border-color: #f13e46;
+        }
+
+        .btn-danger:hover,
+        .btn-danger:focus,
+        .btn-danger:active,
+        .btn-danger.active {
+            color: #fff;
+            background-color: #f1353d;
+            border-color: #ec111b;
+        }
+    </style>
+</head>
+
+<body style="margin: 0px; padding: 0px;">
+    <div align="center" class="notification" id="mailsub">
+        <table border="0" cellpadding="0" cellspacing="0" style="min-width: 320px;" width="100%">
+            <tr>
+                <td align="center" bgcolor="#eff3f8">
+                    <!--[if gte mso 10]>
                                          <table width="680" border="0" cellspacing="0" cellpadding="0">
                                          <tr><td>
                                          <![endif]-->
-                        <table border="0" cellpadding="0" cellspacing="0" class="table_width_100" style="max-width: 680px; min-width: 300px; width: 680px;" width="100%">
-                            <tr>
-                                <td>
-                                    <!-- padding -->
-                                    <div style="font-size: 10px; height: 80px; line-height: 80px;">&nbsp;</div>
-                                </td>
-                            </tr>
-                            <!--header -->
-                            <tr>
-                                <td align="center" bgcolor="#ffffff">
-                                    <!-- padding -->
-                                    <div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
-                                    <table border="0" cellpadding="0" cellspacing="0" width="90%">
-                                        <tr>
-                                            <td align="left">
-                                                <!-- 
+                    <table border="0" cellpadding="0" cellspacing="0" class="table_width_100" style="max-width: 680px; min-width: 300px; width: 680px;" width="100%">
+                        <tr>
+                            <td>
+                                <!-- padding -->
+                                <div style="font-size: 10px; height: 80px; line-height: 80px;">&nbsp;</div>
+                            </td>
+                        </tr>
+                        <!--header -->
+                        <tr>
+                            <td align="center" bgcolor="#ffffff">
+                                <!-- padding -->
+                                <div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
+                                <table border="0" cellpadding="0" cellspacing="0" width="90%">
+                                    <tr>
+                                        <td align="left">
+                                            <!-- 
                                     
                                                                    Item -->
-                                                <div class="mob_center_bl" style="display: inline-block; float: left; width: 300px;">
-                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" class="mob_center" style="border-collapse: collapse;" width="300">
-                                                        <tr>
-                                                            <td align="left" valign="middle">
-                                                                <!-- padding -->
-                                                                <div style="font-size: 10px; height: 20px; line-height: 20px;">&nbsp;</div>
-                                                                <table border="0" cellpadding="0" cellspacing="0" width="300">
-                                                                    <tr>
-                                                                        <td align="left" class="mob_center" valign="top"><span style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 13px;"> <font color="#596167" face="Arial, Helvetica, sans-seri; font-size: 13px;" size="6">@{model.entity}</font></span></td>
-                                                                    </tr>
-                                                                </table>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <!-- Item END-->
-                                                <!--[if gte mso 10]>
+                                            <div class="mob_center_bl" style="display: inline-block; float: left; width: 300px;">
+                                                <table align="left" border="0" cellpadding="0" cellspacing="0" class="mob_center" style="border-collapse: collapse;" width="300">
+                                                    <tr>
+                                                        <td align="left" valign="middle">
+                                                            <!-- padding -->
+                                                            <div style="font-size: 10px; height: 20px; line-height: 20px;">&nbsp;</div>
+                                                            <table border="0" cellpadding="0" cellspacing="0" width="300">
+                                                                <tr>
+                                                                    <td align="left" class="mob_center" valign="top"><span style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 13px;"> <font color="#596167" face="Arial, Helvetica, sans-seri; font-size: 13px;" size="6">@{model.entity}</font></span></td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <!-- Item END-->
+                                            <!--[if gte mso 10]>
                                                                                        </td>
                                                                                        <td align="right">
                                                                                <![endif]-->
-                                                <!-- 
+                                            <!-- 
                                                
                                                                                Item -->
-                                                <div class="mob_center_bl" style="display: inline-block; float: right; width: 88px;">
-                                                    <table align="right" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;" width="88">
-                                                        <tr>
-                                                            <td align="right" valign="middle">
-                                                                <!-- padding -->
-                                                                <div style="font-size: 10px; height: 20px; line-height: 20px;">&nbsp;</div>
-                                                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                                                    <tr>
-                                                                        <td align="right">
-                                                                            <!--social -->
-                                                                            <div class="mob_center_bl" style="width: 88px;">
-                                                                                <table border="0" cellpadding="0" cellspacing="0">
-                                                                                    <tr>
-                                                                                        <td align="center" style="line-height: 19px;" width="30"><a href="http://www.leandco.fr" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 12px;" target="_blank"> <font color="#596167" face="Arial, Helvetica, sans-serif" size="2"> <img alt="Site Internet" border="0" height="25" src="http://www.leandco.fr/signature/www.png" style="display: block;" width="25" /></font></a></td>
-                                                                                        <td align="center" style="line-height: 19px;" width="39"><a href="https://twitter.com/LEANDCO" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 12px;" target="_blank"> <font color="#596167" face="Arial, Helvetica, sans-serif" size="2"> <img alt="Twitter" border="0" height="25" src="http://www.leandco.fr/signature/twitter.png" style="display: block;" width="25" /></font></a></td>
-                                                                                        <td align="right" style="line-height: 19px;" width="29"><a href="https://fr.linkedin.com/in/herveprot" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 12px;" target="_blank"> <font color="#596167" face="Arial, Helvetica, sans-serif" size="2"> <img alt="LinkedIn" border="0" height="25" src="http://www.leandco.fr/signature/linkedin.png" style="display: block;" width="25" /></font></a></td>
-                                                                                    </tr>
-                                                                                </table>
-                                                                            </div>
-                                                                            <!--social END-->
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <!-- Item END-->
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <!-- padding -->
-                                    <div style="font-size: 10px; height: 30px; line-height: 30px;">&nbsp;</div>
-                                </td>
-                            </tr>
-                            <!--header END-->
-                            @{body}
-                            <!--try -->
-                            <tr>
-                                <td align="center" bgcolor="#f8f8f8">
-                                    <table border="0" cellpadding="0" cellspacing="0" width="90%">
-                                        <tr>
-                                            <td class="mob_center">
-                                                <!-- padding -->
-                                                <div style="font-size: 10px; height: 30px; line-height: 30px;">&nbsp;</div>
-                                                <div style="line-height: 24px;"><font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="3" style="font-size: 11px;"> <span style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 11px;"> Le&amp;Co est sp&eacute;cialis&eacute; dans le d&eacute;veloppement de progiciel de gestion int&eacute;gr&eacute; (PGI/ERP) fusionn&eacute; &agrave; un CRM. D&eacute;velopp&eacute; int&eacute;gralement en France, Les progiciels Le&Co sont des logiciels 100 % web utilisables &eacute;galement sur les terminaux mobiles. D&eacute;velopp&eacute; sous license libre (GPL), Le&Co s'adapte &agrave; votre organisation, et &agrave; votre secteur d'activit&eacute;. </span></font></div>
-                                                <!-- padding -->
-                                                <div style="font-size: 10px; height: 30px; line-height: 30px;">&nbsp;</div>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <!--try END-->
-                            <!--footer -->
-                            <tr>
-                                <td align="center" bgcolor="#ffffff">
-                                    <!-- padding -->
-                                    <div style="font-size: 10px; height: 15px; line-height: 15px;">&nbsp;</div>
-                                    <table border="0" cellpadding="0" cellspacing="0" width="90%">
-                                        <tr>
-                                            <td align="left">
-                                                <!-- 
+                                            <div class="mob_center_bl" style="display: inline-block; float: right; width: 88px;">
+                                                <table align="right" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;" width="88">
+                                                    <tr>
+                                                        <td align="right" valign="middle">
+                                                            <!-- padding -->
+                                                            <div style="font-size: 10px; height: 20px; line-height: 20px;">&nbsp;</div>
+                                                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tr>
+                                                                    <td align="right">
+                                                                        <!--social -->
+                                                                        <div class="mob_center_bl" style="width: 88px;">
+                                                                            <table border="0" cellpadding="0" cellspacing="0">
+                                                                                <tr>
+                                                                                    <td align="center" style="line-height: 19px;" width="30">
+                                                                                        <a href="http://www.leandco.fr" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 12px;" target="_blank">
+                                                                                            <font color="#596167" face="Arial, Helvetica, sans-serif" size="2"> <img alt="Site Internet" border="0" height="25" src="http://www.leandco.fr/signature/www.png" style="display: block;" width="25" /></font>
+                                                                                        </a>
+                                                                                    </td>
+                                                                                    <td align="center" style="line-height: 19px;" width="39">
+                                                                                        <a href="https://twitter.com/LEANDCO" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 12px;" target="_blank">
+                                                                                            <font color="#596167" face="Arial, Helvetica, sans-serif" size="2"> <img alt="Twitter" border="0" height="25" src="http://www.leandco.fr/signature/twitter.png" style="display: block;" width="25" /></font>
+                                                                                        </a>
+                                                                                    </td>
+                                                                                    <td align="right" style="line-height: 19px;" width="29">
+                                                                                        <a href="https://fr.linkedin.com/in/herveprot" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 12px;" target="_blank">
+                                                                                            <font color="#596167" face="Arial, Helvetica, sans-serif" size="2"> <img alt="LinkedIn" border="0" height="25" src="http://www.leandco.fr/signature/linkedin.png" style="display: block;" width="25" /></font>
+                                                                                        </a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </div>
+                                                                        <!--social END-->
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <!-- Item END-->
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- padding -->
+                                <div style="font-size: 10px; height: 30px; line-height: 30px;">&nbsp;</div>
+                            </td>
+                        </tr>
+                        <!--header END-->
+                        @{body}
+                        <!--try -->
+                        <tr>
+                            <td align="center" bgcolor="#f8f8f8">
+                                <table border="0" cellpadding="0" cellspacing="0" width="90%">
+                                    <tr>
+                                        <td class="mob_center">
+                                            <!-- padding -->
+                                            <div style="font-size: 10px; height: 30px; line-height: 30px;">&nbsp;</div>
+                                            <div style="line-height: 24px;">
+                                                <font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="3" style="font-size: 11px;"> <span style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 11px;"> Le&amp;Co est sp&eacute;cialis&eacute; dans le d&eacute;veloppement de progiciel de gestion int&eacute;gr&eacute; (PGI/ERP) fusionn&eacute; &agrave; un CRM. D&eacute;velopp&eacute; int&eacute;gralement en France, Les progiciels Le&Co sont des logiciels 100 % web utilisables &eacute;galement sur les terminaux mobiles. D&eacute;velopp&eacute; sous license libre (GPL), Le&Co s'adapte &agrave; votre organisation, et &agrave; votre secteur d'activit&eacute;. </span></font>
+                                            </div>
+                                            <!-- padding -->
+                                            <div style="font-size: 10px; height: 30px; line-height: 30px;">&nbsp;</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <!--try END-->
+                        <!--footer -->
+                        <tr>
+                            <td align="center" bgcolor="#ffffff">
+                                <!-- padding -->
+                                <div style="font-size: 10px; height: 15px; line-height: 15px;">&nbsp;</div>
+                                <table border="0" cellpadding="0" cellspacing="0" width="90%">
+                                    <tr>
+                                        <td align="left">
+                                            <!-- 
                                     
                                                                    Item -->
-                                                <div class="mob_center_bl" style="display: inline-block; float: left; width: 115px;">
-                                                    <table align="left" border="0" cellpadding="0" cellspacing="0" class="mob_center" style="border-collapse: collapse;" width="115">
-                                                        <tr>
-                                                            <td align="left" valign="middle">
-                                                                <!-- padding -->
-                                                                <div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
-                                                                <table border="0" cellpadding="0" cellspacing="0" width="115">
-                                                                    <tr>
-                                                                        <td align="left" class="mob_center" valign="top"><a href="#" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 13px;" target="_blank"> <font color="#596167" face="Arial, Helvetica, sans-seri; font-size: 13px;" size="3"> <img alt="Le&Co" border="0" height="30" src="http://www.leandco.fr/signature/logo-leandco.png" style="display: block;" width="86" /></font></a></td>
-                                                                    </tr>
-                                                                </table>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <!-- Item END-->
-                                                <!--[if gte mso 10]>
+                                            <div class="mob_center_bl" style="display: inline-block; float: left; width: 115px;">
+                                                <table align="left" border="0" cellpadding="0" cellspacing="0" class="mob_center" style="border-collapse: collapse;" width="115">
+                                                    <tr>
+                                                        <td align="left" valign="middle">
+                                                            <!-- padding -->
+                                                            <div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
+                                                            <table border="0" cellpadding="0" cellspacing="0" width="115">
+                                                                <tr>
+                                                                    <td align="left" class="mob_center" valign="top">
+                                                                        <a href="#" style="color: #596167; font-family: Arial, Helvetica, sans-serif; font-size: 13px;" target="_blank">
+                                                                            <font color="#596167" face="Arial, Helvetica, sans-seri; font-size: 13px;" size="3"> <img alt="Le&Co" border="0" height="30" src="http://www.leandco.fr/signature/logo-leandco.png" style="display: block;" width="86" /></font>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <!-- Item END-->
+                                            <!--[if gte mso 10]>
                                                                                        </td>
                                                                                        <td align="right">
                                                                                <![endif]-->
-                                                <!-- 
+                                            <!-- 
                                                
                                                                                Item -->
-                                                <div class="mob_center_bl" style="display: inline-block; float: right; width: 150px;">
-                                                    <table align="right" border="0" cellpadding="0" cellspacing="0" class="mob_center" style="border-collapse: collapse;" width="150">
-                                                        <tr>
-                                                            <td align="right" valign="middle">
-                                                                <!-- padding -->
-                                                                <div style="font-size: 10px; height: 20px; line-height: 20px;">&nbsp;</div>
-                                                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                                                    <tr>
-                                                                        <td align="right">
-                                                                            <!--social -->
-                                                                            <div class="mob_center_bl">
-                                                                                <table border="0" cellpadding="0" cellspacing="0">
-                                                                                    <tr>
-                                                                                        <td align="center" style="line-height: 19px; padding-right: 20px;"><a href="http://www.leandco.fr" style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 12px; text-decoration: none;" target="_blank"> <font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="2"> About</font></a></td>
-                                                                                        <td align="center" style="line-height: 19px; padding-right: 20px;"><a href="http://www.leandco.fr" style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 12px; text-decoration: none;" target="_blank"> <font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="2"> Blog</font></a></td>
-                                                                                        <td align="right" style="line-height: 19px;"><a href="mailto:contact@leandco.fr" style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 12px; text-decoration: none;" target="_blank"> <font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="2"> Contact</font></a></td>
-                                                                                    </tr>
-                                                                                </table>
-                                                                            </div>
-                                                                            <!--social END-->
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                <!-- Item END-->
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <!-- padding -->
-                                    <div style="font-size: 10px; height: 30px; line-height: 30px;">&nbsp;</div>
-                                </td>
-                            </tr>
-                            <!--footer END-->
-                            <!--footer -->
-                            <tr>
-                                <td align="center" bgcolor="#eff3f8" class="iage_footer">
-                                    <!-- padding -->
-                                    <div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
-                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                        <tr>
-                                            <td align="center"><font color="#96a5b5" face="Arial, Helvetica, sans-serif" size="3" style="font-size: 13px;"> <span style="color: #96a5b5; font-family: Arial, Helvetica, sans-serif; font-size: 13px;"> 2014 - 2016 <span class="grand" style="-khtml-transform: rotate(180deg); -moz-transform: rotate(180deg); -ms-transform: rotate(180deg); -o-transform: rotate(180deg); -webkit-transform: rotate(180deg); display: inline-block; transform: rotate(180deg);">&copy;</span> Le&Co by Herve Prot. </span></font></td>
-                                        </tr>
-                                    </table>
-                                    <!-- padding -->
-                                    <div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
-                                </td>
-                            </tr>
-                            <!--footer END-->
-                            <tr>
-                                <td>
-                                    <!-- padding -->
-                                    <div style="font-size: 10px; height: 40px; line-height: 40px;">&nbsp;</div>
-                                </td>
-                            </tr>
-                        </table>
-                        <!--[if gte mso 10]>
+                                            <div class="mob_center_bl" style="display: inline-block; float: right; width: 150px;">
+                                                <table align="right" border="0" cellpadding="0" cellspacing="0" class="mob_center" style="border-collapse: collapse;" width="150">
+                                                    <tr>
+                                                        <td align="right" valign="middle">
+                                                            <!-- padding -->
+                                                            <div style="font-size: 10px; height: 20px; line-height: 20px;">&nbsp;</div>
+                                                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tr>
+                                                                    <td align="right">
+                                                                        <!--social -->
+                                                                        <div class="mob_center_bl">
+                                                                            <table border="0" cellpadding="0" cellspacing="0">
+                                                                                <tr>
+                                                                                    <td align="center" style="line-height: 19px; padding-right: 20px;">
+                                                                                        <a href="http://www.leandco.fr" style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 12px; text-decoration: none;" target="_blank">
+                                                                                            <font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="2"> About</font>
+                                                                                        </a>
+                                                                                    </td>
+                                                                                    <td align="center" style="line-height: 19px; padding-right: 20px;">
+                                                                                        <a href="http://www.leandco.fr" style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 12px; text-decoration: none;" target="_blank">
+                                                                                            <font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="2"> Blog</font>
+                                                                                        </a>
+                                                                                    </td>
+                                                                                    <td align="right" style="line-height: 19px;">
+                                                                                        <a href="mailto:contact@leandco.fr" style="color: #9c9c9c; font-family: Arial, Helvetica, sans-serif; font-size: 12px; text-decoration: none;" target="_blank">
+                                                                                            <font color="#9c9c9c" face="Arial, Helvetica, sans-serif" size="2"> Contact</font>
+                                                                                        </a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </div>
+                                                                        <!--social END-->
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <!-- Item END-->
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- padding -->
+                                <div style="font-size: 10px; height: 30px; line-height: 30px;">&nbsp;</div>
+                            </td>
+                        </tr>
+                        <!--footer END-->
+                        <!--footer -->
+                        <tr>
+                            <td align="center" bgcolor="#eff3f8" class="iage_footer">
+                                <!-- padding -->
+                                <div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <font color="#96a5b5" face="Arial, Helvetica, sans-serif" size="3" style="font-size: 13px;"> <span style="color: #96a5b5; font-family: Arial, Helvetica, sans-serif; font-size: 13px;"> 2014 - 2016 <span class="grand" style="-khtml-transform: rotate(180deg); -moz-transform: rotate(180deg); -ms-transform: rotate(180deg); -o-transform: rotate(180deg); -webkit-transform: rotate(180deg); display: inline-block; transform: rotate(180deg);">&copy;</span>                                                Le&Co by Herve Prot. </span>
+                                            </font>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- padding -->
+                                <div style="font-size: 10px; height: 10px; line-height: 10px;">&nbsp;</div>
+                            </td>
+                        </tr>
+                        <!--footer END-->
+                        <tr>
+                            <td>
+                                <!-- padding -->
+                                <div style="font-size: 10px; height: 40px; line-height: 40px;">&nbsp;</div>
+                            </td>
+                        </tr>
+                    </table>
+                    <!--[if gte mso 10]>
                                          </td></tr>
                                          </table>
                                          <![endif]-->
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </body>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
 </html>

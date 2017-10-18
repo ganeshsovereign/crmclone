@@ -42,7 +42,18 @@ exports.install = function() {
         var employeesModel = MODEL('Employees').Schema;
         var self = this;
 
-        employeesModel.find({ isremoved: { $ne: true }, Status: { $ne: "DISABLE" } }, "name", { sort: { "name.last": 1 } }, function(err, docs) {
+        employeesModel.find({
+            isremoved: {
+                $ne: true
+            },
+            Status: {
+                $ne: "DISABLE"
+            }
+        }, "name", {
+            sort: {
+                "name.last": 1
+            }
+        }, function(err, docs) {
             if (err)
                 return self.throw500("err : /erp/api/employees/select {0}".format(err));
 
@@ -102,19 +113,28 @@ exports.install = function() {
 
         if (self.body.filter)
             query = {
-                '$or': [
-                    { firstname: new RegExp(filter, "i") },
-                    { lastname: new RegExp(filter, "i") }
+                '$or': [{
+                        firstname: new RegExp(filter, "i")
+                    },
+                    {
+                        lastname: new RegExp(filter, "i")
+                    }
                 ]
             };
 
         if (self.query.status) {
-            query.Status = { $in: self.query.status };
+            query.Status = {
+                $in: self.query.status
+            };
         } else {
-            query.Status = { $ne: "DISABLE" };
+            query.Status = {
+                $ne: "DISABLE"
+            };
         }
 
-        Employees.find(query, {}, { limit: self.body.take }, function(err, docs) {
+        Employees.find(query, {}, {
+            limit: self.body.take
+        }, function(err, docs) {
             if (err) {
                 console.log("err : /api/user/name/autocomplete");
                 console.log(err);
@@ -1067,7 +1087,9 @@ Object.prototype = {
         var Status;
         //console.log(self.query);
         var conditions = {
-            isremoved: { $ne: true },
+            isremoved: {
+                $ne: true
+            },
             entity: self.query.entity
         };
 
@@ -1086,7 +1108,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions
-                //select: ""
+            //select: ""
         };
 
         //console.log(options);
@@ -1104,19 +1126,27 @@ Object.prototype = {
 
             //console.log(res);
 
-            DepartmentModel.populate(res.datatable.data, { path: "department" }, function(err, lines) {
+            DepartmentModel.populate(res.datatable.data, {
+                path: "department"
+            }, function(err, lines) {
                 if (err)
                     return self.throw500(err);
 
-                EmployeesModel.populate(res.datatable.data, { path: "manager" }, function(err, lines) {
+                EmployeesModel.populate(res.datatable.data, {
+                    path: "manager"
+                }, function(err, lines) {
                     if (err)
                         return self.throw500(err);
 
-                    EmployeesModel.populate(res.datatable.data, { path: "editedBy" }, function(err, lines) {
+                    EmployeesModel.populate(res.datatable.data, {
+                        path: "editedBy"
+                    }, function(err, lines) {
                         if (err)
                             return self.throw500(err);
 
-                        EmployeesModel.populate(res.datatable.data, { path: "createdBy" }, function(err, lines) {
+                        EmployeesModel.populate(res.datatable.data, {
+                            path: "createdBy"
+                        }, function(err, lines) {
                             if (err)
                                 return self.throw500(err);
 
@@ -1191,13 +1221,19 @@ Object.prototype = {
             var query = [];
             var i;
 
-            query.push({ $match: { isEmployee: type === 'Employees' } });
+            query.push({
+                $match: {
+                    isEmployee: type === 'Employees'
+                }
+            });
 
             for (i = 0; i < lookupForEmployeeArray.length; i++) {
                 query.push(lookupForEmployeeArray[i]);
             }
 
-            query.push({ $match: filterObj });
+            query.push({
+                $match: filterObj
+            });
 
             options.query = query;
             options.cb = cb;
@@ -1247,13 +1283,19 @@ Object.prototype = {
             var query = [];
             var i;
 
-            query.push({ $match: { isEmployee: type === 'Employees' } });
+            query.push({
+                $match: {
+                    isEmployee: type === 'Employees'
+                }
+            });
 
             for (i = 0; i < lookupForEmployeeArray.length; i++) {
                 query.push(lookupForEmployeeArray[i]);
             }
 
-            query.push({ $match: filterObj });
+            query.push({
+                $match: filterObj
+            });
 
             options.query = query;
             options.cb = cb;
@@ -1280,12 +1322,16 @@ Object.prototype = {
         var self = this;
         var Model = MODEL('Employees').Schema;
 
-        Model.find({ isEmployee: true }).count(function(err, result) {
+        Model.find({
+            isEmployee: true
+        }).count(function(err, result) {
             if (err) {
                 return self.throw500(err);
             }
 
-            self.json({ count: result });
+            self.json({
+                count: result
+            });
         });
     },
     getEmployeesCountForDashboard: function() {
@@ -1360,10 +1406,22 @@ Object.prototype = {
                     lastHire: {
                         $let: {
                             vars: {
-                                lastHired: { $arrayElemAt: [{ $slice: ['$hire', -1] }, 0] }
+                                lastHired: {
+                                    $arrayElemAt: [{
+                                        $slice: ['$hire', -1]
+                                    }, 0]
+                                }
                             },
 
-                            in: { $add: [{ $multiply: [{ $year: '$$lastHired' }, 100] }, { $week: '$$lastHired' }] }
+                            in: {
+                                $add: [{
+                                    $multiply: [{
+                                        $year: '$$lastHired'
+                                    }, 100]
+                                }, {
+                                    $week: '$$lastHired'
+                                }]
+                            }
                         }
                     }
                 }
@@ -1372,7 +1430,9 @@ Object.prototype = {
             }, {
                 $group: {
                     _id: null,
-                    count: { $sum: 1 }
+                    count: {
+                        $sum: 1
+                    }
                 }
             }], function(err, result) {
                 var count;
@@ -1408,10 +1468,22 @@ Object.prototype = {
                     lastHire: {
                         $let: {
                             vars: {
-                                lastHired: { $arrayElemAt: [{ $slice: ['$hire', -1] }, 0] }
+                                lastHired: {
+                                    $arrayElemAt: [{
+                                        $slice: ['$hire', -1]
+                                    }, 0]
+                                }
                             },
 
-                            in: { $add: [{ $multiply: [{ $year: '$$lastHired' }, 100] }, { $week: '$$lastHired' }] }
+                            in: {
+                                $add: [{
+                                    $multiply: [{
+                                        $year: '$$lastHired'
+                                    }, 100]
+                                }, {
+                                    $week: '$$lastHired'
+                                }]
+                            }
                         }
                     }
                 }
@@ -1433,7 +1505,9 @@ Object.prototype = {
             }, {
                 $group: {
                     _id: null,
-                    count: { $sum: 1 }
+                    count: {
+                        $sum: 1
+                    }
                 }
             }], function(err, result) {
                 var count;
@@ -1452,7 +1526,9 @@ Object.prototype = {
             Employee.aggregate([{
                 $match: {
                     isEmployee: false,
-                    hire: { $ne: [] }
+                    hire: {
+                        $ne: []
+                    }
                 }
             }, {
                 $lookup: {
@@ -1470,10 +1546,22 @@ Object.prototype = {
                     lastHire: {
                         $let: {
                             vars: {
-                                lastHired: { $arrayElemAt: [{ $slice: ['$hire', -1] }, 0] }
+                                lastHired: {
+                                    $arrayElemAt: [{
+                                        $slice: ['$hire', -1]
+                                    }, 0]
+                                }
                             },
 
-                            in: { $add: [{ $multiply: [{ $year: '$$lastHired' }, 100] }, { $week: '$$lastHired' }] }
+                            in: {
+                                $add: [{
+                                    $multiply: [{
+                                        $year: '$$lastHired'
+                                    }, 100]
+                                }, {
+                                    $week: '$$lastHired'
+                                }]
+                            }
                         }
                     }
                 }
@@ -1496,7 +1584,9 @@ Object.prototype = {
             }, {
                 $group: {
                     _id: null,
-                    count: { $sum: 1 }
+                    count: {
+                        $sum: 1
+                    }
                 }
             }], function(err, result) {
                 var count;
@@ -1530,7 +1620,11 @@ Object.prototype = {
             hiredCount = result[1];
             firedCount = result[2];
 
-            self.json({ employeeCount: employeeCount, hiredCount: hiredCount, firedCount: firedCount });
+            self.json({
+                employeeCount: employeeCount,
+                hiredCount: hiredCount,
+                firedCount: firedCount
+            });
         });
     },
     getSalaryForChart: function() {
@@ -1579,7 +1673,9 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                salary: { $last: '$salary' }
+                salary: {
+                    $last: '$salary'
+                }
             }
         }, {
             $project: {
@@ -1596,7 +1692,9 @@ Object.prototype = {
                 return item._id;
             });
 
-            self.json({ data: salary });
+            self.json({
+                data: salary
+            });
         });
     },
     getSalaryForChartByDepartment: function() {
@@ -1653,13 +1751,19 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                salary: { $last: '$salary' },
-                department: { $first: '$department' } //{$push: ['$department', 0]}*/
+                salary: {
+                    $last: '$salary'
+                },
+                department: {
+                    $first: '$department'
+                } //{$push: ['$department', 0]}*/
             }
         }, {
             $group: {
                 _id: '$department',
-                salary: { $sum: '$salary' }
+                salary: {
+                    $sum: '$salary'
+                }
             }
         }, {
             $project: {
@@ -1671,7 +1775,9 @@ Object.prototype = {
                 return self.throw500(err);
             }
 
-            self.json({ data: result });
+            self.json({
+                data: result
+            });
         });
     },
     getYears: function() {
@@ -1703,7 +1809,9 @@ Object.prototype = {
             arr = _.pluck(result, '_id');
             min = _.min(arr);
 
-            self.json({ min: min });
+            self.json({
+                min: min
+            });
         });
 
     },
@@ -1716,7 +1824,9 @@ Object.prototype = {
                 return self.throw500(err);
             }
 
-            self.json({ data: result });
+            self.json({
+                data: result
+            });
         });
     },
     getBySales: function() {
@@ -1725,7 +1835,9 @@ Object.prototype = {
 
         function assigneFinder(cb) {
             var match = {
-                projectmanager: { $ne: null }
+                projectmanager: {
+                    $ne: null
+                }
             };
 
             Project.aggregate([{
@@ -1739,9 +1851,16 @@ Object.prototype = {
 
         function employeeFinder(assignedArr, cb) {
             Model
-                .find({ _id: { $in: assignedArr } })
+                .find({
+                    _id: {
+                        $in: assignedArr
+                    }
+                })
                 .select('_id name')
-                .sort({ 'name.first': 1, 'name.last': 1 })
+                .sort({
+                    'name.first': 1,
+                    'name.last': 1
+                })
                 .lean()
                 .exec(cb);
         }
@@ -1763,7 +1882,9 @@ Object.prototype = {
         CustomerModel.aggregate([{
                 $match: {
                     "salesPurchases.isActive": true,
-                    'salesPurchases.salesPerson': { $ne: null }
+                    'salesPurchases.salesPerson': {
+                        $ne: null
+                    }
                 }
             }, {
                 $project: {
@@ -1773,7 +1894,9 @@ Object.prototype = {
             {
                 $group: {
                     _id: '$salesPerson',
-                    count: { "$sum": 1 }
+                    count: {
+                        "$sum": 1
+                    }
                 }
             },
             {
@@ -1790,23 +1913,31 @@ Object.prototype = {
                 }
             }, {
                 $match: {
-                    employees: { $ne: null }
+                    employees: {
+                        $ne: null
+                    }
                 }
             }, {
                 $project: {
                     _id: 1,
                     count: 1,
                     name: "$employees.name",
-                    fullName: { $concat: ['$employees.name.first', ' ', '$employees.name.last'] }
+                    fullName: {
+                        $concat: ['$employees.name.first', ' ', '$employees.name.last']
+                    }
                 }
             }, {
-                $sort: { 'fullName': 1 }
+                $sort: {
+                    'fullName': 1
+                }
             }
         ], function(err, employees) {
             if (err)
                 return self.throw500(err);
 
-            self.json({ data: employees });
+            self.json({
+                data: employees
+            });
         });
 
     },
@@ -1816,7 +1947,9 @@ Object.prototype = {
 
         Employee
             .aggregate([{
-                $match: { isEmployee: true }
+                $match: {
+                    isEmployee: true
+                }
             }, {
                 $lookup: {
                     from: 'Department',
@@ -1826,7 +1959,9 @@ Object.prototype = {
                 }
             }, {
                 $project: {
-                    department: { $arrayElemAt: ['$department', 0] },
+                    department: {
+                        $arrayElemAt: ['$department', 0]
+                    },
                     gender: 1,
                     name: 1
                 }
@@ -1911,16 +2046,26 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                parentDepartment: { $push: '$parentDepartment' },
-                name: { $push: '$name' },
-                employees: { $push: '$employees' }
+                parentDepartment: {
+                    $push: '$parentDepartment'
+                },
+                name: {
+                    $push: '$name'
+                },
+                employees: {
+                    $push: '$employees'
+                }
             }
         }, {
             $project: {
                 employees: 1,
-                parentDepartment: { $arrayElemAt: ['$parentDepartment', 0] },
+                parentDepartment: {
+                    $arrayElemAt: ['$parentDepartment', 0]
+                },
                 _id: 1,
-                name: { $arrayElemAt: ['$name', 0] }
+                name: {
+                    $arrayElemAt: ['$name', 0]
+                }
             }
         }, {
             $group: {
@@ -1961,10 +2106,16 @@ Object.prototype = {
                 _id: 1,
                 departments: 1,
                 name: '$selfData.name',
-                parent: { $arrayElemAt: ['$mainParent', 0] }
+                parent: {
+                    $arrayElemAt: ['$mainParent', 0]
+                }
             }
         }, {
-            $match: { _id: { $ne: null } }
+            $match: {
+                _id: {
+                    $ne: null
+                }
+            }
         }], function(err, result) {
             var data = {};
 
@@ -2010,13 +2161,17 @@ Object.prototype = {
 
         Model
             .aggregate([{
-                $match: { isEmployee: true }
+                $match: {
+                    isEmployee: true
+                }
             }, {
                 $group: {
                     _id: '$department',
                     employees: {
                         $push: {
-                            name: { $concat: ['$name.first', ' ', '$name.last'] },
+                            name: {
+                                $concat: ['$name.first', ' ', '$name.last']
+                            },
                             _id: '$_id'
                         }
                     }
@@ -2041,7 +2196,11 @@ Object.prototype = {
         var Model = MODEL('Employees').Schema;
 
         Model
-            .find({ _id: { $in: idsArray } })
+            .find({
+                _id: {
+                    $in: idsArray
+                }
+            })
             .populate('jobPosition', '_id name')
             .populate('department', '_id name')
             .exec(function(err, result) {
@@ -2145,7 +2304,11 @@ Object.prototype = {
             function employeeUpdater(employee, user, waterfallCb) {
                 var _id = employee._id;
 
-                EmployeeService.findByIdAndUpdate(_id, { $set: { relatedUser: user._id } }, waterfallCb);
+                EmployeeService.findByIdAndUpdate(_id, {
+                    $set: {
+                        relatedUser: user._id
+                    }
+                }, waterfallCb);
             }
 
             waterfallTasks = [employeeCreator];
@@ -2166,7 +2329,10 @@ Object.prototype = {
                         return self.throw500(err);
                     }
 
-                    res.status(201).send({ result: employee, id: employee._id });
+                    res.status(201).send({
+                        result: employee,
+                        id: employee._id
+                    });
                 });
             });
         } else {
@@ -2175,7 +2341,10 @@ Object.prototype = {
                     return self.throw500(err);
                 }
 
-                res.status(201).send({ result: employee, id: employee._id });
+                res.status(201).send({
+                    result: employee,
+                    id: employee._id
+                });
             });
         }
     },
@@ -2189,7 +2358,9 @@ Object.prototype = {
                 return self.throw500(err);
             }
 
-            res.send(201, { success: 'A new Transfer create success' /* , data: result*/ });
+            res.send(201, {
+                success: 'A new Transfer create success' /* , data: result*/
+            });
         });
     },
     updateTransfer: function() {
@@ -2201,7 +2372,11 @@ Object.prototype = {
 
             delete data._id;
 
-            Model.findByIdAndUpdate(id, { $set: data }, { new: true }, function(err, updatedDoc) {
+            Model.findByIdAndUpdate(id, {
+                $set: data
+            }, {
+                new: true
+            }, function(err, updatedDoc) {
                 var transferKey = updatedDoc ? updatedDoc.transferKey : null;
                 var transferDate;
                 var employee;
@@ -2226,14 +2401,18 @@ Object.prototype = {
                     $set: {
                         date: transferDate
                     }
-                }, { new: true }, cb);
+                }, {
+                    new: true
+                }, cb);
             });
         }, function(err) {
             if (err) {
                 return self.throw500(err);
             }
 
-            self.json({ success: 'A Transfer update success' });
+            self.json({
+                success: 'A Transfer update success'
+            });
         });
     },
     removeTransfer: function() {
@@ -2255,7 +2434,11 @@ Object.prototype = {
 
                 if (transferKey) {
                     employee = result.employee;
-                    return TransferModel.remove({ employee: employee, transferKey: transferKey, status: 'transfer' }, cb);
+                    return TransferModel.remove({
+                        employee: employee,
+                        transferKey: transferKey,
+                        status: 'transfer'
+                    }, cb);
                 }
 
                 cb();
@@ -2266,7 +2449,9 @@ Object.prototype = {
                 return self.throw500(err);
             }
 
-            self.json({ success: 'A Transfers delete success' });
+            self.json({
+                success: 'A Transfers delete success'
+            });
         });
     },
     updateOnlySelectedFields: function(id) {
@@ -2315,7 +2500,11 @@ Object.prototype = {
             function updateUser(_user, _waterfallCb) {
                 var id = _user._id;
 
-                UsersModel.findByIdAndUpdate(id, { $set: { profile: profileId } }, function(err, result) {
+                UsersModel.findByIdAndUpdate(id, {
+                    $set: {
+                        profile: profileId
+                    }
+                }, function(err, result) {
                     if (err)
                         return _waterfallCb(err);
 
@@ -2347,7 +2536,13 @@ Object.prototype = {
                 });
             }
 
-            async.waterfall([async.apply(findUser, { $or: [{ login: data.userName }, { email: email }] }), userManipulator], function(err, user) {
+            async.waterfall([async.apply(findUser, {
+                $or: [{
+                    login: data.userName
+                }, {
+                    email: email
+                }]
+            }), userManipulator], function(err, user) {
                 if (err)
                     return waterfallCb(err);
 
@@ -2381,7 +2576,11 @@ Object.prototype = {
         function employeeUpdater(employee, user, waterfallCb) {
             var _id = employee._id;
 
-            EmployeeService.findByIdAndUpdate(_id, { $set: { relatedUser: user._id } }, waterfallCb);
+            EmployeeService.findByIdAndUpdate(_id, {
+                $set: {
+                    relatedUser: user._id
+                }
+            }, waterfallCb);
         }
 
         data.editedBy = self.user._id;
@@ -2417,12 +2616,17 @@ Object.prototype = {
                             data.sequence -= 1;
 
 
-                        Model.findByIdAndUpdate(_id, data, { new: true }, function(err, result) {
+                        Model.findByIdAndUpdate(_id, data, {
+                            new: true
+                        }, function(err, result) {
                             if (err)
                                 return self.throw500(err);
 
 
-                            self.json({ success: 'Employees updated', sequence: result.sequence });
+                            self.json({
+                                success: 'Employees updated',
+                                sequence: result.sequence
+                            });
                         });
                     });
                 });
@@ -2433,22 +2637,34 @@ Object.prototype = {
 
                     data.sequence = sequence;
 
-                    Model.findByIdAndUpdate(_id, { $set: data }, { new: true }, function(err) {
+                    Model.findByIdAndUpdate(_id, {
+                        $set: data
+                    }, {
+                        new: true
+                    }, function(err) {
                         if (err)
                             return self.throw500(err);
 
 
                         if (data.relatedUser)
-                        // todo update user profile
-                            UsersModel.findByIdAndUpdate(data.relatedUser, { $set: { relatedEmployee: _id } }, function(error) {
-                            if (error)
-                                return next(error);
+                            // todo update user profile
+                            UsersModel.findByIdAndUpdate(data.relatedUser, {
+                                $set: {
+                                    relatedEmployee: _id
+                                }
+                            }, function(error) {
+                                if (error)
+                                    return next(error);
 
 
-                            self.json({ success: 'Employees updated' });
-                        });
+                                self.json({
+                                    success: 'Employees updated'
+                                });
+                            });
                         else
-                            self.json({ success: 'Employees updated' });
+                            self.json({
+                                success: 'Employees updated'
+                            });
 
                     });
                 });
@@ -2462,7 +2678,9 @@ Object.prototype = {
                 data.workflow = ObjectId('528ce682f3f67bc40b00001a');
 
 
-            waterfallTasks = [async.apply(updateEmployee, _id, { $set: data })];
+            waterfallTasks = [async.apply(updateEmployee, _id, {
+                $set: data
+            })];
 
             if (data.isHire)
                 waterfallTasks.push(defaultProfile, userCreator, employeeUpdater);
@@ -2490,7 +2708,9 @@ Object.prototype = {
 
 
                 if (data.dateBirth || data.hired)
-                    F.emit('employee:recalculate', { userId: self.user._id.toString() });
+                    F.emit('employee:recalculate', {
+                        userId: self.user._id.toString()
+                    });
                 //    event.emit('recalculate', self, null, next);
 
 
@@ -2525,7 +2745,9 @@ Object.prototype = {
 
                 }
 
-                F.emit('employee:recollectVacationDash', { userId: self.user._id.toString() });
+                F.emit('employee:recollectVacationDash', {
+                    userId: self.user._id.toString()
+                });
 
                 result = result.toObject();
                 result.successNotify = {
@@ -2551,7 +2773,10 @@ Object.prototype = {
                 }
 
                 // TODO add check if salary report need update
-                F.emit('payroll:composeSalaryReport', { userId: self.user._id.toString(), data: id.toString() });
+                F.emit('payroll:composeSalaryReport', {
+                    userId: self.user._id.toString(),
+                    data: id.toString()
+                });
                 //payrollHandler.composeSalaryReport(self);
             });
         }
@@ -2578,7 +2803,9 @@ Object.prototype = {
             event.emit('recalculate', self, null, next);
             event.emit('recollectVacationDash');
 
-            TransferModel.remove({ employee: ObjectId(_id) }, function(err, result) {
+            TransferModel.remove({
+                employee: ObjectId(_id)
+            }, function(err, result) {
                 var _id;
 
                 if (err) {
@@ -2592,10 +2819,14 @@ Object.prototype = {
                         if (err) {
                             return self.throw500(err);
                         }
-                        self.json({ success: 'Employees removed' });
+                        self.json({
+                            success: 'Employees removed'
+                        });
                     });
                 } else {
-                    self.json({ success: 'Employees removed' });
+                    self.json({
+                        success: 'Employees removed'
+                    });
                 }
             });
         });
@@ -2604,7 +2835,9 @@ Object.prototype = {
         var self = this;
         var Model = MODEL('Employees').Schema;
         var TransferModel = MODEL('transfers').Schema;
-        var body = self.body || { ids: [] };
+        var body = self.body || {
+            ids: []
+        };
         var ids = body.ids;
 
         async.each(ids, function(id, cb) {
@@ -2620,7 +2853,9 @@ Object.prototype = {
                 event.emit('recalculate', self, null, next);
                 event.emit('recollectVacationDash');
 
-                TransferModel.remove({ employee: ObjectId(id) }, function(err, result) {
+                TransferModel.remove({
+                    employee: ObjectId(id)
+                }, function(err, result) {
                     if (err) {
                         return self.throw500(err);
                     }
@@ -2633,13 +2868,17 @@ Object.prototype = {
             }
 
             UserService.findAndRemove({
-                _id: { $in: ids }
+                _id: {
+                    $in: ids
+                }
             }, function(err) {
                 if (err) {
                     return self.throw500(err);
                 }
 
-                self.json({ success: true });
+                self.json({
+                    success: true
+                });
             });
         });
     },
@@ -2649,7 +2888,14 @@ Object.prototype = {
         var result = {};
         var uId = self.user._id;
 
-        var query = Model.find({ relatedUser: uId, isEmployee: true }, { name: 1 }).sort({ 'name.first': 1 });
+        var query = Model.find({
+            relatedUser: uId,
+            isEmployee: true
+        }, {
+            name: 1
+        }).sort({
+            'name.first': 1
+        });
 
         query.exec(function(err, user) {
             if (err) {
@@ -2667,7 +2913,11 @@ Object.prototype = {
         var UserModel = MODEL('Users').Schema;
 
         function findUser(userId, waterfallCb) {
-            UserModel.find({ _id: userId }, { relatedEmployee: 1 }, function(err, users) {
+            UserModel.find({
+                _id: userId
+            }, {
+                relatedEmployee: 1
+            }, function(err, users) {
                 var user;
 
                 if (err)
@@ -2683,7 +2933,9 @@ Object.prototype = {
 
         function findEmployee(user, waterfallCb) {
 
-            getById({ id: user && user.relatedEmployee }, self.user, function(err, employee) {
+            getById({
+                id: user && user.relatedEmployee
+            }, self.user, function(err, employee) {
                 if (err) {
                     return waterfallCb(err);
                 }
@@ -2711,7 +2963,9 @@ Object.prototype = {
             id = self.query.id;
 
         if (id && id.length >= 24) {
-            getById({ id: id }, self.user, function(err, employee) {
+            getById({
+                id: id
+            }, self.user, function(err, employee) {
                 if (err)
                     return self.throw500(err);
                 self.json(employee);
@@ -2764,8 +3018,14 @@ Object.prototype = {
         var Model = MODEL('Employees').Schema;
         var result = {};
 
-        Model.find({ 'isEmployee': true }, { name: 1 })
-            .sort({ 'name.first': 1 })
+        Model.find({
+                'isEmployee': true
+            }, {
+                name: 1
+            })
+            .sort({
+                'name.first': 1
+            })
             .exec(function(err, employees) {
                 if (err)
                     return self.throw500(err);
@@ -2786,7 +3046,9 @@ Object.prototype = {
                 }
             }, {
                 $project: {
-                    later: { $substr: ['$name.last', 0, 1] }
+                    later: {
+                        $substr: ['$name.last', 0, 1]
+                    }
                 }
             }, {
                 $group: {
@@ -2814,14 +3076,24 @@ Object.prototype = {
             idsArray = self.query.ids || [];
         }
 
-        query = Model.find({ isEmployee: true, _id: { $in: idsArray } }, { imageSrc: 1, name: 1 });
+        query = Model.find({
+            isEmployee: true,
+            _id: {
+                $in: idsArray
+            }
+        }, {
+            imageSrc: 1,
+            name: 1
+        });
 
         query.exec(function(err, response) {
             if (err) {
                 return self.throw500(err);
             }
 
-            self.json({ data: response });
+            self.json({
+                data: response
+            });
 
         });
     },
@@ -2843,7 +3115,9 @@ Object.prototype = {
             Model
                 .aggregate([{
                         $match: {
-                            _id: { $in: deps },
+                            _id: {
+                                $in: deps
+                            },
                             isEmployee: false
                         }
                     }, {
@@ -2855,7 +3129,9 @@ Object.prototype = {
                     {
                         $group: {
                             _id: '$workflow',
-                            count: { $sum: 1 }
+                            count: {
+                                $sum: 1
+                            }
                         }
                     }
                 ], function(err, result) {
@@ -2894,7 +3170,9 @@ Object.prototype = {
                 return self.throw500(err);
             }
 
-            self.json({ data: result });
+            self.json({
+                data: result
+            });
         });
     },
     uploadFile: function() {
@@ -2917,17 +3195,30 @@ Object.prototype = {
             return self.throw500(err);
         }
 
-        uploader.postFile(dir, files, { userId: req.session.uName }, function(err, file) {
+        uploader.postFile(dir, files, {
+            userId: req.session.uName
+        }, function(err, file) {
             if (err) {
                 return self.throw500(err);
             }
 
-            Model.findByIdAndUpdate(id, { $push: { attachments: { $each: file } } }, { new: true }, function(err, response) {
+            Model.findByIdAndUpdate(id, {
+                $push: {
+                    attachments: {
+                        $each: file
+                    }
+                }
+            }, {
+                new: true
+            }, function(err, response) {
                 if (err) {
                     return self.throw500(err);
                 }
 
-                self.json({ success: 'Customers updated success', data: response });
+                self.json({
+                    success: 'Customers updated success',
+                    data: response
+                });
             });
         });
     },
@@ -2991,7 +3282,9 @@ JobPosition.prototype = {
             if (err)
                 return self.throw500(err);
 
-            return self.json({ data: jobs });
+            return self.json({
+                data: jobs
+            });
         });
     }
 }
@@ -3025,7 +3318,9 @@ function getNameAndDepartment(query, callback) {
             matchQuery.isEmployee = true;
         }
         if (query.salesDepartments) {
-            matchQuery['department._id'] = { $in: CONSTANTS.SALESDEPARTMENTS.objectID() };
+            matchQuery['department._id'] = {
+                $in: CONSTANTS.SALESDEPARTMENTS.objectID()
+            };
         }
     }
 
@@ -3044,14 +3339,18 @@ function getNameAndDepartment(query, callback) {
         }
     }, {
         $project: {
-            department: { $arrayElemAt: ['$department', 0] },
+            department: {
+                $arrayElemAt: ['$department', 0]
+            },
             isEmployee: 1,
             name: 1
         }
     }, {
         $match: matchQuery
     }, {
-        $sort: { 'name.first': 1 }
+        $sort: {
+            'name.first': 1
+        }
     }], function(err, employees) {
         if (err) {
             return callback(err);
@@ -3118,7 +3417,9 @@ function getById(data, user, next) {
 
         transfers
             .aggregate([{
-                $match: { employee: ObjectId(data.id) }
+                $match: {
+                    employee: ObjectId(data.id)
+                }
             }, {
                 $lookup: {
                     from: 'Department',
@@ -3163,18 +3464,30 @@ function getById(data, user, next) {
                 }
             }, {
                 $project: {
-                    department: { $arrayElemAt: ['$department', 0] },
-                    jobPosition: { $arrayElemAt: ['$jobPosition', 0] },
-                    weeklyScheduler: { $arrayElemAt: ['$weeklyScheduler', 0] },
-                    manager: { $arrayElemAt: ['$manager', 0] },
+                    department: {
+                        $arrayElemAt: ['$department', 0]
+                    },
+                    jobPosition: {
+                        $arrayElemAt: ['$jobPosition', 0]
+                    },
+                    weeklyScheduler: {
+                        $arrayElemAt: ['$weeklyScheduler', 0]
+                    },
+                    manager: {
+                        $arrayElemAt: ['$manager', 0]
+                    },
                     date: 1,
                     status: 1,
                     jobType: 1,
                     salary: 1,
                     info: 1,
                     employee: 1,
-                    scheduledPay: { $arrayElemAt: ['$scheduledPay', 0] },
-                    payrollStructureType: { $arrayElemAt: ['$payrollStructureType', 0] }
+                    scheduledPay: {
+                        $arrayElemAt: ['$scheduledPay', 0]
+                    },
+                    payrollStructureType: {
+                        $arrayElemAt: ['$payrollStructureType', 0]
+                    }
                 }
             }, {
                 $project: {
@@ -3200,7 +3513,9 @@ function getById(data, user, next) {
             }, {
                 $project: projectSalary
             }, {
-                $sort: { date: 1 }
+                $sort: {
+                    date: 1
+                }
             }], function(err, transfer) {
                 if (err) {
                     return pCb(err);
@@ -3282,7 +3597,9 @@ function getFilter() {
         data.sort[keySort] = parseInt(data.sort[keySort], 10);
         sort = data.sort;
     } else {
-        sort = { 'updatedAt': -1 };
+        sort = {
+            'updatedAt': -1
+        };
     }
 
     accessRollSearcher = function(cb) {
@@ -3298,19 +3615,35 @@ function getFilter() {
             queryObject.$and.push(optionsObject);
         }
 
-        queryObject.$and.push({ _id: { $in: idsArray } });
+        queryObject.$and.push({
+            _id: {
+                $in: idsArray
+            }
+        });
 
         if (contentType === 'Employees') {
-            queryObject.$and.push({ isEmployee: true });
+            queryObject.$and.push({
+                isEmployee: true
+            });
 
             switch (viewType) {
                 case ('list'):
                     project = {
-                        manager: { $arrayElemAt: ['$manager', 0] },
-                        jobPosition: { $arrayElemAt: ['$jobPosition', 0] },
-                        department: { $arrayElemAt: ['$department', 0] },
-                        'createdBy': { $arrayElemAt: ['$createdBy', 0] },
-                        'editedBy': { $arrayElemAt: ['$editedBy', 0] },
+                        manager: {
+                            $arrayElemAt: ['$manager', 0]
+                        },
+                        jobPosition: {
+                            $arrayElemAt: ['$jobPosition', 0]
+                        },
+                        department: {
+                            $arrayElemAt: ['$department', 0]
+                        },
+                        'createdBy': {
+                            $arrayElemAt: ['$createdBy', 0]
+                        },
+                        'editedBy': {
+                            $arrayElemAt: ['$editedBy', 0]
+                        },
                         name: 1,
                         'updatedAt': 1,
                         'createdAt': 1,
@@ -3364,11 +3697,19 @@ function getFilter() {
                     break;
                 case ('thumbnails'):
                     project = {
-                        manager: { $arrayElemAt: ['$manager', 0] },
-                        jobPosition: { $arrayElemAt: ['$jobPosition', 0] },
+                        manager: {
+                            $arrayElemAt: ['$manager', 0]
+                        },
+                        jobPosition: {
+                            $arrayElemAt: ['$jobPosition', 0]
+                        },
                         age: 1,
-                        relatedUser: { $arrayElemAt: ['$relatedUser', 0] },
-                        department: { $arrayElemAt: ['$department', 0] },
+                        relatedUser: {
+                            $arrayElemAt: ['$relatedUser', 0]
+                        },
+                        department: {
+                            $arrayElemAt: ['$department', 0]
+                        },
                         'workPhones.mobile': 1,
                         name: 1,
                         dateBirth: 1,
@@ -3410,7 +3751,9 @@ function getFilter() {
                     // skip default;
             }
         } else if (contentType === 'Applications') {
-            queryObject.$and.push({ isEmployee: false });
+            queryObject.$and.push({
+                isEmployee: false
+            });
 
             switch (viewType) {
                 case ('list'):
@@ -3421,10 +3764,18 @@ function getFilter() {
                     }
 
                     project = {
-                        jobPosition: { $arrayElemAt: ['$jobPosition', 0] },
-                        'createdBy': { $arrayElemAt: ['$createdBy', 0] },
-                        'editedBy': { $arrayElemAt: ['$editedBy', 0] },
-                        department: { $arrayElemAt: ['$department', 0] },
+                        jobPosition: {
+                            $arrayElemAt: ['$jobPosition', 0]
+                        },
+                        'createdBy': {
+                            $arrayElemAt: ['$createdBy', 0]
+                        },
+                        'editedBy': {
+                            $arrayElemAt: ['$editedBy', 0]
+                        },
+                        department: {
+                            $arrayElemAt: ['$department', 0]
+                        },
                         name: 1,
                         'updatedAt': 1,
                         'createdAt': 1,
@@ -3434,7 +3785,9 @@ function getFilter() {
                         workPhones: 1,
                         jobType: 1,
                         isEmployee: 1,
-                        workflow: { $arrayElemAt: ['$workflow', 0] },
+                        workflow: {
+                            $arrayElemAt: ['$workflow', 0]
+                        },
                         personalEmail: 1,
                         sequence: 1,
                         hire: 1,
@@ -3549,8 +3902,12 @@ function getFilter() {
         }, {
             $group: {
                 _id: null,
-                total: { $sum: 1 },
-                root: { $push: '$$ROOT' }
+                total: {
+                    $sum: 1
+                },
+                root: {
+                    $push: '$$ROOT'
+                }
             }
         }, {
             $unwind: '$root'
@@ -3611,16 +3968,27 @@ function getApplicationsForKanban() {
 
     contentSearcher = function(responseApplications, cb) {
         filterObj.$and = [];
-        filterObj.$and.push({ isEmployee: false });
-        filterObj.$and.push({ workflow: ObjectId(data.workflowId) });
-        filterObj.$and.push({ _id: { $in: responseApplications } });
+        filterObj.$and.push({
+            isEmployee: false
+        });
+        filterObj.$and.push({
+            workflow: ObjectId(data.workflowId)
+        });
+        filterObj.$and.push({
+            _id: {
+                $in: responseApplications
+            }
+        });
 
         Model
             .find(filterObj)
             .select('_id name proposedSalary jobPosition nextAction workflow updatedAt sequence fired')
             .populate('workflow', '_id')
             .populate('jobPosition', '_id name')
-            .sort({ lastFire: -1, sequence: -1 })
+            .sort({
+                lastFire: -1,
+                sequence: -1
+            })
             .limit(self.user.kanbanSettings.applications.countPerPage)
             .exec(function(err, result) {
                 if (err) {
@@ -3792,35 +4160,102 @@ function getEmployeesInDateRange(callback) {
     if (tempMonthLength / 12 < 1) {
 
         query = {
-            $or: [
-                { $and: [{ month: _month }, { days: { $gte: day } }, { days: { $lte: 31 } }] },
-                { $and: [{ month: { $gt: _month } }, { month: { $lt: tempMonthLength } }] },
-                { $and: [{ month: tempMonthLength }, { days: { $lte: day } }] }
+            $or: [{
+                    $and: [{
+                        month: _month
+                    }, {
+                        days: {
+                            $gte: day
+                        }
+                    }, {
+                        days: {
+                            $lte: 31
+                        }
+                    }]
+                },
+                {
+                    $and: [{
+                        month: {
+                            $gt: _month
+                        }
+                    }, {
+                        month: {
+                            $lt: tempMonthLength
+                        }
+                    }]
+                },
+                {
+                    $and: [{
+                        month: tempMonthLength
+                    }, {
+                        days: {
+                            $lte: day
+                        }
+                    }]
+                }
             ]
         };
     } else {
         realPart = tempMonthLength % 12;
         query = {
-            $or: [
-                { $and: [{ month: _month }, { days: { $gte: day } }, { days: { $lte: 31 } }] },
-                { $and: [{ month: { $gte: 1 } }, { month: { $lt: realPart } }] },
-                { $and: [{ month: realPart }, { days: { $lt: day } }] }
+            $or: [{
+                    $and: [{
+                        month: _month
+                    }, {
+                        days: {
+                            $gte: day
+                        }
+                    }, {
+                        days: {
+                            $lte: 31
+                        }
+                    }]
+                },
+                {
+                    $and: [{
+                        month: {
+                            $gte: 1
+                        }
+                    }, {
+                        month: {
+                            $lt: realPart
+                        }
+                    }]
+                },
+                {
+                    $and: [{
+                        month: realPart
+                    }, {
+                        days: {
+                            $lt: day
+                        }
+                    }]
+                }
             ]
         };
     }
 
     Model.aggregate({
             $match: {
-                $and: [
-                    { dateBirth: { $ne: null } },
-                    { isEmployee: true }
+                $and: [{
+                        dateBirth: {
+                            $ne: null
+                        }
+                    },
+                    {
+                        isEmployee: true
+                    }
                 ]
             }
         }, {
             $project: {
                 _id: 1,
-                month: { $month: '$dateBirth' },
-                days: { $dayOfMonth: '$dateBirth' }
+                month: {
+                    $month: '$dateBirth'
+                },
+                days: {
+                    $dayOfMonth: '$dateBirth'
+                }
             }
         }, {
             $match: query
@@ -3859,7 +4294,12 @@ function set(currentEmployees) {
     data.date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     data.currentEmployees = currentEmployees;
 
-    Birthdays.findByIdAndUpdate({ _id: 1 }, data, { new: true, upsert: true }, function(err, birth) {
+    Birthdays.findByIdAndUpdate({
+        _id: 1
+    }, data, {
+        new: true,
+        upsert: true
+    }, function(err, birth) {
         if (err) {
             return self.throw500(err);
         }

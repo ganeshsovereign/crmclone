@@ -585,7 +585,10 @@ exports.Book.prototype.balance = function(query) {
                         result[i].debit = MODULE('utils').round(result[i].debit, 2);
 
                         if (isNormalInteger(result[i]._id))
-                            result[i]._id = fixedWidthString(result[i]._id, 10, { padding: '0', align: 'left' });
+                            result[i]._id = fixedWidthString(result[i]._id, 10, {
+                                padding: '0',
+                                align: 'left'
+                            });
 
                         delete result[i].notes;
                     }
@@ -622,11 +625,34 @@ exports.Book.prototype.ledger = function(query, populate) {
     }
     query = this.parseQuery(query);
     q = this.transactionModel.find(query)
-        .populate({ path: "meta.supplier", select: "name ID", model: "Customers" })
-        .populate({ path: "meta.invoice", select: "ref forSales", model: "invoice" })
-        .populate({ path: "meta.bills.invoice", select: "ref forSales", model: "invoice" })
-        .populate({ path: "meta.product", select: "info sellFamily costFamily", model: "product", populate: { path: "sellFamily costFamily" } })
-        .populate({ path: "meta.tax", select: "code", model: "taxes" });
+        .populate({
+            path: "meta.supplier",
+            select: "name ID",
+            model: "Customers"
+        })
+        .populate({
+            path: "meta.invoice",
+            select: "ref forSales",
+            model: "invoice"
+        })
+        .populate({
+            path: "meta.bills.invoice",
+            select: "ref forSales",
+            model: "invoice"
+        })
+        .populate({
+            path: "meta.product",
+            select: "info sellFamily costFamily",
+            model: "product",
+            populate: {
+                path: "sellFamily costFamily"
+            }
+        })
+        .populate({
+            path: "meta.tax",
+            select: "code",
+            model: "taxes"
+        });
 
     //console.log(query);
     if (pagination) {

@@ -330,7 +330,9 @@ MetronicApp.directive('address', ['$http', 'Societes',
                 scope.addressShipping = []; //List for select of delivery Address
 
                 if (scope.supplier)
-                    Societes.get({ Id: scope.supplier }, function(response) {
+                    Societes.get({
+                        Id: scope.supplier
+                    }, function(response) {
                         scope.addressShipping = response.shippingAddress;
                     });
 

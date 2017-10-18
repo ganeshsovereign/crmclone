@@ -60,7 +60,10 @@ MetronicApp.controller('CategoryController', ['$scope', '$rootScope', '$http', '
         var category = scope.$modelValue;
 
         if (category.nodes.length)
-            return toastr.error("Impossible de supprimer ce noeud : non vide", 'Error', { timeOut: 10000, progressBar: true });
+            return toastr.error("Impossible de supprimer ce noeud : non vide", 'Error', {
+                timeOut: 10000,
+                progressBar: true
+            });
 
         category = new Categories(category);
         category.$remove(function(response) {
@@ -134,9 +137,15 @@ MetronicApp.controller('CategoryController', ['$scope', '$rootScope', '$http', '
                             //data.height = scope.$parent.$modelValue.height + 1;
                         }
 
-                        var category = new Categories({ _id: data._id, parent: data.parent, idx: i });
+                        var category = new Categories({
+                            _id: data._id,
+                            parent: data.parent,
+                            idx: i
+                        });
                         //console.log(data._id, data.parent, destIndex);
-                        category.$update({ isChangedLevel: 1 }, function(response) {
+                        category.$update({
+                            isChangedLevel: 1
+                        }, function(response) {
                             //console.log(response);
                             cpt++;
                             if (cpt == len)
@@ -156,8 +165,8 @@ MetronicApp.controller('CategoryController', ['$scope', '$rootScope', '$http', '
 
         $scope.category = options.category;
 
-        if(!$scope.category.groups)
-            $scope.category.groups=[];
+        if (!$scope.category.groups)
+            $scope.category.groups = [];
 
         $http({
             method: 'GET',

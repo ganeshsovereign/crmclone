@@ -55,7 +55,9 @@ function makeDir(p, opts, f, made) {
         f = opts;
         opts = {};
     } else if (!opts || typeof opts !== 'object') {
-        opts = { mode: opts };
+        opts = {
+            mode: opts
+        };
     }
 
     mode = opts.mode;
@@ -174,7 +176,9 @@ exports.pluginGridFs = function(schema, opt) {
 
         var self = this;
 
-        self.findOne({ 'files._id': ObjectId(fileId) }, "files", function(err, doc) {
+        self.findOne({
+            'files._id': ObjectId(fileId)
+        }, "files", function(err, doc) {
             if (err)
                 return fn(err);
 
@@ -256,7 +260,13 @@ exports.pluginGridFs = function(schema, opt) {
 
                     _files.push(file);
 
-                    _this.update({ $addToSet: { files: file } }, { upsert: false }, function(err, doc) {
+                    _this.update({
+                        $addToSet: {
+                            files: file
+                        }
+                    }, {
+                        upsert: false
+                    }, function(err, doc) {
                         if (err)
                             return eachCb(err);
 
@@ -364,8 +374,14 @@ exports.pluginGridFs = function(schema, opt) {
             }
         }
 
-        return _this.update({ $set: { files: _this.files } }, function(err, doc) {
-            fn(err, { files: _this.files });
+        return _this.update({
+            $set: {
+                files: _this.files
+            }
+        }, function(err, doc) {
+            fn(err, {
+                files: _this.files
+            });
         });
     };
     schema.methods.getFile = function(fileId, fn) {

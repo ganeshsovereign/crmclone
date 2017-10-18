@@ -1,11 +1,8 @@
 /* CSS Document */
 
-
 /* ------------------------ */
 
-
 /* ---- Globals styles ---- */
-
 
 /* ------------------------ */
 
@@ -14,12 +11,9 @@ body {
     border: none;
 }
 
-
 /* ------------ */
 
-
 /* --- BODY --- */
-
 
 /* ------------ */
 
@@ -44,7 +38,6 @@ body #header,
     padding: 0;
 }
 
-
 /* --- Main in Body --- */
 
 div>div#main {
@@ -62,7 +55,6 @@ div#body div#main {
     margin: 0 auto !important;
 }
 
-
 /* --- Main Menu --- */
 
 #upper_body {
@@ -73,31 +65,23 @@ div#body div#main {
     display: none;
 }
 
-
 /* ------ footer ---------- */
 
 body #footer {
     display: none !important;
 }
 
-
 /* ----------- */
-
 
 /* --- end --- */
 
-
 /* ----------- */
 
-
 /* --------------------- */
-
 
 /* --- Print Billing --- */
 
-
 /* --------------------- */
-
 
 /* Logo OVH */
 
@@ -120,7 +104,6 @@ body #footer {
     font-weight: bold;
     margin-left: 15px;
 }
-
 
 /* contact */
 
@@ -150,7 +133,6 @@ body #footer {
     padding: 2px;
 }
 
-
 /* facture */
 
 h1 {
@@ -175,7 +157,6 @@ h4 {
     font-weight: normal;
     text-align: center;
 }
-
 
 /* tableau */
 
@@ -236,7 +217,6 @@ h4 {
     text-align: right;
 }
 
-
 /* Pied de page */
 
 #bill_footer {
@@ -266,20 +246,17 @@ h4 {
     margin: 0;
 }
 
-
 /* bouton imprimer */
 
 #print_button {
     display: none;
 }
 
-
 /* Infos sur le paiement */
 
 #paiment_infos {
     display: none;
 }
-
 
 /* mode paiement */
 
@@ -7175,7 +7152,7 @@ div.index-menu-content ul li.softwares a:hover,
 div.index-menu-content ul li.nas a:hover,
 div.index-menu-content ul li.softwares a,
 div.index-menu-content ul li.nas a,
-{
+    {
     background: 0;
     margin: 0;
     padding;
@@ -9711,7 +9688,7 @@ div.dedicated-menu-content ul li.softwares a:hover,
 div.dedicated-menu-content ul li.nas a:hover,
 div.dedicated-menu-content ul li.softwares a,
 div.dedicated-menu-content ul li.nas a,
-{
+    {
     background: 0;
     margin: 0;
     padding;

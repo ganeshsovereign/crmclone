@@ -63,7 +63,9 @@ angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope
 
         entity.$save(function(response) {
             //console.log(response);
-            $rootScope.$state.go("settings.entity.show", { id: response._id });
+            $rootScope.$state.go("settings.entity.show", {
+                id: response._id
+            });
         });
     };
 
@@ -377,7 +379,9 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
             $http({
                 method: 'GET',
                 url: '/erp/api/product/prices/priceslist/select',
-                params: { isCoef: true }
+                params: {
+                    isCoef: true
+                }
             }).success(function(data) {
                 $scope.pricesLists = data.data;
 
@@ -443,14 +447,18 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
     $scope.clone = function() {
         $scope.object.$clone(function(response) {
-            $rootScope.$state.go(goShow, { id: response._id });
+            $rootScope.$state.go(goShow, {
+                id: response._id
+            });
         });
     };
 
     $scope.create = function() {
         var object = new Resource(this.object);
         object.$save(function(response) {
-            $rootScope.$state.go(goShow, { id: response._id });
+            $rootScope.$state.go(goShow, {
+                id: response._id
+            });
         });
     };
 

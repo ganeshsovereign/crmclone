@@ -51,7 +51,9 @@ passport.use(new LocalStrategy({
 
     var query = {
         isEnable: true,
-        password: { $ne: null }
+        password: {
+            $ne: null
+        }
     };
 
     if (login.indexOf("@") > 0) // email
@@ -107,7 +109,9 @@ passport.use(new LocalAPIKeyStrategy(
                 return done(err);
             }
             if (!user) {
-                return done(null, false, { message: 'Unknown apikey : ' + apikey });
+                return done(null, false, {
+                    message: 'Unknown apikey : ' + apikey
+                });
             }
             // if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
             return done(null, user);
@@ -212,67 +216,69 @@ passport.use(new LocalAPIKeyStrategy(
 
 //Use google strategy
 if (CONFIG('google-id') && CONFIG('google-secret') && CONFIG('google-callback')) {
-	passport.use(new GoogleStrategy({
-	    clientID: CONFIG('google-id'),
-	    clientSecret: CONFIG('google-secret'),
-	    callbackURL: CONFIG('google-callback'),
-	    session: false
-	}, function(accessToken, refreshToken, profile, done) {
-	    var User = MODEL('Users').Schema;
+    passport.use(new GoogleStrategy({
+        clientID: CONFIG('google-id'),
+        clientSecret: CONFIG('google-secret'),
+        callbackURL: CONFIG('google-callback'),
+        session: false
+    }, function(accessToken, refreshToken, profile, done) {
+        var User = MODEL('Users').Schema;
 
-	    //console.log(refreshToken);
-	    //console.log(profile);
-	    User.findOne({
-	        //'google.id': profile.id
-	        email: profile._json.emails[0].value,
-	        isEnable: true,
-	    }, "-password", function(err, user) {
-	        if (err)
-	            console.log(err);
+        //console.log(refreshToken);
+        //console.log(profile);
+        User.findOne({
+            //'google.id': profile.id
+            email: profile._json.emails[0].value,
+            isEnable: true,
+        }, "-password", function(err, user) {
+            if (err)
+                console.log(err);
 
-	        if (!user) {
-	            console.log("User unknown ! " + profile._json.emails[0].value);
+            if (!user) {
+                console.log("User unknown ! " + profile._json.emails[0].value);
 
-	            return done({ message: 'Unknown user ' + profile._json.emails[0].value }, false, {
-	                message: 'Unknown user ' + profile._json.emails[0].value
-	            });
+                return done({
+                    message: 'Unknown user ' + profile._json.emails[0].value
+                }, false, {
+                    message: 'Unknown user ' + profile._json.emails[0].value
+                });
 
 
-	            /*user = new User({
-	             name: profile.displayName,
-	             email: profile.emails[0].value,
-	             username: profile.username,
-	             provider: 'google',
-	             google: profile._json
-	             });
-	             user.save(function (err) {
-	             if (err)
-	             console.log(err);
-	             return done(err, user);
-	             });*/
-	        } else {
-	            //user.lastConnection = user.newConnection;
-	            //user.newConnection = new Date();
+                /*user = new User({
+                 name: profile.displayName,
+                 email: profile.emails[0].value,
+                 username: profile.username,
+                 provider: 'google',
+                 google: profile._json
+                 });
+                 user.save(function (err) {
+                 if (err)
+                 console.log(err);
+                 return done(err, user);
+                 });*/
+            } else {
+                //user.lastConnection = user.newConnection;
+                //user.newConnection = new Date();
 
-	            if (!user.google.user_id)
-	                user.google.user_id = profile.id;
+                if (!user.google.user_id)
+                    user.google.user_id = profile.id;
 
-	            user.google.tokens = {
-	                access_token: accessToken,
-	                refresh_token: refreshToken
-	            };
+                user.google.tokens = {
+                    access_token: accessToken,
+                    refresh_token: refreshToken
+                };
 
-	            //console.log(user);
+                //console.log(user);
 
-	            user.save(function(err, user) {
-	                if (err)
-	                    console.log(err);
+                user.save(function(err, user) {
+                    if (err)
+                        console.log(err);
 
-	                return done(err, user);
-	            });
-	        }
-	    });
-	}));
+                    return done(err, user);
+                });
+            }
+        });
+    }));
 }
 
 // Load user profile

@@ -36,27 +36,64 @@ var mongoose = require('mongoose'),
 
 var CategorySchema = new Schema({
     //name: { type: String }, //Meta Title
-    fullName: { type: String, default: 'All' },
+    fullName: {
+        type: String,
+        default: 'All'
+    },
     //parent: { type: ObjectId, ref: 'productCategory', default: null },
     // child: [{ type: ObjectId, default: null }],
-    users: [{ type: ObjectId, ref: 'Users', default: null }],
-    createdBy: { type: Schema.Types.ObjectId, ref: 'Users' },
-    editedBy: { type: Schema.Types.ObjectId, ref: 'Users' },
+    users: [{
+        type: ObjectId,
+        ref: 'Users',
+        default: null
+    }],
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Users'
+    },
+    editedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'Users'
+    },
 
     //entity: [String],
-    idx: { type: Number, default: 0 }, //order in array for nodes
+    idx: {
+        type: Number,
+        default: 0
+    }, //order in array for nodes
 
     langs: [{
         _id: false,
-        name: { type: String, default: 'All', unique: true },
+        name: {
+            type: String,
+            default: 'All',
+            unique: true
+        },
     }],
 
-    nestingLevel: { type: Number, default: 0 },
-    sequence: { type: Number, default: 0 },
-    main: { type: Boolean, default: false },
-    removable: { type: Boolean, default: true },
-    accountsCount: { type: Number, default: 0 }
-}, { collection: 'accountsCategories' });
+    nestingLevel: {
+        type: Number,
+        default: 0
+    },
+    sequence: {
+        type: Number,
+        default: 0
+    },
+    main: {
+        type: Boolean,
+        default: false
+    },
+    removable: {
+        type: Boolean,
+        default: true
+    },
+    accountsCount: {
+        type: Number,
+        default: 0
+    }
+}, {
+    collection: 'accountsCategories'
+});
 
 CategorySchema.plugin(tree, {
     pathSeparator: '#', // Default path separator
@@ -73,7 +110,16 @@ CategorySchema.statics.updateParentsCategory = function(newCategoryId, parentId,
     var SocieteModel = MODEL('Customers').Schema;
 
     if (modifier === 'remove')
-        return SocieteModel.update({ 'companyInfo.category': newCategoryId }, { $set: { 'companyInfo.category': parentId } }, { upsert: false, multi: true }, function(err, doc) {
+        return SocieteModel.update({
+            'companyInfo.category': newCategoryId
+        }, {
+            $set: {
+                'companyInfo.category': parentId
+            }
+        }, {
+            upsert: false,
+            multi: true
+        }, function(err, doc) {
             if (err)
                 return callback(err);
 
@@ -99,13 +145,19 @@ CategorySchema.statics.updateParentsCategory = function(newCategoryId, parentId,
 CategorySchema.statics.updateNestingLevel = function(id, nestingLevel, callback) {
     var Model = this;
 
-    Model.find({ parent: id }).exec(function(err, result) {
+    Model.find({
+        parent: id
+    }).exec(function(err, result) {
         var n = 0;
         if (result.length !== 0)
             return result.forEach(function(item) {
                 n++;
 
-                Model.findByIdAndUpdate(item._id, { nestingLevel: nestingLevel + 1 }, { new: true }, function(err, res) {
+                Model.findByIdAndUpdate(item._id, {
+                    nestingLevel: nestingLevel + 1
+                }, {
+                    new: true
+                }, function(err, res) {
                     if (result.length === n)
                         Model.updateNestingLevel(res._id, res.nestingLevel + 1, callback);
                     else
@@ -140,10 +192,19 @@ CategorySchema.statics.updateSequence = function(model, sequenceField, start, en
                 end -= 1;
 
             objChange = {};
-            objFind = { parent: parentDepartmentStart };
-            objFind[sequenceField] = { $gte: start, $lte: end };
+            objFind = {
+                parent: parentDepartmentStart
+            };
+            objFind[sequenceField] = {
+                $gte: start,
+                $lte: end
+            };
             objChange[sequenceField] = inc;
-            query = model.update(objFind, { $inc: objChange }, { multi: true });
+            query = model.update(objFind, {
+                $inc: objChange
+            }, {
+                multi: true
+            });
             query.exec(function(err, res) {
                 if (callback)
                     callback((inc === -1) ? end : start);
@@ -151,7 +212,9 @@ CategorySchema.statics.updateSequence = function(model, sequenceField, start, en
             });
         } else {
             if (isCreate) {
-                query = model.count({ parent: parentDepartmentStart }).exec(function(err, res) {
+                query = model.count({
+                    parent: parentDepartmentStart
+                }).exec(function(err, res) {
                     if (callback)
                         callback(res);
 
@@ -159,10 +222,18 @@ CategorySchema.statics.updateSequence = function(model, sequenceField, start, en
             }
             if (isDelete) {
                 objChange = {};
-                objFind = { parent: parentDepartmentStart };
-                objFind[sequenceField] = { $gt: start };
+                objFind = {
+                    parent: parentDepartmentStart
+                };
+                objFind[sequenceField] = {
+                    $gt: start
+                };
                 objChange[sequenceField] = -1;
-                query = model.update(objFind, { $inc: objChange }, { multi: true });
+                query = model.update(objFind, {
+                    $inc: objChange
+                }, {
+                    multi: true
+                });
                 query.exec(function(err, res) {
                     if (callback)
                         callback(res);
@@ -172,15 +243,31 @@ CategorySchema.statics.updateSequence = function(model, sequenceField, start, en
         }
     } else { // nbetween workflow
         objChange = {};
-        objFind = { parent: parentDepartmentStart };
-        objFind[sequenceField] = { $gte: start };
+        objFind = {
+            parent: parentDepartmentStart
+        };
+        objFind[sequenceField] = {
+            $gte: start
+        };
         objChange[sequenceField] = -1;
-        query = model.update(objFind, { $inc: objChange }, { multi: true });
+        query = model.update(objFind, {
+            $inc: objChange
+        }, {
+            multi: true
+        });
         query.exec();
-        objFind = { parent: parentDepartmentEnd };
-        objFind[sequenceField] = { $gte: end };
+        objFind = {
+            parent: parentDepartmentEnd
+        };
+        objFind[sequenceField] = {
+            $gte: end
+        };
         objChange[sequenceField] = 1;
-        query = model.update(objFind, { $inc: objChange }, { multi: true });
+        query = model.update(objFind, {
+            $inc: objChange
+        }, {
+            multi: true
+        });
         query.exec(function() {
             if (callback)
                 callback(end);
@@ -209,7 +296,14 @@ CategorySchema.statics.updateFullName = function(id, cb) {
             path = (category && category.parent ? category.parent.path + "#" : "") + category._id.toString();
 
             if (!err)
-                Model.findByIdAndUpdate(id, { $set: { fullName: fullName, path: path } }, { new: true }, cb);
+                Model.findByIdAndUpdate(id, {
+                    $set: {
+                        fullName: fullName,
+                        path: path
+                    }
+                }, {
+                    new: true
+                }, cb);
 
         });
 };
@@ -219,11 +313,20 @@ CategorySchema.statics.removeAllChild = function(id, callback) {
     var Societe = MODEL('Customers').Schema;
 
     Model.find({
-        $or: [
-            { ancestors: { $elemMatch: { $eq: id } } },
-            { _id: id }
+        $or: [{
+                ancestors: {
+                    $elemMatch: {
+                        $eq: id
+                    }
+                }
+            },
+            {
+                _id: id
+            }
         ]
-    }, { _id: 1 }, function(err, result) {
+    }, {
+        _id: 1
+    }, function(err, result) {
         var ids;
 
         if (err)
@@ -232,7 +335,11 @@ CategorySchema.statics.removeAllChild = function(id, callback) {
         ids = _.pluck(result, '_id');
 
         function deleteCategories(parCb) {
-            Model.remove({ _id: { $in: ids } }, function(err) {
+            Model.remove({
+                _id: {
+                    $in: ids
+                }
+            }, function(err) {
                 if (err)
                     return parCb(err);
 

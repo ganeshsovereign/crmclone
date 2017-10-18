@@ -11,7 +11,9 @@ var //rename = require('gulp-rename'),
 //Header on file JS & CSS 
 gulp.task('license', function() {
     var year = (new Date()).getFullYear();
-    gulp.src(['app/**/*.js', 'controllers/*.js', 'definitions/*.js', 'install/**/*.js', 'models/*.js', 'modules/*.js', 'source/*.js'], { base: "./" })
+    gulp.src(['app/**/*.js', 'controllers/*.js', 'definitions/*.js', 'install/**/*.js', 'models/*.js', 'modules/*.js', 'source/*.js'], {
+            base: "./"
+        })
         .pipe(license(fs.readFileSync('header.md', 'utf8'), {
             year: year
         }, 0.8))

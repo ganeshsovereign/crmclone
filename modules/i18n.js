@@ -110,7 +110,9 @@ exports.install = function(options) {
 
     var translation = new Translation();
 
-    translation.options = U.extend({ language: 'en' }, options);
+    translation.options = U.extend({
+        language: 'en'
+    }, options);
     F.helpers.i18n = translation;
     translation.load();
 

@@ -39,8 +39,13 @@ var workflowSchema = new Schema({
     status: String,
     name: String,
     sequence: Number,
-    visible: { type: Boolean, default: true }
-}, { collection: 'workflows' });
+    visible: {
+        type: Boolean,
+        default: true
+    }
+}, {
+    collection: 'workflows'
+});
 
 exports.Schema = mongoose.model('workflows', workflowSchema);
 exports.name = 'workflows';

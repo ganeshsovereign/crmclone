@@ -34,27 +34,69 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var AvailabilitySchema = new Schema({
-    product: { type: ObjectId, ref: 'Product', default: null },
-    warehouse: { type: ObjectId, ref: 'warehouse', default: null },
-    location: { type: ObjectId, ref: 'location', default: null },
-    goodsInNote: { type: ObjectId, ref: 'goodsInNotes', default: null }, //IN
-    cost: { type: Number, default: 0 },
-    onHand: { type: Number, default: 0 },
+    product: {
+        type: ObjectId,
+        ref: 'Product',
+        default: null
+    },
+    warehouse: {
+        type: ObjectId,
+        ref: 'warehouse',
+        default: null
+    },
+    location: {
+        type: ObjectId,
+        ref: 'location',
+        default: null
+    },
+    goodsInNote: {
+        type: ObjectId,
+        ref: 'goodsInNotes',
+        default: null
+    }, //IN
+    cost: {
+        type: Number,
+        default: 0
+    },
+    onHand: {
+        type: Number,
+        default: 0
+    },
     goodsOutNotes: [{
         _id: false, //OUT
-        goodsNoteId: { type: ObjectId, ref: 'goodsOutNotes' },
-        qty: { type: Number, default: 0 }
+        goodsNoteId: {
+            type: ObjectId,
+            ref: 'goodsOutNotes'
+        },
+        qty: {
+            type: Number,
+            default: 0
+        }
     }],
 
-    isJob: { type: Boolean, default: false },
+    isJob: {
+        type: Boolean,
+        default: false
+    },
     orderRows: [{
         _id: false, //Allocated
-        orderRowId: { type: ObjectId, ref: 'orderRows' }, //allocated all for ever
-        qty: { type: Number, default: 0 }
+        orderRowId: {
+            type: ObjectId,
+            ref: 'orderRows'
+        }, //allocated all for ever
+        qty: {
+            type: Number,
+            default: 0
+        }
     }],
 
-    archived: { type: Boolean, default: false }
-}, { collection: 'productsAvailability' });
+    archived: {
+        type: Boolean,
+        default: false
+    }
+}, {
+    collection: 'productsAvailability'
+});
 
 AvailabilitySchema.plugin(timestamps);
 
@@ -117,7 +159,9 @@ AvailabilitySchema.statics.createAvailabilityJob = function(options, callback) {
         if (err)
             return callback(err);
 
-        Location.findOne({ warehouse: warehouse }, function(err, location) {
+        Location.findOne({
+            warehouse: warehouse
+        }, function(err, location) {
             var location = location ? location._id : null;
 
             if (err)
@@ -164,11 +208,24 @@ AvailabilitySchema.statics.updateByQuery = function(options, callback) {
             return callback(err);
 
 
-        self.update({ onHand: { $gt: 0 }, archived: true }, { $set: { archived: false } }, function(err) {
+        self.update({
+            onHand: {
+                $gt: 0
+            },
+            archived: true
+        }, {
+            $set: {
+                archived: false
+            }
+        }, function(err) {
             if (err)
                 return callback(err);
 
-            self.remove({ onHand: 0, orderRows: [], goodsOutNotes: [] }, function(err) {
+            self.remove({
+                onHand: 0,
+                orderRows: [],
+                goodsOutNotes: []
+            }, function(err) {
                 if (err)
                     return callback(err);
             });
@@ -336,7 +393,9 @@ AvailabilitySchema.statics.getList = function(options, callback) {
     }
 
     var query = [{
-            $match: { isJob: false }
+            $match: {
+                isJob: false
+            }
         },
         {
             $lookup: {
@@ -381,11 +440,21 @@ AvailabilitySchema.statics.getList = function(options, callback) {
         {
             $project: {
                 _id: 1,
-                location: { $arrayElemAt: ['$location', 0] },
-                warehouse: { $arrayElemAt: ['$warehouse', 0] },
-                product: { $arrayElemAt: ['$product', 0] },
-                goodsInNote: { $arrayElemAt: ['$goodsInNote', 0] },
-                createdBy: { $arrayElemAt: ['$createdBy', 0] },
+                location: {
+                    $arrayElemAt: ['$location', 0]
+                },
+                warehouse: {
+                    $arrayElemAt: ['$warehouse', 0]
+                },
+                product: {
+                    $arrayElemAt: ['$product', 0]
+                },
+                goodsInNote: {
+                    $arrayElemAt: ['$goodsInNote', 0]
+                },
+                createdBy: {
+                    $arrayElemAt: ['$createdBy', 0]
+                },
                 createdAt: 1,
                 description: 1,
                 cost: 1,
@@ -476,7 +545,9 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 allocated: 1,
                 inStock: 1,
                 goodsInNote: 1,
-                order: { $arrayElemAt: ['$order', 0] }
+                order: {
+                    $arrayElemAt: ['$order', 0]
+                }
             }
         },
         {
@@ -485,8 +556,12 @@ AvailabilitySchema.statics.getList = function(options, callback) {
         {
             $group: {
                 _id: null,
-                total: { $sum: 1 },
-                root: { $push: '$$ROOT' }
+                total: {
+                    $sum: 1
+                },
+                root: {
+                    $push: '$$ROOT'
+                }
             }
         },
         {
@@ -506,8 +581,12 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 cost: '$root.cost',
                 variants: '$root.variants',
                 total: 1,
-                total_cost: { $multiply: ["$root.onHand", "$root.cost"] },
-                value: { $multiply: ['$root.inStock', '$root.cost'] },
+                total_cost: {
+                    $multiply: ["$root.onHand", "$root.cost"]
+                },
+                value: {
+                    $multiply: ['$root.inStock', '$root.cost']
+                },
                 inStock: '$root.inStock',
                 allocated: '$root.allocated',
                 onHand: '$root.onHand'
@@ -532,7 +611,9 @@ AvailabilitySchema.statics.getList = function(options, callback) {
                 let localQuery = _(query).concat({
                     $group: {
                         _id: null,
-                        total_cost: { $sum: "$total_cost" }
+                        total_cost: {
+                            $sum: "$total_cost"
+                        }
                     }
                 });
 
@@ -570,7 +651,9 @@ AvailabilitySchema.statics.getAvailabilityForProducts = function(query, options,
     }, {
         $group: {
             _id: '$product',
-            onHand: { $sum: '$onHand' }
+            onHand: {
+                $sum: '$onHand'
+            }
         }
     }], function(err, result) {
         if (err)
@@ -717,7 +800,9 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
                                             },
 
                                             $pull: {
-                                                orderRows: { orderRowId: existedRow.orderRowId }
+                                                orderRows: {
+                                                    orderRowId: existedRow.orderRowId
+                                                }
                                             },
 
                                             onHand: resultOnHand
@@ -750,7 +835,12 @@ AvailabilitySchema.statics.updateAvailableProducts = function(options, mainCb) {
                             //    return eachCb(error);
 
                             eachCb();
-                            F.emit('inventory:update', { userId: null, product: { _id: orderRow.product._id.toString() } });
+                            F.emit('inventory:update', {
+                                userId: null,
+                                product: {
+                                    _id: orderRow.product._id.toString()
+                                }
+                            });
 
                         });
                     } else
@@ -775,13 +865,21 @@ AvailabilitySchema.statics.deliverProducts = function(options, mainCb) {
 
     self.updateByQuery(_.extend({
         query: {
-            goodsOutNotes: { $size: 0 },
-            orderRows: { $size: 0 },
+            goodsOutNotes: {
+                $size: 0
+            },
+            orderRows: {
+                $size: 0
+            },
             onHand: 0,
             isJob: false
         },
 
-        body: { $set: { archived: true } }
+        body: {
+            $set: {
+                archived: true
+            }
+        }
     }, options), function(err) {
         if (err)
             mainCb(err);
@@ -869,7 +967,9 @@ AvailabilitySchema.statics.deliverProducts = function(options, mainCb) {
                 }, function(err, goodsOutNote) {
                     if (!err) {
 
-                        OrgService.getDefaultShippingAccount({ dbName: dbName }, function(err, shipping) {
+                        OrgService.getDefaultShippingAccount({
+                            dbName: dbName
+                        }, function(err, shipping) {
                             if (!err) {
                                 body.accountsItems.push({
                                     credit: 0,
@@ -1039,7 +1139,12 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
             if (err)
                 return eachCb(err);
 
-            F.emit('inventory:update', { userId: null, product: { _id: elem.product.toString() } });
+            F.emit('inventory:update', {
+                userId: null,
+                product: {
+                    _id: elem.product.toString()
+                }
+            });
 
             eachCb();
         });
@@ -1074,7 +1179,9 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
             }, function(err, goodsInNote) {
                 if (!err) {
 
-                    OrgService.getDefaultShippingAccount({ dbName: dbName }, function(err, shipping) {
+                    OrgService.getDefaultShippingAccount({
+                        dbName: dbName
+                    }, function(err, shipping) {
                         if (!err) {
                             body.accountsItems.push({
                                 credit: 0,

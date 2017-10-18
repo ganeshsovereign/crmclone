@@ -32,17 +32,50 @@ var mongoose = require('mongoose'),
     ObjectId = mongoose.Schema.Types.ObjectId;
 
 var locationsSchema = new Schema({
-    name: { type: String, default: '' },
-    groupingA: { type: String, default: '' },
-    groupingB: { type: String, default: '' },
-    groupingC: { type: String, default: '' },
-    groupingD: { type: String, default: '' },
-    warehouse: { type: ObjectId, ref: 'warehouse', default: null },
-    zone: { type: ObjectId, ref: 'zones', default: null },
-    createdBy: { type: ObjectId, ref: 'Users', default: null },
-    editedBy: { type: ObjectId, ref: 'Users', default: null },
+    name: {
+        type: String,
+        default: ''
+    },
+    groupingA: {
+        type: String,
+        default: ''
+    },
+    groupingB: {
+        type: String,
+        default: ''
+    },
+    groupingC: {
+        type: String,
+        default: ''
+    },
+    groupingD: {
+        type: String,
+        default: ''
+    },
+    warehouse: {
+        type: ObjectId,
+        ref: 'warehouse',
+        default: null
+    },
+    zone: {
+        type: ObjectId,
+        ref: 'zones',
+        default: null
+    },
+    createdBy: {
+        type: ObjectId,
+        ref: 'Users',
+        default: null
+    },
+    editedBy: {
+        type: ObjectId,
+        ref: 'Users',
+        default: null
+    },
 
-}, { collection: 'locations' });
+}, {
+    collection: 'locations'
+});
 
 locationsSchema.plugin(timestamps);
 

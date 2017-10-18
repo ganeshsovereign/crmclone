@@ -78,7 +78,9 @@ Array.prototype.toStringObjectIds = function() {
         } else if (typeof _objectId === 'string') {
             return _objectId;
         } else {
-            throw new Error({ message: 'Incorrect value for ObjectId' });
+            throw new Error({
+                message: 'Incorrect value for ObjectId'
+            });
         }
     });
 

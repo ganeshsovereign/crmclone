@@ -41,7 +41,9 @@ Entity.prototype = {
         var self = this;
         var EntityModel = MODEL('entity').Schema;
 
-        EntityModel.findOne({ _id: id }, function(err, entity) {
+        EntityModel.findOne({
+            _id: id
+        }, function(err, entity) {
             if (err || !entity)
                 return self.throw500(err);
 
@@ -121,7 +123,9 @@ Entity.prototype = {
         var Status;
         //console.log(self.query);
         var conditions = {
-            isremoved: { $ne: true }
+            isremoved: {
+                $ne: true
+            }
         };
 
         if (!query.search.value) {

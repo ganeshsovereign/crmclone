@@ -231,12 +231,16 @@ var Images = function() {
                                     return wCb(err);
                                 wCb();
                                 console.log(info);*/
-                            ImagesModel.update({ imageSrc: name }, {
+                            ImagesModel.update({
+                                imageSrc: name
+                            }, {
                                 $set: {
                                     imageSrc: name
-                                        // size: size
+                                    // size: size
                                 }
-                            }, { upsert: true }, wCb);
+                            }, {
+                                upsert: true
+                            }, wCb);
                             //});
                         }
                     ], function(err) {
@@ -293,7 +297,9 @@ var Images = function() {
             function queryBuilder() {
                 var query1 = ImagesModel.find(query);
 
-                query1.sort({ imageSrc: 1 });
+                query1.sort({
+                    imageSrc: 1
+                });
                 return query1;
             }
 
@@ -398,7 +404,9 @@ var Images = function() {
                 if (err)
                     return self.throw500(err);
 
-                ImagesModel.update({ imageSrc: filename }, {
+                ImagesModel.update({
+                    imageSrc: filename
+                }, {
                     $set: {
                         imageSrc: filename,
                         size: {
@@ -407,7 +415,9 @@ var Images = function() {
                         },
                         length: round(file.length / 1024000, 2) // MB
                     }
-                }, { upsert: true }, function(err, doc) {
+                }, {
+                    upsert: true
+                }, function(err, doc) {
                     if (err)
                         return self.throw500(err);
 
@@ -421,7 +431,9 @@ var Images = function() {
             var ImagesModel = MODEL('Images').Schema;
             var ProductImagesModel = MODEL('productImages').Schema;
 
-            ProductImagesModel.remove({ image: id }, function(err, doc) {
+            ProductImagesModel.remove({
+                image: id
+            }, function(err, doc) {
                 if (err)
                     return self.throw500(err);
 
@@ -457,21 +469,38 @@ var ProductImages = function() {
             var ProductImagesModel = MODEL('productImages').Schema;
             console.log(id);
 
-            ProductImagesModel.find({ product: id })
+            ProductImagesModel.find({
+                    product: id
+                })
                 .populate("image")
-                .sort({ 'image.imageSrc': 1 })
+                .sort({
+                    'image.imageSrc': 1
+                })
                 .exec(function(err, docs) {
                     if (err)
                         return self.throw500(err);
 
-                    return self.json({ data: docs, id: _.map(docs, elem => elem.image._id) });
+                    return self.json({
+                        data: docs,
+                        id: _.map(docs, elem => elem.image._id)
+                    });
                 });
         };
         this.addImageToProductId = function(id) {
             let self = this;
             var ProductImagesModel = MODEL('productImages').Schema;
 
-            ProductImagesModel.update({ product: id, image: self.body.image }, { $set: { product: id, image: self.body.image } }, { upsert: true }, function(err, doc) {
+            ProductImagesModel.update({
+                product: id,
+                image: self.body.image
+            }, {
+                $set: {
+                    product: id,
+                    image: self.body.image
+                }
+            }, {
+                upsert: true
+            }, function(err, doc) {
                 if (err)
                     return self.throw500(err);
 
@@ -484,7 +513,9 @@ var ProductImages = function() {
 
             var ProductImagesModel = MODEL('productImages').Schema;
 
-            ProductImagesModel.remove({ _id: id }, function(err, doc) {
+            ProductImagesModel.remove({
+                _id: id
+            }, function(err, doc) {
                 if (err)
                     return self.throw500(err);
 

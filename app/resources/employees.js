@@ -26,7 +26,11 @@ International Registered Trademark & Property of ToManage SAS
 
 //Users service used REST endpoint
 MetronicApp.factory("Employees", ['$resource', function($resource) {
-    return $resource('/erp/api/employees/:Id', { Id: '@_id' }, {
-        update: { method: 'PUT' }
+    return $resource('/erp/api/employees/:Id', {
+        Id: '@_id'
+    }, {
+        update: {
+            method: 'PUT'
+        }
     });
 }]);

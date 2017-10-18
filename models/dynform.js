@@ -37,8 +37,16 @@ require('mongoose-function')(mongoose);
  * Product Schema
  */
 var dynSchema = new Schema({
-    name: { type: String, require: true, unique: true, uppercase: true },
-    description: { type: String, default: "" },
+    name: {
+        type: String,
+        require: true,
+        unique: true,
+        uppercase: true
+    },
+    description: {
+        type: String,
+        default: ""
+    },
     _form: {},
     _schema: {},
     combined: Function //Pricing calcul

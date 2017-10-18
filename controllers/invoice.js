@@ -125,7 +125,9 @@ Object.prototype = {
                 switch (i) {
                     case "query":
                         if (self.query.query == "WAIT") // For payment
-                            query.Status = { "$nin": ["PAID", "CANCELLED", "DRAFT"] };
+                            query.Status = {
+                                "$nin": ["PAID", "CANCELLED", "DRAFT"]
+                            };
                         break;
                     case "dater":
                         query.dater = JSON.parse(self.query.dater);
@@ -148,7 +150,9 @@ Object.prototype = {
             .populate({
                 path: "total_taxes.taxeId"
             })
-            .sort({ ID: 1 })
+            .sort({
+                ID: 1
+            })
             .exec(function(err, doc) {
                 if (err) {
                     console.log(err);
@@ -290,7 +294,9 @@ Object.prototype = {
             self.body.ref = F.functions.refreshSeq(self.body.ref, self.body.datec);
 
             BillModel.setInvoiceNumber(self.body, function(err, invoice) {
-                BillModel.findByIdAndUpdate(id, invoice, { new: true }, function(err, doc) {
+                BillModel.findByIdAndUpdate(id, invoice, {
+                    new: true
+                }, function(err, doc) {
                     if (err) {
                         console.log(err);
                         return self.json({
@@ -301,7 +307,12 @@ Object.prototype = {
                         });
                     }
 
-                    F.emit('invoice:recalculateStatus', { userId: self.user._id.toString(), invoice: { _id: doc._id.toString() } });
+                    F.emit('invoice:recalculateStatus', {
+                        userId: self.user._id.toString(),
+                        invoice: {
+                            _id: doc._id.toString()
+                        }
+                    });
 
                     //console.log(doc);
                     doc = doc.toObject();
@@ -320,7 +331,15 @@ Object.prototype = {
 
         BillModel.update({
             _id: id
-        }, { $set: { isremoved: true, Status: 'CANCELED', total_ht: 0, total_ttc: 0, total_tva: [] } }, function(err) {
+        }, {
+            $set: {
+                isremoved: true,
+                Status: 'CANCELED',
+                total_ht: 0,
+                total_ttc: 0,
+                total_tva: []
+            }
+        }, function(err) {
             if (err)
                 self.throw500(err);
             else
@@ -348,8 +367,18 @@ Object.prototype = {
             ids.push(list);
 
         BillModel.update({
-            _id: { $in: ids }
-        }, { $set: { isremoved: true, Status: 'CANCELED', total_ht: 0, total_ttc: 0, total_tva: [] } }, function(err) {
+            _id: {
+                $in: ids
+            }
+        }, {
+            $set: {
+                isremoved: true,
+                Status: 'CANCELED',
+                total_ht: 0,
+                total_ttc: 0,
+                total_tva: []
+            }
+        }, function(err) {
             if (err)
                 self.throw500(err);
             else
@@ -686,7 +715,9 @@ Object.prototype = {
                         //console.log(productLines, arr);
 
                         async.each(arr, function(lineBill, callback) {
-                            ProductModel.findOne({ _id: lineBill.id }, "ref compta_buy compta_buy_eu compta_buy_exp", function(err, product) {
+                            ProductModel.findOne({
+                                _id: lineBill.id
+                            }, "ref compta_buy compta_buy_eu compta_buy_exp", function(err, product) {
 
                                 if (!lineBill.product.costFamily)
                                     return callback("Error no family cost on product {0} !".format(lineBill.product.info.SKU));
@@ -812,16 +843,25 @@ Object.prototype = {
         };
 
         async.each(ids, function(id, callback) {
-                BillModel.findOne({ _id: id, isremoved: { $ne: true } }, "-latex")
+                BillModel.findOne({
+                        _id: id,
+                        isremoved: {
+                            $ne: true
+                        }
+                    }, "-latex")
                     .populate({
                         path: "supplier",
                         select: "name salesPurchases",
-                        populate: { path: "salesPurchases.priceList" }
+                        populate: {
+                            path: "salesPurchases.priceList"
+                        }
                     })
                     .populate({
                         path: "lines.product",
                         select: "taxes info weight units sellFamily costFamily",
-                        populate: { path: "sellFamily costFamily" },
+                        populate: {
+                            path: "sellFamily costFamily"
+                        },
                     })
                     .populate({
                         path: "lines.total_taxes.taxeId"
@@ -900,7 +940,9 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            isremoved: { $ne: true },
+            isremoved: {
+                $ne: true
+            },
             entity: self.query.entity,
             forSales: true
         };
@@ -912,17 +954,23 @@ Object.prototype = {
             if (self.query.status_id) {
                 switch (self.query.status_id) {
                     case 'LIST':
-                        conditions.Status = { $ne: "PAID" };
+                        conditions.Status = {
+                            $ne: "PAID"
+                        };
                         break;
                     case 'VALIDATE':
                         Status = self.query.status_id;
                         conditions.Status = 'NOT_PAID';
-                        conditions.dater = { $gt: moment().subtract(10, 'days').toDate() };
+                        conditions.dater = {
+                            $gt: moment().subtract(10, 'days').toDate()
+                        };
                         break;
                     case 'NOT_PAID':
                         Status = self.query.status_id;
                         conditions.Status = 'NOT_PAID';
-                        conditions.dater = { $lte: moment().subtract(10, 'days').toDate() };
+                        conditions.dater = {
+                            $lte: moment().subtract(10, 'days').toDate()
+                        };
                         break;
                     default:
                         conditions.Status = self.query.status_id;
@@ -962,8 +1010,13 @@ Object.prototype = {
                 return self.throw500(err);
 
             //console.log(res);
-            SocieteModel.populate(res, { path: "datatable.data.supplier" }, function(err, res) {
-                EmployeeModel.populate(res, { path: "datatable.data.salesPerson", select: "name" }, function(err, res) {
+            SocieteModel.populate(res, {
+                path: "datatable.data.supplier"
+            }, function(err, res) {
+                EmployeeModel.populate(res, {
+                    path: "datatable.data.salesPerson",
+                    select: "name"
+                }, function(err, res) {
 
 
                     for (var i = 0, len = res.datatable.data.length; i < len; i++) {
@@ -989,7 +1042,7 @@ Object.prototype = {
                         res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
 
                         if (res.datatable.data[i].journalId && res.datatable.data[i].journalId.length > 0)
-                        // Add color line 
+                            // Add color line 
                             res.datatable.data[i].DT_RowClass = "bg-grey-silver";
                         // Action
                         res.datatable.data[i].action = '<a href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
@@ -1056,22 +1109,40 @@ Object.prototype = {
         var BillModel = MODEL('invoice').Schema;
 
         var cond_reglement_code = {};
-        Dict.dict({ dictName: "fk_payment_term", object: true }, function(err, docs) {
+        Dict.dict({
+            dictName: "fk_payment_term",
+            object: true
+        }, function(err, docs) {
             cond_reglement_code = docs;
         });
         var mode_reglement_code = {};
-        Dict.dict({ dictName: "fk_paiement", object: true }, function(err, docs) {
+        Dict.dict({
+            dictName: "fk_paiement",
+            object: true
+        }, function(err, docs) {
             mode_reglement_code = docs;
         });
 
         var tabTex = [];
 
-        BillModel.find({ Status: { $ne: "DRAFT" }, isremoved: { $ne: true }, _id: { $in: self.body.id } })
+        BillModel.find({
+                Status: {
+                    $ne: "DRAFT"
+                },
+                isremoved: {
+                    $ne: true
+                },
+                _id: {
+                    $in: self.body.id
+                }
+            })
             //.populate("contacts", "name phone email")
             .populate({
                 path: "supplier",
                 select: "name salesPurchases",
-                populate: { path: "salesPurchases.priceList" }
+                populate: {
+                    path: "salesPurchases.priceList"
+                }
             })
             .populate({
                 path: "lines.product",
@@ -1098,7 +1169,9 @@ Object.prototype = {
                     return console.log(err);
 
                 if (!bills.length)
-                    return self.json({ error: "No bills" });
+                    return self.json({
+                        error: "No bills"
+                    });
 
                 async.each(bills, function(bill, cb) {
 
@@ -1107,7 +1180,10 @@ Object.prototype = {
                             return cb(err);
                         //console.log(tex);
 
-                        tabTex.push({ id: bill.ref, tex: tex });
+                        tabTex.push({
+                            id: bill.ref,
+                            tex: tex
+                        });
                         cb();
                     });
                 }, function(err) {
@@ -1163,26 +1239,47 @@ Object.prototype = {
         var self = this;
 
         var cond_reglement_code = {};
-        Dict.dict({ dictName: "fk_payment_term", object: true }, function(err, docs) {
+        Dict.dict({
+            dictName: "fk_payment_term",
+            object: true
+        }, function(err, docs) {
             cond_reglement_code = docs;
         });
         var mode_reglement_code = {};
-        Dict.dict({ dictName: "fk_paiement", object: true }, function(err, docs) {
+        Dict.dict({
+            dictName: "fk_paiement",
+            object: true
+        }, function(err, docs) {
             mode_reglement_code = docs;
         });
 
-        BillModel.find({ "client.id": id, isremoved: { $ne: true }, entity: self.query.entity, Status: { $in: ["VALIDATE", "NOT_PAID", "STARTED"] } }, function(err, bills) {
+        BillModel.find({
+            "client.id": id,
+            isremoved: {
+                $ne: true
+            },
+            entity: self.query.entity,
+            Status: {
+                $in: ["VALIDATE", "NOT_PAID", "STARTED"]
+            }
+        }, function(err, bills) {
 
             var doc = bills[0];
             //console.log(bills);
             //return;
 
             if (bills == null || bills.length == 0) {
-                return self.json({ error: "Il n'y aucune facture en attente de règlement" });
+                return self.json({
+                    error: "Il n'y aucune facture en attente de règlement"
+                });
             }
 
-            SocieteModel.findOne({ _id: doc.client.id }, function(err, societe) {
-                BankModel.findOne({ ref: societe.bank_reglement }, function(err, bank) {
+            SocieteModel.findOne({
+                _id: doc.client.id
+            }, function(err, societe) {
+                BankModel.findOne({
+                    ref: societe.bank_reglement
+                }, function(err, bank) {
                     if (bank)
                         var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
@@ -1202,13 +1299,32 @@ Object.prototype = {
 
                     var tabLines = [];
                     tabLines.push({
-                        keys: [
-                            { key: "ref", type: "string" },
-                            { key: "datec", "type": "date", "format": CONFIG('dateformatShort') },
-                            { key: "ref_client", type: "string" },
-                            { key: "dater", "type": "date", "format": CONFIG('dateformatShort') },
-                            { key: "total_ht", type: "euro" },
-                            { key: "total_ttc", type: "euro" }
+                        keys: [{
+                                key: "ref",
+                                type: "string"
+                            },
+                            {
+                                key: "datec",
+                                "type": "date",
+                                "format": CONFIG('dateformatShort')
+                            },
+                            {
+                                key: "ref_client",
+                                type: "string"
+                            },
+                            {
+                                key: "dater",
+                                "type": "date",
+                                "format": CONFIG('dateformatShort')
+                            },
+                            {
+                                key: "total_ht",
+                                type: "euro"
+                            },
+                            {
+                                key: "total_ttc",
+                                type: "euro"
+                            }
                         ]
                     });
 
@@ -1260,9 +1376,18 @@ Object.prototype = {
                                 "value": new Date(),
                                 "format": CONFIG('dateformatShort')
                             },
-                            "REGLEMENT": { "type": "string", "value": cond_reglement_code.values[doc.cond_reglement_code].label },
-                            "PAID": { "type": "string", "value": mode_reglement_code.values[doc.mode_reglement_code].label },
-                            "BK": { "type": "area", "value": reglement },
+                            "REGLEMENT": {
+                                "type": "string",
+                                "value": cond_reglement_code.values[doc.cond_reglement_code].label
+                            },
+                            "PAID": {
+                                "type": "string",
+                                "value": mode_reglement_code.values[doc.mode_reglement_code].label
+                            },
+                            "BK": {
+                                "type": "area",
+                                "value": reglement
+                            },
                             "TABULAR": tabLines,
                             "APAYER": {
                                 "type": "euro",
@@ -1302,13 +1427,26 @@ Object.prototype = {
         var ca = {};
 
         var query = {
-            isremoved: { $ne: true },
-            Status: { '$nin': ['DRAFT', 'CANCELED'] },
+            isremoved: {
+                $ne: true
+            },
+            Status: {
+                '$nin': ['DRAFT', 'CANCELED']
+            },
             forSales: (self.query.forSales == 'false' ? false : true),
-            $or: [
-                    { datec: { '$gte': dateStart, '$lt': dateEnd } },
-                    { datec: { '$gte': dateStartN1, '$lt': dateEndN1 } }
-                ] // Date de facture
+            $or: [{
+                    datec: {
+                        '$gte': dateStart,
+                        '$lt': dateEnd
+                    }
+                },
+                {
+                    datec: {
+                        '$gte': dateStartN1,
+                        '$lt': dateEndN1
+                    }
+                }
+            ] // Date de facture
         };
 
         if (self.query.entity)
@@ -1316,13 +1454,28 @@ Object.prototype = {
 
         /* supplier invoice */
         if (self.query.forSales && self.query.forSales == 'false')
-            return BillModel.aggregate([
-                    { $match: query },
-                    { $project: { _id: 0, total_ht: 1, supplier: 1, year: { $year: '$datec' } } },
+            return BillModel.aggregate([{
+                        $match: query
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            total_ht: 1,
+                            supplier: 1,
+                            year: {
+                                $year: '$datec'
+                            }
+                        }
+                    },
                     {
                         $group: {
-                            _id: { id: "$supplier", year: "$year" },
-                            total_ht: { "$sum": "$total_ht" }
+                            _id: {
+                                id: "$supplier",
+                                year: "$year"
+                            },
+                            total_ht: {
+                                "$sum": "$total_ht"
+                            }
                         }
                     },
                     {
@@ -1333,19 +1486,50 @@ Object.prototype = {
                             as: 'supplier'
                         }
                     },
-                    { $unwind: "$supplier" },
-                    { $project: { _id: 1, total_ht: 1, 'supplier.name': 1, 'supplier._id': 1, 'supplier.isSubcontractor': "$supplier.salesPurchases.isSubcontractor" } },
                     {
-                        $group: { _id: { id: "$supplier.isSubcontractor", year: "$_id.year" }, data: { $addToSet: { supplier: "$supplier", total_ht: "$total_ht" } }, total_ht: { "$sum": "$total_ht" } }
+                        $unwind: "$supplier"
                     },
-                    { $sort: { '_id.year': -1, total_ht: -1 } }
+                    {
+                        $project: {
+                            _id: 1,
+                            total_ht: 1,
+                            'supplier.name': 1,
+                            'supplier._id': 1,
+                            'supplier.isSubcontractor': "$supplier.salesPurchases.isSubcontractor"
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: {
+                                id: "$supplier.isSubcontractor",
+                                year: "$_id.year"
+                            },
+                            data: {
+                                $addToSet: {
+                                    supplier: "$supplier",
+                                    total_ht: "$total_ht"
+                                }
+                            },
+                            total_ht: {
+                                "$sum": "$total_ht"
+                            }
+                        }
+                    },
+                    {
+                        $sort: {
+                            '_id.year': -1,
+                            total_ht: -1
+                        }
+                    }
                 ],
                 function(err, docs) {
                     if (err)
                         return console.log(err);
 
                     if (!docs.length)
-                        return self.json({ total: 0 });
+                        return self.json({
+                            total: 0
+                        });
 
                     //console.log(docs);
                     let result = {
@@ -1442,37 +1626,62 @@ Object.prototype = {
 
                         return cb();
                     }, function(err) {
-                        self.json({ total: (result.charge.total_ht + result.subcontractor.total_ht), data: result });
+                        self.json({
+                            total: (result.charge.total_ht + result.subcontractor.total_ht),
+                            data: result
+                        });
                     });
                 });
 
         var query = {
-            isremoved: { $ne: true },
-            Status: { '$nin': ['DRAFT', 'CANCELED'] },
+            isremoved: {
+                $ne: true
+            },
+            Status: {
+                '$nin': ['DRAFT', 'CANCELED']
+            },
             forSales: (self.query.forSales == 'false' ? false : true),
-            $or: [
-                    { datec: { '$gte': dateStart, '$lt': dateEnd } }
-                ] // Date de facture
+            $or: [{
+                datec: {
+                    '$gte': dateStart,
+                    '$lt': dateEnd
+                }
+            }] // Date de facture
         };
 
         /* Customer invoice */
-        BillModel.aggregate([
-                { $match: query },
-                {
-                    $project: { _id: 0, total_ht: 1 }
+        BillModel.aggregate([{
+                    $match: query
                 },
-                { $group: { _id: null, total_ht: { "$sum": "$total_ht" } } }
+                {
+                    $project: {
+                        _id: 0,
+                        total_ht: 1
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total_ht: {
+                            "$sum": "$total_ht"
+                        }
+                    }
+                }
             ],
             function(err, doc) {
                 if (err)
                     return console.log(err);
 
                 if (!doc.length)
-                    return self.json({ total: 0 });
+                    return self.json({
+                        total: 0
+                    });
 
                 //console.log("totototot", doc);
 
-                self.json({ total: doc[0].total_ht });
+                self.json({
+                    total: doc[0].total_ht
+                });
             });
     },
     download: function(id) {
@@ -1481,7 +1690,12 @@ Object.prototype = {
 
         var object = new Object();
 
-        BillModel.findOne({ _id: id, isremoved: { $ne: true } }, function(err, bill) {
+        BillModel.findOne({
+            _id: id,
+            isremoved: {
+                $ne: true
+            }
+        }, function(err, bill) {
             if (err)
                 return self.throw500(err);
 
@@ -1516,7 +1730,10 @@ Object.prototype = {
         var BillModel = MODEL('invoice').Schema;
 
         async.each(self.body.id, function(id, cb) {
-            BillModel.findOne({ _id: id, Status: 'DRAFT' }, function(err, bill) {
+            BillModel.findOne({
+                _id: id,
+                Status: 'DRAFT'
+            }, function(err, bill) {
                 if (err)
                     return cb(err);
 
@@ -1528,7 +1745,9 @@ Object.prototype = {
                     if (err)
                         return cb(err);
 
-                    BillModel.findByIdAndUpdate(id, invoice, { new: true }, function(err, doc) {
+                    BillModel.findByIdAndUpdate(id, invoice, {
+                        new: true
+                    }, function(err, doc) {
                         if (err)
                             return cb(err);
 
@@ -1565,11 +1784,17 @@ function createBill(doc, cgv, callback) {
 
     var discount = false;
     var cond_reglement_code = {};
-    Dict.dict({ dictName: "fk_payment_term", object: true }, function(err, docs) {
+    Dict.dict({
+        dictName: "fk_payment_term",
+        object: true
+    }, function(err, docs) {
         cond_reglement_code = docs;
     });
     var mode_reglement_code = {};
-    Dict.dict({ dictName: "fk_paiement", object: true }, function(err, docs) {
+    Dict.dict({
+        dictName: "fk_paiement",
+        object: true
+    }, function(err, docs) {
         mode_reglement_code = docs;
     });
 
@@ -1579,17 +1804,21 @@ function createBill(doc, cgv, callback) {
     if (doc.forSales == false)
         model = "bill_supplier.tex";
     else
-    // check if discount
+        // check if discount
         for (var i = 0; i < doc.lines.length; i++) {
-        if (doc.lines[i].discount > 0) {
-            model = "bill_discount.tex";
-            discount = true;
-            break;
+            if (doc.lines[i].discount > 0) {
+                model = "bill_discount.tex";
+                discount = true;
+                break;
+            }
         }
-    }
 
-    SocieteModel.findOne({ _id: doc.supplier.id }, function(err, societe) {
-        BankModel.findOne({ _id: doc.bank_reglement }, function(err, bank) {
+    SocieteModel.findOne({
+        _id: doc.supplier.id
+    }, function(err, societe) {
+        BankModel.findOne({
+            _id: doc.bank_reglement
+        }, function(err, bank) {
             if (bank)
                 var iban = bank.name_bank + "\n RIB : " + bank.code_bank + " " + bank.code_counter + " " + bank.account_number + " " + bank.rib + "\n IBAN : " + bank.iban + "\n BIC : " + bank.bic;
 
@@ -1679,23 +1908,33 @@ function createBill(doc, cgv, callback) {
                             tva_tx: doc.lines[i].total_taxes[0].taxeId.rate,
                             pu_ht: doc.lines[i].pu_ht,
                             discount: (doc.lines[i].discount ? (doc.lines[i].discount + " %") : ""),
-                            qty: { value: doc.lines[i].qty, unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U") },
+                            qty: {
+                                value: doc.lines[i].qty,
+                                unit: (doc.lines[i].product.unit ? " " + doc.lines[i].product.unit : "U")
+                            },
                             total_ht: doc.lines[i].total_ht
                         });
                 }
 
                 if (doc.lines[i].type == 'SUBTOTAL') {
                     tabLines[tabLines.length - 1].italic = true;
-                    tabLines.push({ hline: 1 });
+                    tabLines.push({
+                        hline: 1
+                    });
                 }
                 //tab_latex += " & \\specialcell[t]{\\\\" + "\\\\} & " +   + " & " + " & " +  "\\tabularnewline\n";
             }
 
             // Array of totals
             var tabTotal = [{
-                keys: [
-                    { key: "label", type: "string" },
-                    { key: "total", type: "euro" }
+                keys: [{
+                        key: "label",
+                        type: "string"
+                    },
+                    {
+                        key: "total",
+                        type: "euro"
+                    }
                 ]
             }];
 
@@ -1769,10 +2008,18 @@ function createBill(doc, cgv, callback) {
             if (doc.dateOf && doc.dateTo)
                 period = "\\textit{P\\'eriode du " + moment(doc.dateOf).format(CONFIG('dateformatShort')) + " au " + moment(doc.dateTo).format(CONFIG('dateformatShort')) + "}\\\\";
 
-            Latex.Template(model, doc.entity, { cgv: cgv })
+            Latex.Template(model, doc.entity, {
+                    cgv: cgv
+                })
                 .apply({
-                    "TITLE": { "type": "string", "value": (doc.total_ttc < 0 ? "Avoir" : "Facture") },
-                    "NUM": { "type": "string", "value": doc.ref },
+                    "TITLE": {
+                        "type": "string",
+                        "value": (doc.total_ttc < 0 ? "Avoir" : "Facture")
+                    },
+                    "NUM": {
+                        "type": "string",
+                        "value": doc.ref
+                    },
                     "DESTINATAIRE.NAME": {
                         "type": "string",
                         "value": doc.address.name || doc.supplier.fullName
@@ -1798,8 +2045,14 @@ function createBill(doc, cgv, callback) {
                         "value": societe.salesPurchases.code_client
                     },
                     //"TITLE": {"type": "string", "value": doc.title},
-                    "REFCLIENT": { "type": "string", "value": doc.ref_client },
-                    "PERIOD": { "type": "string", "value": period },
+                    "REFCLIENT": {
+                        "type": "string",
+                        "value": doc.ref_client
+                    },
+                    "PERIOD": {
+                        "type": "string",
+                        "value": period
+                    },
                     "DATEC": {
                         "type": "date",
                         "value": doc.datec,
@@ -1810,13 +2063,22 @@ function createBill(doc, cgv, callback) {
                         "value": doc.dater,
                         "format": CONFIG('dateformatShort')
                     },
-                    "REGLEMENT": { "type": "string", "value": cond_reglement_code.values[doc.cond_reglement_code].label },
-                    "PAID": { "type": "string", "value": mode_reglement_code.values[doc.mode_reglement_code].label },
+                    "REGLEMENT": {
+                        "type": "string",
+                        "value": cond_reglement_code.values[doc.cond_reglement_code].label
+                    },
+                    "PAID": {
+                        "type": "string",
+                        "value": mode_reglement_code.values[doc.mode_reglement_code].label
+                    },
                     "NOTES": {
                         "type": "string",
                         "value": (doc.notes.length ? doc.notes[0].note : "")
                     },
-                    "BK": { "type": "area", "value": reglement },
+                    "BK": {
+                        "type": "area",
+                        "value": reglement
+                    },
                     "TABULAR": tabLines,
                     "TOTAL": tabTotal,
                     "APAYER": {
