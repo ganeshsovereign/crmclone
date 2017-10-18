@@ -1,23 +1,18 @@
-
-
 /*******************************************************************************
 		-	BULLETS AND ARROWS ADD ONS TO THE EXISTING VERSION 	-
 *******************************************************************************/
 
 .tp-bannertimer {
-    background:#777;
-    background:rgba(0,0,0,0.1);
-    height:5px;
-  }
-
-
+    background: #777;
+    background: rgba(0, 0, 0, 0.1);
+    height: 5px;
+}
 
 .tp-bullets.simplebullets.navbar {
-
     height: 35px;
     padding: 0px 0px;
-
 }
+
 .tp-bullets.simplebullets .bullet {
     cursor: pointer;
     position: relative !important;
@@ -38,27 +33,27 @@
     -o-transition: background-color 0.2s, border-color 0.2s;
     -ms-transition: background-color 0.2s, border-color 0.2s;
     transition: background-color 0.2s, border-color 0.2s;
-    float:none !important;
+    float: none !important;
 }
+
 .tp-bullets.simplebullets .bullet.last {
     margin-right: 0px
 }
+
 .tp-bullets.simplebullets .bullet:hover,
 .tp-bullets.simplebullets .bullet.selected {
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-	background: rgba(255, 255, 255, 1) !important;
-	width: 6px !important;
+    background: rgba(255, 255, 255, 1) !important;
+    width: 6px !important;
     height: 6px !important;
     border: 5px solid rgba(0, 0, 0, 1) !important;
 }
 
-
-
 .tparrows:before {
     font-family: 'revicons';
-	color: #fff;
+    color: #fff;
     font-style: normal;
     font-weight: normal;
     speak: none;
@@ -70,34 +65,35 @@
     width: 40px;
     font-size: 20px;
 }
+
 .tparrows {
-
     cursor: pointer;
-
     background: rgba(0, 0, 0, 0.5) !important;
     -webkit-border-radius: 5px;
     border-radius: 5px;
     width: 40px !important;
     height: 40px !important;
-
 }
+
 .tparrows:hover {
     color: #fff;
 }
+
 .tp-leftarrow:before {
     content: '\e824';
 }
+
 .tp-rightarrow:before {
     content: '\e825';
 }
+
 .tparrows.tp-rightarrow:before {
     margin-left: 1px;
 }
+
 .tparrows:hover {
     background: rgba(0, 0, 0, 1) !important;
 }
-
-
 
 /******************************
 	-	SLIDER NAV STYLE DEMOS	-
@@ -110,10 +106,10 @@
 }
 
 #slider4container .tparrows {
-	background:#fff !important;
-	background:rgba(255,255,255,0.5) !important;
+    background: #fff !important;
+    background: rgba(255, 255, 255, 0.5) !important;
 }
 
-#slider4container .tparrows:hover	{
-	background:#fff !important
+#slider4container .tparrows:hover {
+    background: #fff !important
 }

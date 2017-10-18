@@ -1,4 +1,4 @@
-﻿// Ion.RangeSlider
+// Ion.RangeSlider
 // version 1.9.3 Build: 176
 // © 2013-2014 Denis Ineshin | IonDen.com
 //
@@ -9,13 +9,13 @@
 // http://ionden.com/a/plugins/licence-en.html
 // =====================================================================================================================
 
-(function ($, document, window, navigator) {
+(function($, document, window, navigator) {
     "use strict";
 
     var plugin_count = 0,
         current;
 
-    var is_old_ie = (function () {
+    var is_old_ie = (function() {
         var n = navigator.userAgent,
             r = /msie\s\d+/i,
             v;
@@ -30,7 +30,7 @@
     }());
     var is_touch = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
 
-    var testNumber = function (num) {
+    var testNumber = function(num) {
         if (typeof num === "number") {
             if (isNaN(num)) {
                 return null;
@@ -48,7 +48,7 @@
     };
 
     var methods = {
-        init: function (options) {
+        init: function(options) {
 
             // irs = ion range slider css prefix
             var baseHTML =
@@ -72,7 +72,7 @@
 
 
 
-            return this.each(function () {
+            return this.each(function() {
                 var settings = $.extend({
                     min: null,
                     max: null,
@@ -300,7 +300,7 @@
                 }
 
 
-                var prettify = function (num) {
+                var prettify = function(num) {
                     var n = num.toString();
                     if (settings.prettify) {
                         n = n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, "$1 ");
@@ -355,11 +355,11 @@
 
 
                 // public methods
-                this.updateData = function (options) {
+                this.updateData = function(options) {
                     $.extend(settings, options);
                     removeHTML();
                 };
-                this.removeSlider = function () {
+                this.removeSlider = function() {
                     $container.find("*").off();
                     $window.off("mouseup.irs" + self.plugin_count);
                     $body.off("mouseup.irs" + self.plugin_count);
@@ -375,7 +375,7 @@
 
 
                 // private methods
-                var removeHTML = function () {
+                var removeHTML = function() {
                     $container.find("*").off();
                     $window.off("mouseup.irs" + self.plugin_count);
                     $body.off("mouseup.irs" + self.plugin_count);
@@ -385,7 +385,7 @@
 
                     placeHTML();
                 };
-                var placeHTML = function () {
+                var placeHTML = function() {
                     $container.html(baseHTML);
                     $rangeSlider = $container.find(".irs");
 
@@ -433,13 +433,13 @@
                     bindEvents();
                 };
 
-                var bindEvents = function () {
+                var bindEvents = function() {
                     if (settings.type === "single") {
                         $rangeSlider.append(singleHTML);
 
                         $singleSlider = $rangeSlider.find(".single");
 
-                        $singleSlider.on("mousedown", function (e) {
+                        $singleSlider.on("mousedown", function(e) {
                             e.preventDefault();
                             e.stopPropagation();
 
@@ -454,7 +454,7 @@
                             }
                         });
                         if (is_touch) {
-                            $singleSlider.on("touchstart", function (e) {
+                            $singleSlider.on("touchstart", function(e) {
                                 e.preventDefault();
                                 e.stopPropagation();
 
@@ -475,7 +475,7 @@
 
                         setDiapason();
 
-                        $fromSlider.on("mousedown", function (e) {
+                        $fromSlider.on("mousedown", function(e) {
                             e.preventDefault();
                             e.stopPropagation();
 
@@ -491,7 +491,7 @@
                                 $("*").prop("unselectable", true);
                             }
                         });
-                        $toSlider.on("mousedown", function (e) {
+                        $toSlider.on("mousedown", function(e) {
                             e.preventDefault();
                             e.stopPropagation();
 
@@ -509,7 +509,7 @@
                         });
 
                         if (is_touch) {
-                            $fromSlider.on("touchstart", function (e) {
+                            $fromSlider.on("touchstart", function(e) {
                                 e.preventDefault();
                                 e.stopPropagation();
 
@@ -521,7 +521,7 @@
                                 is_slider_active = true;
                                 current = self.plugin_count;
                             });
-                            $toSlider.on("touchstart", function (e) {
+                            $toSlider.on("touchstart", function(e) {
                                 e.preventDefault();
                                 e.stopPropagation();
 
@@ -540,7 +540,7 @@
                         }
                     }
 
-                    var mouseup = function () {
+                    var mouseup = function() {
                         if (current !== self.plugin_count) {
                             return;
                         }
@@ -561,29 +561,29 @@
                         }
                     };
 
-                    $window.on("mouseup.irs" + self.plugin_count, function () {
+                    $window.on("mouseup.irs" + self.plugin_count, function() {
                         mouseup();
                     });
 
                     if (is_old_ie) {
-                        $body.on("mouseleave.irs" + self.plugin_count, function () {
+                        $body.on("mouseleave.irs" + self.plugin_count, function() {
                             mouseup();
                         });
                     }
 
 
-                    $body.on("mousemove.irs" + self.plugin_count, function (e) {
+                    $body.on("mousemove.irs" + self.plugin_count, function(e) {
                         if (allowDrag) {
                             mouseX = e.pageX;
                             dragSlider();
                         }
                     });
 
-                    $container.on("mousedown", function () {
+                    $container.on("mousedown", function() {
                         current = self.plugin_count;
                     });
 
-                    $container.on("mouseup", function (e) {
+                    $container.on("mouseup", function(e) {
                         if (current !== self.plugin_count) {
                             return;
                         }
@@ -596,7 +596,7 @@
                     });
 
                     if (is_touch) {
-                        $window.on("touchend", function () {
+                        $window.on("touchend", function() {
                             if (allowDrag) {
                                 is_slider_active = false;
                                 allowDrag = false;
@@ -608,7 +608,7 @@
                                 getNumbers();
                             }
                         });
-                        $window.on("touchmove", function (e) {
+                        $window.on("touchmove", function(e) {
                             if (allowDrag) {
                                 mouseX = e.originalEvent.touches[0].pageX;
                                 dragSlider();
@@ -628,7 +628,7 @@
                     }
                 };
 
-                var getSize = function () {
+                var getSize = function() {
                     normalWidth = $rangeSlider.width();
                     if ($singleSlider) {
                         sliderWidth = $singleSlider.width();
@@ -638,7 +638,7 @@
                     fullWidth = normalWidth - sliderWidth;
                 };
 
-                var calcDimensions = function (e, currentSlider, whichSlider) {
+                var calcDimensions = function(e, currentSlider, whichSlider) {
                     getSize();
 
                     is_first_start = false;
@@ -666,7 +666,7 @@
                     }
                 };
 
-                var setDiapason = function () {
+                var setDiapason = function() {
                     var _w = $fromSlider.width(),
                         _x = $.data($fromSlider[0], "x") || parseInt($fromSlider[0].style.left, 10) || $fromSlider.position().left,
                         _width = $.data($toSlider[0], "x") || parseInt($toSlider[0].style.left, 10) || $toSlider.position().left,
@@ -676,7 +676,7 @@
                     $diapason[0].style.width = w + "px";
                 };
 
-                var dragSlider = function (manual_x) {
+                var dragSlider = function(manual_x) {
                     var x_pure = mouseX - minusX,
                         x;
 
@@ -714,7 +714,7 @@
                     $activeSlider[0].style.left = x + "px";
                 };
 
-                var getNumbers = function () {
+                var getNumbers = function() {
                     var nums = {
                         input: slider,
                         slider: $container,
@@ -729,7 +729,8 @@
                         toX: 0,
                         toX_pure: 0
                     };
-                    var diapason = settings.max - settings.min, _from, _to;
+                    var diapason = settings.max - settings.min,
+                        _from, _to;
 
                     if (settings.type === "single") {
 
@@ -786,7 +787,7 @@
                     setFields();
                 };
 
-                var setNumbers = function () {
+                var setNumbers = function() {
                     var nums = {
                         input: slider,
                         slider: $container,
@@ -833,7 +834,7 @@
                     setFields();
                 };
 
-                var moveByClick = function (page_x) {
+                var moveByClick = function(page_x) {
                     is_first_start = false;
 
                     var x = page_x - $container.offset().left,
@@ -863,7 +864,7 @@
                     $activeSlider = null;
                 };
 
-                var setFields = function () {
+                var setFields = function() {
                     var _from, _fromW, _fromX,
                         _to, _toW, _toX,
                         _single, _singleW, _singleX,
@@ -1061,7 +1062,7 @@
                 };
 
 
-                var callbacks = function () {
+                var callbacks = function() {
                     // trigger onFinish function
                     if (typeof settings.onFinish === "function" && !is_slider_active && !is_first_start) {
                         settings.onFinish.call(this, numbers);
@@ -1080,7 +1081,7 @@
                 };
 
 
-                var setGrid = function () {
+                var setGrid = function() {
                     $container.addClass("irs-with-grid");
 
                     var i,
@@ -1153,12 +1154,12 @@
 
 
                 // Disable state
-                var setMask = function () {
+                var setMask = function() {
                     $container.addClass("irs-disabled");
                     $container.append(disableHTML);
                 };
 
-                var removeMask = function () {
+                var removeMask = function() {
                     $container.removeClass("irs-disabled");
                     $container.find(".irs-disable-mask").remove();
                 };
@@ -1168,19 +1169,19 @@
                 placeHTML();
             });
         },
-        update: function (options) {
-            return this.each(function () {
+        update: function(options) {
+            return this.each(function() {
                 this.updateData(options);
             });
         },
-        remove: function () {
-            return this.each(function () {
+        remove: function() {
+            return this.each(function() {
                 this.removeSlider();
             });
         }
     };
 
-    $.fn.ionRangeSlider = function (method) {
+    $.fn.ionRangeSlider = function(method) {
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {

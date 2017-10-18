@@ -9,7 +9,7 @@
     .CodeMirror {
         border: 1px solid #999;
     }
-    
+
     .cm-s-default span.cm-arrow {
         color: red;
     }
@@ -53,8 +53,7 @@
             ; Give voicemail at extension 8500 ; exten => 8500,1,VoicemailMain exten => 8500,n,Goto(s,6) </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             mode: "text/x-asterisk",
             matchBrackets: true,
             lineNumber: true

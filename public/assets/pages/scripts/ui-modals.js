@@ -1,6 +1,6 @@
-var UIModals = function () {
+var UIModals = function() {
 
-    var handleModals = function () {
+    var handleModals = function() {
         $("#draggable").draggable({
             handle: ".modal-header"
         });
@@ -8,7 +8,7 @@ var UIModals = function () {
 
     return {
         //main function to initiate the module
-        init: function () {
+        init: function() {
             handleModals();
         }
 
@@ -16,6 +16,6 @@ var UIModals = function () {
 
 }();
 
-jQuery(document).ready(function() {    
-   UIModals.init();
+jQuery(document).ready(function() {
+    UIModals.init();
 });

@@ -58,7 +58,9 @@ exports.install = function() {
                 if (body && body.varname) {
                     var doc = {};
                     doc[body.varname] = files[files.length - 1]._id;
-                    return Model.findByIdAndUpdate(id, doc, { new: true }, function(err, doc) {
+                    return Model.findByIdAndUpdate(id, doc, {
+                        new: true
+                    }, function(err, doc) {
                         return self.json(doc);
                     });
                 }

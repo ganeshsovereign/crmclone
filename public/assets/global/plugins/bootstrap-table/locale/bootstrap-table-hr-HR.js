@@ -1,40 +1,40 @@
-﻿/**
+/**
  * Bootstrap Table Croatian translation
  * Author: Petra Štrbenac (petra.strbenac@gmail.com)
  * Author: Petra Štrbenac (petra.strbenac@gmail.com)
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['hr-HR'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Molimo pričekajte ...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' broj zapisa po stranici';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Prikazujem ' + pageFrom + '. - ' + pageTo + '. od ukupnog broja zapisa ' + totalRows;
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Pretraži';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'Nije pronađen niti jedan zapis';
         },
-        formatPaginationSwitch: function () {
+        formatPaginationSwitch: function() {
             return 'Prikaži/sakrij stranice';
         },
-        formatRefresh: function () {
+        formatRefresh: function() {
             return 'Osvježi';
         },
-        formatToggle: function () {
+        formatToggle: function() {
             return 'Promijeni prikaz';
         },
-        formatColumns: function () {
+        formatColumns: function() {
             return 'Kolone';
         },
-        formatAllRows: function () {
+        formatAllRows: function() {
             return 'Sve';
         }
     };

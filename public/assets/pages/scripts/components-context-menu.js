@@ -1,9 +1,9 @@
-var ComponentsContextMenu = function () {
+var ComponentsContextMenu = function() {
 
     var demo2 = function() {
         $('#main').contextmenu({
             target: '#context-menu2',
-            before: function (e) {
+            before: function(e) {
                 // This function is optional.
                 // Here we use it to stop the event if the user clicks a span
                 e.preventDefault();
@@ -22,32 +22,32 @@ var ComponentsContextMenu = function () {
         // Demo 3
         $('#context2').contextmenu({
             target: '#context-menu2',
-            onItem: function (context, e) {
+            onItem: function(context, e) {
                 alert($(e.target).text());
             }
         });
 
-        $('#context-menu2').on('show.bs.context', function (e) {
+        $('#context-menu2').on('show.bs.context', function(e) {
             console.log('before show event');
         });
 
-        $('#context-menu2').on('shown.bs.context', function (e) {
+        $('#context-menu2').on('shown.bs.context', function(e) {
             console.log('after show event');
         });
 
-        $('#context-menu2').on('hide.bs.context', function (e) {
+        $('#context-menu2').on('hide.bs.context', function(e) {
             console.log('before hide event');
         });
 
-        $('#context-menu2').on('hidden.bs.context', function (e) {
+        $('#context-menu2').on('hidden.bs.context', function(e) {
             console.log('after hide event');
         });
     }
 
     return {
         //main function to initiate the module
-        
-        init: function () {
+
+        init: function() {
             demo2();
             demo3();
         }
@@ -56,6 +56,6 @@ var ComponentsContextMenu = function () {
 
 }();
 
-jQuery(document).ready(function() {    
-   ComponentsContextMenu.init(); 
+jQuery(document).ready(function() {
+    ComponentsContextMenu.init();
 });

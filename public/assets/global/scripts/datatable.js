@@ -1,7 +1,7 @@
 /***
  Wrapper/Helper Class for datagrid based on jQuery Datatable Plugin
  ***/
-var Datatable = function () {
+var Datatable = function() {
 
     var tableOptions; // main options
     var dataTable; // datatable object
@@ -12,7 +12,7 @@ var Datatable = function () {
     var ajaxParams = {}; // set filter mode
     var the;
 
-    var countSelectedRecords = function () {
+    var countSelectedRecords = function() {
         var selected = $('tbody > tr > td:nth-child(1) input[type="checkbox"]:checked', table).size();
         var text = tableOptions.dataTable.language.metronicGroupActions;
         if (selected > 0) {
@@ -24,7 +24,7 @@ var Datatable = function () {
 
     return {
         //main function to initiate the module
-        init: function (options) {
+        init: function(options) {
 
             if (!$().dataTable) {
                 return;
@@ -42,13 +42,13 @@ var Datatable = function () {
                 resetGroupActionInputOnSuccess: true,
                 loadingMessage: 'Loading...',
                 dataTable: {
-		    "dom": "<'row hidden-print'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'f<'table-group-actions pull-right'>>r><'table-responsive't><'row hidden-print'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+                    "dom": "<'row hidden-print'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'f<'table-group-actions pull-right'>>r><'table-responsive't><'row hidden-print'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
                     "lengthMenu": [
-                        [10, 25, 50, 100, 200, 500/*, -1*/],
-                        [10, 25, 50, 100, 200, 500/*, "All"*/] // change per page values here
+                        [10, 25, 50, 100, 200, 500 /*, -1*/ ],
+                        [10, 25, 50, 100, 200, 500 /*, "All"*/ ] // change per page values here
                     ],
                     "pageLength": 25, // default record count per page
-                    "language": {// language settings
+                    "language": { // language settings
                         // metronic spesific
                         "metronicGroupActions": "_TOTAL_ records selected:  ",
                         "metronicAjaxRequestGeneralError": "Could not complete request. Please check your internet connection",
@@ -69,26 +69,26 @@ var Datatable = function () {
                         }
                     },
                     "orderCellsTop": true,
-                    "columnDefs": [{// define columns sorting options(by default all columns are sortable extept the first checkbox column)
-                            'orderable': false,
-                            'targets': [0]
-                        }],
+                    "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
+                        'orderable': false,
+                        'targets': [0]
+                    }],
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)
                     "autoWidth": false, // disable fixed width and enable fluid table
                     "processing": false, // enable/disable display message box on record load
                     "serverSide": true, // enable/disable server side ajax loading
-                    serverParams: function (data) {
+                    serverParams: function(data) {
                         data.bChunkSearch = true;
                     },
-                    "ajax": {// define ajax settings
+                    "ajax": { // define ajax settings
                         "url": "", // ajax URL
                         "type": "POST", // request type
                         "timeout": 20000,
                         "dataType": "json",
-                        "data": function (data) { // add request parameters before submit
+                        "data": function(data) { // add request parameters before submit
                             // Add filter for search
 
-                            $.each(ajaxParams, function (key, value) {
+                            $.each(ajaxParams, function(key, value) {
                                 if (key !== 'action' && value) {
                                     //bChunckSearch mode
                                     data.search.value += " @" + key + ":" + value;
@@ -108,9 +108,12 @@ var Datatable = function () {
                             });
                             //console.log(data);
 
-                            return {'filters': JSON.stringify(ajaxParams), 'query': JSON.stringify(data)};
+                            return {
+                                'filters': JSON.stringify(ajaxParams),
+                                'query': JSON.stringify(data)
+                            };
                         },
-                        "dataSrc": function (res) { // Manipulate the data returned from the server
+                        "dataSrc": function(res) { // Manipulate the data returned from the server
                             if (res.customActionMessage) {
                                 Metronic.alert({
                                     type: (res.customActionStatus == 'OK' ? 'success' : 'danger'),
@@ -142,7 +145,7 @@ var Datatable = function () {
 
                             return res.data;
                         },
-                        "error": function () { // handle general connection errors
+                        "error": function() { // handle general connection errors
                             if (tableOptions.onError) {
                                 tableOptions.onError.call(undefined, the);
                             }
@@ -158,7 +161,7 @@ var Datatable = function () {
                             Metronic.unblockUI(tableContainer);
                         }
                     },
-                    "drawCallback": function (oSettings) { // run some code on table redraw
+                    "drawCallback": function(oSettings) { // run some code on table redraw
                         if (tableInitialized === false) { // check if table has been initialized
                             tableInitialized = true; // set table initialized
                             table.show(); // display table
@@ -204,10 +207,10 @@ var Datatable = function () {
                 $('.table-actions-wrapper', tableContainer).remove(); // remove the template container
             }
             // handle group checkboxes check/uncheck
-            $('.group-checkable', table).change(function () {
+            $('.group-checkable', table).change(function() {
                 var set = $('tbody > tr > td:nth-child(1) input[type="checkbox"]', table);
                 var checked = $(this).is(":checked");
-                $(set).each(function () {
+                $(set).each(function() {
                     $(this).attr("checked", checked);
                 });
                 $.uniform.update(set);
@@ -215,47 +218,47 @@ var Datatable = function () {
             });
 
             // handle row's checkbox click
-            table.on('change', 'tbody > tr > td:nth-child(1) input[type="checkbox"]', function () {
+            table.on('change', 'tbody > tr > td:nth-child(1) input[type="checkbox"]', function() {
                 countSelectedRecords();
             });
 
             // handle filter submit button click
-            table.on('click', '.filter-submit', function (e) {
+            table.on('click', '.filter-submit', function(e) {
                 e.preventDefault();
                 the.submitFilter();
             });
 
             // handle filter cancel button click
-            table.on('click', '.filter-cancel', function (e) {
+            table.on('click', '.filter-cancel', function(e) {
                 e.preventDefault();
                 the.resetFilter();
             });
         },
-        submitFilter: function () {
+        submitFilter: function() {
             the.setAjaxParam("action", tableOptions.filterApplyAction);
 
             // get all typeable inputs
-            $('textarea.form-filter, select.form-filter, input.form-filter:not([type="radio"],[type="checkbox"])', table).each(function () {
+            $('textarea.form-filter, select.form-filter, input.form-filter:not([type="radio"],[type="checkbox"])', table).each(function() {
                 the.setAjaxParam($(this).attr("name"), $(this).val());
             });
 
             // get all checkboxes
-            $('input.form-filter[type="checkbox"]:checked', table).each(function () {
+            $('input.form-filter[type="checkbox"]:checked', table).each(function() {
                 the.addAjaxParam($(this).attr("name"), $(this).val());
             });
 
             // get all radio buttons
-            $('input.form-filter[type="radio"]:checked', table).each(function () {
+            $('input.form-filter[type="radio"]:checked', table).each(function() {
                 the.setAjaxParam($(this).attr("name"), $(this).val());
             });
 
             dataTable.ajax.reload();
         },
-        resetFilter: function (url) {
-            $('textarea.form-filter, select.form-filter, input.form-filter', table).each(function () {
+        resetFilter: function(url) {
+            $('textarea.form-filter, select.form-filter, input.form-filter', table).each(function() {
                 $(this).val("");
             });
-            $('input.form-filter[type="checkbox"]', table).each(function () {
+            $('input.form-filter[type="checkbox"]', table).each(function() {
                 $(this).attr("checked", false);
             });
             the.clearAjaxParams();
@@ -266,21 +269,21 @@ var Datatable = function () {
             else
                 dataTable.ajax.reload();
         },
-        getSelectedRowsCount: function () {
+        getSelectedRowsCount: function() {
             return $('tbody > tr > td:nth-child(1) input[type="checkbox"]:checked', table).size();
         },
-        getSelectedRows: function () {
+        getSelectedRows: function() {
             var rows = [];
-            $('tbody > tr > td:nth-child(1) input[type="checkbox"]:checked', table).each(function () {
+            $('tbody > tr > td:nth-child(1) input[type="checkbox"]:checked', table).each(function() {
                 rows.push($(this).val());
             });
 
             return rows;
         },
-        setAjaxParam: function (name, value) {
+        setAjaxParam: function(name, value) {
             ajaxParams[name] = value;
         },
-        addAjaxParam: function (name, value) {
+        addAjaxParam: function(name, value) {
             if (!ajaxParams[name]) {
                 ajaxParams[name] = [];
             }
@@ -296,19 +299,19 @@ var Datatable = function () {
                 ajaxParams[name].push(value);
             }
         },
-        clearAjaxParams: function (name, value) {
+        clearAjaxParams: function(name, value) {
             ajaxParams = {};
         },
-        getDataTable: function () {
+        getDataTable: function() {
             return dataTable;
         },
-        getTableWrapper: function () {
+        getTableWrapper: function() {
             return tableWrapper;
         },
-        gettableContainer: function () {
+        gettableContainer: function() {
             return tableContainer;
         },
-        getTable: function () {
+        getTable: function() {
             return table;
         }
 

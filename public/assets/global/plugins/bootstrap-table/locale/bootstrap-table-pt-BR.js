@@ -3,35 +3,35 @@
  * Author: Eduardo Cerqueira<egcerqueira@gmail.com>
  * Update: João Mello<jmello@hotmail.com.br>
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['pt-BR'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Carregando, aguarde...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' registros por página';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Exibindo ' + pageFrom + ' até ' + pageTo + ' de ' + totalRows + ' linhas';
         },
-        formatSearch: function () { 
+        formatSearch: function() {
             return 'Pesquisar';
         },
-        formatRefresh: function () { 
+        formatRefresh: function() {
             return 'Recarregar';
         },
-        formatToggle: function () { 
+        formatToggle: function() {
             return 'Alternar';
         },
-        formatColumns: function () { 
+        formatColumns: function() {
             return 'Colunas';
         },
-        formatPaginationSwitch: function () { 
+        formatPaginationSwitch: function() {
             return 'Ocultar/Exibir paginação';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'Nenhum registro encontrado';
         }
     };

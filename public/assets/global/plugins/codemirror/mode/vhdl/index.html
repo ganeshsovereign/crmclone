@@ -42,12 +42,10 @@
                 END; </textarea>
     </div>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             lineNumbers: true,
             matchBrackets: true,
-            mode:
-            {
+            mode: {
                 name: "vhdl",
             }
         });

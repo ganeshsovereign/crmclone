@@ -56,7 +56,9 @@ var UIBlockUI = function() {
         });
 
         $('#blockui_sample_2_3').click(function() {
-            Metronic.startPageLoading({message: 'Please wait...'});
+            Metronic.startPageLoading({
+                message: 'Please wait...'
+            });
 
             window.setTimeout(function() {
                 Metronic.stopPageLoading();
@@ -64,7 +66,9 @@ var UIBlockUI = function() {
         });
 
         $('#blockui_sample_2_4').click(function() {
-            Metronic.startPageLoading({animate: true});
+            Metronic.startPageLoading({
+                animate: true
+            });
 
             window.setTimeout(function() {
                 Metronic.stopPageLoading();

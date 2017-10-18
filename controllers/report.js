@@ -87,7 +87,9 @@ Object.prototype = {
             }
         }, {
             $project: {
-                rate: { $ifNull: ['$currency.rate', 1] },
+                rate: {
+                    $ifNull: ['$currency.rate', 1]
+                },
                 orderRows: 1
             }
         }, {
@@ -116,16 +118,28 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$product',
-                taxes: { $sum: '$taxes' },
-                total: { $sum: '$total' },
-                units: { $sum: '$orderRows.qty' }
+                taxes: {
+                    $sum: '$taxes'
+                },
+                total: {
+                    $sum: '$total'
+                },
+                units: {
+                    $sum: '$orderRows.qty'
+                }
             }
         }, {
             $group: {
                 _id: null,
-                root: { $push: '$$ROOT' },
-                totalSold: { $sum: '$total' },
-                totalUnits: { $sum: '$units' }
+                root: {
+                    $push: '$$ROOT'
+                },
+                totalSold: {
+                    $sum: '$total'
+                },
+                totalUnits: {
+                    $sum: '$units'
+                }
             }
         }, {
             $unwind: '$root'
@@ -135,8 +149,24 @@ Object.prototype = {
                 taxes: '$root.taxes',
                 total: '$root.total',
                 units: '$root.units',
-                totalSold: { $cond: { if: { $eq: ['$totalSold', 0] }, then: 1, else: '$totalSold' } },
-                totalUnits: { $cond: { if: { $eq: ['$totalUnits', 0] }, then: 1, else: '$totalUnits' } }
+                totalSold: {
+                    $cond: {
+                        if: {
+                            $eq: ['$totalSold', 0]
+                        },
+                        then: 1,
+                        else: '$totalSold'
+                    }
+                },
+                totalUnits: {
+                    $cond: {
+                        if: {
+                            $eq: ['$totalUnits', 0]
+                        },
+                        then: 1,
+                        else: '$totalUnits'
+                    }
+                }
             }
         }, {
             $project: {
@@ -146,8 +176,16 @@ Object.prototype = {
                 units: '$units',
                 totalSold: 1,
                 totalUnits: 1,
-                productPercentSales: { $multiply: [{ $divide: ['$total', '$totalSold'] }, 100] },
-                productPercentUnits: { $multiply: [{ $divide: ['$units', '$totalUnits'] }, 100] }
+                productPercentSales: {
+                    $multiply: [{
+                        $divide: ['$total', '$totalSold']
+                    }, 100]
+                },
+                productPercentUnits: {
+                    $multiply: [{
+                        $divide: ['$units', '$totalUnits']
+                    }, 100]
+                }
             }
         }, {
             $lookup: {
@@ -166,7 +204,9 @@ Object.prototype = {
                 totalUnits: 1,
                 productPercentSales: 1,
                 productPercentUnits: 1,
-                product: { $arrayElemAt: ['$product', 0] }
+                product: {
+                    $arrayElemAt: ['$product', 0]
+                }
             }
         }, {
             $project: {
@@ -212,7 +252,9 @@ Object.prototype = {
                 reportData.topProductPercentUnits = {};
                 reportData.topProductUnits = {};
 
-                return self.json({ data: reportData });
+                return self.json({
+                    data: reportData
+                });
             }
 
             reportData.topProductPercentSales = {
@@ -241,7 +283,9 @@ Object.prototype = {
 
             reportData.products = result;
 
-            self.json({ data: reportData });
+            self.json({
+                data: reportData
+            });
         });
     },
 
@@ -350,21 +394,45 @@ Object.prototype = {
                 supplier: '$customer.name',
                 'purchaseOrder.ref': '$ref',
                 'purchaseOrder._id': '$_id',
-                onHand: { $sum: '$productsAvailability.onHand' },
+                onHand: {
+                    $sum: '$productsAvailability.onHand'
+                },
                 incomingStock: '$orderRows.qty',
-                total: { $divide: [{ $add: ['$orderRows.unitPrice', { $sum: '$orderRows.taxes.tax' }] }, '$currency.rate'] }
+                total: {
+                    $divide: [{
+                        $add: ['$orderRows.unitPrice', {
+                            $sum: '$orderRows.taxes.tax'
+                        }]
+                    }, '$currency.rate']
+                }
             }
         }, {
             $group: {
                 _id: '$_id',
-                product: { $first: '$products' },
-                variants: { $first: '$variants' },
-                sku: { $first: '$sku' },
-                supplier: { $first: '$supplier' },
-                purchaseOrder: { $first: '$purchaseOrder' },
-                onHand: { $push: '$onHand' },
-                incomingStock: { $push: '$incomingStock' },
-                total: { $push: '$total' }
+                product: {
+                    $first: '$products'
+                },
+                variants: {
+                    $first: '$variants'
+                },
+                sku: {
+                    $first: '$sku'
+                },
+                supplier: {
+                    $first: '$supplier'
+                },
+                purchaseOrder: {
+                    $first: '$purchaseOrder'
+                },
+                onHand: {
+                    $push: '$onHand'
+                },
+                incomingStock: {
+                    $push: '$incomingStock'
+                },
+                total: {
+                    $push: '$total'
+                }
             }
         }, {
             $project: {
@@ -373,9 +441,13 @@ Object.prototype = {
                 sku: '$sku',
                 supplier: '$supplier',
                 purchaseOrder: '$purchaseOrder',
-                onHand: { $sum: '$onHand' },
+                onHand: {
+                    $sum: '$onHand'
+                },
                 incomingStock: '$incomingStock',
-                total: { $sum: '$total' }
+                total: {
+                    $sum: '$total'
+                }
             }
         }, {
             $unwind: {
@@ -392,7 +464,9 @@ Object.prototype = {
         }, {
             $project: {
                 products: 1,
-                variants: { $arrayElemAt: ['$variants', 0] },
+                variants: {
+                    $arrayElemAt: ['$variants', 0]
+                },
                 sku: 1,
                 supplier: 1,
                 purchaseOrder: 1,
@@ -403,14 +477,32 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                products: { $first: '$products' },
-                variants: { $push: { name: '$variants.value' } },
-                sku: { $first: '$sku' },
-                supplier: { $first: '$supplier' },
-                purchaseOrder: { $first: '$purchaseOrder' },
-                onHand: { $first: '$onHand' },
-                incomingStock: { $first: '$incomingStock' },
-                total: { $first: '$total' },
+                products: {
+                    $first: '$products'
+                },
+                variants: {
+                    $push: {
+                        name: '$variants.value'
+                    }
+                },
+                sku: {
+                    $first: '$sku'
+                },
+                supplier: {
+                    $first: '$supplier'
+                },
+                purchaseOrder: {
+                    $first: '$purchaseOrder'
+                },
+                onHand: {
+                    $first: '$onHand'
+                },
+                incomingStock: {
+                    $first: '$incomingStock'
+                },
+                total: {
+                    $first: '$total'
+                },
             }
         }, {
             $sort: sort
@@ -432,7 +524,9 @@ Object.prototype = {
                 return elem;
             });
 
-            self.json({ data: result });
+            self.json({
+                data: result
+            });
         });
     },
 
@@ -468,7 +562,9 @@ Object.prototype = {
                 path: '$productType'
             }
         }, {
-            $match: { "productType.inventory": true }
+            $match: {
+                "productType.inventory": true
+            }
         }, {
             $lookup: {
                 from: 'productsAvailability',
@@ -483,7 +579,9 @@ Object.prototype = {
             }
         }, {
             $project: {
-                onHand: { $ifNull: ['$productsAvailabilities.onHand', 0] },
+                onHand: {
+                    $ifNull: ['$productsAvailabilities.onHand', 0]
+                },
                 sku: '$info.SKU',
                 name: '$name',
                 minStockLevel: '$inventory.minStockLevel'
@@ -491,7 +589,9 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                onHand: { $sum: '$onHand' },
+                onHand: {
+                    $sum: '$onHand'
+                },
                 product: {
                     $first: '$$ROOT'
                 }
@@ -523,9 +623,15 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                product: { $first: '$product' },
-                onHand: { $first: '$onHand' },
-                orders: { $push: '$orders' }
+                product: {
+                    $first: '$product'
+                },
+                onHand: {
+                    $first: '$onHand'
+                },
+                orders: {
+                    $push: '$orders'
+                }
             }
         }, {
             $project: {
@@ -537,10 +643,13 @@ Object.prototype = {
                         input: '$orders',
                         as: 'order',
                         cond: {
-                            $and: [
-                                { $eq: ['$$order._type', 'orderSupplier'] },
+                            $and: [{
+                                    $eq: ['$$order._type', 'orderSupplier']
+                                },
                                 //{ $eq: ['$$order.status.shippingStatus', 'NOR'] },
-                                { $eq: ['$$order.status.fulfillStatus', 'NOT'] }
+                                {
+                                    $eq: ['$$order.status.fulfillStatus', 'NOT']
+                                }
                                 // { $eq: ['$$order.status.allocateStatus', 'NOR'] }
                             ]
                         }
@@ -567,11 +676,21 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$_id',
-                sku: { $first: '$product.sku' },
-                name: { $first: '$product.name' },
-                onHand: { $first: '$onHand' },
-                minStockLevel: { $first: '$product.minStockLevel' },
-                awaiting: { $sum: '$orderRows.qty' }
+                sku: {
+                    $first: '$product.sku'
+                },
+                name: {
+                    $first: '$product.name'
+                },
+                onHand: {
+                    $first: '$onHand'
+                },
+                minStockLevel: {
+                    $first: '$product.minStockLevel'
+                },
+                awaiting: {
+                    $sum: '$orderRows.qty'
+                }
             }
         }, {
             $project: {
@@ -581,7 +700,9 @@ Object.prototype = {
                 onHand: 1,
                 minStockLevel: 1,
                 awaiting: 1,
-                amtLow: { $subtract: ['$minStockLevel', '$onHand'] }
+                amtLow: {
+                    $subtract: ['$minStockLevel', '$onHand']
+                }
             }
         }, {
             $match: {
@@ -596,7 +717,9 @@ Object.prototype = {
                 return self.throw500(err);
 
 
-            self.json({ data: result });
+            self.json({
+                data: result
+            });
         });
     },
 
@@ -638,7 +761,9 @@ Object.prototype = {
             }
         }, {
             $match: {
-                channelLinks: { $ne: [] }
+                channelLinks: {
+                    $ne: []
+                }
             }
         }, {
             $unwind: {
@@ -688,7 +813,9 @@ Object.prototype = {
                     $filter: {
                         input: '$productPrices',
                         as: 'productPrice',
-                        cond: { $eq: ['$$productPrice.priceLists', '$channelLinks.priceList'] }
+                        cond: {
+                            $eq: ['$$productPrice.priceLists', '$channelLinks.priceList']
+                        }
                     }
                 },
 
@@ -696,7 +823,9 @@ Object.prototype = {
                     $filter: {
                         input: '$orders',
                         as: 'order',
-                        cond: { $eq: ['$$order.channel', '$channelLinks._id'] }
+                        cond: {
+                            $eq: ['$$order.channel', '$channelLinks._id']
+                        }
                     }
                 }
             }
@@ -707,8 +836,12 @@ Object.prototype = {
                 sku: 1,
                 name: 1,
                 channelLinks: 1,
-                productPrices: { $arrayElemAt: ['$productPrices.prices', 0] },
-                unitsSold: { $size: '$orders' },
+                productPrices: {
+                    $arrayElemAt: ['$productPrices.prices', 0]
+                },
+                unitsSold: {
+                    $size: '$orders'
+                },
                 dateLinked: 1
             }
         }, {
@@ -731,7 +864,9 @@ Object.prototype = {
                 return self.throw500(err);
 
 
-            self.json({ data: result });
+            self.json({
+                data: result
+            });
         });
     },
 
@@ -771,8 +906,12 @@ Object.prototype = {
             }
         }, {
             $project: {
-                year: { $year: '$orderDate' },
-                month: { $month: '$orderDate' },
+                year: {
+                    $year: '$orderDate'
+                },
+                month: {
+                    $month: '$orderDate'
+                },
                 taxes: '$paymentInfo.taxes',
                 discount: '$paymentInfo.discount',
                 currency_rate: '$currency.rate',
@@ -789,7 +928,13 @@ Object.prototype = {
                         }
                     },
 
-                    gross_sales: { $multiply: [{ $sum: '$orderRow.qty' }, { $sum: '$orderRow.unitPrice' }] }
+                    gross_sales: {
+                        $multiply: [{
+                            $sum: '$orderRow.qty'
+                        }, {
+                            $sum: '$orderRow.unitPrice'
+                        }]
+                    }
                 }
             }
         }, {
@@ -799,13 +944,27 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$data.order',
-                data: { $push: '$data' },
-                count: { $sum: 1 },
-                year: { $first: '$year' },
-                month: { $first: '$month' },
-                taxes: { $first: '$taxes' },
-                discount: { $first: '$discount' },
-                currency_rate: { $first: '$currency_rate' }
+                data: {
+                    $push: '$data'
+                },
+                count: {
+                    $sum: 1
+                },
+                year: {
+                    $first: '$year'
+                },
+                month: {
+                    $first: '$month'
+                },
+                taxes: {
+                    $first: '$taxes'
+                },
+                discount: {
+                    $first: '$discount'
+                },
+                currency_rate: {
+                    $first: '$currency_rate'
+                }
             }
         }, {
             $sort: {
@@ -818,11 +977,31 @@ Object.prototype = {
         }, {
             $project: {
                 _id: '$_id',
-                discount: { $divide: [{ $sum: '$discount' }, '$currency_rate'] },
-                uniqueString: { $sum: [{ $multiply: ['$year', 100] }, '$month'] },
-                shipping: { $divide: [{ $sum: '$data.shipping.unitPrice' }, 1] },
-                taxes: { $divide: [{ $sum: '$taxes' }, '$currency_rate'] },
-                gross_sales: { $divide: [{ $sum: '$data.gross_sales' }, '$currency_rate'] },
+                discount: {
+                    $divide: [{
+                        $sum: '$discount'
+                    }, '$currency_rate']
+                },
+                uniqueString: {
+                    $sum: [{
+                        $multiply: ['$year', 100]
+                    }, '$month']
+                },
+                shipping: {
+                    $divide: [{
+                        $sum: '$data.shipping.unitPrice'
+                    }, 1]
+                },
+                taxes: {
+                    $divide: [{
+                        $sum: '$taxes'
+                    }, '$currency_rate']
+                },
+                gross_sales: {
+                    $divide: [{
+                        $sum: '$data.gross_sales'
+                    }, '$currency_rate']
+                },
                 data: '$data'
             }
         }, {
@@ -833,28 +1012,56 @@ Object.prototype = {
                 shipping: '$shipping',
                 taxes: '$taxes',
                 gross_sales: '$gross_sales',
-                total_sales: { $subtract: [{ $add: ['$shipping', '$taxes', '$gross_sales'] }, '$discount'] },
+                total_sales: {
+                    $subtract: [{
+                        $add: ['$shipping', '$taxes', '$gross_sales']
+                    }, '$discount']
+                },
                 data: '$data'
             }
         }, {
             $group: {
                 _id: '$uniqueString',
-                discount: { $push: '$discount' },
-                shipping: { $push: '$shipping' },
-                taxes: { $push: '$taxes' },
-                gross_sales: { $push: '$gross_sales' },
-                total_sales: { $push: '$total_sales' },
-                data: { $push: '$data' }
+                discount: {
+                    $push: '$discount'
+                },
+                shipping: {
+                    $push: '$shipping'
+                },
+                taxes: {
+                    $push: '$taxes'
+                },
+                gross_sales: {
+                    $push: '$gross_sales'
+                },
+                total_sales: {
+                    $push: '$total_sales'
+                },
+                data: {
+                    $push: '$data'
+                }
             }
         }, {
             $project: {
                 _id: '$_id',
-                discount: { $sum: '$discount' },
-                shipping: { $sum: '$shipping' },
-                taxes: { $sum: '$taxes' },
-                gross_sales: { $sum: '$gross_sales' },
-                total_sales: { $sum: '$total_sales' },
-                data: { $size: '$data' }
+                discount: {
+                    $sum: '$discount'
+                },
+                shipping: {
+                    $sum: '$shipping'
+                },
+                taxes: {
+                    $sum: '$taxes'
+                },
+                gross_sales: {
+                    $sum: '$gross_sales'
+                },
+                total_sales: {
+                    $sum: '$total_sales'
+                },
+                data: {
+                    $size: '$data'
+                }
             }
         }], function(err, result) {
             if (err) {
@@ -867,7 +1074,9 @@ Object.prototype = {
                 }
             });
 
-            res.status(200).send({ data: result });
+            res.status(200).send({
+                data: result
+            });
         });
     },
 
@@ -915,14 +1124,20 @@ Object.prototype = {
             }
         }, {
             $project: {
-                year: { $year: '$creationDate' },
-                month: { $month: '$creationDate' },
+                year: {
+                    $year: '$creationDate'
+                },
+                month: {
+                    $month: '$creationDate'
+                },
                 taxes: '$paymentInfo.taxes',
                 channel: '$channel.channelName',
                 discount: '$paymentInfo.discount',
                 currency_rate: '$currency.rate',
                 data: {
-                    qty: { $sum: '$orderRow.qty' },
+                    qty: {
+                        $sum: '$orderRow.qty'
+                    },
                     order: '$_id',
                     orderRow: '$orderRow',
                     creation_date: '$creationDate',
@@ -935,7 +1150,13 @@ Object.prototype = {
                             }
                         }
                     },
-                    gross_sales: { $multiply: [{ $sum: '$orderRow.qty' }, { $sum: '$orderRow.unitPrice' }] }
+                    gross_sales: {
+                        $multiply: [{
+                            $sum: '$orderRow.qty'
+                        }, {
+                            $sum: '$orderRow.unitPrice'
+                        }]
+                    }
                 }
             }
         }, {
@@ -945,16 +1166,36 @@ Object.prototype = {
         }, {
             $group: {
                 _id: '$data.order',
-                data: { $push: '$data' },
-                count: { $sum: 1 },
-                year: { $first: '$year' },
-                month: { $first: '$month' },
-                channel: { $first: '$channel' },
-                taxes: { $first: '$taxes' },
-                discount: { $first: '$discount' },
-                qty: { $push: '$data.qty' },
-                currency_rate: { $first: '$currency_rate' },
-                creation_date: { $first: '$creation_date' }
+                data: {
+                    $push: '$data'
+                },
+                count: {
+                    $sum: 1
+                },
+                year: {
+                    $first: '$year'
+                },
+                month: {
+                    $first: '$month'
+                },
+                channel: {
+                    $first: '$channel'
+                },
+                taxes: {
+                    $first: '$taxes'
+                },
+                discount: {
+                    $first: '$discount'
+                },
+                qty: {
+                    $push: '$data.qty'
+                },
+                currency_rate: {
+                    $first: '$currency_rate'
+                },
+                creation_date: {
+                    $first: '$creation_date'
+                }
             }
         }, {
             $sort: {
@@ -967,14 +1208,38 @@ Object.prototype = {
         }, {
             $project: {
                 _id: '$_id',
-                discount: { $divide: [{ $sum: '$discount' }, '$currency_rate'] },
-                uniqueString: { $divide: [{ $sum: [{ $multiply: ['$year', 100] }, '$month'] }, '$currency_rate'] },
-                shipping: { $divide: [{ $sum: '$data.shipping.unitPrice' }, 1] },
-                taxes: { $divide: [{ $sum: '$taxes' }, '$currency_rate'] },
-                gross_sales: { $divide: [{ $sum: '$data.gross_sales' }, '$currency_rate'] },
+                discount: {
+                    $divide: [{
+                        $sum: '$discount'
+                    }, '$currency_rate']
+                },
+                uniqueString: {
+                    $divide: [{
+                        $sum: [{
+                            $multiply: ['$year', 100]
+                        }, '$month']
+                    }, '$currency_rate']
+                },
+                shipping: {
+                    $divide: [{
+                        $sum: '$data.shipping.unitPrice'
+                    }, 1]
+                },
+                taxes: {
+                    $divide: [{
+                        $sum: '$taxes'
+                    }, '$currency_rate']
+                },
+                gross_sales: {
+                    $divide: [{
+                        $sum: '$data.gross_sales'
+                    }, '$currency_rate']
+                },
                 channel: '$channel',
                 data: '$data',
-                qty: { $sum: '$qty' }
+                qty: {
+                    $sum: '$qty'
+                }
             }
         }, {
             $project: {
@@ -985,31 +1250,63 @@ Object.prototype = {
                 taxes: '$taxes',
                 channel: '$channel',
                 gross_sales: '$gross_sales',
-                total_sales: { $subtract: [{ $add: ['$shipping', '$taxes', '$gross_sales'] }, '$discount'] },
+                total_sales: {
+                    $subtract: [{
+                        $add: ['$shipping', '$taxes', '$gross_sales']
+                    }, '$discount']
+                },
                 data: '$data',
                 qty: '$qty'
             }
         }, {
             $group: {
                 _id: '$channel',
-                data: { $push: '$data' },
-                discount: { $push: '$discount' },
-                shipping: { $push: '$shipping' },
-                taxes: { $push: '$taxes' },
-                gross_sales: { $push: '$gross_sales' },
-                total_sales: { $push: '$total_sales' },
-                qty: { $push: '$qty' }
+                data: {
+                    $push: '$data'
+                },
+                discount: {
+                    $push: '$discount'
+                },
+                shipping: {
+                    $push: '$shipping'
+                },
+                taxes: {
+                    $push: '$taxes'
+                },
+                gross_sales: {
+                    $push: '$gross_sales'
+                },
+                total_sales: {
+                    $push: '$total_sales'
+                },
+                qty: {
+                    $push: '$qty'
+                }
             }
         }, {
             $project: {
                 _id: '$_id',
-                orders: { $size: '$data' },
-                discount: { $sum: '$discount' },
-                shipping: { $sum: '$shipping' },
-                taxes: { $sum: '$taxes' },
-                gross_sales: { $sum: '$gross_sales' },
-                total_sales: { $sum: '$total_sales' },
-                qty: { $sum: '$qty' }
+                orders: {
+                    $size: '$data'
+                },
+                discount: {
+                    $sum: '$discount'
+                },
+                shipping: {
+                    $sum: '$shipping'
+                },
+                taxes: {
+                    $sum: '$taxes'
+                },
+                gross_sales: {
+                    $sum: '$gross_sales'
+                },
+                total_sales: {
+                    $sum: '$total_sales'
+                },
+                qty: {
+                    $sum: '$qty'
+                }
             }
         }], function(err, result) {
             if (err) {
@@ -1022,7 +1319,9 @@ Object.prototype = {
              }
              })*/
 
-            res.status(200).send({ data: result });
+            res.status(200).send({
+                data: result
+            });
         });
     }
 };

@@ -35,7 +35,10 @@ var GroupAttributesSchema = new Schema({
         _id: false,
         name: String
     }],
-    createdAt: { type: Date, default: Date.now }
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 exports.Schema = mongoose.model('groupAttributes', GroupAttributesSchema, 'groupAttributes');

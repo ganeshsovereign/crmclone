@@ -2,38 +2,38 @@
  * Bootstrap Table English translation
  * Author: Zhixin Wen<wenzhixin2010@gmail.com>
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['en-US'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Loading, please wait...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' records per page';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Showing ' + pageFrom + ' to ' + pageTo + ' of ' + totalRows + ' rows';
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Search';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'No matching records found';
         },
-        formatPaginationSwitch: function () {
+        formatPaginationSwitch: function() {
             return 'Hide/Show pagination';
         },
-        formatRefresh: function () {
+        formatRefresh: function() {
             return 'Refresh';
         },
-        formatToggle: function () {
+        formatToggle: function() {
             return 'Toggle';
         },
-        formatColumns: function () {
+        formatColumns: function() {
             return 'Columns';
         },
-        formatAllRows: function () {
+        formatAllRows: function() {
             return 'All';
         }
     };

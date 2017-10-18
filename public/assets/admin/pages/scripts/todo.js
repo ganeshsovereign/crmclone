@@ -1,12 +1,12 @@
 /**
 Todo Module
 **/
-var Todo = function () {
+var Todo = function() {
 
     // private functions & variables
 
     var _initComponents = function() {
-        
+
         // init datepicker
         $('.todo-taskbody-due').datepicker({
             rtl: Metronic.isRTL(),
@@ -32,13 +32,13 @@ var Todo = function () {
     return {
 
         //main function
-        init: function () {
-            _initComponents();     
+        init: function() {
+            _initComponents();
             _handleProjectListMenu();
 
-            Metronic.addResizeHandler(function(){
-                _handleProjectListMenu();    
-            });       
+            Metronic.addResizeHandler(function() {
+                _handleProjectListMenu();
+            });
         }
 
     };

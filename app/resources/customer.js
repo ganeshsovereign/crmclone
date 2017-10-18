@@ -29,7 +29,10 @@ MetronicApp.factory("Societes", ['$resource',
         return $resource('/erp/api/societe/:Id', {
             Id: '@_id'
         }, {
-            query: { method: 'GET', isArray: false },
+            query: {
+                method: 'GET',
+                isArray: false
+            },
             update: {
                 method: 'PUT'
             }

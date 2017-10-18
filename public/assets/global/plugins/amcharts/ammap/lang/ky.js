@@ -1,1 +1,3 @@
-AmCharts.mapTranslations.ky = {"Kyrgyzstan":"Кыргызстан"}
+AmCharts.mapTranslations.ky = {
+    "Kyrgyzstan": "Кыргызстан"
+}

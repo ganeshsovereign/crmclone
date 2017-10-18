@@ -4,13 +4,13 @@
  * @version: v1.0.0
  */
 
-!function ($) {
+! function($) {
 
     'use strict';
 
     var isSearch = false;
 
-    var rowAttr = function (row, index) {
+    var rowAttr = function(row, index) {
         return {
             id: 'customId_' + index
         };
@@ -23,14 +23,14 @@
         onDragClass: "reorder_rows_onDragClass",
         dragHandle: null,
         useRowAttrFunc: false,
-        onReorderRowsDrag: function (table, row) {
+        onReorderRowsDrag: function(table, row) {
             return false;
         },
-        onReorderRowsDrop: function (table, row) {
+        onReorderRowsDrop: function(table, row) {
             return false;
         },
-        onReorderRow: function (newData) {
-             return false;
+        onReorderRow: function(newData) {
+            return false;
         }
     });
 
@@ -42,7 +42,7 @@
         _init = BootstrapTable.prototype.init,
         _initSearch = BootstrapTable.prototype.initSearch;
 
-    BootstrapTable.prototype.init = function () {
+    BootstrapTable.prototype.init = function() {
 
         if (!this.options.reorderableRows) {
             return;
@@ -54,8 +54,8 @@
         }
 
         var onPostBody = this.options.onPostBody;
-        this.options.onPostBody = function () {
-            setTimeout(function () {
+        this.options.onPostBody = function() {
+            setTimeout(function() {
                 that.makeRowsReorderable();
                 onPostBody.apply();
             }, 1);
@@ -64,7 +64,7 @@
         _init.apply(this, Array.prototype.slice.apply(arguments));
     };
 
-    BootstrapTable.prototype.initSearch = function () {
+    BootstrapTable.prototype.initSearch = function() {
         _initSearch.apply(this, Array.prototype.slice.apply(arguments));
 
         if (!this.options.reorderableRows) {
@@ -75,7 +75,7 @@
         //isSearch = true;
     };
 
-    BootstrapTable.prototype.makeRowsReorderable = function () {
+    BootstrapTable.prototype.makeRowsReorderable = function() {
         if (this.options.cardView) {
             return;
         }
@@ -91,7 +91,7 @@
         });
     };
 
-    BootstrapTable.prototype.onDrop = function (table, droppedRow) {
+    BootstrapTable.prototype.onDrop = function(table, droppedRow) {
         var tableBs = $(table),
             tableBsData = tableBs.data('bootstrap.table'),
             tableBsOptions = tableBs.data('bootstrap.table').options,

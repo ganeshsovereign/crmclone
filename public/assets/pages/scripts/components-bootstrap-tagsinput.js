@@ -2,25 +2,45 @@ var ComponentsBootstrapTagsinput = function() {
 
     var handleDemo1 = function() {
         var elt = $('#object_tagsinput');
-        
+
         elt.tagsinput({
-          itemValue: 'value',
-          itemText: 'text',
+            itemValue: 'value',
+            itemText: 'text',
         });
 
-        $('#object_tagsinput_add').on('click', function(){
-            elt.tagsinput('add', { 
-                "value": $('#object_tagsinput_value').val(), 
-                "text": $('#object_tagsinput_city').val(), 
-                "continent": $('#object_tagsinput_continent').val()    
+        $('#object_tagsinput_add').on('click', function() {
+            elt.tagsinput('add', {
+                "value": $('#object_tagsinput_value').val(),
+                "text": $('#object_tagsinput_city').val(),
+                "continent": $('#object_tagsinput_continent').val()
             });
         });
 
-        elt.tagsinput('add', { "value": 1 , "text": "Amsterdam"   , "continent": "Europe"    });
-        elt.tagsinput('add', { "value": 4 , "text": "Washington"  , "continent": "America"   });
-        elt.tagsinput('add', { "value": 7 , "text": "Sydney"      , "continent": "Australia" });
-        elt.tagsinput('add', { "value": 10, "text": "Beijing"     , "continent": "Asia"      });
-        elt.tagsinput('add', { "value": 13, "text": "Cairo"       , "continent": "Africa"    });
+        elt.tagsinput('add', {
+            "value": 1,
+            "text": "Amsterdam",
+            "continent": "Europe"
+        });
+        elt.tagsinput('add', {
+            "value": 4,
+            "text": "Washington",
+            "continent": "America"
+        });
+        elt.tagsinput('add', {
+            "value": 7,
+            "text": "Sydney",
+            "continent": "Australia"
+        });
+        elt.tagsinput('add', {
+            "value": 10,
+            "text": "Beijing",
+            "continent": "Asia"
+        });
+        elt.tagsinput('add', {
+            "value": 13,
+            "text": "Cairo",
+            "continent": "Africa"
+        });
     }
 
     var handleDemo2 = function() {
@@ -46,14 +66,14 @@ var ComponentsBootstrapTagsinput = function() {
             itemText: 'text'
         });
 
-         $('#state_tagsinput_add').on('click', function(){
-            elt.tagsinput('add', { 
-                "value": $('#state_tagsinput_value').val(), 
-                "text": $('#state_tagsinput_city').val(), 
-                "continent": $('#state_tagsinput_continent').val()    
+        $('#state_tagsinput_add').on('click', function() {
+            elt.tagsinput('add', {
+                "value": $('#state_tagsinput_value').val(),
+                "text": $('#state_tagsinput_city').val(),
+                "continent": $('#state_tagsinput_continent').val()
             });
         });
-        
+
         elt.tagsinput('add', {
             "value": 1,
             "text": "Amsterdam",

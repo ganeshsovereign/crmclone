@@ -1,1 +1,3 @@
-AmCharts.mapTranslations.gv = {"United Kingdom":"Rywvaneth Unys"}
+AmCharts.mapTranslations.gv = {
+    "United Kingdom": "Rywvaneth Unys"
+}

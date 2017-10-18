@@ -1,6 +1,6 @@
-var TableDatatablesRowreorder = function () {
+var TableDatatablesRowreorder = function() {
 
-    var initTable1 = function () {
+    var initTable1 = function() {
         var table = $('#sample_1');
 
         var oTable = table.dataTable({
@@ -26,10 +26,18 @@ var TableDatatablesRowreorder = function () {
             //},
 
             // setup buttons extentension: http://datatables.net/extensions/buttons/
-            buttons: [
-                { extend: 'print', className: 'btn dark btn-outline' },
-                { extend: 'pdf', className: 'btn green btn-outline' },
-                { extend: 'csv', className: 'btn purple btn-outline ' }
+            buttons: [{
+                    extend: 'print',
+                    className: 'btn dark btn-outline'
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn green btn-outline'
+                },
+                {
+                    extend: 'csv',
+                    className: 'btn purple btn-outline '
+                }
             ],
 
             // setup rowreorder extension: http://datatables.net/extensions/rowreorder/
@@ -40,7 +48,7 @@ var TableDatatablesRowreorder = function () {
             "order": [
                 [0, 'asc']
             ],
-            
+
             "lengthMenu": [
                 [5, 10, 15, 20, -1],
                 [5, 10, 15, 20, "All"] // change per page values here
@@ -57,7 +65,7 @@ var TableDatatablesRowreorder = function () {
         });
     }
 
-    var initTable2 = function () {
+    var initTable2 = function() {
         var table = $('#sample_2');
 
         var oTable = table.dataTable({
@@ -82,16 +90,24 @@ var TableDatatablesRowreorder = function () {
             //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
             //},
 
-            buttons: [
-                { extend: 'print', className: 'btn default' },
-                { extend: 'pdf', className: 'btn default' },
-                { extend: 'csv', className: 'btn default' }
+            buttons: [{
+                    extend: 'print',
+                    className: 'btn default'
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn default'
+                },
+                {
+                    extend: 'csv',
+                    className: 'btn default'
+                }
             ],
 
             // setup colreorder extension: http://datatables.net/extensions/colreorder/
             colReorder: {
-                reorderCallback: function () {
-                    console.log( 'callback' );
+                reorderCallback: function() {
+                    console.log('callback');
                 }
             },
 
@@ -103,7 +119,7 @@ var TableDatatablesRowreorder = function () {
             "order": [
                 [0, 'asc']
             ],
-            
+
             "lengthMenu": [
                 [5, 10, 15, 20, -1],
                 [5, 10, 15, 20, "All"] // change per page values here
@@ -123,7 +139,7 @@ var TableDatatablesRowreorder = function () {
     return {
 
         //main function to initiate the module
-        init: function () {
+        init: function() {
 
             if (!jQuery().dataTable) {
                 return;

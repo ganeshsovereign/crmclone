@@ -44,7 +44,18 @@ exports.install = function() {
         var UserModel = MODEL('Users').Schema;
         var self = this;
 
-        UserModel.find({ isremoved: { $ne: true }, Status: { $ne: "DISABLE" } }, "", { sort: { lastname: 1 } }, function(err, docs) {
+        UserModel.find({
+            isremoved: {
+                $ne: true
+            },
+            Status: {
+                $ne: "DISABLE"
+            }
+        }, "", {
+            sort: {
+                lastname: 1
+            }
+        }, function(err, docs) {
             if (err)
                 return self.throw500("err : /erp/api/user/select {0}".format(err));
 
@@ -109,16 +120,24 @@ exports.install = function() {
                 //'$or': [
                 //    { firstname: new RegExp(filter, "i") },
                 username: new RegExp(filter, "i"),
-                isremoved: { $ne: true }
+                isremoved: {
+                    $ne: true
+                }
             };
 
         if (self.query.status) {
-            query.Status = { $in: self.query.status };
+            query.Status = {
+                $in: self.query.status
+            };
         } else {
-            query.Status = { $ne: "DISABLE" };
+            query.Status = {
+                $ne: "DISABLE"
+            };
         }
 
-        UserModel.find(query, "_id username group", { limit: self.body.take }, function(err, docs) {
+        UserModel.find(query, "_id username group", {
+            limit: self.body.take
+        }, function(err, docs) {
             if (err)
                 return self.throw500(err);
             console.log(docs);
@@ -165,7 +184,9 @@ Object.prototype = {
         var UserModel = MODEL('Users').Schema;
         var self = this;
 
-        UserModel.findOne({ _id: id }, function(err, doc) {
+        UserModel.findOne({
+            _id: id
+        }, function(err, doc) {
             if (err)
                 return self.throw500(err);
             if (!doc)
@@ -213,7 +234,9 @@ Object.prototype = {
         var self = this;
         var UserModel = MODEL('Users').Schema;
 
-        UserModel.findOne({ _id: id }, function(err, user) {
+        UserModel.findOne({
+            _id: id
+        }, function(err, user) {
 
             user = _.extend(user, self.body);
 
@@ -244,7 +267,14 @@ Object.prototype = {
         var self = this;
         var UserModel = MODEL('Users').Schema;
         console.log(id);
-        UserModel.update({ _id: id }, { $set: { isremoved: true, isEnable: false } }, function(err, user) {
+        UserModel.update({
+            _id: id
+        }, {
+            $set: {
+                isremoved: true,
+                isEnable: false
+            }
+        }, function(err, user) {
             if (err)
                 return self.throw500(err);
 
@@ -270,7 +300,16 @@ Object.prototype = {
         else
             ids.push(list);
 
-        UserModel.update({ _id: { $in: ids } }, { $set: { isremoved: true, isEnable: false } }, function(err, users) {
+        UserModel.update({
+            _id: {
+                $in: ids
+            }
+        }, {
+            $set: {
+                isremoved: true,
+                isEnable: false
+            }
+        }, function(err, users) {
             if (err)
                 return self.throw500(err);
             self.json({});
@@ -279,7 +318,12 @@ Object.prototype = {
     connection: function() {
         var self = this;
         var UserModel = MODEL('Users').Schema;
-        UserModel.find({ NewConnection: { $ne: null }, entity: self.query.entity }, "lastname firstname NewConnection", {
+        UserModel.find({
+            NewConnection: {
+                $ne: null
+            },
+            entity: self.query.entity
+        }, "lastname firstname NewConnection", {
             limit: 10,
             sort: {
                 NewConnection: -1
@@ -292,7 +336,9 @@ Object.prototype = {
         var self = this;
         var UserModel = MODEL('Users').Schema;
 
-        UserModel.findOne({ username: id.toLowerCase() }, "_id lastname firstname username", function(err, doc) {
+        UserModel.findOne({
+            username: id.toLowerCase()
+        }, "_id lastname firstname username", function(err, doc) {
             if (err)
                 return self.throw500(err);
             if (!doc)
@@ -309,7 +355,9 @@ Object.prototype = {
         if (!self.query.email)
             return self.throw500("/erp/api/user/email : err query url -> email not found");
 
-        UserModel.findOne({ email: self.query.email.toLowerCase() }, "_id lastname firstname email", function(err, doc) {
+        UserModel.findOne({
+            email: self.query.email.toLowerCase()
+        }, "_id lastname firstname email", function(err, doc) {
             if (err)
                 return self.throw500(err);
             if (!doc)
@@ -325,7 +373,11 @@ Object.prototype = {
         //console.log(req.user);
 
         if (self.user.multiEntities && selfreq.body.entity) {
-            UserModel.findByIdAndUpdate(self.user._id, { $set: { entity: self.body.entity } }, function(err, user) {
+            UserModel.findByIdAndUpdate(self.user._id, {
+                $set: {
+                    entity: self.body.entity
+                }
+            }, function(err, user) {
                 if (err)
                     console.log(err);
 
@@ -341,7 +393,9 @@ Object.prototype = {
         var Status;
         //console.log(self.query);
         var conditions = {
-            isremoved: { $ne: true },
+            isremoved: {
+                $ne: true
+            },
             entity: self.query.entity
         };
 

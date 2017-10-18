@@ -81,7 +81,9 @@ MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($roo
 
             if (data.type === 'go') {
                 console.log('Go ', data);
-                $rootScope.$state.go(data.data.go, { id: data.data._id });
+                $rootScope.$state.go(data.data.go, {
+                    id: data.data._id
+                });
                 return;
             }
 
@@ -96,7 +98,11 @@ MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($roo
                 return;
             }
 
-            messages.splice(0, 0, { user: data.user, message: data.message, date: data.date });
+            messages.splice(0, 0, {
+                user: data.user,
+                message: data.message,
+                date: data.date
+            });
             $rootScope.$broadcast('websocket', 'message', messages);
         });
     }
@@ -110,7 +116,10 @@ MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($roo
             _ws = new ReconnectingWebSocket(url); //auto reconnect
             _ws.onmessage = onMessage;
             _ws.onopen = function() {
-                _ws.send(encodeURIComponent(JSON.stringify({ type: 'change', message: _username })));
+                _ws.send(encodeURIComponent(JSON.stringify({
+                    type: 'change',
+                    message: _username
+                })));
             };
 
         },
@@ -122,7 +131,10 @@ MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($roo
             $rootScope.$broadcast('websocket', 'users', users);
         },
         send: function(message) {
-            _ws.send(encodeURIComponent(JSON.stringify({ type: 'message', message: message })));
+            _ws.send(encodeURIComponent(JSON.stringify({
+                type: 'message',
+                message: message
+            })));
         }
     };
 

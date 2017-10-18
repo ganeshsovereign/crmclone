@@ -11,7 +11,7 @@
 
 /* global define, require, window, document */
 
-(function (factory) {
+(function(factory) {
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
@@ -23,7 +23,7 @@
         // Browser globals:
         factory(window.jQuery);
     }
-}(function ($) {
+}(function($) {
     'use strict';
 
     var counter = 0,
@@ -46,7 +46,7 @@
             'url',
             'username'
         ],
-        convert = function (p) {
+        convert = function(p) {
             return p;
         };
 
@@ -58,14 +58,14 @@
         }
     });
 
-    $.ajaxTransport('postmessage', function (options) {
+    $.ajaxTransport('postmessage', function(options) {
         if (options.postMessage && window.postMessage) {
             var iframe,
                 loc = $('<a>').prop('href', options.postMessage)[0],
                 target = loc.protocol + '//' + loc.host,
                 xhrUpload = options.xhr().upload;
             return {
-                send: function (_, completeCallback) {
+                send: function(_, completeCallback) {
                     counter += 1;
                     var message = {
                             id: 'postmessage-transport-' + counter
@@ -73,14 +73,14 @@
                         eventName = 'message.' + message.id;
                     iframe = $(
                         '<iframe style="display:none;" src="' +
-                            options.postMessage + '" name="' +
-                            message.id + '"></iframe>'
-                    ).bind('load', function () {
-                        $.each(names, function (i, name) {
+                        options.postMessage + '" name="' +
+                        message.id + '"></iframe>'
+                    ).bind('load', function() {
+                        $.each(names, function(i, name) {
                             message[name] = options[name];
                         });
                         message.dataType = message.dataType.replace('postmessage ', '');
-                        $(window).bind(eventName, function (e) {
+                        $(window).bind(eventName, function(e) {
                             e = e.originalEvent;
                             var data = e.data,
                                 ev;
@@ -93,8 +93,9 @@
                                 } else {
                                     completeCallback(
                                         data.status,
-                                        data.statusText,
-                                        {postmessage: data.result},
+                                        data.statusText, {
+                                            postmessage: data.result
+                                        },
                                         data.headers
                                     );
                                     iframe.remove();
@@ -108,7 +109,7 @@
                         );
                     }).appendTo(document.body);
                 },
-                abort: function () {
+                abort: function() {
                     if (iframe) {
                         iframe.remove();
                     }

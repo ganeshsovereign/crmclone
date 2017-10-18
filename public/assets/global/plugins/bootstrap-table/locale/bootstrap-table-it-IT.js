@@ -3,32 +3,32 @@
  * Author: Davide Renzi<davide.renzi@gmail.com>
  * Author: Davide Borsatto <davide.borsatto@gmail.com>
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['it-IT'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Caricamento in corso...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' elementi per pagina';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Pagina ' + pageFrom + ' di ' + pageTo + ' (' + totalRows + ' records)';
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Cerca';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'Nessun elemento trovato';
         },
-        formatRefresh: function () {
+        formatRefresh: function() {
             return 'Aggiorna';
         },
-        formatToggle: function () {
+        formatToggle: function() {
             return 'Alterna';
         },
-        formatColumns: function () {
+        formatColumns: function() {
             return 'Colonne';
         }
     };

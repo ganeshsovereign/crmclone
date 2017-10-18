@@ -40,16 +40,13 @@
     <p>
         <strong>MIME types defined:</strong> <code><a href="?mime=application/x-cypher-query">application/x-cypher-query</a></code> </p>
     <script>
-        window.onload = function()
-        {
+        window.onload = function() {
             var mime = 'application/x-cypher-query';
             // get mime type
-            if (window.location.href.indexOf('mime=') > -1)
-            {
+            if (window.location.href.indexOf('mime=') > -1) {
                 mime = window.location.href.substr(window.location.href.indexOf('mime=') + 5);
             }
-            window.editor = CodeMirror.fromTextArea(document.getElementById('code'),
-            {
+            window.editor = CodeMirror.fromTextArea(document.getElementById('code'), {
                 mode: mime,
                 indentWithTabs: true,
                 smartIndent: true,

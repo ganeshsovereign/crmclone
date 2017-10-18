@@ -37,11 +37,9 @@
             <br />" </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             lineNumbers: true,
-            mode:
-            {
+            mode: {
                 name: "gas",
                 architecture: "ARMv6"
             },

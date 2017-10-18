@@ -6,7 +6,7 @@
  * Licensed under MIT (https://github.com/gilek/bootstrap-gtreetable/blob/master/LICENSE)
  * ========================================================= */
 
-(function( $ ) {
+(function($) {
     $.fn.gtreetable.defaults.languages.tr = {
         save: 'Kaydet',
         cancel: 'Vazgeç',
@@ -23,7 +23,7 @@
             onDelete: 'Silmek istediğinize emin misiniz?',
             onNewRootNotAllowed: 'Yeni ana öğe eklenemez.',
             onMoveInDescendant: 'Taşınacak öğe alt öğe olmamalıdır.',
-            onMoveAsRoot: 'Hedef ana öğe olmamalıdır.'          
+            onMoveAsRoot: 'Hedef ana öğe olmamalıdır.'
         }
     };
-}( jQuery ));
+}(jQuery));

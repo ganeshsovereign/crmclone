@@ -42,8 +42,7 @@
             for { prime := &lt;-ch fmt.Print(prime, "\n") ch1 := make(chan int) go filter(ch, ch1, prime) ch = ch1 } } func main() { sieve() } </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             theme: "elegant",
             matchBrackets: true,
             indentUnit: 8,

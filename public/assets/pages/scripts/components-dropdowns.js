@@ -1,6 +1,6 @@
-var ComponentsDropdowns = function () {
+var ComponentsDropdowns = function() {
 
-    var handleSelect2 = function () {
+    var handleSelect2 = function() {
 
         $('#select2_sample1').select2({
             placeholder: "Select an option",
@@ -16,10 +16,11 @@ var ComponentsDropdowns = function () {
             placeholder: "Select...",
             allowClear: true,
             minimumInputLength: 1,
-            query: function (query) {
+            query: function(query) {
                 var data = {
-                    results: []
-                }, i, j, s;
+                        results: []
+                    },
+                    i, j, s;
                 for (i = 1; i < 5; i++) {
                     s = "";
                     for (j = 0; j < i; j++) {
@@ -43,7 +44,7 @@ var ComponentsDropdowns = function () {
             allowClear: true,
             formatResult: format,
             formatSelection: format,
-            escapeMarkup: function (m) {
+            escapeMarkup: function(m) {
                 return m;
             }
         });
@@ -78,21 +79,21 @@ var ComponentsDropdowns = function () {
             ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
                 url: "http://api.rottentomatoes.com/api/public/v1.0/movies.json",
                 dataType: 'jsonp',
-                data: function (term, page) {
+                data: function(term, page) {
                     return {
                         q: term, // search term
                         page_limit: 10,
                         apikey: "ju6z9mjyajq2djue3gbvv26t" // please do not use so this example keeps working
                     };
                 },
-                results: function (data, page) { // parse the results into the format expected by Select2.
+                results: function(data, page) { // parse the results into the format expected by Select2.
                     // since we are using custom formatting functions we do not need to alter remote JSON data
                     return {
                         results: data.movies
                     };
                 }
             },
-            initSelection: function (element, callback) {
+            initSelection: function(element, callback) {
                 // the input tag has a value attribute preloaded that points to a preselected movie's id
                 // this function resolves that id attribute to an object that select2 can render
                 // using its formatResult renderer - that way the movie name is shown preselected
@@ -103,7 +104,7 @@ var ComponentsDropdowns = function () {
                             apikey: "ju6z9mjyajq2djue3gbvv26t"
                         },
                         dataType: "jsonp"
-                    }).done(function (data) {
+                    }).done(function(data) {
                         callback(data);
                     });
                 }
@@ -111,13 +112,13 @@ var ComponentsDropdowns = function () {
             formatResult: movieFormatResult, // omitted for brevity, see the source of this page
             formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
             dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
-            escapeMarkup: function (m) {
+            escapeMarkup: function(m) {
                 return m;
             } // we do not want to escape markup since we are displaying html in results
         });
     }
 
-    var handleSelect2Modal = function () {
+    var handleSelect2Modal = function() {
 
         $('#select2_sample_modal_1').select2({
             placeholder: "Select an option",
@@ -132,10 +133,11 @@ var ComponentsDropdowns = function () {
         $("#select2_sample_modal_3").select2({
             allowClear: true,
             minimumInputLength: 1,
-            query: function (query) {
+            query: function(query) {
                 var data = {
-                    results: []
-                }, i, j, s;
+                        results: []
+                    },
+                    i, j, s;
                 for (i = 1; i < 5; i++) {
                     s = "";
                     for (j = 0; j < i; j++) {
@@ -158,7 +160,7 @@ var ComponentsDropdowns = function () {
             allowClear: true,
             formatResult: format,
             formatSelection: format,
-            escapeMarkup: function (m) {
+            escapeMarkup: function(m) {
                 return m;
             }
         });
@@ -193,21 +195,21 @@ var ComponentsDropdowns = function () {
             ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
                 url: "http://api.rottentomatoes.com/api/public/v1.0/movies.json",
                 dataType: 'jsonp',
-                data: function (term, page) {
+                data: function(term, page) {
                     return {
                         q: term, // search term
                         page_limit: 10,
                         apikey: "ju6z9mjyajq2djue3gbvv26t" // please do not use so this example keeps working
                     };
                 },
-                results: function (data, page) { // parse the results into the format expected by Select2.
+                results: function(data, page) { // parse the results into the format expected by Select2.
                     // since we are using custom formatting functions we do not need to alter remote JSON data
                     return {
                         results: data.movies
                     };
                 }
             },
-            initSelection: function (element, callback) {
+            initSelection: function(element, callback) {
                 // the input tag has a value attribute preloaded that points to a preselected movie's id
                 // this function resolves that id attribute to an object that select2 can render
                 // using its formatResult renderer - that way the movie name is shown preselected
@@ -218,7 +220,7 @@ var ComponentsDropdowns = function () {
                             apikey: "ju6z9mjyajq2djue3gbvv26t"
                         },
                         dataType: "jsonp"
-                    }).done(function (data) {
+                    }).done(function(data) {
                         callback(data);
                     });
                 }
@@ -226,7 +228,7 @@ var ComponentsDropdowns = function () {
             formatResult: movieFormatResult, // omitted for brevity, see the source of this page
             formatSelection: movieFormatSelection, // omitted for brevity, see the source of this page
             dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
-            escapeMarkup: function (m) {
+            escapeMarkup: function(m) {
                 return m;
             } // we do not want to escape markup since we are displaying html in results
         });
@@ -239,7 +241,7 @@ var ComponentsDropdowns = function () {
         });
     }
 
-    var handleMultiSelect = function () {
+    var handleMultiSelect = function() {
         $('#my_multi_select1').multiSelect();
         $('#my_multi_select2').multiSelect({
             selectableOptgroup: true
@@ -248,7 +250,7 @@ var ComponentsDropdowns = function () {
 
     return {
         //main function to initiate the module
-        init: function () {            
+        init: function() {
             handleSelect2();
             handleSelect2Modal();
             handleMultiSelect();
@@ -258,6 +260,6 @@ var ComponentsDropdowns = function () {
 
 }();
 
-jQuery(document).ready(function() {    
-   ComponentsDropdowns.init(); 
+jQuery(document).ready(function() {
+    ComponentsDropdowns.init();
 });

@@ -1,1 +1,3 @@
-AmCharts.mapTranslations.rw = {"Tonga":"Igitonga"}
+AmCharts.mapTranslations.rw = {
+    "Tonga": "Igitonga"
+}

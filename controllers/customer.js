@@ -191,12 +191,20 @@ exports.install = function() {
 
         var query = {
             'salesPurchases.isActive': true,
-            'isremoved': { $ne: true },
+            'isremoved': {
+                $ne: true
+            },
             $and: [{
                 "$or": [{
-                    'name.last': { $regex: new RegExp(filter), $options: "xgi" }
+                    'name.last': {
+                        $regex: new RegExp(filter),
+                        $options: "xgi"
+                    }
                 }, {
-                    'name.first': { $regex: new RegExp(filter), $options: "xgi" }
+                    'name.first': {
+                        $regex: new RegExp(filter),
+                        $options: "xgi"
+                    }
                 }, {
                     'salesPurchases.ref': new RegExp(self.body.filter.filters[0].value, "i")
                 }]
@@ -210,21 +218,39 @@ exports.install = function() {
             if (self.query.fournisseur || self.body.fournisseur) {
                 if (self.query.fournisseur) {
                     if (typeof self.query.fournisseur == 'object')
-                        query.$and.push({ $or: [{ 'salesPurchases.isSupplier': true }, { 'salesPurchases.isSubcontractor': true }] });
+                        query.$and.push({
+                            $or: [{
+                                'salesPurchases.isSupplier': true
+                            }, {
+                                'salesPurchases.isSubcontractor': true
+                            }]
+                        });
                     else if (self.query.fournisseur == 'SUPPLIER')
                         query['salesPurchases.isSupplier'] = true;
                     else
                         query['salesPurchases.isSubcontractor'] = true;
                 } else {
                     if (typeof self.body.fournisseur == 'object')
-                        query.$and.push({ $or: [{ 'salesPurchases.isSupplier': true }, { 'salesPurchases.isSubcontractor': true }] });
+                        query.$and.push({
+                            $or: [{
+                                'salesPurchases.isSupplier': true
+                            }, {
+                                'salesPurchases.isSubcontractor': true
+                            }]
+                        });
                     else if (self.body.fournisseur == 'SUPPLIER')
                         query['salesPurchases.isSupplier'] = true;
                     else
                         query['salesPurchases.isSubcontractor'] = true;
                 }
             } else // customer Only
-                query.$and.push({ $or: [{ 'salesPurchases.isProspect': true }, { 'salesPurchases.isCustomer': true }] });
+                query.$and.push({
+                    $or: [{
+                        'salesPurchases.isProspect': true
+                    }, {
+                        'salesPurchases.isCustomer': true
+                    }]
+                });
 
         if (self.query.type)
             query.type = self.query.type;
@@ -281,37 +307,37 @@ exports.install = function() {
         query[field] = new RegExp(self.body.filter.filters[0].value, "i");
 
         if (typeof SocieteModel.schema.paths[field].options.type == "object")
-        //console.log(query);
+            //console.log(query);
             SocieteModel.aggregate([{
-            $project: {
-                _id: 0,
-                Tag: 1
-            }
-        }, {
-            $unwind: "$" + field
-        }, {
-            $match: query
-        }, {
-            $group: {
-                _id: "$" + field
-            }
-        }, {
-            $limit: self.body.take
-        }], function(err, docs) {
-            if (err)
-                return console.log("err : /api/societe/autocomplete/" + field, err);
-
-            //console.log(docs);
-            var result = [];
-
-            if (docs !== null)
-                for (var i in docs) {
-                    //result.push({text: docs[i]._id});
-                    result.push(docs[i]._id);
+                $project: {
+                    _id: 0,
+                    Tag: 1
                 }
+            }, {
+                $unwind: "$" + field
+            }, {
+                $match: query
+            }, {
+                $group: {
+                    _id: "$" + field
+                }
+            }, {
+                $limit: self.body.take
+            }], function(err, docs) {
+                if (err)
+                    return console.log("err : /api/societe/autocomplete/" + field, err);
 
-            return self.json(result);
-        });
+                //console.log(docs);
+                var result = [];
+
+                if (docs !== null)
+                    for (var i in docs) {
+                        //result.push({text: docs[i]._id});
+                        result.push(docs[i]._id);
+                    }
+
+                return self.json(result);
+            });
         else
             SocieteModel.distinct(field, query, function(err, docs) {
                 if (err)
@@ -1251,7 +1277,10 @@ exports.install = function() {
                                 break;
                             case "zip":
                                 if (row[i])
-                                    societe.zip = fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
+                                    societe.zip = fixedWidthString(row[i], 5, {
+                                        padding: '0',
+                                        align: 'right'
+                                    });
                             case "BP":
                                 if (row[i]) {
                                     societe.address += "\n" + row[i].substr(0, row[i].indexOf(','));
@@ -1380,20 +1409,32 @@ exports.install = function() {
                                     if (!societe.iban)
                                         societe.iban = {};
 
-                                    societe.iban.id = 'FR76' + fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
+                                    societe.iban.id = 'FR76' + fixedWidthString(row[i], 5, {
+                                        padding: '0',
+                                        align: 'right'
+                                    });
                                 }
                                 break;
                             case "rib.guichet":
                                 if (row[i])
-                                    societe.iban.id += fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
+                                    societe.iban.id += fixedWidthString(row[i], 5, {
+                                        padding: '0',
+                                        align: 'right'
+                                    });
                                 break;
                             case "rib.cpt":
                                 if (row[i])
-                                    societe.iban.id += fixedWidthString(row[i], 11, { padding: '0', align: 'right' });
+                                    societe.iban.id += fixedWidthString(row[i], 11, {
+                                        padding: '0',
+                                        align: 'right'
+                                    });
                                 break;
                             case "rib.key":
                                 if (row[i])
-                                    societe.iban.id += fixedWidthString(row[i], 2, { padding: '0', align: 'right' });
+                                    societe.iban.id += fixedWidthString(row[i], 2, {
+                                        padding: '0',
+                                        align: 'right'
+                                    });
                                 break;
                             case "bank_reglement":
                                 if (row[i]) {
@@ -1455,7 +1496,11 @@ exports.install = function() {
 
                                                 //return console.log(data);
 
-                                                SocieteModel.findOneAndUpdate(req, data, { upsert: false, multi: false, new: true }, function(err, doc) {
+                                                SocieteModel.findOneAndUpdate(req, data, {
+                                                    upsert: false,
+                                                    multi: false,
+                                                    new: true
+                                                }, function(err, doc) {
                                                     if (err)
                                                         return callback(err);
 
@@ -1657,7 +1702,10 @@ exports.install = function() {
                         break;
                     case "zip":
                         if (row[i])
-                            societe.zip = fixedWidthString(row[i], 5, { padding: '0', align: 'right' });
+                            societe.zip = fixedWidthString(row[i], 5, {
+                                padding: '0',
+                                align: 'right'
+                            });
                     case "BP":
                         if (row[i]) {
                             societe.address += "\n" + row[i].substr(0, row[i].indexOf(','));
@@ -2082,7 +2130,9 @@ Object.prototype = {
         //query["commercial_id.id"] = self.user._id;
 
         if (self.query.oldId)
-            query = { oldId: self.query.oldId };
+            query = {
+                oldId: self.query.oldId
+            };
 
         //console.log(query);
 
@@ -2101,7 +2151,9 @@ Object.prototype = {
 
             //console.log(doc);
 
-            self.json({ data: doc });
+            self.json({
+                data: doc
+            });
         });
     },
     readDT: function() {
@@ -2114,7 +2166,9 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            isremoved: { $ne: true },
+            isremoved: {
+                $ne: true
+            },
             //"salesPurchases.isActive": true,
             company: null
         };
@@ -2139,9 +2193,12 @@ Object.prototype = {
                 conditions['salesPurchases.isProspect'] = true;
                 break;
             case "PROSPECT_CUSTOMER":
-                conditions.$or = [
-                    { 'salesPurchases.isProspect': true },
-                    { 'salesPurchases.isCustomer': true }
+                conditions.$or = [{
+                        'salesPurchases.isProspect': true
+                    },
+                    {
+                        'salesPurchases.isCustomer': true
+                    }
                 ];
                 break;
             case "SUPPLIER":
@@ -2151,14 +2208,19 @@ Object.prototype = {
                 conditions['salesPurchases.isSubcontractor'] = true;
                 break;
             case "SUPPLIER_SUBCONTRACTOR":
-                conditions.$or = [
-                    { 'salesPurchases.isSupplier': true },
-                    { 'salesPurchases.isSubcontractor': true }
+                conditions.$or = [{
+                        'salesPurchases.isSupplier': true
+                    },
+                    {
+                        'salesPurchases.isSubcontractor': true
+                    }
                 ];
                 break;
             case "Person":
                 conditions.type = "Person";
-                conditions.company = { $ne: null };
+                conditions.company = {
+                    $ne: null
+                };
                 delete conditions["salesPurchases.isActive"];
 
                 break;
@@ -2209,8 +2271,13 @@ Object.prototype = {
             if (err)
                 console.log(err);
 
-            SocieteModel.populate(res, { path: "datatable.data.company", select: "name" }, function(err, res) {
-                EmployeeModel.populate(res, { path: "datatable.data.salesPurchases.salesPerson" }, function(err, res) {
+            SocieteModel.populate(res, {
+                path: "datatable.data.company",
+                select: "name"
+            }, function(err, res) {
+                EmployeeModel.populate(res, {
+                    path: "datatable.data.salesPurchases.salesPerson"
+                }, function(err, res) {
                     //console.log(res);
                     for (var i = 0, len = res.datatable.data.length; i < len; i++) {
                         var row = res.datatable.data[i];
@@ -2264,7 +2331,9 @@ Object.prototype = {
         //console.log(self.query);
 
         var conditions = {
-            isremoved: { $ne: true },
+            isremoved: {
+                $ne: true
+            },
             company: null
         };
 
@@ -2285,9 +2354,12 @@ Object.prototype = {
                 conditions['salesPurchases.isProspect'] = true;
                 break;
             case "PROSPECT_CUSTOMER":
-                conditions.$or = [
-                    { 'salesPurchases.isProspect': true },
-                    { 'salesPurchases.isCustomer': true }
+                conditions.$or = [{
+                        'salesPurchases.isProspect': true
+                    },
+                    {
+                        'salesPurchases.isCustomer': true
+                    }
                 ];
                 break;
             case "SUPPLIER":
@@ -2297,9 +2369,12 @@ Object.prototype = {
                 conditions['salesPurchases.isSubcontractor'] = true;
                 break;
             case "SUPPLIER_SUBCONTRACTOR":
-                conditions.$or = [
-                    { 'salesPurchases.isSupplier': true },
-                    { 'salesPurchases.isSubcontractor': true }
+                conditions.$or = [{
+                        'salesPurchases.isSupplier': true
+                    },
+                    {
+                        'salesPurchases.isSubcontractor': true
+                    }
                 ];
                 break;
             default: //ALL
@@ -2397,7 +2472,9 @@ Object.prototype = {
         var SocieteModel = MODEL('Customers').Schema;
 
         var query = {
-            isremoved: { $ne: true },
+            isremoved: {
+                $ne: true
+            },
             $or: [{
                 entity: "ALL"
             }, {
@@ -2568,7 +2645,11 @@ Object.prototype = {
 
         SocieteModel.update({
             _id: id
-        }, { $set: { isremoved: true } }, function(err) {
+        }, {
+            $set: {
+                isremoved: true
+            }
+        }, function(err) {
             if (err)
                 self.throw500(err);
             else
@@ -2595,8 +2676,14 @@ Object.prototype = {
             ids.push(list);
 
         SocieteModel.update({
-            _id: { $in: ids }
-        }, { $set: { isremoved: true } }, function(err) {
+            _id: {
+                $in: ids
+            }
+        }, {
+            $set: {
+                isremoved: true
+            }
+        }, function(err) {
             if (err)
                 self.throw500(err);
             else
@@ -2797,7 +2884,9 @@ Object.prototype = {
                             "commercial_id.id": self.user._id
                         };
 
-                    query.isremoved = { $ne: true };
+                    query.isremoved = {
+                        $ne: true
+                    };
 
                     SocieteModel.aggregate([{
                         $match: query
@@ -2932,7 +3021,11 @@ Object.prototype = {
 
         var json2csv = require('json2csv');
 
-        SocieteModel.find({ isremoved: { $ne: true } }, function(err, societes) {
+        SocieteModel.find({
+            isremoved: {
+                $ne: true
+            }
+        }, function(err, societes) {
             //console.log(societe);
 
             async.forEach(societes, function(societe, cb) {
@@ -2971,7 +3064,9 @@ Object.prototype = {
             entity: {
                 $in: ["ALL", req.query.entity]
             },
-            isremoved: { $ne: true },
+            isremoved: {
+                $ne: true
+            },
             "commercial_id.name": {
                 $ne: null
             }
@@ -3010,7 +3105,9 @@ Report.prototype = {
     report: function(req, res, next, id) {
         var ReportModel = MODEL('report').Schema;
 
-        ReportModel.findOne({ _id: id }, function(err, doc) {
+        ReportModel.findOne({
+            _id: id
+        }, function(err, doc) {
             if (err)
                 return next(err);
             if (!doc)
@@ -3103,12 +3200,17 @@ Report.prototype = {
             var dateStart = new Date(self.query.year, self.query.month, 1);
             var dateEnd = new Date(self.query.year, parseInt(self.query.month, 10) + 1, 1);
 
-            query.createdAt = { $gte: dateStart, $lt: dateEnd };
+            query.createdAt = {
+                $gte: dateStart,
+                $lt: dateEnd
+            };
         }
 
         ReportModel.find(query, fields)
             .populate("lead.id", "status")
-            .sort({ createdAt: -1 })
+            .sort({
+                createdAt: -1
+            })
             .exec(function(err, doc) {
                 if (err) {
                     console.log(err);

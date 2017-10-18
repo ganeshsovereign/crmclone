@@ -39,8 +39,7 @@
             generation and format it as a ⍝ character matrix gen ← {' #'[(life ⍣ ⍵) board]} ⍝ Show first three generations (gen 1) (gen 2) (gen 3) </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             lineNumbers: true,
             matchBrackets: true,
             mode: "text/apl"

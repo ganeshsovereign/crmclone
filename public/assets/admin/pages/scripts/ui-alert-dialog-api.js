@@ -1,79 +1,79 @@
-var UIAlertDialogApi = function () {
+var UIAlertDialogApi = function() {
 
     var handleDialogs = function() {
 
-        $('#demo_1').click(function(){
-                bootbox.alert("Hello world!");    
-            });
-            //end #demo_1
+        $('#demo_1').click(function() {
+            bootbox.alert("Hello world!");
+        });
+        //end #demo_1
 
-            $('#demo_2').click(function(){
-                bootbox.alert("Hello world!", function() {
-                    alert("Hello world callback");
-                });  
+        $('#demo_2').click(function() {
+            bootbox.alert("Hello world!", function() {
+                alert("Hello world callback");
             });
-            //end #demo_2
-        
-            $('#demo_3').click(function(){
-                bootbox.confirm("Are you sure?", function(result) {
-                   alert("Confirm result: "+result);
-                }); 
-            });
-            //end #demo_3
+        });
+        //end #demo_2
 
-            $('#demo_4').click(function(){
-                bootbox.prompt("What is your name?", function(result) {
-                    if (result === null) {
-                        alert("Prompt dismissed");
-                    } else {
-                        alert("Hi <b>"+result+"</b>");
-                    }
-                });
+        $('#demo_3').click(function() {
+            bootbox.confirm("Are you sure?", function(result) {
+                alert("Confirm result: " + result);
             });
-            //end #demo_6
+        });
+        //end #demo_3
 
-            $('#demo_5').click(function(){
-                bootbox.dialog({
-                    message: "I am a custom dialog",
-                    title: "Custom title",
-                    buttons: {
-                      success: {
+        $('#demo_4').click(function() {
+            bootbox.prompt("What is your name?", function(result) {
+                if (result === null) {
+                    alert("Prompt dismissed");
+                } else {
+                    alert("Hi <b>" + result + "</b>");
+                }
+            });
+        });
+        //end #demo_6
+
+        $('#demo_5').click(function() {
+            bootbox.dialog({
+                message: "I am a custom dialog",
+                title: "Custom title",
+                buttons: {
+                    success: {
                         label: "Success!",
                         className: "green",
                         callback: function() {
-                          alert("great success");
+                            alert("great success");
                         }
-                      },
-                      danger: {
+                    },
+                    danger: {
                         label: "Danger!",
                         className: "red",
                         callback: function() {
-                          alert("uh oh, look out!");
+                            alert("uh oh, look out!");
                         }
-                      },
-                      main: {
+                    },
+                    main: {
                         label: "Click ME!",
                         className: "blue",
                         callback: function() {
-                          alert("Primary button");
+                            alert("Primary button");
                         }
-                      }
                     }
-                });
+                }
             });
-            //end #demo_7
+        });
+        //end #demo_7
 
     }
 
     var handleAlerts = function() {
-        
-        $('#alert_show').click(function(){
+
+        $('#alert_show').click(function() {
 
             Metronic.alert({
                 container: $('#alert_container').val(), // alerts parent container(by default placed after the page breadcrumbs)
                 place: $('#alert_place').val(), // append or prepent in container 
-                type: $('#alert_type').val(),  // alert's type
-                message: $('#alert_message').val(),  // alert's message
+                type: $('#alert_type').val(), // alert's type
+                message: $('#alert_message').val(), // alert's message
                 close: $('#alert_close').is(":checked"), // make alert closable
                 reset: $('#alert_reset').is(":checked"), // close all previouse alerts first
                 focus: $('#alert_focus').is(":checked"), // auto scroll to the alert after shown
@@ -88,7 +88,7 @@ var UIAlertDialogApi = function () {
     return {
 
         //main function to initiate the module
-        init: function () {
+        init: function() {
             handleDialogs();
             handleAlerts();
         }

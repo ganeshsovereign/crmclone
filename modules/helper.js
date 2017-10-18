@@ -142,7 +142,10 @@ var FilterMapper = function() {
 
                 break;
             case 'regex':
-                result = { $regex: new RegExp(values.toLowerCase()), $options: "gi" };
+                result = {
+                    $regex: new RegExp(values.toLowerCase()),
+                    $options: "gi"
+                };
                 break;
             case 'letter':
                 result = new RegExp('^[' + values.toLowerCase() + values.toUpperCase() + '].*');
@@ -232,7 +235,9 @@ var FilterMapper = function() {
                     });
                 } else
                 if (contentType === 'Products' && filterBackend === 'job') {
-                    filterResObject.job = { $exists: false };
+                    filterResObject.job = {
+                        $exists: false
+                    };
                 } else if (filterValues && (filterName !== 'startDate' || filterName !== 'endDate')) {
                     if (filterBackend) {
                         if (typeof filterBackend === 'string') {
@@ -260,7 +265,9 @@ var FilterMapper = function() {
                                     filterResObject.$and = [];
                                 }
 
-                                filterResObject.$and.push({ $or: $orArray });
+                                filterResObject.$and.push({
+                                    $or: $orArray
+                                });
                             }
                         }
                     }
@@ -301,15 +308,23 @@ var getGroupOption = function(userId, groupsId) {
 
     return {
         $or: [{
-                $and: [
-                    { whoCanRW: 'group' },
-                    { 'groups.users': user }
+                $and: [{
+                        whoCanRW: 'group'
+                    },
+                    {
+                        'groups.users': user
+                    }
                 ]
             },
             {
-                $and: [
-                    { whoCanRW: 'group' },
-                    { 'groups.group': { $in: groups } }
+                $and: [{
+                        whoCanRW: 'group'
+                    },
+                    {
+                        'groups.group': {
+                            $in: groups
+                        }
+                    }
                 ]
             }
         ]

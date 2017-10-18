@@ -34,8 +34,13 @@ var mongoose = require('mongoose'),
  */
 
 var scheduledPaySchema = new Schema({
-    name: { type: String, default: '' }
-}, { collection: 'scheduledPays' });
+    name: {
+        type: String,
+        default: ''
+    }
+}, {
+    collection: 'scheduledPays'
+});
 
 exports.Schema = mongoose.model('scheduledPay', scheduledPaySchema);
 exports.name = 'scheduledPay';

@@ -41,7 +41,7 @@ var Demo = function() {
                 $('.scroll-to-top').insertAfter('.page-footer');
             }
 
-             $(".top-menu > .navbar-nav > li.dropdown").removeClass("dropdown-dark");
+            $(".top-menu > .navbar-nav > li.dropdown").removeClass("dropdown-dark");
 
             $('body > .container').remove();
         };
@@ -268,25 +268,25 @@ var Demo = function() {
         //main function to initiate the theme
         init: function() {
             // handles style customer tool
-            handleTheme(); 
-            
+            handleTheme();
+
             // handle layout style change
             $('.theme-panel .layout-style-option').change(function() {
-                 setThemeStyle($(this).val());
+                setThemeStyle($(this).val());
             });
 
             // set layout style from cookie
             if (typeof Cookies !== "undefined" && Cookies.get('layout-style-option') === 'rounded') {
                 setThemeStyle(Cookies.get('layout-style-option'));
                 $('.theme-panel .layout-style-option').val(Cookies.get('layout-style-option'));
-            }            
+            }
         }
     };
 
 }();
 
 if (App.isAngularJsApp() === false) {
-    jQuery(document).ready(function() {    
-       Demo.init(); // init metronic core componets
+    jQuery(document).ready(function() {
+        Demo.init(); // init metronic core componets
     });
 }

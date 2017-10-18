@@ -1,6 +1,6 @@
-var TableAdvanced = function () {
+var TableAdvanced = function() {
 
-    var initTable1 = function () {
+    var initTable1 = function() {
         var table = $('#sample_1');
 
         /* Table tools samples: https://www.datatables.net/release-datatables/extras/TableTools/ */
@@ -43,7 +43,7 @@ var TableAdvanced = function () {
             "order": [
                 [0, 'asc']
             ],
-            
+
             "lengthMenu": [
                 [5, 15, 20, -1],
                 [5, 15, 20, "All"] // change per page values here
@@ -83,7 +83,7 @@ var TableAdvanced = function () {
         tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
     }
 
-    var initTable2 = function () {
+    var initTable2 = function() {
         var table = $('#sample_2');
 
         /* Table tools samples: https://www.datatables.net/release-datatables/extras/TableTools/ */
@@ -159,7 +159,7 @@ var TableAdvanced = function () {
         tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
     }
 
-    var initTable3 = function () {
+    var initTable3 = function() {
         var table = $('#sample_3');
 
         /* Formatting function for row details */
@@ -184,11 +184,11 @@ var TableAdvanced = function () {
         var nCloneTd = document.createElement('td');
         nCloneTd.innerHTML = '<span class="row-details row-details-close"></span>';
 
-        table.find('thead tr').each(function () {
+        table.find('thead tr').each(function() {
             this.insertBefore(nCloneTh, this.childNodes[0]);
         });
 
-        table.find('tbody tr').each(function () {
+        table.find('tbody tr').each(function() {
             this.insertBefore(nCloneTd.cloneNode(true), this.childNodes[0]);
         });
 
@@ -234,7 +234,7 @@ var TableAdvanced = function () {
          * Note that the indicator for showing which row is open is not controlled by DataTables,
          * rather it is done here
          */
-        table.on('click', ' tbody td .row-details', function () {
+        table.on('click', ' tbody td .row-details', function() {
             var nTr = $(this).parents('tr')[0];
             if (oTable.fnIsOpen(nTr)) {
                 /* This row is already open - close it */
@@ -248,7 +248,7 @@ var TableAdvanced = function () {
         });
     }
 
-    var initTable4 = function () {
+    var initTable4 = function() {
         var table = $('#sample_4');
 
         /* Formatting function for row expanded details */
@@ -269,15 +269,15 @@ var TableAdvanced = function () {
          */
         var nCloneTh = document.createElement('th');
         nCloneTh.className = "table-checkbox";
-        
+
         var nCloneTd = document.createElement('td');
         nCloneTd.innerHTML = '<span class="row-details row-details-close"></span>';
 
-        table.find('thead tr').each(function () {
+        table.find('thead tr').each(function() {
             this.insertBefore(nCloneTh, this.childNodes[0]);
         });
 
-        table.find('tbody tr').each(function () {
+        table.find('tbody tr').each(function() {
             this.insertBefore(nCloneTd.cloneNode(true), this.childNodes[0]);
         });
 
@@ -323,7 +323,7 @@ var TableAdvanced = function () {
          * Note that the indicator for showing which row is open is not controlled by DataTables,
          * rather it is done here
          */
-        table.on('click', ' tbody td .row-details', function () {
+        table.on('click', ' tbody td .row-details', function() {
             var nTr = $(this).parents('tr')[0];
             if (oTable.fnIsOpen(nTr)) {
                 /* This row is already open - close it */
@@ -337,7 +337,7 @@ var TableAdvanced = function () {
         });
 
         /* handle show/hide columns*/
-        $('input[type="checkbox"]', tableColumnToggler).change(function () {
+        $('input[type="checkbox"]', tableColumnToggler).change(function() {
             /* Get the DataTables object again - this is not a recreation, just a get of the object */
             var iCol = parseInt($(this).attr("data-column"));
             var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
@@ -345,7 +345,7 @@ var TableAdvanced = function () {
         });
     }
 
-    var initTable5 = function () {
+    var initTable5 = function() {
 
         var table = $('#sample_5');
 
@@ -370,7 +370,7 @@ var TableAdvanced = function () {
         tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
     }
 
-    var initTable6 = function () {
+    var initTable6 = function() {
 
         var table = $('#sample_6');
 
@@ -399,7 +399,7 @@ var TableAdvanced = function () {
                 [5, 15, 20, "All"] // change per page values here
             ],
             "pageLength": 10, // set the initial value,
-            "columnDefs": [{  // set default column settings
+            "columnDefs": [{ // set default column settings
                 'orderable': false,
                 'targets': [0]
             }, {
@@ -408,10 +408,10 @@ var TableAdvanced = function () {
             }],
             "order": [
                 [1, "asc"]
-            ]           
+            ]
         });
 
-        var oTableColReorder = new $.fn.dataTable.ColReorder( oTable );
+        var oTableColReorder = new $.fn.dataTable.ColReorder(oTable);
 
         var tableWrapper = $('#sample_6_wrapper'); // datatable creates the table wrapper by adding with id {your_table_jd}_wrapper
         tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
@@ -420,7 +420,7 @@ var TableAdvanced = function () {
     return {
 
         //main function to initiate the module
-        init: function () {
+        init: function() {
 
             if (!jQuery().dataTable) {
                 return;

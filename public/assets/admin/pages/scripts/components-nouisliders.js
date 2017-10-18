@@ -139,8 +139,8 @@ var ComponentsNoUiSliders = function() {
 
     var demo5 = function() {
 
-        function timestamp(str){
-            return new Date(str).getTime();   
+        function timestamp(str) {
+            return new Date(str).getTime();
         }
 
         // Create a list of day and monthnames.
@@ -227,10 +227,10 @@ var ComponentsNoUiSliders = function() {
             density: 4
         });
 
-        $('#soft').on('set', function ( event, value ) {
-            if ( value < 20 ) {
+        $('#soft').on('set', function(event, value) {
+            if (value < 20) {
                 $(this).val(20);
-            } else if ( value > 80 ) {
+            } else if (value > 80) {
                 $(this).val(80);
             }
         });

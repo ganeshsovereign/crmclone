@@ -2,38 +2,38 @@
  * Bootstrap Table Catalan translation
  * Author: Marc Pina<iwalkalone69@gmail.com>
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['ca-ES'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Si us plau esperi...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' resultats per pàgina';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Mostrant de ' + pageFrom + ' fins ' + pageTo + ' - total ' + totalRows + ' resultats';
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Buscar';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'No s\'han trobat resultats';
         },
-        formatPaginationSwitch: function () {
+        formatPaginationSwitch: function() {
             return 'Amagar/Mostrar paginació';
         },
-        formatRefresh: function () {
+        formatRefresh: function() {
             return 'Refrescar';
         },
-        formatToggle: function () {
+        formatToggle: function() {
             return 'Amagar/Mostrar';
         },
-        formatColumns: function () {
+        formatColumns: function() {
             return 'Columnes';
         },
-        formatAllRows: function () {
+        formatAllRows: function() {
             return 'Tots';
         }
     };

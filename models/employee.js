@@ -36,7 +36,10 @@ var mongoose = require('mongoose'),
 var DataTable = require('mongoose-datatable');
 
 
-DataTable.configure({ verbose: false, debug: false });
+DataTable.configure({
+    verbose: false,
+    debug: false
+});
 mongoose.plugin(DataTable.init);
 
 
@@ -130,8 +133,14 @@ var EmployeeSchema = new Schema({
      */
 
 
-    isEmployee: { type: Boolean, default: false },
-    isremoved: { type: Boolean, default: false },
+    isEmployee: {
+        type: Boolean,
+        default: false
+    },
+    isremoved: {
+        type: Boolean,
+        default: false
+    },
 
     imageSrc: {
         type: Schema.Types.ObjectId,
@@ -139,135 +148,358 @@ var EmployeeSchema = new Schema({
         default: null
     },
 
-    subject: { type: String, default: '' },
-
-    name: {
-        first: { type: String, set: setFirstname, default: '' },
-        last: { type: String, default: '' }
+    subject: {
+        type: String,
+        default: ''
     },
 
-    tags: { type: Array, default: [] },
+    name: {
+        first: {
+            type: String,
+            set: setFirstname,
+            default: ''
+        },
+        last: {
+            type: String,
+            default: ''
+        }
+    },
+
+    tags: {
+        type: Array,
+        default: []
+    },
 
     workAddress: {
-        street: { type: String, default: '' },
-        city: { type: String, default: '' },
-        state: { type: String, default: '' },
-        zip: { type: String, default: '' },
-        country: { type: String, default: '' }
+        street: {
+            type: String,
+            default: ''
+        },
+        city: {
+            type: String,
+            default: ''
+        },
+        state: {
+            type: String,
+            default: ''
+        },
+        zip: {
+            type: String,
+            default: ''
+        },
+        country: {
+            type: String,
+            default: ''
+        }
     },
 
     emails: {
-        work: { type: String, default: '' },
-        personal: { type: String, default: '' }
+        work: {
+            type: String,
+            default: ''
+        },
+        personal: {
+            type: String,
+            default: ''
+        }
     },
 
     phones: {
-        mobile: { type: String, set: setPhone, default: '' },
-        phone: { type: String, set: setPhone, default: '' },
-        personal: { type: String, set: setPhone, default: '' }
+        mobile: {
+            type: String,
+            set: setPhone,
+            default: ''
+        },
+        phone: {
+            type: String,
+            set: setPhone,
+            default: ''
+        },
+        personal: {
+            type: String,
+            set: setPhone,
+            default: ''
+        }
     },
 
-    skype: { type: String, default: '' },
-    officeLocation: { type: String, default: '' },
-    relatedUser: { type: ObjectId, ref: 'Users', sparse: true },
-    visibility: { type: String, default: 'Public' },
-    department: { type: ObjectId, ref: 'Department' },
-    jobPosition: { type: ObjectId, ref: 'JobPosition' },
-    weeklyScheduler: { type: ObjectId, ref: 'weeklyScheduler' },
-    payrollStructureType: { type: ObjectId, ref: 'payrollStructureTypes' },
-    scheduledPay: { type: ObjectId, ref: 'scheduledPay' },
-    manager: { type: ObjectId, ref: 'Employees' },
-    coach: { type: ObjectId, ref: 'Employees' },
-    nationality: { type: String, default: 'FR' },
-    socialSecurityNumber: { type: String, default: '' },
+    skype: {
+        type: String,
+        default: ''
+    },
+    officeLocation: {
+        type: String,
+        default: ''
+    },
+    relatedUser: {
+        type: ObjectId,
+        ref: 'Users',
+        sparse: true
+    },
+    visibility: {
+        type: String,
+        default: 'Public'
+    },
+    department: {
+        type: ObjectId,
+        ref: 'Department'
+    },
+    jobPosition: {
+        type: ObjectId,
+        ref: 'JobPosition'
+    },
+    weeklyScheduler: {
+        type: ObjectId,
+        ref: 'weeklyScheduler'
+    },
+    payrollStructureType: {
+        type: ObjectId,
+        ref: 'payrollStructureTypes'
+    },
+    scheduledPay: {
+        type: ObjectId,
+        ref: 'scheduledPay'
+    },
+    manager: {
+        type: ObjectId,
+        ref: 'Employees'
+    },
+    coach: {
+        type: ObjectId,
+        ref: 'Employees'
+    },
+    nationality: {
+        type: String,
+        default: 'FR'
+    },
+    socialSecurityNumber: {
+        type: String,
+        default: ''
+    },
     identNo: String,
     passportNo: String,
     iban: {
-        bank: { type: String, uppercase: true, trim: true },
-        id: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true }, //FR76........
-        bic: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true } //BIC / SWIFT
+        bank: {
+            type: String,
+            uppercase: true,
+            trim: true
+        },
+        id: {
+            type: String,
+            set: MODULE('utils').setNoSpace,
+            uppercase: true,
+            trim: true
+        }, //FR76........
+        bic: {
+            type: String,
+            set: MODULE('utils').setNoSpace,
+            uppercase: true,
+            trim: true
+        } //BIC / SWIFT
     },
-    otherId: { type: String, default: '' },
+    otherId: {
+        type: String,
+        default: ''
+    },
 
     homeAddress: {
-        street: { type: String, default: '' },
-        city: { type: String, default: '' },
-        state: { type: String, default: '' },
-        zip: { type: String, default: '' },
-        country: { type: String, default: '' }
+        street: {
+            type: String,
+            default: ''
+        },
+        city: {
+            type: String,
+            default: ''
+        },
+        state: {
+            type: String,
+            default: ''
+        },
+        zip: {
+            type: String,
+            default: ''
+        },
+        country: {
+            type: String,
+            default: ''
+        }
     },
 
     dateBirth: Date,
-    age: { type: Number, default: 0 },
+    age: {
+        type: Number,
+        default: 0
+    },
     daysForBirth: Number,
     nextAction: Date,
-    source: { type: String, default: '' },
-    referredBy: { type: String, default: '' },
-    workflow: { type: ObjectId, ref: 'workflows' },
-    whoCanRW: { type: String, enum: ['owner', 'group', 'everyOne'], default: 'everyOne' },
-
-    groups: {
-        owner: { type: ObjectId, ref: 'Users' },
-        users: [{ type: ObjectId, ref: 'Users' }],
-        group: [{ type: ObjectId, ref: 'Department' }]
+    source: {
+        type: String,
+        default: ''
+    },
+    referredBy: {
+        type: String,
+        default: ''
+    },
+    workflow: {
+        type: ObjectId,
+        ref: 'workflows'
+    },
+    whoCanRW: {
+        type: String,
+        enum: ['owner', 'group', 'everyOne'],
+        default: 'everyOne'
     },
 
-    otherInfo: { type: String, default: '' },
+    groups: {
+        owner: {
+            type: ObjectId,
+            ref: 'Users'
+        },
+        users: [{
+            type: ObjectId,
+            ref: 'Users'
+        }],
+        group: [{
+            type: ObjectId,
+            ref: 'Department'
+        }]
+    },
+
+    otherInfo: {
+        type: String,
+        default: ''
+    },
     expectedSalary: Number,
     proposedSalary: Number,
-    color: { type: String, default: '#4d5a75' },
-    creationDate: { type: Date, default: Date.now },
+    color: {
+        type: String,
+        default: '#4d5a75'
+    },
+    creationDate: {
+        type: Date,
+        default: Date.now
+    },
 
-    createdBy: { type: ObjectId, ref: 'Users' },
+    createdBy: {
+        type: ObjectId,
+        ref: 'Users'
+    },
 
-    editedBy: { type: ObjectId, ref: 'Users' },
+    editedBy: {
+        type: ObjectId,
+        ref: 'Users'
+    },
 
-    attachments: { type: Array, default: [] },
-    files: { type: Array, default: [] },
+    attachments: {
+        type: Array,
+        default: []
+    },
+    files: {
+        type: Array,
+        default: []
+    },
 
-    notes: { type: Array, default: [] },
+    notes: {
+        type: Array,
+        default: []
+    },
 
     internalNotes: {
         new: String,
         old: String,
-        author: { type: ObjectId, ref: 'Users' },
-        datec: { type: Date, default: Date.now }
+        author: {
+            type: ObjectId,
+            ref: 'Users'
+        },
+        datec: {
+            type: Date,
+            default: Date.now
+        }
     },
 
-    arrivalDate: { type: Date },
+    arrivalDate: {
+        type: Date
+    },
     contractEnd: {
-        reason: { type: String, default: '' },
-        date: { type: Date, default: Date.now }
+        reason: {
+            type: String,
+            default: ''
+        },
+        date: {
+            type: Date,
+            default: Date.now
+        }
     },
 
-    marital: { type: String, enum: ['married', 'unmarried'], default: 'unmarried' },
-    employmentType: { type: String, enum: ['Employees', 'FOP', 'Un Employees'], default: 'Un Employees' },
-    gender: { type: String, enum: ['male', 'female'], default: 'male' },
-    jobType: { type: String, default: '' },
-    sequence: { type: Number, default: 0 },
+    marital: {
+        type: String,
+        enum: ['married', 'unmarried'],
+        default: 'unmarried'
+    },
+    employmentType: {
+        type: String,
+        enum: ['Employees', 'FOP', 'Un Employees'],
+        default: 'Un Employees'
+    },
+    gender: {
+        type: String,
+        enum: ['male', 'female'],
+        default: 'male'
+    },
+    jobType: {
+        type: String,
+        default: ''
+    },
+    sequence: {
+        type: Number,
+        default: 0
+    },
     isLead: Number,
     ID: Number,
 
     social: {
-        FB: { type: String, default: '' },
-        LI: { type: String, default: '' },
-        GP: { type: String, default: '' }
+        FB: {
+            type: String,
+            default: ''
+        },
+        LI: {
+            type: String,
+            default: ''
+        },
+        GP: {
+            type: String,
+            default: ''
+        }
     },
 
     hire: [Date],
     fire: [Date],
 
-    transfer: { type: Array, default: [] },
+    transfer: {
+        type: Array,
+        default: []
+    },
 
     //entity: [{ type: String, trim: true }],
 
-    lastFire: { type: Number, default: null },
-    externalId: { type: String, default: null },
+    lastFire: {
+        type: Number,
+        default: null
+    },
+    externalId: {
+        type: String,
+        default: null
+    },
     userName: String
 }, {
     collection: 'Employees',
-    toObject: { getters: true, virtuals: true },
-    toJSON: { getters: true, virtuals: true }
+    toObject: {
+        getters: true,
+        virtuals: true
+    },
+    toJSON: {
+        getters: true,
+        virtuals: true
+    }
 });
 
 EmployeeSchema.virtual('fullName').get(function() {
@@ -292,7 +524,9 @@ EmployeeSchema.virtual('iban.isOk')
 
 if (CONFIG('storing-files')) {
     var gridfs = INCLUDE(CONFIG('storing-files'));
-    EmployeeSchema.plugin(gridfs.pluginGridFs, { root: "Employees" });
+    EmployeeSchema.plugin(gridfs.pluginGridFs, {
+        root: "Employees"
+    });
 }
 
 exports.Status = {
@@ -328,7 +562,9 @@ exports.Status = {
     }
 };
 
-EmployeeSchema.plugin(version, { collection: 'Employees.Version' });
+EmployeeSchema.plugin(version, {
+    collection: 'Employees.Version'
+});
 
 exports.Schema = mongoose.model('Employees', EmployeeSchema);
 exports.name = 'Employees';

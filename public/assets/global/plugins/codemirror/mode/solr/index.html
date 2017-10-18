@@ -10,7 +10,7 @@
         border-top: 1px solid black;
         border-bottom: 1px solid black;
     }
-    
+
     .CodeMirror .cm-operator {
         color: orange;
     }
@@ -41,8 +41,7 @@
         <textarea id="code" name="code">author:Camus title:"The Rebel" and author:Camus philosophy:Existentialism -author:Kierkegaard hardToSpell:Dostoevsky~ published:[194* TO 1960] and author:(Sartre or "Simone de Beauvoir")</textarea>
     </div>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             mode: 'solr',
             lineNumbers: true
         });

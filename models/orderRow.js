@@ -37,40 +37,93 @@ var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
 
 var OrderRowSchema = mongoose.Schema({
-    product: { type: ObjectId, ref: 'product' },
+    product: {
+        type: ObjectId,
+        ref: 'product'
+    },
     product_type: String,
-    order: { type: ObjectId, ref: 'order', index: true },
-    warehouse: { type: ObjectId, ref: 'warehouse' },
-    type: { type: String, default: 'product' }, //Used for subtotal
+    order: {
+        type: ObjectId,
+        ref: 'order',
+        index: true
+    },
+    warehouse: {
+        type: ObjectId,
+        ref: 'warehouse'
+    },
+    type: {
+        type: String,
+        default: 'product'
+    }, //Used for subtotal
     refProductSupplier: String, //Only for an order Supplier or For Ref Title Comment
-    qty: { type: Number, default: 0 },
+    qty: {
+        type: Number,
+        default: 0
+    },
     total_taxes: [{
         _id: false,
-        taxeId: { type: Schema.Types.ObjectId, ref: 'taxes' },
-        value: { type: Number }
+        taxeId: {
+            type: Schema.Types.ObjectId,
+            ref: 'taxes'
+        },
+        value: {
+            type: Number
+        }
     }],
     description: String,
     private: String, // Private note
-    priceSpecific: { type: Boolean, default: false },
-    pu_ht: { type: Number, default: 0 }, //unitPrice
-    costPrice: { type: Number, default: 0 },
-    discount: { type: Number, default: 0 },
-    total_ht: { type: Number, default: 0, set: setPrice },
+    priceSpecific: {
+        type: Boolean,
+        default: false
+    },
+    pu_ht: {
+        type: Number,
+        default: 0
+    }, //unitPrice
+    costPrice: {
+        type: Number,
+        default: 0
+    },
+    discount: {
+        type: Number,
+        default: 0
+    },
+    total_ht: {
+        type: Number,
+        default: 0,
+        set: setPrice
+    },
     pdf: {
         sizes: {
-            label: { type: String, default: 'normalsize' }
+            label: {
+                type: String,
+                default: 'normalsize'
+            }
         },
         colors: {
-            label: { type: String, default: 'black' }
+            label: {
+                type: String,
+                default: 'black'
+            }
         }
     },
-    optional: { type: Schema.Types.Mixed }, // For dynamic forms
+    optional: {
+        type: Schema.Types.Mixed
+    }, // For dynamic forms
     //nominalCode: { type: Number, default: 0 },
-    channel: { type: ObjectId, ref: 'integrations' },
+    channel: {
+        type: ObjectId,
+        ref: 'integrations'
+    },
     integrationId: String,
     sequence: Number, // sequence
-    isDeleted: { type: Boolean, defaut: false }
-}, { collection: 'orderRows' });
+    isDeleted: {
+        type: Boolean,
+        defaut: false
+    }
+}, {
+    collection: 'orderRows'
+});
 
 OrderRowSchema.plugin(timestamps);
 
@@ -110,7 +163,9 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
                                 $filter: {
                                     input: '$orderRows',
                                     as: 'elem',
-                                    cond: { $eq: ['$$elem.orderRowId', objectId(elem._id)] }
+                                    cond: {
+                                        $eq: ['$$elem.orderRowId', objectId(elem._id)]
+                                    }
                                 }
                             },
                             orderRows: 1,
@@ -178,9 +233,15 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
                         $match: {
                             'orderRows.orderRowId': elem._id,
                             _type: forSales ? 'GoodsOutNote' : 'GoodsInNote',
-                            isremoved: { $ne: true },
-                            'status.isInventory': { $ne: null },
-                            archived: { $ne: true }
+                            isremoved: {
+                                $ne: true
+                            },
+                            'status.isInventory': {
+                                $ne: null
+                            },
+                            archived: {
+                                $ne: true
+                            }
                         }
                     }, {
                         $lookup: {
@@ -238,17 +299,33 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
                                 $filter: {
                                     input: '$orderRows',
                                     as: 'elem',
-                                    cond: { $eq: ['$$elem.orderRowId', objectId(elem._id)] }
+                                    cond: {
+                                        $eq: ['$$elem.orderRowId', objectId(elem._id)]
+                                    }
                                 }
                             },
 
-                            goodsInNote: { $arrayElemAt: ['$goodsInNote', 0] },
-                            warehouse: { $arrayElemAt: ['$warehouse', 0] },
-                            order: { $arrayElemAt: ['$order', 0] },
-                            'status.printedById': { $arrayElemAt: ['$status.printedById', 0] },
-                            'status.pickedById': { $arrayElemAt: ['$status.pickedById', 0] },
-                            'status.packedById': { $arrayElemAt: ['$status.packedById', 0] },
-                            'status.shippedById': { $arrayElemAt: ['$status.shippedById', 0] },
+                            goodsInNote: {
+                                $arrayElemAt: ['$goodsInNote', 0]
+                            },
+                            warehouse: {
+                                $arrayElemAt: ['$warehouse', 0]
+                            },
+                            order: {
+                                $arrayElemAt: ['$order', 0]
+                            },
+                            'status.printedById': {
+                                $arrayElemAt: ['$status.printedById', 0]
+                            },
+                            'status.pickedById': {
+                                $arrayElemAt: ['$status.pickedById', 0]
+                            },
+                            'status.packedById': {
+                                $arrayElemAt: ['$status.packedById', 0]
+                            },
+                            'status.shippedById': {
+                                $arrayElemAt: ['$status.shippedById', 0]
+                            },
                             'status.isShipped': 1,
                             'status.isPicked': 1,
                             'status.isPacked': 1,
@@ -257,7 +334,9 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
                     }, {
                         $project: {
                             name: '$name',
-                            orderRow: { $arrayElemAt: ['$orderRow', 0] },
+                            orderRow: {
+                                $arrayElemAt: ['$orderRow', 0]
+                            },
                             status: 1,
                             warehouse: 1,
                             'goodsInNote._id': 1,

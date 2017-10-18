@@ -2,38 +2,38 @@
  * Bootstrap Table Spanish Spain translation
  * Author: Marc Pina<iwalkalone69@gmail.com>
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['es-ES'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Por favor espere...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' resultados por página';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Mostrando desde ' + pageFrom + ' hasta ' + pageTo + ' - En total ' + totalRows + ' resultados';
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Buscar';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'No se encontraron resultados';
         },
-        formatPaginationSwitch: function () {
+        formatPaginationSwitch: function() {
             return 'Ocultar/Mostrar paginación';
         },
-        formatRefresh: function () {
+        formatRefresh: function() {
             return 'Refrescar';
         },
-        formatToggle: function () {
+        formatToggle: function() {
             return 'Ocultar/Mostrar';
         },
-        formatColumns: function () {
+        formatColumns: function() {
             return 'Columnas';
         },
-        formatAllRows: function () {
+        formatAllRows: function() {
             return 'Todos';
         }
     };

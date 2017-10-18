@@ -41,10 +41,8 @@
                 fun stop() { // Shutdown all event loops primaryGroup.shutdownGracefully() workerGroup.shutdownGracefully() // Wait till all threads are terminated primaryGroup.terminationFuture().sync() workerGroup.terminationFuture().sync() } } </textarea>
     </div>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
-            mode:
-            {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            mode: {
                 name: "kotlin"
             },
             lineNumbers: true,

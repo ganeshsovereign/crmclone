@@ -3,26 +3,26 @@
  * Author: Felix Vera (felix.vera@gmail.com) 
  * Copiado: Mauricio Vera (mauricioa.vera@gmail.com)
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['es-MX'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Cargando, espere por favor...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' registros por página';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Mostrando ' + pageFrom + ' a ' + pageTo + ' de ' + totalRows + ' filas';
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Buscar';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'No se encontraron registros';
         },
-        formatAllRows: function () {
+        formatAllRows: function() {
             return 'Todo';
         }
     };

@@ -1,29 +1,27 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <title>amCharts Responsive Example</title>
-        <script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
-        <script src="http://www.amcharts.com/lib/3/xy.js"></script>
-        <script src="../responsive.min.js"></script>
-        <style>
-            body,
-            html {
-                height: 100%;
-                padding: 0;
-                margin: 0;
-            }
-        </style>
-        <script>
-            var chart = AmCharts.makeChart("chartdiv",
-            {
-                "type": "xy",
-                "startDuration": 1.5,
-                "trendLines": [],
-                "graphs": [
-                {
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>amCharts Responsive Example</title>
+    <script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="http://www.amcharts.com/lib/3/xy.js"></script>
+    <script src="../responsive.min.js"></script>
+    <style>
+        body,
+        html {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+    <script>
+        var chart = AmCharts.makeChart("chartdiv", {
+            "type": "xy",
+            "startDuration": 1.5,
+            "trendLines": [],
+            "graphs": [{
                     "title": "Diamonds",
                     "balloonText": "x:<b>[[x]]</b> y:<b>[[y]]</b><br>value:<b>[[value]]</b>",
                     "bullet": "diamond",
@@ -44,18 +42,17 @@
                     "valueField": "value2",
                     "xField": "x2",
                     "yField": "y2"
-                }],
-                "guides": [
-                {
-                    "fillAlpha": 0.3,
-                    "fillColor": "#ff8000",
-                    "id": "Guide-1",
-                    "toValue": -2,
-                    "value": -8,
-                    "valueAxis": "ValueAxis-2"
-                }],
-                "valueAxes": [
-                {
+                }
+            ],
+            "guides": [{
+                "fillAlpha": 0.3,
+                "fillColor": "#ff8000",
+                "id": "Guide-1",
+                "toValue": -2,
+                "value": -8,
+                "valueAxis": "ValueAxis-2"
+            }],
+            "valueAxes": [{
                     "id": "ValueAxis-1",
                     "axisAlpha": 0
                 },
@@ -63,13 +60,12 @@
                     "id": "ValueAxis-2",
                     "axisAlpha": 0,
                     "position": "bottom"
-                }],
-                "allLabels": [],
-                "balloon":
-                {},
-                "titles": [],
-                "dataProvider": [
-                {
+                }
+            ],
+            "allLabels": [],
+            "balloon": {},
+            "titles": [],
+            "dataProvider": [{
                     "y": 10,
                     "x": 14,
                     "value": 59,
@@ -124,23 +120,21 @@
                     "y2": 0,
                     "x2": -3,
                     "value2": 16
-                }],
-                "chartCursor":
-                {},
-                "legend":
-                {
-                    "position": "bottom"
-                },
-                "responsive":
-                {
-                    "enabled": true
                 }
-            });
-        </script>
-    </head>
+            ],
+            "chartCursor": {},
+            "legend": {
+                "position": "bottom"
+            },
+            "responsive": {
+                "enabled": true
+            }
+        });
+    </script>
+</head>
 
-    <body>
-        <div id="chartdiv" style="width: 100%; height: 100%;"></div>
-    </body>
+<body>
+    <div id="chartdiv" style="width: 100%; height: 100%;"></div>
+</body>
 
 </html>

@@ -11,9 +11,9 @@ var ChartsAmcharts = function() {
             "marginTop": 10,
             "marginBottom": 26,
 
-            "fontFamily": 'Open Sans',            
-            "color":    '#888',
-            
+            "fontFamily": 'Open Sans',
+            "color": '#888',
+
             "dataProvider": [{
                 "year": 2009,
                 "income": 23.5,
@@ -90,7 +90,7 @@ var ChartsAmcharts = function() {
             "theme": "light",
 
             "fontFamily": 'Open Sans',
-            "color":    '#888888',
+            "color": '#888888',
 
             "legend": {
                 "equalWidths": false,
@@ -326,13 +326,13 @@ var ChartsAmcharts = function() {
             "type": "serial",
             "theme": "light",
 
-            "fontFamily": 'Open Sans',            
-            "color":    '#888888',
-            
+            "fontFamily": 'Open Sans',
+            "color": '#888888',
+
             "pathToImages": Metronic.getGlobalPluginsPath() + "amcharts/amcharts/images/",
 
             "dataProvider": [{
-                "lineColor": "#b7e021",  
+                "lineColor": "#b7e021",
                 "date": "2012-01-01",
                 "duration": 408
             }, {
@@ -509,8 +509,8 @@ var ChartsAmcharts = function() {
             "startDuration": 2,
 
             "fontFamily": 'Open Sans',
-            
-            "color":    '#888',
+
+            "color": '#888',
 
             "dataProvider": [{
                 "country": "USA",
@@ -643,8 +643,8 @@ var ChartsAmcharts = function() {
             "theme": "light",
 
             "fontFamily": 'Open Sans',
-            
-            "color":    '#888',
+
+            "color": '#888',
 
             "dataProvider": [{
                 "country": "Lithuania",
@@ -695,8 +695,8 @@ var ChartsAmcharts = function() {
             "theme": "light",
 
             "fontFamily": 'Open Sans',
-            
-            "color":    '#888',
+
+            "color": '#888',
 
             "dataProvider": [{
                 "country": "Lithuania",
@@ -756,8 +756,8 @@ var ChartsAmcharts = function() {
             "theme": "light",
 
             "fontFamily": 'Open Sans',
-            
-            "color":    '#888',
+
+            "color": '#888',
 
             "dataProvider": [{
                 "direction": "N",
@@ -835,8 +835,8 @@ var ChartsAmcharts = function() {
             "theme": "light",
 
             "fontFamily": 'Open Sans',
-            
-            "color":    '#888',
+
+            "color": '#888',
 
             "dataProvider": [{
                 "country": "Czech Republic",
@@ -2726,10 +2726,10 @@ var ChartsAmcharts = function() {
             map = new AmCharts.AmMap();
             map.pathToImages = Metronic.getGlobalPluginsPath() + "amcharts/ammap/images/",
 
-            map.fontFamily = 'Open Sans';
+                map.fontFamily = 'Open Sans';
             map.fontSize = '13';
             map.color = '#888';
-            
+
             map.addTitle("Population of the World in 2011", 14);
             map.addTitle("source: Gapminder", 11);
             map.areasSettings = {
@@ -2788,9 +2788,9 @@ var ChartsAmcharts = function() {
             pathToImages: Metronic.getGlobalPluginsPath() + "amcharts/ammap/images/",
 
             "fontFamily": 'Open Sans',
-            
-            "color":    '#888',
-            
+
+            "color": '#888',
+
             dataProvider: {
                 map: "worldLow",
                 linkToObject: "london",
@@ -3074,8 +3074,8 @@ var ChartsAmcharts = function() {
             "theme": "light",
             pathToImages: Metronic.getGlobalPluginsPath() + "amcharts/amcharts/images/",
             "fontFamily": 'Open Sans',
-            
-            "color":    '#888',
+
+            "color": '#888',
             dataSets: [{
                 color: "#b0de09",
                 fieldMappings: [{
@@ -3188,9 +3188,9 @@ var ChartsAmcharts = function() {
             chartCursorSettings: {
                 valueBalloonsEnabled: true,
                 graphBulletSize: 1,
-                valueLineBalloonEnabled:true,
-                valueLineEnabled:true,
-                valueLineAlpha:0.5
+                valueLineBalloonEnabled: true,
+                valueLineEnabled: true,
+                valueLineAlpha: 0.5
             },
 
             periodSelector: {

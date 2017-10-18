@@ -1,1 +1,4 @@
-AmCharts.mapTranslations.ku = {"Africa":"Cîhan","Turkey":"Tirkiye"}
+AmCharts.mapTranslations.ku = {
+    "Africa": "Cîhan",
+    "Turkey": "Tirkiye"
+}

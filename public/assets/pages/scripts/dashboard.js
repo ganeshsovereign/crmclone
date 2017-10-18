@@ -1298,9 +1298,9 @@ var Dashboard = function() {
             });
         },
 
-        initWorldMapStats: function () {
+        initWorldMapStats: function() {
             if ($('#mapplic').size() === 0) {
-               return;
+                return;
             }
 
             $('#mapplic').mapplic({
@@ -1338,7 +1338,7 @@ var Dashboard = function() {
                 barColor: '#f36a5a',
                 negBarColor: '#e02222'
             });
-            
+
             $("#widget_sparkline_bar3").sparkline([8, 7, 9, 8.5, 8, 8.2, 8, 8.5, 9, 8, 9], {
                 type: 'bar',
                 width: '100',
@@ -1347,7 +1347,7 @@ var Dashboard = function() {
                 barColor: '#5b9bd1',
                 negBarColor: '#e02222'
             });
-            
+
             $("#widget_sparkline_bar4").sparkline([8, 7, 9, 8.5, 8, 8.2, 8, 8.5, 9, 8, 9], {
                 type: 'bar',
                 width: '100',
@@ -1380,7 +1380,7 @@ var Dashboard = function() {
 
 }();
 
-if (App.isAngularJsApp() === false) { 
+if (App.isAngularJsApp() === false) {
     jQuery(document).ready(function() {
         Dashboard.init(); // init metronic core componets
     });

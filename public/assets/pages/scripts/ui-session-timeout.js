@@ -1,6 +1,6 @@
-var SessionTimeout = function () {
+var SessionTimeout = function() {
 
-    var handlesessionTimeout = function () {
+    var handlesessionTimeout = function() {
         $.sessionTimeout({
             title: 'Session Timeout Notification',
             message: 'Your session is about to expire.',
@@ -16,13 +16,13 @@ var SessionTimeout = function () {
 
     return {
         //main function to initiate the module
-        init: function () {
+        init: function() {
             handlesessionTimeout();
         }
     };
 
 }();
 
-jQuery(document).ready(function() {    
-   SessionTimeout.init();
+jQuery(document).ready(function() {
+    SessionTimeout.init();
 });

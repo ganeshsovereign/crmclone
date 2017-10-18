@@ -131,21 +131,21 @@ var Login = function() {
         }
 
         if (jQuery().select2) {
-	        $("#select2_sample4").select2({
-	            placeholder: '<i class="fa fa-map-marker"></i>&nbsp;Select a Country',
-	            allowClear: true,
-	            formatResult: format,
-	            formatSelection: format,
-	            escapeMarkup: function(m) {
-	                return m;
-	            }
-	        });
+            $("#select2_sample4").select2({
+                placeholder: '<i class="fa fa-map-marker"></i>&nbsp;Select a Country',
+                allowClear: true,
+                formatResult: format,
+                formatSelection: format,
+                escapeMarkup: function(m) {
+                    return m;
+                }
+            });
 
 
-	        $('#select2_sample4').change(function() {
-	            $('.register-form').validate().element($(this)); //revalidate the chosen dropdown value and show error or success message for the input
-	        });
-    	}
+            $('#select2_sample4').change(function() {
+                $('.register-form').validate().element($(this)); //revalidate the chosen dropdown value and show error or success message for the input
+            });
+        }
 
         $('.register-form').validate({
             errorElement: 'span', //default input error message container

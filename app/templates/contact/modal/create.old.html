@@ -65,7 +65,7 @@
                 <span class="input-group-addon">
                     <i class="fa fa-phone"></i>
                 </span>
-                <input type="text" ng-model="contact.phone" class="form-control" autocomplete="off">                
+                <input type="text" ng-model="contact.phone" class="form-control" autocomplete="off">
             </div>
         </div>
 
@@ -76,7 +76,7 @@
                 <span class="input-group-addon">
                     <i class="fa fa-envelope"></i>
                 </span>
-                <input type="text" ng-model="contact.email" class="form-control" autocomplete="off">                
+                <input type="text" ng-model="contact.email" class="form-control" autocomplete="off">
             </div>
         </div>
 
@@ -87,7 +87,7 @@
                 <span class="input-group-addon">
                     <i class="fa fa-user"></i>
                 </span>
-                <select class="form-control" required data-ng-model="contact.poste" id="poste" data-ng-options="c.label as c.label for c in dict.fk_job.values"></select>              
+                <select class="form-control" required data-ng-model="contact.poste" id="poste" data-ng-options="c.label as c.label for c in dict.fk_job.values"></select>
             </div>
         </div>
 
@@ -96,7 +96,7 @@
 
             <div class="checkbox-list">
                 <label ng-repeat="Soncas in soncas">
-                    <span><input uniform type="checkbox" checklist-model="contact.soncas" checklist-value="Soncas" ></span> {{Soncas}} </label>                  
+                    <span><input uniform type="checkbox" checklist-model="contact.soncas" checklist-value="Soncas" ></span> {{Soncas}} </label>
             </div>
         </div>
     </form>
@@ -105,7 +105,3 @@
     <button class="btn btn-primary" type="button" ng-disabled="!(contact.phone_mobile || contact.phone || contact.email)" ng-click="createContact()">@(Create)</button>
     <button class="btn btn" type="button" ng-click="cancel()">@(Cancel)</button>
 </div>
-
-
-
-

@@ -70,17 +70,37 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
     $scope.types = [];
 
     if (user.rights.task && user.rights.task.readAll)
-        $scope.types = [{ name: "Mes tâches en cours", id: "MYTASK" },
-            { name: "Toutes les tâches en cours", id: "ALLTASK" },
-            { name: "Mes tâches archivées", id: "MYARCHIVED" },
-            { name: "Les tâches archivées", id: "ARCHIVED" }
+        $scope.types = [{
+                name: "Mes tâches en cours",
+                id: "MYTASK"
+            },
+            {
+                name: "Toutes les tâches en cours",
+                id: "ALLTASK"
+            },
+            {
+                name: "Mes tâches archivées",
+                id: "MYARCHIVED"
+            },
+            {
+                name: "Les tâches archivées",
+                id: "ARCHIVED"
+            }
         ];
     else
-        $scope.types = [{ name: "Mes tâches en cours", id: "MYTASK" },
-            { name: "Mes tâches archivées", id: "MYARCHIVED" }
+        $scope.types = [{
+                name: "Mes tâches en cours",
+                id: "MYTASK"
+            },
+            {
+                name: "Mes tâches archivées",
+                id: "MYARCHIVED"
+            }
         ];
 
-    $scope.params = { type: "MYTASK" };
+    $scope.params = {
+        type: "MYTASK"
+    };
 
     $scope.user = {
         _id: user._id,
@@ -413,7 +433,9 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
                 $scope.params.status_id = this.status_id;
                 url = getUrl($scope.params);
             } else
-                url = getUrl({ status_id: this.status_id });
+                url = getUrl({
+                    status_id: this.status_id
+                });
 
             return grid.resetFilter(url);
         }
@@ -426,11 +448,15 @@ MetronicApp.controller('TaskController', ['$scope', '$rootScope', '$http', 'Task
             query: ($scope.group ? "GROUPTASK" : "MYTASK"), //group or all
             //entity: Global.user.entity,
             user: $rootScope.login._id,
-            group: $scope.group || { $in: $scope.groups },
+            group: $scope.group || {
+                $in: $scope.groups
+            },
             //filter: $scope.filterOptions.filterText,
             //skip: $scope.pagingOptions.currentPage - 1,
             //limit: $scope.pagingOptions.pageSize,
-            sort: { datef: 1 }
+            sort: {
+                datef: 1
+            }
         };
 
         Task.query(p, function(tasks) {

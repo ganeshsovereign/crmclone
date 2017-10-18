@@ -248,7 +248,10 @@ Template.prototype.applyHandlers = function() {
                 if (!handler.value)
                     handler.value = 0;
 
-                value = fixedWidthString(handler.value, 13, { padding: '0', align: 'right' });
+                value = fixedWidthString(handler.value, 13, {
+                    padding: '0',
+                    align: 'right'
+                });
                 break;
             default:
                 return callback("Handler not found : " + handler.type + " (" + handler.id + ")");
@@ -354,7 +357,9 @@ Template.prototype.applyHeadFoot = function() {
             object: true
         }, function(err, dict) {
 
-            EntityModel.findOne({ _id: entity }, function(err, doc) {
+            EntityModel.findOne({
+                _id: entity
+            }, function(err, doc) {
                 if (err || !doc)
                     return emit("error", "Entity not found");
                 var mysoc = "";

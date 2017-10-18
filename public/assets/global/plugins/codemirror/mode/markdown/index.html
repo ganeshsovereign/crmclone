@@ -12,14 +12,14 @@
         border-top: 1px solid black;
         border-bottom: 1px solid black;
     }
-    
+
     .cm-s-default .cm-trailing-space-a:before,
     .cm-s-default .cm-trailing-space-b:before {
         position: absolute;
         content: "\00B7";
         color: #777;
     }
-    
+
     .cm-s-default .cm-trailing-space-new-line:before {
         position: absolute;
         content: "\21B5";
@@ -85,13 +85,11 @@
             &lt;/code&gt;&lt;/pre&gt; </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             mode: 'markdown',
             lineNumbers: true,
             theme: "default",
-            extraKeys:
-            {
+            extraKeys: {
                 "Enter": "newlineAndIndentContinueMarkdownList"
             }
         });

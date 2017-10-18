@@ -1,8 +1,8 @@
-var PortletDraggable = function () {
+var PortletDraggable = function() {
 
     return {
         //main function to initiate the module
-        init: function () {
+        init: function() {
 
             if (!jQuery().sortable) {
                 return;
@@ -10,9 +10,9 @@ var PortletDraggable = function () {
 
             $("#sortable_portlets").sortable({
                 connectWith: ".portlet",
-                items: ".portlet", 
+                items: ".portlet",
                 opacity: 0.8,
-                handle : '.portlet-title',
+                handle: '.portlet-title',
                 coneHelperSize: true,
                 placeholder: 'portlet-sortable-placeholder',
                 forcePlaceholderSize: true,
@@ -26,7 +26,7 @@ var PortletDraggable = function () {
                 update: function(b, c) {
                     if (c.item.prev().hasClass("portlet-sortable-empty")) {
                         c.item.prev().before(c.item);
-                    }                    
+                    }
                 }
             });
         }

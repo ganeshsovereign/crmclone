@@ -530,7 +530,10 @@ Object.prototype = {
             var debit = 0;
             var credit = 0;
 
-            BillModel.populate(res.results, { path: "meta.bills.invoice", select: "_id ref dater dateOf dateTo" }, function(err, res) {
+            BillModel.populate(res.results, {
+                path: "meta.bills.invoice",
+                select: "_id ref dater dateOf dateTo"
+            }, function(err, res) {
                 if (err)
                     return console.log(err);
 
@@ -685,7 +688,9 @@ Object.prototype = {
                         entry.accounts = entry.accounts.replace(/^401/, "0");
                         entry.accounts = entry.accounts.replace(/^411/, "9");
 
-                        var account = fixedWidthString(entry.accounts, 9, { ellipsis: '.' });
+                        var account = fixedWidthString(entry.accounts, 9, {
+                            ellipsis: '.'
+                        });
                         out += account.substr(0, 8);
                         //if ((CONFIG('accounting.' + entry.book) || entry.book).length > 2)
                         //    return cb('accounting journal length > 2!');
@@ -694,15 +699,23 @@ Object.prototype = {
                         out += '000'; //Folio
                         out += moment(entry.datetime).format('DDMMYY');
                         out += " "; //Filler
-                        out += fixedWidthString(setLabel(entry.memo), 20, { ellipsis: '.' });
+                        out += fixedWidthString(setLabel(entry.memo), 20, {
+                            ellipsis: '.'
+                        });
                         if (entry.credit) {
                             out += 'C';
                             out += "+"; //signe + ou -
-                            out += fixedWidthString(round(entry.credit * 100, 0), 12, { padding: '0', align: 'right' });
+                            out += fixedWidthString(round(entry.credit * 100, 0), 12, {
+                                padding: '0',
+                                align: 'right'
+                            });
                         } else {
                             out += 'D';
                             out += "+"; //signe + ou -
-                            out += fixedWidthString(round(entry.debit * 100, 0), 12, { padding: '0', align: 'right' });
+                            out += fixedWidthString(round(entry.debit * 100, 0), 12, {
+                                padding: '0',
+                                align: 'right'
+                            });
                         }
                         //if (entry.reconcilliation)
                         //    out += fixedWidthString("R" + moment(entry.reconcilliation).format("MMYY"), 8);
@@ -720,12 +733,16 @@ Object.prototype = {
                         if (entry.reconcilliation)
                             entry.seq = (entry.seq ? entry.seq : "") + "-" + moment(entry.reconcilliation).format("MM");
 
-                        out += fixedWidthString((entry.seq ? entry.seq : ""), 8, { align: 'right' }); // Numero de piece
+                        out += fixedWidthString((entry.seq ? entry.seq : ""), 8, {
+                            align: 'right'
+                        }); // Numero de piece
                         out += " "; //Filler
                         out += "EUR";
                         out += fixedWidthString("", 3); // UNUSED
                         out += fixedWidthString("", 3); //Filler
-                        out += fixedWidthString(setLabel(entry.memo), 32, { ellipsis: '.' });
+                        out += fixedWidthString(setLabel(entry.memo), 32, {
+                            ellipsis: '.'
+                        });
                         out += fixedWidthString((entry.seq ? entry.seq : ""), 10); // Numero de piece
                         out += fixedWidthString("", 73); //Filler
 
@@ -797,7 +814,9 @@ Object.prototype = {
             if (err)
                 return console.log(err);
 
-            self.json({ ok: true });
+            self.json({
+                ok: true
+            });
         });
     },
     autocompleteAccount: function(journal) {
@@ -854,7 +873,13 @@ Object.prototype = {
         var set = {};
         set[self.body.field] = self.body.data;
 
-        TransactionModel.update({ _id: transactionId }, { $set: set }, { upsert: false }, function(err, doc) {
+        TransactionModel.update({
+            _id: transactionId
+        }, {
+            $set: set
+        }, {
+            upsert: false
+        }, function(err, doc) {
             if (err)
                 return console.log(err);
 
@@ -953,7 +978,10 @@ Object.prototype = {
                     // ADD 0 for fix length account if general account
                     if (account.substr(0, 3) !== '401' && account.substr(0, 3) !== '411') {
                         account = parseInt(account);
-                        account = fixedWidthString(account, 10, { padding: '0', align: 'left' });
+                        account = fixedWidthString(account, 10, {
+                            padding: '0',
+                            align: 'left'
+                        });
                     }
 
                     transactions[row[10]].lines.push({
@@ -1002,7 +1030,9 @@ Object.prototype = {
                         //myBook.setEntity(self.query.entity);
                         myBook.setName(transaction.journal);
 
-                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, { name: 'Imported' });
+                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, {
+                            name: 'Imported'
+                        });
 
                         SeqModel.incCpt("PAY", function(seq) {
                             //console.log(seq);
@@ -1104,7 +1134,10 @@ Object.prototype = {
                     // ADD 0 for fix length account if general account
                     if (account.substr(0, 3) !== '401' && account.substr(0, 3) !== '411') {
                         account = parseInt(account);
-                        account = fixedWidthString(account, 10, { padding: '0', align: 'left' });
+                        account = fixedWidthString(account, 10, {
+                            padding: '0',
+                            align: 'left'
+                        });
                     }
 
                     transactions[seq].lines.push({
@@ -1153,7 +1186,9 @@ Object.prototype = {
                         //myBook.setEntity(self.query.entity);
                         myBook.setName(transaction.journal);
 
-                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, { name: 'Imported' });
+                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, {
+                            name: 'Imported'
+                        });
 
                         SeqModel.incCpt("PAY", function(seq) {
                             //console.log(seq);
@@ -1268,7 +1303,9 @@ Object.prototype = {
                     callback();
 
                     //return row;
-                }, { parallel: 1 })
+                }, {
+                    parallel: 1
+                })
                 .on("end", function(count) {
                     //console.log(transactions);
                     console.log('Number of lines: ' + count);
@@ -1301,7 +1338,9 @@ Object.prototype = {
                         //myBook.setEntity(self.query.entity);
                         myBook.setName(transaction.journal);
 
-                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, { name: 'Imported' });
+                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, {
+                            name: 'Imported'
+                        });
 
                         SeqModel.incCpt("PAY", function(seq) {
                             //console.log(seq);
@@ -1438,7 +1477,9 @@ Object.prototype = {
                     callback();
 
                     //return row;
-                }, { parallel: 1 })
+                }, {
+                    parallel: 1
+                })
                 .on("end", function(count) {
                     //console.log(transactions);
                     console.log('Number of lines: ' + count);
@@ -1471,7 +1512,9 @@ Object.prototype = {
                         //myBook.setEntity(self.query.entity);
                         myBook.setName(transaction.journal);
 
-                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, { name: 'Imported' });
+                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, {
+                            name: 'Imported'
+                        });
 
                         SeqModel.incCpt("PAY", function(seq) {
                             //console.log(seq);
@@ -1588,7 +1631,10 @@ Object.prototype = {
                     // ADD 0 for fix length account if general account
                     if (account.substr(0, 3) !== '401' && account.substr(0, 3) !== '411') {
                         account = parseInt(account);
-                        account = fixedWidthString(account, 10, { padding: '0', align: 'left' });
+                        account = fixedWidthString(account, 10, {
+                            padding: '0',
+                            align: 'left'
+                        });
                     }
 
                     transactions[seq].lines.push({
@@ -1637,7 +1683,9 @@ Object.prototype = {
                         //myBook.setEntity(self.query.entity);
                         myBook.setName(transaction.journal);
 
-                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, { name: 'Imported' });
+                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, {
+                            name: 'Imported'
+                        });
 
                         SeqModel.incCpt("PAY", function(seq) {
                             //console.log(seq);
@@ -1733,7 +1781,10 @@ Object.prototype = {
 
                                 obj.datec = new moment().year(parseInt(row.substr(7, 2)) + 2000).month(parseInt(row.substr(5, 2)) - 1).date(row.substr(3, 2)).toDate();
                                 obj.account = row.substr(11, 6);
-                                obj.account = fixedWidthString(obj.account, 10, { padding: '0', align: 'left' });
+                                obj.account = fixedWidthString(obj.account, 10, {
+                                    padding: '0',
+                                    align: 'left'
+                                });
                                 obj.libelleAccounting = row.substr(38, 38).trim();
 
                                 if (row.substr(83, 1) == "D")
@@ -1742,7 +1793,9 @@ Object.prototype = {
                                     obj.total = parseFloat(row.substr(84, 20).trim().replace(",", "."));
 
                                 if (index == 1) {
-                                    entry = myBook.entry(obj.libelleAccounting.toUpperCase(), obj.datec, { name: 'Imported' });
+                                    entry = myBook.entry(obj.libelleAccounting.toUpperCase(), obj.datec, {
+                                        name: 'Imported'
+                                    });
                                     entry.setSeq(seq);
                                 }
 
@@ -1816,7 +1869,10 @@ Object.prototype = {
                         // ADD 0 for fix length account if general account
                         if (account.substr(0, 3) !== '401' && account.substr(0, 3) !== '411') {
                             account = parseInt(account);
-                            account = fixedWidthString(account, 10, { padding: '0', align: 'left' });
+                            account = fixedWidthString(account, 10, {
+                                padding: '0',
+                                align: 'left'
+                            });
                         }
 
                         transactions[seq].lines.push({
@@ -1869,7 +1925,9 @@ Object.prototype = {
                         //myBook.setEntity(self.query.entity);
                         myBook.setName(transaction.journal);
 
-                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, { name: 'Imported' });
+                        var entry = myBook.entry(transaction.libelleAccounting.toUpperCase(), transaction.datec, {
+                            name: 'Imported'
+                        });
 
                         SeqModel.incCpt("PAY", function(seq) {
                             //console.log(seq);
@@ -1931,7 +1989,10 @@ Object.prototype = {
         BookAN.setName('AN');
 
         // You can specify a Date object as the second argument in the book.entry() method if you want the transaction to be for a different date than today
-        var entry = BookAN.entry("A NOUVEAU", moment(self.body.end_date).endOf('day').add(1, 'days').hour(12).toDate(), { id: self.user._id, name: self.user.name }) // libelle, date
+        var entry = BookAN.entry("A NOUVEAU", moment(self.body.end_date).endOf('day').add(1, 'days').hour(12).toDate(), {
+                id: self.user._id,
+                name: self.user.name
+            }) // libelle, date
             .setSeq(1); // numero de piece
 
         //console.log('Getting Accounting Balance ...');

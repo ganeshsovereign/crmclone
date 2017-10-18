@@ -34,29 +34,60 @@ var mongoose = require('mongoose'),
  * Product PriceLevel Schema
  */
 var priceLevelSchema = new Schema({
-    price_level: { type: String, uppercase: true, require: true },
-    product: { type: Schema.Types.ObjectId, ref: 'product' },
+    price_level: {
+        type: String,
+        uppercase: true,
+        require: true
+    },
+    product: {
+        type: Schema.Types.ObjectId,
+        ref: 'product'
+    },
     // new price model
     prices: {
-        pu_ht: { type: Number, default: 0 }, // For base price
-        pricesQty: { type: Schema.Types.Mixed } // For quantity price reduction
+        pu_ht: {
+            type: Number,
+            default: 0
+        }, // For base price
+        pricesQty: {
+            type: Schema.Types.Mixed
+        } // For quantity price reduction
     },
     tms: Date,
     pu_ht: Number, //old
-    qtyMin: { type: Number, default: 0 },
-    user_mod: { id: String, name: String },
+    qtyMin: {
+        type: Number,
+        default: 0
+    },
+    user_mod: {
+        id: String,
+        name: String
+    },
     optional: Schema.Types.Mixed,
-    discount: { type: Number, default: 0 },
+    discount: {
+        type: Number,
+        default: 0
+    },
     history: [{
         tms: Date,
         user_mod: Schema.Types.Mixed,
         pu_ht: Number,
-        qtyMin: { type: Number, default: 0 },
-        discount: { type: Number, default: 0 }
+        qtyMin: {
+            type: Number,
+            default: 0
+        },
+        discount: {
+            type: Number,
+            default: 0
+        }
     }]
 }, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
+    toObject: {
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
+    }
 });
 
 priceLevelSchema.plugin(timestamps);

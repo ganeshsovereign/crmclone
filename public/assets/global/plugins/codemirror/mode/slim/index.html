@@ -52,16 +52,13 @@
             class=:text,:symbol </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             lineNumbers: true,
             theme: "ambiance",
             mode: "application/x-slim"
         });
-        $('.CodeMirror').resizable(
-        {
-            resize: function()
-            {
+        $('.CodeMirror').resizable({
+            resize: function() {
                 editor.setSize($(this).width(), $(this).height());
                 //editor.refresh();
             }

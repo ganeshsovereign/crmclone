@@ -2,12 +2,11 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        banner:
-            '/*!\n'+
-            ' * Bootstrap Confirmation <%= pkg.version %>\n'+
-            ' * Copyright 2013 Nimit Suwannagate <ethaizone@hotmail.com>\n'+
-            ' * Copyright <%= grunt.template.today("yyyy") %> Damien "Mistic" Sorel <http://www.strangeplanet.fr>\n'+
-            ' * Licensed under the Apache License, Version 2.0 (the "License")\n'+
+        banner: '/*!\n' +
+            ' * Bootstrap Confirmation <%= pkg.version %>\n' +
+            ' * Copyright 2013 Nimit Suwannagate <ethaizone@hotmail.com>\n' +
+            ' * Copyright <%= grunt.template.today("yyyy") %> Damien "Mistic" Sorel <http://www.strangeplanet.fr>\n' +
+            ' * Licensed under the Apache License, Version 2.0 (the "License")\n' +
             ' */',
 
         // compress js
@@ -42,7 +41,7 @@ module.exports = function(grunt) {
     grunt.registerTask('default', [
         'uglify'
     ]);
-    
+
     grunt.registerTask('test', [
         'jshint'
     ]);

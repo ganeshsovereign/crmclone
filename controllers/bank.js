@@ -84,7 +84,11 @@ Bank.prototype = {
         //if(self.query.entity)
         //    query.entity = self.query.entity;
 
-        BankModel.find(query, "", { sort: { journalId: 1 } }, function(err, doc) {
+        BankModel.find(query, "", {
+            sort: {
+                journalId: 1
+            }
+        }, function(err, doc) {
             if (err)
                 return self.throw500(err);
 
@@ -112,11 +116,26 @@ Payment.prototype = {
         console.log('payment read:', self.query.find);
 
         TransactionModel.find(query)
-            .populate({ path: "meta.supplier", select: "name" })
-            .populate({ path: "meta.invoice", select: "ref forSales" })
-            .populate({ path: "meta.bills.invoice", select: "ref forSales" })
-            .populate({ path: "meta.product", select: "info" })
-            .populate({ path: "meta.tax", select: "code" })
+            .populate({
+                path: "meta.supplier",
+                select: "name"
+            })
+            .populate({
+                path: "meta.invoice",
+                select: "ref forSales"
+            })
+            .populate({
+                path: "meta.bills.invoice",
+                select: "ref forSales"
+            })
+            .populate({
+                path: "meta.product",
+                select: "info"
+            })
+            .populate({
+                path: "meta.tax",
+                select: "code"
+            })
             .exec(function(err, doc) {
                 console.log(doc);
                 if (err)
@@ -158,7 +177,9 @@ Payment.prototype = {
                 switch (i) {
                     case "query":
                         if (self.query.query == "WAIT") // For payment
-                            query.Status = { "$nin": ["PAID", "CANCELLED", "DRAFT"] };
+                            query.Status = {
+                                "$nin": ["PAID", "CANCELLED", "DRAFT"]
+                            };
                         break;
                     case "dater":
                         query.dater = JSON.parse(self.query.dater);
@@ -181,7 +202,9 @@ Payment.prototype = {
             .populate({
                 path: "total_taxes.taxeId"
             })
-            .sort({ ID: 1 })
+            .sort({
+                ID: 1
+            })
             .exec(function(err, doc) {
                 if (err) {
                     console.log(err);
@@ -212,7 +235,9 @@ Payment.prototype = {
                 if (i == "query") {
                     switch (self.query.query) {
                         case "WAIT":
-                            query.Status = { "$nin": ["CREDITED", "REJECTED"] };
+                            query.Status = {
+                                "$nin": ["CREDITED", "REJECTED"]
+                            };
                             break;
                         default:
                             break;
@@ -265,8 +290,16 @@ Payment.prototype = {
         //console.log(query);
 
         TransactionModel.find(query)
-            .populate({ path: "meta.supplier", select: "name ID", model: "Customers" })
-            .populate({ path: "meta.bills.invoice", select: "ref forSales", model: "invoice" })
+            .populate({
+                path: "meta.supplier",
+                select: "name ID",
+                model: "Customers"
+            })
+            .populate({
+                path: "meta.bills.invoice",
+                select: "ref forSales",
+                model: "invoice"
+            })
             .exec(function(err, doc) {
                 console.log(doc);
 
@@ -339,7 +372,11 @@ Payment.prototype = {
         var PaymentModel = MODEL('payment').Schema;
         var self = this;
 
-        PaymentModel.findByIdAndUpdate(id, { isremoved: true, Status: 'CANCELED', total_amount: 0 }, function(err) {
+        PaymentModel.findByIdAndUpdate(id, {
+            isremoved: true,
+            Status: 'CANCELED',
+            total_amount: 0
+        }, function(err) {
             if (err)
                 return self.throw500(err);
             self.json({});
@@ -410,7 +447,14 @@ Payment.prototype = {
                                 function(pCb) {
                                     async.forEach(payment.lines, function(line, aCb) {
                                         //console.log(line);
-                                        TransactionModel.update({ 'meta.isWaiting': true, _journal: line.journalId }, { $set: { 'meta.isWaiting': false } }, aCb);
+                                        TransactionModel.update({
+                                            'meta.isWaiting': true,
+                                            _journal: line.journalId
+                                        }, {
+                                            $set: {
+                                                'meta.isWaiting': false
+                                            }
+                                        }, aCb);
                                     }, pCb);
                                 }
                             ],
@@ -538,7 +582,9 @@ Payment.prototype = {
         var conditions = {
             mode_reglement: type.toUpperCase(),
             //Status: {$ne: "PAID"},
-            isremoved: { $ne: true }
+            isremoved: {
+                $ne: true
+            }
             //entity: self.query.entity
         };
 
@@ -548,9 +594,13 @@ Payment.prototype = {
                     Status = self.query.status_id;
                     conditions.Status = 'WAITING';
                     if (Status === 'CREDITED')
-                        conditions.dater = { $gt: new Date() };
+                        conditions.dater = {
+                            $gt: new Date()
+                        };
                     else
-                        conditions.dater = { $lte: new Date() };
+                        conditions.dater = {
+                            $lte: new Date()
+                        };
                 } else
                     conditions.Status = self.query.status_id;
             }
@@ -562,7 +612,7 @@ Payment.prototype = {
 
         var options = {
             conditions: conditions
-                // select: ""
+            // select: ""
         };
 
         //console.log(options);
@@ -583,7 +633,9 @@ Payment.prototype = {
 
             var BankModel = MODEL('bank').Schema;
 
-            BankModel.findOne({ _id: res.datatable.data[0].bank_reglement }, "name_bank ref account_number code_bank journalId code_counter", function(err, bank) {
+            BankModel.findOne({
+                _id: res.datatable.data[0].bank_reglement
+            }, "name_bank ref account_number code_bank journalId code_counter", function(err, bank) {
 
                 for (var i = 0, len = res.datatable.data.length; i < len; i++) {
                     var row = res.datatable.data[i];

@@ -42,8 +42,7 @@
             and functions ; IF $PIECE(XUSER(0),U,11),$PIECE(XUSER(0),U,11)'>DT QUIT 11 ;Terminated IF $DATA(DUZ("ASH")) QUIT 0 ;If auto handle, Allow to sign-on p434 IF $PIECE(XUSER(0),U,7) QUIT 5 ;Disuser flag set IF '$LENGTH($PIECE(XUSER(1),U,2)) QUIT
             21 ;p419, p434 Q 0 ; </textarea>
         <script>
-            var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-            {
+            var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                 mode: "mumps",
                 lineNumbers: true,
                 lineWrapping: true

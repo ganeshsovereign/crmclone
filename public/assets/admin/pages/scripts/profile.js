@@ -6,7 +6,7 @@ var Profile = function() {
 
         //main function
         init: function() {
-        
+
             Profile.initMiniCharts();
         },
 

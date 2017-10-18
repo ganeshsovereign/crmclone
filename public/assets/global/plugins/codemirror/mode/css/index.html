@@ -40,10 +40,8 @@
             { font-size: 1.7em; } h1:before, h2:before { content: "::"; } code { font-family: courier, monospace; font-size: 80%; color: #418A8A; } </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
-            extraKeys:
-            {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            extraKeys: {
                 "Ctrl-Space": "autocomplete"
             },
         });

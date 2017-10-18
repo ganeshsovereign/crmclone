@@ -62,7 +62,11 @@ Logistic.prototype = {
         //if(self.query.entity)
         //    query.entity = self.query.entity;
 
-        BankModel.find(query, "", { sort: { journalId: 1 } }, function(err, doc) {
+        BankModel.find(query, "", {
+            sort: {
+                journalId: 1
+            }
+        }, function(err, doc) {
             if (err)
                 return self.throw500(err);
 
@@ -113,7 +117,9 @@ Logistic.prototype = {
             if (err)
                 return self.throw500(err);
 
-            self.json({ data: result });
+            self.json({
+                data: result
+            });
         });
     },
 
@@ -122,7 +128,9 @@ Logistic.prototype = {
         var self = this;
         var body = self.body || {};
 
-        LogisticMethodModel.findByIdAndUpdate(id, body, { new: true }, function(err, result) {
+        LogisticMethodModel.findByIdAndUpdate(id, body, {
+            new: true
+        }, function(err, result) {
             if (err)
                 return self.throw500(err);
 
@@ -134,7 +142,11 @@ Logistic.prototype = {
         var LogisticMethodModel = MODEL('logisticMethod').Schema;
         var self = this;
 
-        LogisticMethodModel.findByIdAndUpdate(id, { isremoved: true }, { new: true }, function(err, result) {
+        LogisticMethodModel.findByIdAndUpdate(id, {
+            isremoved: true
+        }, {
+            new: true
+        }, function(err, result) {
             if (err)
                 return self.throw500(err);
 

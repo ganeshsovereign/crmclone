@@ -3,35 +3,35 @@
  * Author: Dennis Hernández (http://djhvscf.github.io/Blog/)
  * Modification: Tidalf (https://github.com/TidalfFR)
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['fr-FR'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Chargement en cours, patientez, s´il vous plaît ...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' lignes par page';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Affichage des lignes ' + pageFrom + ' à ' + pageTo + ' sur ' + totalRows + ' lignes au total';
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Rechercher';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'Aucun résultat trouvé';
         },
-        formatRefresh: function () {
+        formatRefresh: function() {
             return 'Rafraîchir';
         },
-        formatToggle: function () {
+        formatToggle: function() {
             return 'Alterner';
         },
-        formatColumns: function () {
+        formatColumns: function() {
             return 'Colonnes';
         },
-        formatAllRows: function () {
+        formatAllRows: function() {
             return 'Tous';
         }
     };

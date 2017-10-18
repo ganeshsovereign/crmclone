@@ -29,5 +29,7 @@ function view_product() {
     var self = this;
     self.meta('Product');
 
-    self.view('product', { product: {} });
+    self.view('product', {
+        product: {}
+    });
 }

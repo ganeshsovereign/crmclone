@@ -3,35 +3,35 @@
  * Author: Emin Şen
  * Author: Sercan Cakir <srcnckr@gmail.com>
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['tr-TR'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Yükleniyor, lütfen bekleyin...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return 'Sayfa başına ' + pageNumber + ' kayıt.';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return totalRows + ' kayıttan ' + pageFrom + '-' + pageTo + ' arası gösteriliyor.';
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Ara';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'Eşleşen kayıt bulunamadı.';
         },
-        formatRefresh: function () {
+        formatRefresh: function() {
             return 'Yenile';
         },
-        formatToggle: function () {
+        formatToggle: function() {
             return 'Değiştir';
         },
-        formatColumns: function () {
+        formatColumns: function() {
             return 'Sütunlar';
         },
-        formatAllRows: function () {
+        formatAllRows: function() {
             return 'Tüm Satırlar';
         }
     };

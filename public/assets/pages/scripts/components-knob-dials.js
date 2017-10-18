@@ -1,9 +1,9 @@
-var ComponentsKnobDials = function () {
+var ComponentsKnobDials = function() {
 
     return {
         //main function to initiate the module
-        
-        init: function () {
+
+        init: function() {
             //knob does not support ie8 so skip it
             if (!jQuery().knob || App.isIE8()) {
                 return;
@@ -15,13 +15,13 @@ var ComponentsKnobDials = function () {
                 'thickness': 0.2,
                 'tickColorizeValues': true,
                 'skin': 'tron'
-            });  
+            });
         }
 
     };
 
 }();
 
-jQuery(document).ready(function() {    
-   ComponentsKnobDials.init(); 
+jQuery(document).ready(function() {
+    ComponentsKnobDials.init();
 });

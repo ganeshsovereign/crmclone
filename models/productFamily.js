@@ -33,11 +33,22 @@ var setRound3 = MODULE('utils').setRound3;
 
 var discountSchema = new Schema({
     _id: false,
-    count: { type: Number, default: 0 },
-    discount: { type: Number, default: 0, set: setRound3 }
+    count: {
+        type: Number,
+        default: 0
+    },
+    discount: {
+        type: Number,
+        default: 0,
+        set: setRound3
+    }
 }, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
+    toObject: {
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
+    }
 });
 
 var productFamiliesSchema = new Schema({
@@ -48,27 +59,59 @@ var productFamiliesSchema = new Schema({
 
     entity: [String], // NOT Used
     //isCoef: { type: Boolean, default: false }, //Price was calculated from a coefficient
-    createdAt: { type: Date, default: Date.now },
-    isActive: { type: Boolean, default: true },
-    isCost: { type: Boolean, default: false },
-    sequence: { type: Number, default: 0 }, // sort list
-    indirectCostRate: { type: Number, default: 0 }, // % based on cost Direct Price
-    minMargin: { type: Number, default: 0 },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    isCost: {
+        type: Boolean,
+        default: false
+    },
+    sequence: {
+        type: Number,
+        default: 0
+    }, // sort list
+    indirectCostRate: {
+        type: Number,
+        default: 0
+    }, // % based on cost Direct Price
+    minMargin: {
+        type: Number,
+        default: 0
+    },
 
-    options: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }], //attributes
-    variants: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }], //isVariant
+    options: [{
+        type: Schema.Types.ObjectId,
+        ref: 'productAttributes'
+    }], //attributes
+    variants: [{
+        type: Schema.Types.ObjectId,
+        ref: 'productAttributes'
+    }], //isVariant
 
     discounts: [discountSchema],
 
     accounts: [{
         _id: false,
         code: String,
-        account: { type: String, set: MODULE('utils').setAccount, trim: true } //sell ou buy
+        account: {
+            type: String,
+            set: MODULE('utils').setAccount,
+            trim: true
+        } //sell ou buy
     }]
 }, {
     collection: 'productFamily',
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
+    toObject: {
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
+    }
 });
 
 productFamiliesSchema.virtual('name').get(function() {

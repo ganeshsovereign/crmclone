@@ -2,23 +2,23 @@
  * Bootstrap Table French (Belgium) translation
  * Author: Julien Bisconti (julien.bisconti@gmail.com)
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['fr-BE'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Chargement en cours...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' entrées par page';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Affiche de' + pageFrom + ' à ' + pageTo + ' sur ' + totalRows + ' lignes';
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Recherche';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'Pas de fichiers trouvés';
         }
     };

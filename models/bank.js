@@ -39,7 +39,10 @@ var round = MODULE('utils').round;
  * Bank Schema
  */
 var bankSchema = new Schema({
-    ref: { type: String, unique: true },
+    ref: {
+        type: String,
+        unique: true
+    },
     account_type: String,
     name_bank: String,
     code_bank: Number,
@@ -47,9 +50,23 @@ var bankSchema = new Schema({
     code_counter: String,
     account_number: String,
     iban: {
-        bank: { type: String, uppercase: true, trim: true },
-        id: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true }, //FR76........
-        bic: { type: String, set: MODULE('utils').setNoSpace, uppercase: true, trim: true } //BIC / SWIFT TODO old swift
+        bank: {
+            type: String,
+            uppercase: true,
+            trim: true
+        },
+        id: {
+            type: String,
+            set: MODULE('utils').setNoSpace,
+            uppercase: true,
+            trim: true
+        }, //FR76........
+        bic: {
+            type: String,
+            set: MODULE('utils').setNoSpace,
+            uppercase: true,
+            trim: true
+        } //BIC / SWIFT TODO old swift
     },
     currency: String,
     status: String,
@@ -58,27 +75,65 @@ var bankSchema = new Schema({
     min_balance_required: Number,
     web: String,
     comment: String,
-    entity: [{ type: String, trim: true }],
+    entity: [{
+        type: String,
+        trim: true
+    }],
     address: {
-        street: { type: String, default: '' },
-        city: { type: String, default: '' },
-        state: { type: String, default: '' },
-        zip: { type: String, default: '' },
-        country: { type: String, ref: 'countries', default: 'FR' }
+        street: {
+            type: String,
+            default: ''
+        },
+        city: {
+            type: String,
+            default: ''
+        },
+        state: {
+            type: String,
+            default: ''
+        },
+        zip: {
+            type: String,
+            default: ''
+        },
+        country: {
+            type: String,
+            ref: 'countries',
+            default: 'FR'
+        }
     },
-    createdBy: { type: ObjectId, ref: 'Users' },
-    editedBy: { type: ObjectId, ref: 'Users' },
-    journalId: { type: String, unique: true }, // BQ1
-    compta_bank: { type: String, unique: true }, // 512xxxx
+    createdBy: {
+        type: ObjectId,
+        ref: 'Users'
+    },
+    editedBy: {
+        type: ObjectId,
+        ref: 'Users'
+    },
+    journalId: {
+        type: String,
+        unique: true
+    }, // BQ1
+    compta_bank: {
+        type: String,
+        unique: true
+    }, // 512xxxx
     invoice: String // Text on invoice for payment
 }, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
+    toObject: {
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
+    }
 });
 
 var statusList = {};
 
-Dict.dict({ dictName: "fk_account_status", object: true }, function(err, docs) {
+Dict.dict({
+    dictName: "fk_account_status",
+    object: true
+}, function(err, docs) {
     statusList = docs;
 });
 
@@ -105,7 +160,10 @@ bankSchema.virtual('name').get(function() {
 
 var typeList = {};
 
-Dict.dict({ dictName: "fk_account_type", object: true }, function(err, docs) {
+Dict.dict({
+    dictName: "fk_account_type",
+    object: true
+}, function(err, docs) {
 
     typeList = docs;
 });
@@ -130,7 +188,10 @@ bankSchema.virtual('acc_type').get(function() {
 
 var countryList = {};
 
-Dict.dict({ dictName: "fk_country", object: true }, function(err, docs) {
+Dict.dict({
+    dictName: "fk_country",
+    object: true
+}, function(err, docs) {
 
     countryList = docs;
 });

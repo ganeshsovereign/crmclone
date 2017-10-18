@@ -38,8 +38,7 @@
         -signkey https.key -out https.crt cp https.key{,.orig} openssl rsa -in https.key.orig -out https.key # start the server in HTTPS mode cd web sudo node ../server.js 443 'yes' &gt;&gt; ../node.log &amp; # here is how to stop the server for pid in
         `ps aux | grep 'node ../server.js' | awk '{print $2}'` ; do sudo kill -9 $pid 2&gt; /dev/null done exit 0</textarea>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById('code'),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
             mode: 'shell',
             lineNumbers: true,
             matchBrackets: true

@@ -4,14 +4,14 @@
  * @version: v1.1.0
  */
 
-!function ($) {
+! function($) {
 
     'use strict';
 
     $.extend($.fn.bootstrapTable.defaults, {
         reorderableColumns: false,
         maxMovingRows: 10,
-        onReorderColumn: function (headerFields) {
+        onReorderColumn: function(headerFields) {
             return false;
         },
         dragaccept: null
@@ -27,7 +27,7 @@
         _toggleView = BootstrapTable.prototype.toggleView,
         _resetView = BootstrapTable.prototype.resetView;
 
-    BootstrapTable.prototype.initHeader = function () {
+    BootstrapTable.prototype.initHeader = function() {
         _initHeader.apply(this, Array.prototype.slice.apply(arguments));
 
         if (!this.options.reorderableColumns) {
@@ -37,7 +37,7 @@
         this.makeRowsReorderable();
     };
 
-    BootstrapTable.prototype.toggleColumn = function () {
+    BootstrapTable.prototype.toggleColumn = function() {
         _toggleColumn.apply(this, Array.prototype.slice.apply(arguments));
 
         if (!this.options.reorderableColumns) {
@@ -47,7 +47,7 @@
         this.makeRowsReorderable();
     };
 
-    BootstrapTable.prototype.toggleView = function () {
+    BootstrapTable.prototype.toggleView = function() {
         _toggleView.apply(this, Array.prototype.slice.apply(arguments));
 
         if (!this.options.reorderableColumns) {
@@ -61,7 +61,7 @@
         this.makeRowsReorderable();
     };
 
-    BootstrapTable.prototype.resetView = function () {
+    BootstrapTable.prototype.resetView = function() {
         _resetView.apply(this, Array.prototype.slice.apply(arguments));
 
         if (!this.options.reorderableColumns) {
@@ -71,7 +71,7 @@
         this.makeRowsReorderable();
     };
 
-    BootstrapTable.prototype.makeRowsReorderable = function () {
+    BootstrapTable.prototype.makeRowsReorderable = function() {
         var that = this;
         try {
             $(this.$el).dragtable('destroy');
@@ -79,22 +79,22 @@
         $(this.$el).dragtable({
             maxMovingRows: that.options.maxMovingRows,
             dragaccept: that.options.dragaccept,
-            clickDelay:200,
+            clickDelay: 200,
             beforeStop: function() {
                 var ths = [],
                     formatters = [],
                     columns = [],
                     columnsHidden = [],
                     columnIndex = -1;
-                that.$header.find('th').each(function (i) {
+                that.$header.find('th').each(function(i) {
                     ths.push($(this).data('field'));
                     formatters.push($(this).data('formatter'));
                 });
 
                 //Exist columns not shown
                 if (ths.length < that.columns.length) {
-                    columnsHidden = $.grep(that.columns, function (column) {
-                       return !column.visible;
+                    columnsHidden = $.grep(that.columns, function(column) {
+                        return !column.visible;
                     });
                     for (var i = 0; i < columnsHidden.length; i++) {
                         ths.push(columnsHidden[i].field);
@@ -102,7 +102,7 @@
                     }
                 }
 
-                for (var i = 0; i < ths.length; i++ ) {
+                for (var i = 0; i < ths.length; i++) {
                     columnIndex = $.fn.bootstrapTable.utils.getFieldIndex(that.columns, ths[i]);
                     if (columnIndex !== -1) {
                         columns.push(that.columns[columnIndex]);

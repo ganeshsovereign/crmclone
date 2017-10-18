@@ -45,8 +45,16 @@ function websocket() {
                     usersList.push(client.alias);
             }
         });
-        UserModel.find({ _id: { $in: usersList } }, "username email photo societe", function(err, users) {
-            self.send({ type: 'users', message: users, online: self.online });
+        UserModel.find({
+            _id: {
+                $in: usersList
+            }
+        }, "username email photo societe", function(err, users) {
+            self.send({
+                type: 'users',
+                message: users,
+                online: self.online
+            });
             //console.log("Connected: ", users);
 
             F.global.USERS = users; // User connected
@@ -63,7 +71,12 @@ function websocket() {
             return;
         }
 
-        self.send({ user: client.alias, type: 'message', message: message.message, date: new Date() }, function(current) {
+        self.send({
+            user: client.alias,
+            type: 'message',
+            message: message.message,
+            date: new Date()
+        }, function(current) {
             return (current.alias || '').length > 0;
         });
     });
@@ -83,17 +96,23 @@ function websocket() {
         var userId = data.userId;
         var notify = data;
 
-        self.send({ type: 'refresh', data: notify }, function(id, client) {
+        self.send({
+            type: 'refresh',
+            data: notify
+        }, function(id, client) {
             //send to all
             return true;
         });
 
         if (notify.go) //$rootScope.go
-            self.send({ type: 'go', data: notify }, function(id, client) {
-            //send to all
-            //console.log(client);
-            return (userId.indexOf(client.alias) >= 0);
-        });
+            self.send({
+                type: 'go',
+                data: notify
+            }, function(id, client) {
+                //send to all
+                //console.log(client);
+                return (userId.indexOf(client.alias) >= 0);
+            });
 
 
     });
@@ -103,7 +122,11 @@ function websocket() {
         var notify = data;
 
         // send text notification
-        self.send({ type: 'notify', message: notify, date: new Date() }, function(id, client) {
+        self.send({
+            type: 'notify',
+            message: notify,
+            date: new Date()
+        }, function(id, client) {
             // send only to users in notify.users Array
             return (userId.indexOf(client.alias) >= 0);
         });

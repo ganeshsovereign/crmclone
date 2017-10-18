@@ -1,6 +1,6 @@
-var TableAjax = function () {
+var TableAjax = function() {
 
-    var initPickers = function () {
+    var initPickers = function() {
         //init date pickers
         $('.date-picker').datepicker({
             rtl: Metronic.isRTL(),
@@ -8,16 +8,16 @@ var TableAjax = function () {
         });
     }
 
-    var handleRecords = function () {
+    var handleRecords = function() {
 
         var grid = new Datatable();
 
         grid.init({
             src: $("#datatable_ajax"),
-            onSuccess: function (grid) {
+            onSuccess: function(grid) {
                 // execute some code after table records loaded
             },
-            onError: function (grid) {
+            onError: function(grid) {
                 // execute some code on network or other general error  
             },
             onDataLoad: function(grid) {
@@ -30,7 +30,7 @@ var TableAjax = function () {
                 // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
                 // So when dropdowns used the scrollable div should be removed. 
                 //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-                
+
                 "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
 
                 "lengthMenu": [
@@ -43,12 +43,12 @@ var TableAjax = function () {
                 },
                 "order": [
                     [1, "asc"]
-                ]// set first column as a default sort by asc
+                ] // set first column as a default sort by asc
             }
         });
 
         // handle group actionsubmit button click
-        grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
+        grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
             e.preventDefault();
             var action = $(".table-group-action-input", grid.getTableWrapper());
             if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
@@ -80,7 +80,7 @@ var TableAjax = function () {
     return {
 
         //main function to initiate the module
-        init: function () {
+        init: function() {
 
             initPickers();
             handleRecords();

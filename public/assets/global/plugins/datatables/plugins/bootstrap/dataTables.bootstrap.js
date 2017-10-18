@@ -21,15 +21,15 @@ $.extend($.fn.dataTableExt.oStdClasses, {
 // In 1.10 we use the pagination renderers to draw the Bootstrap paging,
 // rather than  custom plug-in
 $.fn.dataTable.defaults.renderer = 'bootstrap';
-$.fn.dataTable.ext.renderer.pageButton.bootstrap = function (settings, host, idx, buttons, page, pages) {
+$.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx, buttons, page, pages) {
     var api = new $.fn.dataTable.Api(settings);
     var classes = settings.oClasses;
     var lang = settings.oLanguage.oPaginate;
     var btnDisplay, btnClass;
 
-    var attach = function (container, buttons) {
+    var attach = function(container, buttons) {
         var i, ien, node, button;
-        var clickHandler = function (e) {
+        var clickHandler = function(e) {
             e.preventDefault();
             if (e.data.action !== 'ellipsis') {
                 api.page(e.data.action).draw(false);
@@ -46,55 +46,55 @@ $.fn.dataTable.ext.renderer.pageButton.bootstrap = function (settings, host, idx
                 btnClass = '';
 
                 switch (button) {
-                case 'ellipsis':
-                    btnDisplay = '&hellip;';
-                    btnClass = 'disabled';
-                    break;
+                    case 'ellipsis':
+                        btnDisplay = '&hellip;';
+                        btnClass = 'disabled';
+                        break;
 
-                case 'first':
-                    btnDisplay = lang.sFirst;
-                    btnClass = button + (page > 0 ?
-                        '' : ' disabled');
-                    break;
+                    case 'first':
+                        btnDisplay = lang.sFirst;
+                        btnClass = button + (page > 0 ?
+                            '' : ' disabled');
+                        break;
 
-                case 'previous':
-                    btnDisplay = lang.sPrevious;
-                    btnClass = button + (page > 0 ?
-                        '' : ' disabled');
-                    break;
+                    case 'previous':
+                        btnDisplay = lang.sPrevious;
+                        btnClass = button + (page > 0 ?
+                            '' : ' disabled');
+                        break;
 
-                case 'next':
-                    btnDisplay = lang.sNext;
-                    btnClass = button + (page < pages - 1 ?
-                        '' : ' disabled');
-                    break;
+                    case 'next':
+                        btnDisplay = lang.sNext;
+                        btnClass = button + (page < pages - 1 ?
+                            '' : ' disabled');
+                        break;
 
-                case 'last':
-                    btnDisplay = lang.sLast;
-                    btnClass = button + (page < pages - 1 ?
-                        '' : ' disabled');
-                    break;
+                    case 'last':
+                        btnDisplay = lang.sLast;
+                        btnClass = button + (page < pages - 1 ?
+                            '' : ' disabled');
+                        break;
 
-                default:
-                    btnDisplay = button + 1;
-                    btnClass = page === button ?
-                        'active' : '';
-                    break;
+                    default:
+                        btnDisplay = button + 1;
+                        btnClass = page === button ?
+                            'active' : '';
+                        break;
                 }
 
                 if (btnDisplay) {
                     node = $('<li>', {
-                        'class': classes.sPageButton + ' ' + btnClass,
-                        'aria-controls': settings.sTableId,
-                        'tabindex': settings.iTabIndex,
-                        'id': idx === 0 && typeof button === 'string' ?
-                            settings.sTableId + '_' + button : null
-                    })
+                            'class': classes.sPageButton + ' ' + btnClass,
+                            'aria-controls': settings.sTableId,
+                            'tabindex': settings.iTabIndex,
+                            'id': idx === 0 && typeof button === 'string' ?
+                                settings.sTableId + '_' + button : null
+                        })
                         .append($('<a>', {
                                 'href': '#'
                             })
                             .html(btnDisplay)
-                    )
+                        )
                         .appendTo(container);
 
                     settings.oApi._fnBindAction(
@@ -133,7 +133,7 @@ if ($.fn.DataTable.TableTools) {
             }
         },
         "print": {
-            "info": "DTTT_Print_Info"  
+            "info": "DTTT_Print_Info"
         },
         "select": {
             "row": "active"
@@ -155,7 +155,7 @@ Custom Pagination
 ***/
 
 /* API method to get paging information */
-$.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
+$.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
     return {
         "iStart": oSettings._iDisplayStart,
         "iEnd": oSettings.fnDisplayEnd(),
@@ -172,9 +172,9 @@ $.fn.dataTableExt.oApi.fnPagingInfo = function (oSettings) {
 /* Bootstrap style full number pagination control */
 $.extend($.fn.dataTableExt.oPagination, {
     "bootstrap_full_number": {
-        "fnInit": function (oSettings, nPaging, fnDraw) {
+        "fnInit": function(oSettings, nPaging, fnDraw) {
             var oLang = oSettings.oLanguage.oPaginate;
-            var fnClickHandler = function (e) {
+            var fnClickHandler = function(e) {
                 e.preventDefault();
                 if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
                     fnDraw(oSettings);
@@ -204,7 +204,7 @@ $.extend($.fn.dataTableExt.oPagination, {
             }, fnClickHandler);
         },
 
-        "fnUpdate": function (oSettings, fnDraw) {
+        "fnUpdate": function(oSettings, fnDraw) {
             var iListLength = 5;
             var oPaging = oSettings.oInstance.fnPagingInfo();
             var an = oSettings.aanFeatures.p;
@@ -241,7 +241,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                     sClass = (j == oPaging.iPage + 1) ? 'class="active"' : '';
                     $('<li ' + sClass + '><a href="#">' + j + '</a></li>')
                         .insertBefore($('li.next:first', an[i])[0])
-                        .bind('click', function (e) {
+                        .bind('click', function(e) {
                             e.preventDefault();
                             oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
                             fnDraw(oSettings);
@@ -268,11 +268,11 @@ $.extend($.fn.dataTableExt.oPagination, {
 /* Bootstrap style full number pagination control */
 $.extend($.fn.dataTableExt.oPagination, {
     "bootstrap_extended": {
-        "fnInit": function (oSettings, nPaging, fnDraw) {
+        "fnInit": function(oSettings, nPaging, fnDraw) {
             var oLang = oSettings.oLanguage.oPaginate;
             var oPaging = oSettings.oInstance.fnPagingInfo();
 
-            var fnClickHandler = function (e) {
+            var fnClickHandler = function(e) {
                 e.preventDefault();
                 if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
                     fnDraw(oSettings);
@@ -297,7 +297,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                 action: "next"
             }, fnClickHandler);
 
-            $('.pagination-panel-input', nPaging).bind('change.DT', function (e) {
+            $('.pagination-panel-input', nPaging).bind('change.DT', function(e) {
                 var oPaging = oSettings.oInstance.fnPagingInfo();
                 e.preventDefault();
                 var page = parseInt($(this).val());
@@ -310,7 +310,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                 }
             });
 
-            $('.pagination-panel-input', nPaging).bind('keypress.DT', function (e) {
+            $('.pagination-panel-input', nPaging).bind('keypress.DT', function(e) {
                 var oPaging = oSettings.oInstance.fnPagingInfo();
                 if (e.which == 13) {
                     var page = parseInt($(this).val());
@@ -326,7 +326,7 @@ $.extend($.fn.dataTableExt.oPagination, {
             });
         },
 
-        "fnUpdate": function (oSettings, fnDraw) {
+        "fnUpdate": function(oSettings, fnDraw) {
             var iListLength = 5;
             var oPaging = oSettings.oInstance.fnPagingInfo();
             var an = oSettings.aanFeatures.p;
@@ -372,7 +372,7 @@ $.extend($.fn.dataTableExt.oPagination, {
                     sClass = (j == oPaging.iPage + 1) ? 'class="active"' : '';
                     $('<li ' + sClass + '><a href="#">' + j + '</a></li>')
                         .insertBefore($('li.next:first', an[i])[0])
-                        .bind('click', function (e) {
+                        .bind('click', function(e) {
                             e.preventDefault();
                             oSettings._iDisplayStart = (parseInt($('a', this).text(), 10) - 1) * oPaging.iLength;
                             fnDraw(oSettings);

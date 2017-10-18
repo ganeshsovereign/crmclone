@@ -2,38 +2,38 @@
  * Bootstrap Table Estonian translation
  * Author: kristjan@logist.it>
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['et-EE'] = {
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
             return 'Päring käib, palun oota...';
         },
-        formatRecordsPerPage: function (pageNumber) {
+        formatRecordsPerPage: function(pageNumber) {
             return pageNumber + ' rida lehe kohta';
         },
-        formatShowingRows: function (pageFrom, pageTo, totalRows) {
+        formatShowingRows: function(pageFrom, pageTo, totalRows) {
             return 'Näitan tulemusi ' + pageFrom + ' kuni ' + pageTo + ' - kokku ' + totalRows + ' tulemust';
         },
-        formatSearch: function () {
+        formatSearch: function() {
             return 'Otsi';
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
             return 'Päringu tingimustele ei vastanud ühtegi tulemust';
         },
-        formatPaginationSwitch: function () {
+        formatPaginationSwitch: function() {
             return 'Näita/Peida lehtedeks jagamine';
         },
-        formatRefresh: function () {
+        formatRefresh: function() {
             return 'Värskenda';
         },
-        formatToggle: function () {
+        formatToggle: function() {
             return 'Lülita';
         },
-        formatColumns: function () {
+        formatColumns: function() {
             return 'Veerud';
         },
-        formatAllRows: function () {
+        formatAllRows: function() {
             return 'Kõik';
         }
     };

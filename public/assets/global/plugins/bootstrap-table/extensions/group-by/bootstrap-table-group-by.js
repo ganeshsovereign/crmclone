@@ -4,7 +4,7 @@
  * @version: v1.1.0
  */
 
-!function ($) {
+! function($) {
 
     'use strict';
 
@@ -14,7 +14,7 @@
         obj = {},
         parentId = undefined;
 
-    var getParentRowId = function (that, id) {
+    var getParentRowId = function(that, id) {
         var parentRows = that.$body.find('tr').not('[' + 'data-tt-parent-id]');
 
         for (var i = 0; i < parentRows.length; i++) {
@@ -26,9 +26,9 @@
         return undefined;
     };
 
-    var sumData = function (that, data) {
+    var sumData = function(that, data) {
         var sumRow = {};
-        $.each(data, function (i, row) {
+        $.each(data, function(i, row) {
             if (!row.IsParent) {
                 for (var prop in row) {
                     if (!isNaN(parseFloat(row[prop]))) {
@@ -45,7 +45,7 @@
         return sumRow;
     };
 
-    var rowAttr = function (row, index) {
+    var rowAttr = function(row, index) {
         //Call the User Defined Function
         originalRowAttr.apply([row, index]);
 
@@ -61,9 +61,9 @@
         return obj;
     };
 
-    var setObjectKeys = function () {
+    var setObjectKeys = function() {
         // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
-        Object.keys = function (o) {
+        Object.keys = function(o) {
             if (o !== Object(o)) {
                 throw new TypeError('Object.keys called on a non-object');
             }
@@ -78,7 +78,7 @@
         }
     };
 
-    var getDataArrayFromItem = function (that, item) {
+    var getDataArrayFromItem = function(that, item) {
         var itemDataArray = [];
         for (var i = 0; i < that.options.groupByField.length; i++) {
             itemDataArray.push(item[that.options.groupByField[i]]);
@@ -87,7 +87,7 @@
         return itemDataArray;
     };
 
-    var getNewRow = function (that, result, index) {
+    var getNewRow = function(that, result, index) {
         var newRow = {};
         for (var i = 0; i < that.options.groupByField.length; i++) {
             newRow[that.options.groupByField[i].toString()] = result[index][0][that.options.groupByField[i]];
@@ -98,23 +98,23 @@
         return newRow;
     };
 
-    var groupBy = function (array, f) {
+    var groupBy = function(array, f) {
         var groups = {};
-        $.each(array, function (i, o) {
+        $.each(array, function(i, o) {
             var group = JSON.stringify(f(o));
             groups[group] = groups[group] || [];
             groups[group].push(o);
         });
-        return Object.keys(groups).map(function (group) {
+        return Object.keys(groups).map(function(group) {
             return groups[group];
         });
     };
 
-    var makeGrouped = function (that, data) {
+    var makeGrouped = function(that, data) {
         var newData = [],
             sumRow = {};
 
-        var result = groupBy(data, function (item) {
+        var result = groupBy(data, function(item) {
             return getDataArrayFromItem(that, item);
         });
 
@@ -159,7 +159,7 @@
         _init = BootstrapTable.prototype.init,
         _initData = BootstrapTable.prototype.initData;
 
-    BootstrapTable.prototype.init = function () {
+    BootstrapTable.prototype.init = function() {
         //Temporal validation
         if (!this.options.sortName) {
             if ((this.options.groupBy) && (this.options.groupByField.length > 0)) {
@@ -176,15 +176,15 @@
 
                 originalRowAttr = this.options.rowAttributes;
                 this.options.rowAttributes = rowAttr;
-                this.$el.on('post-body.bs.table', function () {
+                this.$el.on('post-body.bs.table', function() {
                     that.$el.treetable({
                         expandable: true,
-                        onNodeExpand: function () {
+                        onNodeExpand: function() {
                             if (that.options.height) {
                                 that.resetHeader();
                             }
                         },
-                        onNodeCollapse: function () {
+                        onNodeCollapse: function() {
                             if (that.options.height) {
                                 that.resetHeader();
                             }
@@ -204,14 +204,14 @@
         _init.apply(this, Array.prototype.slice.apply(arguments));
     };
 
-    BootstrapTable.prototype.initData = function (data, type) {
+    BootstrapTable.prototype.initData = function(data, type) {
         //Temporal validation
         if (!this.options.sortName) {
             if ((this.options.groupBy) && (this.options.groupByField.length > 0)) {
 
                 this.options.groupByField = typeof this.options.groupByField === 'string' ?
                     this.options.groupByField.replace('[', '').replace(']', '')
-                        .replace(/ /g, '').toLowerCase().split(',') : this.options.groupByField;
+                    .replace(/ /g, '').toLowerCase().split(',') : this.options.groupByField;
 
                 data = makeGrouped(this, data ? data : this.options.data);
             }
@@ -219,22 +219,22 @@
         _initData.apply(this, [data, type]);
     };
 
-    BootstrapTable.prototype.expandAll = function () {
+    BootstrapTable.prototype.expandAll = function() {
         this.$el.treetable('expandAll');
     };
 
-    BootstrapTable.prototype.collapseAll = function () {
+    BootstrapTable.prototype.collapseAll = function() {
         this.$el.treetable('collapseAll');
     };
 
-    BootstrapTable.prototype.expandNode = function (id) {
+    BootstrapTable.prototype.expandNode = function(id) {
         id = getParentRowId(this, id);
         if (id !== undefined) {
             this.$el.treetable('expandNode', id);
         }
     };
 
-    BootstrapTable.prototype.refreshGroupByField = function (groupByFields) {
+    BootstrapTable.prototype.refreshGroupByField = function(groupByFields) {
         if (!$.fn.bootstrapTable.utils.compareObjects(this.options.groupByField, groupByFields)) {
             this.options.groupByField = groupByFields;
             this.load(this.options.originalData);

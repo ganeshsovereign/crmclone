@@ -39,10 +39,8 @@
             dc = "eqdc10" [clients] data = [ ["gamma", "delta"], [1, 2] ] # Line breaks are OK when inside arrays hosts = [ "alpha", "omega" ] </textarea>
     </form>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
-            mode:
-            {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+            mode: {
                 name: "toml"
             },
             lineNumbers: true

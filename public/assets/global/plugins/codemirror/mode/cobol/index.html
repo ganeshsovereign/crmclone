@@ -34,7 +34,7 @@
         font-size: 20px;
         height: auto !important;
     }
-    
+
     .CodeMirror-activeline-background {
         background: #555555 !important;
     }
@@ -112,8 +112,7 @@
         000460 PROCESS-RECORDS. 000470 MOVE STUDENT-IN TO RECORD-IMAGE. 000480 MOVE DETAIL-LINE TO PRINT-LINE. 000490 WRITE PRINT-LINE. 000500 ADD 1 TO RECORDS-WRITTEN. 000510 READ STUDENT-FILE 000520 AT END MOVE 'NO' TO DATA-REMAINS-SWITCH 000530 END-READ.
         000540 000550 PRINT-SUMMARY. 000560 MOVE RECORDS-WRITTEN TO TOTAL-READ. 000570 MOVE SUMMARY-LINE TO PRINT-LINE. 000571 WRITE PRINT-LINE. 000572 000580 </textarea>
     <script>
-        var editor = CodeMirror.fromTextArea(document.getElementById("code"),
-        {
+        var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
             lineNumbers: true,
             matchBrackets: true,
             mode: "text/x-cobol",
@@ -122,44 +121,33 @@
             showCursorWhenSelecting: true,
         });
 
-        function selectTheme()
-        {
+        function selectTheme() {
             var themeInput = document.getElementById("selectTheme");
             var theme = themeInput.options[themeInput.selectedIndex].innerHTML;
             editor.setOption("theme", theme);
         }
 
-        function selectFontsize()
-        {
+        function selectFontsize() {
             var fontSizeInput = document.getElementById("selectFontSize");
             var fontSize = fontSizeInput.options[fontSizeInput.selectedIndex].innerHTML;
             editor.getWrapperElement().style.fontSize = fontSize;
             editor.refresh();
         }
 
-        function selectReadOnly()
-        {
+        function selectReadOnly() {
             editor.setOption("readOnly", document.getElementById("checkBoxReadOnly").checked);
         }
 
-        function tabToIndentSpace()
-        {
-            if (document.getElementById("id_tabToIndentSpace").checked)
-            {
-                editor.setOption("extraKeys",
-                {
-                    Tab: function(cm)
-                    {
+        function tabToIndentSpace() {
+            if (document.getElementById("id_tabToIndentSpace").checked) {
+                editor.setOption("extraKeys", {
+                    Tab: function(cm) {
                         cm.replaceSelection("    ", "end");
                     }
                 });
-            }
-            else
-            {
-                editor.setOption("extraKeys",
-                {
-                    Tab: function(cm)
-                    {
+            } else {
+                editor.setOption("extraKeys", {
+                    Tab: function(cm) {
                         cm.replaceSelection("    ", "end");
                     }
                 });

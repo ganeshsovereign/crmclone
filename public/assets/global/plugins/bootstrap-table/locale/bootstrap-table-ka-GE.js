@@ -2,7 +2,7 @@
  * Bootstrap Table Georgian translation
  * Author: Levan Lotuashvili <l.lotuashvili@gmail.com>
  */
-(function ($) {
+(function($) {
     'use strict';
 
     $.fn.bootstrapTable.locales['ka-GE'] = {
@@ -34,7 +34,7 @@
             return 'სვეტები';
         }
     };
-    
+
     $.extend($.fn.bootstrapTable.defaults, $.fn.bootstrapTable.locales['ka-GE']);
 
 })(jQuery);

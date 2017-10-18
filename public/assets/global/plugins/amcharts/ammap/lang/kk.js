@@ -1,1 +1,4 @@
-AmCharts.mapTranslations.kk = {"Kazakhstan":"Қазақстан","Tonga":"Тонга"}
+AmCharts.mapTranslations.kk = {
+    "Kazakhstan": "Қазақстан",
+    "Tonga": "Тонга"
+}

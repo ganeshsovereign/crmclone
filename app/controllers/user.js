@@ -73,7 +73,9 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
         if (!$rootScope.$stateParams.id)
             if ($rootScope.$stateParams.Status) {
                 $scope.status_id = $rootScope.$stateParams.Status;
-                initDatatable({ status_id: $scope.status_id });
+                initDatatable({
+                    status_id: $scope.status_id
+                });
             } else
                 initDatatable();
 
@@ -111,14 +113,18 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
     $scope.create = function() {
         var user = new Users.users(this.user);
         user.$save(function(response) {
-            $rootScope.$state.go("user.show", { id: response._id });
+            $rootScope.$state.go("user.show", {
+                id: response._id
+            });
         });
     };
 
     $scope.showStatus = function(val, dict) {
         if (!($scope.dict[dict] && $scope.user[val]))
             return;
-        var selected = $filter('filter')($scope.dict[dict].values, { id: $scope.user[val] });
+        var selected = $filter('filter')($scope.dict[dict].values, {
+            id: $scope.user[val]
+        });
 
         return ($scope.user[val] && selected && selected.length) ? selected[0].label : 'Non défini';
     };
@@ -168,7 +174,9 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
                 method: 'GET',
                 url: 'api/ticket',
                 params: {
-                    find: { "linked.id": user._id },
+                    find: {
+                        "linked.id": user._id
+                    },
                     fields: "name ref updatedAt percentage Status task"
                 }
             }).success(function(data, status) {
@@ -285,7 +293,9 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
             $scope.params.status_id = this.status_id;
             url = getUrl($scope.params);
         } else
-            url = getUrl({ status_id: this.status_id });
+            url = getUrl({
+                status_id: this.status_id
+            });
 
         grid.resetFilter(url);
     };
@@ -303,21 +313,40 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
     $scope.gridOptionsTicket = {
         data: 'tickets',
         enableRowSelection: false,
-        sortInfo: { fields: ["updatedAt"], directions: ["desc"] },
+        sortInfo: {
+            fields: ["updatedAt"],
+            directions: ["desc"]
+        },
         filterOptions: $scope.filterOptionsTicket,
         i18n: 'fr',
         enableColumnResize: true,
-        columnDefs: [
-            { field: 'name', displayName: 'Titre', cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/ticket/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"right"}\' title=\'{{row.getProperty("task")}}\'><span class="icon-ticket"></span> {{row.getProperty(col.field)}}</a>' },
-            { field: 'ref', displayName: 'Id' },
-            { field: 'percentage', displayName: 'Etat', cellTemplate: '<div class="ngCellText"><progressbar class="progress-striped thin" value="row.getProperty(col.field)" type="success"></progressbar></div>' },
-            { field: 'updatedAt', displayName: 'Dernière MAJ', cellFilter: "date:'dd-MM-yyyy HH:mm:ss'" }
+        columnDefs: [{
+                field: 'name',
+                displayName: 'Titre',
+                cellTemplate: '<div class="ngCellText"><a class="with-tooltip" ng-href="#!/ticket/{{row.getProperty(\'_id\')}}" data-tooltip-options=\'{"position":"right"}\' title=\'{{row.getProperty("task")}}\'><span class="icon-ticket"></span> {{row.getProperty(col.field)}}</a>'
+            },
+            {
+                field: 'ref',
+                displayName: 'Id'
+            },
+            {
+                field: 'percentage',
+                displayName: 'Etat',
+                cellTemplate: '<div class="ngCellText"><progressbar class="progress-striped thin" value="row.getProperty(col.field)" type="success"></progressbar></div>'
+            },
+            {
+                field: 'updatedAt',
+                displayName: 'Dernière MAJ',
+                cellFilter: "date:'dd-MM-yyyy HH:mm:ss'"
+            }
         ]
     };
 
     $scope.changeStatus = function(Status) {
         $scope.user.Status = Status;
-        $scope.update({ Status: Status });
+        $scope.update({
+            Status: Status
+        });
     };
 
     $scope.checkUserExist = function(data) {
@@ -377,7 +406,9 @@ MetronicApp.controller('UserController', ['$scope', '$rootScope', '$http', '$fil
 MetronicApp.controller('BoxRHController', ['$rootScope', '$scope', '$http', '$timeout', 'Users', function($rootScope, $scope, $http, $timeout, Users) {
 
     $scope.loadAbsences = function() {
-        Users.absences.query({ query: 'NOW' }, function(absences) {
+        Users.absences.query({
+            query: 'NOW'
+        }, function(absences) {
             $scope.absences = absences;
             //console.log(absences);
         });

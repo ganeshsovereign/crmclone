@@ -30,22 +30,39 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var AttributesValuesSchema = new Schema({
-    code: { type: String, unique: true },
+    code: {
+        type: String,
+        unique: true
+    },
     langs: [{
         _id: false,
         value: String
     }],
     //isremoved: { type: Boolean, default: false },
-    sequence: { type: Number, default: 1 },
-    optionId: { type: Schema.Types.ObjectId, ref: 'productAttributes', require: true },
+    sequence: {
+        type: Number,
+        default: 1
+    },
+    optionId: {
+        type: Schema.Types.ObjectId,
+        ref: 'productAttributes',
+        require: true
+    },
     channels: [{
         _id: false,
-        channel: { type: Schema.Types.ObjectId, ref: 'integrations' },
+        channel: {
+            type: Schema.Types.ObjectId,
+            ref: 'integrations'
+        },
         integrationId: String
     }]
 }, {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true },
+    toObject: {
+        virtuals: true
+    },
+    toJSON: {
+        virtuals: true
+    },
     collection: 'ProductAttributesValues'
 });
 
