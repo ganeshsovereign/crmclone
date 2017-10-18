@@ -36,15 +36,15 @@ gulp.task('license', function() {
 
 //Clean indentation Js, css, html
 gulp.task('beautifier', function() {
-    gulp.src(['./**/*.css', './**/*.html', './**/*.js', '!./node_modules/**', '!/tmp/**', '!./**/*.min.js', '!./**/*.min.css'])
+    gulp.src(['./**/*.css', './**/*.html', './**/*.js', '!./public/assets/**', '!./node_modules/**', '!/tmp/**', '!./**/*.min.js', '!./**/*.min.css'])
         .pipe(beautifier({
-            "indent_size": 4,
-            "indent_char": ' ',
+            //"indent_size": 4,
+            //"indent_char": ' ',
             // other options 
-            "js": {
-                // other options 
-                "indent_size": 3
-            }
+            //"js": {
+            // other options 
+            //    "indent_size": 3
+            //}
         }))
         .pipe(gulp.dest('.'));
 });
