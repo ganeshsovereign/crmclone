@@ -1,7 +1,7 @@
 /**
 2014-<%= year %> ToManage
 
-NOTICE OF LICENSE
+
 
 Copyright <%= year %> ToManage
 

@@ -14,7 +14,7 @@ var //rename = require('gulp-rename'),
 
 // Task css = CSScomb style formatter + beautify-css (reindent and reformat css) + autoprefixer prefix css (source -> destination)
 gulp.task('css', function() {
-    return gulp.src(['./**/*.css', '!./node_modules/**', '!./tmp/**', '!./app/common/**', '!./**/*.min.js', '!./**/*.min.css'])
+    return gulp.src(['./public/*.css', '!./**/*.min.css'])
         .pipe(plumber({}))
         .pipe(cssbeautify({
             indent: '  ',
@@ -27,7 +27,7 @@ gulp.task('css', function() {
 //Header on file JS & CSS 
 gulp.task('license', function() {
     var year = (new Date()).getFullYear();
-    gulp.src(['./**/*.js', '!./**/*.min.js', '!./node_modules/**', '!./tmp/**', '!./app/common/**'])
+    gulp.src(['./app/*.js', './controllers/*.js', './definitions/*.js', './install/*.js', './models/*.js', './modules/*.js', './source/*.js'])
         .pipe(license(fs.readFileSync('header.md', 'utf8'), {
             year: year
         }, 0.9))
@@ -36,17 +36,17 @@ gulp.task('license', function() {
 
 //Clean indentation Js, css, html
 gulp.task('beautifier', function() {
-    gulp.src(['./**/*.css', './**/*.html', './**/*.js', '!./node_modules/**', '!/tmp/**', '!./**/*.min.js', '!./**/*.min.css']) //['./**/*.css', './**/*.html', './**/*.js','!./node_modules/**','!/tmp/**']
+    gulp.src(['./**/*.css', './**/*.html', './**/*.js', '!./node_modules/**', '!/tmp/**', '!./**/*.min.js', '!./**/*.min.css'])
         .pipe(beautifier({
             "indent_size": 4,
-            "indent_char": '  ',
+            "indent_char": ' ',
             // other options 
             "js": {
                 // other options 
                 "indent_size": 3
             }
         }))
-        .pipe(gulp.dest('./'));
+        .pipe(gulp.dest('.'));
 });
 
 // Task default
