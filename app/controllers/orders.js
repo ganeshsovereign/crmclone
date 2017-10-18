@@ -1241,6 +1241,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             });
 
             var query = {
+                quickSearch: $scope.quickSearch,
                 filter: $scope.search,
                 viewType: 'list',
                 contentType: 'order',
@@ -1587,16 +1588,65 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
     }
 ]);
 
-MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '$window', '$filter', '$timeout',
-    function($scope, $rootScope, $http, $window, $filter, $timeout) {
+MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '$window', '$filter', '$timeout', 'superCache', 'Orders',
+    function($scope, $rootScope, $http, $window, $filter, $timeout, superCache, Orders) {
 
-        var grid = new Datatable();
+        // var grid = new Datatable();
         var user = $rootScope.login;
 
         $scope.editable = false;
 
         $scope.dict = {};
-        $scope.status_id = "LIST";
+        $scope.$dict = {};
+
+        $scope.search = {
+            ref: {
+                value: ""
+            },
+            ref_client: {
+                value: ""
+            },
+            entity: {
+                value: [],
+            },
+            supplier: {
+                value: []
+            },
+            salesPerson: {
+                value: []
+            },
+            Status: {
+                value: ["LIST"]
+            },
+            dater: {
+                value: {
+                    start: moment().startOf('year').toDate(),
+                    end: moment().endOf('year').toDate()
+                }
+            },
+            datec: {
+                value: {
+                    start: moment().startOf('year').toDate(),
+                    end: moment().endOf('year').toDate()
+                }
+            },
+        };
+
+        $scope.page = {
+            limit: 25,
+            page: 1,
+            total: 0
+        };
+
+        $scope.sort = {
+            'ID': 1
+        };
+
+        if (typeof superCache.get("BillListController") !== "undefined") {
+            $scope.page = superCache.get("BillListController").page;
+            $scope.search = superCache.get("BillListController").search;
+            $scope.sort = superCache.get("BillListController").sort;
+        }
 
         $rootScope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
@@ -1633,9 +1683,42 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 //console.log(data);
             });
 
-            initDatatable();
+            $http({
+                method: 'GET',
+                url: '/erp/api/employees/bySalesAccount'
+            }).success(function(data, status) {
+                $scope.$dict.salesPerson = data.data;
+                //console.log(data);
+            });
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/employees/getForDd',
+                params: {
+                    isEmployee: true
+                }
+            }).success(function(data, status) {
+                $scope.$dict.employees = data.data;
+                //console.log(data);
+            });
+
+            // initDatatable();
+            $scope.find();
 
         });
+
+        $scope.resetFilter = function() {
+            superCache.removeAll();
+            $rootScope.$state.reload();
+        }
+
+        $scope.checkedAll = function() {
+            if (!this.checkAll)
+                this.grid = {};
+            for (var i = 0; i < $scope.orders.length; i++)
+                if (this.checkAll)
+                    this.grid[$scope.orders[i]._id] = true;
+        }
 
         // Init ng-include
         $scope.$on('$includeContentLoaded', function() {
@@ -1833,7 +1916,47 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             });
         }
 
-        $scope.find = function(clear) {
+        $scope.find = function() {
+
+            superCache.put("BillListController", {
+                sort: $scope.sort,
+                search: $scope.search,
+                page: $scope.page
+            });
+
+            Metronic.blockUI({
+                target: '.waiting',
+                animate: false,
+                boxed: true,
+                overlayColor: 'gray'
+            });
+
+            var query = {
+                quickSearch: $scope.quickSearch,
+                filter: $scope.search,
+                viewType: 'list',
+                contentType: 'invoice',
+                limit: $scope.page.limit,
+                page: $scope.page.page,
+                sort: this.sort
+            };
+
+            //console.log(query);
+
+            Orders.bill.query(query, function(data, status) {
+                console.log("bills", data);
+                $scope.page.total = data.total;
+                $scope.orders = data.data;
+                $scope.totalAll = data.totalAll;
+
+                $timeout(function() {
+                    Metronic.unblockUI('.waiting');
+                }, 0);
+            });
+
+        };
+
+        /*$scope.find = function(clear) {
             var url;
             //console.log(this.status_id);
 
@@ -1849,7 +1972,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 });
 
             grid.resetFilter(url);
-        };
+        };*/
 
         $scope.changeStatus = function(Status, id) {
             // ChangeStatus multi-bills

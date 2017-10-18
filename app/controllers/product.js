@@ -154,7 +154,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             $scope.dict = data;
 
             if (!$rootScope.$stateParams.id)
-                // Is a list
+            // Is a list
                 initDatatable();
         });
 
@@ -1233,6 +1233,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             });
 
             var query = {
+                quickSearch: $scope.quickSearch,
                 filter: $scope.search,
                 viewType: 'list',
                 contentType: 'salesProduct',

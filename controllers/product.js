@@ -329,18 +329,18 @@ exports.install = function() {
         console.log(req.body);
         if (req.body.checked) // add a product
             StorehouseModel.update({
-                name: req.body.stock.stock,
-                'subStock.name': req.body.stock.subStock
-            }, {
-                $addToSet: {
-                    'subStock.$.productId': req.body.product._id
-                }
-            }, function(err, doc) {
-                if (err)
-                    console.log(err);
-                console.log(doc);
-                res.send(200, {});
-            });
+            name: req.body.stock.stock,
+            'subStock.name': req.body.stock.subStock
+        }, {
+            $addToSet: {
+                'subStock.$.productId': req.body.product._id
+            }
+        }, function(err, doc) {
+            if (err)
+                console.log(err);
+            console.log(doc);
+            res.send(200, {});
+        });
         else
             StorehouseModel.update({
                 name: req.body.stock.stock,
@@ -748,7 +748,7 @@ exports.install = function() {
                     result[i].name = docs[i].ref;
                     result[i].id = docs[i]._id;
                 }
-            //console.log(result);
+                //console.log(result);
             return self.json(result);
         });
     }, ['post', 'json', 'authorize']);
@@ -873,7 +873,7 @@ function Product(id, cb) {
         .populate("bundles.id", "info directCost indirectCost taxes weight")
         .populate({
             path: 'info.productType'
-            //    populate: { path: "options" }
+                //    populate: { path: "options" }
         })
         .populate({
             path: 'sellFamily',
@@ -1283,6 +1283,15 @@ Object.prototype = {
                 'data._id': 1
             };
 
+        if (quickSearch) {
+            regExp = new RegExp(quickSearch, 'ig');
+            matchObject['info.SKU'] = {
+                $regex: regExp
+            };
+
+            filter = {};
+        }
+
         if (filter && filter.channelLinks) {
             channelObjectIds = filter.channelLinks.value.objectID();
             action = filter.channelLinks.type;
@@ -1314,13 +1323,6 @@ Object.prototype = {
 
             accessRoll(self.user, Product, cb);
         };
-
-        if (quickSearch) {
-            regExp = new RegExp(quickSearch, 'ig');
-            matchObject.name = {
-                $regex: regExp
-            };
-        }
 
         contentSearcher = function(productsIds, waterfallCallback) {
             var aggregation;
@@ -2090,7 +2092,7 @@ Object.prototype = {
                                 res.datatable.data[i].directCost = '<span class="text-danger">Inconnu</span>';
 
                             if (res.datatable.data[i].info.isActive == false)
-                                // Add color line 
+                            // Add color line 
                                 res.datatable.data[i].DT_RowClass = "bg-red-haze";
                             // Add Pictures
                             if (row.imageSrc && row.imageSrc._id)
@@ -3521,7 +3523,7 @@ Object.prototype = {
                                     'month': obj._id.month,
                                     'qty': obj.qty * product.qty,
                                     'weight': obj.qty * product.qty * product.id.weight
-                                    //'total_ht': obj.total_ht * product.qty
+                                        //'total_ht': obj.total_ht * product.qty
                                 };
                             else {
                                 new_data[product.id.info.SKU].month[obj._id.month].qty += obj.qty * product.qty;
@@ -7999,10 +8001,10 @@ StockInventory.prototype = {
             data.sort[keys] = parseInt(data.sort[keys], 10);
             sort = data.sort;
         } else
-            //sort = { 'createdAt': -1 };
+        //sort = { 'createdAt': -1 };
             sort = {
-                'product.info.SKU': 1
-            };
+            'product.info.SKU': 1
+        };
 
         options = {
             sort: sort,

@@ -186,6 +186,7 @@ Object.prototype = {
             matchObject['ref'] = {
                 $regex: regExp
             };
+            filter = {};
         }
 
         //console.log(filter);
