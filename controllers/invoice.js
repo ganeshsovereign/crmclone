@@ -1127,7 +1127,7 @@ Object.prototype = {
                     //Add transport
                     if (bill.shipping.total_ht > 0)
                         entry.credit('624200', bill.shipping.total_ht, null, {
-                            label: 'TRANSPORT',
+                            label: 'TRANS ' + bill.supplier.fullName,
                             supplier: bill.supplier._id,
                             bills: [{
                                 invoice: bill._id,
@@ -1136,7 +1136,7 @@ Object.prototype = {
                         });
                     else if (bill.shipping.total_ht < 0)
                         entry.credit('624200', Math.abs(bill.shipping.total_ht), null, {
-                            label: 'TRANSPORT',
+                            label: 'TRANS ' + bill.supplier.fullName,
                             supplier: bill.supplier._id,
                             bills: [{
                                 invoice: bill._id,
@@ -1147,7 +1147,7 @@ Object.prototype = {
                     //Add global discount
                     if (bill.discount.discount.value > 0)
                         entry.debit('709000', bill.discount.discount.value, "REMISE", {
-                            label: 'DISCOUNT',
+                            label: 'DISC ' + bill.supplier.fullName,
                             supplier: bill.supplier._id,
                             bills: [{
                                 invoice: bill._id,
@@ -1156,7 +1156,7 @@ Object.prototype = {
                         });
                     else if (bill.discount.discount.value < 0)
                         entry.credit('709000', Math.abs(bill.discount.discount.value), null, {
-                            label: 'DISCOUNT',
+                            label: 'DISC ' + bill.supplier.fullName,
                             supplier: bill.supplier._id,
                             bills: [{
                                 invoice: bill._id,
@@ -1167,7 +1167,7 @@ Object.prototype = {
                     //Add escompte
                     if (bill.discount.escompte.value > 0)
                         entry.debit('665000', bill.discount.escompte.value, "ESCOMPTE", {
-                            label: 'ESCOMPTE',
+                            label: 'ESCO ' + bill.supplier.fullName,
                             supplier: bill.supplier._id,
                             bills: [{
                                 invoice: bill._id,
@@ -1176,7 +1176,7 @@ Object.prototype = {
                         });
                     else if (bill.discount.discount.value < 0)
                         entry.credit('665000', Math.abs(bill.discount.escompte.value), null, {
-                            label: 'ESCOMPTE',
+                            label: 'ESCO ' + bill.supplier.fullName,
                             supplier: bill.supplier._id,
                             bills: [{
                                 invoice: bill._id,
@@ -1290,7 +1290,7 @@ Object.prototype = {
                                 sellAccount = "445740"; //Waiting account
 
                             if (bill.total_taxes[i].value > 0)
-                                entry.credit(sellAccount, bill.total_taxes[i].value, bill.total_taxes[i].taxeId.code, {
+                                entry.credit(sellAccount, bill.total_taxes[i].value, bill.supplier.fullName, {
                                     tax: bill.total_taxes[i].taxeId._id,
                                     supplier: bill.supplier._id,
                                     bills: [{
@@ -1299,7 +1299,7 @@ Object.prototype = {
                                     }]
                                 });
                             else
-                                entry.debit(sellAccount, Math.abs(bill.total_taxes[i].value), bill.total_taxes[i].taxeId.code, {
+                                entry.debit(sellAccount, Math.abs(bill.total_taxes[i].value), bill.supplier.fullName, {
                                     tax: bill.total_taxes[i].taxeId._id,
                                     supplier: bill.supplier._id,
                                     bills: [{
