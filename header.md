@@ -1,5 +1,5 @@
 /**
-Copyright <%= year %> ToManage
+Copyright ${year} ToManage
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 @author    ToManage SAS <contact@tomanage.fr>
-@copyright 2014-<%= year %> ToManage SAS
+@copyright 2014-${year} ToManage SAS
 @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 International Registered Trademark & Property of ToManage SAS
 */

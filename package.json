@@ -64,7 +64,7 @@
         "gulp-change": "latest",
         "gulp-clean-css": "latest",
         "gulp-cssbeautify": "latest",
-        "gulp-header": "latest",
+        "gulp-header-license": "latest",
         "gulp-htmlmin": "latest",
         "gulp-ignore": "latest",
         "gulp-jsbeautifier": "latest",
