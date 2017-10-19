@@ -4839,6 +4839,96 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
+            },
+            // 0.62 : Schema modify Order Delivery status
+            function(conf, wCb) {
+                if (conf.version >= 0.62)
+                    return wCb(null, conf);
+
+                function convertStatusDelivery(aCb) {
+                    const OrderModel = MODEL('order').Schema.GoodsOutNote;
+
+                    console.log("convert Delivery status.");
+                    OrderModel.find({})
+                        .lean()
+                        .exec(function(err, docs) {
+                            if (err)
+                                return aCb(err);
+
+                            if (!docs || !docs.length)
+                                return aCb();
+
+                            async.forEach(docs, function(doc, eCb) {
+                                return OrderModel.findByIdAndUpdate(doc._id, { $set: { status: doc.status } }, { upsert: false, new: true }, function(err, doc) {
+                                    eCb(err);
+                                });
+                            }, aCb);
+                        });
+                }
+
+                function convertStatusStockReturns(aCb) {
+                    const StockReturnModel = MODEL('order').Schema.stockReturns;
+
+                    console.log("convert stockReturns status.");
+                    StockReturnModel.find({})
+                        .lean()
+                        .exec(function(err, docs) {
+                            if (err)
+                                return aCb(err);
+
+                            if (!docs || !docs.length)
+                                return aCb();
+
+                            async.forEach(docs, function(doc, eCb) {
+                                return StockReturnModel.findByIdAndUpdate(doc._id, { $set: { status: doc.status } }, { upsert: false, new: true }, function(err, doc) {
+                                    eCb(err);
+                                });
+                            }, aCb);
+
+                        });
+
+                }
+
+                function convertStatusGoodsInNote(aCb) {
+                    const OrderModel = MODEL('order').Schema.GoodsInNote;
+
+                    console.log("convert GoodsInNote status.");
+                    OrderModel.find({})
+                        .lean()
+                        .exec(function(err, docs) {
+                            if (err)
+                                return aCb(err);
+
+                            if (!docs || !docs.length)
+                                return aCb();
+
+                            async.forEach(docs, function(doc, eCb) {
+                                return OrderModel.findByIdAndUpdate(doc._id, { $set: { status: doc.status } }, { upsert: false, new: true }, function(err, doc) {
+                                    eCb(err);
+                                });
+                            }, aCb);
+
+                        });
+
+                }
+
+                async.waterfall([convertStatusDelivery, convertStatusStockReturns, convertStatusGoodsInNote], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', {
+                        'values.version': 0.62
+                    }, {
+                        new: true
+                    }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.62));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
             }
         ],
         function(err, doc) {

@@ -432,7 +432,7 @@ const baseSchema = new Schema({
         msg: String
     }],
 
-    status: {},
+    //status: {},
 
     whoCanRW: {
         type: String,
