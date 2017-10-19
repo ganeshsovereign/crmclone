@@ -89,6 +89,7 @@ MetronicApp.factory('websocketService', ['$rootScope', '$timeout', function($roo
 
             if (data.type === 'notify') {
                 $rootScope.$broadcast('websocket', data.type, data.message);
+                console.log('notify');
                 /*if (data.users.length)
                     angular.forEach(data.users, function(value, key) {
                         if (value === $rootScope.login._id)

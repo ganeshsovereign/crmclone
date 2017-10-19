@@ -224,7 +224,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         });
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
@@ -239,7 +239,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.findOne();
                     if (data.data.message)
                         toastr.warning(data.data.message, 'Notification serveur', {
-                            timeOut: 500,
+                            timeOut: 1000,
                             progressBar: true
                         });
                 }
@@ -779,7 +779,7 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
 
         $scope.$dict = {};
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
@@ -1063,7 +1063,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             ]
         };
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
@@ -1344,7 +1344,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$loca
 
         $scope.$dict = {};
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
@@ -1650,7 +1650,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             $scope.sort = superCache.get("BillListController").sort;
         }
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
@@ -2183,7 +2183,7 @@ MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '
 
         $scope.$dict = {};
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
@@ -2376,7 +2376,7 @@ MetronicApp.controller('OrderSupplierListController', ['$scope', '$rootScope', '
 
         $scope.$dict = {};
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
@@ -2569,7 +2569,7 @@ MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope'
 
         $scope.$dict = {};
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
@@ -2742,7 +2742,7 @@ MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$
         $scope.dict = {};
         $scope.status_id = "LIST";
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
@@ -3226,7 +3226,7 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
             $scope.opened = true;
         };
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 

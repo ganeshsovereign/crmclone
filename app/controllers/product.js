@@ -74,7 +74,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
     var grid = new Datatable();
 
-    $rootScope.$on('websocket', function(e, type, data) {
+    $scope.$on('websocket', function(e, type, data) {
         if (type !== 'refresh')
             return;
 
@@ -1156,7 +1156,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
 
         $scope.$dict = {};
 
-        $rootScope.$on('websocket', function(e, type, data) {
+        $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
 
