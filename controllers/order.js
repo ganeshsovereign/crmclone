@@ -1204,16 +1204,33 @@ Object.prototype = {
                     }, 1000);
 
                 //Allocated product order
-                if (order.Status !== "VALIDATED")
-                    return wCb(null, order);
+                if (order.Status == "VALIDATED")
+                    return order.setAllocated(newRows, function(err) {
+                        if (err)
+                            return wCb(err);
 
-                order.setAllocated(newRows, function(err) {
-                    if (err)
-                        return wCb(err);
+                        //order.Status = "VALIDATED";
+                        wCb(null, order);
+                    });
 
-                    //order.Status = "VALIDATED";
-                    wCb(null, order);
-                });
+                if (order.Status == "DRAFT")
+                    return order.unsetAllocated(newRows, function(err) {
+                        if (err)
+                            return wCb(err);
+
+                        wCb(null, order);
+                    });
+
+                if (order.Status == "CANCELLED")
+                    return order.unsetAllocated(newRows, function(err) {
+                        if (err)
+                            return wCb(err);
+
+                        // TODO Remove all Deliveries
+                        wCb(null, order);
+                    });
+
+                return wCb(null, order);
             }
         ], function(err, order) {
             if (err) {
