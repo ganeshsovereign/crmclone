@@ -260,7 +260,7 @@ F.on('load', function() {
                                             });
 
                                             employee.save(function(err, employee) {
-                                                console.log(employee);
+                                                //console.log(employee);
                                                 if (err)
                                                     return eCb(err);
 
@@ -877,7 +877,7 @@ F.on('load', function() {
                                             //product.compta_sell_eu = doc.compta_sell_eu;
                                             //product.compta_sell_exp = doc.compta_sell_exp;
 
-                                            console.log(taxes, doc.tva_tx);
+                                            //console.log(taxes, doc.tva_tx);
 
                                             product.taxes = [{
                                                 taxeId: _.find(taxes, _.matchesProperty('rate', doc.tva_tx))._id
@@ -4712,9 +4712,9 @@ F.on('load', function() {
                             if (err)
                                 return console.log(err);
 
-                            docs.forEach(function(doc) {
+                            async.forEach(docs, function(doc, fCb) {
 
-                                //console.log(bills);
+                                console.log(doc);
 
                                 var bills = [{
                                     invoice: doc.meta.invoice._id,
@@ -4732,17 +4732,18 @@ F.on('load', function() {
                                     if (err)
                                         console.log(err);
 
+                                    fCb(err);
+
                                     F.emit("invoice:recalculateStatus", {
                                         invoice: {
                                             _id: bills[0].invoice
                                         },
                                         userId: null
                                     });
-                                });
-                            });
 
+                                });
+                            }, aCb);
                         });
-                    aCb();
                 }
 
                 function dropCollectionEnd(aCb) {

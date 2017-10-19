@@ -301,7 +301,7 @@ var productSchema = new Schema({
 
         /* PIM transaltion */
         langs: [LangSchema]
-        /* need to Add  alt des images TODO */
+            /* need to Add  alt des images TODO */
 
 
     },
@@ -949,7 +949,7 @@ productSchema.pre('save', function(next) {
                         });
             }
 
-        //console.log(this);
+            //console.log(this);
 
         if (this.directCost != directCost)
             this.directCost = directCost;
@@ -987,18 +987,18 @@ productSchema.pre('save', function(next) {
 
     if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
-            F.emit('product:updateDirectCost', {
-                userId: self.editedBy.toString(),
-                product: {
-                    _id: self._id.toString()
-                }
-            });
-        }, 500);
+        F.emit('product:updateDirectCost', {
+            userId: (self.editedBy ? self.editedBy.toString() : null),
+            product: {
+                _id: self._id.toString()
+            }
+        });
+    }, 500);
 
     //Emit product update
     setTimeout2('product:' + this._id.toString(), function() {
         F.emit('product:update', {
-            userId: self.editedBy.toString(),
+            userId: (self.editedBy ? self.editedBy.toString() : null),
             product: {
                 _id: self._id.toString()
             }
