@@ -4525,8 +4525,8 @@ F.on('load', function() {
             },
             // 0.522 : checkBill and checkDeliveries (BE CAREFULL)
             function(conf, wCb) {
-                if (conf.version >= 0.522)
-                    return wCb(null, conf);
+                //if (conf.version >= 0.522)
+                //    return wCb(null, conf);
 
                 function checkOrder(aCb) {
                     console.log("checkOrder");
@@ -4540,7 +4540,7 @@ F.on('load', function() {
                                 $in: ["PROCESSING", "BILLED"]
                             },
                             datedl: {
-                                $gte: moment().subtract(1, 'day').toDate()
+                                $gte: moment().subtract(5, 'day').toDate()
                             },
                             isremoved: {
                                 $ne: true
@@ -4551,6 +4551,7 @@ F.on('load', function() {
                                 return;
 
                             console.log(orders.length);
+                            var cpt = 0;
                             async.forEach(orders, function(order, eCb) {
 
                                 async.parallel([
@@ -4574,14 +4575,17 @@ F.on('load', function() {
                                     if (err)
                                         return console.log(err);
 
-                                    if (!results[0].length || !results[1].length)
+                                    if (!results[0].length || !results[1].length) {
                                         console.log("order : ", order._id);
+                                        cpt++;
+                                    }
 
                                     eCb();
                                 });
 
                             }, function(err) {
                                 aCb();
+                                console.log(cpt);
                             });
                         });
 
@@ -4591,7 +4595,7 @@ F.on('load', function() {
                     if (err)
                         return console.log(err);
 
-                    Dict.findByIdAndUpdate('const', {
+                    /*Dict.findByIdAndUpdate('const', {
                         'values.version': 0.521
                     }, {
                         new: true
@@ -4600,9 +4604,9 @@ F.on('load', function() {
                             return console.log(err);
 
                         console.log("ToManage updated to {0}".format(0.521));
-                        wCb(err, doc.values);
-                        //wCb(err, conf);
-                    });
+                        wCb(err, doc.values);*/
+                    wCb(err, conf);
+                    // });
                 });
             },
             // 0.60 : fix convert BillSupplier : Restore old Transaction to Transaction_old

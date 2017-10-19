@@ -1226,6 +1226,8 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             });
         }*/
         $scope.find = function() {
+            $scope.grid = {};
+            $scope.checkAll = false;
 
             superCache.put("OrderListController", {
                 sort: $scope.sort,
@@ -1704,7 +1706,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
             // initDatatable();
             $scope.find();
-
         });
 
         $scope.resetFilter = function() {
@@ -1917,6 +1918,8 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         }
 
         $scope.find = function() {
+            $scope.grid = {};
+            $scope.checkAll = false;
 
             superCache.put("BillListController", {
                 sort: $scope.sort,
@@ -1974,49 +1977,49 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             grid.resetFilter(url);
         };*/
 
-        $scope.changeStatus = function(Status, id) {
-            // ChangeStatus multi-bills
-            if (!grid)
-                return;
+        $scope.validateBills = function() {
+            //return console.log($scope.grid);
+            var grid = [];
 
-            var params = {};
-            params.id = grid.getSelectedRows();
+            angular.forEach($scope.grid, function(value, key) {
+                if (value == true)
+                    this.push(key);
+            }, grid);
 
-            $http({
-                method: 'POST',
-                url: '/erp/api/bill/validate',
-                data: params
-            }).success(function(data, status, headers) {
-                $scope.find();
-            });
+            if (grid)
+                $http({
+                    method: 'POST',
+                    url: '/erp/api/bill/validate',
+                    data: {
+                        id: grid
+                    }
+                }).success(function(data, status) {
+                    if (status == 200) {
+                        $scope.find();
+                    }
+                });
         };
 
 
-        $scope.exportAccounting = function(id) {
-            if (!id && grid) {
+        $scope.exportAccounting = function() {
+            var grid = [];
+
+            angular.forEach($scope.grid, function(value, key) {
+                if (value == true)
+                    this.push(key);
+            }, grid);
+
+            if (grid)
                 return $http({
                     method: 'PUT',
                     url: '/erp/api/bill/accounting',
                     data: {
-                        id: grid.getSelectedRows()
+                        id: grid
                     }
                 }).success(function(data, status) {
                     if (status === 200)
                         $scope.find();
                 });
-            }
-            return $http({
-                method: 'PUT',
-                url: '/erp/api/bill/accounting',
-                data: {
-                    id: id
-                }
-            }).success(function(data, status) {
-                if (status === 200 && id)
-                    $scope.findOne();
-                else
-                    $scope.find();
-            });
         };
 
         $scope.filterOptionsPayment = {
