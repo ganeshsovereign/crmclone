@@ -227,23 +227,23 @@
                     <tbody>
                         <tr ng-repeat="line in orders" ng-class="{'bg-grey-silver':line.exported}">
                             <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
-                            <td ui-sref="order.show({id:line._id})"><a class=" with-tooltip " ui-sref="order.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
+                            <td ui-sref="bill.show({id:line._id})"><a class=" with-tooltip " ui-sref="bill.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
                             <td>
                                 <a ng-if="line.supplier._id" class="with-tooltip " ui-sref="societe.show({id:line.supplier._id}) "><i class="fa fa-institution "></i> {{line.supplier.fullName}}</a>
                                 <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty "> @(Empty)</span>
                             </td>
-                            <td ui-sref="order.show({id:line._id})">{{line.ref_client}}</td>
-                            <td ui-sref="order.show({id:line._id})">{{line.salesPerson.fullName}}</td>
-                            <td ui-sref="order.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
-                            <td ui-sref="order.show({id:line._id})">{{line.dater| date:'dd/MM/yyyy'}}</td>
-                            <td ui-sref="order.show({id:line._id})">{{line.total_ht| currency}}</td>
-                            <td ui-sref="order.show({id:line._id})">{{line.total_ttc| currency}}</td>
-                            <td ui-sref="order.show({id:line._id})">{{line.total_paid| currency}}</td>
-                            <td ui-sref="order.show({id:line._id})">
+                            <td ui-sref="bill.show({id:line._id})">{{line.ref_client}}</td>
+                            <td ui-sref="bill.show({id:line._id})">{{line.salesPerson.fullName}}</td>
+                            <td ui-sref="bill.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="bill.show({id:line._id})">{{line.dater| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="bill.show({id:line._id})">{{line.total_ht| currency}}</td>
+                            <td ui-sref="bill.show({id:line._id})">{{line.total_ttc| currency}}</td>
+                            <td ui-sref="bill.show({id:line._id})">{{line.total_paid| currency}}</td>
+                            <td ui-sref="bill.show({id:line._id})">
                                 <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
                             </td>
-                            <td ui-sref="order.show({id:line._id})">{{line.entity}} </td>
-                            <td ui-sref="order.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="bill.show({id:line._id})">{{line.entity}} </td>
+                            <td ui-sref="bill.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
                 </table>
