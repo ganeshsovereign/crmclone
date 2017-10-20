@@ -2551,14 +2551,19 @@ F.on('order:recalculateStatus', function(data) {
                             //Force reload order
                             //Force reload product
 
-                            setTimeout2('notify:controllerAngular', function() {
+                            setTimeout2('notifyorder:controllerAngular', function() {
                                 F.emit('notify:controllerAngular', {
                                     userId: null,
                                     route: 'order',
-                                    _id: el._id.toString(),
+                                    //_id: el._id.toString(),
                                     //message: "Commande " + el.ref + ' modifie.'
                                 });
-                            }, 500);
+                            }, 60000);
+
+                            F.emit('customer:recalculateStatus', {
+                                userId: null,
+                                supplier: { _id: el.supplier.toString() }
+                            });
 
                             wCb();
                         });

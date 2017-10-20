@@ -30,6 +30,8 @@ var mongoose = require('mongoose'),
     _ = require('lodash'),
     timestamps = require('mongoose-timestamp'),
     version = require('mongoose-version'),
+    async = require('async'),
+    moment = require('moment'),
     //		mongoosastic = require('mongoosastic'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId;
@@ -280,13 +282,15 @@ var customerSchema = new Schema({
     Status: {
         type: String,
         default: 'ST_NEVER'
-    }, // TODO virtual
+    },
+
+    lastOrder: { type: Date },
 
     dateBirth: Date,
 
     imageSrc: {
         type: Schema.Types.ObjectId
-        //    ref: 'Images',
+            //    ref: 'Images',
     },
 
     emails: [{
@@ -703,6 +707,9 @@ customerSchema.pre('save', function(next) {
             Status: 'ENABLE'
         });
 
+    if (self.salesPurchases.isActive == false)
+        self.Status = "ST_NO";
+
     //if (this.code_client == null && this.entity !== "ALL" && this.Status !== 'ST_NEVER') {
     //console.log("Save societe");
     if (!this.ID)
@@ -973,7 +980,7 @@ exports.Status = {
         "ST_PCHAU": {
             "enable": true,
             "label": "HotProspect",
-            "cssClass": "ribbon-color-danger",
+            "cssClass": "ribbon-color-danger label-danger",
             "system": true
         },
         "ST_NEW": {
@@ -985,7 +992,7 @@ exports.Status = {
         "ST_CFID": {
             "enable": true,
             "label": "LoyalCustomer",
-            "cssClass": "ribbon-color-success",
+            "cssClass": "ribbon-color-success label-success",
             "system": true
         },
         "ST_CVIP": {
@@ -1012,3 +1019,155 @@ exports.Status = {
 
 exports.Schema = mongoose.model('Customers', customerSchema);
 exports.name = "Customers";
+
+// Refresh Status and LastOrder
+F.on('customer:recalculateStatus', function(data) {
+    var userId = data.userId;
+    const OrderModel = MODEL('order').Schema.OrderCustomer;
+    const QuotationModel = MODEL('order').Schema.QuotationCustomer;
+    const CustomerModel = exports.Schema;
+    const ObjectId = MODULE('utils').ObjectId;
+
+    //console.log(data);
+    console.log("Customer Status refresh", data);
+
+    if (!data.supplier || !data.supplier._id)
+        return;
+
+    async.waterfall([
+            function(wCb) {
+                CustomerModel.findById(data.supplier._id, "Status lastOrder ",
+                    function(err, supplier) {
+                        if (err)
+                            return wCb(err);
+
+                        if (!supplier)
+                            return wCb("No supplier found");
+
+                        if (supplier.salesPurchases.isActive == false)
+                            supplier.Status = "ST_NO";
+
+                        supplier.Status = 'ST_NEVER';
+
+                        return wCb(null, supplier);
+                    });
+            },
+            function(supplier, wCb) {
+                if (supplier.Status == "ST_NO")
+                    return wCb(null, supplier);
+
+                // TODO Check if Task or project or lead -> ST_PFROI
+
+                return wCb(null, supplier);
+            },
+            function(supplier, wCb) {
+                if (supplier.Status == "ST_NO")
+                    return wCb(null, supplier);
+
+                // Check if quotation -> ST_PCHAU
+                QuotationModel.find({
+                        supplier: data.supplier._id,
+                        isremoved: { $ne: true },
+                        Status: { $nin: ["DRAFT", "CANCELLED"] },
+                        datec: { $gte: moment().subtract(1, 'year').toDate() }
+                    }, "", { sort: { datec: -1 }, limit: 1 },
+                    function(err, orders) {
+                        if (err)
+                            return wCb(err);
+
+                        if (orders && orders.length) {
+                            supplier.Status = "ST_PCHAU";
+                            return wCb(null, supplier);
+                        }
+
+                        return wCb(null, supplier);
+
+                    });
+            },
+            function(supplier, wCb) {
+                if (supplier.Status == "ST_NO")
+                    return wCb(null, supplier);
+
+                // Check if order -> ST_NEW, ST_CFID, ST_CVIP, ST_LOOSE
+                OrderModel.find({
+                        supplier: data.supplier._id,
+                        isremoved: { $ne: true },
+                        Status: { $nin: ["DRAFT", "CANCELLED"] }
+                    }, "", { sort: { datec: -1 }, limit: 1 },
+                    function(err, orders) {
+                        if (err)
+                            return wCb(err);
+
+                        if (orders && orders.length)
+                            supplier.Status = "ST_LOOSE";
+
+                        OrderModel.find({
+                            supplier: data.supplier._id,
+                            isremoved: { $ne: true },
+                            Status: { $nin: ["DRAFT", "CANCELLED"] },
+                            datec: { $gte: moment().subtract(1, 'year').toDate() }
+                        }, "", { sort: { datec: -1 } }, function(err, orders) {
+                            if (err)
+                                return wCb(err);
+
+                            if (orders && orders.length) {
+                                supplier.lastOrder = orders[0].datec;
+                                if (orders.length == 1)
+                                    supplier.Status = "ST_NEW";
+                                else
+                                    supplier.Status = "ST_CFID";
+                            }
+
+                            OrderModel.aggregate([{
+                                    $match: {
+                                        isremoved: { $ne: true },
+                                        Status: { $nin: ["DRAFT", "CANCELLED"] },
+                                        datec: { $gte: moment().subtract(1, 'year').toDate() }
+                                    }
+                                }, {
+                                    $project: {
+                                        _id: 1,
+                                        supplier: 1,
+                                        total_ht: 1,
+                                    }
+                                }, {
+                                    $group: {
+                                        _id: "$supplier",
+                                        total_ht: { $sum: "$total_ht" }
+                                    }
+                                }, {
+                                    $sort: { total_ht: 1 }
+                                }, {
+                                    $limit: 10
+                                },
+                                {
+                                    $match: { _id: supplier._id }
+                                }
+                            ], function(err, orders) {
+                                if (err)
+                                    return wCb(err);
+
+                                if (orders && orders.length)
+                                    supplier.Status = "ST_CVIP";
+
+                                return wCb(null, supplier);
+                            });
+                        });
+                    });
+            }
+        ],
+        function(err, supplier) {
+            if (err)
+                return console.log(err);
+
+            //console.log(supplier);
+
+            supplier.updatedAt = new Date();
+
+            if (supplier)
+                CustomerModel.findByIdAndUpdate(supplier._id, supplier, { upsert: false }, function(err, doc) {
+                    if (err)
+                        console.log(err);
+                });
+        });
+});

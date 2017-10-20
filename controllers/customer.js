@@ -245,12 +245,12 @@ exports.install = function() {
                 }
             } else // customer Only
                 query.$and.push({
-                    $or: [{
-                        'salesPurchases.isProspect': true
-                    }, {
-                        'salesPurchases.isCustomer': true
-                    }]
-                });
+                $or: [{
+                    'salesPurchases.isProspect': true
+                }, {
+                    'salesPurchases.isCustomer': true
+                }]
+            });
 
         if (self.query.type)
             query.type = self.query.type;
@@ -307,37 +307,37 @@ exports.install = function() {
         query[field] = new RegExp(self.body.filter.filters[0].value, "i");
 
         if (typeof SocieteModel.schema.paths[field].options.type == "object")
-            //console.log(query);
+        //console.log(query);
             SocieteModel.aggregate([{
-                $project: {
-                    _id: 0,
-                    Tag: 1
+            $project: {
+                _id: 0,
+                Tag: 1
+            }
+        }, {
+            $unwind: "$" + field
+        }, {
+            $match: query
+        }, {
+            $group: {
+                _id: "$" + field
+            }
+        }, {
+            $limit: self.body.take
+        }], function(err, docs) {
+            if (err)
+                return console.log("err : /api/societe/autocomplete/" + field, err);
+
+            //console.log(docs);
+            var result = [];
+
+            if (docs !== null)
+                for (var i in docs) {
+                    //result.push({text: docs[i]._id});
+                    result.push(docs[i]._id);
                 }
-            }, {
-                $unwind: "$" + field
-            }, {
-                $match: query
-            }, {
-                $group: {
-                    _id: "$" + field
-                }
-            }, {
-                $limit: self.body.take
-            }], function(err, docs) {
-                if (err)
-                    return console.log("err : /api/societe/autocomplete/" + field, err);
 
-                //console.log(docs);
-                var result = [];
-
-                if (docs !== null)
-                    for (var i in docs) {
-                        //result.push({text: docs[i]._id});
-                        result.push(docs[i]._id);
-                    }
-
-                return self.json(result);
-            });
+            return self.json(result);
+        });
         else
             SocieteModel.distinct(field, query, function(err, docs) {
                 if (err)
@@ -2252,11 +2252,7 @@ Object.prototype = {
 
         async.parallel({
             status: function(cb) {
-                Dict.dict({
-                    //dictName: "fk_stcomm",
-                    dictName: "fk_user_status",
-                    object: true
-                }, cb);
+                cb(null, MODEL('Customers').Status);
             },
             level: function(cb) {
                 Dict.dict({
@@ -2300,8 +2296,9 @@ Object.prototype = {
 
                         // Convert Date
                         res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].lastOrder = (row.lastOrder ? moment(row.lastOrder).format(CONFIG('dateformatShort')) : '');
                         // Convert Status
-                        res.datatable.data[i].Status = (row.salesPurchases.isActive ? '<span class="label label-sm ' + res.status.values['ENABLE'].cssClass + '">' + res.status.values['ENABLE'].label + '</span>' : '<span class="label label-sm ' + res.status.values['DISABLE'].cssClass + '">' + res.status.values['DISABLE'].label + '</span>');
+                        res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
                         // Convert Potentiel
                         //          if (res.level.values[row.prospectlevel])
                         //              if (res.level.values[row.prospectlevel].label)
@@ -2590,6 +2587,10 @@ Object.prototype = {
 
             // Emit to refresh priceList from parent
             setTimeout2('customer:update_' + societe._id.toString(), function() {
+                F.emit('customer:recalculateStatus', {
+                    userId: (self.user ? self.user._id.toString() : null),
+                    supplier: { _id: societe._id.toString() }
+                });
                 F.emit('customer:update', {
                     userId: (self.user ? self.user._id.toString() : null),
                     customer: societe.toJSON()
@@ -2647,7 +2648,8 @@ Object.prototype = {
             _id: id
         }, {
             $set: {
-                isremoved: true
+                isremoved: true,
+                Status: "ST_NO"
             }
         }, function(err) {
             if (err)

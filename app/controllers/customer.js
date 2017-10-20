@@ -344,7 +344,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     else
                         return $rootScope.$state.go('societe.show.contact');
 
-                //console.log(societe);
+                    //console.log(societe);
 
                 $http({
                     method: 'GET',
@@ -1161,9 +1161,9 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                             "data": "companyInfo.idprof3",
                             defaultContent: ""
                         },
-                        /*{
-                                               "data": "Status"
-                                           },*/
+                        {
+                            "data": "Status"
+                        },
                         {
                             data: "entity",
                             visible: user.multiEntities,
@@ -1172,7 +1172,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                             data: "Tag",
                             defaultContent: ""
                         }, {
-                            data: "updatedAt",
+                            data: "lastOrder",
                             defaultContent: ""
                         }
                     ]

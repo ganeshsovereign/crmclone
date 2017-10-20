@@ -313,8 +313,12 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
                 $scope.findOne(callback);
             }, function(err) {
-                console.log(err);
-                $scope.findOne(callback);
+                if (err)
+                    console.log(err);
+
+                $timeout(function() {
+                    $scope.findOne(callback);
+                }, 500);
             });
         };
 
@@ -1226,6 +1230,8 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             });
         }*/
         $scope.find = function() {
+            var self = this;
+
             $scope.grid = {};
             $scope.checkAll = false;
 
@@ -1249,7 +1255,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 contentType: 'order',
                 limit: $scope.page.limit,
                 page: $scope.page.page,
-                sort: this.sort
+                sort: self.sort
             };
 
             //console.log(query);
@@ -1918,6 +1924,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         }
 
         $scope.find = function() {
+
             $scope.grid = {};
             $scope.checkAll = false;
 
@@ -1956,7 +1963,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                     Metronic.unblockUI('.waiting');
                 }, 0);
             });
-
         };
 
         /*$scope.find = function(clear) {

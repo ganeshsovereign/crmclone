@@ -4929,7 +4929,45 @@ F.on('load', function() {
                         //wCb(err, conf);
                     });
                 });
-            }
+            },
+            // 0.63 Refresh All Supplier Status
+            function(conf, wCb) {
+
+                function checkCustomerStatus(aCb) {
+                    console.log("checkCustomerStatus");
+
+                    const Model = MODEL('Customers').Schema;
+
+                    Model.find({
+                            isremoved: {
+                                $ne: true
+                            },
+                            updatedAt: { $lte: moment().subtract(3, 'month').toDate() }
+                        }, "_id", { limit: 1500 })
+                        .exec(function(err, docs) {
+                            if (err || !docs)
+                                return;
+
+                            async.eachLimit(docs, 100, function(doc, eCb) {
+                                F.emit('customer:recalculateStatus', {
+                                    userId: null,
+                                    supplier: { _id: doc._id.toString() }
+                                });
+                                eCb();
+
+                            }, aCb);
+                        });
+
+                }
+
+                async.waterfall([checkCustomerStatus], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    wCb(err, conf);
+                });
+            },
+
         ],
         function(err, doc) {
             console.log("End update");
