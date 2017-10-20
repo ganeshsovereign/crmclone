@@ -1056,7 +1056,8 @@ F.on('customer:recalculateStatus', function(data) {
                 if (supplier.Status == "ST_NO")
                     return wCb(null, supplier);
 
-                // TODO Check if Task or project or lead -> ST_PFROI
+                if (supplier.isProspect)
+                    supplier.Status = "ST_PFROI";
 
                 return wCb(null, supplier);
             },
@@ -1077,6 +1078,8 @@ F.on('customer:recalculateStatus', function(data) {
 
                         if (orders && orders.length) {
                             supplier.Status = "ST_PCHAU";
+                            supplier.isProspect = true;
+                            supplier.isCustomer = false;
                             return wCb(null, supplier);
                         }
 
@@ -1098,8 +1101,11 @@ F.on('customer:recalculateStatus', function(data) {
                         if (err)
                             return wCb(err);
 
-                        if (orders && orders.length)
+                        if (orders && orders.length) {
+                            supplier.isProspect = false;
+                            supplier.isCustomer = true;
                             supplier.Status = "ST_LOOSE";
+                        }
 
                         OrderModel.find({
                             supplier: data.supplier._id,

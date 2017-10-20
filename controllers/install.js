@@ -4942,7 +4942,7 @@ F.on('load', function() {
                             isremoved: {
                                 $ne: true
                             },
-                            updatedAt: { $lte: moment().subtract(3, 'month').toDate() }
+                            updatedAt: { $lte: moment().subtract(5, 'day').toDate() }
                         }, "_id", { limit: 1500 })
                         .exec(function(err, docs) {
                             if (err || !docs)
