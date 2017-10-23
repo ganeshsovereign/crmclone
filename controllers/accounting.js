@@ -459,6 +459,7 @@ Object.prototype = {
     createBankTransfer: function() {
         const self = this;
         const Book = INCLUDE('accounting').Book;
+        const SeqModel = MODEL('Sequence').Schema; // Pour le numero de piece automatique
 
         //console.log(self.body);
 
@@ -477,17 +478,23 @@ Object.prototype = {
             function(pCb) {
                 let myBook = new Book();
                 myBook.setName(self.body.accountDebit.journalId);
-
                 let entry = myBook.entry(libelleAccounting.toUpperCase(), self.body.datec, self.user._id);
 
-                entry.debit("5800000", round(self.body.amount, 2), null, {
-                    manual: true
-                });
-                entry.credit(self.body.accountDebit.compta_bank, round(self.body.amount, 2), null, {
-                    manual: true
-                });
+                SeqModel.incCpt("PAY", function(seq) {
+                    //console.log(seq);
+                    entry.setSeq(seq);
 
-                entry.commit().then(journal => pCb(null, journal), err => pCb(err));
+
+
+                    entry.debit("5800000", round(self.body.amount, 2), null, {
+                        manual: true
+                    });
+                    entry.credit(self.body.accountDebit.compta_bank, round(self.body.amount, 2), null, {
+                        manual: true
+                    });
+
+                    entry.commit().then(journal => pCb(null, journal), err => pCb(err));
+                });
             },
             //Credit
             function(pCb) {
@@ -496,14 +503,19 @@ Object.prototype = {
 
                 let entry = myBook.entry(libelleAccounting.toUpperCase(), self.body.datec, self.user._id);
 
-                entry.debit(self.body.accountCredit.compta_bank, round(self.body.amount, 2), null, {
-                    manual: true
-                });
-                entry.credit("5800000", round(self.body.amount, 2), null, {
-                    manual: true
-                });
+                SeqModel.incCpt("PAY", function(seq) {
+                    //console.log(seq);
+                    entry.setSeq(seq);
 
-                entry.commit().then(journal => pCb(null, journal), err => pCb(err));
+                    entry.debit(self.body.accountCredit.compta_bank, round(self.body.amount, 2), null, {
+                        manual: true
+                    });
+                    entry.credit("5800000", round(self.body.amount, 2), null, {
+                        manual: true
+                    });
+
+                    entry.commit().then(journal => pCb(null, journal), err => pCb(err));
+                });
             }
         ], function(err, result) {
             if (err) {
