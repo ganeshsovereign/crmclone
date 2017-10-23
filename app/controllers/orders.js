@@ -1624,7 +1624,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 value: []
             },
             Status: {
-                value: ["LIST"]
+                value: []
             },
             dater: {
                 value: {
