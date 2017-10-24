@@ -1223,7 +1223,7 @@ Object.prototype = {
 
         DeliveryModel.aggregate([{
                 $match: {
-                    Status: "VALIDATED",
+                    Status: { $ne: "DRAFT" },
                     isremoved: {
                         $ne: true
                     },
