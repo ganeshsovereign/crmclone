@@ -7390,6 +7390,10 @@ StockCorrection.prototype = {
             "isReceived": new Date(),
         };
 
+        body.orderRows = _.filter(body.orderRows, function(elem) {
+            return elem.isDeleted !== true;
+        });
+
         var stockCorrection = new StockCorrectionModel(body);
 
         stockCorrection.save(function(err, doc) {
@@ -7443,6 +7447,9 @@ StockCorrection.prototype = {
 
             async.each(body.orderRows, function(elem, eachCb) {
                 var options;
+
+                if (elem.isDeleted == true)
+                    return eachCb();
 
                 if (elem.qty <= 0) {
                     options = {
