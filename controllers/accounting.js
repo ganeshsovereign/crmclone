@@ -2071,11 +2071,8 @@ Object.prototype = {
         BookAN.setName('AN');
 
         // You can specify a Date object as the second argument in the book.entry() method if you want the transaction to be for a different date than today
-        var entry = BookAN.entry("A NOUVEAU", moment(self.body.end_date).endOf('day').add(1, 'days').hour(12).toDate(), {
-                id: self.user._id,
-                name: self.user.name
-            }) // libelle, date
-            .setSeq(1); // numero de piece
+        var entry = BookAN.entry("A NOUVEAU", moment(self.body.end_date).endOf('day').add(1, 'days').hour(12).toDate(), self.user._id) // libelle, date
+            .setSeq(0); // numero de piece
 
         //console.log('Getting Accounting Balance ...');
         return myBook.balance(self.body).then(function(data) {
@@ -2095,12 +2092,12 @@ Object.prototype = {
 
                 // Add amount to client account
                 if (elem.balance < 0)
-                    entry.debit(elem._id, Math.abs(elem.balance), {
+                    entry.debit(elem._id, Math.abs(elem.balance), null, {
                         type: 'AN',
                         datec: new Date()
                     });
                 else
-                    entry.credit(elem._id, elem.balance, {
+                    entry.credit(elem._id, elem.balance, null, {
                         type: 'AN',
                         datec: new Date()
                     });
@@ -2110,12 +2107,12 @@ Object.prototype = {
                 //console.log(result);
 
                 if (result < 0) // Benefice
-                    entry.debit("12900000", Math.abs(result), {
+                    entry.debit("12900000", Math.abs(result), null, {
                     type: 'AN',
                     datec: new Date()
                 });
                 else // Perte
-                    entry.credit("12000000", result, {
+                    entry.credit("12000000", result, null, {
                     type: 'AN',
                     datec: new Date()
                 });

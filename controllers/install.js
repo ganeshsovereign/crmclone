@@ -4523,7 +4523,7 @@ F.on('load', function() {
                     });
                 });
             },
-            // 0.522 : checkBill and checkDeliveries (BE CAREFULL)
+            // 0.x : checkBill and checkDeliveries
             function(conf, wCb) {
                 //if (conf.version >= 0.522)
                 //    return wCb(null, conf);
@@ -4791,7 +4791,7 @@ F.on('load', function() {
                     const TransactionModel = MODEL('transaction').Schema;
 
                     console.log("convert compta Transaction memo");
-                    TransactionModel.find({ memo: new RegExp('TVA', 'g') })
+                    TransactionModel.find({ memo: new RegExp('TVA', 'g'), 'meta.supplier': { $ne: null } })
                         .populate('meta.supplier', "name")
                         .exec(function(err, docs) {
                             if (err)
@@ -4930,7 +4930,7 @@ F.on('load', function() {
                     });
                 });
             },
-            // 0.63 Refresh All Supplier Status
+            // 0.x Refresh All Supplier Status
             function(conf, wCb) {
 
                 function checkCustomerStatus(aCb) {
@@ -4961,6 +4961,65 @@ F.on('load', function() {
                 }
 
                 async.waterfall([checkCustomerStatus], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    wCb(err, conf);
+                });
+            },
+            // 0.x Scan VAT
+            function(conf, wCb) {
+
+                function checkVAT(aCb) {
+                    console.log("checkVAT");
+
+                    const Model = MODEL('invoice').Schema;
+
+                    Model.aggregate([{
+                            $match: {
+                                forSales: true,
+                                isremoved: {
+                                    $ne: true
+                                },
+                                datec: { $gte: moment().startOf('year').toDate(), $lte: moment().endOf('year').toDate() }
+                            }
+                        },
+                        {
+                            $unwind: "$total_taxes"
+                        },
+                        {
+                            $group: {
+                                _id: { taxId: "$total_taxes.taxeId", Status: "$Status" },
+                                total: { "$sum": "$total_taxes.value" }
+                            }
+                        }, {
+                            $lookup: {
+                                from: 'taxes',
+                                localField: '_id.taxId',
+                                foreignField: '_id',
+                                as: '_id.taxId'
+                            }
+                        }, {
+                            $unwind: "$_id.taxId"
+                        },
+                        {
+                            $project: {
+                                _id: '$_id.taxId._id',
+                                account: '$_id.taxId.sellAccount',
+                                Status: '$_id.Status',
+                                total: 1
+                            }
+                        }
+                    ], function(err, docs) {
+                        if (err || !docs)
+                            return;
+
+                        console.log(docs);
+                    });
+
+                }
+
+                async.waterfall([checkVAT], function(err) {
                     if (err)
                         return console.log(err);
 
