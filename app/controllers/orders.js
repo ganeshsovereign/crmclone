@@ -1747,7 +1747,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         };
 
         $scope.sort = {
-            'ID': 1
+            'ID': -1
         };
 
         if (typeof superCache.get("BillListController") !== "undefined") {
