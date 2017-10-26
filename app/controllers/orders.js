@@ -1670,6 +1670,8 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                     this.push(key);
             }, grid);
 
+            return;
+
             if (grid)
                 $http({
                     method: 'POST',
