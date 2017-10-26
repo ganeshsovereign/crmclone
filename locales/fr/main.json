@@ -808,7 +808,7 @@
     "TitleRef": "Titre / référence indicative",
     "Store": "Magasin",
     "Delivery": "Livraison",
-    "DeliveryDate": "Date de Livraison",
+    "DeliveryDate": "Date de d'expédition",
     "DateOfReceipt": "Date de réception",
     "DateReturn": "Date de retour",
     "Members": "Membres",
@@ -855,5 +855,6 @@
     "AddComment": "Ajouter un commentaire",
     "Stock": "Stock",
     "StrategicInformation": "Info stratégiques",
-    "DeletePostIt": "Supprimer la note ?"
+    "DeletePostIt": "Supprimer la note ?",
+    "Late": "En retard"
 }

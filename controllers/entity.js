@@ -59,9 +59,9 @@ Entity.prototype = {
 
         //console.log(delivery);
         entity.save(function(err, doc) {
-            if (err) {
+            if (err)
                 return console.log(err);
-            }
+
 
             self.json(doc);
         });
