@@ -1615,54 +1615,11 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
 
 
         $scope.openUrl = function(url, param) {
-            if (!grid)
-                return;
-
             var params = {};
 
             if (!params.entity)
                 params.entity = $rootScope.entity;
 
-            params.id = grid.getSelectedRows();
-
-            //$window.open($rootScope.buildUrl(url, params), '_blank');
-            $http({
-                method: 'POST',
-                url: url,
-                data: params,
-                responseType: 'arraybuffer'
-            }).success(function(data, status, headers) {
-                headers = headers();
-
-                var filename = headers['x-filename'];
-                var contentType = headers['content-type'];
-
-                var linkElement = document.createElement('a');
-                try {
-                    var blob = new Blob([data], {
-                        type: contentType
-                    });
-                    var url = window.URL.createObjectURL(blob);
-
-                    linkElement.setAttribute('href', url);
-                    linkElement.setAttribute("download", filename);
-
-                    var clickEvent = new MouseEvent("click", {
-                        "view": window,
-                        "bubbles": true,
-                        "cancelable": false
-                    });
-                    linkElement.dispatchEvent(clickEvent);
-                } catch (ex) {
-                    console.log(ex);
-                }
-            }).error(function(data) {
-                console.log(data);
-            });
-        };
-
-        $scope.openUrl = function() {
-            //return console.log($scope.grid);
             var grid = [];
 
             angular.forEach($scope.grid, function(value, key) {
@@ -1670,21 +1627,42 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                     this.push(key);
             }, grid);
 
-            return;
+            params.id = grid;
 
-            if (grid)
+            if (grid.length)
                 $http({
                     method: 'POST',
-                    url: '/erp/api/order/billing',
-                    data: {
-                        id: grid
-                    }
-                }).success(function(data, status) {
-                    if (status == 200) {
-                        $rootScope.$state.go("bill.list");
-                    }
-                });
+                    url: url,
+                    data: params,
+                    responseType: 'arraybuffer'
+                }).success(function(data, status, headers) {
+                    headers = headers();
 
+                    var filename = headers['x-filename'];
+                    var contentType = headers['content-type'];
+
+                    var linkElement = document.createElement('a');
+                    try {
+                        var blob = new Blob([data], {
+                            type: contentType
+                        });
+                        var url = window.URL.createObjectURL(blob);
+
+                        linkElement.setAttribute('href', url);
+                        linkElement.setAttribute("download", filename);
+
+                        var clickEvent = new MouseEvent("click", {
+                            "view": window,
+                            "bubbles": true,
+                            "cancelable": false
+                        });
+                        linkElement.dispatchEvent(clickEvent);
+                    } catch (ex) {
+                        console.log(ex);
+                    }
+                }).error(function(data) {
+                    console.log(data);
+                });
         };
 
         $scope.changeStatus = function(Status, id) {
@@ -1886,50 +1864,54 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         };
 
         $scope.openUrl = function(url, param) {
-            if (!grid)
-                return;
-
             var params = {};
 
             if (!params.entity)
                 params.entity = $rootScope.entity;
 
-            params.id = grid.getSelectedRows();
+            var grid = [];
 
-            //$window.open($rootScope.buildUrl(url, params), '_blank');
-            $http({
-                method: 'POST',
-                url: url,
-                data: params,
-                responseType: 'arraybuffer'
-            }).success(function(data, status, headers) {
-                headers = headers();
+            angular.forEach($scope.grid, function(value, key) {
+                if (value == true)
+                    this.push(key);
+            }, grid);
 
-                var filename = headers['x-filename'];
-                var contentType = headers['content-type'];
+            params.id = grid;
 
-                var linkElement = document.createElement('a');
-                try {
-                    var blob = new Blob([data], {
-                        type: contentType
-                    });
-                    var url = window.URL.createObjectURL(blob);
+            if (grid)
+                $http({
+                    method: 'POST',
+                    url: url,
+                    data: params,
+                    responseType: 'arraybuffer'
+                }).success(function(data, status, headers) {
+                    headers = headers();
 
-                    linkElement.setAttribute('href', url);
-                    linkElement.setAttribute("download", filename);
+                    var filename = headers['x-filename'];
+                    var contentType = headers['content-type'];
 
-                    var clickEvent = new MouseEvent("click", {
-                        "view": window,
-                        "bubbles": true,
-                        "cancelable": false
-                    });
-                    linkElement.dispatchEvent(clickEvent);
-                } catch (ex) {
-                    console.log(ex);
-                }
-            }).error(function(data) {
-                console.log(data);
-            });
+                    var linkElement = document.createElement('a');
+                    try {
+                        var blob = new Blob([data], {
+                            type: contentType
+                        });
+                        var url = window.URL.createObjectURL(blob);
+
+                        linkElement.setAttribute('href', url);
+                        linkElement.setAttribute("download", filename);
+
+                        var clickEvent = new MouseEvent("click", {
+                            "view": window,
+                            "bubbles": true,
+                            "cancelable": false
+                        });
+                        linkElement.dispatchEvent(clickEvent);
+                    } catch (ex) {
+                        console.log(ex);
+                    }
+                }).error(function(data) {
+                    console.log(data);
+                });
         };
 
         function getUrl(params) {
