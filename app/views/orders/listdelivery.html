@@ -217,37 +217,37 @@
                     <tbody>
                         <tr ng-repeat="line in orders">
                             <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
-                            <td ui-sref="order.show({id:line._id})"><a class=" with-tooltip " ui-sref="order.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
+                            <td ui-sref="delivery.show({id:line._id})"><a class=" with-tooltip " ui-sref="delivery.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
                             <td>
                                 <a ng-if="line.supplier._id" class="with-tooltip " ui-sref="societe.show({id:line.supplier._id}) "><i class="fa fa-institution "></i> {{line.supplier.fullName}}</a>
                                 <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty "> @(Empty)</span>
                             </td>
-                            <td ui-sref="order.show({id:line._id})">{{line.ref_client}}</td>
-                            <td ui-sref="order.show({id:line._id})">{{line.salesPerson.fullName}}</td>
-                            <td ui-sref="order.show({id:line._id})">{{line.datedl| date:'dd/MM/yyyy'}}</td>
-                            <td ui-sref="order.show({id:line._id})" class="text-center">{{line.qty}}</td>
-                            <td ui-sref="order.show({id:line._id})">
+                            <td ui-sref="delivery.show({id:line._id})">{{line.ref_client}}</td>
+                            <td ui-sref="delivery.show({id:line._id})">{{line.salesPerson.fullName}}</td>
+                            <td ui-sref="delivery.show({id:line._id})">{{line.datedl| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="delivery.show({id:line._id})" class="text-center">{{line.qty}}</td>
+                            <td ui-sref="delivery.show({id:line._id})">
                                 <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
                             </td>
-                            <td ui-sref="order.show({id:line._id})">{{line.entity}}</td>
-                            <td ui-sref="order.show({id:line._id})" class="text-center">
+                            <td ui-sref="delivery.show({id:line._id})">{{line.entity}}</td>
+                            <td ui-sref="delivery.show({id:line._id})" class="text-center">
                                 <span ng-if="!line.status.isPrinted" class="fa fa-close font-red"></span>
                                 <span ng-if="line.status.isPrinted" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Imprimé le : {{line.status.isPrinted | date:'dd/MM/yyyy HH:mm'}}"></span>
                             </td>
-                            <td ui-sref="order.show({id:line._id})" class="text-center">
+                            <td ui-sref="delivery.show({id:line._id})" class="text-center">
                                 <span ng-if="!line.status.isPicked" class="fa fa-close font-red"></span>
                                 <span ng-if="line.status.isPicked" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Scanné le : {{line.status.isPicked | date:'dd/MM/yyyy HH:mm'}}"></span>
                             </td>
-                            <td ui-sref="order.show({id:line._id})" class="text-center">
+                            <td ui-sref="delivery.show({id:line._id})" class="text-center">
                                 <span ng-if="!line.status.isPacked" class="fa fa-close font-red"></span>
                                 <span ng-if="line.status.isPacked" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Emballé le : {{line.status.isPacked | date:'dd/MM/yyyy HH:mm'}}"></span>
                             </td>
-                            <td ui-sref="order.show({id:line._id})" class="text-center">
+                            <td ui-sref="delivery.show({id:line._id})" class="text-center">
                                 <span ng-if="!line.status.isShipped" class="fa fa-close font-red"></span>
                                 <span ng-if="line.status.isShipped" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Expédié le : {{line.status.isShipped | date:'dd/MM/yyyy HH:mm'}}"></span>
                             </td>
 
-                            <td ui-sref="order.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="delivery.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
                 </table>
