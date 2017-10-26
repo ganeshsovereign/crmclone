@@ -847,6 +847,7 @@ Object.prototype = {
             delete order.updatedAt;
             delete order.history;
             delete order.orderRows;
+            delete order.offer;
             order.total_paid = 0;
             order.status = {};
             order.Status = "DRAFT";
