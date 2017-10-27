@@ -430,7 +430,7 @@ Object.prototype = {
             res.totalExport = 0;
 
             for (var i = 0, len = res.results.length; i < len; i++) {
-                if (!res.results[i].exported) {
+                if (!res.results[i].exported && res.results[i].credit) {
                     res.totalExport += res.results[i].credit;
                 }
             }
