@@ -403,7 +403,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                     continue;
 
                                 // TVA on payment
-                                if (bill.total_taxes[j].taxeId.isOnPaid == false)
+                                if (bill.total_taxes[j].taxeId.isOnPaid !== true)
                                     continue;
 
                                 if (bill.total_taxes[j].value > 0) {
@@ -507,7 +507,7 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                                 //console.log(bill.total_taxes[j]);
 
                                 // TVA on payment
-                                if (bill.total_taxes[j].taxeId.isOnPaid == false)
+                                if (bill.total_taxes[j].taxeId.isOnPaid !== true)
                                     continue;
 
                                 // TVA on payment
