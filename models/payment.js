@@ -237,6 +237,10 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
     var SeqModel = MODEL('Sequence').Schema; // Pour le numero de piece automatique
 
     console.log("payment options", options);
+
+    _.map(options.bills, function(elem) {
+        console.log(elem);
+    });
     var body = options;
     var Book = INCLUDE('accounting').Book;
     var myBook = new Book();
