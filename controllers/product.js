@@ -3333,7 +3333,7 @@ Object.prototype = {
 
         OrderModel.aggregate([{
                     $match: {
-                        datedl: {
+                        datec: {
                             $gte: query.start_date,
                             $lt: query.end_date
                         },
@@ -3349,9 +3349,9 @@ Object.prototype = {
                 {
                     $project: {
                         _id: 1,
-                        datedl: 1,
+                        datec: 1,
                         month: {
-                            $month: "$datedl"
+                            $month: "$datec"
                         },
                         order: 1,
                         orderRows: 1,
@@ -3380,7 +3380,7 @@ Object.prototype = {
                 {
                     $project: {
                         _id: 1,
-                        datedl: 1,
+                        datec: 1,
                         month: 1,
                         lines: {
                             $concatArrays: ["$lines", "$orderRows"]
@@ -3390,7 +3390,7 @@ Object.prototype = {
                 {
                     $project: {
                         _id: 1,
-                        datedl: 1,
+                        datec: 1,
                         month: 1,
                         lines: {
                             $filter: {
@@ -3412,9 +3412,9 @@ Object.prototype = {
                 {
                     $project: {
                         _id: 1,
-                        datedl: 1,
+                        datec: 1,
                         month: {
-                            $month: "$datedl"
+                            $month: "$datec"
                         },
                         'lines.qty': 1,
                         'lines.product': 1,
@@ -7390,6 +7390,10 @@ StockCorrection.prototype = {
             "isReceived": new Date(),
         };
 
+        body.orderRows = _.filter(body.orderRows, function(elem) {
+            return elem.isDeleted !== true;
+        });
+
         var stockCorrection = new StockCorrectionModel(body);
 
         stockCorrection.save(function(err, doc) {
@@ -7443,6 +7447,9 @@ StockCorrection.prototype = {
 
             async.each(body.orderRows, function(elem, eachCb) {
                 var options;
+
+                if (elem.isDeleted == true)
+                    return eachCb();
 
                 if (elem.qty <= 0) {
                     options = {

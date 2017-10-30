@@ -282,6 +282,16 @@ MetronicApp.controller('AccountingController', ['$scope', '$rootScope', '$http',
         });
     };
 
+    $scope.saveBankTransfer = function(entry) {
+        return $http.post('/erp/api/accounting/transfer', entry, {
+            params: {
+                //entity: $rootScope.entity
+            }
+        }).then(function(response) {
+            return $scope.find();
+        });
+    };
+
     $scope.saveEntry = function(entry) {
         return $http.post('/erp/api/accounting/' + $scope.entry.journal, entry, {
             params: {
@@ -310,7 +320,7 @@ MetronicApp.controller('AccountingController', ['$scope', '$rootScope', '$http',
         if (data >= $scope.minDate && data <= $scope.maxDate)
             return true;
         else
-            //console.log(data);
+        //console.log(data);
             return "Erreur : date incorrecte";
     };
 

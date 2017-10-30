@@ -38,6 +38,10 @@
             <span>@(orders:CustomersInvoices)</span>
             <i class="fa fa-angle-right"></i>
         </li>
+        <li ng-if="module('billsupplier')">
+            <span>@(orders:SuppliersInvoices)</span>
+            <i class="fa fa-angle-right"></i>
+        </li>
         <li ng-if="module('offer')">
             <a ui-sref="{{backTo}}">@(orders:ListOfProposals)</a>
             <i class="fa fa-angle-right"></i>
@@ -58,6 +62,10 @@
             <a ui-sref="{{backTo}}">@(orders:ListBillsCustomers)</a>
             <i class="fa fa-angle-right"></i>
         </li>
+        <li ng-if="module('billsupplier')" )>
+            <a ui-sref="{{backTo}}">@(orders:ListBillsSuppliers)</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
         <li ng-if="module('offer')">
             <span ng-hide="!object._id">@(orders:Prop) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewProp)</span>
@@ -76,6 +84,10 @@
         </li>
         <li ng-if="module('bill')">
             <span ng-hide="!object._id">@(orders:BillCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
+            <span ng-show="!object._id">@(orders:NewBill)</span>
+        </li>
+        <li ng-if="module('billsupplier')">
+            <span ng-hide="!object._id">@(orders:BillSupplier) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewBill)</span>
         </li>
     </ul>

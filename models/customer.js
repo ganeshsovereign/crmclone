@@ -1024,7 +1024,7 @@ exports.name = "Customers";
 F.on('customer:recalculateStatus', function(data) {
     var userId = data.userId;
     const OrderModel = MODEL('order').Schema.OrderCustomer;
-    const QuotationModel = MODEL('order').Schema.QuotationCustomer;
+    const QuotationModel = MODEL('order').Schema.Order; // All orders Types
     const CustomerModel = exports.Schema;
     const ObjectId = MODULE('utils').ObjectId;
 
@@ -1065,11 +1065,12 @@ F.on('customer:recalculateStatus', function(data) {
                 if (supplier.Status == "ST_NO")
                     return wCb(null, supplier);
 
-                // Check if quotation -> ST_PCHAU
+                // Check if quotation or order DRAFT -> ST_PCHAU
                 QuotationModel.find({
                         supplier: data.supplier._id,
+                        _type: { $in: ["orderCustomer", "quotationCustomer"] },
                         isremoved: { $ne: true },
-                        Status: { $nin: ["DRAFT", "CANCELLED"] },
+                        Status: { $ne: "CANCELLED" },
                         datec: { $gte: moment().subtract(1, 'year').toDate() }
                     }, "", { sort: { datec: -1 }, limit: 1 },
                     function(err, orders) {

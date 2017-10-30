@@ -39,7 +39,7 @@ exports.install = function() {
     var object = new Object();
     var billing = new Billing();
 
-    F.route('/erp/api/delivery', object.read, ['authorize']);
+    F.route('/erp/api/delivery', object.getByViewType, ['authorize']);
     F.route('/erp/api/delivery/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/delivery/dt_supplier', object.readDT_supplier, ['post', 'authorize']);
     F.route('/erp/api/delivery/caFamily', object.caFamily, ['authorize']);
@@ -54,7 +54,6 @@ exports.install = function() {
 
     // recupere la liste des courses pour verification
     F.route('/erp/api/delivery/billing', billing.read, ['authorize']);
-
     F.route('/erp/api/delivery/billing/ca', billing.familyCA, ['authorize']);
 
     F.route('/erp/api/delivery', object.create, ['post', 'json', 'authorize'], 512);
@@ -69,6 +68,573 @@ exports.install = function() {
 function Object() {}
 
 Object.prototype = {
+    getByViewType: function() {
+        var self = this;
+        var Order = MODEL('order').Schema.GoodsOutNote;
+        var OrderStatus = MODEL('order').Status;
+
+        var data = self.query;
+        var quickSearch = data.quickSearch;
+        var paginationObject = MODULE('helper').page(self.query);
+        var limit = paginationObject.limit;
+        var skip = paginationObject.skip;
+
+        const FilterMapper = MODULE('helper').filterMapper;
+        var filterMapper = new FilterMapper();
+
+        var accessRollSearcher;
+        var contentSearcher;
+        var waterfallTasks;
+        var contentType = data.contentType;
+        var sort = {};
+        var filter = data.filter && JSON.parse(data.filter) || {};
+        var key;
+        var filterObject = {
+            isremoved: {
+                $ne: true
+            }
+        };
+        var optionsObject = {};
+        var matchObject = {};
+        var regExp;
+        var pastDue = filter.pastDue;
+
+        if (quickSearch) {
+            regExp = new RegExp(quickSearch, 'ig');
+            matchObject['ref'] = {
+                $regex: regExp
+            };
+            filter = {};
+        }
+
+        //console.log(filter);
+
+        if (filter && filter.salesPerson && filter.salesPerson.value.length)
+            filter.Status.value = [];
+        if (filter && filter.supplier && filter.supplier.value.length)
+            filter.Status.value = [];
+
+        //TODO refresh Status on angular
+        if (filter && filter.Status && filter.Status.value[0] == "NEW") {
+            filter.Status.value = [];
+            filterObject.Status = {
+                $nin: ["SEND", "BILLED"]
+            };
+        }
+
+        if (filter && filter.Status && filter.Status.value[0] == "CLOSED") {
+            filter.Status.value[0] = "SEND";
+        }
+
+        filterObject.$and = [];
+
+        if (filter && typeof filter === 'object') {
+            filterObject.$and.push(filterMapper.mapFilter(filter, {
+                contentType: contentType
+            })); // caseFilter(filter);
+        }
+
+        //return console.log(filterObject);
+
+        if (self.query.sort) {
+            sort = JSON.parse(self.query.sort);
+            sort._id = 1;
+        } else
+            sort = {
+                datedl: 1,
+                _id: 1
+            };
+
+        /* if (contentType !== 'order' && contentType !== 'integrationUnlinkedOrders') {
+             Order = MODEL('order').Schema.OrderSupplier;
+
+             //queryObject.$and.push({ _type: 'purchaseOrders' });
+         } else {
+             //queryObject.$and.push({ _type: 'Order' });
+         }*/
+
+        if (pastDue) {
+            optionsObject.$and.push({
+                expectedDate: {
+                    $gt: new Date(filter.date.value[1])
+                }
+            }, {
+                'workflow.status': {
+                    $ne: 'Done'
+                }
+            });
+        }
+
+        accessRollSearcher = function(cb) {
+            const accessRoll = MODULE('helper').accessRoll;
+
+            accessRoll(self.user, Order, cb);
+        };
+
+        contentSearcher = function(ids, cb) {
+            var newQueryObj = {};
+            const ObjectId = MODULE('utils').ObjectId;
+
+            var salesManagerMatch = {
+                $and: [{
+                        $eq: ['$$projectMember.projectPositionId', ObjectId("570e9a75785753b3f1d9c86e")]
+                    }, //CONSTANTS.SALESMANAGER
+                    {
+                        $or: [{
+                            $and: [{
+                                $eq: ['$$projectMember.startDate', null]
+                            }, {
+                                $eq: ['$$projectMember.endDate', null]
+                            }]
+                        }, {
+                            $and: [{
+                                $lte: ['$$projectMember.startDate', '$datec']
+                            }, {
+                                $eq: ['$$projectMember.endDate', null]
+                            }]
+                        }, {
+                            $and: [{
+                                $eq: ['$$projectMember.startDate', null]
+                            }, {
+                                $gte: ['$$projectMember.endDate', '$datec']
+                            }]
+                        }, {
+                            $and: [{
+                                $lte: ['$$projectMember.startDate', '$datec']
+                            }, {
+                                $gte: ['$$projectMember.endDate', '$datec']
+                            }]
+                        }]
+                    }
+                ]
+            };
+
+            newQueryObj.$and = [];
+            //newQueryObj.$and.push(queryObject);
+            //console.log(JSON.stringify(filterObject));
+            newQueryObj.$and.push({
+                _id: {
+                    $in: ids
+                }
+            });
+
+            Order.aggregate([{
+                    $match: filterObject
+                },
+                {
+                    $match: matchObject
+                },
+                {
+                    $project: {
+                        workflow: 1,
+                        supplier: 1,
+                        salesManagers: {
+                            $filter: {
+                                input: '$projectMembers',
+                                as: 'projectMember',
+                                cond: salesManagerMatch
+                            }
+                        },
+                        channel: 1,
+                        salesPerson: 1,
+                        orderRows: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1,
+                        entity: 1
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'Customers',
+                        localField: 'supplier',
+                        foreignField: '_id',
+                        as: 'supplier'
+                    }
+                },
+                /*{
+                                   $lookup: {
+                                       from: 'workflows',
+                                       localField: 'workflow',
+                                       foreignField: '_id',
+                                       as: 'workflow'
+                                   }
+                               },*/
+                {
+                    $lookup: {
+                        from: 'Employees',
+                        localField: 'salesPerson',
+                        foreignField: '_id',
+                        as: 'salesPerson'
+                    }
+                },
+                /* {
+                                           $lookup: {
+                                               from: 'integrations',
+                                               localField: 'channel',
+                                               foreignField: '_id',
+                                               as: 'channel'
+                                           }
+                                       },*/
+                {
+                    $project: {
+                        workflow: {
+                            $arrayElemAt: ['$workflow', 0]
+                        },
+                        supplier: {
+                            $arrayElemAt: ['$supplier', 0]
+                        },
+                        salesManagers: 1,
+                        channel: {
+                            $arrayElemAt: ['$channel', 0]
+                        },
+                        salesPerson: {
+                            $arrayElemAt: ['$salesPerson', 0]
+                        },
+                        orderRows: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1,
+                        entity: 1
+                    }
+                }, {
+                    $project: {
+                        salesManager: {
+                            $arrayElemAt: ['$salesManagers', 0]
+                        },
+                        supplier: {
+                            _id: '$supplier._id',
+                            fullName: {
+                                $concat: ['$supplier.name.first', ' ', '$supplier.name.last']
+                            }
+                        },
+
+                        workflow: {
+                            _id: '$workflow._id',
+                            status: '$workflow.status',
+                            name: '$workflow.name'
+                        },
+
+                        tempWorkflow: {
+                            _id: '$tempWorkflow._id',
+                            status: '$tempWorkflow.status'
+                        },
+
+                        channel: {
+                            _id: '$channel._id',
+                            name: '$channel.channelName',
+                            type: '$channel.type'
+                        },
+
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        Status: 1,
+                        ID: 1,
+                        salesPerson: 1,
+                        ref: 1,
+                        isOrder: 1,
+                        proformaCounter: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1,
+                        orderRows: 1,
+                        entity: 1
+                    }
+                }, {
+                    $lookup: {
+                        from: 'Employees',
+                        localField: 'salesManager.employeeId',
+                        foreignField: '_id',
+                        as: 'salesManager'
+                    }
+                }, {
+                    $project: {
+                        salesPerson: {
+                            $ifNull: ['$salesPerson', {
+                                $arrayElemAt: ['$salesManager', 0]
+                            }]
+                        },
+                        workflow: 1,
+                        tempWorkflow: 1,
+                        supplier: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1,
+                        orderRows: 1,
+                        channel: 1,
+                        entity: 1
+                    }
+                }, {
+                    $project: {
+                        salesPerson: {
+                            _id: '$salesPerson._id',
+                            fullName: {
+                                $concat: ['$salesPerson.name.first', ' ', '$salesPerson.name.last']
+                            }
+                        },
+                        workflow: 1,
+                        tempWorkflow: 1,
+                        supplier: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        _type: 1,
+                        forSales: 1,
+                        entity: 1,
+                        late: {
+                            $cond: {
+                                if: {
+                                    $and: [{
+                                            $ne: ['$Status', 'SEND']
+                                        },
+                                        {
+                                            $ne: ['$Status', 'BILLED']
+                                        },
+                                        {
+                                            $lte: ['$datedl', moment().subtract(5, 'day').endOf('day').toDate()]
+                                        }
+                                    ]
+                                },
+                                then: 1,
+                                else: 0
+                            }
+                        },
+                        channel: 1,
+                        removable: {
+                            $cond: {
+                                if: {
+                                    $or: [{
+                                        $eq: ['$workflow.status', 'Done']
+                                    }, {
+                                        $eq: ['$tempWorkflow.status', 'Done']
+                                    }, {
+                                        $and: [{
+                                            $ne: ['$status.fulfillStatus', 'NOR']
+                                        }, {
+                                            $ne: ['$status.fulfillStatus', 'NOT']
+                                        }]
+                                    }]
+                                },
+                                then: false,
+                                else: true
+                            }
+                        },
+                        qty: { $sum: "$orderRows.qty" }
+                    }
+                }, {
+                    $match: newQueryObj
+                }, {
+                    $group: {
+                        _id: "null",
+                        total: {
+                            $sum: 1
+                        },
+                        late: {
+                            $sum: "$late"
+                        },
+                        root: {
+                            $push: '$$ROOT'
+                        }
+                    }
+                }, {
+                    $unwind: '$root'
+                }, {
+                    $project: {
+                        _id: '$root._id',
+                        salesPerson: '$root.salesPerson',
+                        workflow: '$root.workflow',
+                        supplier: '$root.supplier',
+                        datec: '$root.datec',
+                        ref_client: '$root.ref_client',
+                        datedl: '$root.datedl',
+                        qty: '$root.qty',
+                        Status: '$root.Status',
+                        ID: '$root.ID',
+                        ref: '$root.ref',
+                        status: '$root.status',
+                        removable: '$root.removable',
+                        channel: '$root.channel',
+                        entity: '$root.entity',
+                        total: 1,
+                        totalAll: {
+                            count: "$total",
+                            late: "$late"
+                        }
+                    }
+                }, {
+                    $group: {
+                        _id: "$Status",
+                        total: {
+                            $sum: 1
+                        },
+                        root: {
+                            $push: '$$ROOT'
+                        }
+                    }
+                }, {
+                    $unwind: '$root'
+                }, {
+                    $group: {
+                        _id: null,
+                        Status: { $addToSet: { _id: "$_id", total: "$total" } },
+                        root: {
+                            $push: '$root'
+                        }
+                    }
+                }, {
+                    $unwind: '$root'
+                }, {
+                    $project: {
+                        _id: '$root._id',
+                        salesPerson: '$root.salesPerson',
+                        workflow: '$root.workflow',
+                        supplier: '$root.supplier',
+                        datec: '$root.datec',
+                        ref_client: '$root.ref_client',
+                        datedl: '$root.datedl',
+                        qty: '$root.qty',
+                        Status: '$root.Status',
+                        ID: '$root.ID',
+                        ref: '$root.ref',
+                        status: '$root.status',
+                        removable: '$root.removable',
+                        channel: '$root.channel',
+                        entity: '$root.entity',
+                        total: "$root.total",
+                        totalAll: {
+                            count: "$root.totalAll.count",
+                            late: "$root.totalAll.late",
+                            Status: "$Status"
+                        }
+                    }
+                }, {
+                    $project: {
+                        salesPerson: 1,
+                        workflow: 1,
+                        supplier: 1,
+                        datec: 1,
+                        ref_client: 1,
+                        datedl: 1,
+                        qty: 1,
+                        Status: 1,
+                        ID: 1,
+                        ref: 1,
+                        status: 1,
+                        removable: 1,
+                        channel: 1,
+                        total: 1,
+                        totalAll: 1,
+                        entity: 1
+                    }
+                }, {
+                    $sort: sort
+                }, {
+                    $skip: skip
+                }, {
+                    $limit: limit
+                }
+            ], cb);
+        };
+
+        waterfallTasks = [accessRollSearcher, contentSearcher];
+
+        async.waterfall(waterfallTasks, function(err, result) {
+            var count;
+            var firstElement;
+            var response = {};
+
+            if (err)
+                return self.throw500(err);
+
+            //return console.log(result);
+
+            result = _.map(result, function(line) {
+                var res_status = {};
+
+                var status = line.Status;
+                var statusList = OrderStatus;
+
+                if (status && statusList.values[status] && statusList.values[status].label) {
+                    res_status.id = status;
+                    res_status.name = i18n.t("orders:" + statusList.values[status].label);
+                    //this.status.name = statusList.values[status].label;
+                    res_status.css = statusList.values[status].cssClass;
+                } else { // By default
+                    res_status.id = status;
+                    res_status.name = status;
+                    res_status.css = "";
+                }
+
+                line.Status = res_status;
+
+                return line;
+            });
+
+            if (result.length)
+                result[0].totalAll.Status = _.map(result[0].totalAll.Status, function(Status) {
+                    var res_status = {};
+
+                    var status = Status._id;
+                    var statusList = OrderStatus;
+
+                    if (status && statusList.values[status] && statusList.values[status].label) {
+                        res_status.id = status;
+                        res_status.name = i18n.t("orders:" + statusList.values[status].label);
+                        //this.status.name = statusList.values[status].label;
+                        res_status.css = statusList.values[status].cssClass;
+                    } else { // By default
+                        res_status.id = status;
+                        res_status.name = status;
+                        res_status.css = "";
+                    }
+
+                    Status.name = res_status.name;
+                    Status.css = res_status.css;
+
+                    return Status;
+                });
+
+
+            firstElement = result[0];
+            count = firstElement && firstElement.total ? firstElement.total : 0;
+            response.total = count;
+            response.totalAll = firstElement && firstElement.totalAll ? firstElement.totalAll : {
+                count: 0,
+                late: 0,
+                Status: []
+            };
+            //response.total = result.length;
+            response.data = result;
+
+            //console.log(result);
+
+            self.json(response);
+        });
+
+    },
     show: function(id) {
         var self = this;
         const BillModel = MODEL('invoice').Schema;
@@ -752,102 +1318,103 @@ Object.prototype = {
         //console.log(options);
 
         async.parallel({
-            status: function(cb) {
-                /*Dict.dict({
-                    dictName: "fk_delivery_status",
-                    object: true
-                }, cb);*/
-                cb(null, MODEL('order').Status);
+                status: function(cb) {
+                    /*Dict.dict({
+                        dictName: "fk_delivery_status",
+                        object: true
+                    }, cb);*/
+                    cb(null, MODEL('order').Status);
+                },
+                datatable: function(cb) {
+                    DeliveryModel.dataTable(query, options, cb);
+                }
             },
-            datatable: function(cb) {
-                DeliveryModel.dataTable(query, options, cb);
-            }
-        }, function(err, res) {
-            if (err)
-                console.log(err);
+            function(err, res) {
+                if (err)
+                    console.log(err);
 
-            //console.log(res);
-            SocieteModel.populate(res, {
-                path: "datatable.data.supplier",
-                select: "_id name"
-            }, function(err, res) {
-                OrderModel.populate(res, {
-                    path: "datatable.data.order",
-                    select: " _id ref"
+                //console.log(res);
+                SocieteModel.populate(res, {
+                    path: "datatable.data.supplier",
+                    select: "_id name"
                 }, function(err, res) {
+                    OrderModel.populate(res, {
+                        path: "datatable.data.order",
+                        select: " _id ref"
+                    }, function(err, res) {
 
-                    for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                        var row = res.datatable.data[i];
-                        //console.log(row);
+                        for (var i = 0, len = res.datatable.data.length; i < len; i++) {
+                            var row = res.datatable.data[i];
+                            //console.log(row);
 
-                        // Add checkbox
-                        res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                        // Add id
-                        res.datatable.data[i].DT_RowId = row._id.toString();
-                        // Add color line 
-                        //if (res.datatable.data[i].Status === 'SEND')
-                        //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
-                        // Add link company
+                            // Add checkbox
+                            res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
+                            // Add id
+                            res.datatable.data[i].DT_RowId = row._id.toString();
+                            // Add color line 
+                            //if (res.datatable.data[i].Status === 'SEND')
+                            //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
+                            // Add link company
 
-                        if (row.supplier && row.supplier._id)
-                            res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
-                        else {
-                            if (!row.supplier)
-                                res.datatable.data[i].supplier = {};
-                            res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                            if (row.supplier && row.supplier._id)
+                                res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
+                            else {
+                                if (!row.supplier)
+                                    res.datatable.data[i].supplier = {};
+                                res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
+                            }
+
+                            if (row.status) {
+                                //Printed Picked Packed Shipped
+                                if (res.datatable.data[i].status.isPrinted == null)
+                                    res.datatable.data[i].status.isPrinted = '<span class="fa fa-close font-red"></span>';
+                                else
+                                    res.datatable.data[i].status.isPrinted = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Imprimé le : ' + row.status.isPrinted.format(CONFIG('dateformatLong')) + '"></span>';
+
+                                if (res.datatable.data[i].status.isPicked == null)
+                                    res.datatable.data[i].status.isPicked = '<span class="fa fa-close font-red"></span>';
+                                else
+                                    res.datatable.data[i].status.isPicked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Scanné le : ' + row.status.isPicked.format(CONFIG('dateformatLong')) + '"></span>';
+
+                                if (res.datatable.data[i].status.isPacked == null)
+                                    res.datatable.data[i].status.isPacked = '<span class="fa fa-close font-red"></span>';
+                                else
+                                    res.datatable.data[i].status.isPacked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Emballé le : ' + row.status.isPacked.format(CONFIG('dateformatLong')) + '"></span>';
+
+                                if (res.datatable.data[i].status.isShipped == null)
+                                    res.datatable.data[i].status.isShipped = '<span class="fa fa-close font-red"></span>';
+                                else
+                                    res.datatable.data[i].status.isShipped = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Expédié le : ' + row.status.isShipped.format(CONFIG('dateformatLong')) + '"></span>';
+                            }
+
+                            // Action
+                            res.datatable.data[i].action = '<a href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
+                            // Add url on name
+                            //if (row.forSales)
+                            if (self.query.stockReturn === 'true')
+                                res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+                            else
+                                res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
+
+                            if (row.order)
+                                res.datatable.data[i].order = '<a class="with-tooltip" href="#!/order/' + row.order._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.order.ref + '"><span class="fa fa-truck"></span> ' + row.order.ref + '</a>';
+                            // Convert Date
+                            res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
+                            res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                            res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
+
+                            // Convert Status
+                            res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
+
+                            res.datatable.data[i].qty = _.sum(row.orderRows, 'qty');
                         }
 
-                        if (row.status) {
-                            //Printed Picked Packed Shipped
-                            if (res.datatable.data[i].status.isPrinted == null)
-                                res.datatable.data[i].status.isPrinted = '<span class="fa fa-close font-red"></span>';
-                            else
-                                res.datatable.data[i].status.isPrinted = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Imprimé le : ' + row.status.isPrinted.format(CONFIG('dateformatLong')) + '"></span>';
+                        //console.log(res.datatable);
 
-                            if (res.datatable.data[i].status.isPicked == null)
-                                res.datatable.data[i].status.isPicked = '<span class="fa fa-close font-red"></span>';
-                            else
-                                res.datatable.data[i].status.isPicked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Scanné le : ' + row.status.isPicked.format(CONFIG('dateformatLong')) + '"></span>';
-
-                            if (res.datatable.data[i].status.isPacked == null)
-                                res.datatable.data[i].status.isPacked = '<span class="fa fa-close font-red"></span>';
-                            else
-                                res.datatable.data[i].status.isPacked = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Emballé le : ' + row.status.isPacked.format(CONFIG('dateformatLong')) + '"></span>';
-
-                            if (res.datatable.data[i].status.isShipped == null)
-                                res.datatable.data[i].status.isShipped = '<span class="fa fa-close font-red"></span>';
-                            else
-                                res.datatable.data[i].status.isShipped = '<span class="fa fa-check font-green-jungle"' + '" data-tooltip-options=\'{"position":"top"}\' title="Expédié le : ' + row.status.isShipped.format(CONFIG('dateformatLong')) + '"></span>';
-                        }
-
-                        // Action
-                        res.datatable.data[i].action = '<a href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                        // Add url on name
-                        //if (row.forSales)
-                        if (self.query.stockReturn === 'true')
-                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/stockreturn/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
-                        else
-                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/delivery/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-truck"></span> ' + row.ref + '</a>';
-
-                        if (row.order)
-                            res.datatable.data[i].order = '<a class="with-tooltip" href="#!/order/' + row.order._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.order.ref + '"><span class="fa fa-truck"></span> ' + row.order.ref + '</a>';
-                        // Convert Date
-                        res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                        res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                        res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
-
-                        // Convert Status
-                        res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-
-                        res.datatable.data[i].qty = _.sum(row.orderRows, 'qty');
-                    }
-
-                    //console.log(res.datatable);
-
-                    self.json(res.datatable);
+                        self.json(res.datatable);
+                    });
                 });
             });
-        });
     },
     readDT_supplier: function() {
         var self = this;
@@ -1223,7 +1790,7 @@ Object.prototype = {
 
         DeliveryModel.aggregate([{
                 $match: {
-                    Status: "VALIDATED",
+                    Status: { $ne: "DRAFT" },
                     isremoved: {
                         $ne: true
                     },

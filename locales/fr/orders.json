@@ -84,6 +84,7 @@
     "BillSupplierAddress": "Adr. fournisseur",
     "BillSuppliers": "Facture fournisseurs",
     "BillTo": "Facturée à",
+    "Buyer": "Acheteur",
     "CancelBill": "Annuler une facture",
     "CancelOrder": "Annuler la commande",
     "CantRemovePaymentWithOneInvoicePaid": "Suppression impossible quand il existe au moins une facture classée payée.",

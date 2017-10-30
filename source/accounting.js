@@ -547,6 +547,12 @@ exports.Book.prototype.balance = function(query) {
                             while (elem._id[elem._id.length - 1] == '0') {
                                 elem._id = elem._id.substring(0, elem._id.length - 1);
                             }
+                        else { // Group 401 and 411
+                            if (elem._id.substring(0, 3) == "411")
+                                elem._id = "411";
+                            else if (elem._id.substring(0, 3) == "401")
+                                elem._id = "401";
+                        }
 
                         if (!idx[elem._id]) {
                             reduce.push(elem);

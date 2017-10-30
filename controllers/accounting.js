@@ -39,6 +39,7 @@ exports.install = function() {
     F.route('/erp/api/accounting/journal/{journal}', object.updateJournal, ['put', 'json', 'authorize']);
     F.route('/erp/api/accounting/balance', object.balance, ['authorize']);
     F.route('/erp/api/accounting/balance', object.createAN, ['post', 'json', 'authorize']);
+    F.route('/erp/api/accounting/transfer', object.createBankTransfer, ['post', 'json', 'authorize']);
     F.route('/erp/api/accounting/balance/{account}', object.balance, ['authorize']);
     F.route('/erp/api/accounting/entries', object.entries, ['authorize']);
     F.route('/erp/api/accounting/entries/{idTransaction}', object.destroy, ['delete', 'authorize']);
@@ -84,7 +85,7 @@ Object.prototype = {
         return myBook.balance({
             account: ['411', '445'],
             perPage: 100
-            //societeName: 'ADHOC STOCK'
+                //societeName: 'ADHOC STOCK'
         }).then(function(data) {
             self.json(data);
         });
@@ -429,7 +430,7 @@ Object.prototype = {
             res.totalExport = 0;
 
             for (var i = 0, len = res.results.length; i < len; i++) {
-                if (!res.results[i].exported) {
+                if (!res.results[i].exported && res.results[i].credit) {
                     res.totalExport += res.results[i].credit;
                 }
             }
@@ -453,6 +454,87 @@ Object.prototype = {
 
         return myBook.ledgerDt(query, conditions).then(function(res) {
             self.json(res);
+        });
+    },
+    createBankTransfer: function() {
+        const self = this;
+        const Book = INCLUDE('accounting').Book;
+        const SeqModel = MODEL('Sequence').Schema; // Pour le numero de piece automatique
+
+        //console.log(self.body);
+
+        if (!self.body.accountDebit || !self.body.accountCredit)
+            return self.json({
+                errorNotify: {
+                    title: 'Erreur',
+                    message: 'Compte manquant'
+                }
+            });
+
+        let libelleAccounting = "VIR INT. " + self.body.accountDebit.journalId + "-" + self.body.accountCredit.journalId;
+
+        async.parallel([
+            //Debit
+            function(pCb) {
+                let myBook = new Book();
+                myBook.setName(self.body.accountDebit.journalId);
+                let entry = myBook.entry(libelleAccounting.toUpperCase(), self.body.datec, self.user._id);
+
+                SeqModel.incCpt("PAY", function(seq) {
+                    //console.log(seq);
+                    entry.setSeq(seq);
+
+
+
+                    entry.debit("5800000", round(self.body.amount, 2), null, {
+                        manual: true
+                    });
+                    entry.credit(self.body.accountDebit.compta_bank, round(self.body.amount, 2), null, {
+                        manual: true
+                    });
+
+                    entry.commit().then(journal => pCb(null, journal), err => pCb(err));
+                });
+            },
+            //Credit
+            function(pCb) {
+                let myBook = new Book();
+                myBook.setName(self.body.accountCredit.journalId);
+
+                let entry = myBook.entry(libelleAccounting.toUpperCase(), self.body.datec, self.user._id);
+
+                SeqModel.incCpt("PAY", function(seq) {
+                    //console.log(seq);
+                    entry.setSeq(seq);
+
+                    entry.debit(self.body.accountCredit.compta_bank, round(self.body.amount, 2), null, {
+                        manual: true
+                    });
+                    entry.credit("5800000", round(self.body.amount, 2), null, {
+                        manual: true
+                    });
+
+                    entry.commit().then(journal => pCb(null, journal), err => pCb(err));
+                });
+            }
+        ], function(err, result) {
+            if (err) {
+                console.log(err);
+                self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err.message
+                    }
+                });
+            }
+
+            var doc = {};
+            doc.successNotify = {
+                title: "Success",
+                message: "Ecriture enregistree"
+            };
+
+            self.json(doc);
         });
     },
     destroy: function(idTransaction) {
@@ -1255,7 +1337,7 @@ Object.prototype = {
 
             csv()
 
-                .from.path(self.files[0].path, {
+            .from.path(self.files[0].path, {
                     delimiter: ';',
                     escape: '"'
                 })
@@ -1441,15 +1523,15 @@ Object.prototype = {
 
                     //console.log(row[0]);
                     if (!transactions[seq])
-                        //console.log(row);
+                    //console.log(row);
                         transactions[seq] = {
-                            id: seq,
-                            journal: self.query.journal.toUpperCase().trim(),
-                            datec: date,
-                            libelleAccounting: row[4].trim(),
-                            lines: [],
-                            total: 0
-                        };
+                        id: seq,
+                        journal: self.query.journal.toUpperCase().trim(),
+                        datec: date,
+                        libelleAccounting: row[4].trim(),
+                        lines: [],
+                        total: 0
+                    };
 
                     // Add a lines account
                     var debit = parseFloat(row[5].replace(" ", "").replace(",", "."));
@@ -1989,11 +2071,8 @@ Object.prototype = {
         BookAN.setName('AN');
 
         // You can specify a Date object as the second argument in the book.entry() method if you want the transaction to be for a different date than today
-        var entry = BookAN.entry("A NOUVEAU", moment(self.body.end_date).endOf('day').add(1, 'days').hour(12).toDate(), {
-                id: self.user._id,
-                name: self.user.name
-            }) // libelle, date
-            .setSeq(1); // numero de piece
+        var entry = BookAN.entry("A NOUVEAU", moment(self.body.end_date).endOf('day').add(1, 'days').hour(12).toDate(), self.user._id) // libelle, date
+            .setSeq(0); // numero de piece
 
         //console.log('Getting Accounting Balance ...');
         return myBook.balance(self.body).then(function(data) {
@@ -2013,12 +2092,12 @@ Object.prototype = {
 
                 // Add amount to client account
                 if (elem.balance < 0)
-                    entry.debit(elem._id, Math.abs(elem.balance), {
+                    entry.debit(elem._id, Math.abs(elem.balance), null, {
                         type: 'AN',
                         datec: new Date()
                     });
                 else
-                    entry.credit(elem._id, elem.balance, {
+                    entry.credit(elem._id, elem.balance, null, {
                         type: 'AN',
                         datec: new Date()
                     });
@@ -2028,15 +2107,15 @@ Object.prototype = {
                 //console.log(result);
 
                 if (result < 0) // Benefice
-                    entry.debit("12900000", Math.abs(result), {
-                        type: 'AN',
-                        datec: new Date()
-                    });
+                    entry.debit("12900000", Math.abs(result), null, {
+                    type: 'AN',
+                    datec: new Date()
+                });
                 else // Perte
-                    entry.credit("12000000", result, {
-                        type: 'AN',
-                        datec: new Date()
-                    });
+                    entry.credit("12000000", result, null, {
+                    type: 'AN',
+                    datec: new Date()
+                });
 
                 entry.commit()
                     .then(function(journal) {
