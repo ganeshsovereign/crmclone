@@ -28,8 +28,10 @@ International Registered Trademark & Property of ToManage SAS
  */
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    timestamps = require('mongoose-timestamp');
-
+    ObjectId = mongoose.Schema.Types.ObjectId,
+    timestamps = require('mongoose-timestamp'),
+    async = require('async'),
+    _ = require('lodash');
 
 var getUrl = function(url) {
     if (!url)
@@ -44,7 +46,7 @@ var getUrl = function(url) {
 };
 
 /**
- * Article Schema
+ * Entity Schema
  */
 var entitySchema = new Schema({
     _id: String,
@@ -61,7 +63,7 @@ var entitySchema = new Schema({
 
     imageSrc: {
         type: Schema.Types.ObjectId
-        //    ref: 'Images',
+            //    ref: 'Images',
     },
 
     logo: {
@@ -205,14 +207,6 @@ var entitySchema = new Schema({
             default: true
         },
     },
-
-    //typent_id: String,
-
-    creationDate: {
-        type: Date,
-        default: Date.now
-    },
-    datec: Date,
     currency: {
         type: String,
         ref: 'currency',
@@ -244,6 +238,7 @@ var entitySchema = new Schema({
     collection: 'Entity'
 });
 
+entitySchema.plugin(timestamps);
 
 exports.Schema = mongoose.model('entity', entitySchema);
 exports.name = 'entity';

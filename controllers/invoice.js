@@ -19,8 +19,6 @@ limitations under the License.
 International Registered Trademark & Property of ToManage SAS
 */
 
-
-
 "use strict";
 
 var fs = require('fs'),
@@ -210,8 +208,6 @@ Object.prototype = {
             filter = {};
         }
 
-        //console.log(filter);
-
         if (filter && filter.salesPerson && filter.salesPerson.value.length)
             filter.Status.value = [];
         if (filter && filter.supplier && filter.supplier.value.length)
@@ -245,7 +241,6 @@ Object.prototype = {
                     filter.Status.value = [];
                     break;
             }
-
 
         filterObject.$and = [];
 
@@ -793,6 +788,7 @@ Object.prototype = {
                         total_ttc: 1,
                         total_ht: 1,
                         total_paid: 1,
+                        total_to_paid: { $subtract: ["$total_ttc", "$total_paid"] },
                         Status: 1,
                         ref: 1,
                         ID: 1,
@@ -861,20 +857,17 @@ Object.prototype = {
                 count: 0,
                 total_ht: 0,
                 total_ttc: 0,
-                total_paid: 0
+                total_paid: 0,
+                total_to_paid: 0
             };
             //response.total = result.length;
             response.data = result;
-
-            //console.log(result);
-
             self.json(response);
         });
 
     },
     show: function(id) {
         var InvoiceModel = MODEL('invoice').Schema;
-
         var self = this;
         InvoiceModel.getById(id, function(err, bill) {
             if (err)
@@ -915,8 +908,6 @@ Object.prototype = {
         BillModel.getById(id, function(err, doc) {
             var bill = doc.toObject();
 
-            //console.log(doc);
-
             delete bill._id;
             delete bill.__v;
             delete bill.ref;
@@ -949,7 +940,6 @@ Object.prototype = {
     },
     update: function(id) {
         var BillModel = MODEL('invoice').Schema;
-        //console.log("update");
         var self = this;
 
         if (!self.body.createdBy)
@@ -1755,7 +1745,6 @@ Object.prototype = {
                         res.datatable.data[i].dater = (row.dater ? moment(row.dater).format(CONFIG('dateformatShort')) : '');
                         res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
                         res.datatable.data[i].total_ttc = self.module('utils').round(res.datatable.data[i].total_ttc, 2);
-
                         if (row.salesPerson)
                             res.datatable.data[i].salesPerson = row.salesPerson.fullName;
                     }
@@ -2043,8 +2032,6 @@ Object.prototype = {
                         });
                         total_toPay += bills[i].total_ttc;
                     }
-
-
 
                     self.res.setHeader('Content-type', 'application/pdf');
                     Latex.Template("list_bills.tex", self.query.entity)

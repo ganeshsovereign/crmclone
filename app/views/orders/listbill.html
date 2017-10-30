@@ -201,6 +201,7 @@
                         <col width="8%">
                         <col width="8%">
                         <col width="8%">
+                        <col width="8%">
                         <col width="70px">
                         <col width="10%">
                         <col width="10%">
@@ -219,6 +220,7 @@
                             <th table-sort='total_ht' ng-model="sort" name="@(TotalHT)"></th>
                             <th table-sort='total_ttc' ng-model="sort" name="@(TotalTTC)"></th>
                             <th table-sort='total_paid' ng-model="sort" name="@(AmountPaid)"></th>
+                            <th table-sort='total_to_paid' ng-model="sort" name="@(AmountToPaid)"></th>
                             <th>@(Status)</th>
                             <th>@(Entity)</th>
                             <th>@(DateCreation)</th>
@@ -239,6 +241,7 @@
                             <td ui-sref="bill.show({id:line._id})">{{line.total_ht| currency}}</td>
                             <td ui-sref="bill.show({id:line._id})">{{line.total_ttc| currency}}</td>
                             <td ui-sref="bill.show({id:line._id})">{{line.total_paid| currency}}</td>
+                            <td ui-sref="bill.show({id:line._id})">{{line.total_to_paid | currency}}</td>
                             <td ui-sref="bill.show({id:line._id})">
                                 <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
                             </td>
@@ -250,6 +253,5 @@
             </div>
             <table-pagination ng-model="page"></table-pagination>
         </div>
-
     </div>
 </div>

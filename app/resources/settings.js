@@ -110,11 +110,15 @@ MetronicApp.factory("Settings", ['$resource', function($resource) {
                 isArray: false
             }
         }),
-        entity: $resource('/erp/api/settings/entity/:Id', {
+        entity: $resource('/erp/api/entity/:Id', {
             Id: '@_id'
         }, {
             update: {
                 method: 'PUT'
+            },
+            query: {
+                method: 'GET',
+                isArray: false
             }
         })
     };

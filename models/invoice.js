@@ -34,7 +34,6 @@ var mongoose = require('mongoose'),
     timestamps = require('mongoose-timestamp');
 
 var DataTable = require('mongoose-datatable');
-
 DataTable.configure({
     verbose: false,
     debug: false
@@ -48,9 +47,10 @@ var setDate = MODULE('utils').setDate;
 const round = MODULE('utils').round;
 
 /**
- * Article Schema
+ * Invoice Schema
  */
 var billSchema = new Schema({
+    // true client false fournisseur
     forSales: {
         type: Boolean,
         default: true
@@ -767,7 +767,6 @@ billSchema.virtual('amount').get(function() {
     return this.total_ttc - this.total_paid;
 });
 
-
 exports.Schema = mongoose.model('invoice', billSchema, 'Invoices');
 exports.name = 'invoice';
 
@@ -855,7 +854,6 @@ F.on('invoice:recalculateStatus', function(data) {
                         if (err)
                             return console.log(err);
                     });
-
 
                 let payment = doc[0].amount;
                 //console.log(payment);

@@ -19,170 +19,157 @@ limitations under the License.
 International Registered Trademark & Property of ToManage SAS
 */
 
+"use strict";
 
-
-'use strict';
-
-angular.module("MetronicApp").controller('SettingGeneralController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
-
+MetronicApp.controller('SettingGeneralController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
     $scope.$on('$viewContentLoaded', function() {
-        // initialize core components
         Metronic.initAjax();
-
         $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
-
     });
-
-
-
 }]);
 
-angular.module("MetronicApp").controller('SettingEntityController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
-    var grid = new Datatable();
-    var user = $rootScope.login;
+MetronicApp.controller('SettingEntityController', ['$rootScope', '$scope', '$http', '$timeout', 'superCache', 'Settings',
+    function($rootScope, $scope, $http, $timeout, superCache, Settings) {
+        $scope.editable = false;
+        $scope.backTo = 'settings.entity.list';
+        $scope.object = {
+            address: {}
+        };
+        $scope.search = {};
+        $scope.page = {
+            limit: 25,
+            page: 1,
+            total: 0
+        };
+        $scope.sort = {
+            'name': 1
+        };
 
-    $scope.backTo = 'settings.entity.list';
-    $scope.object = {};
+        if (typeof superCache.get("SettingEntityListController") !== "undefined") {
+            $scope.page = superCache.get("SettingEntityController").page;
+            $scope.search = superCache.get("SettingEntityController").search;
+            $scope.sort = superCache.get("SettingEntityController").sort;
+        }
 
-    $scope.societe = [];
+        $scope.resetFilter = function() {
+            superCache.removeAll();
+            $rootScope.$state.reload();
+        }
 
-    $scope.$on('$viewContentLoaded', function() {
-        // initialize core components
-        Metronic.initAjax();
+        $scope.checkedAll = function() {
+            if (!this.checkAll)
+                this.grid = {};
+            for (var i = 0; i < $scope.entities.length; i++)
+                if (this.checkAll)
+                    this.grid[$scope.entities[i]._id] = true;
+        }
 
-        $rootScope.settings.layout.pageSidebarClosed = true;
-        $rootScope.settings.layout.pageBodySolid = false;
+        $scope.$on('$viewContentLoaded', function() {
+            Metronic.initAjax();
+            $rootScope.settings.layout.pageSidebarClosed = true;
+            $rootScope.settings.layout.pageBodySolid = false;
 
-        initDatatable();
+            if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "settings.entity.show")
+                return $scope.findOne();
 
-    });
+            $scope.find();
+        });
 
-    $scope.create = function() {
-        let entity = new Settings.entity(this.entity);
+        $scope.create = function() {
+            console.log("CREATE");
+            let entity = new Settings.entity(this.object);
 
-        entity.$save(function(response) {
-            //console.log(response);
-            $rootScope.$state.go("settings.entity.show", {
-                id: response._id
+            entity.$save(function(response) {
+                $rootScope.$state.go("settings.entity.show", {
+                    id: response._id
+                });
             });
-        });
-    };
+        };
 
-    $scope.update = function(options, callback) { //example options : {status: Status}
-        let societe = $scope.societe;
+        $scope.update = function(callback) {
+            var object = $scope.object;
+            if (!object._id)
+                return;
 
-        entity.$update(options, function(response) {
-            $scope.societe = response;
-            if (callback)
-                callback(null, response);
-        });
-    };
+            object.$update(function(response) {
+                $scope.findOne(callback);
+            }, function(err) {
+                if (err)
+                    console.log(err);
 
-    function getUrl(params) {
+                $timeout(function() {
+                    $scope.findOne(callback);
+                }, 500);
+            });
+        };
 
-        if (!params)
-            params = {};
+        $scope.findOne = function() {
+            Settings.entity.get({
+                Id: $rootScope.$stateParams.id
+            }, function(entity) {
+                $scope.object = entity;
+                console.log("mon entity", entity);
+            });
+        };
 
-        var url = $rootScope.buildUrl('/erp/api/entity/dt', params); // Build URL with json parameter
-        //console.log(url);
-        return url;
+        $scope.ngIncludeInit = function(params, length) {
+            $scope.params = params;
+        };
+
+        function getUrl(params) {
+            if (!params)
+                params = {};
+
+            return $rootScope.buildUrl('/erp/api/entity', params); // Build URL with json parameter
+        }
+
+        $scope.find = function() {
+            $scope.grid = {};
+            $scope.checkAll = false;
+
+            superCache.put("SettingEntityController", {
+                sort: $scope.sort,
+                search: $scope.search,
+                page: $scope.page
+            });
+
+            Metronic.blockUI({
+                target: '.waiting',
+                animate: false,
+                boxed: true,
+                overlayColor: 'gray'
+            });
+
+            var query = {
+                quickSearch: $scope.quickSearch,
+                filter: $scope.search,
+                viewType: 'list',
+                contentType: 'entity',
+                limit: $scope.page.limit,
+                page: $scope.page.page,
+                sort: $scope.sort
+            };
+
+            Settings.entity.query(query, function(data) {
+                $scope.page.total = data.total;
+                $scope.entities = data.data;
+                console.log("entites", data.data);
+
+                $timeout(function() {
+                    Metronic.unblockUI('.waiting');
+                }, 0);
+            });
+        };
+
     }
+]);
 
-    function initDatatable(params, length) {
-
-        grid.init({
-            src: $("#entityList"),
-            onSuccess: function(grid) {
-                // execute some code after table records loaded
-            },
-            onError: function(grid) {
-                // execute some code on network or other general error 
-            },
-            loadingMessage: 'Loading...',
-            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                // So when dropdowns used the scrollable div should be removed. 
-                //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-
-                "bStateSave": (params ? false : true), // save datatable state(pagination, sort, etc) in cookie.
-
-                "pageLength": length || 25, // default record count per page
-                "ajax": {
-                    "url": getUrl(params) // ajax source
-                },
-                "order": [
-                    [1, "asc"]
-                ], // set first column as a default sort by asc
-                "columns": [{
-                    data: 'bool'
-                }, {
-                    data: "name",
-                    defaultContent: ""
-                }, {
-                    data: "email",
-                    defaultContent: ""
-                }, {
-                    data: "groupe",
-                    defaultContent: ""
-                }, {
-                    data: "lastConnection",
-                    defaultContent: ""
-                }, {
-                    data: "createdAt",
-                    defaultContent: ""
-                }, {
-                    data: 'Status'
-                }]
-            }
-        });
-
-        // handle group actionsubmit button click
-        grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
-            e.preventDefault();
-            var action = $(".table-group-action-input", grid.getTableWrapper());
-            if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                grid.setAjaxParam("customActionType", "group_action");
-                grid.setAjaxParam("customActionName", action.val());
-                grid.setAjaxParam("id", grid.getSelectedRows());
-                grid.getDataTable().ajax.reload();
-                grid.clearAjaxParams();
-            } else if (action.val() == "") {
-                Metronic.alert({
-                    type: 'danger',
-                    icon: 'warning',
-                    message: 'Please select an action',
-                    container: grid.getTableWrapper(),
-                    place: 'prepend'
-                });
-            } else if (grid.getSelectedRowsCount() === 0) {
-                Metronic.alert({
-                    type: 'danger',
-                    icon: 'warning',
-                    message: 'No record selected',
-                    container: grid.getTableWrapper(),
-                    place: 'prepend'
-                });
-            }
-        });
-    }
-
-
-}]);
-
-angular.module("MetronicApp").controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
+MetronicApp.controller('SettingProductController', ['$rootScope', '$scope', '$http', '$timeout', 'Settings', function($rootScope, $scope, $http, $timeout, Settings) {
     var current = $rootScope.$state.current.name.split('.');
     $scope.backTo = 'settings.product.types';
-
-    //if (current[0] == 'settings' && current.length <= 2)
-    //    return $rootScope.$state.go('settings.product.types');
-
     $scope.edit = [];
-
     $scope.newline = {};
-
     $scope.$dict = {
         attributesMode: [{
             id: 'text',
@@ -234,7 +221,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
     };
     $scope.listObject = [];
 
-    console.log(current);
     if (current[0] === 'settings')
         switch (current[2]) {
             case 'types':
@@ -434,7 +420,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
                     object.options.push(element._id);
                 });
             }
-
         });
     };
 
@@ -496,8 +481,6 @@ angular.module("MetronicApp").controller('SettingProductController', ['$rootScop
 
         return false;
     };
-
-
 }]);
 
 angular.module("MetronicApp").controller('SettingIntegrationController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
@@ -510,7 +493,5 @@ angular.module("MetronicApp").controller('SettingIntegrationController', ['$root
         $rootScope.settings.layout.pageBodySolid = false;
 
     });
-
-
 
 }]);
