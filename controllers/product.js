@@ -3333,7 +3333,7 @@ Object.prototype = {
 
         OrderModel.aggregate([{
                     $match: {
-                        datedl: {
+                        datec: {
                             $gte: query.start_date,
                             $lt: query.end_date
                         },
@@ -3349,9 +3349,9 @@ Object.prototype = {
                 {
                     $project: {
                         _id: 1,
-                        datedl: 1,
+                        datec: 1,
                         month: {
-                            $month: "$datedl"
+                            $month: "$datec"
                         },
                         order: 1,
                         orderRows: 1,
@@ -3380,7 +3380,7 @@ Object.prototype = {
                 {
                     $project: {
                         _id: 1,
-                        datedl: 1,
+                        datec: 1,
                         month: 1,
                         lines: {
                             $concatArrays: ["$lines", "$orderRows"]
@@ -3390,7 +3390,7 @@ Object.prototype = {
                 {
                     $project: {
                         _id: 1,
-                        datedl: 1,
+                        datec: 1,
                         month: 1,
                         lines: {
                             $filter: {
@@ -3412,9 +3412,9 @@ Object.prototype = {
                 {
                     $project: {
                         _id: 1,
-                        datedl: 1,
+                        datec: 1,
                         month: {
-                            $month: "$datedl"
+                            $month: "$datec"
                         },
                         'lines.qty': 1,
                         'lines.product': 1,
