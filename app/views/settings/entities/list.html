@@ -62,7 +62,7 @@
                         <tr role="row" class="heading">
                             <th class="text-center">
                                 <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" ng-click="checkedAll()" />
-                            </th>                            
+                            </th>
                             <th table-sort='name' ng-model="sort" name="@(companies:Company)"></th>
                             <th table-sort='address.zip' ng-model="sort" name="@(Zip)"></th>
                             <th table-sort='address.city' ng-model="sort" name="@(Town)"></th>
@@ -71,13 +71,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="line in entities"  ng-class="{'bg-grey-silver':line.exported}">
+                        <tr ng-repeat="line in entities" ng-class="{'bg-grey-silver':line.exported}">
                             <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
-                            <td><a class="with-tooltip" ui-sref="settings.entity.show({id:line._id})"><i class="fa fa-institution"></i>{{line.name}}</a></td>                  
-                            <td>{{line.address.zip}}</td>                  
-                            <td>{{line.address.city}}</td>                  
-                            <td>{{line.companyInfo.idprof3}}</td>   
-                            <td>{{line.createdAt | date:'dd/MM/yyyy'}}</td>                                                              
+                            <td><a class="with-tooltip" ui-sref="settings.entity.show({id:line._id})"><i class="fa fa-institution"></i>{{line.name}}</a></td>
+                            <td ui-sref="settings.entity.show({id:line._id})">{{line.address.zip}}</td>
+                            <td ui-sref="settings.entity.show({id:line._id})">{{line.address.city}}</td>
+                            <td ui-sref="settings.entity.show({id:line._id})">{{line.companyInfo.idprof3}}</td>
+                            <td ui-sref="settings.entity.show({id:line._id})">{{line.createdAt | date:'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
                 </table>
