@@ -849,9 +849,8 @@ Object.prototype = {
             self.body.status.receivedById = self.user._id;
         }
 
-        if (self.body.Status == "VALIDATED" && !self.body.status.isInventory) {
+        if (self.body.Status == "VALIDATED" && !self.body.status.isInventory && !self.query.stockReturn)
             isInventory = true;
-        }
 
         // CANCEL DELIVERY
         if (self.body.Status == "DRAFT" && self.body.status.isInventory) {
@@ -2768,9 +2767,11 @@ function createDelivery(doc, callback) {
             //console.log(doc.lines[i]);
             let orderRow = _.findWhere(doc.orderRows, {
                 orderRowId: doc.lines[i]._id
-            })
+            });
 
-            if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty !== 0 && orderRow && orderRow.qty != null)
+
+
+            if (doc.lines[i].type != 'SUBTOTAL' && doc.lines[i].qty != 0 && orderRow && orderRow.qty != 0)
                 tabLines.push({
                     ref: doc.lines[i].product.info.SKU.substring(0, 12),
                     description: "\\textbf{" + doc.lines[i].product.info.langs[0].name + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
