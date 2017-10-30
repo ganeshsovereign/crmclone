@@ -1631,6 +1631,22 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "AccountingBalanceController"
         })
+        .state('accounting.vat', {
+            url: "/vat",
+            templateUrl: "/views/_vat/list.html",
+            data: {
+                pageTitle: 'Liste des declarations de TVA'
+            },
+            controller: "AccountingVATListController"
+        })
+        .state('accounting.vat.create', {
+            url: "/create.html",
+            templateUrl: "/views/_vat/fiche.html",
+            data: {
+                pageTitle: 'Creation d\'une declaration de TVA'
+            },
+            controller: "AccountingVATController"
+        })
         // Report
         .state('report', {
             url: "/report",

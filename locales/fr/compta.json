@@ -190,5 +190,6 @@
     "PaymentWaiting": "Opération(s) a venir",
     "Estimated": "Prévisionnel",
     "ViewAllNonExportRows": "Voir toutes les lignes non-exportées",
-    "ViewDeletedRows": "Voir toutes les lignes effacées"
+    "ViewDeletedRows": "Voir toutes les lignes effacées",
+    "BankTransfer": "Virement interne"
 }

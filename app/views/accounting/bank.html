@@ -68,18 +68,19 @@
         <div class="portlet-body">
             <div class="table-toolbar">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="btn-group">
                             <button class="btn blue" ng-click="addEntries = 1">@(compta:AddEntry) <i class="fa fa-plus"></i></button>
+                            <button class="btn yellow" ng-click="bankTransfer = 1">@(compta:BankTransfer) <i class="fa fa-plus"></i></button>
                             <button title="@(Refresh)" class="btn" ng-click="find()"><i class="fa fa-refresh"></i></button>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="col-md-4">
+                    <div class="col-md-5">
+                        <div class="col-md-3">
                             <select ng-model="journal" ng-disabled="account" ng-change="find();" ng-options="s as s for s in journaux track by s" class="form-control">
                             </select>
                         </div>
-                        <div class="col-md-4" ng-if="account">
+                        <div class="col-md-5" ng-if="account">
                             <select ng-model="account" ng-change="find();" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
                             </select>
                         </div>
@@ -194,6 +195,56 @@
                                     <div class="col-md-offset-5 col-md-7">
                                         <button ng-click="saveEntry(entry)" ng-disabled="entryBalance !== 0 || entry.lines.length == 0" class="btn blue">@(Add)</button>
                                         <button class="btn default" ng-click="addEntries = 0">@(Cancel)</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form" ng-show="bankTransfer">
+                    <div class="form-horizontal" role="form">
+                        <div class="form-body">
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(Date)</label>
+                                <div class="col-md-4">
+                                    <input date-input ng-model="entry.datec" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(compta:Debit)</label>
+                                <div class="col-md-4">
+                                    <select ng-model="entry.accountDebit" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(compta:Credit)</label>
+                                <div class="col-md-4">
+                                    <select ng-model="entry.accountCredit" ng-options="s as s.name for s in banks track by s.compta_bank" class="form-control">
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label">@(compta:Amount)</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" ng-model="entry.amount" placeholder="@(compta:Amount)" type="number" step="0.01" min="0">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-body">
+
+                            <div class="form-actions">
+                                <div class="row">
+                                    <div class="col-md-offset-5 col-md-7">
+                                        <button ng-click="saveBankTransfer(entry)" class="btn blue">@(Add)</button>
+                                        <button class="btn default" ng-click="bankTransfer = 0">@(Cancel)</button>
                                     </div>
                                 </div>
                             </div>
