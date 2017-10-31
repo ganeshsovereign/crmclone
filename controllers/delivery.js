@@ -218,6 +218,8 @@ Object.prototype = {
                 }
             });
 
+            //console.log(filterObject.$and[0]);
+
             Order.aggregate([{
                     $match: filterObject
                 },
@@ -448,7 +450,7 @@ Object.prototype = {
                     $match: newQueryObj
                 }, {
                     $group: {
-                        _id: "null",
+                        _id: null,
                         total: {
                             $sum: 1
                         },
@@ -569,7 +571,7 @@ Object.prototype = {
             if (err)
                 return self.throw500(err);
 
-            //return console.log(result);
+            //console.log(result.length);
 
             result = _.map(result, function(line) {
                 var res_status = {};

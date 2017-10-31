@@ -1351,7 +1351,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             datedl: {
                 value: {
                     start: moment().startOf('year').toDate(),
-                    end: moment().endOf('day').toDate()
+                    end: moment().endOf('year').toDate()
                 }
             },
             datec: {
