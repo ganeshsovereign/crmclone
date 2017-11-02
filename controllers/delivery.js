@@ -107,7 +107,7 @@ Object.prototype = {
             filter = {};
         }
 
-        //console.log(filter);
+        console.log(filter);
 
         if (filter && filter.salesPerson && filter.salesPerson.value.length)
             filter.Status.value = [];
