@@ -35,6 +35,10 @@
                         </a>
                     </li>
                     <li>
+                        <a ng-show="login.rights.delivery.read" ng-href="/erp/api/delivery/export?type=xls&filter={{search}}">
+                            <i class="fa fa-file-excel-o"></i> @(Export XLS)</a>
+                    </li>
+                    <li>
                         <a ng-show="login.rights.delivery.read" ng-click="openUrl('/erp/api/delivery/csv/', 'id')" target="_blank">
                             <i class="fa fa-file-excel-o"></i> @(CSV Etiquettes)</a>
                     </li>

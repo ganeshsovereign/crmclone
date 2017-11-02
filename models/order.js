@@ -30,6 +30,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     ObjectId = mongoose.Schema.Types.ObjectId,
     timestamps = require('mongoose-timestamp'),
+    moment = require('moment'),
     async = require('async'),
     _ = require('lodash');
 
@@ -1464,6 +1465,510 @@ goodsOutNoteSchema.statics.cancelInventories = function(options, callback) {
             callback();
         });
     });
+};
+
+goodsOutNoteSchema.statics.query = function(options, callback) {
+    const self = this;
+
+    var data = options.query;
+    var quickSearch = data.quickSearch;
+    const limit = options.limit;
+    const skip = options.skip;
+
+    const FilterMapper = MODULE('helper').filterMapper;
+    var filterMapper = new FilterMapper();
+
+    var accessRollSearcher;
+    var contentSearcher;
+    var waterfallTasks;
+    var contentType = data.contentType;
+    var sort = {};
+    var filter = data.filter && JSON.parse(data.filter) || {};
+    var key;
+    var filterObject = {
+        isremoved: {
+            $ne: true
+        }
+    };
+    var optionsObject = {};
+    var matchObject = {};
+    var regExp;
+    var pastDue = filter.pastDue;
+
+    if (quickSearch) {
+        regExp = new RegExp(quickSearch, 'ig');
+        matchObject['ref'] = {
+            $regex: regExp
+        };
+        filter = {};
+    }
+
+    console.log(filter);
+
+    if (filter && filter.salesPerson && filter.salesPerson.value.length)
+        filter.Status.value = [];
+    if (filter && filter.supplier && filter.supplier.value.length)
+        filter.Status.value = [];
+
+    //TODO refresh Status on angular
+    if (filter && filter.Status && filter.Status.value[0] == "NEW") {
+        filter.Status.value = [];
+        filterObject.Status = {
+            $nin: ["SEND", "BILLED"]
+        };
+    }
+
+    if (filter && filter.Status && filter.Status.value[0] == "CLOSED") {
+        filter.Status.value[0] = "SEND";
+    }
+
+    filterObject.$and = [];
+
+    if (filter && typeof filter === 'object') {
+        filterObject.$and.push(filterMapper.mapFilter(filter, {
+            contentType: contentType
+        })); // caseFilter(filter);
+    }
+
+    //return console.log(filterObject);
+
+    if (options.query.sort) {
+        sort = JSON.parse(options.query.sort);
+        sort._id = 1;
+    } else
+        sort = {
+            datedl: 1,
+            _id: 1
+        };
+
+    /* if (contentType !== 'order' && contentType !== 'integrationUnlinkedOrders') {
+         Order = MODEL('order').Schema.OrderSupplier;
+
+         //queryObject.$and.push({ _type: 'purchaseOrders' });
+     } else {
+         //queryObject.$and.push({ _type: 'Order' });
+     }*/
+
+    if (pastDue) {
+        optionsObject.$and.push({
+            expectedDate: {
+                $gt: new Date(filter.date.value[1])
+            }
+        }, {
+            'workflow.status': {
+                $ne: 'Done'
+            }
+        });
+    }
+
+    accessRollSearcher = function(cb) {
+        const accessRoll = MODULE('helper').accessRoll;
+
+        accessRoll(options.user, Order, cb);
+    };
+
+    contentSearcher = function(ids, cb) {
+        var newQueryObj = {};
+        const ObjectId = MODULE('utils').ObjectId;
+
+        var salesManagerMatch = {
+            $and: [{
+                    $eq: ['$$projectMember.projectPositionId', ObjectId("570e9a75785753b3f1d9c86e")]
+                }, //CONSTANTS.SALESMANAGER
+                {
+                    $or: [{
+                        $and: [{
+                            $eq: ['$$projectMember.startDate', null]
+                        }, {
+                            $eq: ['$$projectMember.endDate', null]
+                        }]
+                    }, {
+                        $and: [{
+                            $lte: ['$$projectMember.startDate', '$datec']
+                        }, {
+                            $eq: ['$$projectMember.endDate', null]
+                        }]
+                    }, {
+                        $and: [{
+                            $eq: ['$$projectMember.startDate', null]
+                        }, {
+                            $gte: ['$$projectMember.endDate', '$datec']
+                        }]
+                    }, {
+                        $and: [{
+                            $lte: ['$$projectMember.startDate', '$datec']
+                        }, {
+                            $gte: ['$$projectMember.endDate', '$datec']
+                        }]
+                    }]
+                }
+            ]
+        };
+
+        newQueryObj.$and = [];
+        //newQueryObj.$and.push(queryObject);
+        //console.log(JSON.stringify(filterObject));
+        newQueryObj.$and.push({
+            _id: {
+                $in: ids
+            }
+        });
+
+        //console.log(filterObject.$and[0]);
+
+        var query = [{
+                $match: filterObject
+            },
+            {
+                $match: matchObject
+            },
+            {
+                $project: {
+                    workflow: 1,
+                    supplier: 1,
+                    salesManagers: {
+                        $filter: {
+                            input: '$projectMembers',
+                            as: 'projectMember',
+                            cond: salesManagerMatch
+                        }
+                    },
+                    channel: 1,
+                    salesPerson: 1,
+                    orderRows: 1,
+                    datec: 1,
+                    ref_client: 1,
+                    datedl: 1,
+                    Status: 1,
+                    ID: 1,
+                    ref: 1,
+                    status: 1,
+                    _type: 1,
+                    forSales: 1,
+                    entity: 1
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Customers',
+                    localField: 'supplier',
+                    foreignField: '_id',
+                    as: 'supplier'
+                }
+            },
+            /*{
+                               $lookup: {
+                                   from: 'workflows',
+                                   localField: 'workflow',
+                                   foreignField: '_id',
+                                   as: 'workflow'
+                               }
+                           },*/
+            {
+                $lookup: {
+                    from: 'Employees',
+                    localField: 'salesPerson',
+                    foreignField: '_id',
+                    as: 'salesPerson'
+                }
+            },
+            /* {
+                                       $lookup: {
+                                           from: 'integrations',
+                                           localField: 'channel',
+                                           foreignField: '_id',
+                                           as: 'channel'
+                                       }
+                                   },*/
+            {
+                $project: {
+                    workflow: {
+                        $arrayElemAt: ['$workflow', 0]
+                    },
+                    supplier: {
+                        $arrayElemAt: ['$supplier', 0]
+                    },
+                    salesManagers: 1,
+                    channel: {
+                        $arrayElemAt: ['$channel', 0]
+                    },
+                    salesPerson: {
+                        $arrayElemAt: ['$salesPerson', 0]
+                    },
+                    orderRows: 1,
+                    datec: 1,
+                    ref_client: 1,
+                    datedl: 1,
+                    Status: 1,
+                    ID: 1,
+                    ref: 1,
+                    status: 1,
+                    _type: 1,
+                    forSales: 1,
+                    entity: 1
+                }
+            }, {
+                $project: {
+                    salesManager: {
+                        $arrayElemAt: ['$salesManagers', 0]
+                    },
+                    supplier: {
+                        _id: '$supplier._id',
+                        fullName: {
+                            $concat: ['$supplier.name.first', ' ', '$supplier.name.last']
+                        }
+                    },
+
+                    workflow: {
+                        _id: '$workflow._id',
+                        status: '$workflow.status',
+                        name: '$workflow.name'
+                    },
+
+                    tempWorkflow: {
+                        _id: '$tempWorkflow._id',
+                        status: '$tempWorkflow.status'
+                    },
+
+                    channel: {
+                        _id: '$channel._id',
+                        name: '$channel.channelName',
+                        type: '$channel.type'
+                    },
+
+                    datec: 1,
+                    ref_client: 1,
+                    datedl: 1,
+                    Status: 1,
+                    ID: 1,
+                    salesPerson: 1,
+                    ref: 1,
+                    isOrder: 1,
+                    proformaCounter: 1,
+                    status: 1,
+                    _type: 1,
+                    forSales: 1,
+                    orderRows: 1,
+                    entity: 1
+                }
+            }, {
+                $lookup: {
+                    from: 'Employees',
+                    localField: 'salesManager.employeeId',
+                    foreignField: '_id',
+                    as: 'salesManager'
+                }
+            }, {
+                $project: {
+                    salesPerson: {
+                        $ifNull: ['$salesPerson', {
+                            $arrayElemAt: ['$salesManager', 0]
+                        }]
+                    },
+                    workflow: 1,
+                    tempWorkflow: 1,
+                    supplier: 1,
+                    datec: 1,
+                    ref_client: 1,
+                    datedl: 1,
+                    Status: 1,
+                    ID: 1,
+                    ref: 1,
+                    status: 1,
+                    _type: 1,
+                    forSales: 1,
+                    orderRows: 1,
+                    channel: 1,
+                    entity: 1
+                }
+            }, {
+                $project: {
+                    salesPerson: {
+                        _id: '$salesPerson._id',
+                        fullName: {
+                            $concat: ['$salesPerson.name.first', ' ', '$salesPerson.name.last']
+                        }
+                    },
+                    workflow: 1,
+                    tempWorkflow: 1,
+                    supplier: 1,
+                    datec: 1,
+                    ref_client: 1,
+                    datedl: 1,
+                    Status: 1,
+                    ID: 1,
+                    ref: 1,
+                    status: 1,
+                    _type: 1,
+                    forSales: 1,
+                    entity: 1,
+                    late: {
+                        $cond: {
+                            if: {
+                                $and: [{
+                                        $ne: ['$Status', 'SEND']
+                                    },
+                                    {
+                                        $ne: ['$Status', 'BILLED']
+                                    },
+                                    {
+                                        $lte: ['$datedl', moment().subtract(5, 'day').endOf('day').toDate()]
+                                    }
+                                ]
+                            },
+                            then: 1,
+                            else: 0
+                        }
+                    },
+                    channel: 1,
+                    removable: {
+                        $cond: {
+                            if: {
+                                $or: [{
+                                    $eq: ['$workflow.status', 'Done']
+                                }, {
+                                    $eq: ['$tempWorkflow.status', 'Done']
+                                }, {
+                                    $and: [{
+                                        $ne: ['$status.fulfillStatus', 'NOR']
+                                    }, {
+                                        $ne: ['$status.fulfillStatus', 'NOT']
+                                    }]
+                                }]
+                            },
+                            then: false,
+                            else: true
+                        }
+                    },
+                    qty: { $sum: "$orderRows.qty" }
+                }
+            }, {
+                $match: newQueryObj
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: 1
+                    },
+                    late: {
+                        $sum: "$late"
+                    },
+                    root: {
+                        $push: '$$ROOT'
+                    }
+                }
+            }, {
+                $unwind: '$root'
+            }, {
+                $project: {
+                    _id: '$root._id',
+                    salesPerson: '$root.salesPerson',
+                    workflow: '$root.workflow',
+                    supplier: '$root.supplier',
+                    datec: '$root.datec',
+                    ref_client: '$root.ref_client',
+                    datedl: '$root.datedl',
+                    qty: '$root.qty',
+                    Status: '$root.Status',
+                    ID: '$root.ID',
+                    ref: '$root.ref',
+                    status: '$root.status',
+                    removable: '$root.removable',
+                    channel: '$root.channel',
+                    entity: '$root.entity',
+                    total: 1,
+                    totalAll: {
+                        count: "$total",
+                        late: "$late"
+                    }
+                }
+            }, {
+                $group: {
+                    _id: "$Status",
+                    total: {
+                        $sum: 1
+                    },
+                    root: {
+                        $push: '$$ROOT'
+                    }
+                }
+            }, {
+                $unwind: '$root'
+            }, {
+                $group: {
+                    _id: null,
+                    Status: { $addToSet: { _id: "$_id", total: "$total" } },
+                    root: {
+                        $push: '$root'
+                    }
+                }
+            }, {
+                $unwind: '$root'
+            }, {
+                $project: {
+                    _id: '$root._id',
+                    salesPerson: '$root.salesPerson',
+                    workflow: '$root.workflow',
+                    supplier: '$root.supplier',
+                    datec: '$root.datec',
+                    ref_client: '$root.ref_client',
+                    datedl: '$root.datedl',
+                    qty: '$root.qty',
+                    Status: '$root.Status',
+                    ID: '$root.ID',
+                    ref: '$root.ref',
+                    status: '$root.status',
+                    removable: '$root.removable',
+                    channel: '$root.channel',
+                    entity: '$root.entity',
+                    total: "$root.total",
+                    totalAll: {
+                        count: "$root.totalAll.count",
+                        late: "$root.totalAll.late",
+                        Status: "$Status"
+                    }
+                }
+            }, {
+                $project: {
+                    salesPerson: 1,
+                    workflow: 1,
+                    supplier: 1,
+                    datec: 1,
+                    ref_client: 1,
+                    datedl: 1,
+                    qty: 1,
+                    Status: 1,
+                    ID: 1,
+                    ref: 1,
+                    status: 1,
+                    removable: 1,
+                    channel: 1,
+                    total: 1,
+                    totalAll: 1,
+                    entity: 1
+                }
+            },
+            {
+                $sort: sort
+            }
+        ];
+
+        if (skip)
+            query.push({
+                $skip: skip
+            });
+
+        if (limit)
+            query.push({
+                $limit: limit
+            });
+
+        self.aggregate(query, cb);
+    };
+
+    waterfallTasks = [accessRollSearcher, contentSearcher];
+
+    async.waterfall(waterfallTasks, callback);
 };
 
 var goodsInNoteSchema = new Schema({
