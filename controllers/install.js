@@ -4791,7 +4791,12 @@ F.on('load', function() {
                     const TransactionModel = MODEL('transaction').Schema;
 
                     console.log("convert compta Transaction memo");
-                    TransactionModel.find({ memo: new RegExp('TVA', 'g'), 'meta.supplier': { $ne: null } })
+                    TransactionModel.find({
+                            memo: new RegExp('TVA', 'g'),
+                            'meta.supplier': {
+                                $ne: null
+                            }
+                        })
                         .populate('meta.supplier', "name")
                         .exec(function(err, docs) {
                             if (err)
@@ -4859,7 +4864,14 @@ F.on('load', function() {
                                 return aCb();
 
                             async.forEach(docs, function(doc, eCb) {
-                                return OrderModel.findByIdAndUpdate(doc._id, { $set: { status: doc.status } }, { upsert: false, new: true }, function(err, doc) {
+                                return OrderModel.findByIdAndUpdate(doc._id, {
+                                    $set: {
+                                        status: doc.status
+                                    }
+                                }, {
+                                    upsert: false,
+                                    new: true
+                                }, function(err, doc) {
                                     eCb(err);
                                 });
                             }, aCb);
@@ -4880,7 +4892,14 @@ F.on('load', function() {
                                 return aCb();
 
                             async.forEach(docs, function(doc, eCb) {
-                                return StockReturnModel.findByIdAndUpdate(doc._id, { $set: { status: doc.status } }, { upsert: false, new: true }, function(err, doc) {
+                                return StockReturnModel.findByIdAndUpdate(doc._id, {
+                                    $set: {
+                                        status: doc.status
+                                    }
+                                }, {
+                                    upsert: false,
+                                    new: true
+                                }, function(err, doc) {
                                     eCb(err);
                                 });
                             }, aCb);
@@ -4903,7 +4922,14 @@ F.on('load', function() {
                                 return aCb();
 
                             async.forEach(docs, function(doc, eCb) {
-                                return OrderModel.findByIdAndUpdate(doc._id, { $set: { status: doc.status } }, { upsert: false, new: true }, function(err, doc) {
+                                return OrderModel.findByIdAndUpdate(doc._id, {
+                                    $set: {
+                                        status: doc.status
+                                    }
+                                }, {
+                                    upsert: false,
+                                    new: true
+                                }, function(err, doc) {
                                     eCb(err);
                                 });
                             }, aCb);
@@ -4942,8 +4968,12 @@ F.on('load', function() {
                             isremoved: {
                                 $ne: true
                             },
-                            updatedAt: { $lte: moment().subtract(3, 'month').toDate() }
-                        }, "_id", { limit: 1500 })
+                            updatedAt: {
+                                $lte: moment().subtract(3, 'month').toDate()
+                            }
+                        }, "_id", {
+                            limit: 1500
+                        })
                         .exec(function(err, docs) {
                             if (err || !docs)
                                 return;
@@ -4951,7 +4981,9 @@ F.on('load', function() {
                             async.eachLimit(docs, 100, function(doc, eCb) {
                                 F.emit('customer:recalculateStatus', {
                                     userId: null,
-                                    supplier: { _id: doc._id.toString() }
+                                    supplier: {
+                                        _id: doc._id.toString()
+                                    }
                                 });
                                 eCb();
 
@@ -4981,7 +5013,10 @@ F.on('load', function() {
                                 isremoved: {
                                     $ne: true
                                 },
-                                datec: { $gte: moment().startOf('year').toDate(), $lte: moment().endOf('year').toDate() }
+                                datec: {
+                                    $gte: moment().startOf('year').toDate(),
+                                    $lte: moment().endOf('year').toDate()
+                                }
                             }
                         },
                         {
@@ -4989,8 +5024,13 @@ F.on('load', function() {
                         },
                         {
                             $group: {
-                                _id: { taxId: "$total_taxes.taxeId", Status: "$Status" },
-                                total: { "$sum": "$total_taxes.value" }
+                                _id: {
+                                    taxId: "$total_taxes.taxeId",
+                                    Status: "$Status"
+                                },
+                                total: {
+                                    "$sum": "$total_taxes.value"
+                                }
                             }
                         }, {
                             $lookup: {

@@ -50,7 +50,6 @@ exports.install = function(options) {
     });
 
     F.route('/erp/api/order/lines/list', object.listLines, ['authorize']);
-    F.route('/erp/api/order/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/order/dt_stockreturn', object.readDT_stockreturn, ['post', 'authorize']);
     F.route('/erp/api/order', object.getByViewType, ['authorize']);
     /**
@@ -152,7 +151,18 @@ Object.prototype = {
 
     getByViewType: function() {
         var self = this;
-        var Order = MODEL('order').Schema.OrderCustomer;
+        if (self.query.quotation === 'true') {
+            if (self.query.forSales == "false")
+                var Order = MODEL('order').Schema.QuotationSupplier;
+            else
+                var Order = MODEL('order').Schema.QuotationCustomer;
+        } else {
+            if (self.query.forSales == "false")
+                var Order = MODEL('order').Schema.OrderSupplier;
+            else
+                var Order = MODEL('order').Schema.OrderCustomer;
+        }
+
         var OrderStatus = MODEL('order').Status;
 
         var data = self.query;
@@ -227,14 +237,6 @@ Object.prototype = {
                 datedl: -1,
                 _id: 1
             };
-
-        if (contentType !== 'order' && contentType !== 'integrationUnlinkedOrders') {
-            Order = MODEL('order').Schema.OrderSupplier;
-
-            //queryObject.$and.push({ _type: 'purchaseOrders' });
-        } else {
-            //queryObject.$and.push({ _type: 'Order' });
-        }
 
         if (pastDue) {
             optionsObject.$and.push({
@@ -702,7 +704,7 @@ Object.prototype = {
             //response.total = result.length;
             response.data = result;
 
-            //console.log(result);
+            //console.log(response);
 
             self.json(response);
         });
@@ -1223,144 +1225,6 @@ Object.prototype = {
                 if (err)
                     return self.throw500(err);
                 self.json({});
-            });
-        });
-    },
-    readDT: function() {
-        var self = this;
-
-        var link = 'order';
-
-        if (self.query.quotation === 'true') {
-            var link = 'offer';
-            if (self.query.forSales == "false")
-                var OrderModel = MODEL('order').Schema.QuotationSupplier;
-            else
-                var OrderModel = MODEL('order').Schema.QuotationCustomer;
-        } else {
-            if (self.query.forSales == "false")
-                var OrderModel = MODEL('order').Schema.OrderSupplier;
-            else
-                var OrderModel = MODEL('order').Schema.OrderCustomer;
-        }
-
-        var round = MODULE('utils').round;
-
-        const SocieteModel = MODEL('Customers').Schema;
-        const EmployeeModel = MODEL('Employees').Schema;
-
-        var query = JSON.parse(self.body.query);
-
-        var conditions = {
-            Status: {
-                $ne: "BILLED"
-            },
-            isremoved: {
-                $ne: true
-            }
-            //  forSales: true
-        };
-
-        //console.log(self.query);
-
-        if (!query.search.value) {
-            if (self.query.Status && self.query.Status !== 'null' && self.query.Status !== 'undefined')
-                if (self.query.Status == 'CLOSED') // TODO Remove fix in dict
-                    conditions.Status = "BILLED";
-                else
-                    conditions.Status = self.query.Status;
-        } else
-            delete conditions.Status;
-
-        if (!self.user.multiEntities)
-            conditions.entity = self.user.entity;
-
-        if (self.query.entity && self.query.entity != 'undefined')
-            conditions.entity = self.query.entity;
-
-        var options = {
-            conditions: conditions,
-            select: "supplier ref forSales status"
-        };
-
-        //console.log(options);
-
-        async.parallel({
-            status: function(cb) {
-                /*Dict.dict({
-                    dictName: "fk_order_status",
-                    object: true
-                }, cb);*/
-                cb(null, MODEL('order').Status);
-            },
-            datatable: function(cb) {
-                OrderModel.dataTable(query, options, cb);
-            }
-        }, function(err, res) {
-            if (err)
-                console.log(err);
-
-            SocieteModel.populate(res, {
-                path: "datatable.data.supplier"
-            }, function(err, res) {
-                EmployeeModel.populate(res, {
-                    path: "datatable.data.salesPerson",
-                    select: "name"
-                }, function(err, res) {
-
-                    for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                        var row = res.datatable.data[i];
-
-                        //console.log(row);
-
-                        // Add checkbox
-                        res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                        // Add id
-                        res.datatable.data[i].DT_RowId = row._id.toString();
-
-                        // Add color line 
-                        /* if (res.datatable.data[i].Status === 'VALIDATED')
-                            res.datatable.data[i].DT_RowClass = "bg-yellow";*/
-
-                        if (row.supplier && row.supplier._id)
-                            res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
-                        else {
-                            if (!row.supplier)
-                                res.datatable.data[i].supplier = {};
-                            res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
-                        }
-
-                        // Action
-                        //res.datatable.data[i].action = '<a href="#!/order/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                        // Add url on name
-                        if (row.forSales)
-                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + '/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
-                        else
-                            res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/' + link + 'supplier/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-shopping-cart"></span> ' + row.ref + '</a>';
-                        // Convert Date
-                        res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                        res.datatable.data[i].datedl = (row.datedl ? moment(row.datedl).format(CONFIG('dateformatShort')) : '');
-                        // Convert Status
-                        res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-                        if (row.status && link == 'order') {
-                            res.datatable.data[i].Status += '<span class="pull-right">';
-                            if (row.forSales)
-                                res.datatable.data[i].Status += '<span class="fa large fa-check-circle ' + (row.status.allocateStatus == 'NOR' ? 'font-grey' : '') + (row.status.allocateStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.allocateStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.allocateStatus == 'NOT' ? 'font-red' : '') + '"></span>';
-                            res.datatable.data[i].Status += '<span class="fa large fa-inbox ' + (row.status.fulfillStatus == 'NOR' ? 'font-grey' : '') + (row.status.fulfillStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.fulfillStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.fulfillStatus == 'NOT' ? 'font-red' : '') + '"></span>';
-                            res.datatable.data[i].Status += '<span class="fa large fa-truck ' + (row.status.shippingStatus == 'NOR' ? 'font-grey' : '') + (row.status.shippingStatus == 'ALL' ? 'font-green-jungle' : '') + (row.status.shippingStatus == 'NOA' ? 'font-yellow-lemon' : '') + (row.status.shippingStatus == 'NOT' ? 'font-red' : '') + '"></span>';
-                            res.datatable.data[i].Status += '</span>';
-                        }
-
-                        if (row.salesPerson)
-                            res.datatable.data[i].salesPerson = row.salesPerson.fullName;
-
-                        res.datatable.data[i].total_ttc = round(row.total_ttc, 2);
-                    }
-
-                    //console.log(res.datatable);
-
-                    self.json(res.datatable);
-                });
             });
         });
     },
@@ -2480,7 +2344,11 @@ Object.prototype = {
                         delete facture.Status;
                         delete facture.latex;
                         delete facture.datec;
-                        delete facture.datel;
+
+                        if (moment(facture.datedl).isAfter(moment()))
+                            facture.datec = facture.datedl;
+
+                        delete facture.datedl;
                         delete facture.createdAt;
                         delete facture.updatedAt;
                         delete facture.ref;

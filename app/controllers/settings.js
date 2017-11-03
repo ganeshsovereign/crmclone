@@ -19,7 +19,7 @@ limitations under the License.
 International Registered Trademark & Property of ToManage SAS
 */
 
-"use strict";
+
 
 MetronicApp.controller('SettingGeneralController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
     $scope.$on('$viewContentLoaded', function() {
@@ -154,7 +154,6 @@ MetronicApp.controller('SettingEntityController', ['$rootScope', '$scope', '$htt
             Settings.entity.query(query, function(data) {
                 $scope.page.total = data.total;
                 $scope.entities = data.data;
-                console.log("entites", data.data);
 
                 $timeout(function() {
                     Metronic.unblockUI('.waiting');

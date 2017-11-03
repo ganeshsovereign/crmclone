@@ -344,7 +344,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     else
                         return $rootScope.$state.go('societe.show.contact');
 
-                    //console.log(societe);
+                //console.log(societe);
 
                 $http({
                     method: 'GET',

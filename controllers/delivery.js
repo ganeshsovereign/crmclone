@@ -71,11 +71,14 @@ function Object() {}
 Object.prototype = {
     getByViewType: function() {
         var self = this;
+        if (self.query.forSales === "false")
+            var Order = MODEL('order').Schema.GoodsInNote;
+        else
         var Order = MODEL('order').Schema.GoodsOutNote;
         var OrderStatus = MODEL('order').Status;
 
         var data = self.query;
-
+        var quickSearch = data.quickSearch;
         var paginationObject = MODULE('helper').page(self.query);
         var limit = paginationObject.limit;
         var skip = paginationObject.skip;
@@ -1313,7 +1316,9 @@ Object.prototype = {
 
         DeliveryModel.aggregate([{
                 $match: {
-                    Status: { $ne: "DRAFT" },
+                    Status: {
+                        $ne: "DRAFT"
+                    },
                     isremoved: {
                         $ne: true
                     },

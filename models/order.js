@@ -666,7 +666,16 @@ orderCustomerSchema.methods.unsetAllocated = function(newRows, callback) {
         Availability.update({
                 product: elem.product,
                 'orderRows.orderRowId': elem._id
-            }, { $pull: { "orderRows": { "orderRowId": elem._id } } }, { multi: true, upsert: false },
+            }, {
+                $pull: {
+                    "orderRows": {
+                        "orderRowId": elem._id
+                    }
+                }
+            }, {
+                multi: true,
+                upsert: false
+            },
             eachCb);
     }, callback);
 };
@@ -2177,14 +2186,14 @@ var stockReturnSchema = new Schema({
         },
 
         qty: Number
-            /*
-                    _id: false,
-                    goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
-                    goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
-                    product: { type: ObjectId, ref: 'product', default: null },
-                    cost: { type: Number, default: 0 },
-                    qty: Number,
-                    warehouse: { type: ObjectId, ref: 'warehouse', default: null }*/
+        /*
+                _id: false,
+                goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
+                goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
+                product: { type: ObjectId, ref: 'product', default: null },
+                cost: { type: Number, default: 0 },
+                qty: Number,
+                warehouse: { type: ObjectId, ref: 'warehouse', default: null }*/
     }]
 });
 
@@ -2375,11 +2384,11 @@ function saveOrder(next) {
 
             if (self.warehouse && self.forSales == false) // Refresh shipping address
                 return WarehouseModel.findById(self.warehouse, "_id address", function(err, warehouse) {
-                if (warehouse && self.Status == "DRAFT")
-                    self.shippingAddress = warehouse.address;
+                    if (warehouse && self.Status == "DRAFT")
+                        self.shippingAddress = warehouse.address;
 
-                return wCb();
-            });
+                    return wCb();
+                });
 
             return WarehouseModel.findOne({
                 main: true
@@ -2544,11 +2553,11 @@ function setNameReturns(next) {
         function(wCb) {
             if (self.warehouse) // Refresh shipping address
                 return WarehouseModel.findById(self.warehouse, "_id address", function(err, warehouse) {
-                if (warehouse && self.Status == "DRAFT")
-                    self.shippingAddress = warehouse.address;
+                    if (warehouse && self.Status == "DRAFT")
+                        self.shippingAddress = warehouse.address;
 
-                return wCb();
-            });
+                    return wCb();
+                });
 
             WarehouseModel.findOne({
                 main: true
@@ -3067,7 +3076,9 @@ F.on('order:recalculateStatus', function(data) {
 
                             F.emit('customer:recalculateStatus', {
                                 userId: null,
-                                supplier: { _id: el.supplier.toString() }
+                                supplier: {
+                                    _id: el.supplier.toString()
+                                }
                             });
 
                             wCb();
@@ -3116,7 +3127,6 @@ F.on('order:sendDelivery', function(data) {
             delete object.Status;
             delete object.latex;
             delete object.datec;
-            delete object.datel;
             delete object.createdAt;
             delete object.updatedAt;
             delete object.ref;

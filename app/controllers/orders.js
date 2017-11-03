@@ -90,7 +90,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             //console.log(current, $rootScope.$stateParams.id);
 
             module = current[0];
-
             switch (current[0]) {
                 case 'offer':
                     Object = Orders.offer;
@@ -144,10 +143,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     break;
             }
 
-
             if ($rootScope.$stateParams.id && current.length <= 2 && current[1] === "show")
                 return $rootScope.$state.go(current[0] + '.show.detail');
-
 
             var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva", "fk_delivery_mode"];
 
@@ -218,10 +215,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 //console.log(data);
             });
 
-
-
             $scope.findOne();
-
         });
 
         $scope.$on('websocket', function(e, type, data) {
@@ -442,7 +436,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             delete object.Status;
             delete object.latex;
             delete object.datec;
-            delete object.datel;
             delete object.createdAt;
             delete object.updatedAt;
             delete object.ref;
@@ -486,7 +479,11 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             delete object.Status;
             delete object.latex;
             delete object.datec;
-            delete object.datel;
+
+            if (moment(object.datedl).isAfter(moment()))
+                object.datec = object.datedl;
+
+            delete object.datedl;
             delete object.createdAt;
             delete object.updatedAt;
             delete object.ref;
@@ -611,7 +608,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             delete object.Status;
             delete object.latex;
             delete object.datec;
-            delete object.datel;
             delete object.createdAt;
             delete object.updatedAt;
             delete object.ref;
@@ -663,7 +659,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             delete object.Status;
             delete object.latex;
             delete object.datec;
-            delete object.datel;
+            delete object.datedl;
             delete object.createdAt;
             delete object.updatedAt;
             delete object.ref;
@@ -748,212 +744,11 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.find();
             });
         };
-
     }
 ]);
 
-MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
-    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
-
-        var grid = new Datatable();
-        var user = $rootScope.login;
-
-        $scope.dict = {};
-
-        $scope.types = [{
-            name: "En cours",
-            id: "NOW"
-        }, {
-            name: "Clos",
-            id: "CLOSED"
-        }];
-        $scope.type = {
-            name: "En cours",
-            id: "NOW"
-        };
-
-        $scope.delivery_mode = ["Comptoir", "Livraison"];
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
-        $scope.$dict = {};
-
-        $scope.$on('websocket', function(e, type, data) {
-            if (type !== 'refresh')
-                return;
-
-            //console.log(data);
-            //console.log(type);
-
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('offer') < 0)
-                return;
-
-            $scope.find();
-        });
-
-        // Init
-        $scope.$on('$viewContentLoaded', function() {
-            // initialize core components
-            Metronic.initAjax();
-
-            // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
-            $rootScope.settings.layout.pageBodySolid = false;
-
-            var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
-            $http({
-                method: 'GET',
-                url: '/erp/api/dict',
-                params: {
-                    dictName: dict
-                }
-            }).success(function(data, status) {
-                $scope.dict = data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/employees/bySalesAccount'
-            }).success(function(data, status) {
-                $scope.$dict.salesPerson = data.data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/employees/getForDd',
-                params: {
-                    isEmployee: true
-                }
-            }).success(function(data, status) {
-                $scope.$dict.employees = data.data;
-                //console.log(data);
-            });
-
-            initDatatable();
-        });
-
-        $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.offer[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.offer[idx]
-            });
-            return ($scope.offer[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
-        };
-
-        function getUrl() {
-            return "/erp/api/order/dt?quotation=true" + "&Status=" + $scope.status_id;
-        }
-
-        function initDatatable() {
-
-            grid.init({
-                src: $("#offerList"),
-                onSuccess: function(grid) {
-                    // execute some code after table records loaded
-                },
-                onError: function(grid) {
-                    // execute some code on network or other general error 
-                },
-                loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
-                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-
-                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-                    "ajax": {
-                        "url": getUrl() // ajax source
-                    },
-                    "order": [
-                        [1, "desc"]
-                    ], // set first column as a default sort by asc
-                    "columns": [{
-                        data: 'bool'
-                    }, {
-                        "data": "ID"
-                    }, {
-                        "data": "supplier",
-                        defaultContent: ""
-                    }, {
-                        "data": "ref_client",
-                        defaultContent: ""
-                    }, {
-                        "data": "datedl",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
-                    }, {
-                        "data": "entity",
-                        defaultContent: ""
-                    }, {
-                        "data": "datec",
-                        defaultContent: ""
-                    }]
-                }
-            });
-
-            // handle group actionsubmit button click
-            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
-                e.preventDefault();
-                var action = $(".table-group-action-input", grid.getTableWrapper());
-                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                    grid.setAjaxParam("customActionType", "group_action");
-                    grid.setAjaxParam("customActionName", action.val());
-                    grid.setAjaxParam("id", grid.getSelectedRows());
-                    grid.getDataTable().ajax.reload();
-                    grid.clearAjaxParams();
-                } else if (action.val() == "") {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Please select an action',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                } else if (grid.getSelectedRowsCount() === 0) {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'No record selected',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                }
-            });
-        }
-
-        $scope.find = function(clear) {
-            if (clear)
-                $scope.status_id = null;
-            var url = getUrl();
-            grid.resetFilter(url);
-        };
-
-    }
-]);
-
-MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
-    function($scope, $rootScope, $http, $modal, $filter, $timeout, superCache, Orders) {
-
-        //var grid = new Datatable();
-        var user = $rootScope.login;
-        $scope.grid = {};
-
-        $scope.dict = {};
+MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
+    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout, superCache, Orders) {
         $scope.search = {
             ref: {
                 value: ""
@@ -962,7 +757,6 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 value: ""
             },
             entity: {
-
                 value: [$rootScope.login.entity],
             },
             supplier: {
@@ -1007,29 +801,43 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             'datedl': -1
         };
 
-        if (typeof superCache.get("OrderListController") !== "undefined") {
-            $scope.page = superCache.get("OrderListController").page;
-            $scope.search = superCache.get("OrderListController").search;
-            $scope.sort = superCache.get("OrderListController").sort;
+        if (typeof superCache.get("OfferListController") !== "undefined") {
+            $scope.page = superCache.get("OfferListController").page;
+            $scope.search = superCache.get("OfferListController").search;
+            $scope.sort = superCache.get("OfferListController").sort;
         }
 
-        /*$scope.loadAutocomplete = function(query, url) {
-            return $http({
-                method: 'POST',
-                url: url,
-                data: {
-                    take: 50, // limit
-                    entity: $rootScope.entity,
-                    filter: {
-                        logic: 'and',
-                        filters: [{
-                            value: query
-                        }]
-                    }
-                }
-            });
-        };*/
+        $scope.types = [{
+            name: "En cours",
+            id: "NOW"
+        }, {
+            name: "Clos",
+            id: "CLOSED"
+        }];
+        $scope.type = {
+            name: "En cours",
+            id: "NOW"
+        };
 
+        $scope.delivery_mode = ["Comptoir", "Livraison"];
+
+        $scope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('offer') < 0)
+                return;
+
+            $scope.find();
+        });
+
+        var module = $rootScope.$state.current.name.split('.')[0];
+        $scope.module = function(themodule) {
+            if (!themodule)
+                return module;
+
+            return module === themodule;
+        };
         $scope.resetFilter = function() {
             superCache.removeAll();
             $rootScope.$state.reload();
@@ -1038,11 +846,10 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
         $scope.checkedAll = function() {
             if (!this.checkAll)
                 this.grid = {};
-            for (var i = 0; i < $scope.orders.length; i++)
+            for (var i = 0; i < $scope.offers.length; i++)
                 if (this.checkAll)
-                    this.grid[$scope.orders[i]._id] = true;
+                    this.grid[$scope.offers[i]._id] = true;
         }
-
 
         $scope.open = function($event) {
             $event.preventDefault();
@@ -1067,6 +874,266 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             ]
         };
 
+        // Init
+        $scope.$on('$viewContentLoaded', function() {
+            // initialize core components
+            Metronic.initAjax();
+
+            // set default layout mode
+            $rootScope.settings.layout.pageSidebarClosed = true;
+            $rootScope.settings.layout.pageBodySolid = false;
+
+            var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva", "fk_delivery_mode"];
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/dict',
+                params: {
+                    dictName: dict
+                }
+            }).success(function(data, status) {
+                $scope.dict = data;
+                //console.log(data);
+            });
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/employees/bySalesAccount'
+            }).success(function(data, status) {
+                $scope.$dict.salesPerson = data.data;
+                //console.log(data);
+            });
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/employees/getForDd',
+                params: {
+                    isEmployee: true
+                }
+            }).success(function(data, status) {
+                $scope.$dict.employees = data.data;
+                //console.log(data);
+            });
+
+            $scope.find();
+        });
+
+        // Init ng-include
+        $scope.$on('$includeContentLoaded', function() {
+            // initialize core components
+            Metronic.initAjax();
+
+            // set default layout mode
+            $rootScope.settings.layout.pageSidebarClosed = true;
+            $rootScope.settings.layout.pageBodySolid = false;
+
+            var dict = ["fk_order_status", "fk_input_reason", "fk_paiement", "fk_bill_type", "fk_transport", "fk_payment_term", "fk_tva"];
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/dict',
+                params: {
+                    dictName: dict
+                }
+            }).success(function(data, status) {
+                $scope.dict = data;
+                //console.log(data);
+            });
+        });
+
+        $scope.ngIncludeInit = function(params, length) {
+            $scope.params = params;
+        };
+
+        $scope.openUrl = function(url, param) {
+            if (!grid)
+                return;
+
+            var params = {};
+
+            if (!params.entity)
+                params.entity = $rootScope.entity;
+
+            angular.forEach($scope.grid, function(value, key) {
+                if (value == true)
+                    this.push(key);
+            }, grid);
+
+            params.id = grid;
+
+            $http({
+                method: 'POST',
+                url: url,
+                data: params,
+                responseType: 'arraybuffer'
+            }).success(function(data, status, headers) {
+                headers = headers();
+
+                var filename = headers['x-filename'];
+                var contentType = headers['content-type'];
+
+                var linkElement = document.createElement('a');
+                try {
+                    var blob = new Blob([data], {
+                        type: contentType
+                    });
+                    var url = window.URL.createObjectURL(blob);
+
+                    linkElement.setAttribute('href', url);
+                    linkElement.setAttribute("download", filename);
+
+                    var clickEvent = new MouseEvent("click", {
+                        "view": window,
+                        "bubbles": true,
+                        "cancelable": false
+                    });
+                    linkElement.dispatchEvent(clickEvent);
+                } catch (ex) {
+                    console.log(ex);
+                }
+            }).error(function(data) {
+                console.log(data);
+            });
+        };
+
+        $scope.find = function() {
+            $scope.grid = {};
+            $scope.checkAll = false;
+
+            superCache.put("OfferListController", {
+                sort: $scope.sort,
+                search: $scope.search,
+                page: $scope.page
+            });
+
+            Metronic.blockUI({
+                target: '.waiting',
+                animate: false,
+                boxed: true,
+                overlayColor: 'gray'
+            });
+
+            var query = {
+                quickSearch: $scope.quickSearch,
+                filter: $scope.search,
+                viewType: 'list',
+                contentType: 'orders',
+                limit: $scope.page.limit,
+                page: $scope.page.page,
+                sort: this.sort
+            };
+
+            if (module === 'offer')
+                Orders.offer.query(query, function(data, status) {
+                    $scope.page.total = data.total;
+                    $scope.offers = data.data;
+                    $scope.totalAll = data.totalAll;
+
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
+            else if (module === 'offersupplier')
+                Orders.offerSupplier.query(query, function(data, status) {
+                    $scope.page.total = data.total;
+                    $scope.offers = data.data;
+                    $scope.totalAll = data.totalAll;
+
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
+        };
+
+        $scope.showStatus = function(idx, dict) {
+            if (!($scope.dict[dict] && $scope.offer[idx]))
+                return;
+            var selected = $filter('filter')($scope.dict[dict].values, {
+                id: $scope.offer[idx]
+            });
+            return ($scope.offer[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
+        };
+    }
+]);
+
+MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
+    function($scope, $rootScope, $http, $modal, $filter, $timeout, superCache, Orders) {
+        $scope.grid = {};
+
+        $scope.dict = {};
+        $scope.search = {
+            ref: {
+                value: ""
+            },
+            ref_client: {
+                value: ""
+            },
+            entity: {
+                value: [$rootScope.login.entity],
+            },
+            supplier: {
+                value: []
+            },
+            salesPerson: {
+                value: []
+            },
+            Status: {
+                value: ["NEW"]
+            },
+            allocationStatus: {
+                value: []
+            },
+            fulfilledStatus: {
+                value: []
+            },
+            shippingStatus: {
+                value: []
+            },
+            datedl: {
+                value: {
+                    start: moment().startOf('year').toDate(),
+                    end: moment().endOf('year').toDate()
+                }
+            },
+            datec: {
+                value: {
+                    start: moment().startOf('year').toDate(),
+                    end: moment().endOf('year').toDate()
+                }
+            },
+        };
+        $scope.page = {
+            limit: 25,
+            page: 1,
+            total: 0
+        };
+        $scope.sort = {
+            'datedl': -1
+        };
+
+        if (typeof superCache.get("OrderListController") !== "undefined") {
+            $scope.page = superCache.get("OrderListController").page;
+            $scope.search = superCache.get("OrderListController").search;
+            $scope.sort = superCache.get("OrderListController").sort;
+        }
+
+        /*$scope.loadAutocomplete = function(query, url) {
+            return $http({
+                method: 'POST',
+                url: url,
+                data: {
+                    take: 50, // limit
+                    entity: $rootScope.entity,
+                    filter: {
+                        logic: 'and',
+                        filters: [{
+                            value: query
+                        }]
+                    }
+                }
+            });
+        };*/
+
         $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
@@ -1079,6 +1146,50 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
             $scope.find();
         });
+
+        var module = $rootScope.$state.current.name.split('.')[0];
+        $scope.module = function(themodule) {
+            if (!themodule)
+                return module;
+
+            return module === themodule;
+        };
+
+        $scope.resetFilter = function() {
+            superCache.removeAll();
+            $rootScope.$state.reload();
+        }
+
+        $scope.checkedAll = function() {
+            if (!this.checkAll)
+                this.grid = {};
+            for (var i = 0; i < $scope.orders.length; i++)
+                if (this.checkAll)
+                    this.grid[$scope.orders[i]._id] = true;
+        }
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = true;
+        };
+
+        $scope.$dict = {
+            status: [{
+                    id: "ALL",
+                    name: "Complet"
+                },
+                {
+                    id: "NOA",
+                    name: "Partiel"
+                },
+                {
+                    id: "NOT",
+                    name: "Aucun"
+                },
+            ]
+        };
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
@@ -1120,118 +1231,10 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 //console.log(data);
             });
 
-            //initDatatable();
             $scope.find();
         });
 
-        /*$scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.order[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.order[idx]
-            });
-            return ($scope.order[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
-        };
-
-        function getUrl() {
-            return "/erp/api/order/dt" + "?Status=" + $scope.status_id + "&entity=" + $rootScope.entity;
-        }*/
-
-        /*function initDatatable() {
-
-            grid.init({
-                src: $("#orderList"),
-                onSuccess: function(grid) {
-                    // execute some code after table records loaded
-                },
-                onError: function(grid) {
-                    // execute some code on network or other general error 
-                },
-                loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
-                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-
-                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-                    "ajax": {
-                        "url": getUrl() // ajax source
-                    },
-                    "order": [
-                        [1, "desc"]
-                    ], // set first column as a default sort by asc
-                    "columns": [{
-                        data: 'bool'
-                    }, {
-                        "data": "ID"
-                    }, {
-                        "data": "supplier",
-                        defaultContent: ""
-                    }, {
-                        "data": "ref_client",
-                        defaultContent: ""
-                    }, {
-                        data: "salesPerson",
-                        defaultContent: ""
-                    }, {
-                        "data": "datedl",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ttc",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_paid",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
-                    }, {
-                        "data": "entity",
-                        defaultContent: ""
-                    }, {
-                        "data": "datec",
-                        defaultContent: ""
-                    }]
-                }
-            });
-
-            // handle group actionsubmit button click
-            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
-                e.preventDefault();
-                var action = $(".table-group-action-input", grid.getTableWrapper());
-                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                    grid.setAjaxParam("customActionType", "group_action");
-                    grid.setAjaxParam("customActionName", action.val());
-                    grid.setAjaxParam("id", grid.getSelectedRows());
-                    grid.getDataTable().ajax.reload();
-                    grid.clearAjaxParams();
-                } else if (action.val() == "") {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Please select an action',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                } else if (grid.getSelectedRowsCount() === 0) {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'No record selected',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                }
-            });
-        }*/
         $scope.find = function() {
-            var self = this;
-
             $scope.grid = {};
             $scope.checkAll = false;
 
@@ -1255,22 +1258,29 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 contentType: 'order',
                 limit: $scope.page.limit,
                 page: $scope.page.page,
-                sort: self.sort
+                sort: this.sort
             };
 
-            //console.log(query);
+            if (module === 'order')
+                Orders.order.query(query, function(data, status) {
+                    $scope.page.total = data.total;
+                    $scope.orders = data.data;
+                    $scope.totalAll = data.totalAll;
 
-            Orders.order.query(query, function(data, status) {
-                console.log("orders", data);
-                $scope.page.total = data.total;
-                $scope.orders = data.data;
-                $scope.totalAll = data.totalAll;
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
+            else if (module === 'ordersupplier')
+                Orders.orderSupplier.query(query, function(data, status) {
+                    $scope.page.total = data.total;
+                    $scope.orders = data.data;
+                    $scope.totalAll = data.totalAll;
 
-                $timeout(function() {
-                    Metronic.unblockUI('.waiting');
-                }, 0);
-            });
-
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
         };
 
         $scope.createBills = function() {
@@ -1321,9 +1331,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
 MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
     function($scope, $rootScope, $http, $modal, $filter, $timeout, superCache, Orders) {
-        var user = $rootScope.login;
-
-        $scope.dict = {};
+        $scope.$dict = {};
         $scope.search = {
             ref: {
                 value: ""
@@ -1349,7 +1357,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             datedl: {
                 value: {
                     start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
+                    end: moment().endOf('day').toDate()
                 }
             },
             datec: {
@@ -1370,6 +1378,22 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             'datedl': 1
         };
 
+
+        $scope.types = [{
+            name: "En cours",
+            id: "NOW"
+        }, {
+            name: "Clos",
+            id: "CLOSED"
+        }];
+
+        $scope.type = {
+            name: "En cours",
+            id: "NOW"
+        };
+
+        $scope.delivery_mode = ["Comptoir", "Livraison"];
+
         if (typeof superCache.get("DeliveryListController") !== "undefined") {
             $scope.page = superCache.get("DeliveryListController").page;
             $scope.search = superCache.get("DeliveryListController").search;
@@ -1377,12 +1401,22 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
         }
 
         $scope.$dict = {};
+        $scope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
 
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('delivery') < 0)
+                return;
 
-            $scope.opened = true;
+            $scope.find();
+        });
+
+        var module = $rootScope.$state.current.name.split('.')[0];
+        $scope.module = function(themodule) {
+            if (!themodule)
+                return module;
+
+            return module === themodule;
         };
 
         $scope.resetFilter = function() {
@@ -1398,18 +1432,12 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                     this.grid[$scope.orders[i]._id] = true;
         };
 
-        $scope.$on('websocket', function(e, type, data) {
-            if (type !== 'refresh')
-                return;
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
 
-            //console.log(data);
-            //console.log(type);
-
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('delivery') < 0)
-                return;
-
-            $scope.find();
-        });
+            $scope.opened = true;
+        };
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
@@ -1420,7 +1448,8 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
-            var dict = ["fk_order_status", "fk_paiement"];
+            var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
+
             $http({
                 method: 'GET',
                 url: '/erp/api/dict',
@@ -1448,7 +1477,6 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                 }
             }).success(function(data, status) {
                 $scope.$dict.employees = data.data;
-                //console.log(data);
             });
 
             $http({
@@ -1465,50 +1493,31 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             $scope.find();
         });
 
-        $scope.find = function() {
-            var self = this;
+        // Init ng-include
+        $scope.$on('$includeContentLoaded', function() {
+            // initialize core components
+            Metronic.initAjax();
 
-            $scope.grid = {};
-            $scope.checkAll = false;
+            // set default layout mode
+            $rootScope.settings.layout.pageSidebarClosed = true;
+            $rootScope.settings.layout.pageBodySolid = false;
 
-            superCache.put("DeliveryListController", {
-                sort: $scope.sort,
-                search: $scope.search,
-                page: $scope.page
+            var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
+
+            $http({
+                method: 'GET',
+                url: '/erp/api/dict',
+                params: {
+                    dictName: dict
+                }
+            }).success(function(data, status) {
+                $scope.dict = data;
             });
+        });
 
-            Metronic.blockUI({
-                target: '.waiting',
-                animate: false,
-                boxed: true,
-                overlayColor: 'gray'
-            });
-
-            var query = {
-                quickSearch: $scope.quickSearch,
-                filter: $scope.search,
-                viewType: 'list',
-                contentType: 'delivery',
-                limit: $scope.page.limit,
-                page: $scope.page.page,
-                sort: self.sort
-            };
-
-            //console.log(query);
-
-            Orders.delivery.query(query, function(data, status) {
-                console.log("orders", data);
-                $scope.page.total = data.total;
-                $scope.orders = data.data;
-                $scope.totalAll = data.totalAll;
-
-                $timeout(function() {
-                    Metronic.unblockUI('.waiting');
-                }, 0);
-            });
-
+        $scope.ngIncludeInit = function(params, length) {
+            $scope.params = params;
         };
-
 
         $scope.openUrl = function(url, param) {
             var params = {};
@@ -1561,6 +1570,64 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                 });
         };
 
+        $scope.find = function() {
+            $scope.grid = {};
+            $scope.checkAll = false;
+
+            superCache.put("DeliveryListController", {
+                sort: $scope.sort,
+                search: $scope.search,
+                page: $scope.page
+            });
+
+            Metronic.blockUI({
+                target: '.waiting',
+                animate: false,
+                boxed: true,
+                overlayColor: 'gray'
+            });
+
+            var query = {
+                quickSearch: $scope.quickSearch,
+                filter: $scope.search,
+                viewType: 'list',
+                contentType: 'delivery',
+                limit: $scope.page.limit,
+                page: $scope.page.page,
+                sort: this.sort
+            };
+
+            if (module === 'delivery')
+                Orders.delivery.query(query, function(data, status) {
+                    $scope.page.total = data.total;
+                    $scope.deliveries = data.data;
+                    $scope.totalAll = data.totalAll;
+                    console.log("delivery", $scope.deliveries);
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
+            else if (module === 'deliverysupplier')
+                Orders.deliverySupplier.query(query, function(data, status) {
+                    $scope.page.total = data.total;
+                    $scope.deliveries = data.data;
+                    $scope.totalAll = data.totalAll;
+                    console.log("deliverysupplier", $scope.deliveries);
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
+        };
+
+        $scope.showStatus = function(idx, dict) {
+            if (!($scope.dict[dict] && $scope.delivery[idx]))
+                return;
+            var selected = $filter('filter')($scope.dict[dict].values, {
+                id: $scope.delivery[idx]
+            });
+            return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
+        };
+
         $scope.changeStatus = function(Status, id) {
             // ChangeStatus multi-deliveries
             var grid = [];
@@ -1599,10 +1666,8 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         var user = $rootScope.login;
 
         $scope.editable = false;
-
         $scope.dict = {};
         $scope.$dict = {};
-
         $scope.search = {
             ref: {
                 value: ""
@@ -1635,13 +1700,11 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 }
             },
         };
-
         $scope.page = {
             limit: 25,
             page: 1,
             total: 0
         };
-
         $scope.sort = {
             'ID': -1
         };
@@ -1664,6 +1727,34 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
             $scope.find();
         });
+
+        var module = $rootScope.$state.current.name.split('.')[0];
+        $scope.module = function(themodule) {
+            if (!themodule)
+                return module;
+
+            return module === themodule;
+        };
+
+        $scope.resetFilter = function() {
+            superCache.removeAll();
+            $rootScope.$state.reload();
+        }
+
+        $scope.checkedAll = function() {
+            if (!this.checkAll)
+                this.grid = {};
+            for (var i = 0; i < $scope.orders.length; i++)
+                if (this.checkAll)
+                    this.grid[$scope.orders[i]._id] = true;
+        }
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = true;
+        };
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
@@ -1706,22 +1797,8 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 //console.log(data);
             });
 
-            // initDatatable();
             $scope.find();
         });
-
-        $scope.resetFilter = function() {
-            superCache.removeAll();
-            $rootScope.$state.reload();
-        }
-
-        $scope.checkedAll = function() {
-            if (!this.checkAll)
-                this.grid = {};
-            for (var i = 0; i < $scope.orders.length; i++)
-                if (this.checkAll)
-                    this.grid[$scope.orders[i]._id] = true;
-        }
 
         // Init ng-include
         $scope.$on('$includeContentLoaded', function() {
@@ -1744,28 +1821,20 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 $scope.dict = data;
                 //console.log(data);
             });
-
         });
 
         $scope.ngIncludeInit = function(params, length) {
             $scope.params = params;
-            initDatatable(params, length);
-        };
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
         };
 
         $scope.openUrl = function(url, param) {
+            if (!grid)
+                return;
+
             var params = {};
 
             if (!params.entity)
                 params.entity = $rootScope.entity;
-
-            var grid = [];
 
             angular.forEach($scope.grid, function(value, key) {
                 if (value == true)
@@ -1774,157 +1843,42 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
             params.id = grid;
 
-            if (grid)
-                $http({
-                    method: 'POST',
-                    url: url,
-                    data: params,
-                    responseType: 'arraybuffer'
-                }).success(function(data, status, headers) {
-                    headers = headers();
+            $http({
+                method: 'POST',
+                url: url,
+                data: params,
+                responseType: 'arraybuffer'
+            }).success(function(data, status, headers) {
+                headers = headers();
 
-                    var filename = headers['x-filename'];
-                    var contentType = headers['content-type'];
+                var filename = headers['x-filename'];
+                var contentType = headers['content-type'];
 
-                    var linkElement = document.createElement('a');
-                    try {
-                        var blob = new Blob([data], {
-                            type: contentType
-                        });
-                        var url = window.URL.createObjectURL(blob);
+                var linkElement = document.createElement('a');
+                try {
+                    var blob = new Blob([data], {
+                        type: contentType
+                    });
+                    var url = window.URL.createObjectURL(blob);
 
-                        linkElement.setAttribute('href', url);
-                        linkElement.setAttribute("download", filename);
+                    linkElement.setAttribute('href', url);
+                    linkElement.setAttribute("download", filename);
 
-                        var clickEvent = new MouseEvent("click", {
-                            "view": window,
-                            "bubbles": true,
-                            "cancelable": false
-                        });
-                        linkElement.dispatchEvent(clickEvent);
-                    } catch (ex) {
-                        console.log(ex);
-                    }
-                }).error(function(data) {
-                    console.log(data);
-                });
+                    var clickEvent = new MouseEvent("click", {
+                        "view": window,
+                        "bubbles": true,
+                        "cancelable": false
+                    });
+                    linkElement.dispatchEvent(clickEvent);
+                } catch (ex) {
+                    console.log(ex);
+                }
+            }).error(function(data) {
+                console.log(data);
+            });
         };
 
-        function getUrl(params) {
-
-            if (!params)
-                params = {
-                    status_id: $scope.status_id
-                };
-
-            if (!params.entity)
-                params.entity = $rootScope.entity;
-
-            var url = $rootScope.buildUrl('/erp/api/bill/dt', params); // Build URL with json parameter
-            //console.log(url);
-            return url;
-        }
-
-        function initDatatable(params, length) {
-
-            grid.init({
-                src: $("#billList"),
-                onSuccess: function(grid) {
-                    // execute some code after table records loaded
-                },
-                onError: function(grid) {
-                    // execute some code on network or other general error 
-                },
-                loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
-                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-
-                    "bStateSave": (params ? false : true), // save datatable state(pagination, sort, etc) in cookie.
-                    "pageLength": length || 25, // default record count per page
-                    "ajax": {
-                        "url": getUrl(params) // ajax source
-                    },
-                    "order": [
-                        [1, "desc"]
-                    ], // set first column as a default sort by asc
-                    "columns": [{
-                        data: 'bool'
-                    }, {
-                        data: "ID"
-                    }, {
-                        data: "supplier",
-                        defaultContent: "",
-                        visible: (params && params['client.id'] ? false : true)
-                    }, {
-                        data: "ref_client",
-                        defaultContent: ""
-                    }, {
-                        data: "datec",
-                        defaultContent: ""
-                    }, {
-                        data: "dater",
-                        defaultContent: ""
-                    }, {
-                        data: "salesPerson",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ttc",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_paid",
-                        defaultContent: ""
-                    }, {
-                        data: "Status"
-                    }, {
-                        data: "entity",
-                        defaultContent: "",
-                        visible: user.multiEntities
-                    }, {
-                        data: "updatedAt",
-                        defaultContent: ""
-                    }]
-                }
-            });
-
-            // handle group actionsubmit button click
-            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
-                e.preventDefault();
-                var action = $(".table-group-action-input", grid.getTableWrapper());
-                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                    grid.setAjaxParam("customActionType", "group_action");
-                    grid.setAjaxParam("customActionName", action.val());
-                    grid.setAjaxParam("id", grid.getSelectedRows());
-                    grid.getDataTable().ajax.reload();
-                    grid.clearAjaxParams();
-                } else if (action.val() == "") {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Please select an action',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                } else if (grid.getSelectedRowsCount() === 0) {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'No record selected',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                }
-            });
-        }
-
         $scope.find = function() {
-
             $scope.grid = {};
             $scope.checkAll = false;
 
@@ -1951,18 +1905,26 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 sort: this.sort
             };
 
-            //console.log(query);
+            if (module === 'bill')
+                Orders.bill.query(query, function(data, status) {
+                    $scope.page.total = data.total;
+                    $scope.orders = data.data;
+                    $scope.totalAll = data.totalAll;
 
-            Orders.bill.query(query, function(data, status) {
-                console.log("bills", data);
-                $scope.page.total = data.total;
-                $scope.orders = data.data;
-                $scope.totalAll = data.totalAll;
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
+            else if (module === 'billsupplier')
+                Orders.billSupplier.query(query, function(data, status) {
+                    $scope.page.total = data.total;
+                    $scope.orders = data.data;
+                    $scope.totalAll = data.totalAll;
 
-                $timeout(function() {
-                    Metronic.unblockUI('.waiting');
-                }, 0);
-            });
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
         };
 
         /*$scope.find = function(clear) {
@@ -2157,885 +2119,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
 
 }]);*/
-
-MetronicApp.controller('OfferSupplierListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
-    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
-
-        var grid = new Datatable();
-        var user = $rootScope.login;
-
-        $scope.dict = {};
-
-        $scope.types = [{
-            name: "En cours",
-            id: "NOW"
-        }, {
-            name: "Clos",
-            id: "CLOSED"
-        }];
-        $scope.type = {
-            name: "En cours",
-            id: "NOW"
-        };
-
-        $scope.delivery_mode = ["Comptoir", "Livraison"];
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
-        $scope.$dict = {};
-
-        $scope.$on('websocket', function(e, type, data) {
-            if (type !== 'refresh')
-                return;
-
-            //console.log(data);
-            //console.log(type);
-
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('offerSupplier') < 0)
-                return;
-
-            $scope.find();
-        });
-
-        // Init
-        $scope.$on('$viewContentLoaded', function() {
-            // initialize core components
-            Metronic.initAjax();
-
-            // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
-            $rootScope.settings.layout.pageBodySolid = false;
-
-            var dict = ["fk_offer_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
-            $http({
-                method: 'GET',
-                url: '/erp/api/dict',
-                params: {
-                    dictName: dict
-                }
-            }).success(function(data, status) {
-                $scope.dict = data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/employees/bySalesAccount'
-            }).success(function(data, status) {
-                $scope.$dict.salesPerson = data.data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/employees/getForDd',
-                params: {
-                    isEmployee: true
-                }
-            }).success(function(data, status) {
-                $scope.$dict.employees = data.data;
-                //console.log(data);
-            });
-
-            initDatatable();
-        });
-
-        $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.offer[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.offer[idx]
-            });
-            return ($scope.offer[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
-        };
-
-        function getUrl() {
-            return "/erp/api/order/dt?quotation=true&forSales=false" + "&Status=" + $scope.status_id;
-        }
-
-
-        function initDatatable() {
-
-            grid.init({
-                src: $("#offerList"),
-                onSuccess: function(grid) {
-                    // execute some code after table records loaded
-                },
-                onError: function(grid) {
-                    // execute some code on network or other general error 
-                },
-                loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
-                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-
-                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-                    "ajax": {
-                        "url": getUrl() // ajax source
-                    },
-                    "order": [
-                        [1, "desc"]
-                    ], // set first column as a default sort by asc
-                    "columns": [{
-                        data: 'bool'
-                    }, {
-                        "data": "ID"
-                    }, {
-                        "data": "supplier",
-                        defaultContent: ""
-                    }, {
-                        "data": "ref_client",
-                        defaultContent: ""
-                    }, {
-                        "data": "datedl",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
-                    }, {
-                        "data": "entity",
-                        defaultContent: ""
-                    }, {
-                        "data": "datec",
-                        defaultContent: ""
-                    }]
-                }
-            });
-
-            // handle group actionsubmit button click
-            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
-                e.preventDefault();
-                var action = $(".table-group-action-input", grid.getTableWrapper());
-                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                    grid.setAjaxParam("customActionType", "group_action");
-                    grid.setAjaxParam("customActionName", action.val());
-                    grid.setAjaxParam("id", grid.getSelectedRows());
-                    grid.getDataTable().ajax.reload();
-                    grid.clearAjaxParams();
-                } else if (action.val() == "") {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Please select an action',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                } else if (grid.getSelectedRowsCount() === 0) {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'No record selected',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                }
-            });
-        }
-
-        $scope.find = function(clear) {
-            if (clear)
-                $scope.status_id = null;
-            var url = getUrl();
-            grid.resetFilter(url);
-        };
-    }
-]);
-
-MetronicApp.controller('OrderSupplierListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
-    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
-
-        var grid = new Datatable();
-        var user = $rootScope.login;
-
-        $scope.dict = {};
-        $scope.types = [{
-            name: "En cours",
-            id: "NOW"
-        }, {
-            name: "Clos",
-            id: "CLOSED"
-        }];
-        $scope.type = {
-            name: "En cours",
-            id: "NOW"
-        };
-
-        $scope.delivery_mode = ["Comptoir", "Livraison"];
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
-        $scope.$dict = {};
-
-        $scope.$on('websocket', function(e, type, data) {
-            if (type !== 'refresh')
-                return;
-
-            //console.log(data);
-            //console.log(type);
-
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('orderSupplier') < 0)
-                return;
-
-            $scope.find();
-        });
-
-        // Init
-        $scope.$on('$viewContentLoaded', function() {
-            // initialize core components
-            Metronic.initAjax();
-
-            // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
-            $rootScope.settings.layout.pageBodySolid = false;
-
-            var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
-            $http({
-                method: 'GET',
-                url: '/erp/api/dict',
-                params: {
-                    dictName: dict
-                }
-            }).success(function(data, status) {
-                $scope.dict = data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/employees/bySalesAccount'
-            }).success(function(data, status) {
-                $scope.$dict.salesPerson = data.data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/employees/getForDd',
-                params: {
-                    isEmployee: true
-                }
-            }).success(function(data, status) {
-                $scope.$dict.employees = data.data;
-                //console.log(data);
-            });
-
-            initDatatable();
-        });
-
-        $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.order[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.order[idx]
-            });
-            return ($scope.order[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
-        };
-
-        function getUrl() {
-            return "/erp/api/order/dt?forSales=false" + "&Status=" + $scope.status_id;
-        }
-
-        function initDatatable() {
-
-            grid.init({
-                src: $("#orderList"),
-                onSuccess: function(grid) {
-                    // execute some code after table records loaded
-                },
-                onError: function(grid) {
-                    // execute some code on network or other general error 
-                },
-                loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
-                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-
-                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-                    "ajax": {
-                        "url": getUrl() // ajax source
-                    },
-                    "order": [
-                        [1, "desc"]
-                    ], // set first column as a default sort by asc
-                    "columns": [{
-                        data: 'bool'
-                    }, {
-                        "data": "ID"
-                    }, {
-                        "data": "supplier",
-                        defaultContent: ""
-                    }, {
-                        "data": "ref_client",
-                        defaultContent: ""
-                    }, {
-                        "data": "datedl",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
-                    }, {
-                        "data": "entity",
-                        defaultContent: ""
-                    }, {
-                        "data": "datec",
-                        defaultContent: ""
-                    }]
-                }
-            });
-
-            // handle group actionsubmit button click
-            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
-                e.preventDefault();
-                var action = $(".table-group-action-input", grid.getTableWrapper());
-                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                    grid.setAjaxParam("customActionType", "group_action");
-                    grid.setAjaxParam("customActionName", action.val());
-                    grid.setAjaxParam("id", grid.getSelectedRows());
-                    grid.getDataTable().ajax.reload();
-                    grid.clearAjaxParams();
-                } else if (action.val() == "") {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Please select an action',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                } else if (grid.getSelectedRowsCount() === 0) {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'No record selected',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                }
-            });
-        }
-
-        $scope.find = function(clear) {
-            if (clear)
-                $scope.status_id = null;
-            var url = getUrl();
-            grid.resetFilter(url);
-        };
-    }
-]);
-
-MetronicApp.controller('DeliverySupplierListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
-    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
-
-        var grid = new Datatable();
-        var user = $rootScope.login;
-
-        $scope.dict = {};
-
-        $scope.types = [{
-            name: "En cours",
-            id: "NOW"
-        }, {
-            name: "Clos",
-            id: "CLOSED"
-        }];
-        $scope.type = {
-            name: "En cours",
-            id: "NOW"
-        };
-
-        $scope.delivery_mode = ["Comptoir", "Livraison"];
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
-        $scope.$dict = {};
-
-        $scope.$on('websocket', function(e, type, data) {
-            if (type !== 'refresh')
-                return;
-
-            //console.log(data);
-            //console.log(type);
-
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('deliverySupplier') < 0)
-                return;
-
-            $scope.find();
-        });
-
-        // Init
-        $scope.$on('$viewContentLoaded', function() {
-            // initialize core components
-            Metronic.initAjax();
-
-            // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
-            $rootScope.settings.layout.pageBodySolid = false;
-
-            var dict = ["fk_delivery_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
-            $http({
-                method: 'GET',
-                url: '/erp/api/dict',
-                params: {
-                    dictName: dict
-                }
-            }).success(function(data, status) {
-                $scope.dict = data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/employees/bySalesAccount'
-            }).success(function(data, status) {
-                $scope.$dict.salesPerson = data.data;
-                //console.log(data);
-            });
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/employees/getForDd',
-                params: {
-                    isEmployee: true
-                }
-            }).success(function(data, status) {
-                $scope.$dict.employees = data.data;
-                //console.log(data);
-            });
-
-            initDatatable();
-        });
-
-        $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.delivery[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.delivery[idx]
-            });
-            return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
-        };
-
-        function getUrl() {
-            return "/erp/api/delivery/dt_supplier?forSales=false" + "&Status=" + $scope.status_id;
-        }
-
-        function initDatatable() {
-
-            grid.init({
-                src: $("#deliveryListSupplier"),
-                onSuccess: function(grid) {
-                    // execute some code after table records loaded
-                },
-                onError: function(grid) {
-                    // execute some code on network or other general error 
-                },
-                loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
-                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-
-                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
-
-                    "ajax": {
-                        "url": getUrl() // ajax source
-                    },
-                    "order": [
-                        [1, "desc"]
-                    ], // set first column as a default sort by asc
-                    "columns": [{
-                        data: 'bool'
-                    }, {
-                        "data": "ID"
-                    }, {
-                        "data": "supplier",
-                        defaultContent: ""
-                    }, {
-                        "data": "ref_client",
-                        defaultContent: ""
-                    }, {
-                        "data": "datedl",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "Status"
-                    }, {
-                        "data": "entity",
-                        defaultContent: ""
-                    }, {
-                        "data": "datec",
-                        defaultContent: ""
-                    }]
-                }
-            });
-
-            // handle group actionsubmit button click
-            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
-                e.preventDefault();
-                var action = $(".table-group-action-input", grid.getTableWrapper());
-                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                    grid.setAjaxParam("customActionType", "group_action");
-                    grid.setAjaxParam("customActionName", action.val());
-                    grid.setAjaxParam("id", grid.getSelectedRows());
-                    grid.getDataTable().ajax.reload();
-                    grid.clearAjaxParams();
-                } else if (action.val() == "") {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Please select an action',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                } else if (grid.getSelectedRowsCount() === 0) {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'No record selected',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                }
-            });
-        }
-
-        $scope.find = function(clear) {
-            if (clear)
-                $scope.status_id = null;
-            var url = getUrl();
-            grid.resetFilter(url);
-        };
-    }
-]);
-
-MetronicApp.controller('BillSupplierListController', ['$scope', '$rootScope', '$http', '$window', '$filter', '$timeout',
-    function($scope, $rootScope, $http, $window, $filter, $timeout) {
-
-        var grid = new Datatable();
-        var user = $rootScope.login;
-
-        $scope.editable = false;
-
-        $scope.dict = {};
-        $scope.status_id = "LIST";
-
-        $scope.$on('websocket', function(e, type, data) {
-            if (type !== 'refresh')
-                return;
-
-            //console.log(data);
-            //console.log(type);
-
-            if (!data || !data.data || !data.data.route || data.data.route.indexOf('billSupplier') < 0)
-                return;
-
-            $scope.find();
-        });
-
-        // Init
-        $scope.$on('$viewContentLoaded', function() {
-            // initialize core components
-            Metronic.initAjax();
-
-            // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
-            $rootScope.settings.layout.pageBodySolid = false;
-
-            var dict = ["fk_bill_status", "fk_input_reason", "fk_paiement", "fk_bill_type", "fk_transport", "fk_payment_term", "fk_tva"];
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/dict',
-                params: {
-                    dictName: dict
-                }
-            }).success(function(data, status) {
-                $scope.dict = data;
-                //console.log(data);
-            });
-
-            initDatatable();
-
-        });
-
-        // Init ng-include
-        $scope.$on('$includeContentLoaded', function() {
-            // initialize core components
-            Metronic.initAjax();
-
-            // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
-            $rootScope.settings.layout.pageBodySolid = false;
-
-            var dict = ["fk_bill_status", "fk_input_reason", "fk_paiement", "fk_bill_type", "fk_transport", "fk_payment_term", "fk_tva"];
-
-            $http({
-                method: 'GET',
-                url: '/erp/api/dict',
-                params: {
-                    dictName: dict
-                }
-            }).success(function(data, status) {
-                $scope.dict = data;
-                //console.log(data);
-            });
-
-        });
-
-        $scope.ngIncludeInit = function(params, length) {
-            $scope.params = params;
-            initDatatable(params, length);
-        };
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
-        $scope.openUrl = function(url, param) {
-            if (!grid)
-                return;
-
-            var params = {};
-
-            if (!params.entity)
-                params.entity = $rootScope.entity;
-
-            params.id = grid.getSelectedRows();
-
-            //$window.open($rootScope.buildUrl(url, params), '_blank');
-            $http({
-                method: 'POST',
-                url: url,
-                data: params,
-                responseType: 'arraybuffer'
-            }).success(function(data, status, headers) {
-                headers = headers();
-
-                var filename = headers['x-filename'];
-                var contentType = headers['content-type'];
-
-                var linkElement = document.createElement('a');
-                try {
-                    var blob = new Blob([data], {
-                        type: contentType
-                    });
-                    var url = window.URL.createObjectURL(blob);
-
-                    linkElement.setAttribute('href', url);
-                    linkElement.setAttribute("download", filename);
-
-                    var clickEvent = new MouseEvent("click", {
-                        "view": window,
-                        "bubbles": true,
-                        "cancelable": false
-                    });
-                    linkElement.dispatchEvent(clickEvent);
-                } catch (ex) {
-                    console.log(ex);
-                }
-            }).error(function(data) {
-                console.log(data);
-            });
-        };
-
-        function getUrl(params) {
-
-            if (!params)
-                params = {
-                    status_id: $scope.status_id
-                };
-
-            if (!params.entity)
-                params.entity = $rootScope.entity;
-
-            var url = $rootScope.buildUrl('/erp/api/bill/dt?forSales=false', params); // Build URL with json parameter
-            //console.log(url);
-            return url;
-        }
-
-        function initDatatable(params, length) {
-
-            grid.init({
-                src: $("#billSupplierList"),
-                onSuccess: function(grid) {
-                    // execute some code after table records loaded
-                },
-                onError: function(grid) {
-                    // execute some code on network or other general error 
-                },
-                loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
-                    //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-
-                    "bStateSave": (params ? false : true), // save datatable state(pagination, sort, etc) in cookie.
-                    "pageLength": length || 25, // default record count per page
-                    "ajax": {
-                        "url": getUrl(params) // ajax source
-                    },
-                    "order": [
-                        [1, "desc"]
-                    ], // set first column as a default sort by asc
-                    "columns": [{
-                        data: 'bool'
-                    }, {
-                        data: "ID"
-                    }, {
-                        data: "supplier",
-                        defaultContent: "",
-                        visible: (params && params['supplier'] ? false : true)
-                    }, {
-                        data: "ref_client",
-                        defaultContent: ""
-                    }, {
-                        data: "datec",
-                        defaultContent: ""
-                    }, {
-                        data: "dater",
-                        defaultContent: ""
-                    }, {
-                        data: "salesPerson",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ht",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_ttc",
-                        defaultContent: ""
-                    }, {
-                        "data": "total_paid",
-                        defaultContent: ""
-                    }, {
-                        data: "Status"
-                    }, {
-                        data: "entity",
-                        defaultContent: "",
-                        visible: user.multiEntities
-                    }, {
-                        data: "updatedAt",
-                        defaultContent: ""
-                    }]
-                }
-            });
-
-            // handle group actionsubmit button click
-            grid.getTableWrapper().on('click', '.table-group-action-submit', function(e) {
-                e.preventDefault();
-                var action = $(".table-group-action-input", grid.getTableWrapper());
-                if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-                    grid.setAjaxParam("customActionType", "group_action");
-                    grid.setAjaxParam("customActionName", action.val());
-                    grid.setAjaxParam("id", grid.getSelectedRows());
-                    grid.getDataTable().ajax.reload();
-                    grid.clearAjaxParams();
-                } else if (action.val() == "") {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'Please select an action',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                } else if (grid.getSelectedRowsCount() === 0) {
-                    Metronic.alert({
-                        type: 'danger',
-                        icon: 'warning',
-                        message: 'No record selected',
-                        container: grid.getTableWrapper(),
-                        place: 'prepend'
-                    });
-                }
-            });
-        }
-
-        $scope.find = function(clear) {
-            var url;
-            //console.log(this.status_id);
-
-            if (clear)
-                this.status_id = null;
-
-            if ($scope.params) { // For ng-include in societe fiche
-                $scope.params.status_id = this.status_id;
-                url = getUrl($scope.params);
-            } else
-                url = getUrl({
-                    status_id: this.status_id
-                });
-
-            grid.resetFilter(url);
-        };
-
-
-        $scope.exportAccounting = function(id) {
-            if (!id && grid) {
-                return $http({
-                    method: 'PUT',
-                    url: '/erp/api/bill/accounting',
-                    data: {
-                        id: grid.getSelectedRows()
-                    }
-                }).success(function(data, status) {
-                    if (status === 200)
-                        $scope.find();
-                });
-            }
-            return $http({
-                method: 'PUT',
-                url: '/erp/api/bill/accounting',
-                data: {
-                    id: id //grid.getSelectedRows()
-                }
-            }).success(function(data, status) {
-                if (status === 200 && id)
-                    $scope.findOne();
-                else
-                    $scope.find();
-            });
-        };
-
-        $scope.filterOptionsPayment = {
-            filterText: "",
-            useExternalFilter: false
-        };
-
-    }
-]);
 
 MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
     function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
