@@ -124,5 +124,86 @@
                 }
             }
         }
+    },
+    "filters": {
+        "delivery": {
+            "forSales": {
+                "backend": "forSales",
+                "type": "boolean"
+            },
+
+            "ref": {
+                "displayName": "Ref",
+                "backend": "ref",
+                "type": "regex"
+            },
+
+            "ref_client": {
+                "displayName": "Ref customer",
+                "backend": "ref_client",
+                "type": "regex"
+            },
+
+            "entity": {
+                "displayName": "Entity",
+                "backend": "entity",
+                "type": "string"
+            },
+
+            "Status": {
+                "displayName": "Status",
+                "backend": "Status",
+                "type": "string"
+            },
+
+            "supplier": {
+                "displayName": "Customer",
+                "backend": "supplier"
+            },
+
+            "warehouse": {
+                "displayName": "Warhouse",
+                "backend": "warehouse"
+            },
+
+            "salesPerson": {
+                "displayName": "Assigned To",
+                "backend": "salesPerson"
+            },
+
+            "workflow": {
+                "displayName": "Status",
+                "backend": "workflow._id"
+            },
+
+            "channel": {
+                "displayName": "Channel",
+                "backend": "channel._id"
+            },
+
+            "name": {
+                "displayName": "Reference",
+                "backend": "_id"
+            },
+
+            "datedl": {
+                "type": "date",
+                "backend": {
+                    "key": "datedl",
+                    "operator": ["$gte", "$lte"]
+                }
+            },
+
+            "datec": {
+                "type": "date",
+                "backend": {
+                    "key": "datec",
+                    "operator": ["$gte", "$lte"]
+                }
+            },
+
+
+            "array": ["supplier", "salesPerson", "workflow", "channel", "name"]
+        }
     }
 }

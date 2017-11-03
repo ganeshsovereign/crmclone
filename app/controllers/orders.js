@@ -1059,6 +1059,8 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
 MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
     function($scope, $rootScope, $http, $modal, $filter, $timeout, superCache, Orders) {
         $scope.grid = {};
+
+        $scope.dict = {};
         $scope.search = {
             ref: {
                 value: ""
@@ -1231,15 +1233,6 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
             $scope.find();
         });
-
-        /*$scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.order[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.order[idx]
-            });
-            return ($scope.order[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
-        };*/
 
         $scope.find = function() {
             $scope.grid = {};

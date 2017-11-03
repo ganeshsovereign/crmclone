@@ -1923,8 +1923,8 @@ function saveOrder(next) {
             });
         },
         function(wCb) {
-            if (self.datedl)
-                self.ref = F.functions.refreshSeq(self.ref, self.datedl);
+            if (self.datec)
+                self.ref = F.functions.refreshSeq(self.ref, self.datec);
 
             wCb();
         }
