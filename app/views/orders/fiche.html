@@ -114,24 +114,23 @@
             <!-- __OFFER__ -->
             <ul ng-if="module('offer') || module('offersupplier')" class="dropdown-menu pull-right" role="menu">
                 <li>
-                    <a ng-show="object.Status == 'DRAFT' && login.rights.offer.validate" data-ng-click="changeStatus('VALIDATED')">
+                    <a ng-show="object.Status == 'DRAFT'" ng-click="changeStatus('VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateQuotation)
                     </a>
                 </li>
                 <li>
-                    <a ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createOrder" ng-confirm-click="@(orders:ConfirmClosePropal)" ng-confirm-title="@(orders:PropalStatusSigned)" confirmed-click="createOrder()">
+                    <a ng-show="object.Status == 'VALIDATED' && login.rights.offer.validate" ng-confirm-click="@(orders:ConfirmClosePropal)" ng-confirm-title="@(orders:PropalStatusSigned)" confirmed-click="createOrder()">
                         <i class="fa fa-shopping-cart"></i> @(orders:CreateOrderSigned)
                     </a>
                 </li>
                 <li>
-                    <a ng-hide="object.Status == 'NOTSIGNED' || object.Status == 'SIGNED'" ng-show="object.Status == 'VALIDATED'" ng-hide="!login.rights.order.createDelivery" ng-confirm-click="@(orders:ConfirmClosePropal)" ng-confirm-title="@(orders:PropalStatusNotSigned)"
-                        confirmed-click="changeStatus('NOTSIGNED')">
+                    <a ng-show="object.Status == 'VALIDATED' && login.rights.offer.validate" ng-confirm-click="@(orders:ConfirmClosePropal)" ng-confirm-title="@(orders:PropalStatusNotSigned)" confirmed-click="changeStatus('NOTSIGNED')">
                         <i class="fa fa-thumbs-o-down"></i> @(orders:CloseOfferOrder)
                     </a>
                 </li>
                 <hr>
                 <li>
-                    <a href="#" ng-show="object.Status == 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                    <a href="#" ng-show="object.Status == 'VALIDATED' && login.rights.offer.create" ng-click="changeStatus('DRAFT')">
                         <i class="fa fa-history"></i> @(ReOpen)
                     </a>
                 </li>
