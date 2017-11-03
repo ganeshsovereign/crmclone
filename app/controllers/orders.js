@@ -51,6 +51,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
 
         $scope.allowValidate = false;
+        $scope.editable = false;
 
         $scope.dict = {};
         var iconsFilesList = {};
@@ -326,7 +327,15 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 Id: $rootScope.$stateParams.id
             }, function(object) {
                 $scope.object = object;
-                //console.log(object);
+                console.log(object);
+
+                if (object.Status == "DRAFT" || object.Status == "NEW" || object.Status == "QUOTES")
+                    $scope.editable = true;
+                else
+                    $scope.editable = false;
+
+                console.log($scope.editable);
+
 
                 //automatic redirect if it's a supplier
                 if (object.forSales == false && current[0].indexOf("supplier") < 0)
@@ -339,10 +348,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     for (var i = 0; i < $scope.object.lines.length; i++) {
                         $scope.object.lines[i].idLine = i;
                     }
-                if (object.Status == "DRAFT" || object.Status == "NEW" || object.Status == "QUOTES")
-                    $scope.editable = true;
-                else
-                    $scope.editable = false;
+
 
                 $scope.allowValidate = $scope.checkDeliveryLocation();
 

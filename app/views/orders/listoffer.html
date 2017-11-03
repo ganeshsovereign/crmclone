@@ -120,20 +120,7 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label>@(orders:StatusAllocated)</label>
-                                            <select ng-model="search.allocationStatus.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
-                                        </div>
 
-                                        <div class="form-group">
-                                            <label>@(orders:StatusFilfull)</label>
-                                            <select ng-model="search.fulfilledStatus.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>@(orders:StatusShipping)</label>
-                                            <select ng-model="search.shippingStatus.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
-                                        </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -181,15 +168,6 @@
                             <div class="row static-info align-reverse ">
                                 <div class="col-md-5 name bold ">@(TotalTTC)</div>
                                 <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc | currency}}</div>
-                            </div>
-                            <hr>
-                            <div class="row static-info align-reverse ">
-                                <div class="col-md-5 name">@(AmountPaid)</div>
-                                <div class="col-md-7 value ng-binding">{{totalAll.total_paid | currency}}</div>
-                            </div>
-                            <div class="row static-info align-reverse ">
-                                <div class="col-md-5 name bold ">@(AmountToPaid)</div>
-                                <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc - totalAll.total_paid | currency}}</div>
                             </div>
                         </div>
                     </div>
@@ -243,8 +221,8 @@
                             <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty "> @(Empty)</span>
                         </td>
 
-                        <td ui-sref="offer.show({id:line._id})">{{line.ref_client}}</td>
-                        <td ui-sref="offersupplier.show({id:line._id})">{{line.ref_client}}</td>
+                        <td ng-if="module('offer')" ui-sref="offer.show({id:line._id})">{{line.ref_client}}</td>
+                        <td ng-if="module('offersupplier')" ui-sref="offersupplier.show({id:line._id})">{{line.ref_client}}</td>
 
                         <td ng-if="module('offer')" ui-sref="offer.show({id:line._id})">{{line.datedl| date:'dd/MM/yyyy'}}</td>
                         <td ng-if="module('offersupplier')" ui-sref="offersupplier.show({id:line._id})">{{line.datedl| date:'dd/MM/yyyy'}}</td>

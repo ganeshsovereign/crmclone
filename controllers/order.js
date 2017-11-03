@@ -1094,6 +1094,9 @@ Object.prototype = {
                     });
             },
             function(order, newRows, wCb) {
+                if (self.query.quotation === 'true')
+                    return wCb(null, order);
+
                 // Send to logistic and create first delivery
                 if (order.Status == "PROCESSING")
                     setTimeout2('orderSendDelivery:' + order._id.toString(), function() {
