@@ -367,10 +367,15 @@
                         </div>
 
                         <div ng-show="module( 'delivery')" class="row static-info align-reverse">
-                            <div class="col-md-5 name">@(orders:LogisticCost) : <span class="icon-pencil grey" ng-click="shippingCostL.$show()" ng-hide="shippingCostL.$visible"></span></div>
+                            <!--<div class="col-md-5 name">@(orders:LogisticCost) : <span class="icon-pencil grey" ng-click="shippingCostL.$show()" ng-hide="shippingCostL.$visible"></span></div>
                             <div class="col-md-7 value"><span editable-number="object.shippingCost.logistic" e-min="0" e-step="0.01" e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="shippingCostL">
                                                 {{object.shippingCost.logistic | currency}}
-                                            </span></div>
+                                            </span></div>-->
+                            <div class="col-md-5 name">@(orders:LogisticCost) : </div>
+                            <div class="col-md-7 value">
+                                {{object.shippingCost.logistic | currency}}
+                            </div>
+
                         </div>
                         <div ng-show="module( 'delivery')" class="row static-info align-reverse">
                             <div class="col-md-5 name">@(orders:ShippingCost) : <span class="icon-pencil grey" ng-click="shippingCostS.$show()" ng-hide="shippingCostS.$visible"></span></div>

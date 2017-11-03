@@ -74,7 +74,7 @@ Object.prototype = {
         if (self.query.forSales === "false")
             var Order = MODEL('order').Schema.GoodsInNote;
         else
-        var Order = MODEL('order').Schema.GoodsOutNote;
+            var Order = MODEL('order').Schema.GoodsOutNote;
         var OrderStatus = MODEL('order').Status;
 
         var data = self.query;
@@ -439,7 +439,7 @@ Object.prototype = {
                         delivery.weight += delivery.logisticMethod.weight;
 
                     //update shippingCost
-                    if (delivery.Status !== 'SEND' && delivery.logisticMethod && delivery.logisticMethod.price)
+                    if (delivery.Status !== 'SEND' && delivery.logisticMethod)
                         delivery.shippingCost.logistic = delivery.logisticMethod.price;
 
                     //delivery = _.extend(delivery, self.body);

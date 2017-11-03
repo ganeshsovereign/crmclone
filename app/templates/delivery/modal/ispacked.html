@@ -9,8 +9,8 @@
                 <label>Emballage</label>
                 <div class="md-radio-list">
                     <div class="md-radio" ng-repeat="s in $dict.logisticMethod | orderBy: 'seq'">
-                        <input type="radio" id="radio1_{{s.seq}}" ng-required="!object.logisticMethod._id" ng-model="object.logisticMethod._id" ng-value="s._id" name="logisticMethod" class="md-radiobtn">
-                        <label for="radio1_{{s.seq}}">
+                        <input type="radio" id="radio1_{{s._id}}" ng-required="!object.logisticMethod._id" ng-model="object.logisticMethod._id" ng-value="s._id" name="logisticMethod" class="md-radiobtn">
+                        <label for="radio1_{{s._id}}">
                             <span></span>
                             <span class="check"></span>
                             <span class="box"></span> {{s.name}} </label>
@@ -21,8 +21,8 @@
                 <label>@(orders:Carrier)</label>
                 <div class="md-radio-list">
                     <div class="md-radio" ng-repeat="s in $dict.shippingMethod">
-                        <input type="radio" id="radio[]" ng-required="!object.shippingMethod._id" ng-model="object.shippingMethod._id" ng-value="s._id" name="shippingMethod" class="md-radiobtn">
-                        <label for="radio[]">
+                        <input type="radio" id="radio2_{{s._id}}" ng-required="!object.shippingMethod._id" ng-model="object.shippingMethod._id" ng-value="s._id" name="shippingMethod" class="md-radiobtn">
+                        <label for="radio2_{{s._id}}">
                             <span></span>
                             <span class="check"></span>
                             <span class="box"></span> {{s.name}} </label>
