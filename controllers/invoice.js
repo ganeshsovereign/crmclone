@@ -357,7 +357,9 @@ Object.prototype = {
                         datec: 1,
                         ref_client: 1,
                         dater: 1,
-                        exported: { $size: "$journalId" },
+                        exported: {
+                            $size: "$journalId"
+                        },
                         entity: 1,
                         total_ttc: 1,
                         total_ht: 1,
@@ -788,7 +790,9 @@ Object.prototype = {
                         total_ttc: 1,
                         total_ht: 1,
                         total_paid: 1,
-                        total_to_paid: { $subtract: ["$total_ttc", "$total_paid"] },
+                        total_to_paid: {
+                            $subtract: ["$total_ttc", "$total_paid"]
+                        },
                         Status: 1,
                         ref: 1,
                         ID: 1,

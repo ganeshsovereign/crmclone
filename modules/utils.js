@@ -566,7 +566,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 //this.total_ttc += this.lines[i].total_ttc;
 
                 if (lines[i].product && lines[i].product._id)
-                //Poids total
+                    //Poids total
                     weight += (lines[i].product.weight || 0) * lines[i].qty;
 
                 count += lines[i].qty;
@@ -577,13 +577,13 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 total_ht -= discount.discount.value;
 
                 if (VATIsUsed)
-                // Remise sur les TVA
+                    // Remise sur les TVA
                     for (j = 0; j < total_taxes.length; j++) {
-                    if (total_taxes[j].isFixValue)
-                        continue;
+                        if (total_taxes[j].isFixValue)
+                            continue;
 
-                    total_taxes[j].total -= total_taxes[j].total * discount.discount.percent / 100;
-                }
+                        total_taxes[j].total -= total_taxes[j].total * discount.discount.percent / 100;
+                    }
             }
 
             if (discount && discount.escompte && discount.escompte.percent >= 0) {
@@ -591,13 +591,13 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 total_ht -= discount.escompte.value;
 
                 if (VATIsUsed)
-                // Remise sur les TVA
+                    // Remise sur les TVA
                     for (j = 0; j < total_taxes.length; j++) {
-                    if (total_taxes[j].isFixValue)
-                        continue;
+                        if (total_taxes[j].isFixValue)
+                            continue;
 
-                    total_taxes[j].total -= total_taxes[j].total * discount.escompte.percent / 100;
-                }
+                        total_taxes[j].total -= total_taxes[j].total * discount.escompte.percent / 100;
+                    }
             }
 
             //Add ecotax to total_ht after ALL DISCOUNT

@@ -63,7 +63,7 @@ var entitySchema = new Schema({
 
     imageSrc: {
         type: Schema.Types.ObjectId
-            //    ref: 'Images',
+        //    ref: 'Images',
     },
 
     logo: {

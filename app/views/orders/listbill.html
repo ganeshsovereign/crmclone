@@ -128,8 +128,12 @@
                                             <select ng-model="search.Status.value[0]" id="Status" ng-options="s.id as s.label for s in dict.fk_bill_status.values" class="form-control input-sm"></select>
                                         </div>
 
-                                        <div class="form-group">
+                                        <div ng-if="module('bill')" class="form-group">
                                             <label for="Status">@(RefCustomer)</label>
+                                            <input ng-model="search.ref_client.value" class="form-control input-sm" />
+                                        </div>
+                                        <div ng-if="module('billsupplier')" class="form-group">
+                                            <label for="Status">@(RefSupplier)</label>
                                             <input ng-model="search.ref_client.value" class="form-control input-sm" />
                                         </div>
                                     </div>
@@ -224,9 +228,13 @@
                             </th>
                             <th table-sort='ID' ng-model="sort" name="@(Ref)"></th>
                             <th table-sort='supplier.fullName' ng-model="sort" name="@(companies:Company)"></th>
-                            <th>@(RefCustomer)</th>
+
+                            <th ng-if="module('bill')">@(RefCustomer)</th>
+                            <th ng-if="module('billsupplier')">@(RefSupplier)</th>
+
                             <th ng-if="module('bill')" table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Commercial)"></th>
                             <th ng-if="module('billsupplier')" table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Buyer)"></th>
+
                             <th table-sort='datec' ng-model="sort" name="@(orders:DateInvoice)"></th>
                             <th table-sort='dater' ng-model="sort" name="@(orders:DatePayment)"></th>
                             <th table-sort='total_ht' ng-model="sort" name="@(TotalHT)"></th>
@@ -250,7 +258,8 @@
                                 <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty "> @(Empty)</span>
                             </td>
 
-                            <td ui-sref="billsupplier.show({id:line._id})">{{line.ref_client}}</td>
+                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.ref_client}}</td>
+                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.ref_client}}</td>
 
                             <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.salesPerson.fullName}}</td>
                             <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.salesPerson.fullName}}</td>

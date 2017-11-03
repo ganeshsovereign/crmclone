@@ -338,7 +338,7 @@ exports.install = function() {
         }, function(err, doc) {
             if (err)
                 console.log(err);
-            console.log(doc);
+            //console.log(doc);
             res.send(200, {});
         });
         else

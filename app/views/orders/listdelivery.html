@@ -11,7 +11,8 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span>@(orders:PreparationReceipt)</span>
+                <span ng-if="module('delivery')">@(orders:PreparationReceipt)</span>
+                <span ng-if="module('deliverysupplier')">@(orders:SuppliersDeliveries)</span>
             </li>
         </ul>
         <div class="page-toolbar">
@@ -58,7 +59,8 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-calculator"></i>
-                <span class="caption-subject dark bold uppercase"> @(orders:ListOfPreparationReceipt)</span>
+                <span ng-if="module('delivery')" class="caption-subject dark bold uppercase"> @(orders:ListOfPreparationReceipt)</span>
+                <span ng-if="module('deliverysupplier')" class="caption-subject dark bold uppercase"> @(orders:ListOfReceptionSupplier)</span>
             </div>
             <div class="actions">
                 <!-- <button class="btn blue" ui-sref="delivery.create">@(Add) <i class="fa fa-plus"></i></button>-->
@@ -92,7 +94,8 @@
                                                 </div>-->
 
                                         <div class="form-group">
-                                            <label>@(commercial:Commercial)</label>
+                                            <label ng-if="module('delivery')">@(commercial:Commercial)</label>
+                                            <label ng-if="module('deliverysupplier')">@(orders:Buyer)</label>
                                             <select ng-model="search.salesPerson.value[0]" id="Status" ng-change="find()" ng-options="s._id as s.fullName for s in $dict.salesPerson" class="form-control input-sm"></select>
                                             <!--<tags-input ng-model="search.salesPerson.value" display-property="fullName" key-property="_id" placeholder="@(Search)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
                                                         <auto-complete source="$dict.salesPerson" min-length="0"></auto-complete>
@@ -112,7 +115,8 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="Status">@(RefCustomer)</label>
+                                            <label ng-if="module('delivery')">@(RefCustomer)</label>
+                                            <label ng-if="module('deliverysupplier')">@(RefSupplier)</label>
                                             <input ng-model="search.ref_client.value" class="form-control input-sm" />
                                         </div>
                                     </div>
@@ -201,8 +205,13 @@
                             </th>
                             <th table-sort='ID' ng-model="sort" name="@(Ref)"></th>
                             <th table-sort='supplier.fullName' ng-model="sort" name="@(companies:Company)"></th>
-                            <th>@(RefCustomer)</th>
-                            <th table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Commercial)"></th>
+
+                            <th ng-if="module('delivery')">@(RefCustomer)</th>
+                            <th ng-if="module('deliverysupplier')">@(RefSupplier)</th>
+
+                            <th ng-if="module('delivery')" table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Commercial)"></th>
+                            <th ng-if="module('deliverysupplier')" table-sort='salesPerson.fullName' ng-model="sort" name="@(orders:Buyer)"></th>
+
                             <th table-sort='datedl' ng-model="sort" name="@(DeliveryDate)"></th>
                             <th table-sort='qty' ng-model="sort" name="@(Qty)"></th>
                             <th>@(Status)</th>
@@ -215,39 +224,77 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="line in orders">
+                        <tr ng-repeat="line in deliveries">
                             <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
-                            <td ui-sref="delivery.show({id:line._id})"><a class=" with-tooltip " ui-sref="delivery.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})"><a class=" with-tooltip " ui-sref="delivery.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})"><a class=" with-tooltip " ui-sref="deliverysupplier.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
+
                             <td>
                                 <a ng-if="line.supplier._id" class="with-tooltip " ui-sref="societe.show({id:line.supplier._id}) "><i class="fa fa-institution "></i> {{line.supplier.fullName}}</a>
-                                <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty "> @(Empty)</span>
+                                <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty ">@(Empty)</span>
                             </td>
-                            <td ui-sref="delivery.show({id:line._id})">{{line.ref_client}}</td>
-                            <td ui-sref="delivery.show({id:line._id})">{{line.salesPerson.fullName}}</td>
-                            <td ui-sref="delivery.show({id:line._id})">{{line.datedl| date:'dd/MM/yyyy'}}</td>
-                            <td ui-sref="delivery.show({id:line._id})" class="text-center">{{line.qty}}</td>
-                            <td ui-sref="delivery.show({id:line._id})">
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})">{{line.ref_client}}</td>
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})">{{line.ref_client}}</td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})">{{line.salesPerson.fullName}}</td>
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})">{{line.salesPerson.fullName}}</td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})">{{line.datedl| date:'dd/MM/yyyy'}}</td>
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})">{{line.datedl| date:'dd/MM/yyyy'}}</td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})" class="text-center">{{line.qty}}</td>
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})" class="text-center">{{line.qty}}</td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})">
                                 <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
                             </td>
-                            <td ui-sref="delivery.show({id:line._id})">{{line.entity}}</td>
-                            <td ui-sref="delivery.show({id:line._id})" class="text-center">
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})">
+                                <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
+                            </td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})">{{line.entity}}</td>
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})">{{line.entity}}</td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})" class="text-center">
                                 <span ng-if="!line.status.isPrinted" class="fa fa-close font-red"></span>
                                 <span ng-if="line.status.isPrinted" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Imprimé le : {{line.status.isPrinted | date:'dd/MM/yyyy HH:mm'}}"></span>
                             </td>
-                            <td ui-sref="delivery.show({id:line._id})" class="text-center">
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})" class="text-center">
+                                <span ng-if="!line.status.isPrinted" class="fa fa-close font-red"></span>
+                                <span ng-if="line.status.isPrinted" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Imprimé le : {{line.status.isPrinted | date:'dd/MM/yyyy HH:mm'}}"></span>
+                            </td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})" class="text-center">
                                 <span ng-if="!line.status.isPicked" class="fa fa-close font-red"></span>
                                 <span ng-if="line.status.isPicked" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Scanné le : {{line.status.isPicked | date:'dd/MM/yyyy HH:mm'}}"></span>
                             </td>
-                            <td ui-sref="delivery.show({id:line._id})" class="text-center">
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})" class="text-center">
+                                <span ng-if="!line.status.isPicked" class="fa fa-close font-red"></span>
+                                <span ng-if="line.status.isPicked" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Scanné le : {{line.status.isPicked | date:'dd/MM/yyyy HH:mm'}}"></span>
+                            </td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})" class="text-center">
                                 <span ng-if="!line.status.isPacked" class="fa fa-close font-red"></span>
                                 <span ng-if="line.status.isPacked" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Emballé le : {{line.status.isPacked | date:'dd/MM/yyyy HH:mm'}}"></span>
                             </td>
-                            <td ui-sref="delivery.show({id:line._id})" class="text-center">
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})" class="text-center">
+                                <span ng-if="!line.status.isPacked" class="fa fa-close font-red"></span>
+                                <span ng-if="line.status.isPacked" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Emballé le : {{line.status.isPacked | date:'dd/MM/yyyy HH:mm'}}"></span>
+                            </td>
+
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})" class="text-center">
+                                <span ng-if="!line.status.isShipped" class="fa fa-close font-red"></span>
+                                <span ng-if="line.status.isShipped" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Expédié le : {{line.status.isShipped | date:'dd/MM/yyyy HH:mm'}}"></span>
+                            </td>
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})" class="text-center">
                                 <span ng-if="!line.status.isShipped" class="fa fa-close font-red"></span>
                                 <span ng-if="line.status.isShipped" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Expédié le : {{line.status.isShipped | date:'dd/MM/yyyy HH:mm'}}"></span>
                             </td>
 
-                            <td ui-sref="delivery.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
                 </table>

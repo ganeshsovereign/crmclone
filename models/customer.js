@@ -284,13 +284,15 @@ var customerSchema = new Schema({
         default: 'ST_NEVER'
     },
 
-    lastOrder: { type: Date },
+    lastOrder: {
+        type: Date
+    },
 
     dateBirth: Date,
 
     imageSrc: {
         type: Schema.Types.ObjectId
-            //    ref: 'Images',
+        //    ref: 'Images',
     },
 
     emails: [{
@@ -1068,11 +1070,24 @@ F.on('customer:recalculateStatus', function(data) {
                 // Check if quotation or order DRAFT -> ST_PCHAU
                 QuotationModel.find({
                         supplier: data.supplier._id,
-                        _type: { $in: ["orderCustomer", "quotationCustomer"] },
-                        isremoved: { $ne: true },
-                        Status: { $ne: "CANCELLED" },
-                        datec: { $gte: moment().subtract(1, 'year').toDate() }
-                    }, "", { sort: { datec: -1 }, limit: 1 },
+                        _type: {
+                            $in: ["orderCustomer", "quotationCustomer"]
+                        },
+                        isremoved: {
+                            $ne: true
+                        },
+                        Status: {
+                            $ne: "CANCELLED"
+                        },
+                        datec: {
+                            $gte: moment().subtract(1, 'year').toDate()
+                        }
+                    }, "", {
+                        sort: {
+                            datec: -1
+                        },
+                        limit: 1
+                    },
                     function(err, orders) {
                         if (err)
                             return wCb(err);
@@ -1095,9 +1110,18 @@ F.on('customer:recalculateStatus', function(data) {
                 // Check if order -> ST_NEW, ST_CFID, ST_CVIP, ST_LOOSE
                 OrderModel.find({
                         supplier: data.supplier._id,
-                        isremoved: { $ne: true },
-                        Status: { $nin: ["DRAFT", "CANCELLED"] }
-                    }, "", { sort: { datec: -1 }, limit: 1 },
+                        isremoved: {
+                            $ne: true
+                        },
+                        Status: {
+                            $nin: ["DRAFT", "CANCELLED"]
+                        }
+                    }, "", {
+                        sort: {
+                            datec: -1
+                        },
+                        limit: 1
+                    },
                     function(err, orders) {
                         if (err)
                             return wCb(err);
@@ -1110,10 +1134,20 @@ F.on('customer:recalculateStatus', function(data) {
 
                         OrderModel.find({
                             supplier: data.supplier._id,
-                            isremoved: { $ne: true },
-                            Status: { $nin: ["DRAFT", "CANCELLED"] },
-                            datec: { $gte: moment().subtract(1, 'year').toDate() }
-                        }, "", { sort: { datec: -1 } }, function(err, orders) {
+                            isremoved: {
+                                $ne: true
+                            },
+                            Status: {
+                                $nin: ["DRAFT", "CANCELLED"]
+                            },
+                            datec: {
+                                $gte: moment().subtract(1, 'year').toDate()
+                            }
+                        }, "", {
+                            sort: {
+                                datec: -1
+                            }
+                        }, function(err, orders) {
                             if (err)
                                 return wCb(err);
 
@@ -1127,9 +1161,15 @@ F.on('customer:recalculateStatus', function(data) {
 
                             OrderModel.aggregate([{
                                     $match: {
-                                        isremoved: { $ne: true },
-                                        Status: { $nin: ["DRAFT", "CANCELLED"] },
-                                        datec: { $gte: moment().subtract(1, 'year').toDate() }
+                                        isremoved: {
+                                            $ne: true
+                                        },
+                                        Status: {
+                                            $nin: ["DRAFT", "CANCELLED"]
+                                        },
+                                        datec: {
+                                            $gte: moment().subtract(1, 'year').toDate()
+                                        }
                                     }
                                 }, {
                                     $project: {
@@ -1140,15 +1180,21 @@ F.on('customer:recalculateStatus', function(data) {
                                 }, {
                                     $group: {
                                         _id: "$supplier",
-                                        total_ht: { $sum: "$total_ht" }
+                                        total_ht: {
+                                            $sum: "$total_ht"
+                                        }
                                     }
                                 }, {
-                                    $sort: { total_ht: 1 }
+                                    $sort: {
+                                        total_ht: 1
+                                    }
                                 }, {
                                     $limit: 10
                                 },
                                 {
-                                    $match: { _id: supplier._id }
+                                    $match: {
+                                        _id: supplier._id
+                                    }
                                 }
                             ], function(err, orders) {
                                 if (err)
@@ -1172,7 +1218,9 @@ F.on('customer:recalculateStatus', function(data) {
             supplier.updatedAt = new Date();
 
             if (supplier)
-                CustomerModel.findByIdAndUpdate(supplier._id, supplier, { upsert: false }, function(err, doc) {
+                CustomerModel.findByIdAndUpdate(supplier._id, supplier, {
+                    upsert: false
+                }, function(err, doc) {
                     if (err)
                         console.log(err);
                 });
