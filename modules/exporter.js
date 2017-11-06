@@ -35,11 +35,19 @@ function createProjection(map, options) {
  */
 
 function exportToCsv(options, cb) {
-    var map = options.map;
-    var resultArray = options.resultArray || [];
+    const map = options.map;
+    //var resultArray = options.resultArray || [];
+    var query = options.query;
+    const Model = options.Model;
     var headersArray = [];
-    var project = createProjection(map.aliases, { putHeadersTo: headersArray });
-    var formatters = map.formatters;
+    const returnResult = options.returnResult;
+    const project = createProjection(map.aliases, { putHeadersTo: headersArray });
+    const formatters = map.formatters;
+
+    //console.log(query, project);
+
+    query.push({ $project: project });
+    var resultAggregate = Model.aggregate(query);
 
     var writeCsv = function(line, callback) {
         json2csv({
@@ -47,13 +55,40 @@ function exportToCsv(options, cb) {
             fields: Object.keys(project),
             del: ";"
         }, function(err, csv) {
-
             options.stream.emit('data', csv);
             callback();
         });
     };
 
-    async.each(resultArray, writeCsv, cb);
+    resultAggregate.exec(function(err, response) {
+        if (err)
+            return cb(err);
+
+        if (returnResult)
+            return cb(null, response);
+
+        if (formatters)
+            return async.each(response, function(item, callback) {
+
+                var keys = Object.keys(formatters);
+
+                for (let i = keys.length - 1; i >= 0; i--) {
+                    let key = keys[i];
+                    if (item[key] !== null)
+                        item[key] = formatters[key](item[key]);
+                }
+
+                callback();
+
+            }, function(err) {
+                if (err)
+                    return cb(err);
+
+                writeCsv(response, cb);
+            });
+
+        writeCsv(response, cb);
+    });
 };
 
 function reportToCSV(options) {

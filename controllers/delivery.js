@@ -71,11 +71,12 @@ function Object() {}
 Object.prototype = {
     getByViewType: function() {
         var self = this;
+        let Order;
         if (self.query.forSales === "false")
-            var Order = MODEL('order').Schema.GoodsInNote;
+            Order = MODEL('order').Schema.GoodsInNote;
         else
-            var Order = MODEL('order').Schema.GoodsOutNote;
-        var OrderStatus = MODEL('order').Status;
+            Order = MODEL('order').Schema.GoodsOutNote;
+        const OrderStatus = MODEL('order').Status;
 
         var data = self.query;
         var quickSearch = data.quickSearch;
@@ -98,50 +99,11 @@ Object.prototype = {
 
             //console.log(result.length);
 
-            result = _.map(result, function(line) {
-                var res_status = {};
-
-                var status = line.Status;
-                var statusList = OrderStatus;
-
-                if (status && statusList.values[status] && statusList.values[status].label) {
-                    res_status.id = status;
-                    res_status.name = i18n.t("orders:" + statusList.values[status].label);
-                    //this.status.name = statusList.values[status].label;
-                    res_status.css = statusList.values[status].cssClass;
-                } else { // By default
-                    res_status.id = status;
-                    res_status.name = status;
-                    res_status.css = "";
-                }
-
-                line.Status = res_status;
-
-                return line;
-            });
+            result = MODULE('utils').Status(result, OrderStatus);
 
             if (result.length)
                 result[0].totalAll.Status = _.map(result[0].totalAll.Status, function(Status) {
-                    var res_status = {};
-
-                    var status = Status._id;
-                    var statusList = OrderStatus;
-
-                    if (status && statusList.values[status] && statusList.values[status].label) {
-                        res_status.id = status;
-                        res_status.name = i18n.t("orders:" + statusList.values[status].label);
-                        //this.status.name = statusList.values[status].label;
-                        res_status.css = statusList.values[status].cssClass;
-                    } else { // By default
-                        res_status.id = status;
-                        res_status.name = status;
-                        res_status.css = "";
-                    }
-
-                    Status.name = res_status.name;
-                    Status.css = res_status.css;
-
-                    return Status;
+                    return _.extend(Status, MODULE('utils').Status(Status._id, OrderStatus));
                 });
 
 
@@ -1583,11 +1545,11 @@ Object.prototype = {
         var Stream = require('stream');
         var stream = new Stream();
 
-        Model.query({ query: self.query, user: self.user }, function(err, result) {
+        Model.query({ query: self.query, user: self.user, exec: false }, function(err, resultQuery) {
             MODULE('exporter').exportToCsv({
                 stream: stream,
                 Model: Model,
-                resultArray: result,
+                query: resultQuery,
                 map: exportMap,
                 fileName: type
             }, function(err, result) {

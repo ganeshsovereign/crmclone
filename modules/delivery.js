@@ -29,52 +29,62 @@ exports.version = '1.00';
 exports.enabled = true;
 
 exports.csv = {
-    "collection": "Invoice",
-    "schema": "Invoice",
+    "model": "order",
+    "schema": "GoodsOutNote",
     "aliases": {
-        "forSales": "ForSales",
-        "supplier.name": "Supplier Name",
-        "sourceDocument": "Source Document",
-        "supplierInvoiceNumber": "Supplier Invoice Number",
-        "paymentReference": "Payment Reference",
-        "invoiceDate": "Invoice Date",
-        "dueDate": "Due Date",
-        "paymentDate": "Payment Date",
-        "account": "Account",
-        "journal": "Journal",
-        "salesPerson.name": "Salesperson Name",
-        "paymentTerms": "Payment Term",
-        "paymentInfo": "Payment Info",
-        "payments": "Payment",
-        "products": "Products",
-        "workflow.name": "Workflow Name",
-        "workflow.status": "Workflow Status",
-        "whoCanRW": "Who Can RW",
-        "groups.owner": "Groups Owner",
-        "groups.users": "Groups Users",
-        "groups.group": "Groups Group",
-        "creationDate": "Creation Date",
-        "createdBy.user": "Created By User",
-        "createdBy.date": "Created By Date",
-        "editedBy.user": "Edited By User",
-        "editedBy.date": "Edited By Date"
+        "supplier.fullName": "Client",
+        "ref": "Ref",
+        "ref_client": "Ref_Client",
+        "salesPerson.fullName": "Commercial",
+        "datedl": "Date exp",
+        "qty": "Qte",
+        "Status": "Statut",
+        "entity": "Entite",
+        "status.isPrinted": "Impression",
+        "status.isPicked": "Scanne",
+        "status.isPacked": "Emballe",
+        "status.isShipped": "Expedie",
+        "status.printedBy": "Impression par",
+        "status.pickedBy": "Scanne par",
+        "status.packedBy": "Emballe par",
+        "status.shippedBy": "Expedie par",
+        "datec": "Date creation"
+            //"createdBy.user": "Created By User",
+            //"createdBy.date": "Created By Date",
+            //"editedBy.user": "Edited By User",
+            //"editedBy.date": "Edited By Date"
     },
 
     "arrayKeys": {
-        "groups.users": true,
-        "groups.group": true
+        // "groups.users": true,
+        // "groups.group": true
     },
 
     "formatters": {
-        "Invoice Date": function(date) {
+        "Date exp": function(date) {
             return moment(date).format(CONFIG('dateformatLong'));
         },
 
-        "Created Date": function(date) {
+        "Date creation": function(date) {
             return moment(date).format(CONFIG('dateformatLong'));
         },
 
-        "Edited Date": function(date) {
+        "Statut": function(Status) {
+            const OrderStatus = MODEL('order').Status;
+
+            let result = MODULE('utils').Status(Status, OrderStatus);
+            return result.name;
+        },
+        "Impression": function(date) {
+            return moment(date).format(CONFIG('dateformatLong'));
+        },
+        "Scanne": function(date) {
+            return moment(date).format(CONFIG('dateformatLong'));
+        },
+        "Emballe": function(date) {
+            return moment(date).format(CONFIG('dateformatLong'));
+        },
+        "Expedie": function(date) {
             return moment(date).format(CONFIG('dateformatLong'));
         }
     }

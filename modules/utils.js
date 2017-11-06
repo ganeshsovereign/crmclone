@@ -566,7 +566,7 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 //this.total_ttc += this.lines[i].total_ttc;
 
                 if (lines[i].product && lines[i].product._id)
-                    //Poids total
+                //Poids total
                     weight += (lines[i].product.weight || 0) * lines[i].qty;
 
                 count += lines[i].qty;
@@ -577,13 +577,13 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 total_ht -= discount.discount.value;
 
                 if (VATIsUsed)
-                    // Remise sur les TVA
+                // Remise sur les TVA
                     for (j = 0; j < total_taxes.length; j++) {
-                        if (total_taxes[j].isFixValue)
-                            continue;
+                    if (total_taxes[j].isFixValue)
+                        continue;
 
-                        total_taxes[j].total -= total_taxes[j].total * discount.discount.percent / 100;
-                    }
+                    total_taxes[j].total -= total_taxes[j].total * discount.discount.percent / 100;
+                }
             }
 
             if (discount && discount.escompte && discount.escompte.percent >= 0) {
@@ -591,13 +591,13 @@ exports.sumTotal = function(lines, shipping, discount, societeId, callback) {
                 total_ht -= discount.escompte.value;
 
                 if (VATIsUsed)
-                    // Remise sur les TVA
+                // Remise sur les TVA
                     for (j = 0; j < total_taxes.length; j++) {
-                        if (total_taxes[j].isFixValue)
-                            continue;
+                    if (total_taxes[j].isFixValue)
+                        continue;
 
-                        total_taxes[j].total -= total_taxes[j].total * discount.escompte.percent / 100;
-                    }
+                    total_taxes[j].total -= total_taxes[j].total * discount.escompte.percent / 100;
+                }
             }
 
             //Add ecotax to total_ht after ALL DISCOUNT
@@ -658,4 +658,53 @@ exports.checksumIsbn = function(isbn) {
         sum += parseInt(chars[i]) * (i % 2 == 0 ? 3 : 1);
 
     return sum % 10;
+};
+
+exports.Status = function(value, statusList) {
+    if (typeof value === 'object')
+        return _.map(value, function(line) {
+            var res_status = {};
+
+            var status = line.Status;
+
+            if (status && statusList.values[status] && statusList.values[status].label) {
+                res_status.id = status;
+                res_status.name = i18n.t(statusList.lang + ":" + statusList.values[status].label);
+                //this.status.name = statusList.values[status].label;
+                res_status.css = statusList.values[status].cssClass;
+            } else { // By default
+                res_status.id = status;
+                res_status.name = status;
+                res_status.css = "";
+            }
+
+            line.Status = res_status;
+
+            return line;
+        });
+
+
+    //Single value
+    var res_status = {};
+    var status = value;
+
+    var Status = {
+        id: value
+    };
+
+    if (status && statusList.values[status] && statusList.values[status].label) {
+        res_status.id = status;
+        res_status.name = i18n.t(statusList.lang + ":" + statusList.values[status].label);
+        //this.status.name = statusList.values[status].label;
+        res_status.css = statusList.values[status].cssClass;
+    } else { // By default
+        res_status.id = status;
+        res_status.name = status;
+        res_status.css = "";
+    }
+
+    Status.name = res_status.name;
+    Status.css = res_status.css;
+
+    return Status;
 };
