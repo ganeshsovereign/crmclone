@@ -150,7 +150,6 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
@@ -1480,7 +1479,6 @@ MetronicApp.controller('SocieteStatsController', ['$scope', '$rootScope', '$http
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             $scope.find();
@@ -1710,11 +1708,7 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
         // initialize core components
         Metronic.initAjax();
 
-        // set default layout mode
-        if ($rootScope.$state.current.parent === "contact")
-            $rootScope.settings.layout.pageSidebarClosed = false;
-        else
-            $rootScope.settings.layout.pageSidebarClosed = true;
+        // set default layout mode    
         $rootScope.settings.layout.pageBodySolid = false;
 
         if ($rootScope.$stateParams.societe)

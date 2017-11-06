@@ -29,7 +29,6 @@ angular.module("MetronicApp").controller('DashboardController', ['$rootScope', '
         // initialize core components
         Metronic.initAjax();
 
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
     });
 

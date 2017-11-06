@@ -24,7 +24,6 @@ International Registered Trademark & Property of ToManage SAS
 MetronicApp.controller('SettingGeneralController', ['$rootScope', '$scope', '$http', '$timeout', function($rootScope, $scope, $http, $timeout) {
     $scope.$on('$viewContentLoaded', function() {
         Metronic.initAjax();
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
     });
 }]);
@@ -67,7 +66,6 @@ MetronicApp.controller('SettingEntityController', ['$rootScope', '$scope', '$htt
 
         $scope.$on('$viewContentLoaded', function() {
             Metronic.initAjax();
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "settings.entity.show")
@@ -349,7 +347,6 @@ MetronicApp.controller('SettingProductController', ['$rootScope', '$scope', '$ht
         Metronic.initAjax();
         var dict = ["fk_units", "fk_tva"];
 
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         $http({
@@ -488,7 +485,6 @@ angular.module("MetronicApp").controller('SettingIntegrationController', ['$root
         // initialize core components
         Metronic.initAjax();
 
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
     });

@@ -33,7 +33,6 @@ MetronicApp.controller('CategoryController', ['$scope', '$rootScope', '$http', '
     };
 
     $scope.$on('$viewContentLoaded', function() {
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
     });
 

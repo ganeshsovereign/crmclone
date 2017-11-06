@@ -54,7 +54,6 @@ MetronicApp.controller('GroupController', ['$scope', '$rootScope', '$http', 'Gro
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         if ($rootScope.$stateParams.Status) {
