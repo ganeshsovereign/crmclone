@@ -219,7 +219,7 @@
 
                             <th table-sort='datedl' ng-model="sort" name="@(DeliveryDate)"></th>
                             <th table-sort='qty' ng-model="sort" name="@(Qty)"></th>
-                            <th>@(Weight)</th>
+                            <th table-sort='weight' ng-model="sort" name="@(Weight)"></th>
                             <th>@(Status)</th>
                             <th>@(companies:Entity)</th>
                             <th class="text-center">@(orders:Printed)</th>
@@ -253,8 +253,8 @@
                             <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})" class="text-center">{{line.qty}}</td>
                             <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})" class="text-center">{{line.qty}}</td>
 
-                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})" class="text-center">{{line.weight}}</td>
-                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})" class="text-center">{{line.weight}}</td>
+                            <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})" class="text-center">{{line.weight | number:2}} kg</td>
+                            <td ng-if="module('deliverysupplier')" ui-sref="deliverysupplier.show({id:line._id})" class="text-center">{{line.weight | number:2}} kg</td>
 
                             <td ng-if="module('delivery')" ui-sref="delivery.show({id:line._id})">
                                 <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
