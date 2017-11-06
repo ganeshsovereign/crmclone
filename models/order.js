@@ -1237,23 +1237,7 @@ baseSchema.statics.getById = function(id, callback) {
  */
 baseSchema.virtual('_status')
     .get(function() {
-        var res_status = {};
-
-        var status = this.Status;
-        var statusList = exports.Status;
-
-        if (status && statusList.values[status] && statusList.values[status].label) {
-            res_status.id = status;
-            res_status.name = i18n.t("orders:" + statusList.values[status].label);
-            //this.status.name = statusList.values[status].label;
-            res_status.css = statusList.values[status].cssClass;
-        } else { // By default
-            res_status.id = status;
-            res_status.name = status;
-            res_status.css = "";
-        }
-
-        return res_status;
+        return MODULE('utils').Status(this.Status, exports.Status);
     });
 
 //Check if orderRow is attached to this main order

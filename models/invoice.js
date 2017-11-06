@@ -710,27 +710,12 @@ exports.Status = {
 
 billSchema.virtual('_status')
     .get(function() {
-        var res_status = {};
-
         var status = this.Status;
-        var statusList = exports.Status;
 
         if (status === 'NOT_PAID' && this.dater > moment().subtract(10, 'days').toDate()) //Check if late
             status = 'VALIDATED';
 
-        if (status && statusList.values[status] && statusList.values[status].label) {
-            //console.log(this);
-            res_status.id = status;
-            res_status.name = i18n.t(statusList.lang + ":" + statusList.values[status].label);
-            //res_status.name = statusList.values[status].label;
-            res_status.css = statusList.values[status].cssClass;
-        } else { // By default
-            res_status.id = status;
-            res_status.name = status;
-            res_status.css = "";
-        }
-        return res_status;
-
+        return MODULE('utils').Status(status, exports.Status);
     });
 
 /*var transactionList = [];

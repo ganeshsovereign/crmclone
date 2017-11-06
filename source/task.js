@@ -170,50 +170,41 @@ function Status(notes, datef) {
 }
 
 function getStatus(status) {
-    var res_status = {};
-
-    var taskStatus = {
-        "TODO": {
-            "enable": true,
-            "label": "StatusActionToDo",
-            "cssClass": "blue-gradient label-info",
-            "dateEnd": "expired"
-        },
-        "ON": {
-            "label": "StatusActionInProcess",
-            "enable": true,
-            "cssClass": "orange-gradient label-warning",
-            "dateEnd": "expired"
-        },
-        "DONE": {
-            "enable": true,
-            "label": "StatusActionDone",
-            "cssClass": "green-gradient label-success"
-        },
-        "NOTAPP": {
-            "label": "StatusNotApplicable",
-            "enable": false,
-            "cssClass": "grey-gradient label-default"
-        },
-        "expired": {
-            "enable": false,
-            "label": "StatusActionTooLate",
-            "cssClass": "red-gradient label-danger"
+    var taskStatus = Status = {
+        "_id": "fk_task_status",
+        "lang": "tasks",
+        "values": {
+            "TODO": {
+                "enable": true,
+                "label": "StatusActionToDo",
+                "cssClass": "blue-gradient label-info",
+                "dateEnd": "expired"
+            },
+            "ON": {
+                "label": "StatusActionInProcess",
+                "enable": true,
+                "cssClass": "orange-gradient label-warning",
+                "dateEnd": "expired"
+            },
+            "DONE": {
+                "enable": true,
+                "label": "StatusActionDone",
+                "cssClass": "green-gradient label-success"
+            },
+            "NOTAPP": {
+                "label": "StatusNotApplicable",
+                "enable": false,
+                "cssClass": "grey-gradient label-default"
+            },
+            "expired": {
+                "enable": false,
+                "label": "StatusActionTooLate",
+                "cssClass": "red-gradient label-danger"
+            }
         }
     };
 
-    if (status && taskStatus[status] && taskStatus[status].label) {
-        //console.log(this);
-        res_status.id = status;
-        res_status.name = i18n.t("tasks:" + taskStatus[status].label);
-        res_status.css = taskStatus[status].cssClass;
-    } else { // By default
-        res_status.id = status;
-        res_status.name = status;
-        res_status.css = "";
-    }
-
-    return res_status;
+    return MODULE('utils').Status(status, taskStatus);
 
 }
 

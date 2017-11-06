@@ -140,10 +140,10 @@ taskSchema.virtual('ended')
         return last_note.percentage >= 100 || false;
     });
 
-function getStatus(status) {
-    var res_status = {};
-
-    var taskStatus = {
+exports.Status = {
+    "_id": "fk_task_status",
+    "lang": "tasks",
+    "values": {
         "TODO": {
             "enable": true,
             "label": "StatusActionToDo",
@@ -171,21 +171,11 @@ function getStatus(status) {
             "label": "StatusActionTooLate",
             "cssClass": "red-gradient label-danger"
         }
-    };
-
-    if (status && taskStatus[status] && taskStatus[status].label) {
-        //console.log(this);
-        res_status.id = status;
-        res_status.name = i18n.t("tasks:" + taskStatus[status].label);
-        res_status.css = taskStatus[status].cssClass;
-    } else { // By default
-        res_status.id = status;
-        res_status.name = status;
-        res_status.css = "";
     }
+};
 
-    return res_status;
-
+function getStatus(status) {
+    return MODULE('utils').Status(status, exports.Status);
 }
 
 taskSchema.virtual('status')

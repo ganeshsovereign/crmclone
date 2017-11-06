@@ -301,7 +301,7 @@ var productSchema = new Schema({
 
         /* PIM transaltion */
         langs: [LangSchema]
-        /* need to Add  alt des images TODO */
+            /* need to Add  alt des images TODO */
 
 
     },
@@ -949,7 +949,7 @@ productSchema.pre('save', function(next) {
                         });
             }
 
-        //console.log(this);
+            //console.log(this);
 
         if (this.directCost != directCost)
             this.directCost = directCost;
@@ -987,13 +987,13 @@ productSchema.pre('save', function(next) {
 
     if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
-            F.emit('product:updateDirectCost', {
-                userId: (self.editedBy ? self.editedBy.toString() : null),
-                product: {
-                    _id: self._id.toString()
-                }
-            });
-        }, 500);
+        F.emit('product:updateDirectCost', {
+            userId: (self.editedBy ? self.editedBy.toString() : null),
+            product: {
+                _id: self._id.toString()
+            }
+        });
+    }, 500);
 
     //Emit product update
     setTimeout2('product:' + this._id.toString(), function() {
@@ -1173,23 +1173,7 @@ exports.Status = {
  */
 productSchema.virtual('_status')
     .get(function() {
-        var res_status = {};
-
-        var status = this.Status;
-        var statusList = exports.Status;
-
-        if (status && statusList.values[status] && statusList.values[status].label) {
-            res_status.id = status;
-            res_status.name = i18n.t(statusList.lang + ":" + statusList.values[status].label);
-            //this.status.name = statusList.values[status].label;
-            res_status.css = statusList.values[status].cssClass;
-        } else { // By default
-            res_status.id = status;
-            res_status.name = status;
-            res_status.css = "";
-        }
-
-        return res_status;
+        return MODULE('utils').Status(this.Status, exports.Status);
     });
 
 

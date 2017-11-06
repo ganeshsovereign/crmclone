@@ -170,23 +170,7 @@ paymentSchema.pre('save', function(next) {
 
 paymentSchema.virtual('status')
     .get(function() {
-        var res_status = {};
-
-        var status = this.Status;
-
-        if (status && exports.Status.values[status] && exports.Status.values[status].label) {
-            //console.log(this);
-            res_status.id = status;
-            res_status.name = i18n.t(exports.Status.lang + ":" + exports.Status.values[status].label);
-            //res_status.name = statusList.values[status].label;
-            res_status.css = exports.Status.values[status].cssClass;
-        } else { // By default
-            res_status.id = status;
-            res_status.name = status;
-            res_status.css = "";
-        }
-        return res_status;
-
+        return MODULE('utils').Status(this.Status, exports.Status);
     });
 
 paymentSchema.statics.getById = function(id, callback) {
@@ -250,8 +234,8 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
 
     if (body.mode === "Receipt" && body.mode_reglement_code == 'CHQ') // Receive a CHQ
         body.bank = {
-            journalId: "RG"
-        }; // Reglement
+        journalId: "RG"
+    }; // Reglement
 
     if (!body.bank.journalId)
         return callback('Journal de banque absent. Voir la configuration de la banque');
@@ -398,55 +382,55 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
                                 for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
 
-                                    // No TVA
-                                    if (bill.total_taxes[j].value == 0)
-                                        continue;
+                                // No TVA
+                                if (bill.total_taxes[j].value == 0)
+                                    continue;
 
-                                    // TVA on payment
-                                    if (bill.total_taxes[j].taxeId.isOnPaid !== true)
-                                        continue;
+                                // TVA on payment
+                                if (bill.total_taxes[j].taxeId.isOnPaid !== true)
+                                    continue;
 
-                                    if (bill.total_taxes[j].value > 0) {
-                                        entry.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                        entry.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                    } else {
-                                        // Si avoir
-                                        entry.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                        entry.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                    }
+                                if (bill.total_taxes[j].value > 0) {
+                                    entry.debit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entry.credit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                } else {
+                                    // Si avoir
+                                    entry.credit("445740", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entry.debit(bill.total_taxes[j].taxeId.sellAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
                                 }
+                            }
 
                             aCb();
                         });
@@ -501,57 +485,57 @@ paymentSchema.statics.addPayment = function(options, user, callback) {
                             if (round(bill.payment + bill.total_paid, 2) >= round(bill.total_ttc, 2)) // Full paid
                                 for (var j = 0, len2 = bill.total_taxes.length; j < len2; j++) {
 
-                                    if (bill.total_taxes[j].value == 0)
-                                        continue;
+                                if (bill.total_taxes[j].value == 0)
+                                    continue;
 
-                                    //console.log(bill.total_taxes[j]);
+                                //console.log(bill.total_taxes[j]);
 
-                                    // TVA on payment
-                                    if (bill.total_taxes[j].taxeId.isOnPaid !== true)
-                                        continue;
+                                // TVA on payment
+                                if (bill.total_taxes[j].taxeId.isOnPaid !== true)
+                                    continue;
 
-                                    // TVA on payment
-                                    if (bill.total_taxes[j].value > 0) {
-                                        entry.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                        entry.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                    } else {
-                                        // Si avoir
-                                        entry.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                        entry.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
-                                            type: body.mode_reglement_code,
-                                            supplier: body.supplier,
-                                            bills: [{
-                                                invoice: bill._id,
-                                                amount: bill.total_taxes[j].value
-                                            }],
-                                            tax: bill.total_taxes[j].taxeId._id
-                                        });
-                                    }
+                                // TVA on payment
+                                if (bill.total_taxes[j].value > 0) {
+                                    entry.credit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entry.debit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                } else {
+                                    // Si avoir
+                                    entry.debit("445640", Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
+                                    entry.credit(bill.total_taxes[j].taxeId.buyAccount, Math.abs(bill.total_taxes[j].value), bill.total_taxes[j].taxeId.code, {
+                                        type: body.mode_reglement_code,
+                                        supplier: body.supplier,
+                                        bills: [{
+                                            invoice: bill._id,
+                                            amount: bill.total_taxes[j].value
+                                        }],
+                                        tax: bill.total_taxes[j].taxeId._id
+                                    });
                                 }
+                            }
 
                             aCb();
                         });

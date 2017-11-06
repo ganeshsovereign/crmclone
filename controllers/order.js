@@ -670,27 +670,7 @@ Object.prototype = {
             if (err)
                 return self.throw500(err);
 
-            result = _.map(result, function(line) {
-                var res_status = {};
-
-                var status = line.Status;
-                var statusList = OrderStatus;
-
-                if (status && statusList.values[status] && statusList.values[status].label) {
-                    res_status.id = status;
-                    res_status.name = i18n.t("orders:" + statusList.values[status].label);
-                    //this.status.name = statusList.values[status].label;
-                    res_status.css = statusList.values[status].cssClass;
-                } else { // By default
-                    res_status.id = status;
-                    res_status.name = status;
-                    res_status.css = "";
-                }
-
-                line.Status = res_status;
-
-                return line;
-            });
+            result = MODULE('utils').Status(result, OrderStatus);
 
             firstElement = result[0];
             count = firstElement && firstElement.total ? firstElement.total : 0;
