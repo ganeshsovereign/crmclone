@@ -48,7 +48,8 @@ exports.csv = {
         "status.pickedBy": "Scanne par",
         "status.packedBy": "Emballe par",
         "status.shippedBy": "Expedie par",
-        "datec": "Date creation"
+        "datec": "Date creation",
+        "weight": "Poids"
             //"createdBy.user": "Created By User",
             //"createdBy.date": "Created By Date",
             //"editedBy.user": "Edited By User",
