@@ -98,7 +98,7 @@
                                             <input ng-model="quickSearch" class="form-control input-sm" ng-change="find()" />
                                         </div>
 
-                                        <crm-id label="@(companies:Company)" name="societeId" placeholder="@(Search)" on-select="find" ng-model="search.supplier.value[0]" entity="login.entity" url="/erp/api/societe/autocomplete" class="form-group" bootstrap="true"></crm-id>
+                                        <crm-id ng-show="hidden_supplier" label="@(companies:Company)" name="societeId" placeholder="@(Search)" on-select="find" ng-model="search.supplier.value[0]" entity="login.entity" url="/erp/api/societe/autocomplete" class="form-group" bootstrap="true"></crm-id>
 
                                         <!--<div class="form-group">
                                             <label>@(companies:Company)</label>
@@ -109,7 +109,9 @@
                                         </div>-->
 
                                         <div class="form-group">
-                                            <label>@(commercial:Commercial)</label>
+                                            <label ng-if="module('bill')">@(commercial:Commercial)</label>
+                                            <label ng-if="module('billsupplier')">@(orders:Buyer)</label>
+
                                             <select ng-model="search.salesPerson.value[0]" id="Status" ng-change="find()" ng-options="s._id as s.fullName for s in $dict.salesPerson" class="form-control input-sm"></select>
                                             <!--<tags-input ng-model="search.salesPerson.value" display-property="fullName" key-property="_id" placeholder="@(Search)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
                                                 <auto-complete source="$dict.salesPerson" min-length="0"></auto-complete>

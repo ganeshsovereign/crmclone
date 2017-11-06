@@ -144,7 +144,7 @@
                                                 <select class="form-control" id="commercial_id" ng-model="object.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees" ng-change="update()">
                                                         </select>
                                                 <label ng-if="module('offer') || module('order') || module('delivery') || module('stockreturn') || module('bill')" for="commercial_id">@(commercial:Commercial)</label>
-                                                <label ng-if="module('offersupplier') || module('ordersupplier') || module('deliverysupplier') || module('stockreturnsupplier') || module('billsupplier')" for="commercial_id">@(commercial:Buyer)</label>
+                                                <label ng-if="module('offersupplier') || module('ordersupplier') || module('deliverysupplier') || module('billsupplier')" for="commercial_id">@(commercial:Buyer)</label>
                                             </div>
                                         </div>
 
@@ -242,7 +242,7 @@
                                                 <div ng-if="!module('delivery') && !module('stockreturn')" class="tools">
                                                     <a href="" class="expand" data-original-title="" title=""> </a>
                                                 </div>
-                                                <div ng-if="module('delivery') || module('deliverysupplier') || module('stockreturn') || module('stockreturnsupplier')" class="tools">
+                                                <div ng-if="module('delivery') || module('deliverysupplier') || module('stockreturn')" class="tools">
                                                     <a href="" class="collapse" data-original-title="" title=""> </a>
                                                 </div>
                                             </div>
@@ -251,7 +251,7 @@
                                                     <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
                                                 </div>
                                             </div>
-                                            <div ng-if="module('delivery') || module('deliverysupplier') || module('stockreturn') || module('stockreturnsupplier')" class="portlet-body" style="display: block;">
+                                            <div ng-if="module('delivery') || module('deliverysupplier') || module('stockreturn')" class="portlet-body" style="display: block;">
                                                 <div class="form-group form-md-line-input">
                                                     <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
                                                 </div>

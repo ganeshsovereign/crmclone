@@ -294,7 +294,7 @@
                 </li>
             </ul>
             <!-- __STOCKRETURN__ -->
-            <ul ng-if="module('stockreturn') || module('stockreturnsupplier')" class="dropdown-menu pull-right" role="menu">
+            <ul ng-if="module('stockreturn')" class="dropdown-menu pull-right" role="menu">
                 <li>
                     <a ng-if="object.Status=='DRAFT' && login.rights.delivery.validate" data-ng-click="changeStatus( 'VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateStockReturn)

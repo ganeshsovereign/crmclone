@@ -1,28 +1,28 @@
-var Index = function () {
+var Index = function() {
 
     return {
 
         //main function
-        init: function () {
-            Metronic.addResizeHandler(function () {
-                jQuery('.vmaps').each(function () {
+        init: function() {
+            Metronic.addResizeHandler(function() {
+                jQuery('.vmaps').each(function() {
                     var map = jQuery(this);
                     map.width(map.parent().width());
                 });
             });
         },
 
-        initJQVMAP: function () {
+        initJQVMAP: function() {
             if (!jQuery().vectorMap) {
                 return;
             }
 
-            var showMap = function (name) {
+            var showMap = function(name) {
                 jQuery('.vmaps').hide();
                 jQuery('#vmap_' + name).show();
             }
 
-            var setMap = function (name) {
+            var setMap = function(name) {
                 var data = {
                     map: 'world_en',
                     backgroundColor: null,
@@ -39,15 +39,15 @@ var Index = function () {
                     selectedColor: '#c9dfaf',
                     selectedRegion: null,
                     showTooltip: true,
-                    onLabelShow: function (event, label, code) {
+                    onLabelShow: function(event, label, code) {
 
                     },
-                    onRegionOver: function (event, code) {
+                    onRegionOver: function(event, code) {
                         if (code == 'ca') {
                             event.preventDefault();
                         }
                     },
-                    onRegionClick: function (element, code, region) {
+                    onRegionClick: function(element, code, region) {
                         var message = 'You clicked "' + region + '" which has the code: ' + code.toUpperCase();
                         alert(message);
                     }
@@ -71,21 +71,21 @@ var Index = function () {
             setMap("germany");
             showMap("world");
 
-            jQuery('#regional_stat_world').click(function () {
+            jQuery('#regional_stat_world').click(function() {
                 showMap("world");
             });
 
-            jQuery('#regional_stat_usa').click(function () {
+            jQuery('#regional_stat_usa').click(function() {
                 showMap("usa");
             });
 
-            jQuery('#regional_stat_europe').click(function () {
+            jQuery('#regional_stat_europe').click(function() {
                 showMap("europe");
             });
-            jQuery('#regional_stat_russia').click(function () {
+            jQuery('#regional_stat_russia').click(function() {
                 showMap("russia");
             });
-            jQuery('#regional_stat_germany').click(function () {
+            jQuery('#regional_stat_germany').click(function() {
                 showMap("germany");
             });
 
@@ -93,7 +93,7 @@ var Index = function () {
             $('#region_statistics_content').show();
         },
 
-        initCalendar: function () {
+        initCalendar: function() {
             if (!jQuery().fullCalendar) {
                 return;
             }
@@ -129,11 +129,11 @@ var Index = function () {
                 }
             }
 
-           
+
 
             $('#calendar').fullCalendar('destroy'); // destroy the calendar
             $('#calendar').fullCalendar({ //re-initialize the calendar
-                disableDragging : false,
+                disableDragging: false,
                 header: h,
                 editable: true,
                 events: [{
@@ -157,7 +157,7 @@ var Index = function () {
                     backgroundColor: Metronic.getBrandColor('green')
                 }, {
                     title: 'Meeting',
-                    start: new Date(y, m, d+9, 10, 30),
+                    start: new Date(y, m, d + 9, 10, 30),
                     allDay: false
                 }, {
                     title: 'Lunch',
@@ -181,7 +181,7 @@ var Index = function () {
             });
         },
 
-        initCharts: function () {
+        initCharts: function() {
             if (!jQuery.plot) {
                 return;
             }
@@ -241,8 +241,7 @@ var Index = function () {
                 $('#site_statistics_loading').hide();
                 $('#site_statistics_content').show();
 
-                var plot_statistics = $.plot($("#site_statistics"),
-                    [{
+                var plot_statistics = $.plot($("#site_statistics"), [{
                         data: visitors,
                         lines: {
                             fill: 0.6,
@@ -296,7 +295,7 @@ var Index = function () {
                     });
 
                 var previousPoint = null;
-                $("#site_statistics").bind("plothover", function (event, pos, item) {
+                $("#site_statistics").bind("plothover", function(event, pos, item) {
                     $("#x").text(pos.x.toFixed(2));
                     $("#y").text(pos.y.toFixed(2));
                     if (item) {
@@ -402,7 +401,7 @@ var Index = function () {
                         }
                     });
 
-                $("#site_activities").bind("plothover", function (event, pos, item) {
+                $("#site_activities").bind("plothover", function(event, pos, item) {
                     $("#x").text(pos.x.toFixed(2));
                     $("#y").text(pos.y.toFixed(2));
                     if (item) {
@@ -416,20 +415,20 @@ var Index = function () {
                     }
                 });
 
-                $('#site_activities').bind("mouseleave", function () {
+                $('#site_activities').bind("mouseleave", function() {
                     $("#tooltip").remove();
                 });
             }
         },
 
-        initMiniCharts: function () {
+        initMiniCharts: function() {
             if (!jQuery().easyPieChart || !jQuery().sparkline) {
                 return;
             }
 
             // IE8 Fix: function.bind polyfill
             if (Metronic.isIE8() && !Function.prototype.bind) {
-                Function.prototype.bind = function (oThis) {
+                Function.prototype.bind = function(oThis) {
                     if (typeof this !== "function") {
                         // closest thing possible to the ECMAScript 5 internal IsCallable function
                         throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
@@ -437,11 +436,11 @@ var Index = function () {
 
                     var aArgs = Array.prototype.slice.call(arguments, 1),
                         fToBind = this,
-                        fNOP = function () {},
-                        fBound = function () {
+                        fNOP = function() {},
+                        fBound = function() {
                             return fToBind.apply(this instanceof fNOP && oThis ? this : oThis,
-                        aArgs.concat(Array.prototype.slice.call(arguments)));
-                    };
+                                aArgs.concat(Array.prototype.slice.call(arguments)));
+                        };
 
                     fNOP.prototype = this.prototype;
                     fBound.prototype = new fNOP();
@@ -471,8 +470,8 @@ var Index = function () {
                 barColor: Metronic.getBrandColor('red')
             });
 
-            $('.easy-pie-chart-reload').click(function () {
-                $('.easy-pie-chart .number').each(function () {
+            $('.easy-pie-chart-reload').click(function() {
+                $('.easy-pie-chart .number').each(function() {
                     var newValue = Math.floor(100 * Math.random());
                     $(this).data('easyPieChart').update(newValue);
                     $('span', this).text(newValue);
@@ -506,7 +505,7 @@ var Index = function () {
 
         },
 
-        initChat: function () {
+        initChat: function() {
 
             var cont = $('#chats');
             var list = $('.chats', cont);
@@ -514,7 +513,7 @@ var Index = function () {
             var input = $('input', form);
             var btn = $('.btn', form);
 
-            var handleClick = function (e) {
+            var handleClick = function(e) {
                 e.preventDefault();
 
                 var text = input.val();
@@ -540,9 +539,9 @@ var Index = function () {
                 var msg = list.append(tpl);
                 input.val("");
 
-                var getLastPostPos = function () {
+                var getLastPostPos = function() {
                     var height = 0;
-                    cont.find("li.out, li.in").each(function () {
+                    cont.find("li.out, li.in").each(function() {
                         height = height + $(this).outerHeight();
                     });
 
@@ -554,7 +553,7 @@ var Index = function () {
                 });
             }
 
-            $('body').on('click', '.message .name', function (e) {
+            $('body').on('click', '.message .name', function(e) {
                 e.preventDefault(); // prevent click event
 
                 var name = $(this).text(); // get clicked user's full name
@@ -564,7 +563,7 @@ var Index = function () {
 
             btn.click(handleClick);
 
-            input.keypress(function (e) {
+            input.keypress(function(e) {
                 if (e.which == 13) {
                     handleClick(e);
                     return false; //<---- Add this line
@@ -572,7 +571,7 @@ var Index = function () {
             });
         },
 
-        initDashboardDaterange: function () {
+        initDashboardDaterange: function() {
 
             if (!jQuery().daterangepicker) {
                 return;
@@ -615,7 +614,7 @@ var Index = function () {
                         firstDay: 1
                     }
                 },
-                function (start, end) {
+                function(start, end) {
                     $('#dashboard-report-range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
                 }
             );

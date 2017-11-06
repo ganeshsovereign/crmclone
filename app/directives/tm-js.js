@@ -74,15 +74,15 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function($rootScope) {
                     buttonClasses: ['btn btn-sm'],
                     applyClass: ' blue',
                     cancelClass: 'default',
-                    format: 'DD/MM/YYYY',
                     separator: ' a ',
                     locale: {
+                        format: 'DD/MM/YYYY',
                         applyLabel: 'Appliquer',
                         fromLabel: 'Du',
                         toLabel: 'Au',
-                        customRangeLabel: 'Custom Range',
-                        daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-                        monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                        customRangeLabel: 'Intervalle',
+                        daysOfWeek: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
+                        monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
                         firstDay: 1
                     }
                 },

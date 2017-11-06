@@ -607,7 +607,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
         $scope.createDelivery = function() {
             var object = angular.copy($scope.object);
-
             var id = object._id;
             object.order = object._id;
             delete object._id;
@@ -1206,7 +1205,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
-            var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term"];
+            var dict = ["fk_order_status", "fk_paiement"];
             $http({
                 method: 'GET',
                 url: '/erp/api/dict',
@@ -1768,7 +1767,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             var dict = ["fk_bill_status", "fk_input_reason", "fk_paiement", "fk_bill_type", "fk_transport", "fk_payment_term", "fk_tva"];
@@ -1811,10 +1809,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             // initialize core components
             Metronic.initAjax();
 
-            // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
-            $rootScope.settings.layout.pageBodySolid = false;
-
             var dict = ["fk_bill_status", "fk_input_reason", "fk_paiement", "fk_bill_type", "fk_transport", "fk_payment_term", "fk_tva"];
 
             $http({
@@ -1830,7 +1824,13 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         });
 
         $scope.ngIncludeInit = function(params, length) {
-            $scope.params = params;
+            if (params.supplier)
+                $scope.search.supplier.value = [params.supplier];
+
+            var hidden_supplier = true;
+            module = params.module;
+
+            $scope.find();
         };
 
         $scope.openUrl = function(url, param) {
@@ -1916,6 +1916,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                     $scope.page.total = data.total;
                     $scope.orders = data.data;
                     $scope.totalAll = data.totalAll;
+                    console.log('data', $scope.orders);
 
                     $timeout(function() {
                         Metronic.unblockUI('.waiting');
