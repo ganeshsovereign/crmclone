@@ -36,4 +36,6 @@ mail-address-bcc                :
 accounting.VTE			: BLO
 accounting.ACH			: BLU
 
-storing-files		  : localfs 
+storing-files		  : localfs
+
+default-theme           : tm
