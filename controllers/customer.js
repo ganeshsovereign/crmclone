@@ -245,12 +245,12 @@ exports.install = function() {
                 }
             } else // customer Only
                 query.$and.push({
-                    $or: [{
-                        'salesPurchases.isProspect': true
-                    }, {
-                        'salesPurchases.isCustomer': true
-                    }]
-                });
+                $or: [{
+                    'salesPurchases.isProspect': true
+                }, {
+                    'salesPurchases.isCustomer': true
+                }]
+            });
 
         if (self.query.type)
             query.type = self.query.type;
@@ -307,37 +307,37 @@ exports.install = function() {
         query[field] = new RegExp(self.body.filter.filters[0].value, "i");
 
         if (typeof SocieteModel.schema.paths[field].options.type == "object")
-            //console.log(query);
+        //console.log(query);
             SocieteModel.aggregate([{
-                $project: {
-                    _id: 0,
-                    Tag: 1
+            $project: {
+                _id: 0,
+                Tag: 1
+            }
+        }, {
+            $unwind: "$" + field
+        }, {
+            $match: query
+        }, {
+            $group: {
+                _id: "$" + field
+            }
+        }, {
+            $limit: self.body.take
+        }], function(err, docs) {
+            if (err)
+                return console.log("err : /api/societe/autocomplete/" + field, err);
+
+            //console.log(docs);
+            var result = [];
+
+            if (docs !== null)
+                for (var i in docs) {
+                    //result.push({text: docs[i]._id});
+                    result.push(docs[i]._id);
                 }
-            }, {
-                $unwind: "$" + field
-            }, {
-                $match: query
-            }, {
-                $group: {
-                    _id: "$" + field
-                }
-            }, {
-                $limit: self.body.take
-            }], function(err, docs) {
-                if (err)
-                    return console.log("err : /api/societe/autocomplete/" + field, err);
 
-                //console.log(docs);
-                var result = [];
-
-                if (docs !== null)
-                    for (var i in docs) {
-                        //result.push({text: docs[i]._id});
-                        result.push(docs[i]._id);
-                    }
-
-                return self.json(result);
-            });
+            return self.json(result);
+        });
         else
             SocieteModel.distinct(field, query, function(err, docs) {
                 if (err)
@@ -2296,6 +2296,7 @@ Object.prototype = {
 
                         // Convert Date
                         res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
+                        res.datatable.data[i].createdAt = (row.createdAt ? moment(row.createdAt).format(CONFIG('dateformatShort')) : '');
                         res.datatable.data[i].lastOrder = (row.lastOrder ? moment(row.lastOrder).format(CONFIG('dateformatShort')) : '');
                         // Convert Status
                         res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);

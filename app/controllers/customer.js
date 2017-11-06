@@ -344,7 +344,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     else
                         return $rootScope.$state.go('societe.show.contact');
 
-                //console.log(societe);
+                    //console.log(societe);
 
                 $http({
                     method: 'GET',
@@ -1173,6 +1173,12 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                             defaultContent: ""
                         }, {
                             data: "lastOrder",
+                            defaultContent: ""
+                        }, {
+                            data: "createdAt",
+                            defaultContent: ""
+                        }, {
+                            data: "updatedAt",
                             defaultContent: ""
                         }
                     ]
