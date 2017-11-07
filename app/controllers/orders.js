@@ -77,7 +77,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             current = $rootScope.$state.current.name.split('.');
@@ -858,7 +857,6 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva", "fk_delivery_mode"];
@@ -902,7 +900,6 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             var dict = ["fk_order_status", "fk_input_reason", "fk_paiement", "fk_bill_type", "fk_transport", "fk_payment_term", "fk_tva"];
@@ -1160,7 +1157,6 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             var dict = ["fk_order_status", "fk_paiement"];
@@ -1401,7 +1397,6 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
@@ -1455,7 +1450,6 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
@@ -2297,7 +2291,6 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             var dict = ["fk_delivery_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];

@@ -138,7 +138,6 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
     $scope.$on('$viewContentLoaded', function() {
         var dict = ["fk_tva", "fk_product_status", "fk_units"];
 
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "product.show")
@@ -154,7 +153,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             $scope.dict = data;
 
             if (!$rootScope.$stateParams.id)
-                // Is a list
+            // Is a list
                 initDatatable();
         });
 
@@ -1175,7 +1174,6 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             /*var dict = [];
@@ -1576,7 +1574,6 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
     var costFind = false;
 
     $scope.$on('$viewContentLoaded', function() {
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
     });
 
@@ -1975,7 +1972,6 @@ MetronicApp.controller('ProductStatsController', ['$scope', '$rootScope', '$http
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         $scope.find();
@@ -2022,7 +2018,6 @@ MetronicApp.controller('ProductBankImagesController', ['$scope', '$rootScope', '
 
     $scope.$on('$viewContentLoaded', function() {
 
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         /*
@@ -2252,7 +2247,6 @@ MetronicApp.controller('ProductStockCorrectionController', ['$scope', '$rootScop
         $scope.backTo = 'product.stockcorrection.list';
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         $http({
@@ -2372,7 +2366,6 @@ MetronicApp.controller('ProductStockDetailController', ['$scope', '$rootScope', 
         $scope.backTo = 'product.stockdetail.list';
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         $scope.find();
@@ -2480,7 +2473,6 @@ MetronicApp.controller('ProductStockTransfersController', ['$scope', '$rootScope
         $scope.backTo = 'product.stocktransfert.list';
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         $scope.find();
@@ -2550,7 +2542,6 @@ MetronicApp.controller('ProductInventoryController', ['$scope', '$rootScope', '$
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         $scope.find();

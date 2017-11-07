@@ -70,7 +70,6 @@ MetronicApp.controller('AccountingController', ['$scope', '$rootScope', '$http',
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         $http({
@@ -320,7 +319,7 @@ MetronicApp.controller('AccountingController', ['$scope', '$rootScope', '$http',
         if (data >= $scope.minDate && data <= $scope.maxDate)
             return true;
         else
-            //console.log(data);
+        //console.log(data);
             return "Erreur : date incorrecte";
     };
 
@@ -362,7 +361,6 @@ MetronicApp.controller('AccountingBalanceController', ['$scope', '$rootScope', '
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = false;
             $rootScope.settings.layout.pageBodySolid = true;
 
             $scope.find();

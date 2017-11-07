@@ -1638,7 +1638,8 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
                     status: 1,
                     _type: 1,
                     forSales: 1,
-                    entity: 1
+                    entity: 1,
+                    weight: 1
                 }
             },
             {
@@ -1698,7 +1699,8 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
                     status: 1,
                     _type: 1,
                     forSales: 1,
-                    entity: 1
+                    entity: 1,
+                    weight: 1
                 }
             }, {
                 $project: {
@@ -1742,7 +1744,8 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
                     _type: 1,
                     forSales: 1,
                     orderRows: 1,
-                    entity: 1
+                    entity: 1,
+                    weight: 1
                 }
             }, {
                 $lookup: {
@@ -1772,7 +1775,8 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
                     forSales: 1,
                     orderRows: 1,
                     channel: 1,
-                    entity: 1
+                    entity: 1,
+                    weight: 1
                 }
             }, {
                 $project: {
@@ -1833,7 +1837,8 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
                             else: true
                         }
                     },
-                    qty: { $sum: "$orderRows.qty" }
+                    qty: { $sum: "$orderRows.qty" },
+                    weight: 1
                 }
             }, {
                 $match: newQueryObj
@@ -1869,6 +1874,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
                     removable: '$root.removable',
                     channel: '$root.channel',
                     entity: '$root.entity',
+                    weight: '$root.weight',
                     total: 1,
                     totalAll: {
                         count: "$total",
@@ -1914,6 +1920,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
                     removable: '$root.removable',
                     channel: '$root.channel',
                     entity: '$root.entity',
+                    weight: '$root.weight',
                     total: "$root.total",
                     totalAll: {
                         count: "$root.totalAll.count",
@@ -1938,7 +1945,8 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
                     channel: 1,
                     total: 1,
                     totalAll: 1,
-                    entity: 1
+                    entity: 1,
+                    weight: 1
                 }
             },
             {

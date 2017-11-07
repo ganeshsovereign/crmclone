@@ -43,7 +43,7 @@ exports.install = function() {
 function view_login() {
     var self = this;
 
-    self.theme(null);
+    //self.theme(null);
     self.layout('layout_login2');
     self.view('login2');
 }

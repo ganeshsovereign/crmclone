@@ -47,7 +47,6 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "employee.show")
@@ -122,7 +121,6 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
         Metronic.initAjax();
 
         // set default layout mode
-        $rootScope.settings.layout.pageSidebarClosed = true;
         $rootScope.settings.layout.pageBodySolid = false;
 
         var dict = ["fk_employees_status"];

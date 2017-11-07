@@ -87,6 +87,6 @@ function view_erp() {
     var self = this;
     //console.log(self.host());
     //console.log(self.session);
-    self.theme(null);
+    //self.theme(null);
     self.view('angular', angular);
 }
