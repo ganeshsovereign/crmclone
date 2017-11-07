@@ -67,13 +67,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             id: "NOW"
         };
 
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
         $scope.$dict = {};
 
         var module;
@@ -114,6 +107,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     break;
                 case 'offersupplier':
                     $scope.object.forSales = false;
+                    //$scope.object.stockReturn = true;
                     Object = Orders.offerSupplier;
                     $scope.backTo = 'offersupplier.list';
                     break;
@@ -132,11 +126,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     Object = Orders.billSupplier;
                     $scope.backTo = 'billsupplier.list';
                     break;
-                    /*case 'stockreturnsupplier':
-                        $scope.object.forSales = false;
-                        Object = Orders.stockReturnSupplier;
-                        $scope.backTo = 'stockreturnsupplier.list';
-                        break;*/
                 case 'ordersfab':
                     $scope.object.forSales = false;
                     Object = Orders.ordersFab;
@@ -245,15 +234,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 return module;
 
             return module === themodule;
-        };
-
-        $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.object[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.object[idx]
-            });
-            return ($scope.object[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
         };
 
         $scope.create = function() {
@@ -856,13 +836,6 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
                     this.grid[$scope.offers[i]._id] = true;
         }
 
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
         $scope.$dict = {
             status: [{
                     id: "ALL",
@@ -1050,14 +1023,6 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
                 });
         };
 
-        $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.offer[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.offer[idx]
-            });
-            return ($scope.offer[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
-        };
     }
 ]);
 
@@ -1172,13 +1137,6 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 if (this.checkAll)
                     this.grid[$scope.orders[i]._id] = true;
         }
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
 
         $scope.$dict = {
             status: [{
@@ -1437,13 +1395,6 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                     this.grid[$scope.orders[i]._id] = true;
         };
 
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
         // Init
         $scope.$on('$viewContentLoaded', function() {
             // initialize core components
@@ -1624,15 +1575,6 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                 });
         };
 
-        $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.delivery[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.delivery[idx]
-            });
-            return ($scope.delivery[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
-        };
-
         $scope.changeStatus = function(Status, id) {
             // ChangeStatus multi-deliveries
             var grid = [];
@@ -1673,6 +1615,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         $scope.editable = false;
         $scope.dict = {};
         $scope.$dict = {};
+
         $scope.search = {
             ref: {
                 value: ""
@@ -1754,13 +1697,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                     this.grid[$scope.orders[i]._id] = true;
         }
 
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
         // Init
         $scope.$on('$viewContentLoaded', function() {
             // initialize core components
@@ -1827,7 +1763,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             if (params.supplier)
                 $scope.search.supplier.value = [params.supplier];
 
-            var hidden_supplier = true;
+            $scope.hide_supplier = true;
             module = params.module;
 
             $scope.find();
@@ -1933,24 +1869,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                     }, 0);
                 });
         };
-
-        /*$scope.find = function(clear) {
-            var url;
-            //console.log(this.status_id);
-
-            if (clear)
-                this.status_id = null;
-
-            if ($scope.params) { // For ng-include in societe fiche
-                $scope.params.status_id = this.status_id;
-                url = getUrl($scope.params);
-            } else
-                url = getUrl({
-                    status_id: this.status_id
-                });
-
-            grid.resetFilter(url);
-        };*/
 
         $scope.validateBills = function() {
             //return console.log($scope.grid);
@@ -2127,8 +2045,8 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
 }]);*/
 
-MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout',
-    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout) {
+MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
+    function($scope, $rootScope, $location, $http, $modal, $filter, $timeout, superCache, Orders) {
 
         var grid = new Datatable();
         var user = $rootScope.login;
@@ -2148,7 +2066,52 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
             id: "NOW"
         };
 
+        $scope.search = {
+
+        };
+
+        $scope.page = {
+            limit: 25,
+            page: 1,
+            total: 0
+        };
+        $scope.sort = {
+            'ID': -1
+        };
+
+        if (typeof superCache.get("StockReturnListController") !== "undefined") {
+            $scope.page = superCache.get("StockReturnListController").page;
+            $scope.search = superCache.get("StockReturnListController").search;
+            $scope.sort = superCache.get("StockReturnListController").sort;
+        }
+
         $scope.delivery_mode = ["Comptoir", "Livraison"];
+
+        $scope.$on('websocket', function(e, type, data) {
+            if (type !== 'refresh')
+                return;
+
+            //console.log(data);
+            //console.log(type);
+
+            if (!data || !data.data || !data.data.route || data.data.route.indexOf('bill') < 0)
+                return;
+
+            $scope.find();
+        });
+
+        $scope.resetFilter = function() {
+            superCache.removeAll();
+            $rootScope.$state.reload();
+        }
+
+        $scope.checkedAll = function() {
+            if (!this.checkAll)
+                this.grid = {};
+            for (var i = 0; i < $scope.orders.length; i++)
+                if (this.checkAll)
+                    this.grid[$scope.orders[i]._id] = true;
+        }
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
@@ -2156,7 +2119,6 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
             Metronic.initAjax();
 
             // set default layout mode
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             var dict = ["fk_delivery_status", "fk_payment_term"];
@@ -2179,7 +2141,6 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
                 $scope.$dict.warehouse = data.data;
                 //console.log(data);
             });
-
 
             initDatatable();
 
@@ -2314,13 +2275,6 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
         };
 
         $scope.delivery_mode = ["Comptoir", "Livraison"];
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
 
         $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')

@@ -28,12 +28,12 @@
                 </button>
                 <ul class="dropdown-menu pull-right" role="menu">
                     <li>
-                        <a href="#" ng-show="!contact.password && contact.email && login.rights.contact.write" ng-click="createLogin(contact)">
+                        <a href="#" ng-show="!contact.password && contact.email && login.rights.societe.write" ng-click="createLogin(contact)">
                             <i class="fa fa-lock"></i> @(Create) acces web
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="font-red" ng-show="login.rights.contact.delete" confirmed-click="remove(contact)" ng-confirm-click="Supprimer le contact ?" title="Supprimer le contact">
+                        <a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove(contact)" ng-confirm-click="Supprimer le contact ?" title="Supprimer le contact">
                             <i class="fa fa-trash-o font-red"></i> @(Delete)
                         </a>
                     </li>

@@ -1631,7 +1631,7 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
     $scope.dict = {};
     $scope.query = {}; //query for find
 
-    $scope.editable = $rootScope.login.rights.contact.write;
+    $scope.editable = $rootScope.login.rights.societe.write;
 
     var grid = new Datatable();
 

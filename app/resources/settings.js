@@ -119,6 +119,12 @@ MetronicApp.factory("Settings", ['$resource', function($resource) {
             query: {
                 method: 'GET',
                 isArray: false
+            },
+            clone: {
+                method: 'POST',
+                params: {
+                    clone: 1
+                }
             }
         })
     };

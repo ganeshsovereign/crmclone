@@ -67,7 +67,6 @@ MetronicApp.controller('SettingEntityController', ['$rootScope', '$scope', '$htt
 
         $scope.$on('$viewContentLoaded', function() {
             Metronic.initAjax();
-            $rootScope.settings.layout.pageSidebarClosed = true;
             $rootScope.settings.layout.pageBodySolid = false;
 
             if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "settings.entity.show")
@@ -77,9 +76,7 @@ MetronicApp.controller('SettingEntityController', ['$rootScope', '$scope', '$htt
         });
 
         $scope.create = function() {
-            console.log("CREATE");
             let entity = new Settings.entity(this.object);
-
             entity.$save(function(response) {
                 $rootScope.$state.go("settings.entity.show", {
                     id: response._id
@@ -104,25 +101,26 @@ MetronicApp.controller('SettingEntityController', ['$rootScope', '$scope', '$htt
             });
         };
 
+        $scope.clone = function() {
+            $scope.object.$clone(function(response) {
+                $rootScope.$state.go('settings.entity.show', {
+                    id: response._id
+                });
+            });
+        };
+
         $scope.findOne = function() {
             Settings.entity.get({
                 Id: $rootScope.$stateParams.id
             }, function(entity) {
                 $scope.object = entity;
-                console.log("mon entity", entity);
             });
         };
 
         $scope.ngIncludeInit = function(params, length) {
-            $scope.params = params;
+            $scope.find();
         };
 
-        function getUrl(params) {
-            if (!params)
-                params = {};
-
-            return $rootScope.buildUrl('/erp/api/entity', params); // Build URL with json parameter
-        }
 
         $scope.find = function() {
             $scope.grid = {};

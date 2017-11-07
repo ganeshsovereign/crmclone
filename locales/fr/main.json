@@ -677,6 +677,7 @@
     "ShippingMethods": "Modes d'envois",
     "NotEnoughPermissions": "Vous n'avez pas les permissions pour cette action",
     "SessionName": "Nom session",
+    "Organizations": "Clients/Fournisseurs",
     "OrganisationProfils": "Profils d'entreprise(s)",
     "CompanySettings": "Paramétres de la société",
     "SettingsOverview": "Aperçu des paramètres",
