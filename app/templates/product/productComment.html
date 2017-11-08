@@ -1,0 +1,26 @@
+<td>
+    {{line.sequence}}
+</td>
+<td></td>
+
+<td colspan="5">
+    <!--<summernote ng-if="edit" height="100" ng-model="line.description"></summernote>-->
+    <textarea ng-if="edit" ng-model="line.description" rows="5" cols="50" class="form-control"></textarea>
+    <pre ng-hide="edit" class="no-padding small">{{ line.description || 'empty' }}</pre>
+    <!--<span ng-bind-html="line.description" ng-hide="edit" class="no-padding small"></span>-->
+</td>
+
+<td>
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group btn-group">
+            <button type="button" ng-show="!edit && editable" ng-disabled="$index == 0" ng-click="upDownLine($index, 'UP', linesModel)" class="btn btn-icon-only btn-xs fa fa-angle-up" title="@(Up)"></button>
+            <button type="button" ng-show="!edit && editable" ng-disabled="$index == (linesModel.length - 1)" ng-click="upDownLine($index, 'DOWN', linesModel)" class="btn btn-icon-only btn-xs fa fa-angle-down" title="@(Down)"></button>
+        </div>
+        <div class="btn-group btn-group">
+            <button type="button" ng-show="edit" ng-click="copyLine(line, linesModel)" class="btn btn-default btn-icon-only btn-sm fa fa-copy" title="@(ToClone)"></button>
+            <button type="button" ng-show="edit" ng-click="addComment($index)" class="btn btn-info btn-icon-only btn-sm fa fa-comment" title="@(AddComment)"></button>
+            <button type="button" ng-show="edit" ng-click="AddSubTotal($index)" class="btn btn-default btn-icon-only btn-sm fa fa-bars" title="@(AddSubTotal)"></button>
+            <button type="button" ng-show="edit" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
+        </div>
+    </div>
+</td>

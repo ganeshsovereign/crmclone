@@ -6,14 +6,10 @@
                 <a ui-sref="home">@(Home)</a>
                 <i class="fa fa-angle-right"></i>
             </li>
-            <li>
-                <span>@(compta:MenuFinancial)</span>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li ng-if="module('bill')">
+            <li ng-show="forSales">
                 <span>@(orders:CustomersInvoices)</span>
             </li>
-            <li ng-if="module('billsupplier')">
+            <li ng-hide="forSales">
                 <span>@(orders:SuppliersInvoices)</span>
             </li>
         </ul>
@@ -65,20 +61,16 @@
 
     <div class="portlet light portlet-form bordered waiting">
         <div class="portlet-title">
-            <div class="caption" ng-if="module('bill')">
+            <div class="caption" ng-if="forSales">
                 <i class="fa fa-money"></i>
                 <span class="caption-subject dark bold uppercase"> @(orders:ListBillsCustomers)</span>
             </div>
-            <div class="caption" ng-if="module('billsupplier')">
+            <div class="caption" ng-if="!forSales">
                 <i class="fa fa-money"></i>
                 <span class="caption-subject dark bold uppercase"> @(orders:ListBillsSuppliers)</span>
             </div>
-            <div class="actions" ng-if="module('bill')">
-                <button class="btn blue" ui-sref="bill.create">@(Add) <i class="fa fa-plus"></i></button>
-                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find(true)"><i class="fa fa-refresh"></i></button>
-            </div>
-            <div class="actions" ng-if="module('billsupplier')">
-                <button class="btn blue" ui-sref="billsupplier.create">@(Add) <i class="fa fa-plus"></i></button>
+            <div class="actions">
+                <button class="btn blue" ui-sref="bill.create({forSales:forSales})">@(Add) <i class="fa fa-plus"></i></button>
                 <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find(true)"><i class="fa fa-refresh"></i></button>
             </div>
         </div>
@@ -95,7 +87,7 @@
 
                                         <div class="form-group">
                                             <label for="Status">@(Ref)</label>
-                                            <input ng-model="quickSearch" class="form-control input-sm" ng-change="find()" />
+                                            <input ng-model="quickSearch" ng-model-options='{ debounce: 500 }' class="form-control input-sm" ng-change="find()" />
                                         </div>
 
                                         <crm-id ng-hide="hide_supplier" label="@(companies:Company)" name="societeId" placeholder="@(Search)" on-select="find" ng-model="search.supplier.value[0]" entity="login.entity" url="/erp/api/societe/autocomplete" class="form-group" bootstrap="true"></crm-id>
@@ -109,8 +101,8 @@
                                         </div>-->
 
                                         <div class="form-group">
-                                            <label ng-if="module('bill')">@(commercial:Commercial)</label>
-                                            <label ng-if="module('billsupplier')">@(orders:Buyer)</label>
+                                            <label ng-show="forSales">@(commercial:Commercial)</label>
+                                            <label ng-hide="forSales">@(orders:Buyer)</label>
 
                                             <select ng-model="search.salesPerson.value[0]" id="Status" ng-change="find()" ng-options="s._id as s.fullName for s in $dict.salesPerson" class="form-control input-sm"></select>
                                             <!--<tags-input ng-model="search.salesPerson.value" display-property="fullName" key-property="_id" placeholder="@(Search)" add-from-autocomplete-only="true" on-tag-added="find()" on-tag-removed="find()">
@@ -130,11 +122,11 @@
                                             <select ng-model="search.Status.value[0]" id="Status" ng-options="s.id as s.label for s in dict.fk_bill_status.values" class="form-control input-sm"></select>
                                         </div>
 
-                                        <div ng-if="module('bill')" class="form-group">
+                                        <div ng-show="forSales" class="form-group">
                                             <label for="Status">@(RefCustomer)</label>
                                             <input ng-model="search.ref_client.value" class="form-control input-sm" />
                                         </div>
-                                        <div ng-if="module('billsupplier')" class="form-group">
+                                        <div ng-hide="forSales" class="form-group">
                                             <label for="Status">@(RefSupplier)</label>
                                             <input ng-model="search.ref_client.value" class="form-control input-sm" />
                                         </div>
@@ -231,11 +223,11 @@
                             <th table-sort='ID' ng-model="sort" name="@(Ref)"></th>
                             <th table-sort='supplier.fullName' ng-model="sort" name="@(companies:Company)"></th>
 
-                            <th ng-if="module('bill')">@(RefCustomer)</th>
-                            <th ng-if="module('billsupplier')">@(RefSupplier)</th>
+                            <th ng-show="forSales">@(RefCustomer)</th>
+                            <th ng-hide="forSales">@(RefSupplier)</th>
 
-                            <th ng-if="module('bill')" table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Commercial)"></th>
-                            <th ng-if="module('billsupplier')" table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Buyer)"></th>
+                            <th ng-show="forSales" table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Commercial)"></th>
+                            <th ng-hide="forSales" table-sort='salesPerson.fullName' ng-model="sort" name="@(commercial:Buyer)"></th>
 
                             <th table-sort='datec' ng-model="sort" name="@(orders:DateInvoice)"></th>
                             <th table-sort='dater' ng-model="sort" name="@(orders:DatePayment)"></th>
@@ -252,50 +244,38 @@
                         <tr ng-repeat="line in orders" ng-class="{'bg-grey-silver':line.exported}">
                             <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})"><a class=" with-tooltip " ui-sref="bill.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})"><a class=" with-tooltip " ui-sref="billsupplier.show({id:line._id}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})"><a class=" with-tooltip " ui-sref="bill.show({id:line._id, forSales:forSales}) "><i class="fa fa-shopping-cart "></i> {{line.ref}}</a></td>
 
                             <td>
                                 <a ng-if="line.supplier._id" class="with-tooltip " ui-sref="societe.show({id:line.supplier._id}) "><i class="fa fa-institution "></i> {{line.supplier.fullName}}</a>
                                 <span ng-show="!line.supplier._id" class="with-tooltip editable editable-empty "> @(Empty)</span>
                             </td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.ref_client}}</td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.ref_client}}</td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.ref_client}}</td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.salesPerson.fullName}}</td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.salesPerson.fullName}}</td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.salesPerson.fullName}}</td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.datec| date:'dd/MM/yyyy'}}</td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.dater| date:'dd/MM/yyyy'}}</td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.dater| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.dater| date:'dd/MM/yyyy'}}</td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.total_ht| currency}}</td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.total_ht| currency}}</td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.total_ht| currency}}</td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.total_ttc| currency}}</td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.total_ttc| currency}}</td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.total_paid| currency}}</td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.total_paid| currency}}</td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.total_ttc| currency}}</td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.total_to_paid | currency}}</td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.total_to_paid | currency}}</td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.total_paid| currency}}</td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">
-                                <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
-                            </td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">
+
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.total_to_paid | currency}}</td>
+
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">
                                 <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
                             </td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.entity}} </td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.entity}} </td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.entity}} </td>
 
-                            <td ng-if="module('bill')" ui-sref="bill.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
-                            <td ng-if="module('billsupplier')" ui-sref="billsupplier.show({id:line._id})">{{line.datec| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.datec| date:'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
                 </table>

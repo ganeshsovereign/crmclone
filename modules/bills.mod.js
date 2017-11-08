@@ -61,10 +61,12 @@ exports.menus = {
         "usertype": 2,
         "icon": "fa-files-o",
         "title": "orders:Bills",
+        route: "bill",
         "submenus": {
             "menu:billslist": {
                 "position": 1,
-                "url": "/erp/#!/bill",
+                route: "bill.list",
+                params: { forSales: 1 },
                 "perms": "bill.read",
                 "icon": "fa-money",
                 "enabled": "$conf->facture->enabled",
@@ -73,8 +75,9 @@ exports.menus = {
             },
             "menu:billssupplierlist": {
                 "position": 10,
-                "url": "/erp/#!/billsupplier",
-                "perms": "bill.read",
+                route: "bill.list",
+                params: { forSales: 0 },
+                "perms": "bill.supplier.read",
                 "icon": "fa-money",
                 "enabled": "$conf->facture->enabled",
                 "usertype": 2,

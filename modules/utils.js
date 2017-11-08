@@ -661,7 +661,10 @@ exports.checksumIsbn = function(isbn) {
 };
 
 exports.Status = function(value, statusList) {
-    if (typeof value === 'object')
+    if (typeof value === 'object') {
+        if (!value.length)
+            return [];
+
         return _.map(value, function(line) {
             var res_status = {};
 
@@ -682,7 +685,7 @@ exports.Status = function(value, statusList) {
 
             return line;
         });
-
+    }
 
     //Single value
     var res_status = {};

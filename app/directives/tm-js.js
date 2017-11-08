@@ -276,14 +276,20 @@ MetronicApp.factory('superCache', ['$cacheFactory',
 
 MetronicApp.directive('save', function() {
     return {
+        restrict: 'E',
         scope: {
             ngDisabled: '=',
             mode: '=?',
             ngCreate: '&',
             ngUpdate: '&',
-            backTo: "="
+            backTo: "=",
+            paramsBackTo: "="
         },
-        templateUrl: "/templates/saveMenu.html"
+        templateUrl: "/templates/saveMenu.html",
+        link: function(scope) {
+            if (!scope.paramsBackTo)
+                scope.paramsBackTo = {};
+        }
     };
 });
 

@@ -824,6 +824,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
     var user = $rootScope.login;
 
     $scope.editable = false;
+    $scope.forSales = $rootScope.$stateParams.forSales;
 
     $scope.payment = {
         mode: null,
@@ -866,7 +867,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
             //console.log(data);
         });
 
-        if ($rootScope.$state.current.name === 'bill.show.payment.create' || $rootScope.$state.current.name === 'billsupplier.show.payment.create') {
+        if ($rootScope.$state.current.name === 'bill.show.payment.create') {
             if ($rootScope.$stateParams.entity)
                 $scope.payment.entity = $rootScope.$stateParams.entity;
 
@@ -907,7 +908,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
             //console.log(data);
         });
 
-        if ($rootScope.$state.current.name === 'bill.show' || $rootScope.$state.current.name === 'billSupplier.show')
+        if ($rootScope.$state.current.name === 'bill.show')
             $scope.find($rootScope.$stateParams.id);
 
     });*/
@@ -966,14 +967,10 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
     $scope.create = function() {
         var payment = new Banks.payment(this.payment);
         payment.$save(function(response) {
-            if ($rootScope.$state.current.name === 'bill.show.payment.create')
-                return $rootScope.$state.go("bill.show.payment", {
-                    reload: true
-                });
-            if ($rootScope.$state.current.name === 'billsupplier.show.payment.create')
-                return $rootScope.$state.go("billsupplier.show.payment", {
-                    reload: true
-                });
+            return $rootScope.$state.go("bill.show.payment", {
+                reload: true,
+                forSales: $scope.forSales
+            });
         });
     };
 
@@ -1142,7 +1139,7 @@ MetronicApp.controller('PaymentController', ['$scope', '$rootScope', '$http', '$
                 id = data._id;
         }
 
-        if ($rootScope.$state.current.name === 'billsupplier.show.payment.create' || $rootScope.$state.current.name === 'bill.show.payment.create') {
+        if ($rootScope.$state.current.name === 'bill.show.payment.create') {
             $http({
                 method: 'GET',
                 url: '/erp/api/bank/payment/bills',

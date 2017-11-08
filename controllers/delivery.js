@@ -79,7 +79,6 @@ Object.prototype = {
         const OrderStatus = MODEL('order').Status;
 
         var data = self.query;
-        var quickSearch = data.quickSearch;
         var paginationObject = MODULE('helper').page(self.query);
         var limit = paginationObject.limit;
         var skip = paginationObject.skip;
@@ -1536,7 +1535,11 @@ Object.prototype = {
     },
     exportToType: function() {
         var self = this;
-        const Model = MODEL('order').Schema.GoodsOutNote;
+        var Order;
+        if (self.query.forSales === "false")
+            Order = MODEL('order').Schema.GoodsInNote;
+        else
+            Order = MODEL('order').Schema.GoodsOutNote;
 
         var type = self.query.type;
 
@@ -1545,10 +1548,14 @@ Object.prototype = {
         var Stream = require('stream');
         var stream = new Stream();
 
-        Model.query({ query: self.query, user: self.user, exec: false }, function(err, resultQuery) {
+        Order.query({
+            query: self.query,
+            user: self.user,
+            exec: false
+        }, function(err, resultQuery) {
             MODULE('exporter').exportToCsv({
                 stream: stream,
-                Model: Model,
+                Model: Order,
                 query: resultQuery,
                 map: exportMap,
                 fileName: type

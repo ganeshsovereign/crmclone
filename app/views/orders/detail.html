@@ -30,11 +30,11 @@
                         <span ng-if="module('stockreturn')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:StockReturn) - {{object.ref}} - {{object.supplier.fullName}} </span>
                         <span ng-if="module('stockreturn')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewStockReturn) </span>
 
-                        <span ng-if="module('bill')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:BillCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('billsupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:BillSupplier) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('bill') || module('billsupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewBill) </span>
+                        <span ng-if="module('bill') && object.forSales" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:BillCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('bill') && !object.forSales" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:BillSupplier) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewBill) </span>
                     </div>
-                    <save ng-disabled="object.Status !=='DRAFT'" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" class="actions btn-set"></save>
+                    <save ng-disabled="object.Status !=='DRAFT'" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" params-back-to="{forSales : object.forSales?1:0}" class="actions btn-set"></save>
                 </div>
                 <div class="portlet-body">
                     <div class="form-body">
@@ -88,12 +88,12 @@
                                                 <label for="ref_client">@(orders:RefCustomerOrder)</label>
                                             </div>
 
-                                            <div ng-if="module('bill') || module('billsupplier')" class="form-group form-md-line-input">
+                                            <div ng-if="module('bill')" class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="dateOf" date-input ng-model="object.dateOf">
                                                 <label for="dateOf">@(orders:DateOf)</label>
                                             </div>
 
-                                            <div ng-if="module('bill') || module('billsupplier')" class="form-group form-md-line-input">
+                                            <div ng-if="module('bill')" class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="dateTo" date-input ng-model="object.dateTo">
                                                 <label for="dateTo">@(orders:DateTo)</label>
                                             </div>
@@ -143,8 +143,8 @@
                                             <div ng-hide="module('stockreturn')" class="form-group form-md-line-input">
                                                 <select class="form-control" id="commercial_id" ng-model="object.salesPerson" ng-options="s._id as s.fullName for s in $dict.employees" ng-change="update()">
                                                         </select>
-                                                <label ng-if="module('offer') || module('order') || module('delivery') || module('stockreturn') || module('bill')" for="commercial_id">@(commercial:Commercial)</label>
-                                                <label ng-if="module('offersupplier') || module('ordersupplier') || module('deliverysupplier') || module('billsupplier')" for="commercial_id">@(commercial:Buyer)</label>
+                                                <label ng-show="object.forSales" for="commercial_id">@(commercial:Commercial)</label>
+                                                <label ng-hide="object.forSales" for="commercial_id">@(commercial:Buyer)</label>
                                             </div>
                                         </div>
 
@@ -165,12 +165,12 @@
                                                 <label ng-show="module('stockreturn')" for="dateLivraison">@(ReturnDate)</label>
                                             </div>
 
-                                            <div ng-if="module('bill') || module('billsupplier')" class="form-group form-md-line-input">
+                                            <div ng-if="module('bill')" class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="dateInvoice" date-input ng-model="object.datec">
                                                 <label for="dateInvoice">@(orders:DateInvoice)</label>
                                             </div>
 
-                                            <div ng-if="module('bill') || module('billsupplier')" class="form-group form-md-line-input">
+                                            <div ng-if="module('bill')" class="form-group form-md-line-input">
                                                 <!--<input type="text" class="form-control" id="datereglement" date-input ng-model="object.dater">-->
                                                 <div class="form-control form-control-static" id="datereglement"> {{object.dater | date:'shortDate'}} </div>
                                                 <label for="datereglement">@(orders:DatePayment)</label>
@@ -308,19 +308,19 @@
 
 <div ng-hide="!object._id || object._id !==object.order._id" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.lines" title="'@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" warehouse="object.warehouse._id" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.lines" title="'@(ShoppingCard)'" for-sales="object.forSales" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" warehouse="object.warehouse._id" ng-change="update()"></product-lines>
     </div>
 </div>
 
 <div ng-show="object._id && module('bill')" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.lines" title="'@(ShoppingCard)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.lines" title="'@(ShoppingCard)'" for-sales="object.forSales" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-change="update()"></product-lines>
     </div>
 </div>
 
 <div ng-if="object._id && module('delivery')" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.orderRows" title="'@(orders:ProductCart)'" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.orderRows" title="'@(orders:ProductCart)'" for-sales="object.forSales" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
     </div>
 </div>
 <!-- __STOCKRETURN__ -->

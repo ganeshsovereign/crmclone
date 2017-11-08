@@ -1,0 +1,18 @@
+<td>
+    {{line.sequence}}
+</td>
+
+<td colspan="5">
+    @(SubTotal)
+</td>
+
+<td ng-if="line.type == 'SUBTOTAL'">
+    {{ line.total_ht | number:2 }}
+</td>
+<td>
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group btn-group">
+            <button type="button" ng-show="edit" ng-click="deleteLine(line)" class="btn red btn-default btn-icon-only btn-sm fa fa-trash-o" title="@(Delete)"></button>
+        </div>
+    </div>
+</td>

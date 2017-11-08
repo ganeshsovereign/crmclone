@@ -164,7 +164,7 @@
                             </tab>
 
                             <tab heading="@(orders:BillsSupplier)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor">
-                                <div ng-include="'/views/orders/listbill.html'" ng-controller="BillListController" onload="ngIncludeInit({'supplier': societe._id, module: 'billsupplier'}, 10)"></div>
+                                <div ng-include="'/views/orders/listbill.html'" ng-controller="BillListController" onload="ngIncludeInit({'supplier': societe._id, forSales: 0}, 10)"></div>
                             </tab>
                             <tab heading="@(orders:InvoicePayment)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor || societe.salesPurchases.isCustomer">
                                 <div class="portlet-body" ng-controller="PaymentController" ng-init="ngIncludeInit({'supplier': societe._id}, 10)">

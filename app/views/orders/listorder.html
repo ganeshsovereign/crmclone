@@ -71,7 +71,7 @@
 
                                         <div class="form-group">
                                             <label for="Status">@(Ref)</label>
-                                            <input ng-model="quickSearch" class="form-control input-sm" ng-change="find()" />
+                                            <input ng-model="quickSearch" ng-model-options='{ debounce: 500 }' class="form-control input-sm" ng-change="find()" />
                                         </div>
 
                                         <crm-id label="@(companies:Company)" name="societeId" placeholder="@(Search)" on-select="find" ng-model="search.supplier.value[0]" entity="login.entity" url="/erp/api/societe/autocomplete" class="form-group" bootstrap="true"></crm-id>

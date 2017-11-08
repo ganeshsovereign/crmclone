@@ -1,4 +1,4 @@
-<a class="btn red" ui-sref="{{backTo}}"><i class="fa fa-angle-left"></i> @(Back)</a>
+<a class="btn red" ui-sref="{{backTo}}({{paramsBackTo}})"><i class="fa fa-angle-left"></i> @(Back)</a>
 <button type="button" ng-if="!mode" ng-click="ngCreate()" class="btn green"> @(Add)<i class="fa fa-check"></i></button>
 <button type="button" ng-if="mode" ng-hide="ngDisabled" ng-click="ngUpdate()" class="btn green"><i class="fa fa-check-circle"></i> @(Save)</button>
 <!-- <div class="btn-group">

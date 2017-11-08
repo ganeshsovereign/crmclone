@@ -761,18 +761,18 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/orders/index.html"
         })
         .state('bill.list', {
-            url: "?Status",
+            url: "?Status&forSales",
             templateUrl: "/views/orders/listbill.html",
             data: {
-                pageTitle: 'Liste des factures clients'
+                pageTitle: 'Liste des factures'
             },
             controller: "BillListController"
         })
         .state('bill.show', {
-            url: "/{id:[0-9a-z]{24}}",
+            url: "/{id:[0-9a-z]{24}}?forSales",
             templateUrl: "/views/orders/fiche.html",
             data: {
-                pageTitle: 'Facture client'
+                pageTitle: 'Facture'
             },
             controller: "OrdersController"
         })
@@ -791,7 +791,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "PaymentController"
         })
         .state('bill.show.payment.create', {
-            //parent: "payment",
             url: "?societe&entity",
             templateUrl: "/views/bank/createPayment.html",
             data: {
@@ -800,7 +799,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "PaymentController"
         })
         .state('bill.create', {
-            parent: "bill",
             url: "/create.html",
             templateUrl: "/views/orders/detail.html",
             data: {
@@ -842,60 +840,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/orders/detail.html",
             data: {
                 pageTitle: 'Nouvelle commande'
-            },
-            controller: "OrdersController"
-        })
-        // BillSupplier
-        .state('billsupplier', {
-            url: "/billsupplier",
-            abstract: true,
-            templateUrl: "/views/orders/index.html"
-        })
-        .state('billsupplier.list', {
-            url: "",
-            templateUrl: "/views/orders/listbill.html",
-            data: {
-                pageTitle: 'Liste des factures'
-            },
-            controller: "BillListController"
-        })
-        .state('billsupplier.show', {
-            url: "/{id:[0-9a-z]{24}}",
-            templateUrl: "/views/orders/fiche.html",
-            data: {
-                pageTitle: 'Facture'
-            },
-            controller: "OrdersController"
-        })
-        .state('billsupplier.show.detail', {
-            templateUrl: "/views/orders/detail.html",
-            data: {
-                pageTitle: 'Facture'
-            }
-        })
-        .state('billsupplier.show.payment', {
-            url: "/payment",
-            templateUrl: "/views/bank/paymentList.html",
-            data: {
-                pageTitle: 'Reglement client'
-            },
-            controller: "PaymentController"
-        })
-        .state('billsupplier.show.payment.create', {
-            //parent: "payment",
-            url: "?societe&entity",
-            templateUrl: "/views/bank/createPayment.html",
-            data: {
-                pageTitle: 'Nouveau règlement'
-            },
-            controller: "PaymentController"
-        })
-        .state('billsupplier.create', {
-            parent: "billsupplier",
-            url: "/create.html",
-            templateUrl: "/views/orders/detail.html",
-            data: {
-                pageTitle: 'Nouvelle Facture'
             },
             controller: "OrdersController"
         })

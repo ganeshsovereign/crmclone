@@ -277,8 +277,6 @@
                                 </td>
                                 <td class="text-right">
                                     <div ng-hide="entry.meta.invoice._id">{{entry.seq}}</div>
-                                    <!--<a ng-show="entry.meta.invoice.forSales" ui-sref="bill.show({id:entry.meta.invoice._id})"><i class="fa fa-money"></i> FA-{{entry.seq}}</a>
-                                    <a ng-hide="entry.meta.invoice.forSales" ui-sref="billsupplier.show({id:entry.meta.invoice._id})"><i class="fa fa-money"></i> FF-{{entry.seq}}</a>-->
                                 </td>
                                 <td>
                                     <a href="#" editable-bsdate="entry.reconcilliation" e-datepicker-popup="dd/MM/yyyy" eb-min-date="{{minDate}}" eb-max-date="{{maxDate}}" eb-onbeforesave="checkReconcilliation($data)" onaftersave="addReconcilliation(entry._journal, $data)">{{entry.reconcilliation|| 'En attente' | date:'@(main:date.format.java.day)'}}</a>
@@ -291,8 +289,7 @@
                                 <td>
                                     <div>{{entry.memo}}</div>
                                     <div ng-repeat="line in entry.meta.bills">
-                                        <a ng-show="line.invoice.forSales" ui-sref="bill.show({id:line.invoice._id})">{{line.invoice.ref}} : {{line.amount| currency}}</a>
-                                        <a ng-hide="line.invoice.forSales" ui-sref="billsupplier.show({id:line.invoice._id})">{{line.invoice.ref}} : {{line.amount| currency}}</a>
+                                        <a ui-sref="bill.show({id:line.invoice._id, forSales:line.invoice.forSales})">{{line.invoice.ref}} : {{line.amount| currency}}</a>
                                     </div>
                                 </td>
                                 <td>

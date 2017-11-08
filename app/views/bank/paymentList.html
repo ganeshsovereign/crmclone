@@ -64,8 +64,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="btn-group">
-                                <button ng-show="$state.includes('bill.show')" class="btn blue" ui-sref="bill.show.payment.create({societe:object.supplier._id, entity:object.entity})">@(Add) <i class="fa fa-plus"></i></button>
-                                <button ng-show="$state.includes('billsupplier.show')" class=" btn blue " ui-sref="billsupplier.show.payment.create({societe:object.supplier._id, entity:object.entity}) ">@(Add) <i class="fa fa-plus "></i></button>
+                                <button class="btn blue" ui-sref="bill.show.payment.create({societe:object.supplier._id, entity:object.entity})">@(Add) <i class="fa fa-plus"></i></button>
                                 <!--<button title="@(Refresh) " class="btn " ng-click="find() "><i class="fa fa-refresh "></i></button>-->
                             </div>
                         </div>

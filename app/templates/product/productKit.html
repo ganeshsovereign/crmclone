@@ -1,0 +1,52 @@
+<td>
+    {{line.sequence}}
+</td>
+
+<td>
+    <a ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a>
+</td>
+
+<td>
+    <pre class="no-padding small">{{ line.description || 'empty' }}</pre>
+</td>
+
+
+<td class="align-right">
+    <span>{{ line.qty || 0 }} <small>{{line.product.unit}}</small></span>
+    <div ng-if="line.product.info.productType.inventory">
+        <hr>
+        <div>{{line.allocated || '0'}} Alloués</div>
+        <div>{{line.onHand || '0'}} Disponibles</div>
+        <div>{{line.fulfilled || '0'}} Expediés</div>
+    </div>
+</td>
+
+<!--<td class="align-right">
+    <a href="#" tooltip="Tarif specific" ng-show="line.priceSpecific && !tableform.$visible"><i class="fa fa-warning font-yellow-gold"></i></a>
+    <input type="number" ng-show="tableform.$visible" ng-disabled="!line.priceSpecific" class="form-control" ng-model="line.pu_ht" min="0" step="0.001" ng-change="calculMontantHT(line, $data)">
+    <span ng-show="!tableform.$visible">{{ line.pu_ht || 0 | number:3}}</span>
+</td>
+
+<td class="align-right">
+    <input type="number" ng-show="tableform.$visible" ng-disabled="!line.priceSpecific" class="form-control" e-ng-disabled="line.type =='kit'" ng-model="line.discount" min="0" step="0.01" ng-change="calculMontantHT(line, $data)">
+    <span ng-show="!tableform.$visible">{{ line.discount || 0 | percent:3}}</span>
+</td>-->
+
+<td class="align-right">
+    <div class="row" ng-repeat="tax in line.total_taxes">
+        <div class="col-md-12" ng-if="tax.taxeId.rate">
+            <span>{{ tax.value | currency}} ({{tax.taxeId.rate | percent:1}})</span>
+        </div>
+        <div class="col-md-12" ng-if="tax.taxeId.isFixValue">
+            <span>{{ tax.value | currency}} ({{tax.taxeId.code}})</span>
+        </div>
+    </div>
+</td>
+
+<td colspan="4">
+</td>
+
+<td>
+    <div class="btn-toolbar" role="toolbar">
+    </div>
+</td>

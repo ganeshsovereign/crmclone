@@ -34,19 +34,23 @@
                 <span ng-class="{selected:$state.includes('dashboard')}"></span>
             </a>
         </li>
-        <li ng-repeat="(_id,menu) in menus | object2Array | orderBy:'position'" ui-sref-active="active" ng-class="{active:$state.includes('{{menu.uiActive}}')}">
+        <li ng-repeat="(_id,menu) in menus | object2Array | orderBy:'position'" ng-class="{active:$state.includes(menu.route)}">
             <a href="{{menu.url}}" target="{{menu.target}}">
                 <i class="fa {{menu.icon}}"></i>
                 <span class="title">{{menu.title}}</span>
-                <span ng-if="menu.submenus" class="arrow "></span>
+                <span ng-if="menu.submenus" class="arrow" ng-class="{open:$state.includes(menu.route)}"></span>
             </a>
             <ul ng-if="menu.submenus" class="sub-menu">
-                <li ng-repeat="(_id, menu) in menu.submenus  | object2Array | orderBy:'position'" ui-sref-active-eq="active">
-                    <a href="{{menu.url}}" target="{{menu.target}}">
+                <li ng-repeat="(_id, menu) in menu.submenus  | object2Array | orderBy:'position'" ng-class="{active:$state.includes(menu.route, menu.params)}">
+                    <a ng-if="!menu.route" href="{{menu.url}}" target="{{menu.target}}">
                         <i class="fa {{menu.icon}}"></i> {{menu.title}}
                     </a>
+                    <a ng-if="menu.route" ui-sref="{{menu.route}}({{menu.params}})">
+                        <i class="fa {{menu.icon}}"></i>
+                        <span class="title">{{menu.title}}</span>
+                    </a>
                     <ul ng-if="menu.submenus" class="sub-menu">
-                        <li ng-repeat="(_id, menu) in menu.submenus  | object2Array | orderBy:'position'" ui-sref-active-eq="active">
+                        <li ng-repeat="(_id, menu) in menu.submenus  | object2Array | orderBy:'position'">
                             <a href="{{menu.url}}" target="{{menu.target}}">
                                 <i class="fa {{menu.icon}}"></i> {{menu.title}}
                             </a>

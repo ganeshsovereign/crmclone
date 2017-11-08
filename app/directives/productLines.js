@@ -21,6 +21,7 @@ International Registered Trademark & Property of ToManage SAS
 
 
 
+// All lines
 MetronicApp.directive('productLines', ['$http', '$modal',
     function($http, $modal) {
         return {
@@ -43,13 +44,11 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                 if (attr.ngTemplate)
                     return attr.ngTemplate;
 
-                if (attr.forSales == "false")
-                    return '/templates/core/productSupplierLine.html';
                 return '/templates/core/productLine.html';
             },
             link: function(scope, elem, attrs, ngModel) {
 
-                console.log(scope);
+                //console.log(scope);
 
                 //Used in delivery
                 scope.min = function(val1, val2) {
@@ -76,53 +75,42 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                         scope.locations = data.data;
                     });
 
-                scope.checkLine = function(data) {
-                    //console.log(data);
-                    if (!data)
-                        return "La ligne produit ne peut pas être vide";
-                    if (!data._id)
-                        return "Le produit n'existe pas";
-                };
 
-                scope.addProduct = function(data, index, lines) {
-                    //console.log("addProduct ", data);
-                    for (var i = 0; i < lines.length; i++) {
-                        if (lines[i].idLine === index) {
-                            lines[i] = {
-                                _id: lines[i]._id,
-                                order: lines[i].order,
+                scope.addProduct = function(data, line) {
+                    //    _id: line._id,
+                    //    order: line.order,
 
-                                type: 'product',
-                                pu_ht: data.prices.price,
-                                total_taxes: data.taxes,
-                                discount: data.discount,
-                                priceSpecific: ((data.dynForm || scope.forSales == false) ? true : false),
-                                product: {
-                                    _id: data._id,
-                                    info: data.info,
-                                    taxes: data.taxes,
-                                    unit: data.units,
-                                    dynForm: data.dynForm,
-                                    weight: data.weight
-                                    //family: data.product.id.caFamily
-                                },
-                                description: (lines[i].description ? lines[i].description : data.info.langs[0].description),
-                                isNew: (lines[i]._id ? false : true),
-                                qty: lines[i].qty || 0,
-                                //qty_order: lines[i].qty_order, // qty from order
-                                idLine: index
-                            };
+                    line.type = 'product';
+                    line.pu_ht = data.prices.price;
+                    line.total_taxes = data.taxes;
+                    line.discount = data.discount;
+                    line.priceSpecific = ((data.dynForm || scope.forSales == false) ? true : false);
+                    line.product = {
+                        _id: data._id,
+                        taxes: data.taxes,
+                        units: data.units,
+                        dynForm: data.dynForm,
+                        weight: data.weight,
+                        //info: data.info
+                    };
+                    line.product.info = {
+                        productType: data.info.productType
+                    };
+                    line.description = (line.description ? line.description : data.info.langs[0].description);
+                    line.isNew = (line._id ? false : true);
+                    line.qty = line.qty || 0;
+                    //qty_order: lines[i].qty_order, // qty from order
+                    //idLine: index
 
-                            if (scope.forSales == false && data.suppliers && data.suppliers.length) {
-                                lines[i].refProductSupplier = data.suppliers[0].ref;
-                                lines[i].pu_ht = data.suppliers[0].prices.pu_ht;
-                                lines[i].qty = data.suppliers[0].minQty;
-                            }
-
-                            //console.log(lines[i]);
-                            scope.calculMontantHT(lines[i]);
-                        }
+                    if (scope.forSales == false && data.suppliers && data.suppliers.length) {
+                        line.refProductSupplier = data.suppliers[0].ref;
+                        line.pu_ht = data.suppliers[0].prices.pu_ht;
+                        line.qty = data.suppliers[0].minQty;
                     }
+
+                    //console.log(line);
+                    scope.calculMontantHT(line);
+
                 };
                 var round = function(value, decimals) {
                     if (value > Math.pow(10, (decimals + 2) * -1) * -1 && value < Math.pow(10, (decimals + 2) * -1)) // Fix error little number
@@ -130,9 +118,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                     return Number(Math.round(value + 'e' + (decimals)) + 'e-' + (decimals));
                 };
 
-                scope.calculMontantHT = function(line, data, varname) {
-                    if (varname)
-                        line[varname] = data;
+                scope.calculMontantHT = function(line) {
 
                     function calculHT(line) {
                         if (line.qty) {
@@ -144,7 +130,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                         }
 
                         //Refresh inventory
-                        //console.log(line.product.info);
+                        console.log(line);
                         if (!line.product.info.productType.inventory)
                             return;
 
@@ -183,7 +169,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                 };
 
 
-                scope.productAutoComplete = function(val) {
+                /*scope.productAutoComplete = function(val) {
                     return $http.post('/erp/api/product/autocomplete', {
                         take: 20,
                         skip: 0,
@@ -202,7 +188,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                         console.log(res.data);
                         return res.data;
                     });
-                };
+                };*/
 
 
                 // filter lines to show
@@ -257,6 +243,8 @@ MetronicApp.directive('productLines', ['$http', '$modal',
 
                     lines.push(new_line);
                 };
+
+
 
                 // Add a comment line
                 scope.addComment = function(index) {
@@ -331,8 +319,123 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                     ngModel.$setViewValue(scope.linesModel);
 
                     scope.ngChange();
+                    scope.edit = false;
 
                     return true;
+                };
+
+                scope.findOne = function() {
+                    scope.$parent.findOne();
+                    scope.edit = false;
+                }
+
+                scope.loadTemplate = function(line) {
+                    //console.log(line);
+                    if (!line.type)
+                        return '/templates/product/productOneLine.html';
+
+                    if (line.type == 'COMMENT')
+                        return '/templates/product/productComment.html';
+
+                    if (line.type == 'kit')
+                        return '/templates/product/productKit.html';
+
+                    if (line.type == 'SUBTOTAL')
+                        return '/templates/product/productSubtotal.html';
+
+                    // Type is product
+                    return '/templates/product/productOneLine.html';
+                }
+            }
+        };
+    }
+]);
+
+MetronicApp.directive('productId', ['$http', '$parse',
+    function($http, $parse) {
+        return {
+            restrict: 'E',
+            require: 'ngModel',
+            scope: {
+                model: "=ngModel",
+                entity: "=?",
+                label: "@",
+                name: "@",
+                required: "@",
+                typeahead: "@",
+                //onSelect: "&",
+                placeholder: "@",
+                url: "@",
+                bootstrap: "=" // Bootstrap or material desgin ? (default false -> md)
+            },
+            templateUrl: function(el, attr) {
+                return '/templates/core/product_id-form.html';
+            },
+            link: function(scope, elm, attrs, ctrl) {
+                //console.log(scope);
+
+                scope.$error = false;
+
+                scope.productAutoComplete = function(val) {
+                    return $http.post('/erp/api/product/autocomplete', {
+                        take: 20,
+                        skip: 0,
+                        page: 1,
+                        pageSize: 5,
+                        priceList: scope.priceList,
+                        forSales: scope.forSales,
+                        supplier: scope.supplier,
+                        filter: {
+                            logic: 'and',
+                            filters: [{
+                                value: val
+                            }]
+                        }
+                    }).then(function(res) {
+                        //console.log(res.data);
+                        return res.data;
+                    });
+                };
+
+                var onSelectCallback = $parse(attrs.onSelect);
+
+                scope.change = function(item) {
+
+                    if (onSelectCallback)
+                        onSelectCallback(scope.$parent, {
+                            $item: item
+                        });
+
+                    //console.log(item);
+                    ctrl.$setViewValue(item);
+                    //ctrl.$setModelValue(item);
+                };
+
+                ctrl.$validators.id = function(modelValue, viewValue) {
+                    //console.log(modelValue);
+
+                    if (ctrl.$isEmpty(modelValue)) {
+                        if (scope.required) {
+                            scope.$error = true;
+                            return false;
+                        } else {
+                            // consider empty models to be valid
+                            scope.$error = false;
+                            return true;
+                        }
+                    }
+
+                    //console.log(attrs);
+
+                    if (typeof modelValue == 'object' && modelValue._id) {
+                        // it is valid
+                        scope.$error = false;
+                        return true;
+                    }
+
+                    // it is invalid
+                    scope.$error = true;
+                    return false;
                 };
             }
         };

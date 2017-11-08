@@ -15,17 +15,10 @@
     }
 }
 
-.page-sidebar-closed .page-sidebar,
-.page-sidebar.collapse,
-.page-sidebar-closed .page-sidebar .page-sidebar-menu.page-sidebar-menu-closed {
-    position: fixed;
-    z-index: 10;
-}
-
 body {
     font-size: 12px;
-    /*zoom: 90%;*/
 }
+
 
 /*body,
 h1,
@@ -51,6 +44,7 @@ h6 {
 .progress-bar-green {
     background-color: #44b6ae!important
 }
+
 
 /* ng-grid */
 
@@ -119,6 +113,7 @@ table.info-table {
     transform: scale(0);
 }
 
+
 /*.label-success {
     background-color: #F3C200;
 }
@@ -134,6 +129,7 @@ table.info-table {
 .page-content {
     background-color: #FFFFFF;
 }
+
 
 /* New theme */
 
@@ -216,6 +212,7 @@ ul.nav-pills {
     margin-right: -10px;
 }
 
+
 /*Fix modal check*/
 
 .modal-body .checkbox>label,
@@ -238,7 +235,9 @@ address pre {
     font-family: inherit;
 }
 
+
 /* radio button see contact create soncas*/
+
 
 /*.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox],*/
 
@@ -246,6 +245,7 @@ address pre {
 .radio-inline input[type=radio] {
     margin-left: -10px;
 }
+
 
 /* typeahead scroll */
 
@@ -255,6 +255,7 @@ address pre {
     overflow-y: auto;
     overflow-x: hidden;
 }
+
 
 /* full with bootstrap */
 
@@ -271,6 +272,7 @@ pre {
     border-radius: 0px;
     border: 0px;
 }
+
 
 /* vertical checkbox in editable */
 
@@ -348,6 +350,7 @@ table.table-bordered.dataTable tbody td {
     z-index: 10600;
 }
 
+
 /* Angular Tree*/
 
 .angular-ui-tree-handle {
@@ -379,6 +382,7 @@ tr.angular-ui-tree-empty {
     background-color: #687074 !important;
     color: #FFF !important;
 }
+
 
 /* --- Tree --- */
 
@@ -436,13 +440,14 @@ hr {
     background-color: #ffffff;
 }
 
-.portlet>.portlet-title>.caption {
+
+/*.portlet>.portlet-title>.caption {
     float: left;
     display: inline-block;
     font-size: 14px;
     line-height: 14px;
     padding: 10px 0;
-}
+}*/
 
 .block-spinner-bar>div,
 .page-spinner-bar>div {
@@ -617,14 +622,15 @@ small {
     padding: 0 0 30px 0;
 }
 
-[class*=" fa-"]:not(.fa-stack),
+
+/*[class*=" fa-"]:not(.fa-stack),
 [class*=" glyphicon-"],
 [class*=" icon-"],
 [class^=fa-]:not(.fa-stack),
 [class^=glyphicon-],
 [class^=icon-] {
     line-height: 10px;
-}
+}*/
 
 .table .center {
     text-align: center;

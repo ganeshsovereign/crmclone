@@ -97,8 +97,15 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.backTo = 'delivery.list';
                     break;
                 case 'bill':
-                    Object = Orders.bill;
-                    $scope.backTo = 'bill.list';
+                    if ($rootScope.$stateParams.forSales == 0) {
+                        $scope.object.forSales = false;
+                        Object = Orders.billSupplier;
+                        $scope.backTo = 'bill.list';
+                    } else {
+                        $scope.object.forSales = true;
+                        Object = Orders.bill;
+                        $scope.backTo = 'bill.list';
+                    }
                     break;
                 case 'stockreturn':
                     Object = Orders.stockReturn;
@@ -119,11 +126,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                     $scope.object.forSales = false;
                     Object = Orders.deliverySupplier;
                     $scope.backTo = 'deliverysupplier.list';
-                    break;
-                case 'billsupplier':
-                    $scope.object.forSales = false;
-                    Object = Orders.billSupplier;
-                    $scope.backTo = 'billsupplier.list';
                     break;
                 case 'ordersfab':
                     $scope.object.forSales = false;
@@ -313,14 +315,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 else
                     $scope.editable = false;
 
-                console.log($scope.editable);
-
-
-                //automatic redirect if it's a supplier
-                if (object.forSales == false && current[0].indexOf("supplier") < 0)
-                    return $rootScope.$state.go(current[0] + "supplier" + ".show", {
-                        id: object._id
-                    });
+                //console.log($scope.editable);
 
                 //on utilise idLine pour definir la ligne produit que nous voulons supprimer
                 if ($scope.object.lines)
@@ -1316,7 +1311,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             datedl: {
                 value: {
                     start: moment().startOf('year').toDate(),
-                    end: moment().endOf('day').toDate()
+                    end: moment().endOf('year').toDate()
                 }
             },
             datec: {
@@ -1670,13 +1665,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             $scope.find();
         });
 
-        var module = $rootScope.$state.current.name.split('.')[0];
-        $scope.module = function(themodule) {
-            if (!themodule)
-                return module;
-
-            return module === themodule;
-        };
+        $scope.forSales = $rootScope.$stateParams.forSales == 0 ? 0 : 1;
 
         $scope.resetFilter = function() {
             superCache.removeAll();
@@ -1758,7 +1747,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 $scope.search.supplier.value = [params.supplier];
 
             $scope.hide_supplier = true;
-            module = params.module;
+            $scope.forSales = params.forSales == 0 ? 0 : 1;
 
             $scope.find();
         };
@@ -1841,7 +1830,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 sort: this.sort
             };
 
-            if (module === 'bill')
+            if ($scope.forSales)
                 Orders.bill.query(query, function(data, status) {
                     $scope.page.total = data.total;
                     $scope.orders = data.data;
@@ -1852,7 +1841,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                         Metronic.unblockUI('.waiting');
                     }, 0);
                 });
-            else if (module === 'billsupplier')
+            else
                 Orders.billSupplier.query(query, function(data, status) {
                     $scope.page.total = data.total;
                     $scope.orders = data.data;

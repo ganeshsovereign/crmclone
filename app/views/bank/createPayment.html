@@ -185,7 +185,7 @@
                             <tbody>
                                 <tr ng-repeat="bill in payment.bills_supplier| orderBy : 'dater'" ng-class="{active: bill.journalId.length}">
                                     <td>
-                                        <a ui-sref="billsupplier.show({id:bill._id})">{{bill.ref}}</a>
+                                        <a ui-sref="bill.show({id:bill._id, forSales:0})">{{bill.ref}}</a>
                                     </td>
                                     <td>
                                         {{bill.dater| date:'dd/MM/yyyy'}}

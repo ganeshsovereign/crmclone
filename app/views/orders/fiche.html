@@ -37,18 +37,6 @@
             <span>@(orders:StockReturn)</span>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('bill')">
-            <span>@(compta:MenuFinancial)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li ng-if="module('bill')">
-            <span>@(orders:CustomersInvoices)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li ng-if="module('billsupplier')">
-            <span>@(orders:SuppliersInvoices)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
         <li ng-if="module('offer')">
             <a ui-sref="{{backTo}}">@(orders:ListOfProposals)</a>
             <i class="fa fa-angle-right"></i>
@@ -65,16 +53,16 @@
             <a ui-sref="{{backTo}}">@(orders:ListOfPreparationReceipt)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('stockreturn')" )>
+        <li ng-if="module('stockreturn')">
             <a ui-sref="{{backTo}}">@(orders:ListStockReturn)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('bill')" )>
-            <a ui-sref="{{backTo}}">@(orders:ListBillsCustomers)</a>
+        <li ng-if="module('bill') && object.forSales">
+            <a ui-sref="{{backTo}}({forSales:1})">@(orders:ListBillsCustomers)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('billsupplier')" )>
-            <a ui-sref="{{backTo}}">@(orders:ListBillsSuppliers)</a>
+        <li ng-if="module('bill') && !object.forSales">
+            <a ui-sref="{{backTo}}({forSales:0})">@(orders:ListBillsSuppliers)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('offer')">
@@ -97,11 +85,11 @@
             <span ng-hide="!object._id">@(orders:StockReturn) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewStockReturn)</span>
         </li>
-        <li ng-if="module('bill')">
+        <li ng-if="module('bill') && object.forSales">
             <span ng-hide="!object._id">@(orders:BillCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewBill)</span>
         </li>
-        <li ng-if="module('billsupplier')">
+        <li ng-if="module('bill') && ! object.forSales">
             <span ng-hide="!object._id">@(orders:BillSupplier) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewBill)</span>
         </li>
@@ -255,7 +243,7 @@
                 </li>
             </ul>
             <!-- __BILL__ -->
-            <ul ng-if="module( 'bill') || module('billsupplier')" class="dropdown-menu pull-right" role="menu">
+            <ul ng-if="module( 'bill')" class="dropdown-menu pull-right" role="menu">
                 <li>
                     <a href="#" ng-show="(object.Status=='NOT_PAID' || object.Status=='VALIDATED' ) && object.journalId.length==0 && login.rights.bill.validate" data-ng-click="exportAccounting(object._id)">
                         <i class="fa fa-mail-forward"></i> @(orders:SendAccounting)
@@ -355,8 +343,8 @@
                                         <div ng-if="module('ordersupplier')" class="uppercase profile-stat-text"> @(orders:OrderSupplier) </div>
                                         <div ng-if="module('delivery')" class="uppercase profile-stat-text"> @(orders:PreparationNoteCustomer) </div>
                                         <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(orders:PreparationNoteSupplier) </div>
-                                        <div ng-if="module('bill')" class="uppercase profile-stat-text"> @(orders:BillCustomer) </div>
-                                        <div ng-if="module('billsupplier')" class="uppercase profile-stat-text"> @(orders:BillSupplier) </div>
+                                        <div ng-if="module('bill') && object.forSales" class="uppercase profile-stat-text"> @(orders:BillCustomer) </div>
+                                        <div ng-if="module('bill') && !object.forSales" class="uppercase profile-stat-text"> @(orders:BillSupplier) </div>
                                         <div class="uppercase profile-stat-title"> {{object.ref}} </div>
                                     </div>
                                 </div>
@@ -408,7 +396,7 @@
                                 <i class="icon-info"></i> @(orders:PreparationDetails) </a>
                         </li>
                     </ul>
-                    <ul class="nav" ng-if="module('bill') || module('billsupplier')">
+                    <ul class="nav" ng-if="module('bill')">
                         <li ng-class="{active: $state.includes(module() + '.show.detail')}">
                             <a ui-sref="bill.show.detail({id:object._id})">
                                 <i class="icon-info"></i> @(orders:DetailsBill) </a>

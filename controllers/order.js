@@ -1917,7 +1917,7 @@ Object.prototype = {
                             case 'COMMENT':
                                 tabLines.push({
                                     ref: "",
-                                    description: "\\textbf{" + doc.lines[i].refProductSupplier + "}" + (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
+                                    description: /*"\\textbf{" + doc.lines[i].refProductSupplier + "}" + */ (doc.lines[i].description ? "\\\\" + doc.lines[i].description : ""),
                                     tva_tx: null,
                                     pu_ht: "",
                                     discount: "",
