@@ -19,7 +19,7 @@ limitations under the License.
 International Registered Trademark & Property of ToManage SAS
 */
 
-"use strict";
+
 
 var fs = require('fs'),
     csv = require('csv'),
@@ -1729,7 +1729,7 @@ Object.prototype = {
                         res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
 
                         if (res.datatable.data[i].journalId && res.datatable.data[i].journalId.length > 0)
-                        // Add color line 
+                            // Add color line 
                             res.datatable.data[i].DT_RowClass = "bg-grey-silver";
                         // Action
                         res.datatable.data[i].action = '<a href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
@@ -2119,18 +2119,18 @@ Object.prototype = {
             },
             forSales: (self.query.forSales == 'false' ? false : true),
             $or: [{
-                        datec: {
-                            '$gte': dateStart,
-                            '$lt': dateEnd
-                        }
-                    },
-                    {
-                        datec: {
-                            '$gte': dateStartN1,
-                            '$lt': dateEndN1
-                        }
+                    datec: {
+                        '$gte': dateStart,
+                        '$lt': dateEnd
                     }
-                ] // Date de facture
+                },
+                {
+                    datec: {
+                        '$gte': dateStartN1,
+                        '$lt': dateEndN1
+                    }
+                }
+            ] // Date de facture
         };
 
         if (self.query.entity)
@@ -2326,11 +2326,11 @@ Object.prototype = {
             },
             forSales: (self.query.forSales == 'false' ? false : true),
             $or: [{
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
-                    }
-                }] // Date de facture
+                datec: {
+                    '$gte': dateStart,
+                    '$lt': dateEnd
+                }
+            }] // Date de facture
         };
 
         /* Customer invoice */
@@ -2488,14 +2488,14 @@ function createBill(doc, cgv, callback) {
     if (doc.forSales == false)
         model = "bill_supplier.tex";
     else
-    // check if discount
+        // check if discount
         for (var i = 0; i < doc.lines.length; i++) {
-        if (doc.lines[i].discount > 0) {
-            model = "bill_discount.tex";
-            discount = true;
-            break;
+            if (doc.lines[i].discount > 0) {
+                model = "bill_discount.tex";
+                discount = true;
+                break;
+            }
         }
-    }
 
     SocieteModel.findOne({
         _id: doc.supplier.id

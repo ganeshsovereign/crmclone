@@ -19,7 +19,7 @@ limitations under the License.
 International Registered Trademark & Property of ToManage SAS
 */
 
-"use strict";
+
 
 const moment = require('moment');
 
@@ -49,10 +49,10 @@ exports.csv = {
         "status.shippedBy": "Expedie par",
         "datec": "Date creation",
         "weight": "Poids"
-            //"createdBy.user": "Created By User",
-            //"createdBy.date": "Created By Date",
-            //"editedBy.user": "Edited By User",
-            //"editedBy.date": "Edited By Date"
+        //"createdBy.user": "Created By User",
+        //"createdBy.date": "Created By Date",
+        //"editedBy.user": "Edited By User",
+        //"editedBy.date": "Edited By Date"
     },
 
     "arrayKeys": {

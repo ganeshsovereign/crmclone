@@ -30,8 +30,8 @@
 <div ng-if="bootstrap == true" class="form-group">
     <div class="typeahead">
         <label ng-if="label" for="{{name}}">{{label}} :</label>
-        <input class="form-control input-sm" ng-model="model" id="{{name}}" name="{{name}}" ng-required="required" typeahead="data as data.ref for data in productAutoComplete($viewValue, 'ref')" typeahead-on-select="change($item)"
-            typeahead-template-url="searchproduct.html" placeholder="{{placeholder}}" type="text" autocomplete="off" />
+        <input class="form-control input-sm" ng-model="model" id="{{name}}" name="{{name}}" ng-required="required" typeahead="data as data.ref for data in productAutoComplete($viewValue, 'ref')" typeahead-on-select="change($item)" typeahead-template-url="searchproduct.html"
+            placeholder="{{placeholder}}" type="text" autocomplete="off" />
 
     </div>
 </div>

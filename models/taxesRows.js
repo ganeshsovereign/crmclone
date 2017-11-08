@@ -37,14 +37,25 @@ var setPrice = MODULE('utils').setPrice;
 var setDate = MODULE('utils').setDate;
 
 var TaxesRowSchema = mongoose.Schema({
-    isremoved: { type: Boolean },
-    type: { type: String, enum: ["VAT"] },
+    isremoved: {
+        type: Boolean
+    },
+    type: {
+        type: String,
+        enum: ["VAT"]
+    },
 
     ID: Number,
     ref: String,
 
-    datec: { type: Date, default: Date.now },
-    Status: { type: String, default: "DRAFT" },
+    datec: {
+        type: Date,
+        default: Date.now
+    },
+    Status: {
+        type: String,
+        default: "DRAFT"
+    },
 
     journalId: [Schema.Types.ObjectId], // Id transactions for accounting
 

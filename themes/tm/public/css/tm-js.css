@@ -19,7 +19,6 @@ body {
     font-size: 12px;
 }
 
-
 /*body,
 h1,
 h2,
@@ -44,7 +43,6 @@ h6 {
 .progress-bar-green {
     background-color: #44b6ae!important
 }
-
 
 /* ng-grid */
 
@@ -113,7 +111,6 @@ table.info-table {
     transform: scale(0);
 }
 
-
 /*.label-success {
     background-color: #F3C200;
 }
@@ -129,7 +126,6 @@ table.info-table {
 .page-content {
     background-color: #FFFFFF;
 }
-
 
 /* New theme */
 
@@ -212,7 +208,6 @@ ul.nav-pills {
     margin-right: -10px;
 }
 
-
 /*Fix modal check*/
 
 .modal-body .checkbox>label,
@@ -235,9 +230,7 @@ address pre {
     font-family: inherit;
 }
 
-
 /* radio button see contact create soncas*/
-
 
 /*.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox],*/
 
@@ -245,7 +238,6 @@ address pre {
 .radio-inline input[type=radio] {
     margin-left: -10px;
 }
-
 
 /* typeahead scroll */
 
@@ -255,7 +247,6 @@ address pre {
     overflow-y: auto;
     overflow-x: hidden;
 }
-
 
 /* full with bootstrap */
 
@@ -272,7 +263,6 @@ pre {
     border-radius: 0px;
     border: 0px;
 }
-
 
 /* vertical checkbox in editable */
 
@@ -350,7 +340,6 @@ table.table-bordered.dataTable tbody td {
     z-index: 10600;
 }
 
-
 /* Angular Tree*/
 
 .angular-ui-tree-handle {
@@ -382,7 +371,6 @@ tr.angular-ui-tree-empty {
     background-color: #687074 !important;
     color: #FFF !important;
 }
-
 
 /* --- Tree --- */
 
@@ -439,7 +427,6 @@ hr {
 .page-bar {
     background-color: #ffffff;
 }
-
 
 /*.portlet>.portlet-title>.caption {
     float: left;
@@ -621,7 +608,6 @@ small {
 .aligntop {
     padding: 0 0 30px 0;
 }
-
 
 /*[class*=" fa-"]:not(.fa-stack),
 [class*=" glyphicon-"],

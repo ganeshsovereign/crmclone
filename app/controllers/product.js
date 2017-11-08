@@ -153,7 +153,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             $scope.dict = data;
 
             if (!$rootScope.$stateParams.id)
-            // Is a list
+                // Is a list
                 initDatatable();
         });
 
