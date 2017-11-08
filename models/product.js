@@ -301,7 +301,7 @@ var productSchema = new Schema({
 
         /* PIM transaltion */
         langs: [LangSchema]
-        /* need to Add  alt des images TODO */
+            /* need to Add  alt des images TODO */
 
 
     },
@@ -949,7 +949,7 @@ productSchema.pre('save', function(next) {
                         });
             }
 
-        //console.log(this);
+            //console.log(this);
 
         if (this.directCost != directCost)
             this.directCost = directCost;
@@ -987,13 +987,13 @@ productSchema.pre('save', function(next) {
 
     if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
-            F.emit('product:updateDirectCost', {
-                userId: (self.editedBy ? self.editedBy.toString() : null),
-                product: {
-                    _id: self._id.toString()
-                }
-            });
-        }, 500);
+        F.emit('product:updateDirectCost', {
+            userId: (self.editedBy ? self.editedBy.toString() : null),
+            product: {
+                _id: self._id.toString()
+            }
+        });
+    }, 500);
 
     //Emit product update
     setTimeout2('product:' + this._id.toString(), function() {
@@ -1200,15 +1200,25 @@ function prepare_subcategories(name) {
 
 F.on('load', function() {
     // Refresh pack prices from directCost
-    return;
-    /*F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
+
+    const ProductModel = MODEL('product').Schema;
+    const round = MODULE('utils').round;
+    const ProductPricesModel = MODEL('productPrices').Schema;
+    const PriceListModel = MODEL('priceList').Schema;
+
+    F.on('product:updateDirectCost', function(data) {
         //console.log(data);
         console.log("Update emit product", data.product);
 
-        switch (channel) {
-            case 'product:updateDirectCost':
-                if (data.product._id) {
-                    exports.Schema.find({ 'bundles.id': data.product._id })
+        if (!data.product || !data.product._id)
+            return;
+
+        async.parallel([
+                function(pCb) {
+                    /*Update Bundle Cost*/
+                    const product = data.product;
+
+                    ProductModel.find({ 'bundles.id': product._id })
                         //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                         //.populate("priceLists")
                         .populate("pack.id", "info directCost indirectCost")
@@ -1222,26 +1232,34 @@ F.on('load', function() {
                             populate: { path: "options", populate: { path: "group" } }
                         })
                         .exec(function(err, products) {
-                            products.forEach(function(product) {
+                            if (!products)
+                                return pCb();
+                            async.each(products, function(product, aCb) {
                                 if (!product.isBundle)
                                     return;
 
-                                product.save(function(err, doc) {
-                                    if (err)
-                                        return console.log(err);
+                                product.editedBy = data.userId;
 
-                                    //F.functions.PubSub.emit('product:updateDirectCost', {
-                                    //    data: doc
-                                    //});
-                                });
+                                product.save(aCb);
                             });
+                        }, function(err) {
+                            if (err)
+                                console.log("update bundleCost error ", err);
+                            pCb(null);
                         });
 
-                    exports.Schema.find({ 'pack.id': data.product._id })
+                    //F.functions.PubSub.emit('product:updateDirectCost', {
+                    //    data: doc
+                    //});
+                },
+                function(pCb) {
+                    /*UpdatePackCost*/
+                    const product = data.product;
+
+                    ProductModel.find({ 'pack.id': product._id })
                         //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                         //.populate("priceLists")
                         .populate("pack.id", "info directCost indirectCost")
-                        .populate("bundles.id", "info directCost indirectCost")
                         .populate({
                             path: 'info.productType'
                                 //    populate: { path: "options" }
@@ -1251,29 +1269,121 @@ F.on('load', function() {
                             populate: { path: "options", populate: { path: "group" } }
                         })
                         .exec(function(err, products) {
-
-                            products.forEach(function(product) {
+                            if (!products)
+                                return pCb();
+                            async.each(products, function(product, aCb) {
                                 if (!product.isPackaging)
                                     return;
 
-                                //console.log("PRODUCTS", product);
-                                product.save(function(err, doc) {
-                                    if (err)
-                                        return console.log(err);
+                                product.editedBy = data.userId;
 
-
-
-                                    // Emit to all that a productPrice in product list by coef was changed
-                                    //setTimeout2('productPrices:updatePrice_' + this._id.toString(), function() {
-                                    //F.functions.PubSub.emit('product:updateDirectCost', {
-                                    //    data: doc
-                                    //});
-                                    //}, 5000);
-                                });
+                                product.save(aCb);
+                            }, function(err) {
+                                if (err)
+                                    console.log("update packCost error ", err);
+                                pCb(null);
                             });
+
+                            //F.functions.PubSub.emit('product:updateDirectCost', {
+                            //    data: doc
+                            //});
                         });
+                },
+                function(pCb) {
+                    /*isCoef : UpdateProductPrices*/
+                    const product = data.product;
+
+                    ProductPricesModel.find({ 'product': data.product._id })
+                        //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
+                        .populate("priceLists")
+                        .exec(function(err, pricesList) {
+                            if (!products)
+                                return pCb();
+                            async.each(pricesList, function(prices, aCb) {
+                                if (!prices.priceLists.isCoef)
+                                    return aCb();
+
+                                prices.editedBy = data.userId;
+
+                                prices.save(function(err, doc) {
+                                    if (err)
+                                        return aCb(err);
+
+                                    setTimeout2('productPricesList:' + doc._id.toString(), function() {
+                                        F.emit('productPrices:updatePrice', {
+                                            userId: data.userId,
+                                            priceList: {
+                                                _id: doc._id.toString()
+                                            }
+                                        });
+                                    }, 1000);
+
+                                    data: doc
+                                });
+
+                                aCb();
+                            });
+                        }, function(err) {
+                            if (err)
+                                console.log("update UpdateProductPrices error ", err);
+
+                            pCb();
+                        });
+
+                    //F.functions.PubSub.emit('product:updateDirectCost', {
+                    //    data: doc
+                    //});
+                },
+                function(pCb) {
+                    /*InitCoefIfNewSP*/
+                    const product = data.product;
+
+                    return pCb();
+
+                    async.waterfall([
+                        function(wCb) {
+                            ProductPricesModel.find({ 'product': data.product._id })
+                                //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
+                                .populate("priceLists")
+                                .exec(function(err, pricesList) {
+
+                                    pricesList = _.map(_.filter(pricesList, function(priceList) {
+                                        if (!priceList.priceLists.isCoef)
+                                            return true;
+                                        return false;
+                                    }), function(elem) {
+                                        return elem.priceLists._id;
+                                    });
+
+                                    wCb(null, pricesList);
+                                });
+                        },
+                        function(pricesList, wCb) {
+
+                        }
+                    ], function(err, result) {
+                        prices.editedBy = data.userId;
+
+                        // prices.save(function(err, doc) {
+                        if (err)
+                            return aCb(err);
+
+
+                        aCb();
+                        //});
+                    }, function(err) {
+                        if (err)
+                            console.log("update UpdateProductPrices error ", err);
+                        callback(null);
+                    });
+
+                    //F.functions.PubSub.emit('product:updateDirectCost', {
+                    //    data: doc
+                    //});
                 }
-                break;
-        }
-    });*/
+            ],
+            function(err) {
+                console.log('Product automatic update');
+            });
+    });
 });

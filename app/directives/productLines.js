@@ -30,7 +30,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
             scope: {
                 linesModel: '=ngModel',
                 title: '=',
-                priceList: "=",
+                priceList: "=?",
                 forSales: "=",
                 supplier: "=",
                 warehouse: "=",
@@ -358,6 +358,7 @@ MetronicApp.directive('productId', ['$http', '$parse',
             scope: {
                 model: "=ngModel",
                 entity: "=?",
+                priceList: "=?",
                 label: "@",
                 name: "@",
                 forSales: "=",
@@ -366,13 +367,13 @@ MetronicApp.directive('productId', ['$http', '$parse',
                 //onSelect: "&",
                 placeholder: "@",
                 url: "@",
-                bootstrap: "=" // Bootstrap or material desgin ? (default false -> md)
+                bootstrap: "=?" // Bootstrap or material desgin ? (default false -> md)
             },
             templateUrl: function(el, attr) {
                 return '/templates/core/product_id-form.html';
             },
             link: function(scope, elm, attrs, ctrl) {
-                //console.log(scope);
+                console.log(scope);
 
                 scope.$error = false;
 
@@ -404,7 +405,7 @@ MetronicApp.directive('productId', ['$http', '$parse',
                             }]
                         }
                     }).then(function(res) {
-                        //console.log(res.data);
+                        console.log(res.data);
                         return res.data;
                     });
                 };

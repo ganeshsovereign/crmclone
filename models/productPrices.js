@@ -506,162 +506,168 @@ exports.Schema = mongoose.model('productPrices', productPricesSchema, 'ProductPr
 exports.name = "productPrices";
 
 F.on('load', function() {
-    return;
-    var ProductPricesModel = exports.Schema;
-    var PriceListModel = MODEL('priceList').Schema;
-    var ProductModel = MODEL('product').Schema;
+    const ProductPricesModel = exports.Schema;
+    const PriceListModel = MODEL('priceList').Schema;
+    const ProductModel = MODEL('product').Schema;
+    const ProductFamilyCoefModel = MODEL('productFamilyCoef').Schema;
+    const round = MODULE('utils').round;
 
     // On refresh emit product
     // data : {data :{_id : product._id, }}
-    F.functions.PubSub.on('product:updateDirectCost', function(channel, data) {
+    F.on('productPrices:updatePrice', function(data) {
+
+        if (!data.price)
+            return;
+
+        if (!data.price.priceLists || !data.price.priceLists.cost)
+            return;
+
         //console.log(data);
-        console.log("Update emit productPrice", data.product, channel);
-        //return;
-        switch (channel) {
-            case 'product:updateDirectCost':
-                if (data.product._id)
-                    ProductPricesModel.find({
-                        'product': data.product._id
-                    })
-                    //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
-                    .populate("priceLists")
-                    .exec(function(err, pricesList) {
-                        async.each(pricesList, function(prices, aCb) {
-                            if (!prices.priceLists.isCoef)
-                                return aCb();
+        console.log("Update emit productPrice", data.price);
 
-                            prices.save(function(err, doc) {
-                                if (err)
-                                    return aCb(err);
+        // One element in the parent priceList changed, we must update all priceList that are parent form this priceList and are isGlobalDiscount
+        const price = data.price;
 
-                                // Emit to all that a productPrice in product list by coef was changed
-                                //setTimeout2('productPrices:updatePrice_' + this._id.toString(), function() {
-                                F.functions.PubSub.emit('productPrices:updatePrice', {
-                                    product: doc
-                                });
-                                aCb();
-                                //}, 5000);
-                            });
-                        }, function(err) {
-                            if (err)
-                                console.log(err);
-                        });
+        async.waterfall([
+            function(cb) {
+                ProductModel.findOne({ _id: price.product }, "info directCost indirectCost prices pack createdAt sellFamily")
+                    .populate("sellFamily")
+                    .exec(function(err, product) {
+                        if (err)
+                            return cb(err);
+
+                        if (!product || !product.sellFamily)
+                            return cb("Product with unknown family " + product);
+
+                        return cb(null, product);
                     });
+            },
+            function(product, cb) {
+                if (price.priceLists.cost != true)
+                    return cb();
 
-                break;
-        }
+                product.directCost = round(price.prices[0].price, 3);
+                product.indirectCost = round(product.directCost * product.sellFamily.indirectCostRate / 100, 3);
+                product.save(cb);
+            }
+        ], function(err) {
+            if (err)
+                return console.log("update updateDirectCost error " + err);
+
+        });
+
     });
 
 
     // Refresh prices on change Base price List or on discount productList
-    F.functions.PubSub.on('productPrices:*', function(channel, data) {
-        //console.log(data);
-        console.log("Update emit productList updateDiscount", channel);
-        //return;
-        switch (channel) {
-            // The discount changed in the productList : Destroy all prices and recreate all prices form parent priceList
-            case 'productPrices:updateDiscountRate':
-                if (!data.data._id)
-                    return;
+    /* F.functions.PubSub.on('productPrices:*', function(channel, data) {
+         //console.log(data);
+         console.log("Update emit productList updateDiscount", channel);
+         //return;
+         switch (channel) {
+             // The discount changed in the productList : Destroy all prices and recreate all prices form parent priceList
+             case 'productPrices:updateDiscountRate':
+                 if (!data.data._id)
+                     return;
 
-                if (!data.data.parent)
-                    return;
+                 if (!data.data.parent)
+                     return;
 
-                if (!data.data.isGlobalDiscount)
-                    return;
+                 if (!data.data.isGlobalDiscount)
+                     return;
 
-                //Delete old PriceList
-                ProductPricesModel.remove({
-                    priceLists: data.data._id
-                }, function(err, doc) {
-                    //Load parent priceList
-                    ProductPricesModel.find({
-                        priceLists: data.data.parent
-                    }, function(err, docs) {
-                        docs.forEach(function(elem) {
-                            elem = elem.toObject();
-                            delete elem._id;
-                            delete elem.__v;
-                            delete elem.createdAt;
-                            delete elem.updatedAt;
-                            elem.priceLists = data.data._id;
+                 //Delete old PriceList
+                 ProductPricesModel.remove({
+                     priceLists: data.data._id
+                 }, function(err, doc) {
+                     //Load parent priceList
+                     ProductPricesModel.find({
+                         priceLists: data.data.parent
+                     }, function(err, docs) {
+                         docs.forEach(function(elem) {
+                             elem = elem.toObject();
+                             delete elem._id;
+                             delete elem.__v;
+                             delete elem.createdAt;
+                             delete elem.updatedAt;
+                             elem.priceLists = data.data._id;
 
-                            elem = new ProductPricesModel(elem);
+                             elem = new ProductPricesModel(elem);
 
-                            for (var i = 0; i < elem.prices.length; i++) {
-                                //console.log(elem.prices[i]);
-                                elem.prices[i].price = MODULE('utils').round(elem.prices[i].price * (1 - data.data.discount / 100), 3);
-                                elem.prices[i].coef = 1;
-                                elem.prices[i].coefTotal = 1;
-                            }
-
-
-                            elem.save(function(err) {
-                                if (err)
-                                    console.log("update priceList rte discout ", err);
-                            });
-
-                        });
-                    });
-                });
-
-                break;
-                // One element in the parent priceList changed, we must update all priceList that are parent form this priceList and are isGlobalDiscount
-            case 'productPrices:updatePrice':
-
-                // if data is from populate
-                if (data && data.data && data.priceLists && data.data.priceLists._id)
-                    data.data.priceLists = data.data.priceLists._id;
-
-                if (!data.data || !data.data.priceLists)
-                    return;
-
-                PriceListModel.find({
-                    isGlobalDiscount: true,
-                    parent: data.data.priceLists
-                }, function(err, docs) {
-                    if (err || !docs || !docs.length)
-                        return;
-
-                    //console.log(docs);
-                    docs.forEach(function(priceList) {
-                        //Delete old PriceList
-                        if (!data.data.product)
-                            return;
-
-                        ProductPricesModel.remove({
-                            priceLists: priceList._id,
-                            product: data.data.product
-                        }, function(err, doc) {
-                            //Load parent priceList
-
-                            var elem = data.data;
-                            delete elem._id;
-                            delete elem.__v;
-                            delete elem.createdAt;
-                            delete elem.updatedAt;
-                            elem.priceLists = priceList._id;
-
-                            elem = new ProductPricesModel(elem);
-
-                            for (var i = 0; i < elem.prices.length; i++) {
-                                //console.log(elem.prices[i]);
-                                elem.prices[i].price = MODULE('utils').round(elem.prices[i].price * (1 - priceList.discount / 100), 3);
-                                elem.prices[i].coef = 1;
-                                elem.prices[i].coefTotal = 1;
-                            }
+                             for (var i = 0; i < elem.prices.length; i++) {
+                                 //console.log(elem.prices[i]);
+                                 elem.prices[i].price = MODULE('utils').round(elem.prices[i].price * (1 - data.data.discount / 100), 3);
+                                 elem.prices[i].coef = 1;
+                                 elem.prices[i].coefTotal = 1;
+                             }
 
 
-                            elem.save(function(err) {
-                                if (err)
-                                    console.log("update priceList rte discout ", err);
-                            });
+                             elem.save(function(err) {
+                                 if (err)
+                                     console.log("update priceList rte discout ", err);
+                             });
 
-                        });
-                    });
-                });
+                         });
+                     });
+                 });
 
-                break;
-        }
-    });
+                 break;
+                 // One element in the parent priceList changed, we must update all priceList that are parent form this priceList and are isGlobalDiscount
+             case 'productPrices:updatePrice':
+
+                 // if data is from populate
+                 if (data && data.data && data.priceLists && data.data.priceLists._id)
+                     data.data.priceLists = data.data.priceLists._id;
+
+                 if (!data.data || !data.data.priceLists)
+                     return;
+
+                 PriceListModel.find({
+                     isGlobalDiscount: true,
+                     parent: data.data.priceLists
+                 }, function(err, docs) {
+                     if (err || !docs || !docs.length)
+                         return;
+
+                     //console.log(docs);
+                     docs.forEach(function(priceList) {
+                         //Delete old PriceList
+                         if (!data.data.product)
+                             return;
+
+                         ProductPricesModel.remove({
+                             priceLists: priceList._id,
+                             product: data.data.product
+                         }, function(err, doc) {
+                             //Load parent priceList
+
+                             var elem = data.data;
+                             delete elem._id;
+                             delete elem.__v;
+                             delete elem.createdAt;
+                             delete elem.updatedAt;
+                             elem.priceLists = priceList._id;
+
+                             elem = new ProductPricesModel(elem);
+
+                             for (var i = 0; i < elem.prices.length; i++) {
+                                 //console.log(elem.prices[i]);
+                                 elem.prices[i].price = MODULE('utils').round(elem.prices[i].price * (1 - priceList.discount / 100), 3);
+                                 elem.prices[i].coef = 1;
+                                 elem.prices[i].coefTotal = 1;
+                             }
+
+
+                             elem.save(function(err) {
+                                 if (err)
+                                     console.log("update priceList rte discout ", err);
+                             });
+
+                         });
+                     });
+                 });
+
+                 break;
+         }
+     });*/
 });

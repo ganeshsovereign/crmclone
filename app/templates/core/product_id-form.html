@@ -1,5 +1,5 @@
 <script type="text/ng-template" id="searchproduct.html">
-    <a ng-class="{'list-group-item bg-yellow bg-font-yellow': match.model.priceLists.isFixed == true}">
+    <a ng-class="{'list-group-item bg-yellow bg-font-yellow': match.model.priceLists._id == $parent.$parent.$parent.priceList}">
         <span ng-bind-html="match.model.ref | typeaheadHighlight:query"></span> - <span ng-bind-html="match.model.info.langs[0].name"></span> ({{match.model.priceLists.priceListCode}} : {{match.model.prices.price|currency}})
     </a>
 </script>

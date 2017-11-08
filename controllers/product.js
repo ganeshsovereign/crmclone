@@ -1036,7 +1036,7 @@ Object.prototype = {
                 function(family, wCb) {
                     if (family)
                         query.sellFamily = family._id;
-                    console.log(query);
+                    //console.log(query);
                     var request = [{
                         $match: query
                     }, {
@@ -3894,7 +3894,7 @@ PricesList.prototype = {
         var paginationObject = MODULE('helper').page(query);
         var skip = paginationObject.skip;
         var limit = paginationObject.limit;
-        var PriceListModel = MODEL('priceList').Schema;
+        const SupplierModel = MODEL('Customers').Schema;
         var sortObj;
         var key;
 
@@ -3916,87 +3916,98 @@ PricesList.prototype = {
 
         //console.log(query);
 
-        PriceListModel.aggregate([{
-            $match: query
-        }, {
-            $lookup: {
-                from: 'Customers',
-                localField: '_id',
-                foreignField: 'salesPurchases.priceList',
-                as: 'Customers'
-            }
-        }, {
-            $project: {
-                countCustomers: {
-                    $size: '$Customers'
-                },
-                priceListCode: 1,
-                name: 1,
-                currency: 1,
-                cost: 1,
-                defaultPriceList: 1,
-                removable: 1,
-                isCoef: 1,
-                isFixed: 1,
-                discount: 1,
-                isGlobalDiscount: 1
-            }
-        }, {
-            $group: {
-                _id: null,
-                total: {
-                    $sum: 1
-                },
-                root: {
-                    $push: '$$ROOT'
+        SupplierModel.aggregate([{
+                $match: {
+                    isremoved: { $ne: true }
                 }
-            }
-        }, {
-            $unwind: '$root'
-        }, {
-            $project: {
-                _id: 1,
-                total: 1,
-                data: {
-                    _id: '$root._id',
-                    priceListCode: '$root.priceListCode',
-                    name: {
-                        $concat: ['$root.name', ' - ', '$root.currency']
+            },
+            {
+                $group: {
+                    _id: '$salesPurchases.priceList',
+                    countCustomers: { $sum: 1 }
+                }
+            }, {
+                $lookup: {
+                    from: 'PriceList',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'PriceList'
+                }
+            }, {
+                $unwind: '$PriceList'
+            }, {
+                $project: {
+                    countCustomers: 1,
+                    priceListCode: "$PriceList.priceListCode",
+                    name: "$PriceList.name",
+                    currency: "$PriceList.currency",
+                    cost: "$PriceList.cost",
+                    defaultPriceList: "$PriceList.defaultPriceList",
+                    removable: "$PriceList.removable",
+                    isCoef: "$PriceList.isCoef",
+                    isFixed: "$PriceList.isFixed",
+                    discount: "$PriceList.discount",
+                    isGlobalDiscount: "$PriceList.isGlobalDiscount"
+                }
+            }, {
+                $match: query
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: 1
                     },
-                    currency: '$root.currency',
-                    cost: '$root.cost',
-                    defaultPriceList: '$root.defaultPriceList',
-                    removable: '$root.removable',
-                    isGlobalDiscount: '$root.isGlobalDiscount',
-                    isCoef: '$root.isCoef',
-                    isFixed: '$root.isFixed',
-                    discount: '$root.discount',
-                    countCustomers: '$root.countCustomers'
+                    root: {
+                        $push: '$$ROOT'
+                    }
+                }
+            }, {
+                $unwind: '$root'
+            }, {
+                $project: {
+                    _id: 1,
+                    total: 1,
+                    data: {
+                        _id: '$root._id',
+                        priceListCode: '$root.priceListCode',
+                        name: {
+                            $concat: ['$root.name', ' - ', '$root.currency']
+                        },
+                        currency: '$root.currency',
+                        cost: '$root.cost',
+                        defaultPriceList: '$root.defaultPriceList',
+                        removable: '$root.removable',
+                        isGlobalDiscount: '$root.isGlobalDiscount',
+                        isCoef: '$root.isCoef',
+                        isFixed: '$root.isFixed',
+                        discount: '$root.discount',
+                        countCustomers: '$root.countCustomers'
+                    }
+                }
+            }, {
+                $sort: sortObj
+            }, {
+                $skip: skip
+            }, {
+                $limit: limit
+            }, {
+                $group: {
+                    _id: null,
+                    total: {
+                        $first: '$total'
+                    },
+                    data: {
+                        $push: '$data'
+                    }
+                }
+            }, {
+                $project: {
+                    _id: 1,
+                    total: '$total',
+                    data: '$data'
                 }
             }
-        }, {
-            $sort: sortObj
-        }, {
-            $skip: skip
-        }, {
-            $limit: limit
-        }, {
-            $group: {
-                _id: null,
-                total: {
-                    $first: '$total'
-                },
-                data: {
-                    $push: '$data'
-                }
-            }
-        }, {
-            $project: {
-                _id: 1,
-                total: '$total',
-                data: '$data'
-            }
-        }]).exec(function(err, result) {
+        ]).exec(function(err, result) {
             //console.log(result);
             if (err)
                 return self.throw500(err);

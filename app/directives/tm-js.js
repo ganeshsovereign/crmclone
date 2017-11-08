@@ -283,7 +283,7 @@ MetronicApp.directive('save', function() {
             ngCreate: '&',
             ngUpdate: '&',
             backTo: "=",
-            paramsBackTo: "="
+            paramsBackTo: "=?"
         },
         templateUrl: "/templates/saveMenu.html",
         link: function(scope) {

@@ -136,65 +136,72 @@ exports.name = "productFamily";
 
 F.on('load', function() {
 
-    return;
+    const ProductModel = MODEL('product').Schema;
+    const round = MODULE('utils').round;
 
-    /*var PriceListModel = MODEL('priceList').Schema;
-    var ProductModel = MODEL('product').Schema;
-    var round = MODULE('utils').round;
+    F.on('productFamily:update', function(data) {
+        if (!data.family || !data.family._id)
+            return;
 
-    // Refresh prices on change Base price List or on discount productList
-    F.functions.PubSub.on('productFamily:*', function(channel, data) {
-        //console.log(data);
-        console.log("Update emit productFamily update", data, channel);
-        //return;
-        switch (channel) {
-            // Change indirectCostRate will update all product priceList
-            case 'productFamily:update':
-                if (!data.data._id)
-                    return;
+        if (!data.family.indirectCostRate)
+            return;
 
-                if (!data.data.indirectCostRate)
-                    return;
+        if (data.family.isCost)
+            return;
 
-                ProductModel.find({ sellFamily: data.data._id }, function(err, docs) {
-                    //Load parent priceList
-                    docs.forEach(function(elem) {
+        console.log("Update emit productFamily update", data);
 
-                        elem.indirectCost = round(elem.directCost * data.data.indirectCostRate / 100, 3);
+        const family = data.family;
 
-                        elem.save(function(err) {
-                            if (err)
-                                console.log("update productFamily error ", err);
-                        });
+        ProductModel.find({ sellFamily: family._id }, function(err, docs) {
+            if (!docs)
+                return;
 
+            async.each(docs, function(elem, aCb) {
+                elem.indirectCost = round(elem.directCost * family.indirectCostRate / 100, 3);
+                elem.editedBy = data.userId;
+                elem.save(aCb);
+            }, function(err) {
+                if (err)
+                    return console.log("update productFamily error ", err);
+            });
+        });
+    });
+
+    F.on('productFamily:coefUpdate', function(data) {
+        if (!data.family || !data.family._id)
+            return;
+
+        if (!data.productFamilyCoef || !data.productFamilyCoef._id)
+            return;
+
+        if (data.isCost)
+            return;
+
+        console.log("Update emit productFamily coefUpdate", data);
+
+        ProductModel.find({ sellFamily: data.family._id }, function(err, docs) {
+            if (!docs)
+                return;
+
+            async.eachLimit(docs, 100, function(elem, aCb) {
+                console.log(elem);
+
+                setTimeout2('product:' + elem._id.toString(), function() {
+                    F.emit('product:updateDirectCost', {
+                        userId: data.userId,
+                        product: {
+                            _id: elem._id.toString()
+                        }
                     });
-                });
+                }, 500);
 
-                break;
+                elem.save(aCb);
 
-               
-            case 'productFamily:coef':
-                if (!data.data._id)
-                    return;
-
-                ProductModel.find({ sellFamily: data.data._id })
-                    //.populate("priceLists")
-                    .exec(function(err, docs) {
-
-                        docs.forEach(function(elem) {
-                            setTimeout2('product:updateDirectCost_' + elem._id.toString(), function() {
-                                F.emit('product:updateDirectCost', {userId:  null, product: {_id : elem._id:.toString()} });
-                            }, 500);
-
-                            //                elem.save(function(err) {
-                            //                    if (err)
-                            //                        console.log("update productFamily coef error ", err);
-                            //                });
-
-                        });
-                    });
-
-                break;
-        }
-    });*/
+            }, function(err) {
+                if (err)
+                    return console.log("update productFamily error ", err);
+            });
+        });
+    });
 });
