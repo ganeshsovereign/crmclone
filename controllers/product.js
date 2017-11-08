@@ -329,18 +329,18 @@ exports.install = function() {
         console.log(req.body);
         if (req.body.checked) // add a product
             StorehouseModel.update({
-                name: req.body.stock.stock,
-                'subStock.name': req.body.stock.subStock
-            }, {
-                $addToSet: {
-                    'subStock.$.productId': req.body.product._id
-                }
-            }, function(err, doc) {
-                if (err)
-                    console.log(err);
-                //console.log(doc);
-                res.send(200, {});
-            });
+            name: req.body.stock.stock,
+            'subStock.name': req.body.stock.subStock
+        }, {
+            $addToSet: {
+                'subStock.$.productId': req.body.product._id
+            }
+        }, function(err, doc) {
+            if (err)
+                console.log(err);
+            //console.log(doc);
+            res.send(200, {});
+        });
         else
             StorehouseModel.update({
                 name: req.body.stock.stock,
@@ -748,7 +748,7 @@ exports.install = function() {
                     result[i].name = docs[i].ref;
                     result[i].id = docs[i]._id;
                 }
-            //console.log(result);
+                //console.log(result);
             return self.json(result);
         });
     }, ['post', 'json', 'authorize']);
@@ -873,7 +873,7 @@ function Product(id, cb) {
         .populate("bundles.id", "info directCost indirectCost taxes weight")
         .populate({
             path: 'info.productType'
-            //    populate: { path: "options" }
+                //    populate: { path: "options" }
         })
         .populate({
             path: 'sellFamily',
@@ -1237,7 +1237,7 @@ Object.prototype = {
         var matchObject = {
             isremoved: {
                 $ne: true
-            },
+            }
         };
         var regExp;
         var filter = query.filter && JSON.parse(query.filter) || {};
@@ -1273,6 +1273,7 @@ Object.prototype = {
             delete filter.groupId;
             delete filter.productId;
         }
+        //console.log(filter);
 
         const Product = MODEL('product').Schema;
 
@@ -1318,7 +1319,7 @@ Object.prototype = {
             }));
         }
 
-        //console.log(optionsObject.$and);
+        //console.log(optionsObject.$and[0]);
 
         accessRollSearcher = function(cb) {
             const accessRoll = MODULE('helper').accessRoll;
@@ -1336,6 +1337,8 @@ Object.prototype = {
                     $in: productsIds
                 }
             });
+
+            //console.log(optionsObject.$and[1]);
 
             if (!toExpand) {
                 aggregationArray = [{
@@ -1837,7 +1840,7 @@ Object.prototype = {
                     }
                 }];
 
-                if (groupId) {
+                if (groupId)
                     matchAggregationArray = [{
                         $match: matchObject
                     }, {
@@ -1857,7 +1860,7 @@ Object.prototype = {
                     }, {
                         $unwind: '$products'
                     }];
-                } else {
+                else
                     matchAggregationArray = [{
                         $match: optionsObject
                     }, {
@@ -1873,10 +1876,11 @@ Object.prototype = {
                     }, {
                         $unwind: '$products'
                     }];
-                }
+
             }
 
             matchAggregationArray = matchAggregationArray.concat(aggregationArray);
+            //console.log(matchAggregationArray);
 
             aggregation = Product.aggregate(matchAggregationArray);
 
@@ -1889,15 +1893,15 @@ Object.prototype = {
                 var mainImage;
                 var oldImage;
 
-                if (err) {
+                if (err)
                     return waterfallCallback(err);
-                }
 
-                if (!res.length) {
+
+                if (!res.length)
                     resultData = {
                         total: 0
                     };
-                } else {
+                else {
                     resultData = res[0];
                     var status = MODEL('product').Status;
 
@@ -2094,7 +2098,7 @@ Object.prototype = {
                                 res.datatable.data[i].directCost = '<span class="text-danger">Inconnu</span>';
 
                             if (res.datatable.data[i].info.isActive == false)
-                                // Add color line 
+                            // Add color line 
                                 res.datatable.data[i].DT_RowClass = "bg-red-haze";
                             // Add Pictures
                             if (row.imageSrc && row.imageSrc._id)
@@ -3153,6 +3157,7 @@ Object.prototype = {
                 product.info.SKU += "-copy";
 
             product = new ProductModel(product);
+            product.groupId = product._id.toString(); //Fix not find product
 
             product.save(function(err, newProduct) {
                 if (err)
@@ -3525,7 +3530,7 @@ Object.prototype = {
                                     'month': obj._id.month,
                                     'qty': obj.qty * product.qty,
                                     'weight': obj.qty * product.qty * product.id.weight
-                                    //'total_ht': obj.total_ht * product.qty
+                                        //'total_ht': obj.total_ht * product.qty
                                 };
                             else {
                                 new_data[product.id.info.SKU].month[obj._id.month].qty += obj.qty * product.qty;
@@ -8010,10 +8015,10 @@ StockInventory.prototype = {
             data.sort[keys] = parseInt(data.sort[keys], 10);
             sort = data.sort;
         } else
-            //sort = { 'createdAt': -1 };
+        //sort = { 'createdAt': -1 };
             sort = {
-                'product.info.SKU': 1
-            };
+            'product.info.SKU': 1
+        };
 
         options = {
             sort: sort,
