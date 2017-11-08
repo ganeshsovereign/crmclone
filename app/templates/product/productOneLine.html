@@ -7,7 +7,7 @@
     <div class="input-icon right">
         <i class="fa fa-warning font-red pull-right" ng-show="!line.product._id" title="@(products:ErrorProductBadRefOrLabel)"></i>
 
-        <product-id ng-if="edit" name="productId" ng-model="line.product.info.SKU" required="true" on-select="addProduct($item, line)" placeholder="@(product:Ref)" bootstrap="true"></product-id>
+        <product-id ng-if="edit" name="productId" for-sales="forSales" ng-model="line.product.info.SKU" required="true" on-select="addProduct($item, line)" placeholder="@(product:Ref)" bootstrap="true"></product-id>
 
         <a ng-hide="edit" ui-sref="product.show.informations({id:line.product._id})">{{ line.product.info.SKU || 'Erreur' }}</a> - <span class="bold">{{ line.product.info.langs[0].name}}</span>
     </div>
