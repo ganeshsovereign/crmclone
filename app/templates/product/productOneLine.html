@@ -19,8 +19,10 @@
         </div>
     </div>
 
-    <textarea ng-if="edit" ng-model="line.description" class="form-control" rows="4" cols="50"></textarea>
-    <pre ng-hide="edit" class="no-padding small">{{ line.description}}</pre>
+    <a href="#" ng-hide="!edit || line.description || openDescription" ng-click="openDescription = 1"><i class="fa fa-plus"></i></a>
+
+    <textarea ng-if="edit && (line.description || openDescription)" ng-model="line.description" class="form-control" rows="4" cols="50"></textarea>
+    <pre ng-hide="edit" class="no-padding small">{{line.description}}</pre>
 </td>
 
 <td class="align-right">
