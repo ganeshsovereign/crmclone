@@ -75,7 +75,6 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                         scope.locations = data.data;
                     });
 
-
                 scope.addProduct = function(data, line) {
                     //    _id: line._id,
                     //    order: line.order,
@@ -91,11 +90,11 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                         units: data.units,
                         dynForm: data.dynForm,
                         weight: data.weight,
-                        //info: data.info
+                        info: data.info
                     };
-                    line.product.info = {
-                        productType: data.info.productType
-                    };
+                    //line.product.info = {
+                    //    productType: data.info.productType
+                    //};
                     line.description = (line.description ? line.description : data.info.langs[0].description);
                     line.isNew = (line._id ? false : true);
                     line.qty = line.qty || 0;
@@ -130,7 +129,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                         }
 
                         //Refresh inventory
-                        console.log(line);
+                        //console.log(line);
                         if (!line.product.info.productType.inventory)
                             return;
 
@@ -376,6 +375,17 @@ MetronicApp.directive('productId', ['$http', '$parse',
                 //console.log(scope);
 
                 scope.$error = false;
+
+                scope.product = {
+                    _id: null,
+                    ref: ""
+                };
+
+                if (scope.model)
+                    scope.product = {
+                        _id: scope.model._id,
+                        ref: scope.model.info.SKU
+                    };
 
                 scope.productAutoComplete = function(val) {
                     return $http.post('/erp/api/product/autocomplete', {
