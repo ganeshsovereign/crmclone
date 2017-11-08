@@ -1021,211 +1021,213 @@ Object.prototype = {
             query.isSell = true;
 
         async.waterfall([
-            function(wCb) {
-                // Get sellFamilyId
-                /* filter on family product */
-                if (!self.body.family)
-                    return wCb(null, null);
+                function(wCb) {
+                    // Get sellFamilyId
+                    /* filter on family product */
+                    if (!self.body.family)
+                        return wCb(null, null);
 
-                const ProductFamilyModel = MODEL('productFamily').Schema;
+                    const ProductFamilyModel = MODEL('productFamily').Schema;
 
-                ProductFamilyModel.findOne({
-                    'langs.name': self.body.family
-                }, wCb);
-            },
-            function(family, wCb) {
-                if (family)
-                    query.sellFamily = family._id;
-                console.log(query);
-                var request = [{
-                    $match: query
-                }, {
-                    $project: {
-                        _id: 1,
-                        ref: '$info.SKU',
-                        dynForm: 1,
-                        taxes: 1,
-                        units: 1,
-                        directCost: 1,
-                        indirectCost: 1,
-                        info: 1,
-                        size: 1,
-                        weight: 1,
-                        suppliers: {
-                            $filter: {
-                                input: "$suppliers",
-                                as: "supplier",
-                                cond: {
-                                    $eq: ["$$supplier.societe", ObjectId(self.body.supplier || self.query.supplier)]
+                    ProductFamilyModel.findOne({
+                        'langs.name': self.body.family
+                    }, wCb);
+                },
+                function(family, wCb) {
+                    if (family)
+                        query.sellFamily = family._id;
+                    console.log(query);
+                    var request = [{
+                        $match: query
+                    }, {
+                        $project: {
+                            _id: 1,
+                            ref: '$info.SKU',
+                            dynForm: 1,
+                            taxes: 1,
+                            units: 1,
+                            directCost: 1,
+                            indirectCost: 1,
+                            info: 1,
+                            size: 1,
+                            weight: 1,
+                            suppliers: {
+                                $filter: {
+                                    input: "$suppliers",
+                                    as: "supplier",
+                                    cond: {
+                                        $eq: ["$$supplier.societe", ObjectId(self.body.supplier || self.query.supplier)]
+                                    }
                                 }
                             }
                         }
-                    }
-                }, {
-                    $unwind: {
-                        path: '$taxes',
-                        preserveNullAndEmptyArrays: true
-                    }
-                }, {
-                    $lookup: {
-                        from: 'taxes',
-                        localField: 'taxes.taxeId',
-                        foreignField: '_id',
-                        as: 'taxes.taxeId'
-                    }
-                }, {
-                    $unwind: {
-                        path: '$taxes.taxeId',
-                        preserveNullAndEmptyArrays: true
-                    }
-                }, {
-                    $sort: {
-                        _id: 1,
-                        'taxes.taxeId.sequence': 1
-                    }
-                }, {
-                    $group: {
-                        _id: "$_id",
-                        ref: {
-                            $first: "$ref"
-                        },
-                        dynForm: {
-                            $first: "$dynForm"
-                        },
-                        taxes: {
-                            $push: '$taxes'
-                        },
-                        units: {
-                            $first: "$units"
-                        },
-                        directCost: {
-                            $first: "$directCost"
-                        },
-                        indirectCost: {
-                            $first: "$indirectCost"
-                        },
-                        info: {
-                            $first: "$info"
-                        },
-                        size: {
-                            $first: "$size"
-                        },
-                        weight: {
-                            $first: "$weight"
-                        },
-                        suppliers: {
-                            $first: "$suppliers"
+                    }, {
+                        $unwind: {
+                            path: '$taxes',
+                            preserveNullAndEmptyArrays: true
                         }
-                    }
-                }, {
-                    $lookup: {
-                        from: 'productTypes',
-                        localField: 'info.productType',
-                        foreignField: '_id',
-                        as: 'info.productType'
-                    }
-                }, {
-                    $unwind: {
-                        path: '$info.productType'
-                    }
-                }, {
-                    $lookup: {
-                        from: 'ProductPrices',
-                        localField: '_id',
-                        foreignField: 'product',
-                        as: 'prices'
-                    }
-                }, {
-                    $unwind: {
-                        path: '$prices',
-                        preserveNullAndEmptyArrays: true
-                    }
-                }, {
-                    $lookup: {
-                        from: 'PriceList',
-                        localField: 'prices.priceLists',
-                        foreignField: '_id',
-                        as: 'priceLists'
-                    }
-                }, {
-                    $project: {
-                        _id: 1,
-                        ref: 1,
-                        dynForm: 1,
-                        taxes: 1,
-                        units: 1,
-                        directCost: 1,
-                        indirectCost: 1,
-                        info: 1,
-                        size: 1,
-                        weight: 1,
-                        suppliers: 1,
-                        prices: {
-                            $arrayElemAt: ['$prices.prices', 0]
-                        },
-                        discount: '$prices.discount',
-                        priceLists: {
-                            $arrayElemAt: ['$priceLists', 0]
+                    }, {
+                        $lookup: {
+                            from: 'taxes',
+                            localField: 'taxes.taxeId',
+                            foreignField: '_id',
+                            as: 'taxes.taxeId'
                         }
-                    }
-                }];
+                    }, {
+                        $unwind: {
+                            path: '$taxes.taxeId',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    }, {
+                        $sort: {
+                            _id: 1,
+                            'taxes.taxeId.sequence': 1
+                        }
+                    }, {
+                        $group: {
+                            _id: "$_id",
+                            ref: {
+                                $first: "$ref"
+                            },
+                            dynForm: {
+                                $first: "$dynForm"
+                            },
+                            taxes: {
+                                $push: '$taxes'
+                            },
+                            units: {
+                                $first: "$units"
+                            },
+                            directCost: {
+                                $first: "$directCost"
+                            },
+                            indirectCost: {
+                                $first: "$indirectCost"
+                            },
+                            info: {
+                                $first: "$info"
+                            },
+                            size: {
+                                $first: "$size"
+                            },
+                            weight: {
+                                $first: "$weight"
+                            },
+                            suppliers: {
+                                $first: "$suppliers"
+                            }
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'productTypes',
+                            localField: 'info.productType',
+                            foreignField: '_id',
+                            as: 'info.productType'
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$info.productType'
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'ProductPrices',
+                            localField: '_id',
+                            foreignField: 'product',
+                            as: 'prices'
+                        }
+                    }, {
+                        $unwind: {
+                            path: '$prices',
+                            preserveNullAndEmptyArrays: true
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'PriceList',
+                            localField: 'prices.priceLists',
+                            foreignField: '_id',
+                            as: 'priceLists'
+                        }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            ref: 1,
+                            dynForm: 1,
+                            taxes: 1,
+                            units: 1,
+                            directCost: 1,
+                            indirectCost: 1,
+                            info: 1,
+                            size: 1,
+                            weight: 1,
+                            suppliers: 1,
+                            prices: {
+                                $arrayElemAt: ['$prices.prices', 0]
+                            },
+                            discount: '$prices.discount',
+                            priceLists: {
+                                $arrayElemAt: ['$priceLists', 0]
+                            }
+                        }
+                    }];
 
-                //if (self.body.priceList)
+                    //if (self.body.priceList)
 
-                if (cost)
+                    if (query.isBuy)
+                        request.push({
+                            $match: {
+                                'priceLists.cost': true
+                            }
+                        });
+                    if (query.isSell)
+                        request.push({
+                            $match: {
+                                $or: [{
+                                    'priceLists.defaultPriceList': true
+                                }, {
+                                    'priceLists._id': ObjectId(self.body.priceList)
+                                }]
+                            }
+                        });
+
+
+                    if (inventoryProductOnly)
+                        request.push({
+                            $match: {
+                                'info.productType.inventory': true
+                            }
+                        });
+
+
+                    request.push(
+                        /*,{
+                                    $group : {
+                                        _id:
+                                    }
+                                }, */
+                        {
+                            $limit: self.body.take || self.query.take || 20
+                        })
                     request.push({
-                        $match: {
-                            'priceLists.cost': true
+                        $sort: {
+                            'info.SKU': 1
                         }
                     });
-                else
-                    request.push({
-                        $match: {
-                            $or: [{
-                                'priceLists.defaultPriceList': true
-                            }, {
-                                'priceLists._id': ObjectId(self.body.priceList)
-                            }]
-                        }
-                    });
 
-                if (inventoryProductOnly)
-                    request.push({
-                        $match: {
-                            'info.productType.inventory': true
-                        }
-                    });
+                    //console.log(request);
 
+                    wCb(null, request);
+                },
+                function(request, wCb) {
+                    ProductModel.aggregate(request, wCb);
+                }
+            ],
+            function(err, docs) {
+                if (err)
+                    return self.throw500("err : /api/product/autocomplete" + err);
 
-                request.push(
-                    /*,{
-                                $group : {
-                                    _id:
-                                }
-                            }, */
-                    {
-                        $limit: self.body.take || self.query.take || 20
-                    })
-                request.push({
-                    $sort: {
-                        'info.SKU': 1
-                    }
-                });
-
-                //console.log(request);
-
-                wCb(null, request);
-            },
-            function(request, wCb) {
-                ProductModel.aggregate(request, wCb);
-            }
-        ], function(err, docs) {
-            if (err)
-                return self.throw500("err : /api/product/autocomplete" + err);
-
-            //console.log(docs);
-            self.json(docs);
-        });
+                //console.log(docs);
+                self.json(docs);
+            });
     },
     getByViewType: function getProductsFilter() {
         var self = this;
