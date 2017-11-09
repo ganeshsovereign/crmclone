@@ -107,9 +107,7 @@ var OrderRowSchema = mongoose.Schema({
             }
         }
     },
-    optional: {
-        type: Schema.Types.Mixed
-    }, // For dynamic forms
+    optional: {}, // For dynamic forms
     //nominalCode: { type: Number, default: 0 },
     channel: {
         type: ObjectId,

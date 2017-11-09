@@ -21,9 +21,9 @@
                 <tr role="row" class="heading">
                     <th style="width: 30px;">#</th>
                     <th style="width: 45%;">@(products:ProductCode)</th>
-                    <th style="width: 60px;">@(Qty)</th>
+                    <th ng-style="{width : edit?'110px':'60px'}">@(Qty)</th>
                     <th style="width: 100px;">@(AmountHT)</th>
-                    <th style="width: 60px;">@(Discount)</th>
+                    <th ng-style="{width : edit?'110px':'60px'}">@(Discount)</th>
                     <th style="width: 100px;">@(Taxes)</th>
                     <th style="width: 100px;">@(TotalHT)</th>
                     <th style="width: 50px;"><span ng-show="tableform.$visible">@(Action)</span></th>
