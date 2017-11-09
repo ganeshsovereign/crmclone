@@ -2188,14 +2188,14 @@ var stockReturnSchema = new Schema({
         },
 
         qty: Number
-        /*
-                _id: false,
-                goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
-                goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
-                product: { type: ObjectId, ref: 'product', default: null },
-                cost: { type: Number, default: 0 },
-                qty: Number,
-                warehouse: { type: ObjectId, ref: 'warehouse', default: null }*/
+            /*
+                    _id: false,
+                    goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
+                    goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
+                    product: { type: ObjectId, ref: 'product', default: null },
+                    cost: { type: Number, default: 0 },
+                    qty: Number,
+                    warehouse: { type: ObjectId, ref: 'warehouse', default: null }*/
     }]
 });
 
@@ -2386,11 +2386,11 @@ function saveOrder(next) {
 
             if (self.warehouse && self.forSales == false) // Refresh shipping address
                 return WarehouseModel.findById(self.warehouse, "_id address", function(err, warehouse) {
-                    if (warehouse && self.Status == "DRAFT")
-                        self.shippingAddress = warehouse.address;
+                if (warehouse && self.Status == "DRAFT")
+                    self.shippingAddress = warehouse.address;
 
-                    return wCb();
-                });
+                return wCb();
+            });
 
             return WarehouseModel.findOne({
                 main: true
@@ -2555,11 +2555,11 @@ function setNameReturns(next) {
         function(wCb) {
             if (self.warehouse) // Refresh shipping address
                 return WarehouseModel.findById(self.warehouse, "_id address", function(err, warehouse) {
-                    if (warehouse && self.Status == "DRAFT")
-                        self.shippingAddress = warehouse.address;
+                if (warehouse && self.Status == "DRAFT")
+                    self.shippingAddress = warehouse.address;
 
-                    return wCb();
-                });
+                return wCb();
+            });
 
             WarehouseModel.findOne({
                 main: true
@@ -2758,7 +2758,7 @@ exports.name = "order";
 
 // Refresh pack prices from directCost
 F.on('order:recalculateStatus', function(data) {
-    var userId = data.userId;
+    const userId = data.userId;
     const OrderRows = MODEL('orderRows').Schema;
     var ObjectId = MODULE('utils').ObjectId;
 
@@ -3066,6 +3066,15 @@ F.on('order:recalculateStatus', function(data) {
                             console.log('Status updated');
                             //Force reload order
                             //Force reload product
+
+                            if (userId)
+                                F.emit('notify:controllerAngular', {
+                                    userId: userId,
+                                    route: 'order',
+                                    _id: el._id.toString(),
+                                    message: "Commande " + el.ref + ' modifie.'
+                                });
+
 
                             setTimeout2('notifyorder:controllerAngular', function() {
                                 F.emit('notify:controllerAngular', {

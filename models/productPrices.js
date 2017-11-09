@@ -519,17 +519,24 @@ F.on('load', function() {
         if (!data.price)
             return;
 
-        if (!data.price.priceLists || !data.price.priceLists.cost)
-            return;
+        const userId = data.userId;
 
         //console.log(data);
         console.log("Update emit productPrice", data.price);
 
         // One element in the parent priceList changed, we must update all priceList that are parent form this priceList and are isGlobalDiscount
-        const price = data.price;
 
         async.waterfall([
             function(cb) {
+                //Load price
+                ProductPricesModel.findById(data.price._id, "_id product priceLists prices")
+                    .populate("priceLists", "cost")
+                    .exec(cb);
+            },
+            function(price, cb) {
+                if (!price)
+                    return cb(null, null, null);
+
                 ProductModel.findOne({ _id: price.product }, "info directCost indirectCost prices pack createdAt sellFamily")
                     .populate("sellFamily")
                     .exec(function(err, product) {
@@ -539,16 +546,31 @@ F.on('load', function() {
                         if (!product || !product.sellFamily)
                             return cb("Product with unknown family " + product);
 
-                        return cb(null, product);
+                        return cb(null, price, product);
                     });
             },
-            function(product, cb) {
+            function(price, product, cb) {
+                if (!price)
+                    return cb();
+
                 if (price.priceLists.cost != true)
                     return cb();
 
                 product.directCost = round(price.prices[0].price, 3);
                 product.indirectCost = round(product.directCost * product.sellFamily.indirectCostRate / 100, 3);
-                product.save(cb);
+                product.save(function(err, doc) {
+                    if (err)
+                        return cb(err);
+
+                    if (userId)
+                        F.emit('notify:controllerAngular', {
+                            userId: userId,
+                            route: 'product',
+                            _id: product._id.toString(),
+                            message: "Produit " + product.info.SKU + ' modifie.'
+                        });
+
+                });
             }
         ], function(err) {
             if (err)

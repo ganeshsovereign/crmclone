@@ -89,7 +89,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
                 $scope.findOne();
                 if (data.data.message)
                     toastr.warning(data.data.message, 'Notification serveur', {
-                        timeOut: 500,
+                        timeOut: 1000,
                         progressBar: true
                     });
             }
@@ -153,7 +153,7 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
             $scope.dict = data;
 
             if (!$rootScope.$stateParams.id)
-                // Is a list
+            // Is a list
                 initDatatable();
         });
 

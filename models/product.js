@@ -31,7 +31,7 @@ var mongoose = require('mongoose'),
     timestamps = require('mongoose-timestamp'),
     moment = require('moment'),
     _ = require("lodash"),
-    Q = require('q');
+    async = require("async");
 
 var Dict = INCLUDE('dict');
 /**
@@ -1312,7 +1312,7 @@ F.on('load', function() {
                                     setTimeout2('productPricesList:' + doc._id.toString(), function() {
                                         F.emit('productPrices:updatePrice', {
                                             userId: data.userId,
-                                            priceList: {
+                                            price: {
                                                 _id: doc._id.toString()
                                             }
                                         });
