@@ -43,7 +43,7 @@ var productTypesSchema = new Schema({
     //attributes: [{ type: Schema.Types.ObjectId, ref: 'productAttributes' }],
     inventory: {
         type: Boolean,
-        default: true
+        default: false
     },
     isService: {
         type: Boolean,
@@ -67,8 +67,8 @@ var productTypesSchema = new Schema({
             type: String,
             default: ""
         }, //Schema name for v0.1
-        forms: String, //Schema for v1.0
-        url: String // Schema for v1.0
+        template: String, //Schema for v1.0
+        controller: String // Schema for v1.0
     },
 
     createdAt: {
