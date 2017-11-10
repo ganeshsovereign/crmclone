@@ -342,7 +342,7 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                     if (line.type == 'SUBTOTAL')
                         return '/templates/product/productSubtotal.html';
 
-                    if (line.product.info.productType.isDynamic)
+                    if (line.product && line.product.info.productType.isDynamic)
                         return line.product.info.productType.dynamic.template;
 
                     // Type is product
