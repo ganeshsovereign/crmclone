@@ -90,6 +90,16 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="profile-usermenu">
+                                    <ul class="nav">
+                                        <li ng-class="{active: $state.includes('settings.entity.show.billing')}">
+                                            <a ui-sref="settings.entity.show.billing({id:object._id})">
+                                                <i class="icon-credit-card"></i> @(orders:Billing) </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-offset-1 col-md-10">
                                     <div class="row list-separated profile-stat">
                                         <div class=" col-md-6 col-sm-6 col-xs-6">
@@ -141,46 +151,25 @@
                             <div class="portlet-body">
                                 <div class="form-body">
                                     <div class="row">
-                                        <div class="col-md-8">
+                                        <div class="col-md-6 col-sm-12">
                                             <div class="portlet light bordered">
-                                                <div class="row">
-                                                    <div class=" col-md-6 col-sm-12">
-                                                        <div class="form-group form-md-line-input has-success">
-                                                            <input type="text" class="form-control" id="Name" ng-model="object.name">
-                                                            <label for="Name">@(Name)<span class="required">
+                                                <div class="form-group form-md-line-input has-success">
+                                                    <input type="text" class="form-control" id="Name" ng-model="object.name">
+                                                    <label for="Name">@(Name)<span class="required">
                                                             * </span></label>
-                                                        </div>
+                                                </div>
 
-                                                        <div class="form-group form-md-line-input">
-                                                            <input type="number" class="form-control" id="Tel-Fixe" ng-model="object.phones.phone">
-                                                            <label for="Tel-Fixe">@(Tel-Fixe)</label>
-                                                        </div>
+                                                <div class="form-group form-md-line-input">
+                                                    <input type="text" class="form-control" id="brand" ng-model="object.companyInfo.brand">
+                                                    <label for="brand">@(companies:SocGroupShort) </label>
+                                                </div>
 
-                                                        <div class="form-group form-md-line-input">
-                                                            <input type="number" class="form-control" id="Tel-Fax" ng-model="object.phones.fax">
-                                                            <label for="Tel-Fax">@(Fax)</label>
-                                                        </div>
-
-                                                        <div class="form-group form-md-line-input">
-                                                            <div class="input-group">
-                                                                <div class="input-group-control">
-                                                                    <input type="text" class="form-control" id="Email" ng-model="object.emails.email">
-                                                                    <label for="Email">@(Email)</label>
-                                                                </div>
-                                                                <span class="input-group-btn btn-right">
-                                                                    <a ng-href="mailto:{{object.emails.email}}"  class="btn yellow" type="button"> <i class="fa fa-envelope"></i></a>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class=" col-md-6 col-sm-12">
-                                                        <address ng-model="object.address" mode="simple"></address>
-                                                    </div>
+                                                <div class="caption">
+                                                    <address ng-model="object.address" mode="simple"></address>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6 col-sm-12">
                                             <div class="portlet light bordered">
                                                 <div class="row">
                                                     <div class="col-md-12 col-sm-12">
@@ -198,6 +187,47 @@
                                                             <input type="text" class="form-control" id="BIC/SWIFT" ng-model="employee.companyInfo.forme_juridique_code">
                                                             <label for="BIC/SWIFT">@(companies:ProfId5FR)</label>
                                                         </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="portlet light bordered">
+                                                <div class="form-group form-md-line-input">
+                                                    <input type="text" class="form-control" id="Phone" ng-model="object.phones.phone">
+                                                    <label for="Tel-Fixe">@(Tel-Fixe)</label>
+                                                </div>
+
+                                                <div class="form-group form-md-line-input">
+                                                    <input type="text" class="form-control" id="PhoneMobile" ng-model="object.phones.mobile">
+                                                    <label for="PhoneMobile">@(companies:PhoneMobile) </label>
+                                                </div>
+
+                                                <div class="form-group form-md-line-input">
+                                                    <input type="text" class="form-control" id="Fax" ng-model="object.phones.fax">
+                                                    <label for="Fax">@(Fax) </label>
+                                                </div>
+
+                                                <div class="form-group form-md-line-input">
+                                                    <div class="input-group">
+                                                        <div class="input-group-control">
+                                                            <input type="text" class="form-control" id="Email" ng-model="object.emails.email">
+                                                            <label for="Email">@(Email)</label>
+                                                        </div>
+                                                        <span class="input-group-btn btn-right">
+                                                                    <a ng-href="mailto:{{object.emails.email}}"  class="btn yellow" type="button"> <i class="fa fa-envelope"></i></a>
+                                                                </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group form-md-line-input">
+                                                    <div class="input-group">
+                                                        <div class="input-group-control">
+                                                            <input type="text" placeholder="@(companies:WithHttp)" class="form-control" id="object.url" ng-model="object.url">
+                                                            <label for="object.url">@(Web) </label>
+                                                        </div>
+                                                        <span class="input-group-btn btn-right">
+                                                                        <a ng-href="http://{{object.url}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-globe"></i></a>
+                                                                    </span>
                                                     </div>
                                                 </div>
                                             </div>

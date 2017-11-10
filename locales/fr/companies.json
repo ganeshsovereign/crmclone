@@ -30,6 +30,10 @@
     "ThirdPartyContacts": "Contacts compte",
     "ThirdPartyContact": "Contact compte",
     "StatusContactValidated": "Etat du contact",
+    "Status": {
+        "IsProspect": "Prospect",
+        "IsSubcontractor": "Sous-traitant"
+    },
     "Company": "Société",
     "CompanyName": "Nom de la société",
     "Companies": "Sociétés",

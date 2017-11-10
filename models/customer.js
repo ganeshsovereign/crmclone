@@ -263,7 +263,6 @@ var customerSchema = new Schema({
         type: Boolean,
         default: false
     },
-
     name: {
         civilite: String, // DICT civilite
         first: {
@@ -278,23 +277,11 @@ var customerSchema = new Schema({
             default: 'DEMO'
         } // Company name
     },
-
-    Status: {
-        type: String,
-        default: 'ST_NEVER'
-    },
-
-    lastOrder: {
-        type: Date
-    },
-
     dateBirth: Date,
-
     imageSrc: {
         type: Schema.Types.ObjectId
-        //    ref: 'Images',
+            //    ref: 'Images',
     },
-
     emails: [{
         _id: false,
         type: {
@@ -334,14 +321,11 @@ var customerSchema = new Schema({
         type: String,
         default: 'UTC'
     },
-
     address: addressSchema,
-
     shippingAddress: [addressSchema], // list of deliveries address
     deliveryAddressId: {
         type: Schema.Types.ObjectId
     }, // id of default address in addresses
-
     url: {
         type: String,
         get: getUrl
@@ -354,7 +338,6 @@ var customerSchema = new Schema({
         type: String,
         default: ''
     },
-
     phones: {
         phone: {
             type: String,
@@ -372,9 +355,7 @@ var customerSchema = new Schema({
             default: ''
         }
     },
-
     //contacts: { type: Array, default: [] },
-
     internalNotes: {
         new: String,
         old: String,
@@ -391,7 +372,6 @@ var customerSchema = new Schema({
         type: String,
         default: ''
     },
-
     salesPurchases: {
         isGeneric: {
             type: Boolean,
@@ -454,7 +434,6 @@ var customerSchema = new Schema({
             default: "58c962f7d3e1802b17fe95a4"
         }, //price_level
         //prospectlevel: { type: String, default: 'PL_NONE' },
-
         cond_reglement: {
             type: String,
             default: 'RECEP'
@@ -471,9 +450,7 @@ var customerSchema = new Schema({
             type: Boolean,
             default: true
         },
-
         rival: [String], //concurrent
-
         customerAccount: {
             type: String,
             set: MODULE('utils').setAccount,
@@ -487,7 +464,13 @@ var customerSchema = new Schema({
             uppercase: true
         } //code_compta_fournisseur
     },
-
+    Status: {
+        type: String,
+        default: 'ST_NEVER'
+    },
+    lastOrder: {
+        type: Date
+    },
     iban: {
         bank: {
             type: String,
@@ -507,12 +490,10 @@ var customerSchema = new Schema({
             trim: true
         } //BIC / SWIFT TODO old swift
     },
-
     entity: [{
         type: String,
         trim: true
     }],
-
     relatedUser: {
         type: ObjectId,
         ref: 'Users',
@@ -522,7 +503,6 @@ var customerSchema = new Schema({
         type: String,
         default: '#4d5a75'
     },
-
     social: {
         FB: {
             type: String,
@@ -537,13 +517,11 @@ var customerSchema = new Schema({
             default: ''
         }
     },
-
     whoCanRW: {
         type: String,
         enum: ['owner', 'group', 'everyOne'],
         default: 'everyOne'
     },
-
     groups: {
         owner: {
             type: ObjectId,
@@ -558,7 +536,6 @@ var customerSchema = new Schema({
             ref: 'Department'
         }]
     },
-
     notes: [{
         _id: false,
         note: String,
@@ -581,7 +558,6 @@ var customerSchema = new Schema({
             default: "note-info"
         }
     }],
-
     files: {
         type: Array,
         default: []
@@ -590,17 +566,14 @@ var customerSchema = new Schema({
         type: Array,
         default: []
     },
-
     createdBy: {
         type: ObjectId,
         ref: 'Users'
     },
-
     editedBy: {
         type: ObjectId,
         ref: 'Users'
     },
-
     companyInfo: {
         brand: {
             type: String,
@@ -637,7 +610,6 @@ var customerSchema = new Schema({
             set: MODULE('utils').setTags
         }
     },
-
     contactInfo: {
         soncas: [String],
         hobbies: [String],
@@ -646,14 +618,12 @@ var customerSchema = new Schema({
             default: "H"
         }
     },
-
     ID: {
         type: Number,
         unique: true
     },
-    oldId: String // only use for migration
-
-}, {
+    oldId: String
+}, { // only use for migration
     collection: 'Customers',
     toObject: {
         virtuals: true
@@ -662,6 +632,294 @@ var customerSchema = new Schema({
         virtuals: true
     }
 });
+
+customerSchema.statics.query = function(options, callback) {
+    const self = this;
+
+    var data = options.query;
+    var quickSearch = data.quickSearch;
+    const limit = options.limit;
+    const skip = options.skip;
+
+    const FilterMapper = MODULE('helper').filterMapper;
+    var filterMapper = new FilterMapper();
+
+    var accessRollSearcher;
+    var contentSearcher;
+    var waterfallTasks;
+    var contentType = data.contentType;
+    var sort = {};
+    var filter = data.filter && JSON.parse(data.filter) || {};
+    var key;
+    var filterObject = {
+        isremoved: {
+            $ne: true
+        },
+        'salesPurchases.isSupplier': (data.forSales == 'false' ? true : false),
+    };
+    var optionsObject = {};
+    var matchObject = {};
+
+    if (quickSearch) {
+        matchObject.$or = [{
+                fullName: {
+                    $regex: new RegExp(quickSearch, 'ig')
+                }
+            },
+            {
+                'salesPurchases.ref': {
+                    $regex: new RegExp("^" + quickSearch, 'ig')
+                }
+            }
+        ];
+        filter = {};
+    }
+
+    if (data.sort) {
+        sort = JSON.parse(data.sort);
+    } else
+        sort = {
+            name: 1
+        };
+    sort._id = 1;
+
+
+    filterObject.$and = [];
+
+    if (filter && typeof filter === 'object') {
+        filterObject.$and.push(filterMapper.mapFilter(filter, {
+            contentType: contentType
+        })); // caseFilter(filter);
+    }
+
+    accessRollSearcher = function(cb) {
+        const accessRoll = MODULE('helper').accessRoll;
+        accessRoll(options.user, self, cb);
+    };
+
+    contentSearcher = function(ids, cb) {
+        var newQueryObj = {};
+        const ObjectId = MODULE('utils').ObjectId;
+
+        newQueryObj.$and = [];
+        newQueryObj.$and.push({
+            _id: {
+                $in: ids
+            }
+        });
+
+        var query = [{
+                $match: filterObject
+            },
+            {
+                $match: matchObject
+            },
+            {
+                $project: {
+                    fullName: {
+                        $concat: ['$name.first', ' ', '$name.last']
+                    },
+                    'salesPurchases.ref': 1,
+                    'salesPurchases.salesPerson': 1,
+                    'salesPurchases.isProspect': 1,
+                    'salesPurchases.isCustomer': 1,
+                    'salesPurchases.isSupplier': 1,
+                    'salesPurchases.isSubcontractor': 1,
+                    address: 1,
+                    companyInfo: 1,
+                    notes: 1,
+                    Status: 1,
+                    entity: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    lastOrder: 1,
+                    type: 1
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Employees',
+                    localField: 'salesPurchases.salesPerson',
+                    foreignField: '_id',
+                    as: 'salesPurchases.salesPerson'
+                },
+            },
+            {
+                $project: {
+                    fullName: 1,
+                    'salesPurchases.ref': 1,
+                    'salesPurchases.salesPerson': {
+                        $arrayElemAt: ['$salesPurchases.salesPerson', 0]
+                    },
+                    'salesPurchases.isProspect': 1,
+                    'salesPurchases.isCustomer': 1,
+                    'salesPurchases.isSupplier': 1,
+                    'salesPurchases.isSubcontractor': 1,
+                    address: 1,
+                    companyInfo: 1,
+                    notes: 1,
+                    Status: 1,
+                    entity: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    lastOrder: 1,
+                    type: 1
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    fullName: 1,
+                    'salesPurchases.ref': 1,
+                    'salesPurchases.salesPerson': {
+                        _id: '$salesPurchases.salesPerson._id',
+                        fullName: {
+                            $concat: ['$salesPurchases.salesPerson.name.first', ' ', '$salesPurchases.salesPerson.name.last']
+                        },
+                    },
+                    'salesPurchases.isProspect': 1,
+                    'salesPurchases.isCustomer': 1,
+                    'salesPurchases.isSupplier': 1,
+                    'salesPurchases.isSubcontractor': 1,
+                    address: 1,
+                    companyInfo: 1,
+                    notes: 1,
+                    Status: 1,
+                    entity: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    lastOrder: 1,
+                    type: 1
+                },
+            },
+            {
+                $match: newQueryObj
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: {
+                        $sum: 1
+                    },
+                    root: {
+                        $push: '$$ROOT'
+                    }
+                }
+            },
+            {
+                $unwind: '$root'
+            },
+            {
+                $project: {
+                    _id: '$root._id',
+                    fullName: '$root.fullName',
+                    'salesPurchases': '$root.salesPurchases',
+                    address: '$root.address',
+                    companyInfo: '$root.companyInfo',
+                    notes: '$root.notes',
+                    Status: '$root.Status',
+                    entity: '$root.entity',
+                    createdAt: '$root.createdAt',
+                    updatedAt: '$root.updatedAt',
+                    type: '$root.type',
+                    lastOrder: '$root.lastOrder',
+                    total: 1,
+                    totalAll: {
+                        count: "$total",
+                    },
+                }
+            },
+            {
+                $group: {
+                    _id: "$Status",
+                    total: {
+                        $sum: 1
+                    },
+                    root: {
+                        $push: '$$ROOT'
+                    }
+                }
+            },
+            {
+                $unwind: '$root'
+            }, {
+                $group: {
+                    _id: null,
+                    Status: {
+                        $addToSet: {
+                            _id: "$_id",
+                            total: "$total"
+                        }
+                    },
+                    root: {
+                        $push: '$root'
+                    }
+                }
+            }, {
+                $unwind: '$root'
+            },
+            {
+                $project: {
+                    _id: '$root._id',
+                    fullName: '$root.fullName',
+                    'salesPurchases': '$root.salesPurchases',
+                    address: '$root.address',
+                    companyInfo: '$root.companyInfo',
+                    notes: '$root.notes',
+                    Status: '$root.Status',
+                    entity: '$root.entity',
+                    createdAt: '$root.createdAt',
+                    updatedAt: '$root.updatedAt',
+                    lastOrder: '$root.lastOrder',
+                    type: '$root.type',
+                    total: "$root.total",
+                    totalAll: {
+                        count: "$root.totalAll.count",
+                        Status: "$Status"
+                    }
+                }
+            },
+            {
+                $project: {
+                    fullName: 1,
+                    salesPurchases: 1,
+                    address: 1,
+                    companyInfo: 1,
+                    notes: 1,
+                    Status: 1,
+                    entity: 1,
+                    createdAt: 1,
+                    updatedAt: 1,
+                    lastOrder: 1,
+                    type: 1,
+                    total: 1,
+                    totalAll: 1
+                }
+            },
+            {
+                $sort: sort
+            }
+        ];
+
+        if (skip)
+            query.push({
+                $skip: skip
+            });
+
+        if (limit)
+            query.push({
+                $limit: limit
+            });
+
+        if (options.exec == false) // No execute aggregate : juste return query
+            return cb(null, query);
+
+        self.aggregate(query, cb);
+    };
+
+    waterfallTasks = [accessRollSearcher, contentSearcher];
+    async.waterfall(waterfallTasks, callback);
+};
 
 customerSchema.path('salesPurchases.customerAccount').validate(function(v) {
     if (!v)
@@ -747,11 +1005,12 @@ customerSchema.pre('save', function(next) {
 
 var statusList = {};
 Dict.dict({
-    dictName: "fk_stcomm",
-    object: true
-}, function(err, docs) {
-    statusList = docs;
-});
+        dictName: "fk_stcomm",
+        object: true
+    },
+    function(err, docs) {
+        statusList = docs;
+    });
 
 var prospectLevelList = {};
 Dict.dict({
@@ -763,13 +1022,14 @@ Dict.dict({
 
 var segmentationList = {};
 Dict.dict({
-    dictName: "fk_segmentation",
-    object: true
-}, function(err, docs) {
-    if (docs) {
-        segmentationList = docs.values;
-    }
-});
+        dictName: "fk_segmentation",
+        object: true
+    },
+    function(err, docs) {
+        if (docs) {
+            segmentationList = docs.values;
+        }
+    });
 
 var tab_attractivity = {
     effectif_id: {
@@ -1017,7 +1277,6 @@ exports.Status = {
         }
     }
 };
-
 
 exports.Schema = mongoose.model('Customers', customerSchema);
 exports.name = "Customers";

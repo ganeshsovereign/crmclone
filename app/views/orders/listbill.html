@@ -113,7 +113,7 @@
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label for="Status">@(companies:Entity)</label>
+                                            <label>@(companies:Entity)</label>
                                             <select ng-show="login.multiEntities" ng-model="search.entity.value[0]" ng-options="s.id as s.name for s in entityList" class="form-control input-sm"></select>
                                         </div>
 
@@ -133,8 +133,8 @@
                                     </div>
 
                                     <div class="col-md-2">
-
                                     </div>
+
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>@(orders:DateInvoice)</label>
@@ -143,7 +143,7 @@
 
                                         <div class="form-group">
                                             <label>@(orders:DatePayment)</label>
-                                            <div report-date-range ng-model="search.dater.value" class="btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
+                                            <div filter-date-range ng-model="search.dater.value"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -195,7 +195,6 @@
                     </div>
                 </div>
             </div>
-
             <table-pagination ng-model="page"></table-pagination>
             <div class="no-footer table-responsive">
                 <table class="table table-striped table-hover table-condensed no-footer">
@@ -237,7 +236,7 @@
                             <th table-sort='total_to_paid' ng-model="sort" name="@(AmountToPaid)"></th>
                             <th>@(Status)</th>
                             <th>@(companies:Entity)</th>
-                            <th>@(DateCreation)</th>
+                            <th table-sort='datec' ng-model='sort' name="@(DateCreation)"></th>
                         </tr>
                     </thead>
                     <tbody>

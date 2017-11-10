@@ -105,6 +105,81 @@ MetronicApp.directive('reportDateRange', ['$rootScope', function($rootScope) {
     };
 }]);
 
+MetronicApp.directive('filterDateRange', ['$rootScope', function($rootScope) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        scope: {
+            data: '=ngModel'
+        },
+        template: '<input type="checkbox" ng-model="checked" ng-click="activate($event)" ng-if="!checked"/><div class="btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range" ng-if="checked"><i class="icon-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block">{{data.start | date : \'d MMM yyyy\'}} - {{data.end | date : \'d MMM yyyy\'}}</span>&nbsp; <i class="fa fa-angle-down"></i></div>',
+        link: function(scope, element, attrs, ngModel) {
+            scope.checked = false; 
+            if (!jQuery().daterangepicker || !element) {
+                return;
+            }
+
+            scope.activate = function($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                scope.data = {
+                    start: moment().startOf('year').toDate(),
+                    end: moment().endOf('year').toDate()
+                };
+                scope.checked = true;
+            };
+            
+            element.daterangepicker({
+                    opens: (Metronic.isRTL() ? 'right' : 'left'),
+                    startDate: moment(scope.data.start),
+                    endDate: moment(scope.data.end),
+                    minDate: '01/01/2000',
+                    //maxDate: '12/31/2014',
+                    //dateLimit: {
+                    //    days: 90
+                    //},
+                    showDropdowns: false,
+                    showWeekNumbers: true,
+                    timePicker: false,
+                    timePickerIncrement: 1,
+                    timePicker12Hour: true,
+                    ranges: {
+                        'Ce mois-ci': [moment().startOf('month'), moment().endOf('month')],
+                        'Mois m-1': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'Mois m-2': [moment().subtract(2, 'month').startOf('month'), moment().subtract(2, 'month').endOf('month')],
+                        'Mois m-3': [moment().subtract(3, 'month').startOf('month'), moment().subtract(3, 'month').endOf('month')],
+                        '3 derniers mois': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'Année en cours': [moment().startOf('year'), moment().endOf('month')],
+                        'Année N-1': [moment().startOf('year').subtract(1, 'year'), moment().endOf('year').subtract(1, 'year')]
+                    },
+                    buttonClasses: ['btn btn-sm'],
+                    applyClass: ' blue',
+                    cancelClass: 'default',
+                    separator: ' a ',
+                    locale: {
+                        format: 'DD/MM/YYYY',
+                        applyLabel: 'Appliquer',
+                        fromLabel: 'Du',
+                        toLabel: 'Au',
+                        customRangeLabel: 'Intervalle',
+                        daysOfWeek: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
+                        monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+                        firstDay: 1
+                    }
+                },
+                function(start, end) {
+                    ngModel.$setViewValue({
+                        start: start.toDate(),
+                        end: end.toDate()
+                    });
+
+                    //console.log(start.toDate());
+                }
+            );
+
+        }
+    };
+}]);
 /*angular.module('mean.system').directive('sdSelect', function() {
  return function(scope, element) {
  //console.log(element.parent());

@@ -25,10 +25,53 @@ International Registered Trademark & Property of ToManage SAS
 "use strict";
 
 MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$modal', '$filter', /*'Upload',*/ '$timeout', 'dialogs', 'superCache', 'Societes',
-    function($scope, $rootScope, $http, $modal, $filter, /*Upload,*/ $timeout, $dialogs, superCache, Societe) {
-
+    function($scope, $rootScope, $http, $modal, $filter, /*Upload,*/ $timeout, $dialogs, superCache, Societes) {
         var user = $rootScope.login;
         $scope.backTo = 'societe.list';
+        $scope.search = {
+            salesPerson: {
+                value: []
+            },
+            Status: {
+                value: []
+            },
+            entity: {
+                value: [],
+            },
+            lastOrder: {
+                value: []
+            },
+            createdAt: {
+                value: []
+            },
+            isProspect: {
+                value: [true, true]
+            },
+            isCustomer: {
+                value: [true, true]
+            },
+            isSupplier: {
+                value: [true, true]
+            },
+            isSubcontractor: {
+                value: [true, true]
+            },
+        };
+
+        $scope.page = {
+            limit: 25,
+            page: 1,
+            total: 0
+        };
+        $scope.sort = {
+            fullName: 1
+        };
+
+        if (typeof superCache.get("SocieteController") !== "undefined") {
+            $scope.page = superCache.get("SocieteController").page;
+            $scope.search = superCache.get("SocieteController").search;
+            $scope.sort = superCache.get("SocieteController").sort;
+        }
 
         // This month
         $scope.date = {
@@ -60,63 +103,6 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
         $scope.editable = $rootScope.login.rights.societe.write;
 
-        $scope.types = [];
-
-        var isSupplier = false;
-
-        console.log($rootScope.$state.current.name);
-        if (($rootScope.$state.current.name == 'societe.list' || $rootScope.$state.current.name == 'societe.list_supplier') && $rootScope.$stateParams.type) {
-            if ($rootScope.$stateParams.type === 'PROSPECT_CUSTOMER' ||
-                $rootScope.$stateParams.type === 'PROSPECT' ||
-                $rootScope.$stateParams.type === 'CUSTOMER') {
-                isSupplier = false;
-
-                $scope.types.push({
-                    name: "Clients/Prospects",
-                    id: "PROSPECT_CUSTOMER"
-                }, {
-                    name: "Clients seulement",
-                    id: "CUSTOMER"
-                }, {
-                    name: "Prospects seulement",
-                    id: "PROSPECT"
-                });
-            }
-
-            if ($rootScope.$stateParams.type === 'SUPPLIER_SUBCONTRACTOR' ||
-                $rootScope.$stateParams.type === 'SUPPLIER' ||
-                $rootScope.$stateParams.type === 'SUBCONTRACTOR') {
-                isSupplier = true;
-                $scope.types.push({
-                    name: "Fournisseurs/Sous-traitants",
-                    id: "SUPPLIER_SUBCONTRACTOR"
-                }, {
-                    name: "Fournisseurs seulement",
-                    id: "SUPPLIER"
-                }, {
-                    name: "Sous-traitants seulement",
-                    id: "SUBCONTRACTOR"
-                });
-            }
-        }
-
-        $scope.changeType = function() {
-            if ($rootScope.$state.current.name == 'societe.list')
-                return $rootScope.$state.go('societe.list', {
-                    type: $scope.type
-                });
-
-            return $rootScope.$state.go('societe.list_supplier', {
-                type: $scope.type
-            });
-        }
-
-        if (typeof superCache.get("SocieteController.type") == "undefined")
-            superCache.put("SocieteController.type", {
-                name: "Client/Prospect",
-                id: "CUSTOMER"
-            });
-
         $scope.importExport = [{
                 id: null,
                 name: "Aucun"
@@ -131,7 +117,6 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             }
         ];
 
-        $scope.type = $rootScope.$stateParams.type;
         $scope.commercial_id = superCache.get("SocieteController.commercial_id");
         $scope.status_id = superCache.get("SocieteController.status_id");
 
@@ -142,6 +127,21 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         $scope.clearCache = function() {
             superCache.removeAll();
         };
+
+        $scope.forSales = $rootScope.$stateParams.forSales == 0 ? 0 : 1;
+
+        $scope.resetFilter = function() {
+            superCache.removeAll();
+            $rootScope.$state.reload();
+        }
+
+        $scope.checkedAll = function() {
+            if (!this.checkAll)
+                this.grid = {};
+            for (var i = 0; i < $scope.customers.length; i++)
+                if (this.checkAll)
+                    this.grid[$scope.customers[i]._id] = true;
+        }
 
         // Init
         $scope.$on('$viewContentLoaded', function() {
@@ -155,7 +155,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
                 return $rootScope.$state.go('societe.show.company');
 
-            var dict = ["fk_typent", "fk_effectif", "fk_forme_juridique", "fk_payment_term", "fk_paiement", "fk_civilite", "fk_user_status"];
+            var dict = ["fk_stcomm", "fk_typent", "fk_effectif", "fk_forme_juridique", "fk_payment_term", "fk_paiement", "fk_civilite", "fk_user_status"];
 
             $http({
                 method: 'GET',
@@ -227,40 +227,58 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             });
 
             if (!$rootScope.$stateParams.id) {
-                // Is a list
-                initDatatable();
+                $scope.find();
                 initCharts();
             } else
                 $scope.findOne();
         });
 
-        /*$scope.loadDatatable = function(query) {
-         initDatatable();
-         initCharts();
-         };*/
+        $scope.find = function() {
+            $scope.grid = {};
+            $scope.checkAll = false;
 
-        /*$scope.segmentationSelect = function (val, max) {
-         return $http.post('api/societe/segmentation/autocomplete', {
-         take: max,
-         skip: 0,
-         page: 1,
-         pageSize: 5,
-         filter: {logic: 'and', filters: [{value: val}]
-         }
-         }).then(function (res) {
-         //console.log(res.data);
-         return res.data;
-         });
-         };*/
-
-        $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.societe[idx]))
-                return 'Non défini';
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.societe[idx]
+            superCache.put("SocieteController", {
+                sort: $scope.sort,
+                search: $scope.search,
+                page: $scope.page
             });
 
-            return ($scope.societe[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
+            Metronic.blockUI({
+                target: '.waiting',
+                animate: false,
+                boxed: true,
+                overlayColor: 'gray'
+            });
+
+            var query = {
+                quickSearch: $scope.quickSearch,
+                filter: $scope.search,
+                viewType: 'list',
+                contentType: 'societe',
+                limit: $scope.page.limit,
+                page: $scope.page.page,
+                sort: $scope.sort
+            };
+
+            if ($scope.forSales)
+                Societes.company.query(query, function(data, status) {
+                    console.log("societes", data);
+                    $scope.page.total = data.total;
+                    $scope.customers = data.data;
+                    $scope.totalAll = data.totalAll;
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
+            else
+                Societes.companySupplier.query(query, function(data, status) {
+                    $scope.page.total = data.total;
+                    $scope.customers = data.data;
+                    $scope.totalAll = data.totalAll;
+                    $timeout(function() {
+                        Metronic.unblockUI('.waiting');
+                    }, 0);
+                });
         };
 
         $scope.remove = function(societe) {
@@ -331,8 +349,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         };
 
         $scope.findOne = function() {
-
-            Societe.get({
+            Societes.company.get({
                 Id: $rootScope.$stateParams.id
             }, function(societe) {
                 $scope.societe = societe;
@@ -343,7 +360,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     else
                         return $rootScope.$state.go('societe.show.contact');
 
-                //console.log(societe);
+                    //console.log(societe);
 
                 $http({
                     method: 'GET',
@@ -596,9 +613,6 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     commercial_id: $scope.commercial_id
                 }
             }).success(function(data, status) {
-                console.log(data);
-                //$scope.chartData = data.data;
-
                 var series = [];
                 for (var i = 0; i < data.commercial.length; i++) {
                     series.push({

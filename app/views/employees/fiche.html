@@ -35,11 +35,14 @@
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
+
+                <!-- /!\ -->
                 <li>
-                    <a href="#" class="font-red" ng-show="login.rights.product.delete" confirmed-click="remove(product)" ng-confirm-click="Supprimer le produit ?" title="Supprimer le produit">
+                    <a href="#" class="font-red" ng-show="login.rights.employee.delete" confirmed-click="remove(employee)" ng-confirm-click="@(users:ConfirmDeleteEmployee)" title="@(ConfirmDeleteEmployee) ?">
                         <i class="fa fa-trash-o font-red"></i> @(Delete)
                     </a>
                 </li>
+
             </ul>
         </div>
     </div>

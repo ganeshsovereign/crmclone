@@ -43,6 +43,12 @@ exports.rights = [{
         "perm": {
             "entity": false
         }
+    },
+    {
+        "desc": "Supprimer un ou des collaborateurs",
+        "perm": {
+            "delete": false
+        }
     }
 ];
 

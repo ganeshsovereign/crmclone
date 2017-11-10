@@ -33,7 +33,7 @@ MetronicApp.controller('SettingEntityController', ['$rootScope', '$scope', '$htt
         $scope.editable = false;
         $scope.backTo = 'settings.entity.list';
         $scope.object = {
-            address: {}
+            address: []
         };
         $scope.search = {};
         $scope.page = {
