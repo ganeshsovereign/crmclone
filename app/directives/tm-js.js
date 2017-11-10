@@ -278,7 +278,7 @@ MetronicApp.directive('save', function() {
     return {
         restrict: 'E',
         scope: {
-            ngDisabled: '=',
+            ngDisabled: '=?',
             mode: '=?',
             ngCreate: '&',
             ngUpdate: '&',
@@ -298,10 +298,10 @@ MetronicApp.directive('address', ['$http', 'Societes',
         return {
             restrict: 'E',
             scope: {
-                addressModel: '=ngModel',
-                editable: '=ngDisabled',
+                addressModel: '=?ngModel',
+                editable: '=?ngDisabled',
                 mode: '=?',
-                supplier: '='
+                supplier: '=?'
             },
             templateUrl: function(el, attr) {
                 if (attr.mode) {
