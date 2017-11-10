@@ -2222,9 +2222,6 @@ Object.prototype = {
                         Status: "PROCESSING",
                         _id: {
                             $in: list
-                        },
-                        total_ttc: {
-                            $ne: 0
                         }
                     }
                 },
@@ -2415,7 +2412,6 @@ Object.prototype = {
                         console.log(err);
 
                     self.json({});
-
                 });
 
             });

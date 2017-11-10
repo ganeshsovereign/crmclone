@@ -342,6 +342,10 @@ Payment.prototype = {
         //console.log("update");
         var self = this;
 
+        self.body.lines = _.filter(self.body.lines, function(elem){
+            return elem.isDeleted != true;
+        });
+
         self.body.total_amount = _.sum(self.body.lines, function(elem) {
             return elem.amount;
         });
