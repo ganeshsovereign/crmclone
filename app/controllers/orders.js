@@ -375,7 +375,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
 
         $scope.updateAddress = function(data) {
-            console.log(data);
+            //console.log(data);
 
             $scope.object.address = data.address;
 

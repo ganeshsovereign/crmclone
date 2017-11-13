@@ -114,7 +114,7 @@ MetronicApp.directive('filterDateRange', ['$rootScope', function($rootScope) {
         },
         template: '<input type="checkbox" ng-model="checked" ng-click="activate($event)" ng-if="!checked"/><div class="btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range" ng-if="checked"><i class="icon-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block">{{data.start | date : \'d MMM yyyy\'}} - {{data.end | date : \'d MMM yyyy\'}}</span>&nbsp; <i class="fa fa-angle-down"></i></div>',
         link: function(scope, element, attrs, ngModel) {
-            scope.checked = false; 
+            scope.checked = false;
             if (!jQuery().daterangepicker || !element) {
                 return;
             }
@@ -128,7 +128,7 @@ MetronicApp.directive('filterDateRange', ['$rootScope', function($rootScope) {
                 };
                 scope.checked = true;
             };
-            
+
             element.daterangepicker({
                     opens: (Metronic.isRTL() ? 'right' : 'left'),
                     startDate: moment(scope.data.start),
@@ -875,7 +875,7 @@ MetronicApp.directive('crmId', ['$http',
                     if (scope.onSelect)
                         scope.onSelect(item);
 
-                    console.log(item);
+                    //console.log(item);
                     ctrl.$setViewValue(item);
 
                 }

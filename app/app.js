@@ -993,8 +993,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/orders/detail.html",
             data: {
                 pageTitle: 'Bon de retour'
-            },
-            controller: "OrdersController"
+            }
         })
         // Stock Correction
         .state('product.stockcorrection', {
