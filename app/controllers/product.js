@@ -119,24 +119,8 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         $scope.validRef = isValide;
     };
 
-    $scope.types = [{
-            name: "A la vente",
-            id: "SELL"
-        },
-        {
-            name: "A l'achat",
-            id: "BUY"
-        },
-        {
-            name: "Tous",
-            id: "ALL"
-        }
-    ];
-
-    $scope.type = "SELL";
-
     $scope.$on('$viewContentLoaded', function() {
-        var dict = ["fk_tva", "fk_product_status", "fk_units"];
+        var dict = ["fk_tva", "fk_units"];
 
         $rootScope.settings.layout.pageBodySolid = false;
 
@@ -152,9 +136,9 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         }).success(function(data, status) {
             $scope.dict = data;
 
-            if (!$rootScope.$stateParams.id)
+            //if (!$rootScope.$stateParams.id)
             // Is a list
-                initDatatable();
+            //  initDatatable();
         });
 
         $http({
@@ -191,6 +175,14 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         }).success(function(data, status) {
             //console.log(data);
             $scope.taxes = data.data;
+        });
+
+        $http({
+            method: 'GET',
+            url: '/erp/api/status/Product'
+        }).success(function(data, status) {
+            console.log(data);
+            $scope.$dict.Status = data.data;
         });
 
         $http({
@@ -1086,12 +1078,6 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
 
         $scope.dict = {};
         $scope.search = {
-            ref: {
-                value: ""
-            },
-            name: {
-                value: ""
-            },
             Status: {
                 value: []
             },
@@ -1138,21 +1124,6 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
                     this.grid[$scope.products[i]._id] = true;
         }
 
-
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-
-            $scope.opened = true;
-        };
-
-        $scope.doOpenFilter = function(key) {
-            if (!key)
-                return;
-
-            $scope.openFilter[key] = !$scope.openFilter[key];
-        };
-
         $scope.$dict = {};
 
         $scope.$on('websocket', function(e, type, data) {
@@ -1176,17 +1147,16 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             // set default layout mode
             $rootScope.settings.layout.pageBodySolid = false;
 
-            /*var dict = [];
             $http({
                 method: 'GET',
                 url: '/erp/api/dict',
                 params: {
-                    dictName: dict
+                    modelName: 'product'
                 }
             }).success(function(data, status) {
-                $scope.dict = data;
+                $scope.$dict.Status = data.product;
                 //console.log(data);
-            });*/
+            });
 
             $http({
                 method: 'GET',
@@ -1202,18 +1172,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
 
             });
 
-
         });
-
-        $scope.showStatus = function(idx, dict) {
-            if (!($scope.dict[dict] && $scope.order[idx]))
-                return;
-            var selected = $filter('filter')($scope.dict[dict].values, {
-                id: $scope.order[idx]
-            });
-            return ($scope.order[idx] && selected && selected.length) ? selected[0].label : 'Non défini';
-        };
-
 
         $scope.find = function() {
 
@@ -1240,10 +1199,10 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
                 sort: this.sort
             };
 
-            //console.log(query);
+            //console.log("scope", $scope);
 
             Products.query(query, function(data, status) {
-                console.log("products", data);
+                //console.log("products", data);
                 $scope.page.total = data.total;
                 $scope.products = data.data;
                 $scope.totalAll = data.totalAll;

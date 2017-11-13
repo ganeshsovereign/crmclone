@@ -58,7 +58,6 @@ var options = {
     }
 };
 
-
 const baseSchema = new Schema({
     forSales: {
         type: Boolean,
@@ -719,69 +718,6 @@ var quotationSupplierSchema = new Schema({
     }]
 });
 
-// Gets listing
-baseSchema.statics.query = function(options, callback) {
-    var self = this;
-
-    // options.search {String}
-    // options.category {String}
-    // options.page {String or Number}
-    // options.max {String or Number}
-    // options.id {String}
-
-    options.page = U.parseInt(options.page) - 1;
-    options.max = U.parseInt(options.max, 20);
-    if (options.id && typeof(options.id) === 'string')
-        options.id = options.id.split(',');
-    if (options.page < 0)
-        options.page = 0;
-    var take = U.parseInt(options.max);
-    var skip = U.parseInt(options.page * options.max);
-
-    var query = options.query;
-    if (!query.isremoved)
-        query.isremoved = {
-            $ne: true
-        };
-
-    //if (options.search)
-    //    builder.in('search', options.search.keywords(true, true));
-    if (options.id) {
-        if (typeof options.id === 'object')
-            options.id = {
-                '$in': options.id
-            };
-        query._id = options.id;
-    }
-
-    var sort = "ref";
-
-    if (options.sort)
-        sort = options.sort;
-
-    //console.log(query);
-
-    this.find(query)
-        .select(options.fields)
-        .limit(take)
-        .skip(skip)
-        //.populate('category', "_id path url linker name")
-        .sort(sort)
-        //.lean()
-        .exec(function(err, doc) {
-            //console.log(doc);
-            var data = {};
-            data.count = doc.length;
-            data.items = doc;
-            data.limit = options.max;
-            data.pages = Math.ceil(data.count / options.max);
-
-            if (!data.pages)
-                data.pages = 1;
-            data.page = options.page + 1;
-            callback(null, data);
-        });
-};
 
 // Read Order
 /*baseSchema.statics.getById = function(id, callback) {
@@ -1557,7 +1493,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
     accessRollSearcher = function(cb) {
         const accessRoll = MODULE('helper').accessRoll;
 
-        accessRoll(options.user, Order, cb);
+        accessRoll(options.user, self, cb);
     };
 
     contentSearcher = function(ids, cb) {

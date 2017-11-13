@@ -1220,7 +1220,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                     $scope.page.total = data.total;
                     $scope.orders = data.data;
                     $scope.totalAll = data.totalAll;
-
+                    //console.log("query", data);
                     $timeout(function() {
                         Metronic.unblockUI('.waiting');
                     }, 0);
@@ -1230,6 +1230,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                     $scope.page.total = data.total;
                     $scope.orders = data.data;
                     $scope.totalAll = data.totalAll;
+                    console.log("query", data);
 
                     $timeout(function() {
                         Metronic.unblockUI('.waiting');
@@ -1434,9 +1435,10 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
 
                 $scope.search.warehouse.value[0] = data.data[0]._id;
                 //console.log(data);
+                $scope.find();
             });
 
-            $scope.find();
+            //$scope.find();
         });
 
         // Init ng-include
@@ -1542,12 +1544,13 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                 sort: this.sort
             };
 
+            console.log("query", query);
             if (module === 'delivery')
                 Orders.delivery.query(query, function(data, status) {
                     $scope.page.total = data.total;
                     $scope.deliveries = data.data;
                     $scope.totalAll = data.totalAll;
-                    console.log("delivery", $scope.deliveries);
+                    console.log("delivery", data);
                     $timeout(function() {
                         Metronic.unblockUI('.waiting');
                     }, 0);
@@ -1557,7 +1560,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                     $scope.page.total = data.total;
                     $scope.deliveries = data.data;
                     $scope.totalAll = data.totalAll;
-                    console.log("deliverysupplier", $scope.deliveries);
+                    console.log("deliverysupplier", data);
                     $timeout(function() {
                         Metronic.unblockUI('.waiting');
                     }, 0);
@@ -1827,7 +1830,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 contentType: 'invoice',
                 limit: $scope.page.limit,
                 page: $scope.page.page,
-                sort: this.sort
+                sort: $scope.sort
             };
 
             if ($scope.forSales)
@@ -1835,8 +1838,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                     $scope.page.total = data.total;
                     $scope.orders = data.data;
                     $scope.totalAll = data.totalAll;
-                    console.log('data', $scope.orders);
-
                     $timeout(function() {
                         Metronic.unblockUI('.waiting');
                     }, 0);

@@ -29,6 +29,12 @@
                         <a href="#" ng-click="refreshAllProducts()"><i class="fa fa-refresh"></i> 
                                         Force @(Refresh) </a>
                     </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a ng-show="login.rights.product.read" ng-href="/erp/api/product/export?contentType=product&type=xls&filter={{search}}">
+                            <i class="fa fa-file-excel-o"></i> @(Export XLS)</a>
+                    </li>
+                    <li class="divider"></li>
                     <!--<li>
                         <a href="#" ng-show="login.rights.product.create" data-ng-click="updatePrices()">
                             <i class="fa fa-mail-forward"></i> @(products:UpdatePrice)
@@ -62,7 +68,7 @@
         </div>
         <div class="portlet-body">
             <div class="row hidden-print">
-                <div class="col-md-12">
+                <div class="col-md-9">
                     <div class="portlet light bg-inverse">
                         <div class="portlet-body">
                             <form ng-submit="find()">
@@ -92,7 +98,7 @@
 
                                         <div class="form-group">
                                             <label>@(Status)</label>
-                                            <select ng-model="search.Status.value[0]" id="Status" ng-options="s.id as s.name for s in types" class="form-control input-sm"></select>
+                                            <select ng-model="search.Status.value[0]" id="Status" ng-options="s.id as s.label for s in $dict.Status.values" class="form-control input-sm"></select>
                                         </div>
                                     </div>
 
@@ -192,43 +198,31 @@
                     </div>
 
                 </div>
-                <!--<div class="col-md-3">
-                    <div class="portlet mt-element-ribbon light portlet-fit bordered">
-                        <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase">
-                            <div class="ribbon-sub ribbon-bookmark"></div>
-                            <i class="fa fa-pause"></i>
+                <div class="col-md-3">
+                    <div class="portlet mt-element-ribbon light portlet-fit bordered ">
+                        <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase ">
+                            <div class="ribbon-sub ribbon-bookmark "></div>
+                            <i class="fa fa-pause "></i>
                         </div>
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class=" icon-control-pause font-yellow-crusta"></i>
-                                <span class="caption-subject font-yellow-crusta bold uppercase">Totaux</span>
+                        <div class="portlet-title ">
+                            <div class="caption ">
+                                <i class=" icon-control-pause font-yellow-crusta "></i>
+                                <span class="caption-subject font-yellow-crusta bold uppercase ">Totaux</span>
                             </div>
                         </div>
-                        <div class="portlet-body">
-                            <div class="row static-info align-reverse">
-                                <div class="col-md-5 name">@(Qty)</div>
-                                <div class="col-md-7 value ng-binding">{{totalAll.count}}</div>
-                            </div>
-                            <div class="row static-info align-reverse">
-                                <div class="col-md-5 name">@(TotalHT)</div>
-                                <div class="col-md-7 value ng-binding">{{totalAll.total_ht | currency}}</div>
-                            </div>
-                            <div class="row static-info align-reverse">
-                                <div class="col-md-5 name bold">@(TotalTTC)</div>
-                                <div class="col-md-7 value bold ng-binding">{{totalAll.total_ttc | currency}}</div>
+                        <div class="portlet-body ">
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-6 name ">@(Qty)</div>
+                                <div class="col-md-6 value">{{totalAll.count}}</div>
                             </div>
                             <hr>
-                            <div class="row static-info align-reverse">
-                                <div class="col-md-5 name">@(AmountPaid)</div>
-                                <div class="col-md-7 value ng-binding">{{totalAll.total_paid | currency}}</div>
-                            </div>
-                            <div class="row static-info align-reverse">
-                                <div class="col-md-5 name bold">@(AmountToPaid)</div>
-                                <div class="col-md-7 value bold ng-binding">{{totalAll.total_ttc - totalAll.total_paid | currency}}</div>
+                            <div class="row static-info align-reverse" ng-repeat="status in totalAll.Status">
+                                <div class="col-md-6 name "><span class="label label-sm" ng-class="status.css">{{status.name}}</span></div>
+                                <div class="col-md-6 value">{{status.total}}</div>
                             </div>
                         </div>
                     </div>
-                </div>-->
+                </div>
             </div>
 
             <table-pagination ng-model="page"></table-pagination>
@@ -286,7 +280,7 @@
                                 <progressbar animate="false" value="line.rating.total *100" type="info"><b>{{line.rating.total * 100}}%</b></progressbar>
                             </td>
                             <td ui-sref="product.show({id:line._id})">
-                                <span class="label label-sm {{line._status.css}}"> {{line._status.name}}</span>
+                                <span class="label label-sm {{line.Status.css}}"> {{line.Status.name}}</span>
                             </td>
                             <td ui-sref="product.show({id:line._id})">
                                 {{line.ProductFamily.langs[_language].name}}

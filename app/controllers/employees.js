@@ -166,21 +166,8 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     };
 
     $scope.remove = function(employees) {
-        if (!employees && grid) {
-            return $http({
-                method: 'DELETE',
-                url: '/erp/api/employees',
-                params: {
-                    id: grid.getSelectedRows()
-                }
-            }).success(function(data, status) {
-                if (status === 200)
-                    $scope.find();
-            });
-        }
-
         employees.$remove(function() {
-            $rootScope.$state.go("employees.list");
+            $rootScope.$state.go("employee.list");
         });
     };
 

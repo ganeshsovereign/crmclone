@@ -25,9 +25,7 @@ exports.name = 'stock';
 exports.version = '1.00';
 exports.enabled = true;
 exports.description = "Gestion du stock";
-exports.rights = {
-
-};
+exports.rights = {};
 exports.menus = {
     "menu:stock": {
         "position": 60,

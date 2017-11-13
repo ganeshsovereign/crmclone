@@ -201,6 +201,11 @@ Object.prototype = {
                 },
                 {
                     $sort: sort
+                },
+                {
+                    $skip: skip
+                }, {
+                    $limit: limit
                 }
             ], cb);
         };

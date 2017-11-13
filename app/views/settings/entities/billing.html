@@ -1,0 +1,243 @@
+<div ng-repeat="error in societe.errors" class="alert alert-warning">
+    <strong>Erreur !</strong> {{error}} </div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-credit-card"></i>
+                        <span class="caption-subject dark bold uppercase"> @(orders:Billing)</span>
+                        <span class="caption-helper"> - @(companies:CardCompany)</span>
+                    </div>
+                    <save ng-disabled="!editable" mode="societe._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="portlet light portlet-form bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-cog"></i>@(orders:AccountParameters)
+                                        </div>
+
+                                    </div>
+                                    <div class="portlet-body">
+                                        <div class="form-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+
+                                                    <div ng-if="societe.salesPurchases.isCustomer" class="form-group form-md-line-input">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.customerAccount" maxlength="10">
+                                                        <label for="form_control_1">@(compta:CustomerAccountancyCodeShort) </label>
+                                                    </div>
+
+                                                    <div ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor" class="form-group form-md-line-input" maxlength="10">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.supplierAccount">
+                                                        <label for="form_control_1">@(compta:SupplierAccountancyCodeShort) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input">
+                                                        <input type="text" class="form-control" id="idprof6" ng-model="societe.companyInfo.idprof6">
+                                                        <label for="idprof6">@(companies:VATIntra) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input"></div>
+
+                                                    <!--<div class="form-group form-md-line-input">
+                                                            <input type="text" class="form-control" id="form_control_1" ng-model="societe.salesPurchases.cptBilling">
+                                                            <label for="form_control_1">@(commercial:ThirdPartyBilling) </label>
+                                                        </div>-->
+
+                                                    <div class="md-checkbox">
+                                                        <div class="md-checkbox">
+                                                            <input type="checkbox" id="checkbox7" class="md-check" ng-model="societe.salesPurchases.VATIsUsed">
+                                                            <label for="checkbox7">
+                                                                <span class="inc"></span>
+                                                                <span class="check"></span>
+                                                                <span class="box"></span> @(companies:VATIsUsed) </label>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-md-6">
+
+                                                    <div class="form-group form-md-line-input">
+                                                        <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.cond_reglement" ng-options="s.id as s.label for s in dict.fk_payment_term.values"></select>
+                                                        <label for="form_control_1">@(orders:PaymentConditions)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input">
+                                                        <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.mode_reglement" ng-options="s.id as s.label for s in dict.fk_paiement.values"></select>
+                                                        <label for="form_control_1">@(orders:PaymentMode)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input">
+                                                        <select class="table-group-action-input form-control" ng-model="societe.salesPurchases.bank_reglement" ng-options="s._id as s.ref for s in banks"></select>
+                                                        <label for="form_control_1">@(orders:PaymentBank)</label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input"></div>
+
+                                                    <div class="form-group form-md-line-input">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.bank">
+                                                        <label for="form_control_1">@(bank:BankName) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.id">
+                                                        <label for="form_control_1">@(bank:IBAN) </label>
+                                                    </div>
+
+                                                    <div class="form-group form-md-line-input">
+                                                        <input type="text" class="form-control" id="form_control_1" ng-model="societe.iban.bic">
+                                                        <label for="form_control_1">@(bank:BIC/SWIFT) </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--<div class="col-md-4">
+                                    <div class="portlet light portlet-form bordered">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-line-chart"></i> @(Summary)
+                                            </div>
+                                            <div class="tools">
+                                                <a class="reload" href="javascript:;" data-original-title="" title="@(ReLoad)">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body">
+                                            <div class="row static-info">
+    
+                                                <div class="form-group form-md-line-input form-md-floating-label">
+                                                    <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                    <label for="form_control_1">@(orders:LastBill) :</label>
+                                                </div>
+    
+                                                <div class="form-group form-md-line-input form-md-floating-label">
+                                                    <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                    <label for="form_control_1">@(orders:LastPayment) :</label>
+                                                </div>
+    
+                                                <div class="form-group form-md-line-input form-md-floating-label">
+                                                    <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                    <label for="form_control_1">@(orders:TotalInvoicedThisMonth) :</label>
+                                                </div>
+    
+                                                <div class="form-group form-md-line-input form-md-floating-label">
+                                                    <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                    <label for="form_control_1">@(orders:TotalInvoicedThisYear) :</label>
+                                                </div>
+    
+                                                <div class="form-group form-md-line-input form-md-floating-label">
+                                                    <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                    <label for="form_control_1">@(orders:RemainderToTake) :</label>
+                                                </div>
+    
+                                                <div class="form-group form-md-line-input form-md-floating-label">
+                                                    <div class="form-control form-control-static"> {{societe.idprof5}} </div>
+                                                    <label for="form_control_1">@(orders:PaymentPeriod) :</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class='col-md-12'>
+                        <!--INVOICE TABLE-->
+                        <tabset class="tabbable-line tabbable-full-width">
+                            <tab heading="@(orders:BillsCustomer)" ng-if="societe.salesPurchases.isCustomer">
+                                <div ng-include="'/views/orders/listbill.html'" ng-controller="BillListController" onload="ngIncludeInit({'supplier': societe._id, module: 'bill'}, 10)"></div>
+                            </tab>
+
+                            <tab heading="@(orders:BillsSupplier)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor">
+                                <div ng-include="'/views/orders/listbill.html'" ng-controller="BillListController" onload="ngIncludeInit({'supplier': societe._id, forSales: 0}, 10)"></div>
+                            </tab>
+                            <tab heading="@(orders:InvoicePayment)" ng-if="societe.salesPurchases.isSupplier || societe.salesPurchases.isSubcontractor || societe.salesPurchases.isCustomer">
+                                <div class="portlet-body" ng-controller="PaymentController" ng-init="ngIncludeInit({'supplier': societe._id}, 10)">
+                                    <div class="table-toolbar">
+                                        <div class="row">
+                                            <div class="col-md-6" ng-show="!global.user.rights.bill.read">
+                                                <div class="btn-group pull-left">
+                                                    <button class="btn blue" disabled data-ng-click="paymentBills()">@(Add) <i class="fa fa-plus"></i></button>
+                                                    <button title="@(Refresh)" class="btn" data-ng-click="commercialList = [];commercial_id = ''status_id = null;filterOptionsSociete.filterText = '';clearCache();find();"><i class="fa fa-refresh"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dataTables_wrapper no-footer">
+                                        <table class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                                <tr role="row " class="heading ">
+                                                    <th>@(Date)</th>
+                                                    <th class="text-right ">@(compta:Piece)</th>
+                                                    <th class="text-right ">@(compta:JournalNum)</th>
+                                                    <th class="text-right ">@(compta:Account)</th>
+                                                    <th>@(Ref)</th>
+                                                    <th>@(Libelle)</th>
+                                                    <th class="text-right ">@(compta:Debit)</th>
+                                                    <th class="text-right ">@(compta:Credit)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="entry in entries| orderBy: 'datetime' ">
+                                                    <td>
+                                                        {{entry.datetime| date:"dd/MM/yyyy "}}
+                                                    </td>
+                                                    <td class="text-right ">
+                                                        <div ng-hide="entry.meta.invoice ">{{entry.seq}}</div>
+                                                        <a ng-show="entry.meta.invoice " ui-sref="bill.show({id:entry.meta.invoice}) "><i class="fa fa-money "></i> {{entry.seq}}</a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="text-right ">{{entry.book}}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="text-right ">{{entry.accounts}}</div>
+                                                    </td>
+                                                    <td>
+                                                        <span ng-if="entry.meta.product._id " ui-sref="product.show({id:entry.meta.product._id}) ">{{entry.meta.product.info.SKU}}</span>
+                                                        <a ng-if="entry.meta.supplier._id " ui-sref="societe.show({id:entry.meta.supplier._id}) "><i class="fa fa-institution "></i> {{entry.meta.supplier.fullName}}</a>
+                                                        <div ng-if="entry.meta.tax._id ">{{entry.meta.tax.code}}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div>{{entry.memo}}</div>
+                                                        <div ng-repeat="line in entry.meta.bills ">
+                                                            <a ui-sref="bill.show({id:line.invoice._id}) ">{{line.invoice.ref}}</a> : {{line.amount| currency}}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div ng-if="entry.credit " class="text-right ">{{entry.credit| currency}}</div>
+                                                        <!-- inverse debit/credit car compta-->
+                                                    </td>
+                                                    <td>
+                                                        <div ng-if="entry.debit " class="text-right ">{{entry.debit| currency}}</div>
+                                                        <!-- inverse debit/credit car compta-->
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </tab>
+                        </tabset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -51,10 +51,12 @@ exports.install = function() {
             return;
 
         /* Load rights */
+        let right = {};
+        right[data.name] = data.rights;
         rights.push({
             name: data.name,
             desc: data.description,
-            rights: data.rights
+            rights: right
         });
 
         /* Load Menu : 3 levels MAX */

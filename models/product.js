@@ -574,7 +574,6 @@ var productSchema = new Schema({
             set: setRound3
         }
     }
-
 }, {
     toObject: {
         virtuals: true
@@ -583,6 +582,800 @@ var productSchema = new Schema({
         virtuals: true
     }
 });
+
+productSchema.statics.query = function(options, callback) {
+    const self = this;
+    var data = options.query;
+    var quickSearch = data.quickSearch;
+    const limit = options.limit;
+    const skip = options.skip;
+
+    const FilterMapper = MODULE('helper').filterMapper;
+    var filterMapper = new FilterMapper();
+
+    var accessRollSearcher;
+    var contentSearcher;
+    var waterfallTasks;
+    var contentType = data.contentType;
+    var sort = {};
+    var filter = data.filter && JSON.parse(data.filter) || {};
+    var key;
+
+    var optionsObject = {
+        $and: []
+    };
+    var matchObject = {
+        isremoved: {
+            $ne: true
+        }
+    };
+
+    var mid = options.query.contentType === 'salesProduct' ? 65 : 58;
+    var regExp;
+    var doNotShowImage = options.query.doNotGetImage || false;
+
+    var channelLinksMatch = {};
+    var channelObjectIds;
+    var action;
+    var toExpand;
+    var groupId;
+
+    if (filter) {
+        toExpand = filter.toExpand;
+        groupId = filter.groupId;
+
+        delete filter.toExpand;
+        delete filter.groupId;
+        delete filter.productId;
+    }
+    //console.log(filter);
+
+    if (quickSearch) {
+        matchObject.$or = [
+            { 'info.SKU': { $regex: new RegExp(quickSearch, 'ig') } },
+            { 'info.langs.name': { $regex: new RegExp(quickSearch, 'ig') } }
+        ];
+        filter = {};
+    }
+
+    if (data.sort) {
+        sort = JSON.parse(data.sort);
+        sort['data._id'] = 1;
+    } else
+        sort = {
+            'data.info.SKU': 1,
+            'data._id': 1
+        };
+
+    if (filter && filter.channelLinks) {
+        channelObjectIds = filter.channelLinks.value.objectID();
+        action = filter.channelLinks.type;
+
+        if (action === 'unpublish' || action === 'unlink') {
+            channelLinksMatch[filter.channelLinks.key] = {
+                $in: channelObjectIds
+            };
+        } else if (action === 'publish') {
+            channelLinksMatch['channelLinks.channel'] = {
+                $nin: channelObjectIds
+            };
+        }
+
+        delete filter.channelLinks;
+    }
+    // optionsObject.$and.push({job: null});
+
+    if (filter && typeof filter === 'object') {
+        optionsObject.$and.push(filterMapper.mapFilter(filter, {
+            contentType: contentType
+        }));
+    }
+
+    //console.log(optionsObject.$and[0]);
+
+    accessRollSearcher = function(cb) {
+        const accessRoll = MODULE('helper').accessRoll;
+        accessRoll(options.user, self, cb);
+    };
+
+    contentSearcher = function(productsIds, waterfallCallback) {
+        var aggregation;
+        var matchAggregationArray = [];
+        var aggregationArray;
+
+        optionsObject.$and.push({
+            _id: {
+                $in: productsIds
+            }
+        });
+
+        //console.log(optionsObject.$and[1]);
+        if (!toExpand) {
+            aggregationArray = [{
+                    $lookup: {
+                        from: 'productTypes',
+                        localField: 'products.info.productType',
+                        foreignField: '_id',
+                        as: 'ProductTypes'
+                    }
+                }, {
+                    $unwind: {
+                        path: '$ProductTypes',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $lookup: {
+                        from: 'productFamily',
+                        localField: 'products.sellFamily',
+                        foreignField: '_id',
+                        as: 'ProductFamily'
+                    }
+                }, {
+                    $unwind: {
+                        path: '$ProductFamily',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $unwind: {
+                        path: '$products.info.categories',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $lookup: {
+                        from: 'ProductCategories',
+                        localField: 'products.info.categories',
+                        foreignField: '_id',
+                        as: 'productCategories'
+                    }
+                }, {
+                    $unwind: {
+                        path: '$productCategories',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $lookup: {
+                        from: 'Images',
+                        localField: 'products.imageSrc',
+                        foreignField: '_id',
+                        as: 'products.image'
+                    }
+                }, {
+                    $unwind: {
+                        path: '$products.image',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $group: {
+                        _id: '$products._id',
+                        productCategories: {
+                            $push: {
+                                _id: '$productCategories._id',
+                                name: '$productCategories.fullName'
+                            }
+                        },
+
+                        variantsCount: {
+                            $first: '$variantsCount'
+                        },
+                        ProductTypes: {
+                            $first: '$ProductTypes'
+                        },
+                        ProductFamily: {
+                            $first: '$ProductFamily'
+                        },
+                        products: {
+                            $first: '$products'
+                        },
+                        image: {
+                            $first: '$image'
+                        },
+                        count: {
+                            $first: '$count'
+                        }
+                    }
+                }, {
+                    $unwind: {
+                        path: '$products.variants',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $lookup: {
+                        from: 'ProductOptionsValues',
+                        localField: 'products.variants',
+                        foreignField: '_id',
+                        as: 'variants'
+                    }
+                }, {
+                    $unwind: {
+                        path: '$variants',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $lookup: {
+                        from: 'ProductOptions',
+                        localField: 'variants.optionId',
+                        foreignField: '_id',
+                        as: 'variants.optionId'
+                    }
+                }, {
+                    $unwind: {
+                        path: '$variants.optionId',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }, {
+                    $group: {
+                        _id: '$products._id',
+                        variants: {
+                            $push: '$variants'
+                        },
+                        count: {
+                            $first: '$count'
+                        },
+                        ProductTypes: {
+                            $first: '$ProductTypes'
+                        },
+                        ProductFamily: {
+                            $first: '$ProductFamily'
+                        },
+                        productCategories: {
+                            $first: '$productCategories'
+                        },
+                        products: {
+                            $first: '$products'
+                        },
+                        variantsCount: {
+                            $first: '$variantsCount'
+                        }
+                    }
+                }, {
+                    $project: {
+                        count: 1,
+                        data: {
+                            _id: '$products._id',
+                            info: '$products.info',
+                            Status: '$products.Status',
+                            bundles: '$products.bundles',
+                            inventory: '$products.inventory',
+                            name: '$products.name',
+                            imageSrc: '$products.image.imageSrc',
+                            isBundle: '$products.isBundle',
+                            ProductTypes: '$ProductTypes',
+                            //ProductTypesName: '$ProductTypes.name',
+                            ProductCategories: '$productCategories',
+                            variants: '$variants',
+                            createdBy: '$products.createdBy',
+                            groupId: '$products.groupId',
+                            prices: '$products.prices',
+                            weight: '$products.weight',
+                            rating: '$products.rating',
+                            updatedAt: '$products.updatedAt',
+                            directCost: '$products.directCost',
+                            ProductFamily: '$ProductFamily',
+                            variantsCount: {
+                                $filter: {
+                                    input: '$variantsCount',
+                                    as: 'variant',
+                                    cond: {
+                                        $eq: ['$products.groupId', '$$variant.groupId']
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }, {
+                    $project: {
+                        name: '$data.name',
+                        sku: '$data.info.SKU',
+                        count: 1,
+                        data: 1
+                    }
+                }, {
+                    $sort: sort
+                }, {
+                    $project: {
+                        count: 1,
+                        data: {
+                            _id: '$data._id',
+                            info: '$data.info',
+                            Status: '$data.Status',
+                            bundles: '$data.bundles',
+                            inventory: '$data.inventory',
+                            name: '$data.name',
+                            imageSrc: '$data.imageSrc',
+                            isBundle: '$data.isBundle',
+                            ProductTypes: '$data.ProductTypes',
+                            //ProductTypesName: '$data.ProductTypesName',
+                            ProductCategories: '$data.ProductCategories',
+                            variants: '$data.variants',
+                            createdBy: '$data.createdBy',
+                            images: '$data.images',
+                            groupId: '$data.groupId',
+                            prices: '$data.prices',
+                            weight: '$data.weight',
+                            rating: '$data.rating',
+                            updatedAt: '$data.updatedAt',
+                            directCost: '$data.directCost',
+                            ProductFamily: '$data.ProductFamily',
+                            variantsCount: {
+                                $arrayElemAt: ['$data.variantsCount', 0]
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        data: 1,
+                        Status: "$data.Status",
+                        count: 1,
+                        totalAll: {
+                            count: "$count",
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$Status",
+                        total: {
+                            $sum: 1
+                        },
+                        root: {
+                            $push: '$$ROOT'
+                        }
+                    }
+                },
+                {
+                    $unwind: '$root'
+                },
+                {
+                    $group: {
+                        _id: null,
+                        Status: {
+                            $addToSet: {
+                                _id: "$_id",
+                                total: "$total"
+                            }
+                        },
+                        root: {
+                            $push: '$root'
+                        }
+                    }
+                },
+                {
+                    $unwind: '$root'
+                },
+                {
+                    $project: {
+                        _id: '$root._id',
+                        data: '$root.data',
+                        Status: '$root.Status',
+                        total: '$root.count',
+                        totalAll: {
+                            count: "$root.totalAll.count",
+                            Status: "$Status"
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        data: 1,
+                        Status: 1,
+                        total: 1,
+                        totalAll: 1
+                    }
+                },
+                {
+                    $skip: skip
+                }, {
+                    $limit: limit
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: {
+                            $first: '$total'
+                        },
+                        data: {
+                            $push: '$data'
+                        },
+                        totalAll: {
+                            $first: '$totalAll'
+                        },
+                    }
+                }
+            ];
+            matchAggregationArray = [{
+                    $match: matchObject
+                },
+                {
+                    $match: optionsObject
+                },
+                {
+                    $group: {
+                        _id: '$groupId',
+                        variantsCount: {
+                            $sum: 1
+                        },
+                        products: {
+                            $first: '$$ROOT'
+                        }
+                    }
+                }, {
+                    $group: {
+                        _id: null,
+                        variantsCount: {
+                            $addToSet: {
+                                count: '$variantsCount',
+                                groupId: '$_id'
+                            }
+                        },
+
+                        count: {
+                            $sum: 1
+                        },
+                        products: {
+                            $push: '$products'
+                        }
+                    }
+                }, {
+                    $unwind: '$products'
+                }
+            ];
+        } else {
+            aggregationArray = [{
+                $lookup: {
+                    from: 'productTypes',
+                    localField: 'products.info.productType',
+                    foreignField: '_id',
+                    as: 'ProductTypes'
+                }
+            }, {
+                $unwind: {
+                    path: '$ProductTypes',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $unwind: {
+                    path: '$products.info.categories',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $lookup: {
+                    from: 'ProductCategories',
+                    localField: 'products.info.categories',
+                    foreignField: '_id',
+                    as: 'productCategories'
+                }
+            }, {
+                $unwind: {
+                    path: '$productCategories',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $lookup: {
+                    from: 'Images',
+                    localField: 'products.imageSrc',
+                    foreignField: '_id',
+                    as: 'products.image'
+                }
+            }, {
+                $unwind: {
+                    path: '$products.image',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $group: {
+                    _id: '$products._id',
+                    productCategories: {
+                        $push: {
+                            _id: '$productCategories._id',
+                            name: '$productCategories.fullName'
+                        }
+                    },
+
+                    variantsCount: {
+                        $first: '$variantsCount'
+                    },
+                    ProductTypes: {
+                        $first: '$ProductTypes'
+                    },
+                    products: {
+                        $first: '$products'
+                    },
+                    count: {
+                        $first: '$count'
+                    }
+                }
+            }, {
+                $unwind: {
+                    path: '$products.variants',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $lookup: {
+                    from: 'ProductOptionsValues',
+                    localField: 'products.variants',
+                    foreignField: '_id',
+                    as: 'variants'
+                }
+            }, {
+                $unwind: {
+                    path: '$variants',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $lookup: {
+                    from: 'ProductOptions',
+                    localField: 'variants.optionId',
+                    foreignField: '_id',
+                    as: 'variants.optionId'
+                }
+            }, {
+                $unwind: {
+                    path: '$variants.optionId',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $lookup: {
+                    from: 'channelLinks',
+                    localField: '_id',
+                    foreignField: 'product',
+                    as: 'channelLinks'
+                }
+            }, {
+                $unwind: {
+                    path: '$channelLinks',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $match: channelLinksMatch
+            }, {
+                $lookup: {
+                    from: 'integrations',
+                    localField: 'channelLinks.channel',
+                    foreignField: '_id',
+                    as: 'channelLinks'
+                }
+            }, {
+                $unwind: {
+                    path: '$channelLinks',
+                    preserveNullAndEmptyArrays: true
+                }
+            }, {
+                $group: {
+                    _id: '$products._id',
+                    variants: {
+                        $push: '$variants'
+                    },
+                    count: {
+                        $first: '$count'
+                    },
+                    ProductTypes: {
+                        $first: '$ProductTypes'
+                    },
+                    productCategories: {
+                        $first: '$productCategories'
+                    },
+                    products: {
+                        $first: '$products'
+                    },
+                    variantsCount: {
+                        $first: '$variantsCount'
+                    },
+                    channelLinks: {
+                        $addToSet: {
+                            name: '$channelLinks.channelName',
+                            type: '$channelLinks.type'
+                        }
+                    }
+                }
+            }, {
+                $project: {
+                    count: 1,
+                    data: {
+                        _id: '$products._id',
+                        info: '$products.info',
+                        Status: '$products.Status',
+                        bundles: '$products.bundles',
+                        inventory: '$products.inventory',
+                        name: '$products.name',
+                        imageSrc: '$products.image.imageSrc',
+                        isBundle: '$products.isBundle',
+                        ProductTypes: "$ProductTypes",
+                        //ProductTypesId: '$ProductTypes._id',
+                        //ProductTypesName: '$ProductTypes.name',
+                        ProductCategories: '$productCategories',
+                        variants: '$variants',
+                        createdBy: '$products.createdBy',
+                        channelLinks: '$channelLinks',
+                        groupId: '$products.groupId',
+                        variantsCount: {
+                            $filter: {
+                                input: '$variantsCount',
+                                as: 'variant',
+                                cond: {
+                                    $eq: ['$products.groupId', '$$variant.groupId']
+                                }
+                            }
+                        }
+                    }
+                }
+            }, {
+                $project: {
+                    name: '$data.name',
+                    sku: '$data.info.SKU',
+                    count: 1,
+                    data: 1
+                }
+            }, {
+                $sort: sort
+            }, {
+                $project: {
+                    count: 1,
+                    data: {
+                        _id: '$data._id',
+                        info: '$data.info',
+                        Status: '$data.Status',
+                        bundles: '$data.bundles',
+                        inventory: '$data.inventory',
+                        name: '$data.name',
+                        imageSrc: '$data.imageSrc',
+                        isBundle: '$data.isBundle',
+                        ProductTypes: '$data.ProductTypes',
+                        //ProductTypesName: '$data.ProductTypesName',
+                        ProductCategories: '$data.ProductCategories',
+                        variants: '$data.variants',
+                        createdBy: '$data.createdBy',
+                        groupId: '$data.groupId',
+                        channelLinks: '$data.channelLinks',
+                        variantsCount: {
+                            $arrayElemAt: ['$data.variantsCount', 0]
+                        },
+                    }
+                }
+            }, {
+                $skip: skip
+            }, {
+                $limit: limit
+            }, {
+                $group: {
+                    _id: '$count',
+                    total: {
+                        $first: '$count'
+                    },
+                    data: {
+                        $push: '$data'
+                    }
+                }
+            }, {
+                $project: {
+                    _id: 0,
+                    total: 1,
+                    data: 1
+                }
+            }];
+
+            if (groupId)
+                matchAggregationArray = [{
+                    $match: matchObject
+                }, {
+                    $match: {
+                        groupId: groupId
+                    }
+                }, {
+                    $group: {
+                        _id: null,
+                        count: {
+                            $sum: 1
+                        },
+                        products: {
+                            $push: '$$ROOT'
+                        }
+                    }
+                }, {
+                    $unwind: '$products'
+                }];
+            else
+                matchAggregationArray = [{
+                    $match: optionsObject
+                }, {
+                    $group: {
+                        _id: null,
+                        count: {
+                            $sum: 1
+                        },
+                        products: {
+                            $push: '$$ROOT'
+                        }
+                    }
+                }, {
+                    $unwind: '$products'
+                }];
+
+        }
+
+        matchAggregationArray = matchAggregationArray.concat(aggregationArray);
+        //console.log(matchAggregationArray);
+
+        if (options.exec == false) // No execute aggregate : juste return query
+            return waterfallCallback(null, matchAggregationArray);
+
+        aggregation = self.aggregate(matchAggregationArray);
+
+        aggregation.options = {
+            //allowDiskUse: true
+        };
+
+        aggregation.exec(function(err, res) {
+            var mainImage;
+            var oldImage;
+            var resultData;
+            const ProductStatus = exports.Status;
+
+            if (err)
+                return waterfallCallback(err);
+
+            if (!res.length)
+                resultData = {
+                    data: [],
+                    total: 0
+                };
+            else {
+                resultData = res[0];
+                const status = exports.Status;
+
+                resultData.data = MODULE('utils').Status(resultData.data, ProductStatus);
+
+                /*resultData.data = _.map(resultData.data, function(line) {
+
+                    line._status = (status.values[line.Status] ? {
+                        css: status.values[line.Status].cssClass,
+                        name: i18n.t(status.lang + ":" + status.values[line.Status].label)
+                    } : {
+                        name: line.Status
+                    });
+
+                    return line;
+                });*/
+
+                for (var i = 0; i < resultData.data.length; i++) {
+                    /*console.log(doNotShowImage);
+    
+                             if (doNotShowImage) {
+                             console.log(resultData.data[i]);
+                             delete resultData.data[i].imageSrc;
+                             return;
+                             }*/
+
+                    oldImage = resultData.data[i].imageSrc;
+
+                    mainImage = _.find(resultData.data[i].images, function(item) {
+                        return item.main === true;
+                    });
+
+                    resultData.data[i].imageSrc = mainImage && mainImage.imageSrc || oldImage;
+                }
+            }
+
+            waterfallCallback(null, resultData);
+        });
+
+        /* if (skip)
+             query.push({
+                 $skip: skip
+             });
+
+         if (limit)
+             query.push({
+                 $limit: limit
+             });*/
+    };
+
+
+
+    waterfallTasks = [accessRollSearcher, contentSearcher];
+    async.waterfall(waterfallTasks, callback);
+}
 
 productSchema.plugin(timestamps);
 
@@ -627,155 +1420,6 @@ productSchema.statics.previous = function(options, callback) {
         })
         .limit(1)
         .exec(callback);
-};
-
-
-// Gets listing
-productSchema.statics.query = function(options, callback) {
-    var self = this;
-
-    // options.search {String}
-    // options.category {String}
-    // options.page {String or Number}
-    // options.max {String or Number}
-    // options.id {String}
-
-    options.page = U.parseInt(options.page) - 1;
-    options.max = U.parseInt(options.max, 20);
-    if (options.id && typeof(options.id) === 'string')
-        options.id = options.id.split(',');
-    if (options.page < 0)
-        options.page = 0;
-    var take = U.parseInt(options.max);
-    var skip = U.parseInt(options.page * options.max);
-
-    var query = {
-        enabled: true,
-        Status: {
-            $in: ['SELL', 'SELLBUY']
-        },
-        'prices.pu_ht': {
-            $gt: 0
-        }
-    };
-
-    if (options.category)
-        query.category = options.category;
-    if (options.manufacturer)
-        query.manufacturer = options.manufacturer;
-    //if (options.search)
-    //    builder.in('search', options.search.keywords(true, true));
-    if (options.id) {
-        if (typeof options.id === 'object')
-            options.id = {
-                '$in': options.id
-            };
-        query._id = options.id;
-    }
-    if (options.skip)
-        builder.where('id', '<>', options.skip);
-    if (options.homepage)
-        query.istop = true;
-
-    var sort = '';
-
-    //console.log(query);
-
-    if (options.homepage)
-        sort = 'updatedAt';
-
-    this.find(query)
-        .limit(take)
-        .skip(skip)
-        .populate('category', "_id path url linker name")
-        .sort(sort)
-        .lean()
-        .exec(function(err, doc) {
-            //console.log(doc);
-            var data = {};
-            data.count = doc.length;
-            data.items = doc;
-            data.limit = options.max;
-            data.pages = Math.ceil(data.count / options.max);
-
-            var linker_detail = F.sitemap('detail', true);
-            var linker_category = F.sitemap('category', true);
-
-            data.items.forEach(function(item) {
-
-                if (linker_detail) {
-                    item.url = item.linker;
-                    item.linker = linker_detail.url.format(item.url, item._id);
-                }
-                if (linker_category)
-                    item.linker_category = linker_category.url + item.category.linker + '/' + item.category._id + '/';
-
-                // Load PHOTO ?
-
-            });
-            if (!data.pages)
-                data.pages = 1;
-            data.page = options.page + 1;
-            callback(null, data);
-        });
-
-    return;
-
-    var nosql = DB(error);
-    nosql.listing('products', 'Product').make(function(builder) {
-
-        builder.where('enabled', true);
-        builder.in('Status', ['SELL', 'SELLBUY']);
-        builder.where('prices.pu_ht', '>', 0);
-        builder.where('type', 'PRODUCT');
-        if (options.category)
-            builder.like('linker_category', '^' + options.category);
-        if (options.manufacturer)
-            builder.where('manufacturer', options.manufacturer);
-        if (options.search)
-            builder.in('search', options.search.keywords(true, true));
-        if (options.id)
-            builder.in('id', options.id);
-        if (options.skip)
-            builder.where('id', '<>', options.skip);
-        if (options.homepage)
-            builder.where('istop', true);
-        builder.limit(take);
-        builder.skip(skip);
-        if (options.homepage)
-            builder.sort('updatedAt', true);
-        else
-            builder.sort('_id', false);
-    });
-    nosql.exec(function(err, response) {
-        //console.log(response.products.items);
-        var data = {};
-        data.count = response.products.count;
-        data.items = response.products.items;
-        data.limit = options.max;
-        data.pages = Math.ceil(data.count / options.max);
-
-        var linker_detail = F.sitemap('detail', true);
-        var linker_category = F.sitemap('category', true);
-
-        data.items.forEach(function(item) {
-            if (linker_detail) {
-                item.url = item.linker;
-                item.linker = linker_detail.url.format(item.linker, item._id);
-            }
-            if (linker_category)
-                item.linker_category = linker_category.url.format(item.linker_category);
-            if (moment(item.createdAt).isAfter(moment().subtract(15, 'days'))) // IsNEW
-                item.isnew = true;
-
-            // Load PHOTO ?
-
-        });
-        if (!data.pages)
-            data.pages = 1;
-        data.page = options.page + 1;
-        callback(data);
-    });
 };
 
 /*productSchema.methods.getPrice = function(qty, price_level) {

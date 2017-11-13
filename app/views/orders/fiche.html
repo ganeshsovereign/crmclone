@@ -128,11 +128,13 @@
                     </a>
                 </li>
                 <hr>
+                <!-- /!\
                 <li>
                     <a ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
                         <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
                     </a>
                 </li>
+                -->
                 <li>
                     <a ng-if="object.Status != 'DRAFT' && object.contacts.length" ng-href="#" ng-click="sendEmail('@(offers:Offer)','offer',object.address.contacts)">
                         <i class="fa  fa-envelope"></i> @(mails:SendMail)

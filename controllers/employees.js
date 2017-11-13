@@ -1108,7 +1108,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions
-            //select: ""
+                //select: ""
         };
 
         //console.log(options);
@@ -2321,7 +2321,7 @@ Object.prototype = {
         }
 
         if (!body.isEmployee) {
-            event.emit('updateSequence', Model, 'sequence', 0, 0, body.workflow, body.workflow, true, false, function(sequence) {
+            F.emit('updateSequence', Model, 'sequence', 0, 0, body.workflow, body.workflow, true, false, function(sequence) {
                 body.sequence = sequence;
 
                 create(body, function(err, employee) {
@@ -2608,8 +2608,8 @@ Object.prototype = {
 
         if (data.workflow && isUpdateSequence) {
             if (data.sequence === -1) {
-                event.emit('updateSequence', Model, 'sequence', startSequence, data.sequence, startWorkflow, startWorkflow, false, true, function() {
-                    event.emit('updateSequence', Model, 'sequence', startSequence, data.sequence, data.workflow, data.workflow, true, false, function(sequence) {
+                F.emit('updateSequence', Model, 'sequence', startSequence, data.sequence, startWorkflow, startWorkflow, false, true, function() {
+                    F.emit('updateSequence', Model, 'sequence', startSequence, data.sequence, data.workflow, data.workflow, true, false, function(sequence) {
                         data.sequence = sequence;
 
                         if (data.workflow === startWorkflow)
@@ -2631,7 +2631,7 @@ Object.prototype = {
                     });
                 });
             } else {
-                event.emit('updateSequence', Model, 'sequence', startSequence, data.sequence, startWorkflow, data.workflow, false, false, function(sequence) {
+                F.emit('updateSequence', Model, 'sequence', startSequence, data.sequence, startWorkflow, data.workflow, false, false, function(sequence) {
                     delete data.sequenceStart;
                     delete data.workflowStart;
 
@@ -2647,20 +2647,20 @@ Object.prototype = {
 
 
                         if (data.relatedUser)
-                            // todo update user profile
+                        // todo update user profile
                             UsersModel.findByIdAndUpdate(data.relatedUser, {
-                                $set: {
-                                    relatedEmployee: _id
-                                }
-                            }, function(error) {
-                                if (error)
-                                    return next(error);
+                            $set: {
+                                relatedEmployee: _id
+                            }
+                        }, function(error) {
+                            if (error)
+                                return next(error);
 
 
-                                self.json({
-                                    success: 'Employees updated'
-                                });
+                            self.json({
+                                success: 'Employees updated'
                             });
+                        });
                         else
                             self.json({
                                 success: 'Employees updated'
@@ -2711,7 +2711,7 @@ Object.prototype = {
                     F.emit('employee:recalculate', {
                         userId: self.user._id.toString()
                     });
-                //    event.emit('recalculate', self, null, next);
+                //    F.emit('recalculate', self, null, next);
 
 
                 // todo refactor it
@@ -2785,23 +2785,25 @@ Object.prototype = {
         var self = this;
         var _id = id;
         var Model = MODEL('Employees').Schema;
+        var UserModel = MODEL('Users').Schema;
         var TransferModel = MODEL('transfers').Schema;
 
-        EmployeeService.findByIdAndRemove(_id, function(err, result) {
-            var employee;
-
+        Model.findByIdAndUpdate(_id, {
+            isremoved: true
+        }, {
+            new: true
+        }, function(err, result) {
             if (err)
                 return self.throw500(err);
-
+            console.log("res", result);
 
             if (result && !result.isEmployee)
-                event.emit('updateSequence', Model, 'sequence', result.sequence, 0, result.workflow, result.workflow, false, true);
+                F.emit('updateSequence', Model, 'sequence', result.sequence, 0, result.workflow, result.workflow, false, true);
 
+            var employee = result;
 
-            employee = result;
-
-            event.emit('recalculate', self, null, next);
-            event.emit('recollectVacationDash');
+            F.emit('recalculate', self, null);
+            F.emit('recollectVacationDash');
 
             TransferModel.remove({
                 employee: ObjectId(_id)
@@ -2815,7 +2817,7 @@ Object.prototype = {
                 if (employee && employee.relatedUser) {
                     _id = employee.relatedUser;
 
-                    UserService.findByIdAndRemove(_id, function(err) {
+                    UserModel.findByIdAndUpdate(_id, function(err) {
                         if (err) {
                             return self.throw500(err);
                         }
@@ -2847,11 +2849,11 @@ Object.prototype = {
                 }
 
                 if (result && !result.isEmployee) {
-                    event.emit('updateSequence', Model, 'sequence', result.sequence, 0, result.workflow, result.workflow, false, true);
+                    F.emit('updateSequence', Model, 'sequence', result.sequence, 0, result.workflow, result.workflow, false, true);
                 }
 
-                event.emit('recalculate', self, null, next);
-                event.emit('recollectVacationDash');
+                F.emit('recalculate', self, null, next);
+                F.emit('recollectVacationDash');
 
                 TransferModel.remove({
                     employee: ObjectId(id)
@@ -3289,7 +3291,7 @@ JobPosition.prototype = {
     }
 }
 
-//event.on('recalculate', recalculate);
+//F.on('recalculate', recalculate);
 
 function recalculate() {
     getEmployeesInDateRange(set);

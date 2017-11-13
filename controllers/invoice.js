@@ -35,7 +35,6 @@ exports.install = function() {
 
     var object = new Object();
     F.route('/erp/api/bill', object.getByViewType, ['authorize']);
-    F.route('/erp/api/bill/dt', object.readDT, ['post', 'authorize']);
     F.route('/erp/api/bill/stats', object.stats, ['authorize']);
     F.route('/erp/api/bill/pdf/', object.pdfAll, ['post', 'json', 'authorize', 60000]);
     F.route('/erp/api/bill/{id}', object.show, ['authorize']);
@@ -1613,144 +1612,6 @@ Object.prototype = {
 
             });
     },
-    readDT: function() {
-        var self = this;
-        const BillModel = MODEL('invoice').Schema;
-        const SocieteModel = MODEL('Customers').Schema;
-        const EmployeeModel = MODEL('Employees').Schema;
-
-
-        var query = JSON.parse(self.req.body.query);
-
-        var Status;
-
-        //console.log(self.query);
-
-        var conditions = {
-            isremoved: {
-                $ne: true
-            },
-            entity: self.query.entity,
-            forSales: true
-        };
-
-        if (self.query.forSales == "false")
-            conditions.forSales = false;
-
-        if (!query.search.value) {
-            if (self.query.status_id) {
-                switch (self.query.status_id) {
-                    case 'LIST':
-                        conditions.Status = {
-                            $ne: "PAID"
-                        };
-                        break;
-                    case 'VALIDATE':
-                        Status = self.query.status_id;
-                        conditions.Status = 'NOT_PAID';
-                        conditions.dater = {
-                            $gt: moment().subtract(10, 'days').toDate()
-                        };
-                        break;
-                    case 'NOT_PAID':
-                        Status = self.query.status_id;
-                        conditions.Status = 'NOT_PAID';
-                        conditions.dater = {
-                            $lte: moment().subtract(10, 'days').toDate()
-                        };
-                        break;
-                    default:
-                        conditions.Status = self.query.status_id;
-                }
-            }
-        } else
-            delete conditions.Status;
-
-
-        if (!self.user.multiEntities)
-            conditions.entity = self.user.entity;
-
-        //console.log(self.query);
-        if (self.query['supplier'])
-            conditions['supplier'] = self.query['supplier'];
-
-        var options = {
-            conditions: conditions,
-            select: "supplier dater journalId ref"
-        };
-
-        console.log(options);
-
-        async.parallel({
-            status: function(cb) {
-                /*Dict.dict({
-                     dictName: "fk_bill_status",
-                     object: true
-                 }, cb);*/
-                cb(null, MODEL('invoice').Status);
-            },
-            datatable: function(cb) {
-                BillModel.dataTable(query, options, cb);
-            }
-        }, function(err, res) {
-            if (err)
-                return self.throw500(err);
-
-            //console.log(res);
-            SocieteModel.populate(res, {
-                path: "datatable.data.supplier"
-            }, function(err, res) {
-                EmployeeModel.populate(res, {
-                    path: "datatable.data.salesPerson",
-                    select: "name"
-                }, function(err, res) {
-
-
-                    for (var i = 0, len = res.datatable.data.length; i < len; i++) {
-                        var row = res.datatable.data[i];
-
-                        // Add checkbox
-                        res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
-                        // Add link company
-                        if (row.supplier && row.supplier._id)
-                            res.datatable.data[i].supplier = '<a class="with-tooltip" href="#!/societe/' + row.supplier._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.supplier.fullName + '"><span class="fa fa-institution"></span> ' + row.supplier.fullName + '</a>';
-                        else {
-                            if (!row.supplier)
-                                res.datatable.data[i].supplier = {};
-                            res.datatable.data[i].supplier = '<span class="with-tooltip editable editable-empty" data-tooltip-options=\'{"position":"top"}\' title="Empty"><span class="fa fa-institution"></span> Empty</span>';
-                        }
-                        // Add id
-                        res.datatable.data[i].DT_RowId = row._id.toString();
-
-                        // Convert Status
-                        if (row.Status == 'NOT_PAID' && row.dater > moment().subtract(10, 'days').toDate()) // Check if to late
-                            row.Status = 'VALIDATED';
-
-                        res.datatable.data[i].Status = (res.status.values[row.Status] ? '<span class="label label-sm ' + res.status.values[row.Status].cssClass + '">' + i18n.t(res.status.lang + ":" + res.status.values[row.Status].label) + '</span>' : row.Status);
-
-                        if (res.datatable.data[i].journalId && res.datatable.data[i].journalId.length > 0)
-                            // Add color line 
-                            res.datatable.data[i].DT_RowClass = "bg-grey-silver";
-                        // Action
-                        res.datatable.data[i].action = '<a href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '" class="btn btn-xs default"><i class="fa fa-search"></i> View</a>';
-                        // Add url on name
-                        res.datatable.data[i].ID = '<a class="with-tooltip" href="#!/bill/' + row._id + '" data-tooltip-options=\'{"position":"top"}\' title="' + row.ref + '"><span class="fa fa-money"></span> ' + row.ref + '</a>';
-                        // Convert Date
-                        res.datatable.data[i].datec = (row.datec ? moment(row.datec).format(CONFIG('dateformatShort')) : '');
-                        res.datatable.data[i].dater = (row.dater ? moment(row.dater).format(CONFIG('dateformatShort')) : '');
-                        res.datatable.data[i].updatedAt = (row.updatedAt ? moment(row.updatedAt).format(CONFIG('dateformatShort')) : '');
-                        res.datatable.data[i].total_ttc = self.module('utils').round(res.datatable.data[i].total_ttc, 2);
-                        if (row.salesPerson)
-                            res.datatable.data[i].salesPerson = row.salesPerson.fullName;
-                    }
-
-                    //console.log(res.datatable);
-
-                    self.json(res.datatable);
-                });
-            });
-        });
-    },
     pdf: function(ref, self) {
         // Generation de la facture PDF et download
         const InvoiceModel = MODEL('invoice').Schema;
@@ -2119,18 +1980,18 @@ Object.prototype = {
             },
             forSales: (self.query.forSales == 'false' ? false : true),
             $or: [{
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
+                        datec: {
+                            '$gte': dateStart,
+                            '$lt': dateEnd
+                        }
+                    },
+                    {
+                        datec: {
+                            '$gte': dateStartN1,
+                            '$lt': dateEndN1
+                        }
                     }
-                },
-                {
-                    datec: {
-                        '$gte': dateStartN1,
-                        '$lt': dateEndN1
-                    }
-                }
-            ] // Date de facture
+                ] // Date de facture
         };
 
         if (self.query.entity)
@@ -2326,11 +2187,11 @@ Object.prototype = {
             },
             forSales: (self.query.forSales == 'false' ? false : true),
             $or: [{
-                datec: {
-                    '$gte': dateStart,
-                    '$lt': dateEnd
-                }
-            }] // Date de facture
+                    datec: {
+                        '$gte': dateStart,
+                        '$lt': dateEnd
+                    }
+                }] // Date de facture
         };
 
         /* Customer invoice */
@@ -2488,14 +2349,14 @@ function createBill(doc, cgv, callback) {
     if (doc.forSales == false)
         model = "bill_supplier.tex";
     else
-        // check if discount
+    // check if discount
         for (var i = 0; i < doc.lines.length; i++) {
-            if (doc.lines[i].discount > 0) {
-                model = "bill_discount.tex";
-                discount = true;
-                break;
-            }
+        if (doc.lines[i].discount > 0) {
+            model = "bill_discount.tex";
+            discount = true;
+            break;
         }
+    }
 
     SocieteModel.findOne({
         _id: doc.supplier.id

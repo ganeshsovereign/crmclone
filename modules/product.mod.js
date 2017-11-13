@@ -24,6 +24,36 @@ International Registered Trademark & Property of ToManage SAS
 exports.name = 'product';
 exports.version = '1.00';
 exports.enabled = true;
+
+exports.csv = {
+    "model": "product",
+    "schema": "productSchema",
+    "aliases": {
+        "info.SKU": "Ref interne",
+        "ProductTypes.langs[_language].name": "Type",
+        "info.langs[_language].name": "Nom",
+        "prices.pu_ht": "Prix vente HT",
+        "directCost": "Prix achat HT",
+        "weight": "Poids",
+        "updatedAt": "Date modif",
+        "rating.total": "Rating",
+        "Status": "Etat",
+        "ProductFamily.langs[_language].name": "Famille"
+    },
+    "arrayKeys": {},
+    "formatters": {
+        "Date modif": function(date) {
+            return moment(date).format(CONFIG('dateformatLong'));
+        },
+
+        "Etat": function(Status) {
+            const ProductStatus = MODEL('product').Status;
+            let result = MODULE('utils').Status(Status, ProductStatus);
+            return result.name;
+        }
+    }
+};
+
 exports.description = 'Gestion des produits';
 exports.rights = [{
         "desc": "Lire les produits",
@@ -152,18 +182,6 @@ exports.filters = {
         "sellFamily": {
             "displayName": "products:Family",
             "backend": "sellFamily"
-        },
-
-        "name": {
-            "displayName": "Name",
-            "backend": "info.langs.name",
-            "type": "regex"
-        },
-
-        "ref": {
-            "displayName": "Ref",
-            "backend": "info.SKU",
-            "type": "regex"
         },
 
         "date": {
