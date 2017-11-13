@@ -208,7 +208,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
 
             $http({
                 method: 'GET',
-                url: '/erp/api/product/prices/priceslist',
+                url: '/erp/api/product/prices/priceslist/select',
                 params: {
                     cost: false
                 }

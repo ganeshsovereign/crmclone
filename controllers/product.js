@@ -3213,6 +3213,7 @@ PricesList.prototype = {
         var paginationObject = MODULE('helper').page(query);
         var skip = paginationObject.skip;
         var limit = paginationObject.limit;
+        const PriceListModel = MODEL('priceList').Schema;
         const SupplierModel = MODEL('Customers').Schema;
         var sortObj;
         var key;
@@ -3233,147 +3234,238 @@ PricesList.prototype = {
             };
         }
 
-        //console.log(query);
+        console.log(query);
 
-        SupplierModel.aggregate([{
-                $match: {
-                    isremoved: { $ne: true }
-                }
+        async.parallel([
+            function(pCb) {
+                SupplierModel.aggregate([{
+                        $match: {
+                            isremoved: { $ne: true }
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: '$salesPurchases.priceList',
+                            countCustomers: { $sum: 1 }
+                        }
+                    }, {
+                        $lookup: {
+                            from: 'PriceList',
+                            localField: '_id',
+                            foreignField: '_id',
+                            as: 'PriceList'
+                        }
+                    }, {
+                        $unwind: '$PriceList'
+                    }, {
+                        $project: {
+                            countCustomers: 1,
+                            priceListCode: "$PriceList.priceListCode",
+                            name: "$PriceList.name",
+                            currency: "$PriceList.currency",
+                            cost: "$PriceList.cost",
+                            defaultPriceList: "$PriceList.defaultPriceList",
+                            removable: "$PriceList.removable",
+                            isCoef: "$PriceList.isCoef",
+                            isFixed: "$PriceList.isFixed",
+                            discount: "$PriceList.discount",
+                            isGlobalDiscount: "$PriceList.isGlobalDiscount"
+                        }
+                    }, {
+                        $match: query
+                    }, {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $sum: 1
+                            },
+                            root: {
+                                $push: '$$ROOT'
+                            }
+                        }
+                    }, {
+                        $unwind: '$root'
+                    }, {
+                        $project: {
+                            _id: 1,
+                            total: 1,
+                            data: {
+                                _id: '$root._id',
+                                priceListCode: '$root.priceListCode',
+                                name: {
+                                    $concat: ['$root.name', ' - ', '$root.currency']
+                                },
+                                currency: '$root.currency',
+                                cost: '$root.cost',
+                                defaultPriceList: '$root.defaultPriceList',
+                                removable: '$root.removable',
+                                isGlobalDiscount: '$root.isGlobalDiscount',
+                                isCoef: '$root.isCoef',
+                                isFixed: '$root.isFixed',
+                                discount: '$root.discount',
+                                countCustomers: '$root.countCustomers'
+                            }
+                        }
+                    }, {
+                        $sort: sortObj
+                    }, {
+                        $skip: skip
+                    }, {
+                        $limit: limit
+                    }, {
+                        $group: {
+                            _id: null,
+                            total: {
+                                $first: '$total'
+                            },
+                            data: {
+                                $push: '$data'
+                            }
+                        }
+                    }, {
+                        $project: {
+                            _id: 1,
+                            total: '$total',
+                            data: '$data'
+                        }
+                    }
+                ]).exec(function(err, result) {
+                    return pCb(err, result[0]);
+                });
             },
-            {
-                $group: {
-                    _id: '$salesPurchases.priceList',
-                    countCustomers: { $sum: 1 }
-                }
-            }, {
-                $lookup: {
-                    from: 'PriceList',
-                    localField: '_id',
-                    foreignField: '_id',
-                    as: 'PriceList'
-                }
-            }, {
-                $unwind: '$PriceList'
-            }, {
-                $project: {
-                    countCustomers: 1,
-                    priceListCode: "$PriceList.priceListCode",
-                    name: "$PriceList.name",
-                    currency: "$PriceList.currency",
-                    cost: "$PriceList.cost",
-                    defaultPriceList: "$PriceList.defaultPriceList",
-                    removable: "$PriceList.removable",
-                    isCoef: "$PriceList.isCoef",
-                    isFixed: "$PriceList.isFixed",
-                    discount: "$PriceList.discount",
-                    isGlobalDiscount: "$PriceList.isGlobalDiscount"
-                }
-            }, {
-                $match: query
-            }, {
-                $group: {
-                    _id: null,
-                    total: {
-                        $sum: 1
-                    },
-                    root: {
-                        $push: '$$ROOT'
+            function(pCb) {
+                PriceListModel.aggregate([{
+                    $match: query
+                }, {
+                    $project: {
+                        //      countCustomers: {
+                        //          $size: '$Customers'
+                        //      },
+                        priceListCode: 1,
+                        name: 1,
+                        currency: 1,
+                        cost: 1,
+                        defaultPriceList: 1,
+                        removable: 1,
+                        isCoef: 1,
+                        isFixed: 1,
+                        discount: 1,
+                        isGlobalDiscount: 1
                     }
-                }
-            }, {
-                $unwind: '$root'
-            }, {
-                $project: {
-                    _id: 1,
-                    total: 1,
-                    data: {
-                        _id: '$root._id',
-                        priceListCode: '$root.priceListCode',
-                        name: {
-                            $concat: ['$root.name', ' - ', '$root.currency']
+                }, {
+                    $group: {
+                        _id: null,
+                        total: {
+                            $sum: 1
                         },
-                        currency: '$root.currency',
-                        cost: '$root.cost',
-                        defaultPriceList: '$root.defaultPriceList',
-                        removable: '$root.removable',
-                        isGlobalDiscount: '$root.isGlobalDiscount',
-                        isCoef: '$root.isCoef',
-                        isFixed: '$root.isFixed',
-                        discount: '$root.discount',
-                        countCustomers: '$root.countCustomers'
+                        root: {
+                            $push: '$$ROOT'
+                        }
                     }
-                }
-            }, {
-                $sort: sortObj
-            }, {
-                $skip: skip
-            }, {
-                $limit: limit
-            }, {
-                $group: {
-                    _id: null,
-                    total: {
-                        $first: '$total'
-                    },
-                    data: {
-                        $push: '$data'
+                }, {
+                    $unwind: '$root'
+                }, {
+                    $project: {
+                        _id: 1,
+                        total: 1,
+                        data: {
+                            _id: '$root._id',
+                            priceListCode: '$root.priceListCode',
+                            name: {
+                                $concat: ['$root.name', ' - ', '$root.currency']
+                            },
+                            currency: '$root.currency',
+                            cost: '$root.cost',
+                            defaultPriceList: '$root.defaultPriceList',
+                            removable: '$root.removable',
+                            isGlobalDiscount: '$root.isGlobalDiscount',
+                            isCoef: '$root.isCoef',
+                            isFixed: '$root.isFixed',
+                            discount: '$root.discount',
+                            // countCustomers: '$root.countCustomers'
+                        }
                     }
-                }
-            }, {
-                $project: {
-                    _id: 1,
-                    total: '$total',
-                    data: '$data'
-                }
+                }, {
+                    $sort: sortObj
+                }, {
+                    $skip: skip
+                }, {
+                    $limit: limit
+                }, {
+                    $group: {
+                        _id: null,
+                        total: {
+                            $first: '$total'
+                        },
+                        data: {
+                            $push: '$data'
+                        }
+                    }
+                }, {
+                    $project: {
+                        _id: 1,
+                        total: '$total',
+                        data: '$data'
+                    }
+                }]).exec(function(err, result) {
+                    return pCb(err, result[0]);
+                });
             }
-        ]).exec(function(err, result) {
-            //console.log(result);
+        ], function(err, result) {
+            console.log(result);
+
             if (err)
                 return self.throw500(err);
 
-            if (result && result.length)
-                return self.json(result[0]);
+            if (!result[1].data.length)
+                return self.json({
+                    data: []
+                });
 
-            self.json({
-                data: []
-            });
+            if (result[0].data.length)
+                result[1].data = _.map(result[1].data, function(elem) {
+
+                    let count = _.find(result[0].data, { _id: elem._id });
+                    if (count)
+                        elem.countCustomers = count.countCustomers;
+                    else
+                        elem.countCustomers = 0;
+                    return elem;
+                });
+
+
+            return self.json(result[1]);
         });
     },
     readForSelect: function() {
         var self = this;
         var PriceListModel = MODEL('priceList').Schema;
         var query = {
-            $or: []
+            $and: []
         };
 
-        if (self.query.cost && self.query.cost == 'true')
-            query.$or.push({
-                cost: true
-            });
-        else
-            query.cost = false;
-
-        if (self.query.isGlobalDiscount && self.query.isGlobalDiscount == 'true')
-            query.$or.push({
-                isGlobalDiscount: true
-            });
-        else
-            query.isGlobalDiscount = false;
-
-        if (self.query.isCoef && self.query.isCoef == 'true')
-            query.$or.push({
-                isCoef: true
-            });
-        else
-            query.isCoef = false;
-
-        if (self.query.isFixed && self.query.isFixed == 'true')
-            query.$or.push({
-                isFixed: true
+        if (self.query.cost)
+            query.$and.push({
+                cost: (self.query.cost == 'true' ? true : false)
             });
 
-        if (query.$or.length == 0)
-            delete query.$or;
+        if (self.query.isGlobalDiscount)
+            query.$and.push({
+                isGlobalDiscount: (self.query.isGlobalDiscount == 'true' ? true : false)
+            });
+
+        if (self.query.isCoef)
+            query.$and.push({
+                isCoef: (self.query.isCoef == 'true' ? true : false)
+            });
+
+        if (self.query.isFixed)
+            query.$and.push({
+                isFixed: (self.query.isFixed == 'true' ? true : false)
+            });
+
+        if (query.$and.length == 0)
+            delete query.$and;
 
 
         //console.log(query);

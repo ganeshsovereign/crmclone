@@ -1548,10 +1548,10 @@ MetronicApp.controller('ProductPriceListController', ['$scope', '$rootScope', '$
                 method: 'GET',
                 url: '/erp/api/product/prices/priceslist/select',
                 params: {
-                    cost: (cost === false ? false : true),
-                    isGlobalDiscount: false,
-                    isCoef: true,
-                    isFixed: true
+                    // cost: (cost === false ? false : true),
+                    // isGlobalDiscount: false,
+                    // isCoef: true,
+                    // isFixed: true
                 }
             }).success(function(data, status) {
                 $scope.pricesLists = data.data;
