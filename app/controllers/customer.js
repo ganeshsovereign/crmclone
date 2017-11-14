@@ -316,7 +316,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         };
 
         $scope.create = function() {
-            var societe = new Societe(this.societe);
+            var societe = new Societes.company(this.societe);
 
             societe.$save(function(response) {
                 //console.log(response);

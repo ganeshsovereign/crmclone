@@ -8,30 +8,32 @@
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-info"></i>
-                        <span ng-if="module('offer')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:CommercialProposals) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('offersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:PurchaseRequests) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('offer')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:CommercialProposals) - {{object.ref}} </span>
+                        <span ng-if="module('offersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:PurchaseRequests) - {{object.ref}}</span>
                         <span ng-if="module('offer')" ng-hide=" object._id" class="caption-subject dark bold uppercase">@(orders:NewProp) </span>
                         <span ng-if="module('offersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewQuotation) </span>
 
-                        <span ng-if="module('order')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}} - {{object.supplier.fullName}}</span>
-                        <span ng-if="module('ordersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:OrderSupplier) - {{object.ref}} - {{object.supplier.fullName}}</span>
+                        <span ng-if="module('order')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:Order) - {{object.ref}}</span>
+                        <span ng-if="module('ordersupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:OrderSupplier) - {{object.ref}}</span>
                         <span ng-if="module('order') || module('ordersupplier')" ng-hide="!object._id" class="large fa fa-check-circle" ng-class="{'font-grey': object.status.allocateStatus=='NOR' ,'font-green-jungle': object.status.allocateStatus=='ALL'
                             ,'font-yellow-lemon': object.status.allocateStatus=='NOA' ,'font-red' : object.status.allocateStatus=='NOT' }"></span>
                         <span ng-if="module('order') || module('ordersupplier')" ng-hide="!object._id" class="large fa fa-inbox" ng-class="{'font-grey': object.status.fulfillStatus=='NOR' ,'font-green-jungle': object.status.fulfillStatus=='ALL'
                             ,'font-yellow-lemon': object.status.fulfillStatus=='NOA' ,'font-red' : object.status.fulfillStatus=='NOT' }"></span>
                         <span ng-if="module('order') || module('ordersupplier')" ng-hide="!object._id" class="large fa fa-truck" ng-class="{'font-grey': object.status.shippingStatus=='NOR' ,'font-green-jungle': object.status.shippingStatus=='ALL'
                             ,'font-yellow-lemon': object.status.shippingStatus=='NOA' ,'font-red' : object.status.shippingStatus=='NOT' }"></span>
+                        <span ng-if="module('order') || module('ordersupplier')" ng-hide="!object._id" class="large fa fa-usd" ng-class="{'font-grey': object.status.invoiceStatus=='NOR' ,'font-green-jungle': object.status.invoiceStatus=='ALL'
+                            ,'font-yellow-lemon': object.status.invoiceStatus=='NOA' ,'font-red' : object.status.invoiceStatus=='NOT' }"></span>
                         <span ng-if="module('order') || module('ordersupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewOrder) </span>
 
-                        <span ng-if="module('delivery')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:PreparationNote) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('deliverysupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:PreparationNoteSupplier) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('delivery')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:PreparationNote) - {{object.ref}}</span>
+                        <span ng-if="module('deliverysupplier')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:PreparationNoteSupplier) - {{object.ref}}</span>
                         <span ng-if="module('delivery') || module('deliverysupplier')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewPreparation) </span>
 
-                        <span ng-if="module('stockreturn')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:StockReturn) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('stockreturn')" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:StockReturn) - {{object.ref}}</span>
                         <span ng-if="module('stockreturn')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewStockReturn) </span>
 
-                        <span ng-if="module('bill') && object.forSales" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:BillCustomer) - {{object.ref}} - {{object.supplier.fullName}} </span>
-                        <span ng-if="module('bill') && !object.forSales" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:BillSupplier) - {{object.ref}} - {{object.supplier.fullName}} </span>
+                        <span ng-if="module('bill') && object.forSales" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:BillCustomer) - {{object.ref}}</span>
+                        <span ng-if="module('bill') && !object.forSales" ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:BillSupplier) - {{object.ref}}</span>
                         <span ng-if="module('bill')" ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewBill) </span>
                     </div>
                     <save ng-disabled="object.Status !=='DRAFT'" mode="object._id" ng-create="create()" ng-update="update()" back-to="backTo" params-back-to="{forSales : object.forSales?1:0}" class="actions btn-set"></save>

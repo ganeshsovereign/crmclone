@@ -521,6 +521,11 @@ var orderCustomerSchema = new Schema({
             type: String,
             default: 'NOR',
             enum: ['NOR', 'NOT', 'NOA', 'ALL']
+        },
+        invoiceStatus: {
+            type: String,
+            default: 'NOR',
+            enum: ['NOR', 'NOT', 'NOA', 'ALL']
         }
     }
 });
@@ -698,6 +703,11 @@ var orderSupplierSchema = new Schema({
             enum: ['NOR', 'NOT', 'NOA', 'ALL']
         },
         shippingStatus: {
+            type: String,
+            default: 'NOR',
+            enum: ['NOR', 'NOT', 'NOA', 'ALL']
+        },
+        invoiceStatus: {
             type: String,
             default: 'NOR',
             enum: ['NOR', 'NOT', 'NOA', 'ALL']
@@ -2714,6 +2724,7 @@ F.on('order:recalculateStatus', function(data) {
         var stockStatus = {};
 
         if (docs && docs.length && docs[0].order.Status != "DRAFT" && docs[0].order.Status != "NEW") {
+            stockStatus.invoiceStatus = 'NOT'; //NO invoice
             async.eachSeries(docs, function(elem, eahcCb) {
                     var product;
 
@@ -2935,6 +2946,7 @@ F.on('order:recalculateStatus', function(data) {
             stockStatus.fulfillStatus = 'NOR';
             stockStatus.allocateStatus = 'NOR';
             stockStatus.shippingStatus = 'NOR';
+            stockStatus.invoiceStatus = 'NOR';
 
             cb(null, stockStatus);
         }
@@ -2989,46 +3001,138 @@ F.on('order:recalculateStatus', function(data) {
                         if (err)
                             return wCb(err);
 
-                        OrderModel.findByIdAndUpdate(data.order._id, {
-                            status: status
+                        /* Update invoiceStatus */
+                        const BillModel = MODEL('invoice').Schema;
+
+                        BillModel.aggregate([{
+                            $match: {
+                                orders: ObjectId(data.order._id),
+                                isremoved: {
+                                    $ne: true
+                                }
+                            }
                         }, {
-                            new: true
-                        }, function(err, el) {
+                            $project: {
+                                _id: 1,
+                                ref: 1,
+                                orders: 1,
+                                total_ht: 1
+                            }
+                        }, {
+                            $group: {
+                                _id: null,
+                                total: { $sum: "$total_ht" },
+                                data: { $push: "$$ROOT" }
+                            }
+                        }, {
+                            $unwind: "$data"
+                        }, {
+                            $project: {
+                                _id: "$data._id",
+                                ref: "$data.ref",
+                                orders: "$data.orders",
+                                total: "$total"
+                            }
+                        }, {
+                            $unwind: "$orders"
+                        }, {
+                            $lookup: {
+                                from: 'Orders',
+                                localField: 'orders',
+                                foreignField: '_id',
+                                as: 'orders'
+                            }
+                        }, {
+                            $unwind: {
+                                path: '$orders'
+                            }
+                        }, {
+                            $project: {
+                                _id: 1,
+                                ref: 1,
+                                'orders._id': 1,
+                                'orders.ref': 1,
+                                'orders.total_ht': 1,
+                                total: 1
+                            }
+                        }, {
+                            $group: {
+                                _id: null,
+                                total: { $sum: "$orders.total_ht" },
+                                data: { $push: "$$ROOT" }
+                            }
+                        }, {
+                            $unwind: "$data"
+                        }, {
+                            $project: {
+                                _id: "$data._id",
+                                ref: "$data.ref",
+                                orders: "$data.orders",
+                                total: {
+                                    invoice: "$data.total",
+                                    orders: "$total"
+                                }
+                            }
+                        }, {
+                            $group: {
+                                _id: null,
+                                total: { $first: "$total" },
+                                data: { $push: "$$ROOT" }
+                            }
+                        }], function(err, invoices) {
                             if (err)
                                 return wCb(err);
 
-                            //console.log(status, el.status);
+                            //console.log("invoices: ", invoices);
+                            if (invoices && invoices.length) {
+                                let result = invoices[0].total;
+                                if (result.invoice >= result.orders)
+                                    status.invoiceStatus = 'ALL'; // All billed
+                                else
+                                    status.invoiceStatus = 'NOA'; // Not all billed
+                            }
 
-                            console.log('Status updated');
-                            //Force reload order
-                            //Force reload product
+                            OrderModel.findByIdAndUpdate(data.order._id, {
+                                status: status
+                            }, {
+                                new: true
+                            }, function(err, el) {
+                                if (err)
+                                    return wCb(err);
 
-                            if (userId)
-                                F.emit('notify:controllerAngular', {
-                                    userId: userId,
-                                    route: 'order',
-                                    _id: el._id.toString(),
-                                    message: "Commande " + el.ref + ' modifie.'
-                                });
+                                //console.log(status, el.status);
+
+                                console.log('Status updated');
+                                //Force reload order
+                                //Force reload product
+
+                                if (userId)
+                                    F.emit('notify:controllerAngular', {
+                                        userId: userId,
+                                        route: 'order',
+                                        _id: el._id.toString(),
+                                        message: "Commande " + el.ref + ' modifie.'
+                                    });
 
 
-                            setTimeout2('notifyorder:controllerAngular', function() {
-                                F.emit('notify:controllerAngular', {
+                                setTimeout2('notifyorder:controllerAngular', function() {
+                                    F.emit('notify:controllerAngular', {
+                                        userId: null,
+                                        route: 'order',
+                                        //_id: el._id.toString(),
+                                        //message: "Commande " + el.ref + ' modifie.'
+                                    });
+                                }, 60000);
+
+                                F.emit('customer:recalculateStatus', {
                                     userId: null,
-                                    route: 'order',
-                                    //_id: el._id.toString(),
-                                    //message: "Commande " + el.ref + ' modifie.'
+                                    supplier: {
+                                        _id: el.supplier.toString()
+                                    }
                                 });
-                            }, 60000);
 
-                            F.emit('customer:recalculateStatus', {
-                                userId: null,
-                                supplier: {
-                                    _id: el.supplier.toString()
-                                }
+                                wCb();
                             });
-
-                            wCb();
                         });
                     });
 

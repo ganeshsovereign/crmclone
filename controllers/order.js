@@ -1356,11 +1356,9 @@ Object.prototype = {
         }
 
 
-        var DeliveryModel = MODEL('order').Schema.Order;
-
-        var BillModel = MODEL('invoice').Schema;
-
-        var ObjectId = MODULE('utils').ObjectId;
+        const DeliveryModel = MODEL('order').Schema.Order;
+        const BillModel = MODEL('invoice').Schema;
+        const ObjectId = MODULE('utils').ObjectId;
 
         /*departmentSearcher = function(waterfallCallback) {
             MODEL('Department').Schema.aggregate({

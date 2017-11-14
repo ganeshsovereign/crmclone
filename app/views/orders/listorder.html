@@ -136,6 +136,10 @@
                                             <label>@(orders:StatusShipping)</label>
                                             <select ng-model="search.shippingStatus.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
                                         </div>
+                                        <div class="form-group">
+                                            <label>@(orders:StatusBilling)</label>
+                                            <select ng-model="search.invoiceStatus.value[0]" id="Status" ng-options="s.id as s.name for s in $dict.status" class="form-control input-sm"></select>
+                                        </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -290,6 +294,8 @@
                                 'font-red' : line.status.fulfillStatus=='NOT' } "></span>
                                     <span class="large fa fa-truck " ng-class="{ 'font-grey': line.status.shippingStatus=='NOR' , 'font-green-jungle': line.status.shippingStatus=='ALL' , 'font-yellow-lemon': line.status.shippingStatus=='NOA' ,
                                 'font-red' : line.status.shippingStatus=='NOT' } "></span>
+                                    <span class="large fa fa-usd " ng-class="{ 'font-grey': line.status.invoiceStatus=='NOR' , 'font-green-jungle': line.status.invoiceStatus=='ALL' , 'font-yellow-lemon': line.status.invoiceStatus=='NOA' ,
+                                'font-red' : line.status.invoiceStatus=='NOT' } "></span>
                                 </div>
                             </td>
                             <td ng-if="module('ordersupplier')" ui-sref="ordersupplier.show({id:line._id})">
@@ -300,6 +306,8 @@
                                     'font-red' : line.status.fulfillStatus=='NOT' } "></span>
                                     <span class="large fa fa-truck " ng-class="{ 'font-grey': line.status.shippingStatus=='NOR' , 'font-green-jungle': line.status.shippingStatus=='ALL' , 'font-yellow-lemon': line.status.shippingStatus=='NOA' ,
                                     'font-red' : line.status.shippingStatus=='NOT' } "></span>
+                                    <span class="large fa fa-usd " ng-class="{ 'font-grey': line.status.invoiceStatus=='NOR' , 'font-green-jungle': line.status.invoiceStatus=='ALL' , 'font-yellow-lemon': line.status.invoiceStatus=='NOA' ,
+                                    'font-red' : line.status.invoiceStatus=='NOT' } "></span>
                                 </div>
                             </td>
 

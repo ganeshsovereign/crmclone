@@ -957,7 +957,7 @@ customerSchema.pre('save', function(next) {
         self.shippingAddress[0].zip = self.address.zip;
         self.shippingAddress[0].city = self.address.city;
         self.shippingAddress[0].country = self.address.country;
-    } else
+    } else if (self.address)
         self.shippingAddress.push({
             name: self.fullName,
             street: self.address.street,
