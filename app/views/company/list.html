@@ -110,6 +110,27 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                            <label>@(companies:Status.IsCustomer)</label>
+                                            <div class="md-checkbox-inline">
+                                                <div class="md-checkbox">
+                                                    <input type="checkbox" id="isCustomerYes" class="md-check" ng-model="search.isCustomer.value[0]" ng-checked="search.isCustomer.value[0]" ng-change="find()">
+                                                    <label for="isCustomerYes">
+                                                                        <span></span>
+                                                                        <span class="check"></span>
+                                                                        <span class="box"></span> @(Yes)</label>
+                                                </div>
+
+                                                <div class="md-checkbox">
+                                                    <input type="checkbox" id="isCustomerNo" class="md-check" ng-model="search.isCustomer.value[1]" ng-checked="search.isCustomer.value[1]" ng-change="find()">
+                                                    <label for="isCustomerNo">
+                                                                    <span></span>
+                                                                    <span class="check"></span>
+                                                                    <span class="box"></span> @(No)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div ng-hide="forSales" class="form-group">
                                             <label>@(companies:Status.IsSubcontractor)</label>
                                             <div class="md-checkbox-inline">

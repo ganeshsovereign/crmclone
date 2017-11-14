@@ -31,6 +31,7 @@
     "ThirdPartyContact": "Contact compte",
     "StatusContactValidated": "Etat du contact",
     "Status": {
+        "IsCustomer": "Client",
         "IsProspect": "Prospect",
         "IsSubcontractor": "Sous-traitant"
     },
