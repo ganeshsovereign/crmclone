@@ -1376,6 +1376,8 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
     };
 
     $scope.findOne = function() {
+        this.search = "";
+        
         Banks.paymentGroupChq.get({
             Id: $rootScope.$stateParams.id
         }, function(group) {
@@ -1505,6 +1507,7 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
     };
 
     $scope.update = function() {
+        this.search = "";
         var group = $scope.group;
         //console.log(group);
         group.$update(function(response) {
@@ -1551,12 +1554,16 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
         });
     };
 
-    $scope.deleteEntry = function(idx) {
-        $scope.group.lines.splice(idx, 1);
+    $scope.deleteEntry = function(line) {
+        line.isDeleted = true;
+
+        //$scope.lcr.lines.splice(idx, 1);
         $scope.update();
     };
 
-    $scope.rejectEntry = function(idx, reason) {
+    $scope.rejectEntry = function(line, reason) {
+
+        return; //TODO PB sur IDX faire de meme avec les cheques
 
         return $http({
             method: 'POST',
