@@ -661,16 +661,9 @@ customerSchema.statics.query = function(options, callback) {
     var matchObject = {};
 
     if (quickSearch) {
-        matchObject.$or = [{
-                fullName: {
-                    $regex: new RegExp(quickSearch, 'ig')
-                }
-            },
-            {
-                'salesPurchases.ref': {
-                    $regex: new RegExp("^" + quickSearch, 'ig')
-                }
-            }
+        matchObject.$or = [
+            { fullName: { $regex: new RegExp(quickSearch, 'ig') } },
+            { 'salesPurchases.ref': { $regex: new RegExp("^" + quickSearch, 'ig') } }
         ];
         filter = {};
     }
@@ -712,9 +705,6 @@ customerSchema.statics.query = function(options, callback) {
                 $match: filterObject
             },
             {
-                $match: matchObject
-            },
-            {
                 $project: {
                     fullName: {
                         $concat: ['$name.first', ' ', '$name.last']
@@ -735,6 +725,9 @@ customerSchema.statics.query = function(options, callback) {
                     lastOrder: 1,
                     type: 1
                 }
+            },
+            {
+                $match: matchObject
             },
             {
                 $lookup: {

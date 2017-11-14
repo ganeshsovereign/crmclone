@@ -839,7 +839,7 @@ Object.prototype = {
                     start_date: dateStart,
                     end_date: dateEnd,
                     perPage: 100
-                    //societeName: 'ADHOC STOCK'
+                        //societeName: 'ADHOC STOCK'
                 }).then(function(data) {
                     cb(null, data.balance);
                 });
@@ -1440,7 +1440,7 @@ Object.prototype = {
                     //_id: 1,
                     "supplier_name": 1,
                     ref: 1
-                    // family: 1,
+                        // family: 1,
                 }
             }
         ], function(err, docs) {
@@ -1685,7 +1685,7 @@ function(err) {
     },
     result: function() {
         var BillModel = MODEL('invoice').Schema;
-        var SocieteModel = MODEL('societe').Schema;
+        var SocieteModel = MODEL('Customers').Schema;
 
         var self = this;
 
@@ -1837,7 +1837,7 @@ function(err) {
                     start_date: dateStart,
                     end_date: dateEnd,
                     perPage: 100
-                    //societeName: 'ADHOC STOCK'
+                        //societeName: 'ADHOC STOCK'
                 }).then(function(data) {
                     cb(null, data.balance);
                 });
@@ -2514,7 +2514,7 @@ function(err) {
                     start_date: dateStart,
                     end_date: dateEnd,
                     perPage: 100
-                    //societeName: 'ADHOC STOCK'
+                        //societeName: 'ADHOC STOCK'
                 }).then(function(data) {
                     cb(null, data.balance);
                 });
