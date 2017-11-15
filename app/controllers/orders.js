@@ -152,6 +152,14 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
             $http({
                 method: 'GET',
+                url: '/erp/api/product/taxes'
+            }).success(function(data, status) {
+                //console.log(data);
+                $scope.taxes = data.data;
+            });
+
+            $http({
+                method: 'GET',
                 url: '/erp/api/bank',
                 params: {
                     //entity: Global.user.entity
@@ -736,7 +744,7 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
                 value: ""
             },
             entity: {
-                value: [$rootScope.login.entity],
+                value: [],
             },
             supplier: {
                 value: []
@@ -1031,7 +1039,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 value: ""
             },
             entity: {
-                value: [$rootScope.login.entity],
+                value: [],
             },
             supplier: {
                 value: []
@@ -1295,7 +1303,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                 value: ""
             },
             entity: {
-                value: [$rootScope.login.entity],
+                value: [],
             },
             supplier: {
                 value: []
