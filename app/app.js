@@ -182,8 +182,9 @@ MetronicApp.config(['$httpProvider', function($httpProvider) {
 }]);
 
 /* Setup global settings */
-MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
+MetronicApp.factory('settings', function($rootScope, $http) {
     // supported languages
+
     var settings = {
         layout: {
             pageSidebarClosed: false, // sidebar menu state
@@ -193,9 +194,19 @@ MetronicApp.factory('settings', ['$rootScope', function($rootScope) {
         layoutImgPath: Metronic.getAssetsPath() + 'admin/layout/img/',
         layoutCssPath: Metronic.getAssetsPath() + 'admin/layout/css/'
     };
+
     $rootScope.settings = settings;
+
+    // Load Global parameters form DB
+    $http({
+        method: 'GET',
+        url: '/erp/api/settings',
+    }).success(function(data, status) {
+        $rootScope.settings.values = data.data;
+    });
+
     return settings;
-}]);
+});
 /* Setup App Main Controller */
 MetronicApp.controller('AppController', ['$scope', '$rootScope', '$http', '$location', 'dialogs', 'websocketService', '$notification',
     function($scope, $rootScope, $http, $location, dialogs, websocketService, $notification) {

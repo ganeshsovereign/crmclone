@@ -76,6 +76,10 @@
                         <div class="row">
                             <div class="col-md-7">
                                 <div class="portlet light bordered">
+                                    <div class="form-group form-md-line-input">
+                                        <input type="text" class="form-control" id="ref_client" ng-model="object.ref_client">
+                                        <label for="ref_client">@(orders:RefCustomerOrder)</label>
+                                    </div>
                                     <div class="row">
                                         <div class=" col-md-6 col-sm-12">
                                             <crm-id label="@(companies:Customer)" ng-if="!object._id" name="societeId" ng-model="object.supplier" entity="object.entity" url="/erp/api/societe/autocomplete" required="true" on-select="updateAddress" placeholder="@(companies:CompanyName)" class="form-group form-md-line-input"></crm-id>
@@ -83,11 +87,6 @@
                                             <div class="form-group form-md-line-input" ng-if="!object._id">
                                                 <select class="form-control" id="entity" ng-model="object.entity" ng-change="changeEntity()" ng-options="entity.id as entity.name for entity in entityList"></select>
                                                 <label for="entity">@(companies:Entity)</label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="ref_client" ng-model="object.ref_client">
-                                                <label for="ref_client">@(orders:RefCustomerOrder)</label>
                                             </div>
 
                                             <div ng-if="module('bill')" class="form-group form-md-line-input">
@@ -105,7 +104,7 @@
                                                 <label for="RefProposal">@(orders:RefProposal)</label>
                                             </div>
 
-                                            <div ng-if="object.order" class="form-group form-md-line-input">
+                                            <div ng-hide="module('offer')" ng-if="object.order" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static" id="RefOrderShort"> <a ui-sref="order.show({id:object.order._id})">{{object.order.ref}}</a> (HT {{object.order.total_ht | currency}})</div>
                                                 <label for="RefOrderShort">@(orders:RefOrderShort)</label>
                                             </div>
@@ -121,10 +120,7 @@
                                                 <label for="RefOrderShort">@(orders:RefOrderShort)</label>
                                             </div>
 
-                                            <div ng-hide="!object._id" class="form-group form-md-line-input">
-                                                <div class="form-control form-control-static" id="price_level"> {{object.supplier.salesPurchases.priceList.priceListCode}} </div>
-                                                <label for="price_level">@(products:PriceLevel)</label>
-                                            </div>
+
 
                                             <!--<div ng-hide="!object._id" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static" id="Amounts"> {{object.total_ht| currency}} @(HT) </div>
@@ -134,6 +130,22 @@
                                             <div ng-hide="!object.tracking" class="form-group form-md-line-input">
                                                 <div class="form-control form-control-static" id="TrackingNumber"> {{object.tracking}} </div>
                                                 <label for="TrackingNumber">@(orders:TrackingNumber)</label>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input">
+                                                <select class="form-control" id="type" ng-model="object.type" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
+                                                            </select>
+                                                <label for="type">@(orders:OrderMode)</label>
+                                            </div>
+                                            <div class="form-group form-md-line-input">
+                                                <select class="form-control" id="delivery_mode" ng-model="object.delivery_mode" ng-options="s.id as s.label for s in dict.fk_delivery_mode.values">
+                                                            </select>
+                                                <label for="delivery_mode">@(orders:RemovingOrder)</label>
+                                            </div>
+                                            <div ng-if="!module('bill')" class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="dateLivraison" date-input ng-model="object.datedl">
+                                                <label ng-hide="module('stockreturn')" for="dateLivraison">@(DeliveryDate)</label>
+                                                <label ng-show="module('stockreturn')" for="dateLivraison">@(ReturnDate)</label>
                                             </div>
 
                                             <div ng-hide="module('bill')" class="form-group form-md-line-input">
@@ -151,20 +163,10 @@
                                         </div>
 
                                         <div class="col-md-6 col-sm-12">
-                                            <div class="form-group form-md-line-input">
-                                                <select class="form-control" id="type" ng-model="object.type" ng-options="s.id as s.label for s in dict.fk_input_reason.values">
-                                                        </select>
-                                                <label for="type">@(orders:OrderMode)</label>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <select class="form-control" id="delivery_mode" ng-model="object.delivery_mode" ng-options="s.id as s.label for s in dict.fk_delivery_mode.values">
-                                                        </select>
-                                                <label for="delivery_mode">@(orders:RemovingOrder)</label>
-                                            </div>
-                                            <div ng-if="!module('bill')" class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="dateLivraison" date-input ng-model="object.datedl">
-                                                <label ng-hide="module('stockreturn')" for="dateLivraison">@(DeliveryDate)</label>
-                                                <label ng-show="module('stockreturn')" for="dateLivraison">@(ReturnDate)</label>
+
+                                            <div ng-hide="!object._id" class="form-group form-md-line-input">
+                                                <div class="form-control form-control-static" id="price_level"> {{object.supplier.salesPurchases.priceList.priceListCode}} </div>
+                                                <label for="price_level">@(products:PriceLevel)</label>
                                             </div>
 
                                             <div ng-if="module('bill')" class="form-group form-md-line-input">
@@ -202,6 +204,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div ng-include="settings.values.ORDER_OPTIONAL_TEMPLATE"></div>
                             </div>
 
                             <div class="col-md-5">

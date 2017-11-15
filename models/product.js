@@ -300,10 +300,10 @@ var productSchema = new Schema({
         },
 
         /* PIM transaltion */
-        langs: [LangSchema]
-            /* need to Add  alt des images TODO */
+        langs: [LangSchema],
+        /* need to Add  alt des images TODO */
 
-
+        optional: {} // Form module and dynamic form
     },
 
     compta_buy: {
@@ -538,8 +538,6 @@ var productSchema = new Schema({
         default: 0
     }, //Total Effort
     /**********************************/
-
-    optional: Schema.Types.Mixed, // TODO Remove ?
 
     // For color and % good quality of information
     rating: {

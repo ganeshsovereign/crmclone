@@ -123,6 +123,7 @@ exports.install = function() {
     F.route('/erp/api/extrafield', load_extrafield, ['authorize']);
     F.route('/erp/api/sendEmail', sendEmail, ['post', 'json', 'authorize']);
     F.route('/erp/api/task/count', task_count, ['authorize']);
+    F.route('/erp/api/settings', getSettings, ['authorize']);
 
     F.route('/erp/api/product/convert_price', function() {
         var ProductModel = MODEL('product').Schema;
@@ -195,7 +196,9 @@ exports.install = function() {
         });
     }, ['authorize']);
     F.route('/erp/convert/resource', convert_resource, ['authorize']);
-    F.route('/erp/convert/{type}', convert, []);
+    //F.route('/erp/convert/{type}', convert, []);
+
+
 
 
     // SHOW LAST 50 PROBLEMS
@@ -820,4 +823,20 @@ function getCurrencies() {
                 data: result
             });
         });
+}
+
+function getSettings() {
+    var self = this;
+    var DictModel = MODEL('dict').Schema;
+
+    DictModel.findOne({
+        _id: "const"
+    }, function(err, result) {
+        if (err || !result)
+            return self.throw500(err);
+
+        self.json({
+            data: result.values
+        });
+    });
 }

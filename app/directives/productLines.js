@@ -376,7 +376,7 @@ MetronicApp.directive('productId', ['$http', '$parse',
                 return '/templates/core/product_id-form.html';
             },
             link: function(scope, elm, attrs, ctrl) {
-                console.log(scope);
+                //console.log(scope);
 
                 scope.$error = false;
 

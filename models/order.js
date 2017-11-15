@@ -235,7 +235,7 @@ const baseSchema = new Schema({
         ref: 'Department'
     },
     entity: String,
-    optional: Schema.Types.Mixed,
+    optional: {},
     order: {
         type: ObjectId,
         ref: 'order'

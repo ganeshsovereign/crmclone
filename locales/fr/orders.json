@@ -429,6 +429,7 @@
     "OrderByPhone": "Téléphone",
     "OrderByWWW": "En ligne",
     "OrderCard": "Fiche commande",
+    "QuotationCustomer": "Devis client",
     "OrderCustomer": "Commande client",
     "OrderDate": "Date commande",
     "OrderFab": "Ordre de fabrication",
@@ -449,6 +450,7 @@
     "OrdersToBill": "Commandes clients délivrées",
     "OrdersToProcess": "Commandes clients à traiter",
     "OrdersToValid": "Commandes clients à valider",
+    "QuotationSupplier": "Demande d'achat",
     "OrderSupplier": "Commande fournisseur",
     "OrderToProcess": "Commande à traiter",
     "OtherBills": "Autres factures",
@@ -554,7 +556,7 @@
     "ReductionsShort": "Réduc.",
     "RefBill": "Réf facture",
     "RefCustomer": "Ref. client",
-    "RefCustomerOrder": "Réf. du client",
+    "RefCustomerOrder": "Réf. chez le client",
     "RefCustomerOrderShort": "Réf. com. client",
     "RefOfSupplier": "Réf. du Fournisseur",
     "RefOrder": "Référence utile de la commande",
@@ -866,5 +868,7 @@
     "NewQuotation": "Nouvelle demande d'achats",
     "StatusAllocated": "Etat stock",
     "StatusFilfull": "Etat préparation",
-    "StatusShipping": "Etat expédition"
+    "StatusShipping": "Etat expédition",
+    "Setting": "Configuration",
+    "VATRate": "TVA par défaut"
 }
