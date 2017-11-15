@@ -1207,7 +1207,7 @@ Object.prototype = {
 
                     csv += delivery.ref;
                     csv += ";" + delivery.supplier.fullName;
-                    var address = delivery.address.street.split('\n');
+                    var address = delivery.shippingAddress.street.split('\n');
                     if (address[0])
                         csv += ";" + address[0];
                     else
@@ -1216,8 +1216,8 @@ Object.prototype = {
                         csv += ";" + address[1];
                     else
                         csv += ";";
-                    csv += ";" + delivery.address.zip;
-                    csv += ";" + delivery.address.city;
+                    csv += ";" + delivery.shippingAddress.zip;
+                    csv += ";" + delivery.shippingAddress.city;
                     csv += ";" + MODULE('utils').printNumber(delivery.weight);
                     csv += ";" + delivery.ref;
                     csv += ";" + delivery._id.toString();
