@@ -1187,7 +1187,7 @@ MetronicApp.controller('ProductListController', ['$scope', '$rootScope', '$http'
             //console.log("scope", $scope);
 
             Products.query(query, function(data, status) {
-                //console.log("products", data);
+                console.log("products", data);
                 $scope.page.total = data.total;
                 $scope.products = data.data;
                 $scope.totalAll = data.totalAll;

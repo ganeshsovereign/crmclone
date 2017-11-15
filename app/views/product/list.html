@@ -259,7 +259,7 @@
                         <tr ng-repeat="line in products">
                             <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
                             <td ui-sref="product.show({id:line._id})">
-                                <img ng-if="line.imageSrc" width="32" height="32" ng-src="/erp/api/images/bank/xs/{{line.imageSrc.imageSrc}}" />
+                                <img ng-if="line.imageSrc" width="32" height="32" ng-src="/erp/api/images/bank/xs/{{line.imageSrc}}" />
                                 <img ng-hide="line.imageSrc" width="32" height="32" src="/assets/admin/layout/img/nophoto.jpg" />
                             </td>
                             <td ui-sref="product.show({id:line._id})"><a class=" with-tooltip" ui-sref="product.show({id:line._id})"><i class="fa fa-shopping-cart"></i> {{line.info.SKU}}</a></td>
