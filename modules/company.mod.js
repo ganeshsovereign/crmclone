@@ -192,6 +192,11 @@ exports.filters = {
             "backend": "type",
             "type": "string"
         },
+        "ref": {
+            "displayName": "Ref",
+            "backend": "salesPurchases.ref",
+            "type": "string"
+        },
         "entity": {
             "displayName": "Entity",
             "backend": "entity",

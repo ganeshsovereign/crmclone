@@ -541,9 +541,10 @@ h4 {
     left: 0px;
 }
 
-.form-group.form-md-line-input.has-success .form-control {
+
+/*.form-group.form-md-line-input.has-success .form-control {
     border-bottom: 1px solid #dedede;
-}
+}*/
 
 .form-group.form-md-line-input.form-md-floating-label .form-control.input-lg~label {
     font-size: 20px;

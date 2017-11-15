@@ -98,6 +98,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         $scope.totalCountSociete = 0;
         $scope.dict = {};
         $scope.commercialList = [];
+        $scope.$error = true;
 
         var gridSociete = new Datatable();
 
@@ -304,16 +305,37 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         };
 
         $scope.checkCodeClient = function(data) {
+            if (!this.societe.salesPurchases.ref || this.societe.salesPurchases.ref.length < 4)
+                return $scope.$error = true;
+
+            return Societes.query({
+                filter: {
+                    ref: {
+                        value: [this.societe.salesPurchases.ref.toUpperCase()],
+                    }
+                },
+                viewType: 'list',
+                contentType: 'societe',
+                field: "name contatInfo phones emails"
+            }, function(data) {
+                //console.log(data);
+                if (data && data.total && data.data[0]._id != $scope.societe._id)
+                    return $scope.$error = true;
+
+                return $scope.$error = false;
+            });
+
+
             return $http.get('/erp/api/societe/' + data).then(function(societe) {
                 if (!societe.data)
-                    return true;
+                    return $scope.$error = false;
 
                 //console.log(societe.data);
                 //console.log($scope.societe);
                 if (societe.data._id && $scope.societe._id !== societe.data._id)
-                    return "Existe deja !";
-                else
-                    return true;
+                    return $scope.$error = true;
+
+                return $scope.$error = false;
             });
 
         };
@@ -356,6 +378,8 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 Id: $rootScope.$stateParams.id
             }, function(societe) {
                 $scope.societe = societe;
+
+                $scope.checkCodeClient();
 
                 if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
                     if (societe.type == "Company")
