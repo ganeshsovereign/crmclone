@@ -23,6 +23,46 @@ International Registered Trademark & Property of ToManage SAS
 
 "use strict";
 
+MetronicApp.config(function($stateProvider, $urlRouterProvider) {
+
+    // Gestion des Paiements grouped
+    $stateProvider.state('payment', {
+            parent: "bank",
+            url: "/payment",
+            abstract: true,
+            templateUrl: "/views/bank/index.html"
+        })
+        .state('payment.chq', {
+            url: "/chq",
+            abstract: true,
+            templateUrl: "/views/bank/index.html"
+        })
+        .state('payment.chq.list', {
+            url: "?Status",
+            templateUrl: "/views/bank/listGroupChq.html",
+            data: {
+                pageTitle: 'Liste des remises de cheques'
+            },
+            controller: "PaymentGroupController"
+        })
+        .state('payment.chq.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/bank/ficheGroupChq.html",
+            data: {
+                pageTitle: 'Remise de cheque'
+            },
+            controller: "PaymentGroupController"
+        })
+        .state('payment.chq.create', {
+            url: "/create.html",
+            templateUrl: "/views/bank/createGroupChq.html",
+            data: {
+                pageTitle: 'Nouvelle remise de cheque'
+            },
+            controller: "PaymentGroupController"
+        });
+});
+
 //Bank service
 MetronicApp.factory("Banks", ['$resource', function($resource) {
     return {

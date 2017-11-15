@@ -69,9 +69,10 @@ var productTypesSchema = new Schema({
         name: {
             type: String,
             default: ""
-        }, //Schema name for v0.1
-        template: String, //Schema for v1.0
-        controller: String // Schema for v1.0
+        }, //Module name
+        template: String, //For productLine
+        controller: String, // For productLine
+        configurator: String // For product configurator /templates/_{{module}}/configurator.html
     },
     isEShop: {
         type: Boolean,

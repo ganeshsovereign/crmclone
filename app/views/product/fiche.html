@@ -208,12 +208,12 @@
                                     class="badge badge-success">{{product.info.categories.length}}</span></a>
                         </li>
 
-                        <!--<li ng-if="product.isVariant" ng-class="{active: $state.includes('product.show.declinations')}">
-                            <a ui-sref="product.show.declinations({id:product._id})">
-                                <i class="icon-docs"></i> @(Declinations) </a>
+                        <li ng-if="product.info.productType.dynamic.configurator" ng-class="{active: $state.includes('product.show.configurator')}">
+                            <a ui-sref="product.show.configurator({id:product._id, module:product.info.productType.dynamic.configurator})">
+                                <i class="icon-settings"></i> @(Setting) {{product.info.productType.dynamic.name}}</a>
                         </li>
 
-                        <li ng-class="{active: $state.includes('product.show.channels')}">
+                        <!--<li ng-class="{active: $state.includes('product.show.channels')}">
                             <a ui-sref="product.show.channels({id:product._id})">
                                 <i class="icon-shopping-cart"></i> @(products:Channels) <span ng-if="product.channels.active" class="badge badge-success">{{product.channels.active}}</span></a>
                         </li>-->

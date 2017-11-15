@@ -22,9 +22,42 @@ International Registered Trademark & Property of ToManage SAS
 
 
 "use strict";
-/* global angular: true */
 
-//Users service used REST endpoint
+MetronicApp.config(function($stateProvider, $urlRouterProvider) {
+    $stateProvider.state('user', {
+            url: "/user",
+            abstract: true,
+            templateUrl: "/views/settings/user/index.html"
+        })
+        .state('user.list', {
+            url: "",
+            templateUrl: "/views/settings/user/list.html",
+            data: {
+                pageTitle: 'Liste des utilisateurs'
+            },
+            controller: "UserController"
+        })
+        .state('user.create', {
+            parent: "user",
+            url: "/create.html",
+            templateUrl: "/views/settings/user/fiche.html",
+            data: {
+                pageTitle: 'Nouvel utilisateur'
+            },
+            controller: "UserController"
+        })
+        .state('user.show', {
+            parent: "user",
+            url: "/{id}",
+            templateUrl: "/views/settings/user/fiche.html",
+            data: {
+                pageTitle: 'Fiche collaborateur'
+            },
+            controller: "UserController"
+        });
+});
+
+
 MetronicApp.factory("Users", ['$resource', function($resource) {
     return {
         users: $resource('/erp/api/users/:Id', {

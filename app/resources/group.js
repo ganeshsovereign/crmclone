@@ -22,9 +22,40 @@ International Registered Trademark & Property of ToManage SAS
 
 
 "use strict";
-/* global angular: true */
-
-//User Group service used for UserGroup REST endpoint
+MetronicApp.config(function($stateProvider, $urlRouterProvider) {
+    // Group management
+    $stateProvider.state('group', {
+            url: "/group",
+            abstract: true,
+            templateUrl: "/views/settings/group/index.html"
+        })
+        .state('group.list', {
+            url: "",
+            templateUrl: "/views/settings/group/list.html",
+            data: {
+                pageTitle: 'Liste des utilisateurs'
+            },
+            controller: "GroupController"
+        })
+        .state('group.create', {
+            parent: "group",
+            url: "/create.html",
+            templateUrl: "/views/settings/group/create.html",
+            data: {
+                pageTitle: 'Nouveau groupe'
+            },
+            controller: "GroupController"
+        })
+        .state('group.show', {
+            parent: "group",
+            url: "/{id}",
+            templateUrl: "/views/settings/group/fiche.html",
+            data: {
+                pageTitle: 'Fiche groupe'
+            },
+            controller: "GroupController"
+        });
+});
 MetronicApp.factory("Group", ['$resource', function($resource) {
     return $resource('/erp/api/group/:Id', {
         Id: '@_id'
