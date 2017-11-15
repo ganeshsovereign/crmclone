@@ -419,7 +419,8 @@
     "Conditionning": "Conditionnement",
     "IncomingStock": "Stock Entrant",
     "WarehouseMsgProductNotAvailable": "Message quand le produit n'est plus disponible",
-    "CreateNewPackaging": "Créer un nouveau conditionnemnt",
+    "CreateNewPackaging": "Créer un nouveau conditionnement",
     "ProductQty": "Quantité de produit",
-    "ProductManagement": "Gestion des produits"
+    "ProductManagement": "Gestion des produits",
+    "EShop": "E-commerce"
 }

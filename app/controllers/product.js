@@ -179,14 +179,6 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
 
         $http({
             method: 'GET',
-            url: '/erp/api/status/Product'
-        }).success(function(data, status) {
-            console.log(data);
-            $scope.$dict.Status = data.data;
-        });
-
-        $http({
-            method: 'GET',
             url: '/erp/api/product/prices/priceslist/select',
             params: {
                 cost: false
@@ -420,13 +412,6 @@ MetronicApp.controller('ProductController', ['$scope', '$rootScope', '$timeout',
         }).then(function(res) {
             //console.log(res.data);
             return res.data;
-        });
-    };
-
-    $scope.loadDynForms = function() {
-        $http.get('/erp/api/product/dynform').then(function(res) {
-            //console.log(res.data);
-            $scope.dynForms = res.data;
         });
     };
 

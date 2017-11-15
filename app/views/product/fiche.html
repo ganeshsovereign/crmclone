@@ -62,20 +62,20 @@
                         <i class="fa fa-thumbs-o-up"></i> @(Validate)
                     </a>
                 </li>
-                <li class="divider"></li>
+                <li ng-if="product.Status == 'PREPARED'" class="divider"></li>
                 <li>
                     <a href="#" ng-click="clone()">
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-if="product.info.productType.isService == false" ng-click="createNewPackaging()">
+                    <a href="#" ng-if="product.info.productType.isProduct" ng-click="createNewPackaging()">
                         <i class="fa fa-copy"></i> @(products:CreateNewPackaging)
                     </a>
                 </li>
 
                 <li>
-                    <a ng-if="product.Status == 'VALIDATED'" data-ng-click="changeStatus('PUBLISHED')">
+                    <a ng-if="product.Status == 'VALIDATED' && product.info.productType.isEShop" data-ng-click="changeStatus('PUBLISHED')">
                         <i class="fa fa-thumbs-o-up"></i> @(Send)
                     </a>
                 </li>
@@ -246,7 +246,7 @@
                     </div>
                 </div>
             </div>
-            <div class="portlet light">
+            <div class="portlet light" ng-show="product.info.productType.isEShop">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-docs"></i>

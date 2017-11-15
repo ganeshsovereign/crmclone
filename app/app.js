@@ -1363,14 +1363,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             },
             controller: "ProductController"
         })
-        // marketing
-        .state("product.show.marketing", {
-            url: "/marketing",
-            templateUrl: "/views/product/marketing.html",
-            data: {
-                pageTitle: 'Marketing - Product'
-            }
-        })
         // attributes
         .state("product.show.attributes", {
             url: "/attributes",

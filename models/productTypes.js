@@ -45,11 +45,14 @@ var productTypesSchema = new Schema({
         type: Boolean,
         default: false
     },
+    isProduct: {
+        type: Boolean,
+        default: true
+    }, //Product
     isService: {
         type: Boolean,
         default: false
-    }, //Product or Service
-
+    }, //Product
     isBundle: {
         type: Boolean,
         default: false
@@ -70,6 +73,10 @@ var productTypesSchema = new Schema({
         template: String, //Schema for v1.0
         controller: String // Schema for v1.0
     },
+    isEShop: {
+        type: Boolean,
+        default: false
+    }, // Enable eshop on PIM
 
     createdAt: {
         type: Date,

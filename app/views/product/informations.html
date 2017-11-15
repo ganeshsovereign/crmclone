@@ -82,7 +82,7 @@ Marketing
                                     </div>
                                 </div>
 
-                                <div class="portlet light bordered">
+                                <div class="portlet light bordered" ng-show="product.info.productType.isProduct">
                                     <div class="form-group form-md-line-input">
                                         <label class="col-md-3 control-label">@(products:EANCode):</label>
                                         <div class="col-md-9">
@@ -123,14 +123,14 @@ Marketing
                                             </div>
                                         </tab>
 
-                                        <tab heading="@(eshop:abstract) Internet">
+                                        <tab heading="@(eshop:abstract) Internet" ng-show="product.info.productType.isEShop">
                                             <div class="form-group form-md-line-input ">
                                                 <!--<label for="Abstract">@(eshop:abstract) <span class="required">
                                         * </span></label>-->
                                                 <summernote height="220" ng-model="product.info.langs[_language].shortDescription"><i class="fa fa-flag"></i></summernote>
                                             </div>
                                         </tab>
-                                        <tab heading="@(Description) Longue Internet">
+                                        <tab heading="@(Description) Longue Internet" ng-show="product.info.productType.isEShop">
                                             <div class="form-group form-md-line-input ">
                                                 <!--<label for="Des">@(Description) <span class="required">
                                         * </span></label>-->
@@ -150,21 +150,21 @@ Marketing
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-6" ng-show="product.info.productType.isProduct">
                                             <div class="form-group form-md-line-input">
                                                 <input type="number" class="form-control" id="Weight" ng-model="product.weight" min="0" step="0.0001">
                                                 <label for="Weight">@(products:Weight)</label>
                                                 <div class="form-control-focus"> </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6" ng-show="product.info.productType.inventory">
                                             <div class="form-group form-md-line-input">
                                                 <input type="number" class="form-control" id="stockTimeLimit" ng-model="product.inventory.stockTimeLimit" min="0" step="1">
                                                 <label for="stockTimeLimit">@(products:stockTimeLimit) @(products:Day)</label>
                                                 <div class="form-control-focus"> </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6" ng-show="product.info.productType.isProduct">
                                             <div class="form-group form-md-line-input">
                                                 <input type="number" class="form-control" id="packing" ng-model="product.packing" min="0" step="1">
                                                 <label for="packing">@(products:Packing)</label>
@@ -173,7 +173,7 @@ Marketing
                                         </div>
                                     </div>
                                     <hr>
-                                    <div class="row" ng-if="product.info.productType.inventory == true">
+                                    <div class="row" ng-show="product.info.productType.inventory">
                                         <div class="col-md-6">
                                             <div class="form-group form-md-line-input">
                                                 <input type="text" class="form-control" id="minstock" ng-model="product.inventory.minStockLevel">
@@ -206,21 +206,10 @@ Marketing
     </div>
 </div>
 
-
-<div ng-if="product.type == 'DYNAMIC'" class="form-group">
-    <label class="col-md-2 control-label">@(products:DynamicForm): <span class="required">
-                                        * </span>
-                                </label>
-    <div class="col-md-4" ng-init="loadDynForms()">
-        <select class="table-group-action-input form-control" ng-model="product.dynForm" ng-options="d.name as d.name for d in dynForms"></select>
-    </div>
-
-</div>
-
 <!--
 SEO
 -->
-<div class="row">
+<div class="row" ng-show="product.info.productType.isEShop">
     <div class="col-md-12">
         <div class="portlet light bordered">
             <div class="portlet-title">
@@ -308,10 +297,6 @@ SEO
     </div>
 </div>
 
+<!-- declinations -->
 
-<!--
-Categories and declinations    
--->
-
-<div ng-include="'/views/product/declinations.html'">
-    </div
+<div ng-if="product.info.productType.isProduct" ng-include="'/views/product/declinations.html'"></div>

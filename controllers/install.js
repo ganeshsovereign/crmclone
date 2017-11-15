@@ -5184,7 +5184,61 @@ F.on('load', function() {
                         if (err)
                             return console.log(err);
 
-                        console.log("ToManage updated to {0}".format(0.62));
+                        console.log("ToManage updated to {0}".format(0.63));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            },
+            // 0.64 : ProductType disabled ESHOP
+            function(conf, wCb) {
+                if (conf.version >= 0.64)
+                    return wCb(null, conf);
+
+                function convertProductType(aCb) {
+                    const Model = MODEL('productTypes').Schema;
+
+                    console.log("update productType");
+
+                    async.parallel([
+                        function(pCb) {
+                            Model.update({
+                                isService: false
+                            }, {
+                                $set: { isProduct: true }
+                            }, { upsert: false, multi: true }, pCb);
+                        },
+                        function(pCb) {
+                            Model.update({
+                                isService: true
+                            }, {
+                                $set: { isProduct: false }
+                            }, { upsert: false, multi: true }, pCb);
+                        },
+                        function(pCb) {
+                            Model.update({}, {
+                                $set: { isEShop: false }
+                            }, { upsert: false, multi: true }, pCb);
+                        }
+                    ], function(err, docs) {
+                        aCb(err);
+                    });
+
+                }
+
+                async.waterfall([convertProductType], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', {
+                        'values.version': 0.64
+                    }, {
+                        new: true
+                    }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.64));
                         wCb(err, doc.values);
                         //wCb(err, conf);
                     });

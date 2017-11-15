@@ -24,6 +24,7 @@
                                 <tr role="row" class="heading">
                                     <th>@(Code)</th>
                                     <th>@(Name)</th>
+                                    <th width="15%" class="text-center">@(products:EShop)</th>
                                     <th width="15%" class="text-center">@(products:Inventory)</th>
                                     <th width="10%" class="text-center">@(products:Quantity)</th>
                                     <th width="10%" class="text-center">@(CreatedAt)</th>
@@ -34,6 +35,7 @@
                                 <tr ng-repeat="line in listObject">
                                     <td>{{line.sequence}}</td>
                                     <td>{{line.name}}</td>
+                                    <td class="text-center"><span ng-show="line.isEShop == true" class="fa fa-check font-blue"></span></td>
                                     <td class="text-center"><span ng-show="line.inventory == true" class="fa fa-check font-blue"></span></td>
                                     <!--<input type="checkbox" id="isActive" class="md-check" ng-model="line.inventory" disabled ng-checked="line.inventory"></td>-->
 

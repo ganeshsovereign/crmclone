@@ -755,7 +755,6 @@ exports.install = function() {
 
     F.route('/erp/api/product/Tag/autocomplete', object.Tag, ['post', 'json', 'authorize']);
 
-    F.route('/erp/api/product/dynform', dynform.read, ['authorize']);
     F.route('/erp/api/product/dynform/{combinedName}', dynform.show, ['authorize']);
     //F.route('/erp/api/product/combined', dynform.calcul, ['post', 'json', 'authorize']); // For eshop
     //F.route('/erp/api/product/combined', dynform.calcul, ['post', 'json', 'unauthorize']); // For eshop
@@ -1234,7 +1233,6 @@ Object.prototype = {
         const Product = MODEL('product').Schema;
         const ProductStatus = MODEL('product').Status;
         var query = self.query || {};
-        var quickSearch = query.quickSearch;
         var paginationObject = MODULE('helper').page(self.query);
         var limit = paginationObject.limit;
         var skip = paginationObject.skip;
@@ -4645,17 +4643,6 @@ Prices.prototype = {
 
 function DynForm() {}
 DynForm.prototype = {
-    read: function() {
-        var DynFormModel = MODEL('dynform').Schema;
-        var self = this;
-
-        DynFormModel.find({}, "name", function(err, dynforms) {
-            //dynforms.unshift({
-            //    name: ""
-            //});
-            self.json(dynforms)
-        });
-    },
     show: function(name) {
         var self = this;
         var DynFormModel = MODEL('dynform').Schema;
@@ -4768,6 +4755,7 @@ ProductTypes.prototype = {
                 },
                 name: '$langs',
                 inventory: '$inventory',
+                isEShop: 1,
                 sequence: 1,
                 createdAt: '$createdAt',
                 opts: {
@@ -4794,6 +4782,9 @@ ProductTypes.prototype = {
                 },
                 inventory: {
                     $first: '$inventory'
+                },
+                isEShop: {
+                    $first: '$isEShop'
                 },
                 sequence: {
                     $first: '$sequence'
@@ -4826,6 +4817,7 @@ ProductTypes.prototype = {
                     name: '$root.name',
                     options: '$root.options',
                     inventory: '$root.inventory',
+                    isEShop: '$root.isEShop',
                     sequence: '$root.sequence',
                     countProducts: '$root.countProducts',
                     createdAt: '$root.createdAt'
