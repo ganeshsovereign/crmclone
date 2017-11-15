@@ -767,7 +767,6 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             controller: "StockController"
         })
         .state('stock.inventory', {
-            parent: "stock",
             url: "/inventory.html",
             templateUrl: "/views/stock/inventory.html",
             data: {

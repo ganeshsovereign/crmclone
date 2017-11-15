@@ -178,14 +178,14 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
             url: "/attributes",
             templateUrl: "/views/product/attributes.html",
             data: {
-                pageTitle: 'Attributes - Product'
+                pageTitle: 'AttributesProduct'
             }
         })
         // information
         .state("product.show.informations", {
             templateUrl: "/views/product/informations.html",
             data: {
-                pageTitle: 'Informations - Product'
+                pageTitle: 'InformationsProduct'
             }
         })
         // price
@@ -193,7 +193,7 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
             url: "/price",
             templateUrl: "/views/product/price.html",
             data: {
-                pageTitle: 'Prices - Product'
+                pageTitle: 'PricesProduct'
             }
         })
         // associations
@@ -201,7 +201,7 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
             url: "/categories",
             templateUrl: "/views/product/categories.html",
             data: {
-                pageTitle: 'Categories - Product '
+                pageTitle: 'CategoriesProduct '
             },
             controller: "CategoryController"
         })
@@ -210,7 +210,7 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
             url: "/declinations",
             templateUrl: "/views/product/declinations.html",
             data: {
-                pageTitle: 'Declinaisons - Product '
+                pageTitle: 'DeclinaisonsProduct '
             }
         })
         // stocks
@@ -218,7 +218,7 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
             url: "/stock",
             templateUrl: "/templates/product/stock.html",
             data: {
-                pageTitle: 'Stock - Product '
+                pageTitle: 'StockProduct '
             }
         })
         // ecommerce
@@ -226,14 +226,14 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
             url: "/ecommerce",
             templateUrl: "/views/product/ecommerce.html",
             data: {
-                pageTitle: 'Ecommerce - Product '
+                pageTitle: 'EcommerceProduct '
             }
         })
         .state("product.show.bundles", {
             url: "/bundle",
             templateUrl: "/views/product/bundles.html",
             data: {
-                pageTitle: 'Compositions - Product '
+                pageTitle: 'CompositionsProduct '
             }
         })
         .state("product.show.packaging", {
@@ -248,7 +248,7 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
             url: "/channels",
             templateUrl: "/views/product/channels.html",
             data: {
-                pageTitle: 'Canaux - Integration'
+                pageTitle: 'CanauxIntegration'
             }
         })
         // configurator
@@ -258,7 +258,7 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
                 return '/templates/_' + $stateParams.module + '/configurator.html';
             },
             data: {
-                pageTitle: 'Configuration - Product '
+                pageTitle: 'ConfigurationProduct '
             }
         })
         .state('product.show.stats', {
@@ -267,6 +267,91 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
             data: {
                 pageTitle: 'Statistiques produits'
             }
+        })
+        // Stock Correction
+        .state('product.stockcorrection', {
+            parent: "product",
+            url: "/stockcorrectionlist",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.stockcorrection.list', {
+            url: "",
+            templateUrl: "/views/product/stockcorrectionlist.html",
+            data: {
+                pageTitle: 'Liste des corrections de stock'
+            },
+            controller: "ProductStockCorrectionController"
+        })
+        .state('product.stockcorrection.create', {
+            url: "/create.html",
+            templateUrl: "/views/product/stockcorrectionlistfiche.html",
+            data: {
+                pageTitle: 'Créer une correction de stock'
+            },
+            controller: "ProductStockCorrectionController"
+        })
+        .state('product.stockcorrection.show', {
+            url: "/{id:[0-9a-z]{24}}",
+            templateUrl: "/views/product/stockcorrectionlistfiche.html",
+            data: {
+                pageTitle: 'Editer une correction de stock'
+            },
+            controller: "ProductStockCorrectionController"
+        })
+        // Stock Detail
+        .state('product.stockdetail', {
+            parent: "product",
+            url: "/stockdetail",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.stockdetail.list', {
+            url: "",
+            templateUrl: "/views/product/stockdetail.html",
+            data: {
+                pageTitle: 'Liste des états de stock'
+            },
+            controller: "ProductStockDetailController"
+        })
+        // Stock transfert
+        .state('product.stocktransfers', {
+            parent: "product",
+            url: "/stocktransfers",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.stocktransfers.list', {
+            url: "",
+            templateUrl: "/views/product/stocktransfers.html",
+            data: {
+                pageTitle: 'Liste des transferts de stock'
+            },
+            controller: "ProductStockTransfersController"
+        })
+        .state('product.stocktransfers.create', {
+            parent: "",
+            url: "/create.html",
+            templateUrl: "/views/product/informations.html",
+            data: {
+                pageTitle: 'Nouveau produit / service'
+            },
+            controller: "ProductStockTransfersController"
+        })
+        // Stock Inventory
+        .state('product.inventory', {
+            parent: "product",
+            url: "/inventory",
+            abstract: true,
+            templateUrl: "/views/product/index.html"
+        })
+        .state('product.inventory.list', {
+            url: "",
+            templateUrl: "/views/product/inventory.html",
+            data: {
+                pageTitle: 'Gestion des stock'
+            },
+            controller: "ProductInventoryController"
         });
 });
 
