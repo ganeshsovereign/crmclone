@@ -1044,9 +1044,7 @@ Object.prototype = {
         var BillModel = MODEL('invoice').Schema;
         var self = this;
 
-        BillModel.update({
-            _id: id
-        }, {
+        BillModel.findByIdAndUpdate(id, {
             $set: {
                 isremoved: true,
                 Status: 'CANCELED',
@@ -1054,11 +1052,28 @@ Object.prototype = {
                 total_ttc: 0,
                 total_tva: []
             }
-        }, function(err) {
+        }, { new: true }, function(err, doc) {
             if (err)
-                self.throw500(err);
-            else
-                self.json({});
+                return self.throw500(err);
+
+            F.emit('invoice:recalculateStatus', {
+                userId: self.user._id.toString(),
+                invoice: {
+                    _id: doc._id.toString()
+                }
+            });
+
+            if (doc.orders.length)
+                for (var i = 0; i < doc.orders.length; i++)
+                    F.emit('order:recalculateStatus', {
+                        userId: self.user._id.toString(),
+                        order: {
+                            _id: doc.orders[i].toString()
+                        }
+                    });
+
+
+            self.json({});
 
         });
     },
@@ -1081,23 +1096,41 @@ Object.prototype = {
         else
             ids.push(list);
 
-        BillModel.update({
-            _id: {
-                $in: ids
-            }
-        }, {
-            $set: {
-                isremoved: true,
-                Status: 'CANCELED',
-                total_ht: 0,
-                total_ttc: 0,
-                total_tva: []
-            }
+        async.forEachLimit(ids, 100, function(id, aCb) {
+            BillModel.findByIdAndUpdate(id, {
+                $set: {
+                    isremoved: true,
+                    Status: 'CANCELED',
+                    total_ht: 0,
+                    total_ttc: 0,
+                    total_tva: []
+                }
+            }, { new: true }, function(err, doc) {
+                if (err)
+                    return aCb(err);
+
+                F.emit('invoice:recalculateStatus', {
+                    userId: self.user._id.toString(),
+                    invoice: {
+                        _id: doc._id.toString()
+                    }
+                });
+
+                if (doc.orders.length)
+                    for (var i = 0; i < doc.orders.length; i++)
+                        F.emit('order:recalculateStatus', {
+                            userId: self.user._id.toString(),
+                            order: {
+                                _id: doc.orders[i].toString()
+                            }
+                        });
+                aCb();
+            });
         }, function(err) {
             if (err)
-                self.throw500(err);
-            else
-                self.json({});
+                return self.throw500(err);
+
+            self.json({});
         });
     },
     exportAccounting: function() {
