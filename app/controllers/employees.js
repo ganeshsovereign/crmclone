@@ -32,6 +32,7 @@ MetronicApp.controller('EmployeeController', ['$scope', '$rootScope', '$http', '
     $scope.editable = false;
     $scope.employee = {
         entity: $rootScope.login.entity,
+        isEmployee: true,
         datec: new Date(),
         address: {}
     };

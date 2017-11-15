@@ -2703,16 +2703,14 @@ exports.name = "order";
 
 
 // Refresh pack prices from directCost
-F.on('order:recalculateStatus', function(data) {
+F.on('order:recalculateStatus', function(data, callback) {
     const userId = data.userId;
     const OrderRows = MODEL('orderRows').Schema;
+    const round = MODULE('utils').round;
     var ObjectId = MODULE('utils').ObjectId;
 
     //console.log(data);
     console.log("Update emit order", data);
-
-    if (!data.order || !data.order._id)
-        return;
 
     function getAvailableForRows(docs, cb) {
         var Availability;
@@ -2955,27 +2953,36 @@ F.on('order:recalculateStatus', function(data) {
 
     async.waterfall([
         function(wCb) {
+            if (!data.order || !data.order._id)
+                return wCb("No Id order");
+
+            wCb(null);
+        },
+        function(wCb) {
             const Order = exports.Schema.Order;
             // Get Type ONLY CustomerOrder AND SupplierOrder type
 
-            Order.findById(data.order._id, "_type", function(err, doc) {
+            Order.findById(data.order._id, "_type Status total_ht", function(err, doc) {
                 if (err)
                     return wCb(err);
 
-                if (!doc)
-                    return wCb(null, null);
+                if (!doc || doc.isremoved == true)
+                    return wCb(null, null, null);
+
+                if (doc.Status == 'CLOSED' || doc.Status == 'CANCELLED')
+                    return wCb(null, null, null); // No UPDATE IF CLOSED
 
                 if (doc._type == 'orderCustomer')
-                    return wCb(null, exports.Schema.OrderCustomer);
+                    return wCb(null, exports.Schema.OrderCustomer, doc);
 
                 if (doc._type == 'orderSupplier')
-                    return wCb(null, exports.Schema.OrderSupplier);
+                    return wCb(null, exports.Schema.OrderSupplier, doc);
 
                 return wCb(null, null);
 
             });
         },
-        function(OrderModel, wCb) {
+        function(OrderModel, order, wCb) {
             if (!OrderModel)
                 return wCb();
 
@@ -3083,18 +3090,29 @@ F.on('order:recalculateStatus', function(data) {
                             if (err)
                                 return wCb(err);
 
+                            if (round(order.total_ht) == 0)
+                                status.invoiceStatus = 'NOR'; // No need bill
+
                             //console.log("invoices: ", invoices);
                             if (invoices && invoices.length) {
                                 let result = invoices[0].total;
+
                                 if (result.invoice >= result.orders)
                                     status.invoiceStatus = 'ALL'; // All billed
                                 else
                                     status.invoiceStatus = 'NOA'; // Not all billed
                             }
 
-                            OrderModel.findByIdAndUpdate(data.order._id, {
+
+                            let query = {
                                 status: status
-                            }, {
+                            };
+
+                            // Classify CLOSED
+                            if (status.fulfillStatus == 'ALL' && status.allocateStatus == 'ALL' && status.shippingStatus == 'ALL' && (status.invoiceStatus == 'ALL' || status.invoiceStatus == 'NOR'))
+                                query.Status = 'CLOSED';
+
+                            OrderModel.findByIdAndUpdate(data.order._id, query, {
                                 new: true
                             }, function(err, el) {
                                 if (err)
@@ -3140,7 +3158,10 @@ F.on('order:recalculateStatus', function(data) {
         }
     ], function(err) {
         if (err)
-            return console.log(err);
+            console.log(err);
+
+        if (callback)
+            callback(err);
     });
 });
 

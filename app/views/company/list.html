@@ -6,11 +6,14 @@
                 <a ui-sref="home">@(Home)</a>
                 <i class="fa fa-angle-right"></i>
             </li>
-            <li ng-show="forSales">
+            <li ng-show="!type && forSales===1">
                 <span>@(companies:ListCustomersShort)</span>
             </li>
-            <li ng-hide="forSales">
+            <li ng-show="forSales===0">
                 <span>@(companies:ListSuppliersShort)</span>
+            </li>
+            <li ng-show="type=='Person'">
+                <span>@(companies:ListOfContacts)</span>
             </li>
         </ul>
         <div class="page-toolbar">
@@ -46,8 +49,9 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="fa fa-institution"></i>
-                <span ng-show="forSales" class="caption-subject dark bold uppercase"> @(companies:CustomerList)</span>
-                <span ng-hide="forSales" class="caption-subject dark bold uppercase"> @(companies:SupplierList)</span>
+                <span ng-show="!type && forSales === 1" class="caption-subject dark bold uppercase"> @(companies:CustomerList)</span>
+                <span ng-show="forSales === 0" class="caption-subject dark bold uppercase"> @(companies:SupplierList)</span>
+                <span ng-show="type == 'Person'" class="caption-subject dark bold uppercase"> @(companies:ListOfContacts)</span>
             </div>
             <div class="actions">
                 <button class="btn blue" ui-sref="societe.create">@(Add) <i class="fa fa-plus"></i></button>
@@ -65,7 +69,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label>@(companies:Company)</label>
+                                            <label>@(Name)</label>
                                             <input ng-model="quickSearch" ng-model-options='{ debounce: 500 }' class="form-control input-sm" ng-change="find()" />
                                         </div>
 
@@ -89,7 +93,7 @@
                                     </div>
 
                                     <div class="col-md-2">
-                                        <div class="form-group">
+                                        <div class="form-group" ng-if="forSales">
                                             <label>@(companies:Status.IsProspect)</label>
                                             <div class="md-checkbox-inline">
                                                 <div class="md-checkbox">
@@ -110,7 +114,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" ng-if="forSales">
                                             <label>@(companies:Status.IsCustomer)</label>
                                             <div class="md-checkbox-inline">
                                                 <div class="md-checkbox">
@@ -128,6 +132,27 @@
                                                                     <span class="check"></span>
                                                                     <span class="box"></span> @(No)
                                                     </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div ng-hide="forSales" class="form-group">
+                                            <label>@(companies:Status.IsSupplier)</label>
+                                            <div class="md-checkbox-inline">
+                                                <div class="md-checkbox">
+                                                    <input name="isSupplier" type="checkbox" id="isSupplierYes" class="md-check" ng-model="search.isSupplier.value[0]" ng-checked="search.isSupplier.value[0]" ng-change="find()">
+                                                    <label for="isSupplierYes">
+                                                                            <span></span>
+                                                                            <span class="check"></span>
+                                                                            <span class="box"></span> @(Yes)</label>
+                                                </div>
+
+                                                <div class="md-checkbox">
+                                                    <input name="isSupplier" type="checkbox" id="isSupplierNo" class="md-check" ng-model="search.isSupplier.value[1]" ng-checked="search.isSupplier.value[1]" ng-change="find()">
+                                                    <label for="isSupplierNo">
+                                                                        <span></span>
+                                                                        <span class="check"></span>
+                                                                        <span class="box"></span> @(No)
+                                                        </label>
                                                 </div>
                                             </div>
                                         </div>
@@ -222,7 +247,7 @@
                             <th class="text-center">
                                 <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" ng-click="checkedAll()" />
                             </th>
-                            <th table-sort='fullName' ng-model="sort" name="@(companies:Company)"></th>
+                            <th table-sort='fullName' ng-model="sort" name="@(Name)"></th>
                             <th table-sort='salesPurchases.ref' ng-model="sort" name="@(companies:IdThirdParty)"></th>
 
                             <th ng-show="forSales" table-sort='salesPurchases.salesPerson.fullName' ng-model=" sort " name="@(commercial:Commercial)"></th>
@@ -231,7 +256,7 @@
 
                             <th table-sort='address.zip' ng-model="sort " name="@(Zip)"></th>
                             <th table-sort='address.city' ng-model="sort " name="@(Town)"></th>
-                            <th table-sort='companyInfo.idprof3' ng-model="sort " name="@(companies:ProfId3FR)"></th>
+                            <th ng-hide="type" table-sort='companyInfo.idprof3' ng-model="sort " name="@(companies:ProfId3FR)"></th>
                             <th ng-show="forSales">@(Status)</th>
                             <th>@(companies:Entity)</th>
                             <!--<th>@(Tag)</th>-->
@@ -247,7 +272,7 @@
                                 <td ui-sref="societe.show({id:line._id})">{{line.salesPurchases.salesPerson.fullName}}</td>
                                 <td ui-sref="societe.show({id:line._id})">{{line.address.zip}}</td>
                                 <td ui-sref="societe.show({id:line._id})">{{line.address.city}}</td>
-                                <td ui-sref="societe.show({id:line._id})">{{line.companyInfo.idprof3}}</td>
+                                <td ng-hide="type" ui-sref="societe.show({id:line._id})">{{line.companyInfo.idprof3}}</td>
                                 <td ng-show="forSales" ui-sref="societe.show({id:line._id})">
                                     <span class="label label-sm {{line.Status.css}} "> {{line.Status.name}}</span>
                                 </td>

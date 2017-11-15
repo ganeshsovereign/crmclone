@@ -370,7 +370,8 @@ Object.prototype = {
                         ref: 1,
                         status: 1,
                         _type: 1,
-                        forSales: 1
+                        forSales: 1,
+                        createdAt: 1
                     }
                 },
                 /*{
@@ -472,7 +473,8 @@ Object.prototype = {
                         ref: 1,
                         status: 1,
                         _type: 1,
-                        forSales: 1
+                        forSales: 1,
+                        createdAt: 1
                     }
                 }, {
                     $project: {
@@ -522,7 +524,8 @@ Object.prototype = {
                         payments: 1,
                         status: 1,
                         _type: 1,
-                        forSales: 1
+                        forSales: 1,
+                        createdAt: 1
                     }
                 }, {
                     $match: matchObject
@@ -560,7 +563,8 @@ Object.prototype = {
                         status: 1,
                         _type: 1,
                         forSales: 1,
-                        channel: 1
+                        channel: 1,
+                        createdAt: 1
                     }
                 }, {
                     $project: {
@@ -589,6 +593,7 @@ Object.prototype = {
                         status: 1,
                         _type: 1,
                         forSales: 1,
+                        createdAt: 1,
                         channel: 1,
                         payments: 1,
                         removable: {
@@ -647,6 +652,7 @@ Object.prototype = {
                         datec: '$root.datec',
                         ref_client: '$root.ref_client',
                         dater: '$root.dater',
+                        createdAt: '$root.createdAt',
                         exported: '$root.exported',
                         entity: '$root.entity',
                         total_ttc: '$root.total_ttc',
@@ -693,6 +699,7 @@ Object.prototype = {
                         status: 1,
                         removable: 1,
                         channel: 1,
+                        createdAt: 1,
                         total: 1,
                         totalAll: 1,
                         'payments.currency': 1,
@@ -730,6 +737,9 @@ Object.prototype = {
                         },
                         dater: {
                             $first: '$dater'
+                        },
+                        createdAt: {
+                            $first: '$createdAt'
                         },
                         exported: {
                             $first: '$exported'
@@ -786,6 +796,7 @@ Object.prototype = {
                         datec: 1,
                         ref_client: 1,
                         dater: 1,
+                        createdAt: 1,
                         exported: 1,
                         entity: 1,
                         total_ttc: 1,
@@ -892,6 +903,15 @@ Object.prototype = {
             if (err)
                 return self.throw500(err);
 
+            if (doc.orders.length)
+                for (var i = 0; i < doc.orders.length; i++)
+                    F.emit('order:recalculateStatus', {
+                        userId: self.user._id.toString(),
+                        order: {
+                            _id: doc.orders[i].toString()
+                        }
+                    });
+
             self.json(doc);
         });
     },
@@ -924,9 +944,9 @@ Object.prototype = {
 
             //console.log(delivery);
             bill.save(function(err, doc) {
-                if (err) {
+                if (err)
                     return console.log(err);
-                }
+
 
                 self.json(doc);
             });
@@ -999,6 +1019,15 @@ Object.prototype = {
                             _id: doc._id.toString()
                         }
                     });
+
+                    if (doc.orders.length)
+                        for (var i = 0; i < doc.orders.length; i++)
+                            F.emit('order:recalculateStatus', {
+                                userId: self.user._id.toString(),
+                                order: {
+                                    _id: doc.orders[i].toString()
+                                }
+                            });
 
                     //console.log(doc);
                     doc = doc.toObject();

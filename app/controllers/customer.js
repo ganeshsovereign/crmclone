@@ -55,7 +55,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             },
             isSubcontractor: {
                 value: [true, true]
-            },
+            }
         };
 
         $scope.page = {
@@ -129,6 +129,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         };
 
         $scope.forSales = $rootScope.$stateParams.forSales == 0 ? 0 : 1;
+        $scope.type = $rootScope.$stateParams.type;
 
         $scope.resetFilter = function() {
             superCache.removeAll();
@@ -251,6 +252,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             });
 
             var query = {
+                forSales: ($scope.forSales ? true : false),
                 quickSearch: $scope.quickSearch,
                 filter: $scope.search,
                 viewType: 'list',
@@ -260,25 +262,26 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 sort: $scope.sort
             };
 
-            if ($scope.forSales)
-                Societes.company.query(query, function(data, status) {
-                    console.log("societes", data);
-                    $scope.page.total = data.total;
-                    $scope.customers = data.data;
-                    $scope.totalAll = data.totalAll;
-                    $timeout(function() {
-                        Metronic.unblockUI('.waiting');
-                    }, 0);
-                });
-            else
-                Societes.companySupplier.query(query, function(data, status) {
-                    $scope.page.total = data.total;
-                    $scope.customers = data.data;
-                    $scope.totalAll = data.totalAll;
-                    $timeout(function() {
-                        Metronic.unblockUI('.waiting');
-                    }, 0);
-                });
+            if (this.type) {
+                delete query.forSales;
+                query.filter.type = {
+                    value: [this.type]
+                };
+            } else
+                delete query.filter.type;
+
+            //console.log(query);
+
+
+            Societes.query(query, function(data, status) {
+                console.log("societes", data);
+                $scope.page.total = data.total;
+                $scope.customers = data.data;
+                $scope.totalAll = data.totalAll;
+                $timeout(function() {
+                    Metronic.unblockUI('.waiting');
+                }, 0);
+            });
         };
 
         $scope.remove = function(societe) {
@@ -316,7 +319,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         };
 
         $scope.create = function() {
-            var societe = new Societes.company(this.societe);
+            var societe = new Societes(this.societe);
 
             societe.$save(function(response) {
                 //console.log(response);
@@ -349,7 +352,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         };
 
         $scope.findOne = function() {
-            Societes.company.get({
+            Societes.get({
                 Id: $rootScope.$stateParams.id
             }, function(societe) {
                 $scope.societe = societe;
@@ -1950,7 +1953,13 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
     $scope.find = function(id) {
         if (id)
             return Societes.query({
-                company: id,
+                filter: {
+                    company: {
+                        value: [id],
+                    }
+                },
+                viewType: 'list',
+                contentType: 'societe',
                 type: "Person",
                 field: "name contatInfo phones emails"
             }, function(data) {

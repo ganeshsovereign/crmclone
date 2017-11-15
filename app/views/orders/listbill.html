@@ -236,7 +236,7 @@
                             <th table-sort='total_to_paid' ng-model="sort" name="@(AmountToPaid)"></th>
                             <th>@(Status)</th>
                             <th>@(companies:Entity)</th>
-                            <th table-sort='datec' ng-model='sort' name="@(DateCreation)"></th>
+                            <th table-sort='createdAt' ng-model='sort' name="@(DateCreation)"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -274,7 +274,7 @@
 
                             <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.entity}} </td>
 
-                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.datec| date:'dd/MM/yyyy'}}</td>
+                            <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.createdAt| date:'dd/MM/yyyy'}}</td>
                         </tr>
                     </tbody>
                 </table>

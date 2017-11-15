@@ -154,7 +154,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="(object.status.allocatedStatus != 'ALL' && (object.Status == 'PROCESSING' || object.Status == 'BILLED' )) && login.rights.order.createDelivery" ng-click="createDelivery()">
+                    <a ng-if="(object.status.allocatedStatus != 'ALL' && (object.Status == 'PROCESSING')) && login.rights.order.createDelivery" ng-click="createDelivery()">
                         <i class="fa fa-plane"></i> @(orders:CreateDelivery)
                     </a>
                 </li>
@@ -169,7 +169,7 @@
                     </a>
                 </li>
                 <li>
-                    <a ng-if="(object.Status == 'BILLED' || object.Status == 'PROCESSING')  && login.rights.order.validate" ng-click="createProductReturn()">
+                    <a ng-if="(object.Status == 'CLOSED' || object.Status == 'PROCESSING')  && login.rights.order.validate" ng-click="createProductReturn()">
                         <i class="fa fa-thumbs-o-up"></i> @(orders:CreateProductReturn)
                     </a>
                 </li>

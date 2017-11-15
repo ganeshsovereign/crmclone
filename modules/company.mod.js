@@ -155,7 +155,7 @@ exports.menus = {
             },
             "menu:contacts": {
                 "position": 30,
-                "url": "/erp/#!/contact",
+                "url": "/erp/#!/contact?type=Person",
                 "perms": "contact.read",
                 "enabled": "$conf->societe->enabled",
                 "usertype": 2,
@@ -181,6 +181,15 @@ exports.filters = {
         "Status": {
             "displayName": "Status",
             "backend": "Status",
+            "type": "string"
+        },
+        "company": {
+            "displayName": "Linked To",
+            "backend": "company"
+        },
+        "type": {
+            "displayName": "Type",
+            "backend": "type",
             "type": "string"
         },
         "entity": {

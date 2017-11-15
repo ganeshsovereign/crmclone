@@ -218,6 +218,9 @@ exports.install = function() {
         if (self.query.company)
             query.company = (self.query.company == 'null' ? null : self.query.company);
 
+        if (self.query.type)
+            query.type = self.query.type;
+
         //"$nin": ["ST_NO", "ST_NEVER"]
         //};
 

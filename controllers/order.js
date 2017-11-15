@@ -210,14 +210,14 @@ Object.prototype = {
         if (filter && filter.Status && filter.Status.value[0] == "NEW") {
             filter.Status.value = [];
             filterObject.Status = {
-                $ne: "BILLED"
+                $ne: "CLOSED"
             };
         }
 
-        if (filter && filter.Status && filter.Status.value[0] == "CLOSED") {
-            filter.Status.value[0] = "BILLED";
-            //filterObject.Status = { $ne: "BILLED" };
-        }
+        //if (filter && filter.Status && filter.Status.value[0] == "CLOSED") {
+        //    filter.Status.value[0] = "BILLED";
+        //filterObject.Status = { $ne: "BILLED" };
+        //}
 
         filterObject.$and = [];
 
@@ -2388,18 +2388,14 @@ Object.prototype = {
                                     return console.log(err);
 
                                 //console.log(bill);
-                                for (var i = 0; i < bill.orders.length; i++) {
-                                    OrderModel.update({
-                                        _id: bill.orders[i]
-                                    }, {
-                                        $set: {
-                                            Status: "BILLED"
+                                for (var i = 0; i < bill.orders.length; i++)
+                                    F.emit('order:recalculateStatus', {
+                                        userId: self.user._id.toString(),
+                                        order: {
+                                            _id: bill.orders[i].toString()
                                         }
-                                    }, function(err) {
-                                        if (err)
-                                            console.log(err);
                                     });
-                                }
+
                                 callback(err);
                             });
                         });

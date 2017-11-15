@@ -776,7 +776,7 @@ Object.prototype = {
 
         var conditions = {
             Status: {
-                $nin: ["BILLED", "SEND"]
+                $nin: ["CLOSED", "SEND"]
             },
             isremoved: {
                 $ne: true

@@ -25,30 +25,16 @@ International Registered Trademark & Property of ToManage SAS
 /* global angular: true */
 //Societes service used for articles REST endpoint
 MetronicApp.factory("Societes", ['$resource', function($resource) {
-    return {
-        company: $resource(
-            '/erp/api/societe/:Id', {
-                Id: '@_id'
-            }, {
-                query: {
-                    method: 'GET',
-                    isArray: false
-                },
-                update: {
-                    method: 'PUT'
-                }
-            }),
-        companySupplier: $resource(
-            '/erp/api/societe/:Id?forSales=false', {
-                Id: '@_id'
-            }, {
-                query: {
-                    method: 'GET',
-                    isArray: false
-                },
-                update: {
-                    method: 'PUT'
-                }
-            })
-    }
+    return $resource(
+        '/erp/api/societe/:Id', {
+            Id: '@_id'
+        }, {
+            query: {
+                method: 'GET',
+                isArray: false
+            },
+            update: {
+                method: 'PUT'
+            }
+        });
 }]);

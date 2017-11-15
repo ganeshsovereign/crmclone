@@ -2214,7 +2214,7 @@ Object.prototype = {
     },
     create: function() {
         var self = this;
-        var Model = MODEL('Employees').Schema;
+        const Model = MODEL('Employees').Schema;
         var validatorEmployee = MODULE('validator');
         var userId = self.user._id;
         var currentDate = new Date();
@@ -2226,16 +2226,16 @@ Object.prototype = {
             body.dateBirth = getDate(body.dateBirth);
             body.age = getAge(body.dateBirth);
         }
+
         if (body.notes && body.notes.length) {
             body.notes[0]._id = mongoose.Types.ObjectId();
             body.notes[0].date = currentDate;
-        }
-        if (body.notes && body.notes.length) {
+
             noteObj = body.notes[0];
 
             noteObj._id = mongoose.Types.ObjectId();
             noteObj.date = currentDate;
-            noteObj.author = self.user.username;
+            noteObj.author = self.user._id;
         }
 
         if (body.transfer && body.transfer.length) {
@@ -2262,40 +2262,43 @@ Object.prototype = {
             var email;
 
             function employeeCreator(waterfallCb) {
-                EmployeeService.create(body, waterfallCb);
+                let employee = new Model(body);
+                employee.save(function(err, doc) {
+                    if (err)
+                        return waterfallCb(err);
+
+                    waterfallCb(null, doc);
+                });
             }
 
             function defaultProfile(employee, waterfallCb) {
-                SettingsService.getSettings(function(err, _defaultProfile) {
-                    if (err) {
-                        return waterfallCb(err);
-                    }
-
-                    waterfallCb(null, employee, _defaultProfile._id);
-                });
-
+                // LOAD DEFAULT PROFILE
+                //{_id: 1387275598000, profileName: 'admin'}
+                waterfallCb(null, employee, 1387275598000);
             }
 
             function userCreator(employee, profileId, waterfallCb) {
                 var _user;
+                const UserModel = MODEL('Users').Schema;
 
-                email = employee.workEmail || employee.personalEmail;
+                console.log(body, employee);
 
-                password = randomPass.generate(8);
+                email = employee.emails.work || employee.emails.personal;
 
                 _user = {
-                    login: body.userName,
+                    username: body.name.first[0].toLowerCase() + body.name.last.toLowerCase(),
                     imageSrc: employee.imageSrc,
-                    pass: password,
                     profile: profileId,
                     email: email,
                     relatedEmployee: employee._id,
                 };
 
-                UserService.create(_user, function(err, user) {
-                    if (err) {
+                let user = new UserModel(_user);
+                user.generatePassword(8);
+
+                user.save(function(err, user) {
+                    if (err)
                         return waterfallCb(err);
-                    }
 
                     waterfallCb(null, employee, user);
                 });
@@ -2304,49 +2307,47 @@ Object.prototype = {
             function employeeUpdater(employee, user, waterfallCb) {
                 var _id = employee._id;
 
-                EmployeeService.findByIdAndUpdate(_id, {
-                    $set: {
-                        relatedUser: user._id
-                    }
-                }, waterfallCb);
+                Model.findByIdAndUpdate(_id, {
+                    relatedUser: user._id
+                }, { new: true }, waterfallCb);
             }
 
             waterfallTasks = [employeeCreator];
 
-            if (body.isEmployee) {
+            if (body.isEmployee)
                 waterfallTasks.push(defaultProfile, userCreator, employeeUpdater);
-            }
 
             async.waterfall(waterfallTasks, callback);
         }
 
-        if (!body.isEmployee) {
-            F.emit('updateSequence', Model, 'sequence', 0, 0, body.workflow, body.workflow, true, false, function(sequence) {
-                body.sequence = sequence;
+        /* if (!body.isEmployee) {
+             F.emit('updateSequence', Model, 'sequence', 0, 0, body.workflow, body.workflow, true, false, function(sequence) {
+                 body.sequence = sequence;
 
-                create(body, function(err, employee) {
-                    if (err) {
-                        return self.throw500(err);
+                 create(body, function(err, employee) {
+                     if (err) {
+                         return self.throw500(err);
+                     }
+
+                     res.status(201).send({
+                         result: employee,
+                         id: employee._id
+                     });
+                 });
+             });
+         } else {*/
+        create(body, function(err, employee) {
+            if (err)
+                return self.json({
+                    errorNotify: {
+                        title: 'Erreur',
+                        message: err
                     }
-
-                    res.status(201).send({
-                        result: employee,
-                        id: employee._id
-                    });
                 });
-            });
-        } else {
-            create(body, function(err, employee) {
-                if (err) {
-                    return self.throw500(err);
-                }
 
-                res.status(201).send({
-                    result: employee,
-                    id: employee._id
-                });
-            });
-        }
+
+            self.json(employee);
+        });
     },
     createTransfer: function() {
         var Model = MODEL('transfers').Schema;
@@ -2538,7 +2539,7 @@ Object.prototype = {
 
             async.waterfall([async.apply(findUser, {
                 $or: [{
-                    login: data.userName
+                    username: data.userName
                 }, {
                     email: email
                 }]

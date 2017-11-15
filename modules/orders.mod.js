@@ -180,6 +180,13 @@ exports.filters = {
             "type": "string"
         },
 
+
+        "invoiceStatus": {
+            "displayName": "Invoice Status",
+            "backend": "status.invoiceStatus",
+            "type": "string"
+        },
+
         "channel": {
             "displayName": "Channel",
             "backend": "channel._id"

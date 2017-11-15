@@ -17,7 +17,7 @@
                         <span ng-show="object._id" class="caption-subject dark bold uppercase">@(orders:OrderFab) - {{object.ref}}</span>
                         <span ng-hide="object._id" class="caption-subject dark bold uppercase">@(orders:NewOrderFab) </span>
                     </div>
-                    <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'BILLED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED'" mode="object._id" ng-create="create()" ng-update="update()"
+                    <save ng-disabled="object.Status == 'VALIDATED'|| object.Status == 'CLOSED' ||object.Status == 'SIGNED' || object.Status == 'SEND' || object.Status == 'NOTSIGNED' || object.Status == 'CLOSED'" mode="object._id" ng-create="create()" ng-update="update()"
                         back-to="backTo" class="actions btn-set"></save>
                 </div>
 

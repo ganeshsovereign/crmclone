@@ -508,14 +508,23 @@ MetronicApp.directive('contactId', ['$http', '$modal', 'Societes',
                     if (!newValue)
                         return;
 
-                    $http({
-                        method: 'GET',
-                        url: '/erp/api/societe',
-                        params: {
-                            company: newValue._id,
-                            field: "_id name poste emails phones"
-                        }
-                    }).success(function(data) {
+                    var query = {
+                        //forSales: ($scope.forSales ? true : false),
+                        //quickSearch: $scope.quickSearch,
+                        filter: {
+                            company: {
+                                value: [newValue._id],
+                            }
+                        },
+                        viewType: 'list',
+                        contentType: 'societe',
+                        //limit: $scope.page.limit,
+                        //page: $scope.page.page,
+                        //sort: $scope.sort
+                        field: "_id name poste emails phones"
+                    };
+
+                    Societes.query(query, function(data, status) {
                         //console.log(data);
                         scope.contacts = data.data;
                     });

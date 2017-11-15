@@ -1377,7 +1377,7 @@ MetronicApp.controller('PaymentGroupController', ['$scope', '$rootScope', '$http
 
     $scope.findOne = function() {
         this.search = "";
-        
+
         Banks.paymentGroupChq.get({
             Id: $rootScope.$stateParams.id
         }, function(group) {

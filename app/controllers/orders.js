@@ -473,12 +473,12 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
             //create new bill
             order.$save(function(response) {
-                $scope.object.Status = 'BILLED';
-                $scope.object.$update(function(object) {
-                    $rootScope.$state.go("bill.show", {
-                        id: response._id
-                    });
+                //$scope.object.Status = 'BILLED';
+                //$scope.object.$update(function(object) {
+                $rootScope.$state.go("bill.show", {
+                    id: response._id
                 });
+                //});
             });
         };
 

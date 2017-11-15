@@ -5052,9 +5052,10 @@ F.on('load', function() {
                         }
                     ], function(err, docs) {
                         if (err || !docs)
-                            return;
+                            return aCb(err);
 
                         console.log(docs);
+                        aCb(err);
                     });
 
                 }
@@ -5066,7 +5067,129 @@ F.on('load', function() {
                     wCb(err, conf);
                 });
             },
+            // 0.63 : Add new Status invoiceStatus in order
+            function(conf, wCb) {
+                if (conf.version >= 0.63)
+                    return wCb(null, conf);
 
+                function updateOldOrder(aCb) {
+                    const OrderModel = MODEL('order').Schema.OrderCustomer;
+
+                    console.log("re-import old order");
+                    mongoose.connection.db.collection('Commande', function(err, collection) {
+                        collection.find({ Status: "CLOSED" }).toArray(function(err, docs) {
+                            if (err)
+                                return aCb(err);
+
+                            if (!docs || !docs.length)
+                                return aCb();
+
+                            async.forEach(docs, function(doc, eCb) {
+
+                                OrderModel.update({
+                                        _id: doc._id
+                                    }, {
+                                        $set: {
+                                            "Status": "CLOSED",
+                                            "status.fulfillStatus": 'ALL',
+                                            "status.allocateStatus": 'ALL',
+                                            "status.shippingStatus": 'ALL',
+                                            "status.invoiceStatus": 'ALL'
+                                        }
+                                    }, { upsert: false, multi: false },
+                                    function(err, res) {
+                                        if (err)
+                                            return eCb(err);
+
+                                        //doc.save(function(err, doc) {
+                                        return eCb(err);
+                                    });
+                            }, aCb);
+
+                        });
+                    });
+
+                }
+
+                function updateNewOrder(aCb) {
+                    const OrderModel = MODEL('order').Schema.OrderCustomer;
+
+                    console.log("Status PROCESSING");
+                    OrderModel.update({ Status: "BILLED" }, {
+                            $set: {
+                                "Status": "PROCESSING"
+                            }
+                        }, { upsert: false, multi: true },
+                        function(err, res) {
+                            if (err)
+                                return aCb(err);
+
+                            //doc.save(function(err, doc) {
+                            return aCb(err);
+                        });
+                }
+
+
+                function refreshAllOrder(aCb) {
+                    const OrderModel = MODEL('order').Schema.OrderCustomer;
+
+                    console.log("Update Order status.");
+                    OrderModel.find({
+                            isremoved: { $ne: true },
+                            Status: { $nin: ['CANCELLED', 'CLOSED'] }
+                        }, "_id")
+                        .lean()
+                        .exec(function(err, docs) {
+                            if (err)
+                                return aCb(err);
+
+                            if (!docs || !docs.length)
+                                return aCb();
+
+                            async.forEachLimit(docs, 100, function(doc, eCb) {
+
+                                return F.emit('order:recalculateStatus', {
+                                    userId: null,
+                                    order: {
+                                        _id: doc._id.toString()
+                                    }
+                                }, eCb);
+
+                            }, aCb);
+                        });
+                }
+
+                function dropCollectionEnd(aCb) {
+                    var collectionName = ['Commande'];
+
+                    _.each(collectionName, function(collection) {
+                        mongoose.connection.db.dropCollection(collection, function(err, result) {
+                            console.log(result);
+                        });
+                    });
+
+                    aCb(null);
+                }
+
+
+                async.waterfall([updateOldOrder, updateNewOrder, refreshAllOrder, dropCollectionEnd], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', {
+                        'values.version': 0.63
+                    }, {
+                        new: true
+                    }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.62));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            }
         ],
         function(err, doc) {
             console.log("End update");

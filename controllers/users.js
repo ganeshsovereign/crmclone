@@ -395,8 +395,8 @@ Object.prototype = {
         var conditions = {
             isremoved: {
                 $ne: true
-            },
-            entity: self.query.entity
+            }
+            //entity: self.query.entity
         };
 
         if (!query.search.value) {

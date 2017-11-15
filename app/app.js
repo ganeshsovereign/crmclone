@@ -1087,7 +1087,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/company/index.html"
         })
         .state('societe.list', {
-            url: "?forSales",
+            url: "?forSales&type",
             templateUrl: "/views/company/list.html",
             data: {
                 pageTitle: 'Liste des societes'
@@ -1190,12 +1190,12 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             templateUrl: "/views/contact/index.html"
         })
         .state('contact.list', {
-            url: "",
-            templateUrl: "/views/contact/list.html",
+            url: "?type",
+            templateUrl: "/views/company/list.html",
             data: {
                 pageTitle: 'Liste des contacts'
             },
-            controller: "ContactController"
+            controller: "SocieteController"
         })
         .state('contact.show', {
             url: "/{id:[0-9a-z]{24}}",
