@@ -1050,6 +1050,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             Status: {
                 value: ["NEW"]
             },
+
             allocationStatus: {
                 value: []
             },
@@ -1060,11 +1061,9 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 value: []
             },
             datedl: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
+                value: []
             },
+
             datec: {
                 value: {
                     start: moment().startOf('year').toDate(),
@@ -1228,7 +1227,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                     $scope.page.total = data.total;
                     $scope.orders = data.data;
                     $scope.totalAll = data.totalAll;
-                    //console.log("query", data);
+                    //console.log("orders", data);
                     $timeout(function() {
                         Metronic.unblockUI('.waiting');
                     }, 0);
@@ -1617,6 +1616,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         $scope.$dict = {};
 
         $scope.search = {
+
             ref: {
                 value: ""
             },
@@ -1635,17 +1635,14 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             Status: {
                 value: []
             },
-            dater: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
-            },
             datec: {
                 value: {
                     start: moment().startOf('year').toDate(),
                     end: moment().endOf('year').toDate()
                 }
+            },
+            dater: {
+                value: []
             },
         };
         $scope.page = {
