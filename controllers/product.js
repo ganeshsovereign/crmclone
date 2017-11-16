@@ -2662,7 +2662,7 @@ Object.prototype = {
                             $lt: query.end_date
                         },
                         Status: {
-                            $nin: ['DRAFT', 'CANCELLED']
+                            $nin: ['DRAFT', 'CANCELED']
                         },
                         isremoved: {
                             $ne: true

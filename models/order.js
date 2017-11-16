@@ -2969,8 +2969,8 @@ F.on('order:recalculateStatus', function(data, callback) {
                 if (!doc || doc.isremoved == true)
                     return wCb(null, null, null);
 
-                if (doc.Status == 'CLOSED' || doc.Status == 'CANCELLED')
-                    return wCb(null, null, null); // No UPDATE IF CLOSED
+                //if (doc.Status == 'CLOSED' || doc.Status == 'CANCELED')
+                //    return wCb(null, null, null); // No UPDATE IF CLOSED
 
                 if (doc._type == 'orderCustomer')
                     return wCb(null, exports.Schema.OrderCustomer, doc);

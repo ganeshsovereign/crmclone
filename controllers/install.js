@@ -5136,7 +5136,7 @@ F.on('load', function() {
                     console.log("Update Order status.");
                     OrderModel.find({
                             isremoved: { $ne: true },
-                            Status: { $nin: ['CANCELLED', 'CLOSED'] }
+                            Status: { $nin: ['CANCELED', 'CLOSED'] }
                         }, "_id")
                         .lean()
                         .exec(function(err, docs) {

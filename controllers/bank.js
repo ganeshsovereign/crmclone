@@ -178,8 +178,8 @@ Payment.prototype = {
                     case "query":
                         if (self.query.query == "WAIT") // For payment
                             query.Status = {
-                                "$nin": ["PAID", "CANCELLED", "DRAFT"]
-                            };
+                            "$nin": ["PAID", "CANCELED", "DRAFT"]
+                        };
                         break;
                     case "dater":
                         query.dater = JSON.parse(self.query.dater);
@@ -342,7 +342,7 @@ Payment.prototype = {
         //console.log("update");
         var self = this;
 
-        self.body.lines = _.filter(self.body.lines, function(elem){
+        self.body.lines = _.filter(self.body.lines, function(elem) {
             return elem.isDeleted != true;
         });
 
@@ -616,7 +616,7 @@ Payment.prototype = {
 
         var options = {
             conditions: conditions
-            // select: ""
+                // select: ""
         };
 
         //console.log(options);

@@ -9,34 +9,6 @@
             <span>@(Sales)</span>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('ordersupplier') || module('offersupplier')">
-            <span>@(orders:Purchases)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li ng-if="module('order')">
-            <span>@(orders:CustomersOrders)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li ng-if="module('ordersupplier')">
-            <span>@(orders:SuppliersOrders)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li ng-if="module('offer')">
-            <span>@(orders:CommercialProposals)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li ng-if="module('delivery') || module('stockreturn')">
-            <span>@(orders:Logistics)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li ng-if="module('delivery')">
-            <span>@(orders:PreparationReceipt)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li ng-if=" module('stockreturn')">
-            <span>@(orders:StockReturn)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
         <li ng-if="module('offer')">
             <a ui-sref="{{backTo}}">@(orders:ListOfProposals)</a>
             <i class="fa fa-angle-right"></i>
@@ -173,9 +145,9 @@
                         <i class="fa fa-thumbs-o-up"></i> @(orders:CreateProductReturn)
                     </a>
                 </li>
-                <hr>
+                <li class="divider"></li>
                 <li>
-                    <a href="#" ng-show="object.Status == 'VALIDATED' && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
+                    <a href="#" ng-show="(object.Status !== 'DRAFT' || object.Status !== 'CANCELED') && login.rights.order.create" data-ng-click="changeStatus('DRAFT')">
                         <i class="fa fa-history"></i> @(ReOpen)
                     </a>
                 </li>
@@ -184,130 +156,142 @@
                         <i class="fa fa-copy"></i> @(ToClone)
                     </a>
                 </li>
-                <hr>
                 <li>
-                    <a ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
-                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    <a href="#" class="font-blue" ng-if="object.Status =='PROCESSING' && login.rights.order.validate" confirmed-click="changeStatus('CLOSED')" ng-confirm-click="Forcer la cloture manuelle de la commade ?" title="Cloturer ">
+                        <i class=" fa fa-close font-blue "></i> @(orders:CloseOrder)
+                    </a>
+                </li>
+                <li class="divider "></li>
+                <li>
+                    <a ng-href="/erp/api/{{module()}}/pdf/{{object.ref}} " target="_blank ">
+                        <i class="fa fa-file-pdf-o "></i> @(BuildPDF)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="object.total_ht != 0" ng-href="/erp/api/order/pdf/{{object.ref}}?proforma=1" target="_blank">
-                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF) Proforma</a>
+                    <a ng-if="object.total_ht !=0 " ng-href="/erp/api/order/pdf/{{object.ref}}?proforma=1 " target="_blank ">
+                        <i class="fa fa-file-pdf-o "></i> @(BuildPDF) Proforma</a>
                 </li>
                 <li>
-                    <a ng-if="object.Status != 'DRAFT' && object.contacts.length" ng-href="#" ng-click="sendEmail('@(orders:Order)','order',object.address.contacts)">
-                        <i class="fa  fa-envelope"></i> @(mails:SendMail)
+                    <a ng-if="object.Status !='DRAFT' && object.contacts.length " ng-href="# " ng-click="sendEmail( '@(orders:Order)', 'order',object.address.contacts) ">
+                        <i class="fa fa-envelope "></i> @(mails:SendMail)
+                    </a>
+                </li>
+                <li class="divider "></li>
+                <li>
+                    <a href="# " class="font-red " ng-if="(object.Status !=='CLOSED' && object.Status !== 'CANCELED') && login.rights.order.delete " confirmed-click="changeStatus('CANCELED') " ng-confirm-click="Annuler la commade ? Attention ceci ne supprime que les bons de preparation en etat BROUILLON ? "
+                        title="Annuler ">
+                        <i class="fa fa-ban font-red "></i> @(orders:CancelOrder)
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="font-red" ng-if="object.Status =='DRAFT' && login.rights.order.delete" confirmed-click="remove(orders)" ng-confirm-click="Supprimer le document ?" title="Supprimer le document">
-                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    <a href="# " class="font-red " ng-if="(object.Status =='DRAFT' || object.Status=='CANCELED') && login.rights.order.delete " confirmed-click="remove(orders) " ng-confirm-click="Supprimer la commade ? " title="Supprimer ">
+                        <i class="fa fa-trash-o font-red "></i> @(Delete)
                     </a>
                 </li>
             </ul>
             <!-- __DELIVERY__ -->
-            <ul ng-if="module('delivery') || module('deliverysupplier')" class="dropdown-menu pull-right" role="menu">
+            <ul ng-if="module( 'delivery') || module( 'deliverysupplier') " class="dropdown-menu pull-right " role="menu ">
                 <li>
-                    <a ng-if="object.Status == 'DRAFT' && login.rights.delivery.validate && isQty(object.orderRows)" data-ng-click="changeStatus('VALIDATED')">
-                        <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateDelivery)
+                    <a ng-if="object.Status=='DRAFT' && login.rights.delivery.validate && isQty(object.orderRows) " data-ng-click="changeStatus( 'VALIDATED') ">
+                        <i class="fa fa-thumbs-o-up "></i> @(orders:ValidateDelivery)
                     </a>
                 </li>
                 <!--<li>
-                    <a ng-show="object.Status == 'SEND'" ng-href="#" ng-click="sendFTP()">
-                        <i class="fa fa-file-pdf-o"></i> @(SendToFtp)
+                    <a ng-show="object.Status=='SEND' " ng-href="# " ng-click="sendFTP() ">
+                        <i class="fa fa-file-pdf-o "></i> @(SendToFtp)
                     </a>
                 </li>-->
                 <li>
-                    <a href="#" ng-show="object.Status == 'VALIDATED' && login.rights.delivery.validate && object.status.isShipped == null" data-ng-click="changeStatus('DRAFT')">
-                        <i class="fa fa-history"></i> @(ReOpen)
+                    <a href="# " ng-show="object.Status=='VALIDATED' && login.rights.delivery.validate && object.status.isShipped==n ull " data-ng-click="changeStatus( 'DRAFT') ">
+                        <i class="fa fa-history "></i> @(ReOpen)
                     </a>
                 </li>
                 <li>
-                    <a href="#" data-ng-click="clone()">
-                        <i class="fa fa-copy"></i> @(ToClone)
+                    <a href="# " data-ng-click="clone() ">
+                        <i class="fa fa-copy "></i> @(ToClone)
                     </a>
                 </li>
                 <hr>
                 <li>
-                    <a ng-if="isQty(object.orderRows)" ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
-                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    <a ng-if="isQty(object.orderRows) " ng-href="/erp/api/{{module()}}/pdf/{{object.ref}} " target="_blank ">
+                        <i class="fa fa-file-pdf-o "></i> @(BuildPDF)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="object.Status !='DRAFT' && object.contacts.length" ng-href="#" ng-click="sendEmail('@(orders:Delivery)','delivery',object.address.contact.email)">
-                        <i class="fa fa-envelope"></i> @(mails:SendMail)
+                    <a ng-if="object.Status !='DRAFT' && object.contacts.length " ng-href="# " ng-click="sendEmail( '@(orders:Delivery)', 'delivery',object.address.contact.email) ">
+                        <i class="fa fa-envelope "></i> @(mails:SendMail)
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="font-red" ng-if="object.Status=='DRAFT' && login.rights.order.delete" confirmed-click="remove(orders)" ng-confirm-click="Supprimer le document ?" title="Supprimer le document">
-                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    <a href="# " class="font-red " ng-if="object.Status=='DRAFT' && login.rights.order.delete " confirmed-click="remove(orders) " ng-confirm-click="Supprimer le document ? " title="Supprimer le document ">
+                        <i class="fa fa-trash-o font-red "></i> @(Delete)
                     </a>
                 </li>
             </ul>
             <!-- __BILL__ -->
-            <ul ng-if="module( 'bill')" class="dropdown-menu pull-right" role="menu">
+            <ul ng-if="module( 'bill') " class="dropdown-menu pull-right " role="menu ">
                 <li>
-                    <a href="#" ng-show="(object.Status=='NOT_PAID' || object.Status=='VALIDATED' ) && object.journalId.length==0 && login.rights.bill.validate" data-ng-click="exportAccounting(object._id)">
-                        <i class="fa fa-mail-forward"></i> @(orders:SendAccounting)
+                    <a href="# " ng-show="(object.Status=='NOT_PAID' || object.Status=='VALIDATED' ) && object.journalId.length==0 && login.rights.bill.validate " data-ng-click="exportAccounting(object._id) ">
+                        <i class="fa fa-mail-forward "></i> @(orders:SendAccounting)
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-if="(object.Status=='VALIDATED' || object.Status == 'NOT_PAID') && login.rights.bill.unvalidate && !object.journalId.length" data-ng-click="changeStatus( 'DRAFT')">
-                        <i class="fa fa-history"></i> @(ReOpen)
+                    <a href="# " ng-if="(object.Status=='VALIDATED' || object.Status=='NOT_PAID' ) && login.rights.bill.unvalidate && !object.journalId.length " data-ng-click="changeStatus( 'DRAFT') ">
+                        <i class="fa fa-history "></i> @(ReOpen)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="object.Status=='DRAFT' && login.rights.bill.validate" data-ng-click="changeStatus( 'NOT_PAID')">
-                        <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateBill)
+                    <a ng-if="object.Status=='DRAFT' && login.rights.bill.validate " data-ng-click="changeStatus( 'NOT_PAID') ">
+                        <i class="fa fa-thumbs-o-up "></i> @(orders:ValidateBill)
                     </a>
                 </li>
                 <li>
-                    <a href="#" data-ng-click="clone()">
-                        <i class="fa fa-copy"></i> @(ToClone)
+                    <a href="# " data-ng-click="clone() ">
+                        <i class="fa fa-copy "></i> @(ToClone)
                     </a>
                 </li>
                 <hr>
                 <li>
-                    <a ng-if="object.Status !='DRAFT'" ng-href="/erp/api/{{module()}}/pdf/{{object.ref}}" target="_blank">
-                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    <a ng-if="object.Status !='DRAFT' " ng-href="/erp/api/{{module()}}/pdf/{{object.ref}} " target="_blank ">
+                        <i class="fa fa-file-pdf-o "></i> @(BuildPDF)
                     </a>
                 </li>
                 <li>
-                    <a ng-show='object.Status !="DRAFT" && object.address.contact.email' ng-href="#" ng-click="sendEmail('@(orders:Bill)','bill',object.address.contact.email)">
-                        <i class="fa fa-envelope"></i> @(mails:SendMail)
+                    <a ng-show='object.Status !="DRAFT " && object.address.contact.email' ng-href="# " ng-click="sendEmail( '@(orders:Bill)', 'bill',object.address.contact.email) ">
+                        <i class="fa fa-envelope "></i> @(mails:SendMail)
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="font-red" ng-if="object.Status=='DRAFT' && login.rights.bill.delete" confirmed-click="remove(object)" ng-confirm-click="Supprimer le document ?" title="Supprimer le document">
-                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    <a href="# " class="font-red " ng-if="object.Status=='DRAFT' && login.rights.bill.delete " confirmed-click="remove(object) " ng-confirm-click="Supprimer le document ? " title="Supprimer le document ">
+                        <i class="fa fa-trash-o font-red "></i> @(Delete)
                     </a>
                 </li>
             </ul>
             <!-- __STOCKRETURN__ -->
-            <ul ng-if="module('stockreturn')" class="dropdown-menu pull-right" role="menu">
+            <ul ng-if="module( 'stockreturn') " class="dropdown-menu pull-right " role="menu ">
                 <li>
-                    <a ng-if="object.Status=='DRAFT' && login.rights.delivery.validate" data-ng-click="changeStatus( 'VALIDATED')">
-                        <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateStockReturn)
+                    <a ng-if="object.Status=='DRAFT' && login.rights.delivery.validate " data-ng-click="changeStatus( 'VALIDATED') ">
+                        <i class="fa fa-thumbs-o-up "></i> @(orders:ValidateStockReturn)
                     </a>
                 </li>
                 <li>
-                    <a href="#" ng-if="object.Status=='VALIDATED' && login.rights.order.create" data-ng-click="changeStatus( 'DRAFT')">
-                        <i class="fa fa-history"></i> @(ReOpen)
+                    <a href="# " ng-if="object.Status=='VALIDATED' && login.rights.order.create " data-ng-click="changeStatus( 'DRAFT') ">
+                        <i class="fa fa-history "></i> @(ReOpen)
                     </a>
                 </li>
                 <li>
-                    <a ng-href="/erp/api/delivery/pdf/{{object.ref}}?stockReturn=true" target="_blank">
-                        <i class="fa fa-file-pdf-o"></i> @(BuildPDF)
+                    <a ng-href="/erp/api/delivery/pdf/{{object.ref}}?stockReturn=true " target="_blank ">
+                        <i class="fa fa-file-pdf-o "></i> @(BuildPDF)
                     </a>
                 </li>
                 <li>
-                    <a ng-if="object.supplier.emails[0].email" ng-click="sendEmail('@(orders:StockReturn)','stockreturn',object.shippingAddress.contact.email)">
-                        <i class="fa fa-envelope"></i> @(mails:SendMail)
+                    <a ng-if="object.supplier.emails[0].email " ng-click="sendEmail( '@(orders:StockReturn)', 'stockreturn',object.shippingAddress.contact.email) ">
+                        <i class="fa fa-envelope "></i> @(mails:SendMail)
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="font-red" ng-if="object.Status=='DRAFT' && login.rights.order.delete" confirmed-click="remove(orders)" ng-confirm-click="Supprimer le document ?" title="Supprimer le document">
-                        <i class="fa fa-trash-o font-red"></i> @(Delete)
+                    <a href="# " class="font-red " ng-if="object.Status=='DRAFT' && login.rights.order.delete " confirmed-click="remove(orders) " ng-confirm-click="Supprimer le document ? " title="Supprimer le document ">
+                        <i class="fa fa-trash-o font-red "></i> @(Delete)
                     </a>
                 </li>
             </ul>
@@ -315,62 +299,62 @@
     </div>
 </div>
 
-<!--<h3 class="page-title" ng-class="{ 'font-red':!product.info.isActive}">
-    <i class="fa fa-cubes font-grey-silver"></i> @(products:ProductServiceCard) : {{product.info.langs[0].name}} <small ng-hide="!product.info.isActive" class="font-green">@(Enabled)</small><small ng-show="!product.info.isActive" class="font-red">@(Disabled)</small>
+<!--<h3 class="page-title " ng-class="{ 'font-red':!product.info.isActive} ">
+    <i class="fa fa-cubes font-grey-silver "></i> @(products:ProductServiceCard) : {{product.info.langs[0].name}} <small ng-hide="!product.info.isActive " class="font-green ">@(Enabled)</small><small ng-show="!product.info.isActive " class="font-red ">@(Disabled)</small>
 </h3>-->
 
-<div ng-if="object.isremoved" class="alert alert-danger"><strong> @(BeCareful) !</strong> Cette fiche à été supprimée</div>
+<div ng-if="object.isremoved " class="alert alert-danger "><strong> @(BeCareful) !</strong> Cette fiche à été supprimée</div>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="profile-sidebar mt-element-ribbon portlet-fit bordered">
-            <div ng-hide="!object._id" class="ribbon ribbon-right ribbon-clip ribbon-shadow uppercase" ng-class="object._status.css">
-                <div class="ribbon-sub ribbon-clip ribbon-right"></div> {{object._status.name}}
+<div class="row ">
+    <div class="col-md-12 ">
+        <div class="profile-sidebar mt-element-ribbon portlet-fit bordered ">
+            <div ng-hide="!object._id " class="ribbon ribbon-right ribbon-clip ribbon-shadow uppercase " ng-class="object._status.css ">
+                <div class="ribbon-sub ribbon-clip ribbon-right "></div> {{object._status.name}}
             </div>
-            <div class="portlet light profile-sidebar-portlet">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-6">
-                            <div class="profile">
-                                <img ng-src="{{getImage( 'product', product.imageSrc)}}" class="img-responsive" alt="Product" />
+            <div class="portlet light profile-sidebar-portlet ">
+                <div class="row ">
+                    <div class="col-md-12 ">
+                        <div class="col-md-6 ">
+                            <div class="profile ">
+                                <img ng-src="{{getImage( 'product', product.imageSrc)}} " class="img-responsive " alt="Product " />
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="profile-usertitle">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div ng-if="module('offer')" class="uppercase profile-stat-text"> @(orders:QuotationCustomer) </div>
-                                        <div ng-if="module('offersupplier')" class="uppercase profile-stat-text"> @(orders:QuotationSupplier) </div>
-                                        <div ng-if="module('order')" class="uppercase profile-stat-text"> @(orders:OrderCustomer) </div>
-                                        <div ng-if="module('ordersupplier')" class="uppercase profile-stat-text"> @(orders:OrderSupplier) </div>
-                                        <div ng-if="module('delivery')" class="uppercase profile-stat-text"> @(orders:PreparationNoteCustomer) </div>
-                                        <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(orders:PreparationNoteSupplier) </div>
-                                        <div ng-if="module('bill') && object.forSales" class="uppercase profile-stat-text"> @(orders:BillCustomer) </div>
-                                        <div ng-if="module('bill') && !object.forSales" class="uppercase profile-stat-text"> @(orders:BillSupplier) </div>
-                                        <div class="uppercase profile-stat-title"> {{object.ref}} </div>
+                        <div class="col-md-6 ">
+                            <div class="profile-usertitle ">
+                                <div class="row ">
+                                    <div class="col-md-12 ">
+                                        <div ng-if="module( 'offer') " class="uppercase profile-stat-text "> @(orders:QuotationCustomer) </div>
+                                        <div ng-if="module( 'offersupplier') " class="uppercase profile-stat-text "> @(orders:QuotationSupplier) </div>
+                                        <div ng-if="module( 'order') " class="uppercase profile-stat-text "> @(orders:OrderCustomer) </div>
+                                        <div ng-if="module( 'ordersupplier') " class="uppercase profile-stat-text "> @(orders:OrderSupplier) </div>
+                                        <div ng-if="module( 'delivery') " class="uppercase profile-stat-text "> @(orders:PreparationNoteCustomer) </div>
+                                        <div ng-if="module( 'deliverysupplier') " class="uppercase profile-stat-text "> @(orders:PreparationNoteSupplier) </div>
+                                        <div ng-if="module( 'bill') && object.forSales " class="uppercase profile-stat-text "> @(orders:BillCustomer) </div>
+                                        <div ng-if="module( 'bill') && !object.forSales " class="uppercase profile-stat-text "> @(orders:BillSupplier) </div>
+                                        <div class="uppercase profile-stat-title "> {{object.ref}} </div>
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="uppercase profile-stat-text"> @(orders:RefCustomerOrder) </div>
-                                        <div class="uppercase profile-stat-title"> {{object.ref_client}} </div>
+                                <div class="row ">
+                                    <div class="col-md-12 ">
+                                        <div class="uppercase profile-stat-text "> @(orders:RefCustomerOrder) </div>
+                                        <div class="uppercase profile-stat-title "> {{object.ref_client}} </div>
                                     </div>
                                 </div>
-                                <!-- <div class="md-checkbox-inline">
-                            <div class="md-checkbox">
-                                <input type="checkbox" id="isSell" class="md-check" ng-model="product.isSell" ng-checked="product.isSell">
-                                <label for="isSell">
+                                <!-- <div class="md-checkbox-inline ">
+                            <div class="md-checkbox ">
+                                <input type="checkbox " id="isSell " class="md-check " ng-model="product.isSell " ng-checked="product.isSell ">
+                                <label for="isSell ">
                                     <span></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span> @(products:Status.OnSell)</label>
+                                    <span class="check "></span>
+                                    <span class="box "></span> @(products:Status.OnSell)</label>
                             </div>
-                            <div class="md-checkbox">
-                                <input type="checkbox" id="isBuy" class="md-check" ng-model="product.isBuy" ng-checked="product.isBuy">
-                                <label for="isBuy">
+                            <div class="md-checkbox ">
+                                <input type="checkbox " id="isBuy " class="md-check " ng-model="product.isBuy " ng-checked="product.isBuy ">
+                                <label for="isBuy ">
                                     <span></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span> @(products:Status.OnBuy)</label>
+                                    <span class="check "></span>
+                                    <span class="box "></span> @(products:Status.OnBuy)</label>
                             </div>
                         </div>
                     </div>-->
@@ -379,32 +363,32 @@
                     </div>
                 </div>
 
-                <div class="profile-usermenu">
-                    <ul class="nav" ng-if="module('offer') || module('offersupplier')">
-                        <li ng-class="{active: $state.includes(module() + '.show.detail')}">
-                            <a ui-sref="offer.show.detail({id:object._id})">
-                                <i class="icon-info"></i> @(orders:DetailsOffer) </a>
+                <div class="profile-usermenu ">
+                    <ul class="nav " ng-if="module( 'offer') || module( 'offersupplier') ">
+                        <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
+                            <a ui-sref="offer.show.detail({id:object._id}) ">
+                                <i class="icon-info "></i> @(orders:DetailsOffer) </a>
                         </li>
                     </ul>
-                    <ul class="nav" ng-if="module('order') || module('ordersupplier')">
-                        <li ng-class="{active: $state.includes(module() + '.show.detail')}">
-                            <a ui-sref="order.show.detail({id:object._id})">
-                                <i class="icon-info"></i> @(orders:OrdersDetails) </a>
+                    <ul class="nav " ng-if="module( 'order') || module( 'ordersupplier') ">
+                        <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
+                            <a ui-sref="order.show.detail({id:object._id}) ">
+                                <i class="icon-info "></i> @(orders:OrdersDetails) </a>
                         </li>
                     </ul>
-                    <ul class="nav" ng-if="module('delivery') || module('deliverysupplier')">
-                        <li ng-class="{active: $state.includes(module() + '.show.detail')}">
-                            <a ui-sref="delivery.show.detail({id:object._id})">
-                                <i class="icon-info"></i> @(orders:PreparationDetails) </a>
+                    <ul class="nav " ng-if="module( 'delivery') || module( 'deliverysupplier') ">
+                        <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
+                            <a ui-sref="delivery.show.detail({id:object._id}) ">
+                                <i class="icon-info "></i> @(orders:PreparationDetails) </a>
                         </li>
                     </ul>
-                    <ul class="nav" ng-if="module('bill')">
-                        <li ng-class="{active: $state.includes(module() + '.show.detail')}">
-                            <a ui-sref="bill.show.detail({id:object._id})">
-                                <i class="icon-info"></i> @(orders:DetailsBill) </a>
+                    <ul class="nav " ng-if="module( 'bill') ">
+                        <li ng-class="{active: $state.includes(module() + '.show.detail')} ">
+                            <a ui-sref="bill.show.detail({id:object._id}) ">
+                                <i class="icon-info "></i> @(orders:DetailsBill) </a>
                         </li>
 
-                        <li ng-class="{active: $state.includes(module() + '.show.payment')}" ng-show="object.journalId.length> 0">
+                        <li ng-class="{active: $state.includes(module() + '.show.payment')} " ng-show="object.journalId.length> 0">
                             <a ui-sref="bill.show.payment({id:object._id})">
                                 <i class="icon-info"></i> @(compta:ListOfPayments) </a>
                         </li>

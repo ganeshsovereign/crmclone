@@ -123,7 +123,7 @@ Object.prototype = {
                     case "query":
                         if (self.query.query == "WAIT") // For payment
                             query.Status = {
-                            "$nin": ["PAID", "CANCELLED", "DRAFT"]
+                            "$nin": ["PAID", "CANCELED", "DRAFT"]
                         };
                         break;
                     case "dater":

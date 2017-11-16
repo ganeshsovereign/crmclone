@@ -1329,7 +1329,7 @@ F.on('customer:recalculateStatus', function(data) {
                             $ne: true
                         },
                         Status: {
-                            $ne: "CANCELLED"
+                            $ne: "CANCELED"
                         },
                         datec: {
                             $gte: moment().subtract(1, 'year').toDate()
@@ -1366,7 +1366,7 @@ F.on('customer:recalculateStatus', function(data) {
                             $ne: true
                         },
                         Status: {
-                            $nin: ["DRAFT", "CANCELLED"]
+                            $nin: ["DRAFT", "CANCELED"]
                         }
                     }, "", {
                         sort: {
@@ -1390,7 +1390,7 @@ F.on('customer:recalculateStatus', function(data) {
                                 $ne: true
                             },
                             Status: {
-                                $nin: ["DRAFT", "CANCELLED"]
+                                $nin: ["DRAFT", "CANCELED"]
                             },
                             datec: {
                                 $gte: moment().subtract(1, 'year').toDate()
@@ -1417,7 +1417,7 @@ F.on('customer:recalculateStatus', function(data) {
                                             $ne: true
                                         },
                                         Status: {
-                                            $nin: ["DRAFT", "CANCELLED"]
+                                            $nin: ["DRAFT", "CANCELED"]
                                         },
                                         datec: {
                                             $gte: moment().subtract(1, 'year').toDate()

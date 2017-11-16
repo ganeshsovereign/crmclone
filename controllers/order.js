@@ -210,7 +210,7 @@ Object.prototype = {
         if (filter && filter.Status && filter.Status.value[0] == "NEW") {
             filter.Status.value = [];
             filterObject.Status = {
-                $ne: "CLOSED"
+                $nin: ["CLOSED", "CANCELED"]
             };
         }
 
@@ -899,17 +899,21 @@ Object.prototype = {
         var OrderRowsModel = MODEL('orderRows').Schema;
 
         //console.log("update");
+        var DeliveryModel, OrderModel;
 
         if (self.query.quotation === 'true') {
             if (self.query.forSales == "false")
-                var OrderModel = MODEL('order').Schema.QuotationSupplier;
+                OrderModel = MODEL('order').Schema.QuotationSupplier;
             else
-                var OrderModel = MODEL('order').Schema.QuotationCustomer;
+                OrderModel = MODEL('order').Schema.QuotationCustomer;
         } else {
-            if (self.query.forSales == "false")
-                var OrderModel = MODEL('order').Schema.OrderSupplier;
-            else
-                var OrderModel = MODEL('order').Schema.OrderCustomer;
+            if (self.query.forSales == "false") {
+                OrderModel = MODEL('order').Schema.OrderSupplier;
+                DeliveryModel = MODEL('order').Schema.GoodsInNote;
+            } else {
+                OrderModel = MODEL('order').Schema.OrderCustomer;
+                DeliveryModel = MODEL('order').Schema.GoodsOutNote;
+            }
         }
 
         var rows = [];
@@ -1106,12 +1110,30 @@ Object.prototype = {
                         wCb(null, order);
                     });
 
-                if (order.Status == "CANCELLED")
+                if (order.Status == "CANCELED")
                     return order.unsetAllocated(newRows, function(err) {
                         if (err)
                             return wCb(err);
 
-                        // TODO Remove all Deliveries
+                        if (DeliveryModel)
+                            DeliveryModel.update({
+                                order: order._id,
+                                Status: 'DRAFT'
+                            }, {
+                                $set: {
+                                    isremoved: true,
+                                    Status: 'CANCELED',
+                                    total_ht: 0,
+                                    total_ttc: 0,
+                                    total_tva: [],
+                                    orderRows: []
+                                }
+                            }, { multi: true, upsert: false }, function(err) {
+                                if (err)
+                                    console.log(err);
+                            });
+
+                        //Remove all Deliveries
                         wCb(null, order);
                     });
 
@@ -2412,4 +2434,6 @@ Object.prototype = {
     }
 };
 
-exports.Order = Object;
+//exports.Order = Object;
+
+//exports.Order = Object;
