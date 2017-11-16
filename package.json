@@ -51,7 +51,7 @@
     "q": "^1.4.1",
     "shortid": "latest",
     "symeos-mqtt": "latest",
-    "total.js": "~2.8.x",
+    "total.js": "^2.9.0",
     "unzip": "^0.1.11",
     "validator": "4.2.1",
     "xml-writer": ">=1.4.1",
