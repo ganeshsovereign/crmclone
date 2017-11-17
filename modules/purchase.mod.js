@@ -86,7 +86,7 @@ exports.menus = {
             "menu:offersupplier": {
                 "position": 30,
                 "url": "/erp/#!/offersupplier",
-                "perms": "offersuppliers.read",
+                "perms": "purchase.read",
                 "enabled": "$conf->offersupplier->enabled",
                 "usertype": 2,
                 "title": "orders:PurchaseRequests",
@@ -95,7 +95,7 @@ exports.menus = {
             "menu:ordersupplier": {
                 "position": 40,
                 "url": "/erp/#!/ordersupplier",
-                "perms": "ordersuppliers.read",
+                "perms": "purchase.read",
                 "enabled": "$conf->ordersupplier->enabled",
                 "usertype": 2,
                 "title": "orders:SuppliersOrders",
