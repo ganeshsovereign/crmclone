@@ -32,6 +32,7 @@ exports.csv = {
         "fullName": "Client/Prospect/Fournisseur",
         "salesPurchases.ref": "Ref",
         "salesPurchases.salesPerson.fullName": "Commercial/Acheteur",
+        "address.street":"Adresse",
         "address.zip": "Code postal",
         "address.city": "Ville",
         "companyInfo.idprof3": "Naf",
