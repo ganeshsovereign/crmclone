@@ -84,7 +84,7 @@ var UserSchema = new Schema({
         lowercase: true,
         trim: true,
         index: true,
-        unique: true
+        sparse :true
     },
     password: {
         type: String,
@@ -146,7 +146,7 @@ var UserSchema = new Schema({
         ref: 'Profile',
         required: false
     }, //TODO true by default
-    groupe: String, //TODO Remove 
+    groupe: String, //TODO Remove
     groups: [String],
     lastConnection: Date,
     newConnection: Date,

@@ -249,5 +249,12 @@ exports.filters = {
                 "values": [true, false]
             }
         },
+        "total_ttc": {
+            "type": "number",
+            "backend": {
+                "key": "total_ttc",
+                "operator": ["$gte", "$lte"]
+            }
+        }
     }
 };
