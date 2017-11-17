@@ -870,5 +870,6 @@
     "StatusFilfull": "Etat préparation",
     "StatusShipping": "Etat expédition",
     "Setting": "Configuration",
-    "VATRate": "TVA par défaut"
+    "VATRate": "TVA par défaut",
+    "StatusBilling":"Etat Facturation"
 }

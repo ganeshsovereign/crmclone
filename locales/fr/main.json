@@ -802,7 +802,10 @@
     "Tel-Mobile": "Téléphone Mobile",
     "Tel-Fixe": "Téléphone Fixe",
     "Tel-Fax": "Fax",
+    "Tel-Pro":"Tél. Pro",
     "Email": "Email",
+    "PersonalEmail":"Email Personnel",
+    "ProEmail":"Email Professionel",
     "Phone": "Tél.",
     "Tools": "Outils",
     "ShoppingCard": "Panier",
@@ -857,5 +860,7 @@
     "Stock": "Stock",
     "StrategicInformation": "Info stratégiques",
     "DeletePostIt": "Supprimer la note ?",
-    "Late": "En retard"
+    "Late": "En retard",
+    "ManagementEmployees":"Gestion des collaborateurs",
+    "Entities":"Entités"
 }
