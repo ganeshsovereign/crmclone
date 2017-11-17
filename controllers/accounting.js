@@ -866,7 +866,7 @@ Object.prototype = {
                  BillModel.update({_id: {$in: need_imported}}, {$set: {imported: true}}, {multi: true}, function (err, result) {
                  if (err)
                  console.log(err);
-                 
+
                  console.log(result);
                  });*/
             });
@@ -999,12 +999,12 @@ Object.prototype = {
             });
         });
     },
-    /* 
+    /*
      * 0  1          2            3                4                5                 6     7      8                9        10
      * JL;Date pièce;Numéro pièce;Libellé écriture;Numéro de compte;Libellé mouvement;Débit;Crédit;Date de pointage;Lettrage;transaction
      * EX;31/12/2015;            ;acomptes        ;40910000        ;                 ;969,8;0     ;                ;        ;1
      * IV;31/01/2015;0           ;TVA 01.2016     ;44551000        ;0                ;1965 ;      ;                ;AAI     ;5
-     * 
+     *
      */
     importcsv: function() {
         var self = this;
@@ -1161,10 +1161,10 @@ Object.prototype = {
         }
     },
     /* Coala Balance
-     * 0        1           2           3           4                   5           6   
+     * 0        1           2           3           4                   5           6
      * Date;    Journal;    Libelle;    Compte; 	Libelle compte; 	debit;  	credit
      * 30/09/2012;	AN;	A NOUVEAU;	1010000000;	CAPITAL;            	0;	121500
-     * 
+     *
      */
     importcsv1: function() {
         var self = this;
@@ -1317,10 +1317,10 @@ Object.prototype = {
         }
     },
     /* Coala
-     * 0               1            2                3               4              5               6       7   
+     * 0               1            2                3               4              5               6       7
      * date DD/MM/YYYY;code journal;numéro de compte;numéro de pièce;libellé       ;débit ou crédit;montant;E (pour symbole monétaire euro)
      * 03/10/2011     ;AC          ;6263000000      ;1              ;WIMIFI 10/2011;D              ;460    ;E
-     * 
+     *
      */
     importcsv2: function() {
         var self = this;

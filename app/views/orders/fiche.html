@@ -157,7 +157,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="font-blue" ng-if="object.Status =='PROCESSING' && login.rights.order.validate" confirmed-click="changeStatus('CLOSED')" ng-confirm-click="Forcer la cloture manuelle de la commade ?" title="Cloturer">
+                    <a href="#" class="font-blue" ng-if="(object.Status =='PROCESSING' || object.Status == 'VALIDATED') && login.rights.order.validate" confirmed-click="changeStatus('CLOSED')" ng-confirm-click="Forcer la cloture manuelle de la commade ?" title="Cloturer">
                         <i class=" fa fa-close font-blue"></i> @(orders:CloseOrder)
                     </a>
                 </li>
