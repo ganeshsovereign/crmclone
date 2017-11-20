@@ -1,0 +1,18 @@
+{
+    "CHARSET": "UTF-8",
+    "Buy": "Acheter",
+    "Purchase": "Achat",
+    "Purchases": "Achats",
+    "Purchaser": "Acheteur",
+    "PurchaseRequisition": "Demande d'achat",
+    "DateLastPurchase": "Date du dernier achat",
+    "TotalBuyThisMonth": "Total achats ce mois",
+    "TotalBuyThisYear": "Total achats cette année",
+    "KeepToReceived": "Reste à acheter",
+    "PurchasesParameters": "Paramètres des achats",
+    "PurchaseTracking": "Suivi des achats",
+    "ListProductPrice": "Liste de produits et de prix",
+    "BestBuyingPrice": "Meilleur prix d'achat",
+    "BuyingPrice": "Prix d'achat",
+    "Tender": "Appel d'offres"
+}

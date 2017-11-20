@@ -1,0 +1,93 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-horizontal form-row-seperated">
+            <div class="portlet portlet light bordered">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="icon-info"></i>
+                        <span class="caption-subject dark bold uppercase"> @(users:PersonalInformation)</span>
+                        <span class="caption-helper"> - @(users:Employees)</span>
+
+                    </div>
+                    <save mode="employee._id" ng-create="create()" ng-update="update(true)" back-to="backTo" class="actions btn-set"></save>
+                </div>
+                <div class="portlet-body">
+                    <div class="form-body">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="portlet light bordered">
+                                    <div class="form-group form-md-radios">
+                                        <div class="md-radio-inline">
+                                            <div class="md-radio">
+                                                <input type="radio" id="female" name="type" class="md-radiobtn" ng-model="employee.gender" value="female">
+                                                <label for="female">
+                                                    <span class="inc"></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> @(Femme) </label>
+                                            </div>
+                                            <div class="md-radio">
+                                                <input type="radio" id="male" name="type" class="md-radiobtn" ng-model="employee.gender" value="male">
+                                                <label for="male">
+                                                    <span class="inc"></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> @(Homme) </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group form-md-line-input">
+                                        <select class="form-control" id="CityOfBirth" required ng-model="employee.homeAddress.country" ng-options="s._id as s.name for s in $dict.nationality.data"></select>
+                                        <label for="CityOfBirth">@(users:CityOfBirth)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <select class="form-control" id="CountryOfBirth"  required ng-model="employee.homeAddress.country" ng-options="s._id as s.name for s in $dict.nationality.data"></select>
+                                        <label for="CountryOfBirth">@(users:CountryOfBirth)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <select class="form-control" id="Nationality" ng-model="employee.nationality" ng-options="c._id as c.name for c in nationality"></select>
+                                        <label for="Nationality">@(users:Nationality)</label>
+                                    </div>
+                                </div>
+
+                                <div class="portlet light bordered">
+                                    <div class="caption">
+                                        <span class="caption-subject dark bold"> @(users:Address) </span>
+                                        <hr>
+                                    </div>
+                                    <address ng-model=employee.homeAddress mode="simple"></address>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-sm-12">
+                                <div class="portlet light bordered">
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="text" class="form-control" id="SocialeSecurityNumber" ng-model="employee.socialSecurityNumber">
+                                        <label for="SocialeSecurityNumber">@(users:SocialeSecurityNumber)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="text" class="form-control" id="BankingEtablishment" ng-model="employee.iban.id">
+                                        <label for="BankingEtablishment">@(users:BankingEtablishment)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="text" class="form-control" id="IBAN" ng-model="employee.iban.bank">
+                                        <label for="IBAN">@(users:IBAN)</label>
+                                    </div>
+
+                                    <div class="form-group form-md-line-input">
+                                        <input type="text" class="form-control" id="BIC" ng-model="employee.iban.bic">
+                                        <label for="BIC">@(users:BIC)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

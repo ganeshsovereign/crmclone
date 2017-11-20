@@ -1,0 +1,129 @@
+[main]
+host = https://www.transifex.com
+
+[tomanage-erp.adminjson]
+file_filter = locales/<lang>/admin.json
+source_file = locales/fr/admin.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.bankjson]
+file_filter = locales/<lang>/bank.json
+source_file = locales/fr/bank.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.buyjson]
+file_filter = locales/<lang>/buy.json
+source_file = locales/fr/buy.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.categoriesjson]
+file_filter = locales/<lang>/categories.json
+source_file = locales/fr/categories.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.commercialjson]
+file_filter = locales/<lang>/commercial.json
+source_file = locales/fr/commercial.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.companiesjson]
+file_filter = locales/<lang>/companies.json
+source_file = locales/fr/companies.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.comptajson]
+file_filter = locales/<lang>/compta.json
+source_file = locales/fr/compta.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.contractsjson]
+file_filter = locales/<lang>/contracts.json
+source_file = locales/fr/contracts.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.dictjson]
+file_filter = locales/<lang>/dict.json
+source_file = locales/fr/dict.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.eshopjson]
+file_filter = locales/<lang>/eshop.json
+source_file = locales/fr/eshop.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.leadsjson]
+file_filter = locales/<lang>/leads.json
+source_file = locales/fr/leads.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.mailsjson]
+file_filter = locales/<lang>/mails.json
+source_file = locales/fr/mails.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.mainjson]
+file_filter = locales/<lang>/main.json
+source_file = locales/fr/main.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.ordersjson]
+file_filter = locales/<lang>/orders.json
+source_file = locales/fr/orders.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.productsjson]
+file_filter = locales/<lang>/products.json
+source_file = locales/fr/products.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.sendingsjson]
+file_filter = locales/<lang>/sendings.json
+source_file = locales/fr/sendings.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.stocksjson]
+file_filter = locales/<lang>/stocks.json
+source_file = locales/fr/stocks.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.suppliersjson]
+file_filter = locales/<lang>/suppliers.json
+source_file = locales/fr/suppliers.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.tasksjson]
+file_filter = locales/<lang>/tasks.json
+source_file = locales/fr/tasks.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.ticketjson]
+file_filter = locales/<lang>/ticket.json
+source_file = locales/fr/ticket.json
+source_lang = fr
+type = KEYVALUEJSON
+
+[tomanage-erp.usersjson]
+file_filter = locales/<lang>/users.json
+source_file = locales/fr/users.json
+source_lang = fr
+type = KEYVALUEJSON
+
