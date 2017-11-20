@@ -18,17 +18,3 @@ limitations under the License.
 @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 International Registered Trademark & Property of ToManage SAS
 */
-
-
-
-'use strict';
-
-MetronicApp.controller('TodoController', function($rootScope, $scope, $http, $timeout) {
-    $scope.$on('$viewContentLoaded', function() {
-        Metronic.initAjax(); // initialize core components        
-    });
-
-    // set sidebar closed and body solid layout mode
-    $rootScope.settings.layout.pageBodySolid = false;
-
-});
