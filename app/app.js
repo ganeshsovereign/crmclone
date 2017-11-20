@@ -583,7 +583,7 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
     // Redirect any unmatched url
     $urlRouterProvider.otherwise("/");
     $stateProvider
-    // Dashboard
+        // Dashboard
         .state('home', {
             url: "/",
             templateUrl: "/views/home/index.html",
@@ -662,19 +662,19 @@ MetronicApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvi
             url: "/accounting",
             abstract: true,
             templateUrl: "/views/accounting/index.html"
-                /*resolve: {
-                    deps: ['$ocLazyLoad', function ($ocLazyLoad) {
-                            return $ocLazyLoad.load({
-                                name: 'MetronicApp',
-                                insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-                                files: [
-                                    '/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css',
-                                    '/assets/global/plugins/bootstrap-daterangepicker/moment.min.js',
-                                    '/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js'
-                                ]
-                            });
-                        }]
-                }*/
+            /*resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                        return $ocLazyLoad.load({
+                            name: 'MetronicApp',
+                            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                            files: [
+                                '/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css',
+                                '/assets/global/plugins/bootstrap-daterangepicker/moment.min.js',
+                                '/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js'
+                            ]
+                        });
+                    }]
+            }*/
         })
         .state('accounting.journal', {
             parent: "accounting",

@@ -70,8 +70,7 @@
                                     </div>
 
                                     <div class="form-group form-md-line-input" ng-class="{'has-error':$error , 'has-success': !$error}">
-                                        <input type="text" class="form-control" maxlength="13" id="ref" ng-change="checkCodeClient()" ng-model="societe.salesPurchases.ref"
-                                            ng-model-options='{ debounce: 500 }'>
+                                        <input type="text" class="form-control" maxlength="13" id="ref" ng-change="checkCodeClient()" ng-model="societe.salesPurchases.ref" ng-model-options='{ debounce: 500 }'>
                                         <label for="ref">@(companies:IdThirdParty)
                                             <span class="required">
                                                 * </span>
@@ -100,8 +99,7 @@
                                         <label for="">@(Entities)</label>
                                         <div class="md-checkbox-inline">
                                             <div class="md-checkbox" ng-repeat="value in entityList">
-                                                <input type="checkbox" class="md-check" name="checkedObj[]" id="{{value.id}}" ng-click="toggleSelection(societe.entity, value.id)"
-                                                    ng-checked="societe.entity.indexOf(value.id) >= 0" />
+                                                <input type="checkbox" class="md-check" name="checkedObj[]" id="{{value.id}}" ng-click="toggleSelection(societe.entity, value.id)" ng-checked="societe.entity.indexOf(value.id) >= 0" />
                                                 <label for="{{value.id}}">
                                                     <span></span>
                                                     <span class="check"></span>
@@ -130,8 +128,7 @@
                                             <div class="caption">@(StrategicInformation)
                                             </div>
                                             <div class="actions" ng-show="!editableInfo.$visible">
-                                                <a href="#" ng-click="editableInfo.$show()" ng-show="!editableInfo.$visible && editable" class="btn yellow-haze btn-sm" data-original-title=""
-                                                    title="@(Add)">
+                                                <a href="#" ng-click="editableInfo.$show()" ng-show="!editableInfo.$visible && editable" class="btn yellow-haze btn-sm" data-original-title="" title="@(Add)">
                                                     <i class="fa fa-plus"></i>@(Add)</a>
                                             </div>
                                             <div class="actions" ng-show="editableInfo.$visible">
@@ -154,8 +151,7 @@
                                                             <b>{{vnote.author.username}}</b> -
                                                             <i>{{ vnote.datec | date:'@(main:date.format.java.dayhour)' }}
                                                             </i>
-                                                            <span ng-if="login.rights.societe.delete" title="Supprimer note" class="pull-right icon icon-trash" ng-confirm-click="@(DeletePostIt)"
-                                                                confirmed-click="removeNote(vnote)"></span>
+                                                            <span ng-if="login.rights.societe.delete" title="Supprimer note" class="pull-right icon icon-trash" ng-confirm-click="@(DeletePostIt)" confirmed-click="removeNote(vnote)"></span>
                                                         </h4>
                                                         <pre class="col-md-12">{{vnote.note}}</pre>
                                                     </div>

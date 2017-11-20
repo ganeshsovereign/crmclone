@@ -226,14 +226,10 @@
 
                                             </div>
                                             <div ng-if="!module('delivery') || !module('deliverysupplier')" class="portlet-body" style="display: block;">
-                                                <div class="form-group form-md-line-input">
-                                                    <address ng-model="object.address" mode="withEmail" ng-disabled="!editable"></address>
-                                                </div>
+                                                <address ng-model="object.address" mode="withEmail" ng-disabled="!editable"></address>
                                             </div>
                                             <div ng-if="module('delivery') || module('deliverysupplier')" class="portlet-body" style="display: none;">
-                                                <div class="form-group form-md-line-input">
-                                                    <address ng-model="object.address" mode="simple" ng-disabled="!editable"></address>
-                                                </div>
+                                                <address ng-model="object.address" mode="simple" ng-disabled="!editable"></address>
                                             </div>
                                         </div>
                                     </div>
@@ -253,14 +249,10 @@
                                                 </div>
                                             </div>
                                             <div ng-if="!module('delivery') && !module('stockreturn')" class="portlet-body" style="display: none;">
-                                                <div class="form-group form-md-line-input">
-                                                    <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
-                                                </div>
+                                                <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
                                             </div>
                                             <div ng-if="module('delivery') || module('deliverysupplier') || module('stockreturn')" class="portlet-body" style="display: block;">
-                                                <div class="form-group form-md-line-input">
-                                                    <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
-                                                </div>
+                                                <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
                                             </div>
                                         </div>
                                     </div>
@@ -277,9 +269,7 @@
                                                 </div>
                                             </div>
                                             <div class="portlet-body" style="display: block;">
-                                                <div class="form-group form-md-line-input">
-                                                    <address ng-model="object.shippingAddress" ng-disabled="!editable"></address>
-                                                </div>
+                                                <address ng-model="object.shippingAddress" ng-disabled="!editable"></address>
                                             </div>
                                         </div>
                                     </div>

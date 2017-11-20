@@ -84,7 +84,7 @@ var UserSchema = new Schema({
         lowercase: true,
         trim: true,
         index: true,
-        sparse :true
+        sparse: true
     },
     password: {
         type: String,

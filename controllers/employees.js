@@ -1108,7 +1108,7 @@ Object.prototype = {
 
         var options = {
             conditions: conditions
-                //select: ""
+            //select: ""
         };
 
         //console.log(options);
@@ -2309,7 +2309,9 @@ Object.prototype = {
 
                 Model.findByIdAndUpdate(_id, {
                     relatedUser: user._id
-                }, { new: true }, waterfallCb);
+                }, {
+                    new: true
+                }, waterfallCb);
             }
 
             waterfallTasks = [employeeCreator];
@@ -2648,20 +2650,20 @@ Object.prototype = {
 
 
                         if (data.relatedUser)
-                        // todo update user profile
+                            // todo update user profile
                             UsersModel.findByIdAndUpdate(data.relatedUser, {
-                            $set: {
-                                relatedEmployee: _id
-                            }
-                        }, function(error) {
-                            if (error)
-                                return next(error);
+                                $set: {
+                                    relatedEmployee: _id
+                                }
+                            }, function(error) {
+                                if (error)
+                                    return next(error);
 
 
-                            self.json({
-                                success: 'Employees updated'
+                                self.json({
+                                    success: 'Employees updated'
+                                });
                             });
-                        });
                         else
                             self.json({
                                 success: 'Employees updated'

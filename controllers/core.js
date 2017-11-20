@@ -649,24 +649,24 @@ function convert(type) {
                             //console.log(doc.commercial_id.id.substr(0, 5));
                             if (doc.commercial_id.id.substr(0, 5) == 'user:') //Not an automatic code
                                 UserModel.findOne({
-                                username: doc.commercial_id.id.substr(5)
-                            }, "_id lastname firstname", function(err, user) {
+                                    username: doc.commercial_id.id.substr(5)
+                                }, "_id lastname firstname", function(err, user) {
 
-                                //console.log(user);
-                                //return;
+                                    //console.log(user);
+                                    //return;
 
-                                collection.update({
-                                    _id: doc._id
-                                }, {
-                                    $set: {
-                                        'commercial_id.id': user._id,
-                                        'commercial_id.name': user.fullname
-                                    }
-                                }, function(err, doc) {
-                                    if (err)
-                                        console.log(err);
+                                    collection.update({
+                                        _id: doc._id
+                                    }, {
+                                        $set: {
+                                            'commercial_id.id': user._id,
+                                            'commercial_id.name': user.fullname
+                                        }
+                                    }, function(err, doc) {
+                                        if (err)
+                                            console.log(err);
+                                    });
                                 });
-                            });
                         });
                     });
                 });
@@ -737,25 +737,25 @@ function convert_resource() {
             return file.endsWith('.json');
         })
 
-    .forEach(function(file) {
-        var readjson = require(__dirname + '/../locales/fr/' + file); // lecture fichier json
-        var writeresource = fs.createWriteStream(__dirname + '/../resources/fr/' + file + 'fr.json');
+        .forEach(function(file) {
+            var readjson = require(__dirname + '/../locales/fr/' + file); // lecture fichier json
+            var writeresource = fs.createWriteStream(__dirname + '/../resources/fr/' + file + 'fr.json');
 
-        _.forEach(readjson, function(file) {
-            /*if (value === "UTF-8")
-             return;*/
+            _.forEach(readjson, function(file) {
+                /*if (value === "UTF-8")
+                 return;*/
 
-            //var header = file.substring(0, file.length - 5);//delete .json 
+                //var header = file.substring(0, file.length - 5);//delete .json 
 
-            /* var temp = fixedWidthString(header + "_" + key, 80);
-             temp += ": ";
-             temp += value;
-             temp += "\n";*/
-            writeresource.write(readjson);
+                /* var temp = fixedWidthString(header + "_" + key, 80);
+                 temp += ": ";
+                 temp += value;
+                 temp += "\n";*/
+                writeresource.write(readjson);
+
+            });
 
         });
-
-    });
 
     writeresource.end();
     self.plain("Ok"); //text

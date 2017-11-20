@@ -537,7 +537,9 @@ F.on('load', function() {
                 if (!price)
                     return cb(null, null, null);
 
-                ProductModel.findOne({ _id: price.product }, "info directCost indirectCost prices pack createdAt sellFamily")
+                ProductModel.findOne({
+                        _id: price.product
+                    }, "info directCost indirectCost prices pack createdAt sellFamily")
                     .populate("sellFamily")
                     .exec(function(err, product) {
                         if (err)

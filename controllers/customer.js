@@ -270,37 +270,37 @@ exports.install = function() {
         query[field] = new RegExp(self.body.filter.filters[0].value, "i");
 
         if (typeof SocieteModel.schema.paths[field].options.type == "object")
-        //console.log(query);
+            //console.log(query);
             SocieteModel.aggregate([{
-            $project: {
-                _id: 0,
-                Tag: 1
-            }
-        }, {
-            $unwind: "$" + field
-        }, {
-            $match: query
-        }, {
-            $group: {
-                _id: "$" + field
-            }
-        }, {
-            $limit: self.body.take
-        }], function(err, docs) {
-            if (err)
-                return console.log("err : /api/societe/autocomplete/" + field, err);
-
-            //console.log(docs);
-            var result = [];
-
-            if (docs !== null)
-                for (var i in docs) {
-                    //result.push({text: docs[i]._id});
-                    result.push(docs[i]._id);
+                $project: {
+                    _id: 0,
+                    Tag: 1
                 }
+            }, {
+                $unwind: "$" + field
+            }, {
+                $match: query
+            }, {
+                $group: {
+                    _id: "$" + field
+                }
+            }, {
+                $limit: self.body.take
+            }], function(err, docs) {
+                if (err)
+                    return console.log("err : /api/societe/autocomplete/" + field, err);
 
-            return self.json(result);
-        });
+                //console.log(docs);
+                var result = [];
+
+                if (docs !== null)
+                    for (var i in docs) {
+                        //result.push({text: docs[i]._id});
+                        result.push(docs[i]._id);
+                    }
+
+                return self.json(result);
+            });
         else
             SocieteModel.distinct(field, query, function(err, docs) {
                 if (err)

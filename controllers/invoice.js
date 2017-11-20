@@ -1052,7 +1052,9 @@ Object.prototype = {
                 total_ttc: 0,
                 total_tva: []
             }
-        }, { new: true }, function(err, doc) {
+        }, {
+            new: true
+        }, function(err, doc) {
             if (err)
                 return self.throw500(err);
 
@@ -1105,7 +1107,9 @@ Object.prototype = {
                     total_ttc: 0,
                     total_tva: []
                 }
-            }, { new: true }, function(err, doc) {
+            }, {
+                new: true
+            }, function(err, doc) {
                 if (err)
                     return aCb(err);
 
@@ -2042,18 +2046,18 @@ Object.prototype = {
             },
             forSales: (self.query.forSales == 'false' ? false : true),
             $or: [{
-                        datec: {
-                            '$gte': dateStart,
-                            '$lt': dateEnd
-                        }
-                    },
-                    {
-                        datec: {
-                            '$gte': dateStartN1,
-                            '$lt': dateEndN1
-                        }
+                    datec: {
+                        '$gte': dateStart,
+                        '$lt': dateEnd
                     }
-                ] // Date de facture
+                },
+                {
+                    datec: {
+                        '$gte': dateStartN1,
+                        '$lt': dateEndN1
+                    }
+                }
+            ] // Date de facture
         };
 
         if (self.query.entity)
@@ -2249,11 +2253,11 @@ Object.prototype = {
             },
             forSales: (self.query.forSales == 'false' ? false : true),
             $or: [{
-                    datec: {
-                        '$gte': dateStart,
-                        '$lt': dateEnd
-                    }
-                }] // Date de facture
+                datec: {
+                    '$gte': dateStart,
+                    '$lt': dateEnd
+                }
+            }] // Date de facture
         };
 
         /* Customer invoice */
@@ -2411,14 +2415,14 @@ function createBill(doc, cgv, callback) {
     if (doc.forSales == false)
         model = "bill_supplier.tex";
     else
-    // check if discount
+        // check if discount
         for (var i = 0; i < doc.lines.length; i++) {
-        if (doc.lines[i].discount > 0) {
-            model = "bill_discount.tex";
-            discount = true;
-            break;
+            if (doc.lines[i].discount > 0) {
+                model = "bill_discount.tex";
+                discount = true;
+                break;
+            }
         }
-    }
 
     SocieteModel.findOne({
         _id: doc.supplier.id
