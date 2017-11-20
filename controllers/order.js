@@ -587,6 +587,15 @@ Object.prototype = {
                         total_paid: {
                             $sum: "$total_paid"
                         },
+                        min: {
+                            $min: "$total_ht"
+                        },
+                        max: {
+                            $max: "$total_ht"
+                        },
+                        avg: {
+                            $avg: "$total_ht"
+                        },
                         root: {
                             $push: '$$ROOT'
                         }
@@ -619,7 +628,10 @@ Object.prototype = {
                             count: "$total",
                             total_ht: "$total_ht",
                             total_ttc: "$total_ttc",
-                            total_paid: "$total_paid"
+                            total_paid: "$total_paid",
+                            min: "$min",
+                            max: "$max",
+                            avg: "$avg"
                         }
                     }
                 }, {
@@ -982,7 +994,7 @@ Object.prototype = {
   costPrice: 0,
   pu_ht: 2190.344,
   priceSpecific: false,
-  total_taxes: 
+  total_taxes:
    [ { value: 5256.826, taxeId: [Object] },
      { value: 2280, taxeId: [Object] } ],
   qty: 12,
@@ -1767,7 +1779,7 @@ Object.prototype = {
                 if (err)
                     return res.send(500, err);
                 if (req.query.download)
-                    res.attachment(store.filename); // for downloading 
+                    res.attachment(store.filename); // for downloading
 
                 res.type(store.contentType);
                 store.stream(true).pipe(res);
@@ -2008,7 +2020,7 @@ Object.prototype = {
                         }]
                     }];
 
-                    // Frais de port 
+                    // Frais de port
                     if (doc.shipping && doc.shipping.total_ht)
                         tabTotal.push({
                             label: "Frais de port",

@@ -212,7 +212,13 @@ exports.filters = {
                 "operator": ["$gte", "$lte"]
             }
         },
-
+        "total_ht": {
+            "type": "number",
+            "backend": {
+                "key": "total_ht",
+                "operator": ["$gte", "$lte"]
+            }
+        },
 
         "array": ["supplier", "salesPerson", "workflow", "allocationStatus", "fulfilledStatus", "shippingStatus", "channel", "name"]
     }
