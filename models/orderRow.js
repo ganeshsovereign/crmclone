@@ -229,13 +229,16 @@ OrderRowSchema.statics.getAvailableForRows = function(docs, forSales, cb) {
 
                     Model.aggregate([{
                         $match: {
-                            'orderRows.orderRowId': elem._id,
-                            _type: forSales ? 'GoodsOutNote' : 'GoodsInNote',
+                            'orderRows.orderRowId': objectId(elem._id),
+                            //_type: forSales ? 'GoodsOutNote' : 'GoodsInNote',
                             isremoved: {
                                 $ne: true
                             },
-                            'status.isInventory': {
+                            /*'status.isInventory': {
                                 $ne: null
+                            },*/
+                            Status: {
+                                $ne: 'DRAFT'
                             },
                             archived: {
                                 $ne: true

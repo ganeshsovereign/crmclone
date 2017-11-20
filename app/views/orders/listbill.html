@@ -147,8 +147,8 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="Status">@(RefSupplier)</label>
-                                            <input ion-range-slider min="0" max="5000" from="search.total_ttc.value[0]" to="search.total_ttc.value[1]" />
+                                            <label for="Status">@(AmountHT)</label>
+                                            <input ion-range-slider type="double" grid="true" min="totalAll.min" max="totalAll.max" from="search.total_ht.value[0]" to="search.total_ht.value[1]" />
                                         </div>
                                     </div>
                                 </div>
@@ -186,6 +186,19 @@
                             <div class="row static-info align-reverse ">
                                 <div class="col-md-5 name bold ">@(TotalTTC)</div>
                                 <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc | currency}}</div>
+                            </div>
+                            <hr>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(Min) HT</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.min | currency}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(Max) HT</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.max | currency}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(orders:Average) HT</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.avg | currency}}</div>
                             </div>
                             <hr>
                             <div class="row static-info align-reverse ">
@@ -264,7 +277,6 @@
                             <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.dater| date:'dd/MM/yyyy'}}</td>
 
                             <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.total_ht| currency}}</td>
-
 
                             <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.total_ttc| currency}}</td>
 

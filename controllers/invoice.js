@@ -52,9 +52,9 @@ exports.install = function() {
 
 /*	// list for autocomplete
  app.post('/api/bill/autocomplete', function (req, res) {
- 
+
  var BillModel = MODEL('invoice').Schema;
- 
+
  console.dir(req.body.filter);
  if (req.body.filter == null)
  return res.send(200, {});
@@ -75,7 +75,7 @@ exports.install = function() {
  console.log(err);
  return;
  }
- 
+
  var result = [];
  if (docs !== null)
  for (var i in docs) {
@@ -101,7 +101,7 @@ exports.install = function() {
  result[i].address.town = docs[i].town;
  result[i].address.country = docs[i].country;
  }
- 
+
  return res.send(200, result);
  });
  });
@@ -242,6 +242,7 @@ Object.prototype = {
             }
 
         filterObject.$and = [];
+        //console.log(filter);
 
         if (filter && typeof filter === 'object') {
             filterObject.$and.push(filterMapper.mapFilter(filter, {
@@ -249,7 +250,7 @@ Object.prototype = {
             })); // caseFilter(filter);
         }
 
-        //return console.log(filterObject.$and[0].$and[0].$or);
+        //console.log(filterObject.$and[0]);
 
         if (self.query.sort) {
             sort = JSON.parse(self.query.sort);
@@ -635,6 +636,15 @@ Object.prototype = {
                         total_paid: {
                             $sum: "$total_paid"
                         },
+                        min: {
+                            $min: "$total_ht"
+                        },
+                        max: {
+                            $max: "$total_ht"
+                        },
+                        avg: {
+                            $avg: "$total_ht"
+                        },
                         root: {
                             $push: '$$ROOT'
                         }
@@ -670,7 +680,10 @@ Object.prototype = {
                             count: "$total",
                             total_ht: "$total_ht",
                             total_ttc: "$total_ttc",
-                            total_paid: "$total_paid"
+                            total_paid: "$total_paid",
+                            min: "$min",
+                            max: "$max",
+                            avg: "$avg"
                         }
                     }
                 }, {
@@ -2549,7 +2562,7 @@ function createBill(doc, cgv, callback) {
                 ]
             }];
 
-            // Frais de port 
+            // Frais de port
             if (doc.shipping && doc.shipping.total_ht)
                 tabTotal.push({
                     label: "Frais de port",

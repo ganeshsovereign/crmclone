@@ -22,7 +22,7 @@ International Registered Trademark & Property of ToManage SAS
 
 
 // All lines
-MetronicApp.directive('productLines', ['$http', '$modal','$timeout',
+MetronicApp.directive('productLines', ['$http', '$modal', '$timeout',
     function($http, $modal, $timeout) {
         return {
             restrict: 'E',
@@ -54,31 +54,31 @@ MetronicApp.directive('productLines', ['$http', '$modal','$timeout',
 
                 var timeout = null;
                 var saving = false;
-                var autoSaveUpdates = function(newVal, oldVal){
-                  //enable autoSave every 300s
+                var autoSaveUpdates = function(newVal, oldVal) {
+                    //enable autoSave every 300s
 
-                  if(newVal != oldVal){
+                    if (newVal != oldVal) {
 
-                      if (scope.edit && !timeout && !saving)
-                    return timeout = $timeout(function() {
-                      //scope.update();
-                      //console.log('save');
-                      timeout = null;
-                      saving = true;
+                        if (scope.edit && !timeout && !saving)
+                            return timeout = $timeout(function() {
+                                //scope.update();
+                                //console.log('save');
+                                timeout = null;
+                                saving = true;
 
-                      ngModel.$setViewValue(scope.linesModel);
-                      scope.ngChange();
-                        //block saving cicle
-                        $timeout(function(){
-                          saving=false;
-                        }, 3000);
+                                ngModel.$setViewValue(scope.linesModel);
+                                scope.ngChange();
+                                //block saving cicle
+                                $timeout(function() {
+                                    saving = false;
+                                }, 3000);
 
-                    }, 300000);
-                }
+                            }, 300000);
+                    }
                 };
 
 
-                scope.$watch('linesModel',autoSaveUpdates, true);
+                scope.$watch('linesModel', autoSaveUpdates, true);
 
                 //Used in delivery
                 scope.min = function(val1, val2) {
@@ -350,9 +350,9 @@ MetronicApp.directive('productLines', ['$http', '$modal','$timeout',
                     scope.ngChange();
 
                     scope.edit = false;
-                    if(timeout){
-                      $timeout.cancel(timeout);
-                      timeout = null;
+                    if (timeout) {
+                        $timeout.cancel(timeout);
+                        timeout = null;
                     }
 
                     return true;

@@ -906,7 +906,7 @@ baseSchema.statics.getById = function(id, callback) {
 
                             order.lines = rows || [];
 
-                            //console.log(deliveries);
+                            //console.log(rows);
 
                             return wCb(err, order);
                         });
@@ -1136,9 +1136,8 @@ baseSchema.statics.getById = function(id, callback) {
                 firstCreateDelivery = false;
 
             order.orderRows = _.map(orderRows, function(item) {
-                if (!firstCreateDelivery) {
+                if (!firstCreateDelivery)
                     delete item.qty;
-                }
 
                 //console.log(item.orderRowId, order.orderRows);
                 //console.log('test', _.find(order.orderRows, _.matchesProperty('orderRowId', item.orderRowId.toString())));
@@ -2783,7 +2782,7 @@ F.on('order:recalculateStatus', function(data, callback) {
                         if (err)
                             return eahcCb(err);
 
-                        //return console.log(availability);
+                        //console.log(availability);
 
                         GoodsOutNote.aggregate([{
                             $match: {
@@ -2791,8 +2790,11 @@ F.on('order:recalculateStatus', function(data, callback) {
                                 _type: {
                                     $ne: 'stockReturns'
                                 },
-                                "status.isInventory": {
+                                /*"status.isInventory": {
                                     $ne: null
+                                },*/
+                                Status: {
+                                    $ne: 'DRAFT'
                                 },
                                 isremoved: {
                                     $ne: true
@@ -2834,7 +2836,7 @@ F.on('order:recalculateStatus', function(data, callback) {
                             var allocatedOnRow;
                             var shippedDocs;
 
-                            //console.log(docs);
+                            console.log(docs);
 
                             if (err)
                                 return eahcCb(err);
@@ -2873,6 +2875,8 @@ F.on('order:recalculateStatus', function(data, callback) {
 
                                 } else
                                     stockStatus.shippingStatus = ((stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL')) ? 'NOA' : 'NOT';
+
+                                console.log(stockStatus);
 
 
                                 docs.forEach(function(el) {
@@ -2978,7 +2982,7 @@ F.on('order:recalculateStatus', function(data, callback) {
                 if (doc._type == 'orderSupplier')
                     return wCb(null, exports.Schema.OrderSupplier, doc);
 
-                return wCb(null, null);
+                return wCb(null, null, null);
 
             });
         },
