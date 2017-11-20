@@ -2134,14 +2134,14 @@ var stockReturnSchema = new Schema({
         },
 
         qty: Number
-            /*
-                    _id: false,
-                    goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
-                    goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
-                    product: { type: ObjectId, ref: 'product', default: null },
-                    cost: { type: Number, default: 0 },
-                    qty: Number,
-                    warehouse: { type: ObjectId, ref: 'warehouse', default: null }*/
+        /*
+                _id: false,
+                goodsOutNote: { type: ObjectId, ref: 'GoodsOutNote', default: null },
+                goodsInNote: { type: ObjectId, ref: 'GoodsInNote', default: null },
+                product: { type: ObjectId, ref: 'product', default: null },
+                cost: { type: Number, default: 0 },
+                qty: Number,
+                warehouse: { type: ObjectId, ref: 'warehouse', default: null }*/
     }]
 });
 
@@ -2332,11 +2332,11 @@ function saveOrder(next) {
 
             if (self.warehouse && self.forSales == false) // Refresh shipping address
                 return WarehouseModel.findById(self.warehouse, "_id address", function(err, warehouse) {
-                if (warehouse && self.Status == "DRAFT")
-                    self.shippingAddress = warehouse.address;
+                    if (warehouse && self.Status == "DRAFT")
+                        self.shippingAddress = warehouse.address;
 
-                return wCb();
-            });
+                    return wCb();
+                });
 
             return WarehouseModel.findOne({
                 main: true
@@ -2501,11 +2501,11 @@ function setNameReturns(next) {
         function(wCb) {
             if (self.warehouse) // Refresh shipping address
                 return WarehouseModel.findById(self.warehouse, "_id address", function(err, warehouse) {
-                if (warehouse && self.Status == "DRAFT")
-                    self.shippingAddress = warehouse.address;
+                    if (warehouse && self.Status == "DRAFT")
+                        self.shippingAddress = warehouse.address;
 
-                return wCb();
-            });
+                    return wCb();
+                });
 
             WarehouseModel.findOne({
                 main: true
@@ -3028,8 +3028,12 @@ F.on('order:recalculateStatus', function(data, callback) {
                         }, {
                             $group: {
                                 _id: null,
-                                total: { $sum: "$total_ht" },
-                                data: { $push: "$$ROOT" }
+                                total: {
+                                    $sum: "$total_ht"
+                                },
+                                data: {
+                                    $push: "$$ROOT"
+                                }
                             }
                         }, {
                             $unwind: "$data"
@@ -3065,8 +3069,12 @@ F.on('order:recalculateStatus', function(data, callback) {
                         }, {
                             $group: {
                                 _id: null,
-                                total: { $sum: "$orders.total_ht" },
-                                data: { $push: "$$ROOT" }
+                                total: {
+                                    $sum: "$orders.total_ht"
+                                },
+                                data: {
+                                    $push: "$$ROOT"
+                                }
                             }
                         }, {
                             $unwind: "$data"
@@ -3083,8 +3091,12 @@ F.on('order:recalculateStatus', function(data, callback) {
                         }, {
                             $group: {
                                 _id: null,
-                                total: { $first: "$total" },
-                                data: { $push: "$$ROOT" }
+                                total: {
+                                    $first: "$total"
+                                },
+                                data: {
+                                    $push: "$$ROOT"
+                                }
                             }
                         }], function(err, invoices) {
                             if (err)

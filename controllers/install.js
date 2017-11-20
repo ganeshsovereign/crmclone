@@ -5077,7 +5077,9 @@ F.on('load', function() {
 
                     console.log("re-import old order");
                     mongoose.connection.db.collection('Commande', function(err, collection) {
-                        collection.find({ Status: "CLOSED" }).toArray(function(err, docs) {
+                        collection.find({
+                            Status: "CLOSED"
+                        }).toArray(function(err, docs) {
                             if (err)
                                 return aCb(err);
 
@@ -5096,7 +5098,10 @@ F.on('load', function() {
                                             "status.shippingStatus": 'ALL',
                                             "status.invoiceStatus": 'ALL'
                                         }
-                                    }, { upsert: false, multi: false },
+                                    }, {
+                                        upsert: false,
+                                        multi: false
+                                    },
                                     function(err, res) {
                                         if (err)
                                             return eCb(err);
@@ -5115,11 +5120,16 @@ F.on('load', function() {
                     const OrderModel = MODEL('order').Schema.OrderCustomer;
 
                     console.log("Status PROCESSING");
-                    OrderModel.update({ Status: "BILLED" }, {
+                    OrderModel.update({
+                            Status: "BILLED"
+                        }, {
                             $set: {
                                 "Status": "PROCESSING"
                             }
-                        }, { upsert: false, multi: true },
+                        }, {
+                            upsert: false,
+                            multi: true
+                        },
                         function(err, res) {
                             if (err)
                                 return aCb(err);
@@ -5135,8 +5145,12 @@ F.on('load', function() {
 
                     console.log("Update Order status.");
                     OrderModel.find({
-                            isremoved: { $ne: true },
-                            Status: { $nin: ['CANCELED', 'CLOSED'] }
+                            isremoved: {
+                                $ne: true
+                            },
+                            Status: {
+                                $nin: ['CANCELED', 'CLOSED']
+                            }
                         }, "_id")
                         .lean()
                         .exec(function(err, docs) {
@@ -5205,20 +5219,35 @@ F.on('load', function() {
                             Model.update({
                                 isService: false
                             }, {
-                                $set: { isProduct: true }
-                            }, { upsert: false, multi: true }, pCb);
+                                $set: {
+                                    isProduct: true
+                                }
+                            }, {
+                                upsert: false,
+                                multi: true
+                            }, pCb);
                         },
                         function(pCb) {
                             Model.update({
                                 isService: true
                             }, {
-                                $set: { isProduct: false }
-                            }, { upsert: false, multi: true }, pCb);
+                                $set: {
+                                    isProduct: false
+                                }
+                            }, {
+                                upsert: false,
+                                multi: true
+                            }, pCb);
                         },
                         function(pCb) {
                             Model.update({}, {
-                                $set: { isEShop: false }
-                            }, { upsert: false, multi: true }, pCb);
+                                $set: {
+                                    isEShop: false
+                                }
+                            }, {
+                                upsert: false,
+                                multi: true
+                            }, pCb);
                         }
                     ], function(err, docs) {
                         aCb(err);

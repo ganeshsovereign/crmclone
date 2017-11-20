@@ -280,7 +280,7 @@ var customerSchema = new Schema({
     dateBirth: Date,
     imageSrc: {
         type: Schema.Types.ObjectId
-            //    ref: 'Images',
+        //    ref: 'Images',
     },
     emails: [{
         _id: false,
@@ -661,9 +661,16 @@ customerSchema.statics.query = function(options, callback) {
     var matchObject = {};
 
     if (quickSearch) {
-        matchObject.$or = [
-            { fullName: { $regex: new RegExp(quickSearch, 'ig') } },
-            { 'salesPurchases.ref': { $regex: new RegExp("^" + quickSearch, 'ig') } }
+        matchObject.$or = [{
+                fullName: {
+                    $regex: new RegExp(quickSearch, 'ig')
+                }
+            },
+            {
+                'salesPurchases.ref': {
+                    $regex: new RegExp("^" + quickSearch, 'ig')
+                }
+            }
         ];
         filter = {};
     }

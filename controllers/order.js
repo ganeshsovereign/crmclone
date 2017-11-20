@@ -1128,7 +1128,10 @@ Object.prototype = {
                                     total_tva: [],
                                     orderRows: []
                                 }
-                            }, { multi: true, upsert: false }, function(err) {
+                            }, {
+                                multi: true,
+                                upsert: false
+                            }, function(err) {
                                 if (err)
                                     console.log(err);
                             });
