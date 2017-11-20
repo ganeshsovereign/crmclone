@@ -805,6 +805,8 @@
     "ShowBugTrackLink": "Pokaż link \"Zgłoś błąd\"",
     "ShowWorkBoard": "Pokaż \"roboczego\" na stronie głównej",
     "Alerts": "Alarmy",
+    "SignIn": "Se connecter",
+    "Enteryoure-mailaddressbelowtoresetyourpassword": "Entrez votre adresse e-mail ci-dessous pour réinitialiser votre mot de passe",
     "Delays": "Opóźnienia",
     "DelayBeforeWarning": "Opóźnienie ostrzeżenie przed",
     "DelaysBeforeWarning": "Opóźnienia ostrzeżenie przed",
@@ -923,6 +925,7 @@
     "GeneratePassword": "Zaproponuj wygenerowane hasło",
     "RuleForGeneratedPasswords": "Artykuł sugerował, aby wygenerować hasła",
     "DoNotSuggest": "Nie zgłosił żadnych hasło",
+    "ForgotPassword": "Mot de passe oublié ?",
     "EncryptedPasswordInDatabase": "Aby umożliwić szyfrowanie haseł w bazie danych",
     "DisableForgetPasswordLinkOnLogonPage": "Nie pokazuj link \"Zapomniałeś hasła\" na stronie logowania",
     "UsersSetup": "Użytkownicy modułu konfiguracji",
@@ -1304,5 +1307,6 @@
     "Chartofaccounts": "Plan comptable",
     "Definechartofaccounts": "Définir un plan comptable",
     "Selectchartofaccounts": "Sélection d'un plan comptable",
-    "DoNotSuggestChart": "Ne pas suggérer de plan comptable"
+    "DoNotSuggestChart": "Ne pas suggérer de plan comptable",
+    "General": "General"
 }

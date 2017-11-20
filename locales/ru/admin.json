@@ -805,6 +805,8 @@
     "ShowBugTrackLink": "Показать ссылку \"Сообщить об ошибке\"",
     "ShowWorkBoard": "Шоу \"Workbench\" на главной странице",
     "Alerts": "Предупреждения",
+    "SignIn": "Se connecter",
+    "Enteryoure-mailaddressbelowtoresetyourpassword": "Entrez votre adresse e-mail ci-dessous pour réinitialiser votre mot de passe",
     "Delays": "Задержки",
     "DelayBeforeWarning": "Задержка перед предупреждение",
     "DelaysBeforeWarning": "Задержки перед предупреждение",
@@ -923,6 +925,7 @@
     "GeneratePassword": "Предложить генерируемого пароля",
     "RuleForGeneratedPasswords": "Правило предложили генерировать пароли",
     "DoNotSuggest": "Не предложить какой-либо пароль",
+    "ForgotPassword": "Mot de passe oublié ?",
     "EncryptedPasswordInDatabase": "Для шифрования паролей в базе данных",
     "DisableForgetPasswordLinkOnLogonPage": "Не показывать ссылку \"Забыли пароль\" на странице входа",
     "UsersSetup": "Пользователь модуля установки",
@@ -1304,5 +1307,6 @@
     "Chartofaccounts": "Plan comptable",
     "Definechartofaccounts": "Définir un plan comptable",
     "Selectchartofaccounts": "Sélection d'un plan comptable",
-    "DoNotSuggestChart": "Ne pas suggérer de plan comptable"
+    "DoNotSuggestChart": "Ne pas suggérer de plan comptable",
+    "General": "General"
 }

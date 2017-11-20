@@ -805,6 +805,8 @@
     "ShowBugTrackLink": "Mostra vincle \"Assenyalar un bug\"",
     "ShowWorkBoard": "Mostra panell d'informació a la pàgina principal",
     "Alerts": "Alertes",
+    "SignIn": "Se connecter",
+    "Enteryoure-mailaddressbelowtoresetyourpassword": "Entrez votre adresse e-mail ci-dessous pour réinitialiser votre mot de passe",
     "Delays": "Terminis",
     "DelayBeforeWarning": "Termini abans d'alerta",
     "DelaysBeforeWarning": "Terminis abans d'alerta",
@@ -923,6 +925,7 @@
     "GeneratePassword": "Proposar una contrasenya generada",
     "RuleForGeneratedPasswords": "Norma per a la generació de les contrasenyes propostes",
     "DoNotSuggest": "No proposar",
+    "ForgotPassword": "Mot de passe oublié ?",
     "EncryptedPasswordInDatabase": "Permetre encriptació de les contrasenyes en la base de dades",
     "DisableForgetPasswordLinkOnLogonPage": "No mostrar l'enllaç \"Contrasenya oblidada\" a la pàgina de login",
     "UsersSetup": "Configuració del mòdul usuaris",
@@ -1304,5 +1307,6 @@
     "Chartofaccounts": "Plan comptable",
     "Definechartofaccounts": "Définir un plan comptable",
     "Selectchartofaccounts": "Sélection d'un plan comptable",
-    "DoNotSuggestChart": "Ne pas suggérer de plan comptable"
+    "DoNotSuggestChart": "Ne pas suggérer de plan comptable",
+    "General": "General"
 }
