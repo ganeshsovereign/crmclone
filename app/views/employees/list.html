@@ -7,11 +7,7 @@
                 <i class="fa fa-angle-right"></i>
             </li>
             <li>
-                <span> @(Parameters)</span>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span> @(users:ManagementEmployees)</span>
+                <span> @(ManagementEmployees)</span>
             </li>
         </ul>
 
@@ -42,6 +38,127 @@
             </div>
         </div>
     </div>
+
+
+    <!--<div class="portlet light portlet-form bordered">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="fa fa-institution"></i>
+                <span class="caption-subject dark bold uppercase"> @(users:ListOfEmployees)</span>
+          </div>
+            <div class="actions">
+                <button class="btn blue" ui-sref="emplyee.create">@(Add) <i class="fa fa-plus"></i></button>
+                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find()"><i class="fa fa-refresh"></i></button>
+            </div>
+        </div>
+        <div class="tools">
+        </div>
+        <div class="portlet-body portlet-form bordered waiting">
+            <div class="row hidden-print">
+                <div class="col-md-9">
+                    <div class="portlet light bg-inverse">
+                        <div class="portlet-body">
+                            <form ng-submit="find()">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>@(Name)</label>
+                                            <input ng-model="quickSearch" ng-model-options='{ debounce: 500 }' class="form-control input-sm" ng-change="find()" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Status">@(users:Department)</label>
+                                            <select ng-model="search.department.value[0]" ng-options="s.id as s.name for s in employeeList" class="form-control input-sm"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions right no-padding">
+                                    <button type="button" class="btn btn-sm default" ng-click="resetFilter()">@(Reset)</button>
+                                    <button type="submit" class="btn btn-sm green">@(Search)</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="forSales" class="col-md-3">
+                    <div class="portlet mt-element-ribbon light portlet-fit bordered ">
+                        <div class="ribbon ribbon-vertical-right ribbon-shadow ribbon-color-warning uppercase ">
+                            <div class="ribbon-sub ribbon-bookmark "></div>
+                            <i class="fa fa-pause "></i>
+                        </div>
+                        <div class="portlet-title ">
+                            <div class="caption ">
+                                <i class=" icon-control-pause font-yellow-crusta "></i>
+                                <span class="caption-subject font-yellow-crusta bold uppercase ">Totaux</span>
+                            </div>
+                        </div>
+                        <div class="portlet-body ">
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-6 name ">@(Qty)</div>
+                                <div class="col-md-6 value">{{totalAll.count}}</div>
+                            </div>
+                            <hr>
+                            <div class="row static-info align-reverse" ng-repeat="status in totalAll.Status">
+                                <div class="col-md-6 name "><span class="label label-sm" ng-class="status.css">{{status.name}}</span></div>
+                                <div class="col-md-6 value">{{status.total}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table-pagination ng-model="page"></table-pagination>
+            <div class="no-footer table-responsive">
+                <table class="table table-striped table-hover table-condensed no-footer">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="7%">
+                        <col width="7%">
+                        <col width="8%">
+                        <col width="10%">
+                        <col width="12%">
+                        <col width="12%">
+                        <col width="8%">
+                        <col width="8%">
+                        <col width="8%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                        <tr role="row" class="heading">
+                            <th class="text-center">
+                                <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" ng-click="checkedAll()" />
+                            </th>
+                            <th>@(Pictures)</th>
+                            <th table-sort='name.first' ng-model="sort" name="@(users:FirstName)"></th>
+                            <th table-sort='name.last' ng-model="sort" name="@(users:LastName)"></th>
+                            <th table-sort='phones.mobile' ng-model="sort" name="@(Tel-Mobile)"></th>
+                            <th table-sort='emails.works' ng-model=" sort" name="@(Email)"></th>
+                            <th table-sort='skype' ng-model="sort" name="@(users:Skype)"></th>
+                            <th table-sort='department' ng-model="sort" name="@(users:Departement)"></th>
+                            <th table-sort='jobPosition' ng-model="sort" name="@(users:Job)"></th>
+                            <th table-sort='manager' ng-model="sort" name="@(users:Manager)"></th>
+                            <th table-sort='editedBy' ng-model="sort" name="@(users:EditedBy)"></th>
+                            <th table-sort='createdBy' ng-model="sort" name="@(users:CreatedBy)"></th>
+                        </tr>
+                        <tbody>
+                            <tr ng-repeat="line in employees " ng-class="{ 'bg-grey-silver':line.exported} ">
+                                <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
+                                <td ui-sref="employee.show({id:line._id})"><a class=" with-tooltip " ui-sref="employee.show({id:line._id})"><i class="fa fa-user"></i> {{line.name.first}}</a>{{line.name.first}}</td>
+                                <td ui-sref="employee.show({id:line._id})">{{line.name.last}}</td>
+                                <td ui-sref="employee.show({id:line._id})">{{line.phones.mobile}}</td>
+                                <td ui-sref="employee.show({id:line._id})">{{line.emails.works}}</td>
+                                <td ui-sref="employee.show({id:line._id})">{{line.skype}}</td>
+                                <td ui-sref="employee.show({id:line._id})">{{line.department}}</td>
+                                <td ui-sref="employee.show({id:line._id})">{{line.jobPosition}}</td>
+                                <td ui-sref="employee.show({id:line._id})">{{line.manager}}</td>
+                                <td ui-sref="employee.show({id:line._id})">{{line.editedBy}}</td>
+                                <td ui-sref="employee.show({id:line._id})">{{line.createdBy}}</td>
+                            </tr>
+                        </tbody>
+                    </thead>
+                </table>
+            </div>
+            <table-pagination ng-model="page "></table-pagination>
+        </div>
+    </div>-->
 
     <div class="portlet light portlet-form bordered">
         <div class="portlet-title">

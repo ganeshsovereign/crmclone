@@ -58,7 +58,7 @@ exports.menus = {
         "perms": "employee.read",
         "enabled": "$conf->bank->enabled",
         "usertype": 2,
-        "title": "HR",
+        "title": "ManagementEmployees",
         "icon": "fa-group",
         "submenus": {
             "menu:employees": {

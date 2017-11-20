@@ -22,30 +22,25 @@
                                 <div class="portlet light bordered">
                                     <div class="row">
                                         <div class=" col-md-6 col-sm-12">
-                                            <div class="form-group form-md-line-input  has-success">
+
+                                            <div class="form-group form-md-line-input has-success">
                                                 <input type="text" class="form-control" id="LastName" ng-model="employee.name.last">
-                                                <label for="LastName">@(users:LastName)<span class="required">
-                                        * </span></label>
+                                                <label for="LastName">@(users:LastName)
+                                                    <span class="required">
+                                                        * </span>
+                                                </label>
                                             </div>
 
                                             <div class="form-group form-md-line-input has-success">
                                                 <input type="text" class="form-control" id="FirstName" ng-model="employee.name.first">
-                                                <label for="FirstName">@(users:FirstName)<span class="required">
-                                        * </span></label>
+                                                <label for="FirstName">@(users:FirstName)
+                                                    <span class="required">
+                                                        * </span>
+                                                </label>
                                             </div>
 
-                                            <div class="form-group form-md-line-input has-success">
-                                                <input class="table-group-action-input form-control" date-input id="dateBirth" ng-model="employee.dateBirth">
-                                                <label for="dateBirth">@(users:dateBirth)<span class="required">
-                                        * </span></label>
-                                            </div>
-
-                                            <address ng-model=employee.homeAddress mode="simple"></address>
-                                        </div>
-
-                                        <div class="col-md-6 col-sm-12">
                                             <div class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="Mobile" ng-model="employee.phones.phone">
+                                                <input type="text" class="form-control" id="Mobile" ng-model="employee.phones.personal">
                                                 <label for="Mobile">@(Phone)</label>
                                             </div>
 
@@ -53,44 +48,61 @@
                                                 <input type="text" class="form-control" id="Mobile" ng-model="employee.phones.mobile">
                                                 <label for="Mobile">@(Tel-Mobile)</label>
                                             </div>
+                                        </div>
 
+                                        <div class="col-md-6 col-sm-12">
                                             <div class="form-group form-md-line-input">
                                                 <div class="input-group">
                                                     <div class="input-group-control">
-                                                        <input type="text" class="form-control" id="Email" ng-model="employee.emails.work">
-                                                        <label for="Email">@(Email)</label>
+                                                        <input type="text" class="form-control" id="Email" ng-model="employee.emails.personal" placeholder="xxxxxx@xxx.xx">
+                                                        <label for="Email">@(PersonalEmail)</label>
                                                     </div>
                                                     <span class="input-group-btn btn-right">
-                                                            <a ng-href="mailto:{{employee.emails.work}}"  class="btn yellow" type="button"><i class="fa fa-envelope"></i></a>
-                                                        </span>
+                                                        <a ng-href="mailto:{{employee.emails.personnal}}" class="btn yellow" type="button">
+                                                            <i class="fa fa-envelope"></i>
+                                                        </a>
+                                                    </span>
                                                 </div>
                                             </div>
 
                                             <div class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="Skype" ng-model="employee.skype">
-                                                <label for="Skype">@(users:Skype)</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-control">
+                                                        <input type="text" class="form-control" id="Skype" ng-model="employee.skype">
+                                                        <label for="Skype">@(users:Skype)</label>
+                                                    </div>
+                                                    <span class="input-group-btn btn-right">
+                                                        <a ng-href="{{employee.skype}}" class="btn yellow" type="button">
+                                                            <i class="fa fa-skype"></i>
+                                                        </a>
+                                                    </span>
+                                                </div>
                                             </div>
 
                                             <div class="form-group form-md-line-input">
                                                 <div class="input-group">
                                                     <div class="input-group-control">
-                                                        <input type="text" class="form-control" id="LinkedIn" ng-model="employee.social.LI" placeholder="@(companies:WithHttp)">
+                                                        <input type="text" class="form-control" id="LinkedIn" ng-model="employee.social.LI">
                                                         <label for="LinkedIn">@(users:LinkedIn)</label>
                                                     </div>
                                                     <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{employee.social.LI}}"  class="btn yellow" type="button"><i class="fa fa-linkedin"></i></a>
-                                                        </span>
+                                                        <a ng-href="{{employee.social.LI}}" class="btn yellow" type="button">
+                                                            <i class="fa fa-linkedin"></i>
+                                                        </a>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div class="form-group form-md-line-input">
                                                 <div class="input-group">
                                                     <div class="input-group-control">
-                                                        <input type="text" class="form-control" id="Facebook" ng-model="employee.social.FB" placeholder="@(companies:WithHttp)">
+                                                        <input type="text" class="form-control" id="Facebook" ng-model="employee.social.FB">
                                                         <label for="Facebook">@(users:Facebook)</label>
                                                     </div>
                                                     <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{employee.social.FB}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-facebook"></i></a>
-                                                        </span>
+                                                        <a ng-href="{{employee.social.FB}}" target="_blank" class="btn yellow" type="button">
+                                                            <i class="fa fa-facebook"></i>
+                                                        </a>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -100,7 +112,7 @@
                             <div class="col-md-6">
                                 <div class="portlet light bordered">
                                     <div class="row">
-                                        <div class="col-md-6 col-sm-12">
+                                        <div class="col-md-12 col-sm-12">
                                             <!-- <div class="form-group form-md-line-input">
                                         <input type="text" class="form-control" id="form_control_1" ng-model="employee.homeAddress.street">
                                         <label for="form_control_1">@(users:HomeAddress)</label>
@@ -121,51 +133,39 @@
                                         <label for="form_control_1">@(Region)</label>
                                     </div>
                                     -->
+
+                                            <div class="form-group form-md-line-input">
+                                                <div class="input-group">
+                                                    <div class="input-group-control">
+                                                        <input type="text" class="form-control" id="Email" ng-model="employee.emails.work" placeholder="xxxxxx@xxx.xx">
+                                                        <label for="Email">@(ProEmail)</label>
+                                                    </div>
+                                                    <span class="input-group-btn btn-right">
+                                                        <a ng-href="mailto:{{employee.emails.work}}" class="btn yellow" type="button">
+                                                            <i class="fa fa-envelope"></i>
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group form-md-line-input">
+                                                <input type="text" class="form-control" id="Mobile" ng-model="employee.phones.phone">
+                                                <label for="Mobile">@(Tel-Pro)</label>
+                                            </div>
+
                                             <div class="form-group form-md-line-input">
                                                 <select class="table-group-action-input form-control" id="Department" required ng-model="employee.department" ng-options="s.id as s.name for s in $dict.department.data"></select>
                                                 <label for="Department">@(users:Department)</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input">
-                                                <select class="table-group-action-input form-control" id="Manager" required ng-model="employee.manager" ng-options="s._id as s.name for s in $dict.employees.data"></select>
+                                                <select class="table-group-action-input form-control" id="Manager" required ng-model="employee.manager" ng-options="s.id as s.name for s in $dict.employees.data"></select>
                                                 <label for="Manager">@(users:Manager)</label>
                                             </div>
 
                                             <div class="form-group form-md-line-input">
                                                 <select class="table-group-action-input form-control" id="JobPosition" required ng-model="employee.jobPosition" ng-options="p as p.name for p in $dict.getJobPositionForDd.data track by _id"></select>
                                                 <label for="JobPosition">@(users:JobPosition)</label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input">
-                                                <select class="table-group-action-input form-control" id="CountryOfBirth" required ng-model="employee.homeAddress.country" ng-options="s.id as s.name for s in $dict.nationality.data"></select>
-                                                <label for="CountryOfBirth">@(users:CountryOfBirth)</label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input">
-                                                <select class="table-group-action-input form-control" id="Nationality" required ng-model="employee.nationality" ng-options="s.id as s.name for s in $dict.nationality.data"></select>
-                                                <label for="Nationality">@(users:Nationality)</label>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6 col-sm-12">
-                                            <div class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="SocialeSecurityNumber" ng-model="employee.socialSecurityNumber">
-                                                <label for="SocialeSecurityNumber">@(users:SocialeSecurityNumber)</label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="BankingEtablishment" ng-model="employee.iban.id">
-                                                <label for="BankingEtablishment">@(users:BankingEtablishment)</label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="IBAN" ng-model="employee.iban.bank">
-                                                <label for="IBAN">@(users:IBAN)</label>
-                                            </div>
-
-                                            <div class="form-group form-md-line-input">
-                                                <input type="text" class="form-control" id="BIC" ng-model="employee.iban.bic">
-                                                <label for="BIC">@(users:BIC)</label>
                                             </div>
                                         </div>
                                     </div>
@@ -181,18 +181,24 @@
                                                 <i class="fa fa-comments-o"></i> @(users:Notes)
                                             </div>
                                             <div class="actions" ng-show="!editableReport.$visible">
-                                                <a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn default" data-original-title="" title="@(Edit)"><i class="fa fa-pencil"></i>@(Edit)</a>
+                                                <a href="#" ng-click="editableReport.$show()" ng-show="!editableReport.$visible && editable" class="btn default" data-original-title=""
+                                                    title="@(Edit)">
+                                                    <i class="fa fa-pencil"></i>@(Edit)</a>
                                                 <a href="#" class="btn btn-icon-only btn-default fullscreen" data-original-title="" title="@(FullScreen)"></a>
                                             </div>
                                             <div class="actions" ng-show="editableReport.$visible">
-                                                <button type="submit" ng-disabled="editableReport.$waiting" class="btn green"><i class="fa fa-check"></i> @(Save) </button>
-                                                <button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel();
-                                    findOne();" class="btn red">@(Cancel) <i class="fa fa-angle-right"></i></button>
+                                                <button type="submit" ng-disabled="editableReport.$waiting" class="btn green">
+                                                    <i class="fa fa-check"></i> @(Save) </button>
+                                                <button type="button" ng-disabled="editableReport.$waiting" ng-click="editableReport.$cancel(); findOne();" class="btn red">@(Cancel)
+                                                    <i class="fa fa-angle-right"></i>
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="portlet-body">
                                             <div ng-hide="editableReport.$visible" ng-if="employee.internalNotes.author.name" class="alert alert-info alert-dismissable">
-                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) : <strong>{{employee.internalNotes.datec| date:'@(main:date.format.java.dayhour)'}}</strong>                                                @(By) {{employee.internalNotes.author.name}}
+                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button> @(DateLastModification) :
+                                                <strong>{{employee.internalNotes.datec| date:'@(main:date.format.java.dayhour)'}}</strong>
+                                                @(By) {{employee.internalNotes.author.name}}
                                             </div>
                                             <div ng-if="!editableReport.$visible" marked="employee.internalNotes.new"></div>
                                             <div ng-if="editableReport.$visible" markdown-editor height="300" ng-model="employee.internalNotes"></div>

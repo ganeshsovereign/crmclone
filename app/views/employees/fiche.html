@@ -9,11 +9,7 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
-            <span> @(Parameters)</span>
-            <i class="fa fa-angle-right"></i>
-        </li>
-        <li>
-            <span> @(users:ManagementEmployees)</span>
+            <span> @(ManagementEmployees)</span>
             <i class="fa fa-angle-right"></i>
         </li>
         <li>
@@ -87,14 +83,14 @@
                             <a ui-sref="employee.show.main">
                                 <i class="icon-info" class="selected"></i> @(users:Main) </a>
                         </li>
-                        <!--<li ng-class="{active: $state.includes('employee.show.personnalinformation')}">
+                        <li ng-class="{active: $state.includes('employee.show.personnalinformation')}">
                             <a ui-sref="employee.show.personnalinformation">
-                                <i class="icon-speech"></i> @(users:PersonnalInformation) </a>
+                                <i class="icon-speech"></i> @(users:PersonalInformation) </a>
                         </li>
                         <li ng-class="{active: $state.includes('employee.show.files')}">
                             <a ui-sref="employee.show.files">
                                 <i class="icon-picture"></i> @(products:Images/documents) </a>
-                        </li>-->
+                        </li>
                         <!--<li ng-class="{active: $state.includes('employee.show.job')}">
                             <a ui-sref="employee.show.job">
                                 <i class="icon-basket"></i> @(users:Job) </a>
