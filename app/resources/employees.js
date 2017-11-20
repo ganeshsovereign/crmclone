@@ -74,7 +74,7 @@ MetronicApp.config(function($stateProvider, $urlRouterProvider) {
         // Personnal Information
         .state("employee.show.personnalinformation", {
             url: "/PersonnalInformation",
-            templateUrl: "/views/employees/personnal.html",
+            templateUrl: "/views/employees/personal.html",
             data: {
                 pageTitle: 'PersonnalInformation'
             }

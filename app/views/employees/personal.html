@@ -34,24 +34,20 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group form-md-line-input has-success">
-                                        <input class="table-group-action-input form-control" date-input id="dateBirth" ng-model="employee.dateBirth">
-                                        <label for="dateBirth">@(users:DateBirth)</label>
+                                    
+                                    <div class="form-group form-md-line-input">
+                                        <select class="form-control" id="CityOfBirth" required ng-model="employee.homeAddress.country" ng-options="s._id as s.name for s in $dict.nationality.data"></select>
+                                        <label for="CityOfBirth">@(users:CityOfBirth)</label>
                                     </div>
 
                                     <div class="form-group form-md-line-input">
-                                        <select class="table-group-action-input form-control" required ng-model="employee.homeAddress.country" ng-options="s._id as s.name for s in $dict.nationality.data"></select>
-                                        <label for="form_control_1">@(users:CityOfBirth)</label>
+                                        <select class="form-control" id="CountryOfBirth"  required ng-model="employee.homeAddress.country" ng-options="s._id as s.name for s in $dict.nationality.data"></select>
+                                        <label for="CountryOfBirth">@(users:CountryOfBirth)</label>
                                     </div>
 
                                     <div class="form-group form-md-line-input">
-                                        <select class="table-group-action-input form-control" required ng-model="employee.homeAddress.country" ng-options="s._id as s.name for s in $dict.nationality.data"></select>
-                                        <label for="form_control_1">@(users:CountryOfBirth)</label>
-                                    </div>
-
-                                    <div class="form-group form-md-line-input">
-                                        <select class="table-group-action-input form-control" ng-model="employee.nationality" ng-options="c._id as c.name for c in countries"></select>
-                                        <label for="form_control_1">@(users:Nationality)</label>
+                                        <select class="form-control" id="Nationality" ng-model="employee.nationality" ng-options="c._id as c.name for c in nationality"></select>
+                                        <label for="Nationality">@(users:Nationality)</label>
                                     </div>
                                 </div>
 
@@ -68,23 +64,23 @@
                                 <div class="portlet light bordered">
 
                                     <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="form_control_1" ng-model="employee.socialSecurityNumber">
-                                        <label for="form_control_1">@(users:SocialeSecurityNumber)</label>
+                                        <input type="text" class="form-control" id="SocialeSecurityNumber" ng-model="employee.socialSecurityNumber">
+                                        <label for="SocialeSecurityNumber">@(users:SocialeSecurityNumber)</label>
                                     </div>
 
                                     <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="form_control_1" ng-model="employee.iban.id">
-                                        <label for="form_control_1">@(users:BankingEtablishment)</label>
+                                        <input type="text" class="form-control" id="BankingEtablishment" ng-model="employee.iban.id">
+                                        <label for="BankingEtablishment">@(users:BankingEtablishment)</label>
                                     </div>
 
                                     <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="form_control_1" ng-model="employee.iban.bank">
-                                        <label for="form_control_1">@(users:IBAN)</label>
+                                        <input type="text" class="form-control" id="IBAN" ng-model="employee.iban.bank">
+                                        <label for="IBAN">@(users:IBAN)</label>
                                     </div>
 
                                     <div class="form-group form-md-line-input">
-                                        <input type="text" class="form-control" id="form_control_1" ng-model="employee.iban.bic">
-                                        <label for="form_control_1">@(users:BIC)</label>
+                                        <input type="text" class="form-control" id="BIC" ng-model="employee.iban.bic">
+                                        <label for="BIC">@(users:BIC)</label>
                                     </div>
                                 </div>
                             </div>
