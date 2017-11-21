@@ -2273,6 +2273,8 @@ Object.prototype = {
             }] // Date de facture
         };
 
+        //console.log(query);
+
         /* Customer invoice */
         BillModel.aggregate([{
                     $match: query

@@ -10,19 +10,19 @@
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('offer')">
-            <a ui-sref="{{backTo}}">@(orders:ListOfProposals)</a>
+            <a ui-sref="{{backTo}}({forSales:1})">@(orders:ListOfProposals)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('order')">
-            <a ui-sref="{{backTo}}">@(orders:ListOfCustomersOrders)</a>
+        <li ng-if="module('order') && object.forSales">
+            <a ui-sref="{{backTo}}({forSales:1})">@(orders:ListOfCustomersOrders)</a>
             <i class="fa fa-angle-right"></i>
         </li>
-        <li ng-if="module('ordersupplier')">
-            <a ui-sref="{{backTo}}">@(orders:ListOfSuppliersOrders)</a>
+        <li ng-if="module('order') && !object.forSales">
+            <a ui-sref="{{backTo}}({forSales:0})">@(orders:ListOfSuppliersOrders)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('delivery')">
-            <a ui-sref="{{backTo}}">@(orders:ListOfPreparationReceipt)</a>
+            <a ui-sref="{{backTo}}({forSales:1})">@(orders:ListOfPreparationReceipt)</a>
             <i class="fa fa-angle-right"></i>
         </li>
         <li ng-if="module('stockreturn')">
@@ -41,13 +41,13 @@
             <span ng-hide="!object._id">@(orders:Prop) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewProp)</span>
         </li>
-        <li ng-if="module('order')">
+        <li ng-if="module('order') && object.forSales">
             <span ng-hide="!object._id">@(orders:OrderCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewOrder)</span>
         </li>
-        <li ng-if="module('ordersupplier')">
+        <li ng-if="module('order') && !object.forSales">
             <span ng-hide="!object._id">@(orders:OrderSupplier) : {{object.ref}} - {{object.supplier.fullName}}</span>
-            <span ng-show="!object._id">@(orders:NewOrder)</span>
+            <span ng-show="!object._id">@(orders:NewSupplierOrder)</span>
         </li>
         <li ng-if="module('delivery')">
             <span ng-hide="!object._id">@(orders:PreparationNote) : {{object.ref}} - {{object.supplier.fullName}}</span>
@@ -61,9 +61,9 @@
             <span ng-hide="!object._id">@(orders:BillCustomer) : {{object.ref}} - {{object.supplier.fullName}}</span>
             <span ng-show="!object._id">@(orders:NewBill)</span>
         </li>
-        <li ng-if="module('bill') && ! object.forSales">
+        <li ng-if="module('bill') && !object.forSales">
             <span ng-hide="!object._id">@(orders:BillSupplier) : {{object.ref}} - {{object.supplier.fullName}}</span>
-            <span ng-show="!object._id">@(orders:NewBill)</span>
+            <span ng-show="!object._id">@(orders:NewSupplierBill)</span>
         </li>
     </ul>
     <div class="page-toolbar">
@@ -72,7 +72,7 @@
                 <i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
             </a>
             <!-- __OFFER__ -->
-            <ul ng-if="module('offer') || module('offersupplier')" class="dropdown-menu pull-right" role="menu">
+            <ul ng-if="module('offer')" class="dropdown-menu pull-right" role="menu">
                 <li>
                     <a ng-show="object.Status =='DRAFT'" ng-click="changeStatus('VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateQuotation)
@@ -117,7 +117,7 @@
                 </li>
             </ul>
             <!-- __ORDER__ -->
-            <ul ng-if="module('order') || module('ordersupplier')" class="dropdown-menu pull-right" role="menu">
+            <ul ng-if="module('order')" class="dropdown-menu pull-right" role="menu">
                 <li>
                     <a ng-show="object.Status =='VALIDATED'" ng-show="login.rights.order.createDelivery" ng-confirm-click="@(orders:ConfirmProcessing)" confirmed-click="changeStatus('PROCESSING')">
                         <i class="fa fa-external-link-square"></i> @(orders:Processing)
@@ -188,7 +188,7 @@
                 </li>
             </ul>
             <!-- __DELIVERY__ -->
-            <ul ng-if="module('delivery') || module('deliverysupplier')" class="dropdown-menu pull-right" role="menu">
+            <ul ng-if="module('delivery')" class="dropdown-menu pull-right" role="menu">
                 <li>
                     <a ng-if="object.Status=='DRAFT' && login.rights.delivery.validate && isQty(object.orderRows)" data-ng-click="changeStatus('VALIDATED')">
                         <i class="fa fa-thumbs-o-up"></i> @(orders:ValidateDelivery)
@@ -321,12 +321,12 @@
                             <div class="profile-usertitle">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div ng-if="module('offer')" class="uppercase profile-stat-text"> @(orders:QuotationCustomer) </div>
-                                        <div ng-if="module('offersupplier')" class="uppercase profile-stat-text"> @(orders:QuotationSupplier) </div>
-                                        <div ng-if="module('order')" class="uppercase profile-stat-text"> @(orders:OrderCustomer) </div>
-                                        <div ng-if="module('ordersupplier')" class="uppercase profile-stat-text"> @(orders:OrderSupplier) </div>
-                                        <div ng-if="module('delivery')" class="uppercase profile-stat-text"> @(orders:PreparationNoteCustomer) </div>
-                                        <div ng-if="module('deliverysupplier')" class="uppercase profile-stat-text"> @(orders:PreparationNoteSupplier) </div>
+                                        <div ng-if="module('offer') && object.forSales" class="uppercase profile-stat-text"> @(orders:QuotationCustomer) </div>
+                                        <div ng-if="module('offer') && !object.forSales" class="uppercase profile-stat-text"> @(orders:QuotationSupplier) </div>
+                                        <div ng-if="module('order') && object.forSales" class="uppercase profile-stat-text"> @(orders:OrderCustomer) </div>
+                                        <div ng-if="module('order') && !object.forSales" class="uppercase profile-stat-text"> @(orders:OrderSupplier) </div>
+                                        <div ng-if="module('delivery') && object.forSales" class="uppercase profile-stat-text"> @(orders:PreparationNoteCustomer) </div>
+                                        <div ng-if="module('delivery') && !object.forSales" class="uppercase profile-stat-text"> @(orders:PreparationNoteSupplier) </div>
                                         <div ng-if="module('bill') && object.forSales" class="uppercase profile-stat-text"> @(orders:BillCustomer) </div>
                                         <div ng-if="module('bill') && !object.forSales" class="uppercase profile-stat-text"> @(orders:BillSupplier) </div>
                                         <div class="uppercase profile-stat-title"> {{object.ref}} </div>
@@ -362,19 +362,19 @@
                 </div>
 
                 <div class="profile-usermenu">
-                    <ul class="nav" ng-if="module('offer') || module('offersupplier')">
+                    <ul class="nav" ng-if="module('offer')">
                         <li ng-class="{active: $state.includes(module() +'.show.detail')}">
                             <a ui-sref="offer.show.detail({id:object._id})">
                                 <i class="icon-info"></i> @(orders:DetailsOffer) </a>
                         </li>
                     </ul>
-                    <ul class="nav" ng-if="module('order') || module('ordersupplier')">
+                    <ul class="nav" ng-if="module('order')">
                         <li ng-class="{active: $state.includes(module() +'.show.detail')}">
                             <a ui-sref="order.show.detail({id:object._id})">
                                 <i class="icon-info"></i> @(orders:OrdersDetails) </a>
                         </li>
                     </ul>
-                    <ul class="nav" ng-if="module('delivery') || module('deliverysupplier')">
+                    <ul class="nav" ng-if="module('delivery')">
                         <li ng-class="{active: $state.includes(module() +'.show.detail')}">
                             <a ui-sref="delivery.show.detail({id:object._id})">
                                 <i class="icon-info"></i> @(orders:PreparationDetails) </a>

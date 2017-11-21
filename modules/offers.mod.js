@@ -76,30 +76,18 @@ exports.rights = [{
 ];
 exports.menus = {
     "menu:orders": {
-        "position": 30,
-        "perms": "order.read",
-        "enabled": "$conf->commande->enabled",
-        "usertype": 2,
-        "icon": "fa-shopping-cart",
-        "title": "orders:Orders",
         "submenus": {
             "menu:offerlist": {
                 "position": 40,
-                "url": "/erp/#!/offer",
                 "perms": "offer.read",
+                route: "offer.list",
+                params: {
+                    forSales: 1
+                },
                 "enabled": "$conf->offer->enabled",
                 "usertype": 2,
                 "icon": "fa-calculator",
                 "title": "orders:CommercialProposals"
-            },
-            "menu:orderslist": {
-                "position": 50,
-                "url": "/erp/#!/order",
-                "perms": "order.read",
-                "enabled": "$conf->commande->enabled",
-                "usertype": 2,
-                "icon": "fa-shopping-cart",
-                "title": "orders:ListOfOrders"
             }
         }
     }

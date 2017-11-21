@@ -76,6 +76,7 @@ Object.prototype = {
             Order = MODEL('order').Schema.GoodsInNote;
         else
             Order = MODEL('order').Schema.GoodsOutNote;
+
         const OrderStatus = MODEL('order').Status;
         var data = self.query;
         var paginationObject = MODULE('helper').page(self.query);
@@ -837,7 +838,7 @@ Object.prototype = {
                             res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
                             // Add id
                             res.datatable.data[i].DT_RowId = row._id.toString();
-                            // Add color line 
+                            // Add color line
                             //if (res.datatable.data[i].Status === 'SEND')
                             //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
                             // Add link company
@@ -971,7 +972,7 @@ Object.prototype = {
                     res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
                     // Add id
                     res.datatable.data[i].DT_RowId = row._id.toString();
-                    // Add color line 
+                    // Add color line
                     //if (res.datatable.data[i].Status === 'SEND')
                     //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
                     // Add link company
@@ -1416,7 +1417,7 @@ Object.prototype = {
              ], function(err, doc) {
              if (doc.length == 0)
              return cb(0);
-             
+
              //console.log(doc);
              cb(null, doc);
              });
@@ -1950,8 +1951,8 @@ Billing.prototype = {
                     /*
                      * Error $month operator with GMT !!!
                      * See https://jira.mongodb.org/browse/SERVER-6310
-                     * 
-                     * 
+                     *
+                     *
                      CoursesModel.aggregate([
                      {$match: {Status: {'$ne': 'REFUSED'}, date_enlevement: {'$gte': dateStart}}},
                      {$project: {total_ht: 1, type: 1, date_enlevement: 1}},
@@ -1967,16 +1968,16 @@ Billing.prototype = {
                      ], function(err, docs) {
                      if (err)
                      console.log(err);
-                     
+
                      console.log(docs);
-                     
+
                      for (var i = 0; i < docs.length; i++) {
                      result[docs[i]._id.type][docs[i]._id.month - 1] = docs[i].total_ht;
                      }
-                     
-                     
+
+
                      console.log(result);
-                     
+
                      cb(null, result);
                      });
                      */
@@ -2665,7 +2666,7 @@ function createDelivery2(doc, callback) {
                 ]
             }];
 
-            // Frais de port 
+            // Frais de port
             if (doc.shipping && doc.shipping.total_ht)
                 tabTotal.push({
                     label: "Frais de port",

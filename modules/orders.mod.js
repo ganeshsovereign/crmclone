@@ -94,19 +94,17 @@ exports.menus = {
         "usertype": 2,
         "icon": "fa-shopping-cart",
         "title": "orders:Orders",
+        route: "order",
+        params: {
+            forSales: 1
+        },
         "submenus": {
-            "menu:offerlist": {
-                "position": 40,
-                "url": "/erp/#!/offer",
-                "perms": "offer.read",
-                "enabled": "$conf->offer->enabled",
-                "usertype": 2,
-                "icon": "fa-calculator",
-                "title": "orders:CommercialProposals"
-            },
             "menu:orderslist": {
                 "position": 50,
-                "url": "/erp/#!/order",
+                route: "order.list",
+                params: {
+                    forSales: 1
+                },
                 "perms": "order.read",
                 "enabled": "$conf->commande->enabled",
                 "usertype": 2,

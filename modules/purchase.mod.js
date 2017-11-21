@@ -82,10 +82,17 @@ exports.menus = {
         "usertype": 2,
         "icon": "fa-credit-card",
         "title": "orders:Purchases",
+        route: "order",
+        params: {
+            forSales: 0
+        },
         "submenus": {
             "menu:offersupplier": {
                 "position": 30,
-                "url": "/erp/#!/offersupplier",
+                route: "offer.list",
+                params: {
+                    forSales: 0
+                },
                 "perms": "purchase.read",
                 "enabled": "$conf->offersupplier->enabled",
                 "usertype": 2,
@@ -94,7 +101,10 @@ exports.menus = {
             },
             "menu:ordersupplier": {
                 "position": 40,
-                "url": "/erp/#!/ordersupplier",
+                route: "order.list",
+                params: {
+                    forSales: 0
+                },
                 "perms": "purchase.read",
                 "enabled": "$conf->ordersupplier->enabled",
                 "usertype": 2,

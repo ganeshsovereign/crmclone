@@ -34,11 +34,11 @@
                 <span ng-class="{selected:$state.includes('dashboard')}"></span>
             </a>
         </li>
-        <li ng-repeat="(_id,menu) in menus | object2Array | orderBy:'position'" ng-class="{active:$state.includes(menu.route)}">
+        <li ng-repeat="(_id,menu) in menus | object2Array | orderBy:'position'" ng-class="{active:$state.includes(menu.route, menu.params)}">
             <a href="{{menu.url}}" target="{{menu.target}}">
                 <i class="fa {{menu.icon}}"></i>
                 <span class="title">{{menu.title}}</span>
-                <span ng-if="menu.submenus" class="arrow" ng-class="{open:$state.includes(menu.route)}"></span>
+                <span ng-if="menu.submenus" class="arrow" ng-class="{open:$state.includes(menu.route, menu.params)}"></span>
             </a>
             <ul ng-if="menu.submenus" class="sub-menu">
                 <li ng-repeat="(_id, menu) in menu.submenus  | object2Array | orderBy:'position'" ng-class="{active:$state.includes(menu.route, menu.params)}">
@@ -60,8 +60,8 @@
             </ul>
         </li>
 
-        <!-- TODO Example for new menu 
-        
+        <!-- TODO Example for new menu
+
         <li ng-class="{active:$state.includes('societe')}">
                 <a href="javascript:;">
                         <i class="icon-settings"></i>
@@ -74,7 +74,7 @@
                                         <i class="icon-puzzle"></i> Societes
                                 </a>
                         </li>
-                        
+
                 </ul>
         </li>-->
     </ul>

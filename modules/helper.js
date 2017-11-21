@@ -363,7 +363,7 @@ exports.accessRoll = function(user, Model, waterfallCb) {
             $or: whoCanRw
         };
 
-        //console.log(JSON.stringify(matchQuery));
+        console.log(JSON.stringify(matchQuery));
 
         Model.aggregate({
                 $match: matchQuery

@@ -913,13 +913,15 @@ Object.prototype = {
         //console.log("update");
         var DeliveryModel, OrderModel;
 
+        const forSales = (self.query.forSales == 'false' ? false : true);
+
         if (self.query.quotation === 'true') {
-            if (self.query.forSales == "false")
+            if (forSales == false)
                 OrderModel = MODEL('order').Schema.QuotationSupplier;
             else
                 OrderModel = MODEL('order').Schema.QuotationCustomer;
         } else {
-            if (self.query.forSales == "false") {
+            if (forSales == false) {
                 OrderModel = MODEL('order').Schema.OrderSupplier;
                 DeliveryModel = MODEL('order').Schema.GoodsInNote;
             } else {
@@ -1105,7 +1107,7 @@ Object.prototype = {
                     }, 1000);
 
                 //Allocated product order
-                if (order.Status == "VALIDATED")
+                if (order.Status == "VALIDATED" && forSales)
                     return order.setAllocated(newRows, function(err) {
                         if (err)
                             return wCb(err);
@@ -1114,7 +1116,7 @@ Object.prototype = {
                         wCb(null, order);
                     });
 
-                if (order.Status == "DRAFT")
+                if (order.Status == "DRAFT" && forSales)
                     return order.unsetAllocated(newRows, function(err) {
                         if (err)
                             return wCb(err);
@@ -1613,7 +1615,7 @@ Object.prototype = {
                         _type: {
                             $in: ['GoodsOutNote', 'GoodsInNote', 'stockReturns']
                         }
-                    }, "_id ref Status", pCb);
+                    }, "_id ref Status forSales", pCb);
                     /*DeliveryModel.aggregate([{
                         $match: { _id: ObjectId(id) }
                     }, {
@@ -1724,7 +1726,7 @@ Object.prototype = {
                         isremoved: {
                             $ne: true
                         }
-                    }, "_id ref Status total_ht", pCb);
+                    }, "_id ref Status total_ht forSales", pCb);
                 }
             },
             function(err, result) {

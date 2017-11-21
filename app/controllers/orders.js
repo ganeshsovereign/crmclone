@@ -41,7 +41,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         $scope.backTo = 'dashboard';
 
         $scope.object = {
-            forSales: true,
+            forSales: ($rootScope.$stateParams.forSales == '1' ? true : false),
             delivery_mode: "SHIP_STANDARD",
             entity: $rootScope.login.entity,
             billing: {},
@@ -85,19 +85,40 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
             module = current[0];
             switch (current[0]) {
                 case 'offer':
-                    Object = Orders.offer;
-                    $scope.backTo = 'offer.list';
+                    if ($rootScope.$stateParams.forSales == '0') {
+                        $scope.object.forSales = false;
+                        Object = Orders.offerSupplier;
+                        $scope.backTo = 'offer.list';
+                    } else {
+                        $scope.object.forSales = true;
+                        Object = Orders.offer;
+                        $scope.backTo = 'offer.list';
+                    }
                     break;
                 case 'order':
-                    Object = Orders.order;
-                    $scope.backTo = 'order.list';
+                    if ($rootScope.$stateParams.forSales == '0') {
+                        $scope.object.forSales = false;
+                        Object = Orders.orderSupplier;
+                        $scope.backTo = 'order.list';
+                    } else {
+                        $scope.object.forSales = true;
+                        Object = Orders.order;
+                        $scope.backTo = 'order.list';
+                    }
                     break;
                 case 'delivery':
-                    Object = Orders.delivery;
-                    $scope.backTo = 'delivery.list';
+                    if ($rootScope.$stateParams.forSales == '0') {
+                        $scope.object.forSales = false;
+                        Object = Orders.deliverySupplier;
+                        $scope.backTo = 'delivery.list';
+                    } else {
+                        $scope.object.forSales = true;
+                        Object = Orders.delivery;
+                        $scope.backTo = 'delivery.list';
+                    }
                     break;
                 case 'bill':
-                    if ($rootScope.$stateParams.forSales == 0) {
+                    if ($rootScope.$stateParams.forSales == '0') {
                         $scope.object.forSales = false;
                         Object = Orders.billSupplier;
                         $scope.backTo = 'bill.list';
@@ -110,27 +131,6 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 case 'stockreturn':
                     Object = Orders.stockReturn;
                     $scope.backTo = 'stockreturn.list';
-                    break;
-                case 'offersupplier':
-                    $scope.object.forSales = false;
-                    //$scope.object.stockReturn = true;
-                    Object = Orders.offerSupplier;
-                    $scope.backTo = 'offersupplier.list';
-                    break;
-                case 'ordersupplier':
-                    $scope.object.forSales = false;
-                    Object = Orders.orderSupplier;
-                    $scope.backTo = 'ordersupplier.list';
-                    break;
-                case 'deliverysupplier':
-                    $scope.object.forSales = false;
-                    Object = Orders.deliverySupplier;
-                    $scope.backTo = 'deliverysupplier.list';
-                    break;
-                case 'ordersfab':
-                    $scope.object.forSales = false;
-                    Object = Orders.ordersFab;
-                    $scope.backTo = 'ordersfab.list';
                     break;
             }
 
@@ -606,16 +606,16 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
         };
 
         $scope.checkDeliveryLocation = function() {
-            if (!$scope.module('deliverysupplier'))
+            if ($scope.module('delivery') && $scope.forSales)
                 return false;
 
             if (!$scope.object.orderRows || !$scope.object.orderRows.length)
                 return false;
 
             for (var i = 0; i < $scope.object.orderRows.length; i++) {
-                if (!$scope.object.orderRows[i].locationsReceived.length)
+                if (!$scope.object.orderRows[i].locationsReceived || $scope.object.orderRows[i].locationsReceived.length)
                     return false;
-                if (!$scope.object.orderRows[i].locationsReceived[0].location || !$scope.object.orderRows[i].locationsReceived[0].location._id)
+                if (!$scope.object.orderRows[i].locationsReceived[0] || !$scope.object.orderRows[i].locationsReceived[0].location || !$scope.object.orderRows[i].locationsReceived[0].location._id)
                     return false;
             }
             return true;
@@ -721,6 +721,10 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 
 MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$location', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
     function($scope, $rootScope, $location, $http, $modal, $filter, $timeout, superCache, Orders) {
+        $scope.forSales = $rootScope.$stateParams.forSales == '0' ? 0 : 1;
+
+        var enableCache = true;
+
         $scope.search = {
             ref: {
                 value: ""
@@ -773,12 +777,6 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
             'datedl': -1
         };
 
-        if (typeof superCache.get("OfferListController") !== "undefined") {
-            $scope.page = superCache.get("OfferListController").page;
-            $scope.search = superCache.get("OfferListController").search;
-            $scope.sort = superCache.get("OfferListController").sort;
-        }
-
         $scope.types = [{
             name: "En cours",
             id: "NOW"
@@ -803,13 +801,6 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
             $scope.find();
         });
 
-        var module = $rootScope.$state.current.name.split('.')[0];
-        $scope.module = function(themodule) {
-            if (!themodule)
-                return module;
-
-            return module === themodule;
-        };
         $scope.resetFilter = function() {
             superCache.removeAll();
             $rootScope.$state.reload();
@@ -846,6 +837,12 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
 
             // set default layout mode
             $rootScope.settings.layout.pageBodySolid = false;
+
+            if (typeof superCache.get("OfferListController" + $scope.forSales) !== "undefined") {
+                $scope.page = superCache.get("OfferListController" + $scope.forSales).page;
+                $scope.search = superCache.get("OfferListController" + $scope.forSales).search;
+                $scope.sort = superCache.get("OfferListController" + $scope.forSales).sort;
+            }
 
             var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva", "fk_delivery_mode"];
 
@@ -886,6 +883,7 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
         $scope.$on('$includeContentLoaded', function() {
             // initialize core components
             Metronic.initAjax();
+            enableCache = false;
 
             // set default layout mode
             $rootScope.settings.layout.pageBodySolid = false;
@@ -963,11 +961,12 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
             $scope.grid = {};
             $scope.checkAll = false;
 
-            superCache.put("OfferListController", {
-                sort: $scope.sort,
-                search: $scope.search,
-                page: $scope.page
-            });
+            if (enableCache)
+                superCache.put("OfferListController" + $scope.forSales, {
+                    sort: $scope.sort,
+                    search: $scope.search,
+                    page: $scope.page
+                });
 
             Metronic.blockUI({
                 target: '.waiting',
@@ -977,6 +976,7 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
             });
 
             var query = {
+                forSales: $scope.forSales ? true : false,
                 quickSearch: $scope.quickSearch,
                 filter: $scope.search,
                 viewType: 'list',
@@ -986,26 +986,15 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
                 sort: this.sort
             };
 
-            if (module === 'offer')
-                Orders.offer.query(query, function(data, status) {
-                    $scope.page.total = data.total;
-                    $scope.offers = data.data;
-                    $scope.totalAll = data.totalAll;
+            Orders.offer.query(query, function(data, status) {
+                $scope.page.total = data.total;
+                $scope.offers = data.data;
+                $scope.totalAll = data.totalAll;
 
-                    $timeout(function() {
-                        Metronic.unblockUI('.waiting');
-                    }, 0);
-                });
-            else if (module === 'offersupplier')
-                Orders.offerSupplier.query(query, function(data, status) {
-                    $scope.page.total = data.total;
-                    $scope.offers = data.data;
-                    $scope.totalAll = data.totalAll;
-
-                    $timeout(function() {
-                        Metronic.unblockUI('.waiting');
-                    }, 0);
-                });
+                $timeout(function() {
+                    Metronic.unblockUI('.waiting');
+                }, 0);
+            });
         };
 
     }
@@ -1014,6 +1003,8 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
 MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
     function($scope, $rootScope, $http, $modal, $filter, $timeout, superCache, Orders) {
         $scope.grid = {};
+
+        $scope.forSales = $rootScope.$stateParams.forSales == '0' ? 0 : 1;
 
         $scope.dict = {};
         $scope.search = {
@@ -1069,10 +1060,10 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             'datedl': -1
         };
 
-        if (typeof superCache.get("OrderListController") !== "undefined") {
-            $scope.page = superCache.get("OrderListController").page;
-            $scope.search = superCache.get("OrderListController").search;
-            $scope.sort = superCache.get("OrderListController").sort;
+        if (typeof superCache.get("OrderListController" + $scope.forSales) !== "undefined") {
+            $scope.page = superCache.get("OrderListController" + $scope.forSales).page;
+            $scope.search = superCache.get("OrderListController" + $scope.forSales).search;
+            $scope.sort = superCache.get("OrderListController" + $scope.forSales).sort;
         }
 
         /*$scope.loadAutocomplete = function(query, url) {
@@ -1104,14 +1095,6 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
             $scope.find();
         });
-
-        var module = $rootScope.$state.current.name.split('.')[0];
-        $scope.module = function(themodule) {
-            if (!themodule)
-                return module;
-
-            return module === themodule;
-        };
 
         $scope.resetFilter = function() {
             superCache.removeAll();
@@ -1188,7 +1171,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             $scope.grid = {};
             $scope.checkAll = false;
 
-            superCache.put("OrderListController", {
+            superCache.put("OrderListController" + $scope.forSales, {
                 sort: $scope.sort,
                 search: $scope.search,
                 page: $scope.page
@@ -1202,6 +1185,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
             });
 
             var query = {
+                forSales: ($scope.forSales ? true : false),
                 quickSearch: $scope.quickSearch,
                 filter: $scope.search,
                 viewType: 'list',
@@ -1211,36 +1195,20 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 sort: this.sort
             };
 
-            if (module === 'order')
-                Orders.order.query(query, function(data, status) {
-                    $scope.page.total = data.total;
-                    $scope.orders = data.data;
-                    $scope.totalAll = data.totalAll;
-                    //console.log("query", data);
+            Orders.order.query(query, function(data, status) {
+                $scope.page.total = data.total;
+                $scope.orders = data.data;
+                $scope.totalAll = data.totalAll;
+                //console.log("query", data);
 
-                    $scope.search.total_ht = {
-                        value: [data.totalAll.min, data.totalAll.max]
-                    };
+                $scope.search.total_ht = {
+                    value: [data.totalAll.min, data.totalAll.max]
+                };
 
-                    $timeout(function() {
-                        Metronic.unblockUI('.waiting');
-                    }, 0);
-                });
-            else if (module === 'ordersupplier')
-                Orders.orderSupplier.query(query, function(data, status) {
-                    $scope.page.total = data.total;
-                    $scope.orders = data.data;
-                    $scope.totalAll = data.totalAll;
-                    console.log("query", data);
-
-                    $scope.search.total_ht = {
-                        value: [data.totalAll.min, data.totalAll.max]
-                    };
-
-                    $timeout(function() {
-                        Metronic.unblockUI('.waiting');
-                    }, 0);
-                });
+                $timeout(function() {
+                    Metronic.unblockUI('.waiting');
+                }, 0);
+            });
         };
 
         $scope.createBills = function() {
@@ -1291,6 +1259,11 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
 
 MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http', '$modal', '$filter', '$timeout', 'superCache', 'Orders',
     function($scope, $rootScope, $http, $modal, $filter, $timeout, superCache, Orders) {
+
+        $scope.forSales = $rootScope.$stateParams.forSales == '0' ? 0 : 1;
+
+        var enableCache = true;
+
         $scope.$dict = {};
         $scope.search = {
             ref: {
@@ -1354,12 +1327,6 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
 
         $scope.delivery_mode = ["Comptoir", "Livraison"];
 
-        if (typeof superCache.get("DeliveryListController") !== "undefined") {
-            $scope.page = superCache.get("DeliveryListController").page;
-            $scope.search = superCache.get("DeliveryListController").search;
-            $scope.sort = superCache.get("DeliveryListController").sort;
-        }
-
         $scope.$dict = {};
         $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
@@ -1370,14 +1337,6 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
 
             $scope.find();
         });
-
-        var module = $rootScope.$state.current.name.split('.')[0];
-        $scope.module = function(themodule) {
-            if (!themodule)
-                return module;
-
-            return module === themodule;
-        };
 
         $scope.resetFilter = function() {
             superCache.removeAll();
@@ -1399,6 +1358,12 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
 
             // set default layout mode
             $rootScope.settings.layout.pageBodySolid = false;
+
+            if (typeof superCache.get("DeliveryListController" + $scope.forSales) !== "undefined") {
+                $scope.page = superCache.get("DeliveryListController" + $scope.forSales).page;
+                $scope.search = superCache.get("DeliveryListController" + $scope.forSales).search;
+                $scope.sort = superCache.get("DeliveryListController" + $scope.forSales).sort;
+            }
 
             var dict = ["fk_order_status", "fk_paiement", "fk_input_reason", "fk_payment_term", "fk_tva"];
 
@@ -1450,6 +1415,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
         $scope.$on('$includeContentLoaded', function() {
             // initialize core components
             Metronic.initAjax();
+            enableCache = false;
 
             // set default layout mode
             $rootScope.settings.layout.pageBodySolid = false;
@@ -1526,11 +1492,12 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             $scope.grid = {};
             $scope.checkAll = false;
 
-            superCache.put("DeliveryListController", {
-                sort: $scope.sort,
-                search: $scope.search,
-                page: $scope.page
-            });
+            if (enableCache)
+                superCache.put("DeliveryListController" + $scope.forSales, {
+                    sort: $scope.sort,
+                    search: $scope.search,
+                    page: $scope.page
+                });
 
             Metronic.blockUI({
                 target: '.waiting',
@@ -1540,6 +1507,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             });
 
             var query = {
+                forSales: ($scope.forSales ? true : false),
                 quickSearch: $scope.quickSearch,
                 filter: $scope.search,
                 viewType: 'list',
@@ -1550,26 +1518,15 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             };
 
             console.log("query", query);
-            if (module === 'delivery')
-                Orders.delivery.query(query, function(data, status) {
-                    $scope.page.total = data.total;
-                    $scope.deliveries = data.data;
-                    $scope.totalAll = data.totalAll;
-                    console.log("delivery", data);
-                    $timeout(function() {
-                        Metronic.unblockUI('.waiting');
-                    }, 0);
-                });
-            else if (module === 'deliverysupplier')
-                Orders.deliverySupplier.query(query, function(data, status) {
-                    $scope.page.total = data.total;
-                    $scope.deliveries = data.data;
-                    $scope.totalAll = data.totalAll;
-                    console.log("deliverysupplier", data);
-                    $timeout(function() {
-                        Metronic.unblockUI('.waiting');
-                    }, 0);
-                });
+            Orders.delivery.query(query, function(data, status) {
+                $scope.page.total = data.total;
+                $scope.deliveries = data.data;
+                $scope.totalAll = data.totalAll;
+                console.log("delivery", data);
+                $timeout(function() {
+                    Metronic.unblockUI('.waiting');
+                }, 0);
+            });
         };
 
         $scope.changeStatus = function(Status, id) {
@@ -1608,6 +1565,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
         var grid = new Datatable();
         var user = $rootScope.login;
+        var enableCache = true;
 
         $scope.editable = false;
         $scope.dict = {};
@@ -1657,12 +1615,6 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             'ID': -1
         };
 
-        if (typeof superCache.get("BillListController") !== "undefined") {
-            $scope.page = superCache.get("BillListController").page;
-            $scope.search = superCache.get("BillListController").search;
-            $scope.sort = superCache.get("BillListController").sort;
-        }
-
         $scope.$on('websocket', function(e, type, data) {
             if (type !== 'refresh')
                 return;
@@ -1676,7 +1628,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             $scope.find();
         });
 
-        $scope.forSales = $rootScope.$stateParams.forSales == 0 ? 0 : 1;
+        $scope.forSales = $rootScope.$stateParams.forSales == '0' ? 0 : 1;
 
         $scope.resetFilter = function() {
             superCache.removeAll();
@@ -1698,6 +1650,12 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
 
             // set default layout mode
             $rootScope.settings.layout.pageBodySolid = false;
+
+            if (typeof superCache.get("BillListController" + $scope.forSales) !== "undefined") {
+                $scope.page = superCache.get("BillListController" + $scope.forSales).page;
+                $scope.search = superCache.get("BillListController" + $scope.forSales).search;
+                $scope.sort = superCache.get("BillListController" + $scope.forSales).sort;
+            }
 
             var dict = ["fk_bill_status", "fk_input_reason", "fk_paiement", "fk_bill_type", "fk_transport", "fk_payment_term", "fk_tva"];
 
@@ -1738,6 +1696,8 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
         $scope.$on('$includeContentLoaded', function() {
             // initialize core components
             Metronic.initAjax();
+
+            enableCache = false;
 
             var dict = ["fk_bill_status", "fk_input_reason", "fk_paiement", "fk_bill_type", "fk_transport", "fk_payment_term", "fk_tva"];
 
@@ -1818,11 +1778,12 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
             $scope.grid = {};
             $scope.checkAll = false;
 
-            superCache.put("BillListController", {
-                sort: $scope.sort,
-                search: $scope.search,
-                page: $scope.page
-            });
+            if (enableCache)
+                superCache.put("BillListController" + $scope.forSales, {
+                    sort: $scope.sort,
+                    search: $scope.search,
+                    page: $scope.page
+                });
 
             Metronic.blockUI({
                 target: '.waiting',

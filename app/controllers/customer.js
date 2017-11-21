@@ -67,12 +67,6 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             fullName: 1
         };
 
-        if (typeof superCache.get("SocieteController") !== "undefined") {
-            $scope.page = superCache.get("SocieteController").page;
-            $scope.search = superCache.get("SocieteController").search;
-            $scope.sort = superCache.get("SocieteController").sort;
-        }
-
         // This month
         $scope.date = {
             start: moment().startOf('year').toDate(),
@@ -118,16 +112,6 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             }
         ];
 
-        $scope.commercial_id = superCache.get("SocieteController.commercial_id");
-        $scope.status_id = superCache.get("SocieteController.status_id");
-
-        $scope.setCache = function(idx, value) {
-            superCache.put("SocieteController." + idx, value);
-        };
-
-        $scope.clearCache = function() {
-            superCache.removeAll();
-        };
 
         $scope.forSales = $rootScope.$stateParams.forSales == 0 ? 0 : 1;
         $scope.type = $rootScope.$stateParams.type;
@@ -154,8 +138,11 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             // set default layout mode
             $rootScope.settings.layout.pageBodySolid = false;
 
-            if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
-                return $rootScope.$state.go('societe.show.company');
+            if (typeof superCache.get("SocieteController") !== "undefined") {
+                $scope.page = superCache.get("SocieteController").page;
+                $scope.search = superCache.get("SocieteController").search;
+                $scope.sort = superCache.get("SocieteController").sort;
+            }
 
             var dict = ["fk_stcomm", "fk_typent", "fk_effectif", "fk_forme_juridique", "fk_payment_term", "fk_paiement", "fk_civilite", "fk_user_status"];
 

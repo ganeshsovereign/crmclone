@@ -1405,7 +1405,7 @@ goodsOutNoteSchema.statics.cancelInventories = function(options, callback) {
     });
 };
 
-goodsOutNoteSchema.statics.query = function(options, callback) {
+baseSchema.statics.query = function(options, callback) {
     const self = this;
 
     var data = options.query;
@@ -1553,6 +1553,7 @@ goodsOutNoteSchema.statics.query = function(options, callback) {
         });
 
         //console.log(filterObject.$and[0]);
+        console.log(newQueryObj.$and[0]);
 
         var query = [{
                 $match: filterObject

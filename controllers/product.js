@@ -791,7 +791,7 @@ exports.install = function() {
     F.route('/erp/api/product/warehouse/location', warehouse.createLocation, ['post', 'json', 'authorize']);
     F.route('/erp/api/product/warehouse/zone', warehouse.createZone, ['post', 'json', 'authorize']);
 
-    /*{ orderRows: 
+    /*{ orderRows:
    [ { locationsReceived: [],
        cost: 7,
        orderRowId: null,
@@ -814,7 +814,7 @@ exports.install = function() {
   location: { _id: '5945a123907df220805d4df1' },
   description: 'test',
   createdBy: 58e7b03389217fbd13820c76,
-  status: 
+  status:
    { receivedById: 58e7b03389217fbd13820c76,
      isInventory: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST),
      isReceived: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST) } }
@@ -1018,6 +1018,8 @@ Object.prototype = {
 
         if (self.body.isSell || self.query.isSell == "true")
             query.isSell = true;
+        if (self.body.isBuy || self.query.isBuy == "true")
+            query.isBuy = true;
 
         async.waterfall([
                 function(wCb) {
@@ -1401,7 +1403,7 @@ Object.prototype = {
                             res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
                             // Add id
                             res.datatable.data[i].DT_RowId = row._id.toString();
-                            //Prices 
+                            //Prices
                             if (row.prices && row.prices.pu_ht)
                                 res.datatable.data[i].prices.pu_ht = MODULE('utils').printPrice(row.prices.pu_ht, 3);
                             //else if (row.Status == 'SELL' || row.Status == 'SELLBUY')
@@ -1415,7 +1417,7 @@ Object.prototype = {
                                 res.datatable.data[i].directCost = '<span class="text-danger">Inconnu</span>';
 
                             if (res.datatable.data[i].info.isActive == false)
-                                // Add color line 
+                                // Add color line
                                 res.datatable.data[i].DT_RowClass = "bg-red-haze";
                             // Add Pictures
                             if (row.imageSrc && row.imageSrc._id)
@@ -3067,7 +3069,7 @@ Object.prototype = {
                 delete modelJSON._id;
                 delete modelJSON.seq;
                 delete modelJSON.info.langs[0].linker;
-                //modelJSON.info.langs[0].name += 
+                //modelJSON.info.langs[0].name +=
 
                 model = new Product(modelJSON);
                 model.save(function(err) {
@@ -6164,7 +6166,7 @@ ProductAttributes.prototype = {
         ProductAttributesValuesModel.find({
             optionId: id
         }, "_id", function(err, values) {
-            //get all values    
+            //get all values
             values = _.map(values, function(elem) {
                 //Remove all variants
                 ProductModel.update({
@@ -6775,7 +6777,7 @@ Warehouse.prototype = {
 
 function StockCorrection() {}
 StockCorrection.prototype = {
-    /*{ orderRows: 
+    /*{ orderRows:
    [ { locationsReceived: [],
        cost: 7,
        orderRowId: null,
@@ -6798,7 +6800,7 @@ StockCorrection.prototype = {
   location: { _id: '5945a123907df220805d4df1' },
   description: 'test',
   createdBy: 58e7b03389217fbd13820c76,
-  status: 
+  status:
    { receivedById: 58e7b03389217fbd13820c76,
      isInventory: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST),
      isReceived: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST) } }
@@ -7582,7 +7584,7 @@ StockInventory.prototype = {
 
 function StockReturn() {}
 StockReturn.prototype = {
-    /*{ orderRows: 
+    /*{ orderRows:
 +   [ { locationsReceived: [],
 +       cost: 7,
 +       orderRowId: null,
@@ -7605,7 +7607,7 @@ StockReturn.prototype = {
 +  location: { _id: '5945a123907df220805d4df1' },
 +  description: 'test',
 +  createdBy: 58e7b03389217fbd13820c76,
-+  status: 
++  status:
 +   { receivedById: 58e7b03389217fbd13820c76,
 +     isInventory: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST),
 +     isReceived: Wed Aug 02 2017 15:39:57 GMT+0200 (CEST) } }
