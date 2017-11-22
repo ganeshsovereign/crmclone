@@ -1237,7 +1237,7 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                     $scope.page.total = data.total;
                     $scope.orders = data.data;
                     $scope.totalAll = data.totalAll;
-                    console.log("query", data);
+                    //console.log("query", data);
 
                     $timeout(function() {
                         Metronic.unblockUI('.waiting');
@@ -1316,17 +1316,14 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             warehouse: {
                 value: []
             },
-            datedl: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
-            },
             datec: {
                 value: {
                     start: moment().startOf('year').toDate(),
                     end: moment().endOf('year').toDate()
                 }
+            },
+            datedl: {
+                value: []
             },
         };
 
@@ -1340,14 +1337,16 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
             'datedl': 1
         };
 
-
-        $scope.types = [{
+        $scope.types = [
+          {
             name: "En cours",
             id: "NOW"
-        }, {
+          },
+          {
             name: "Clos",
             id: "CLOSED"
-        }];
+          }
+        ];
 
         $scope.type = {
             name: "En cours",
@@ -2163,14 +2162,14 @@ MetronicApp.controller('StockReturnListController', ['$scope', '$rootScope', '$l
                     // execute some code after table records loaded
                 },
                 onError: function(grid) {
-                    // execute some code on network or other general error 
+                    // execute some code on network or other general error
                 },
                 loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options
 
                     // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js).
+                    // So when dropdowns used the scrollable div should be removed.
                     //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
 
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
@@ -2343,14 +2342,14 @@ MetronicApp.controller('OrdersFabListController', ['$scope', '$rootScope', '$loc
                     // execute some code after table records loaded
                 },
                 onError: function(grid) {
-                    // execute some code on network or other general error 
+                    // execute some code on network or other general error
                 },
                 loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options
 
                     // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js).
+                    // So when dropdowns used the scrollable div should be removed.
                     //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
 
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
