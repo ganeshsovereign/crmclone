@@ -59,7 +59,7 @@ var FilterMapper = function() {
         var result = {};
         var _operator = operator || '$in';
 
-        //console.log(values, type, operator, options);
+        //console.log("convert1",values, type, operator, options);
 
         // ng-tags-inputs modules {_id : , name : }
         if (typeof values == 'object')
@@ -73,7 +73,10 @@ var FilterMapper = function() {
                 return elem;
             });
 
-        //console.log(values, type);
+        //if(!values || !values.length)
+        //  return {};
+
+        //  console.log("convert2",values, type);
 
         switch (type) {
             case 'ObjectId':
@@ -215,10 +218,14 @@ var FilterMapper = function() {
             if (filterNames.indexOf(filterName) !== -1) {
                 filterObject = filter[filterName];
 
-                if (typeof filterObject.value == 'object' && filterObject.value.length === 0)
+                //console.log(filterObject.value);
+                if (Object.keys(filterObject.value).length === 0 && filterObject.value.constructor === Object)
                     continue;
 
-                if (typeof filterObject.value == 'string' && filterObject.value.length === 0)
+                if (typeof filterObject.value == 'object' && filterObject.value.length == 0)
+                    continue;
+
+                if (typeof filterObject.value == 'string' && filterObject.value.length == 0)
                     continue;
 
                 filterValues = filterObject.value;
@@ -363,7 +370,7 @@ exports.accessRoll = function(user, Model, waterfallCb) {
             $or: whoCanRw
         };
 
-        console.log(JSON.stringify(matchQuery));
+        //console.log(JSON.stringify(matchQuery));
 
         Model.aggregate({
                 $match: matchQuery

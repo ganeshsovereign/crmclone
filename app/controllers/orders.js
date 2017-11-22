@@ -754,16 +754,10 @@ MetronicApp.controller('OfferListController', ['$scope', '$rootScope', '$locatio
                 value: []
             },
             datedl: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
+                value: {}
             },
             datec: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
+                value: {}
             },
         };
 
@@ -1036,16 +1030,10 @@ MetronicApp.controller('OrderListController', ['$scope', '$rootScope', '$http', 
                 value: []
             },
             datedl: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
+                value: {}
             },
             datec: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
+                value: {}
             },
             total_ht: {
                 value: []
@@ -1288,10 +1276,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                 value: []
             },
             datedl: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
+                value: {}
             },
             datec: {
                 value: {
@@ -1591,10 +1576,7 @@ MetronicApp.controller('BillListController', ['$scope', '$rootScope', '$http', '
                 value: []
             },
             dater: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
+                value: {}
             },
             datec: {
                 value: {

@@ -2055,7 +2055,7 @@ Object.prototype = {
                 $ne: true
             },
             Status: {
-                '$nin': ['DRAFT', 'CANCELED']
+                '$ne': 'CANCELED'
             },
             forSales: (self.query.forSales == 'false' ? false : true),
             $or: [{
@@ -2262,7 +2262,7 @@ Object.prototype = {
                 $ne: true
             },
             Status: {
-                '$nin': ['DRAFT', 'CANCELED']
+                '$ne': 'CANCELED'
             },
             forSales: (self.query.forSales == 'false' ? false : true),
             $or: [{
