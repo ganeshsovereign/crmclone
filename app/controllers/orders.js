@@ -1279,10 +1279,7 @@ MetronicApp.controller('DeliveryListController', ['$scope', '$rootScope', '$http
                 value: {}
             },
             datec: {
-                value: {
-                    start: moment().startOf('year').toDate(),
-                    end: moment().endOf('year').toDate()
-                }
+                value: {}
             },
         };
 
