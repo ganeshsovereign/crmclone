@@ -19,7 +19,7 @@
                             ,'font-yellow-lemon': object.status.allocateStatus=='NOA' ,'font-red' : object.status.allocateStatus=='NOT' }"></span>
                         <span ng-if="module('order')" ng-hide="!object._id" class="large fa fa-inbox" ng-class="{'font-grey': object.status.fulfillStatus=='NOR' ,'font-green-jungle': object.status.fulfillStatus=='ALL'
                             ,'font-yellow-lemon': object.status.fulfillStatus=='NOA' ,'font-red' : object.status.fulfillStatus=='NOT' }"></span>
-                        <span ng-if="module('order')" ng-hide="!object._id" class="large fa fa-truck" ng-class="{'font-grey': object.status.shippingStatus=='NOR' ,'font-green-jungle': object.status.shippingStatus=='ALL'
+                        <span ng-if="module('order')" ng-hide="!object._id" class="large fa" ng-class="{'fa-truck':object.forSales, 'fa-sign-in':!object.forSales,'font-grey': object.status.shippingStatus=='NOR' ,'font-green-jungle': object.status.shippingStatus=='ALL'
                             ,'font-yellow-lemon': object.status.shippingStatus=='NOA' ,'font-red' : object.status.shippingStatus=='NOT' }"></span>
                         <span ng-if="module('order')" ng-hide="!object._id" class="large fa fa-usd" ng-class="{'font-grey': object.status.invoiceStatus=='NOR' ,'font-green-jungle': object.status.invoiceStatus=='ALL'
                             ,'font-yellow-lemon': object.status.invoiceStatus=='NOA' ,'font-red' : object.status.invoiceStatus=='NOT' }"></span>
@@ -44,7 +44,7 @@
                     <div class="form-body">
                         <div class="row" ng-if="module('delivery') && object._id && object.Status !='DRAFT'">
                             <div class="col-md-12">
-                                <div class="portlet light bordered">
+                                <div class="portlet light bordered" ng-show="object.forSales">
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="btn-group btn-group-solid">
@@ -70,6 +70,14 @@
                                                     <span>{{object.status.isShipped | date:'dd/MM/yyyy HH:mm'}}</span>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="portlet light bordered" ng-hide="object.forSales">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <button ng-disabled="object.status.isReceived" class="btn" ng-click="changeStatus('INSTOCK')" class="btn" ng-class="{'default':!object.status.isReceived,'green' : object.status.isReceived}"> @(orders:PutInStock) <i class="fa fa-sign-in"></i></button>
+                                            <span>{{object.status.isReceived | date:'dd/MM/yyyy HH:mm'}}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -320,7 +328,8 @@
 </div>
 <div ng-if="object._id && module('delivery') && !object.forSales" class="row">
     <div class="col-md-12">
-        <product-lines ng-model="object.orderRows" title="'@(orders:ReceptionNotes)'" for-sales="object.forSales" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliverySupplierLine.html" ng-change="update()"></product-lines>
+        <product-lines ng-model="object.orderRows" title="'@(orders:ReceptionNotes)'" for-sales="object.forSales" warehouse="object.warehouse" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliverySupplierLine.html"
+            ng-change="update()"></product-lines>
     </div>
 </div>
 

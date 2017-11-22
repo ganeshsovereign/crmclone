@@ -591,7 +591,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 var go = "delivery.show";
             } else {
                 var delivery = new Orders.deliverySupplier(object);
-                var go = "deliverysupplier.show";
+                var go = "delivery.show";
             }
 
             //create new order
@@ -599,7 +599,8 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
                 //$scope.object.Status = 'PROCESSING';
                 //$scope.object.$update(function(object) {
                 $rootScope.$state.go(go, {
-                    id: response._id
+                    id: response._id,
+                    forSales: response.forSales
                 });
                 //});
             });

@@ -2714,10 +2714,10 @@ F.on('order:recalculateStatus', function(data, callback) {
 
     function getAvailableForRows(docs, cb) {
         var Availability;
-        var GoodsOutNote;
+        var OrderModel;
 
         Availability = MODEL('productsAvailability').Schema;
-        GoodsOutNote = exports.Schema.Order;
+        OrderModel = exports.Schema.Order;
 
         var stockStatus = {};
 
@@ -2785,7 +2785,7 @@ F.on('order:recalculateStatus', function(data, callback) {
 
                         //console.log(availability);
 
-                        GoodsOutNote.aggregate([{
+                        OrderModel.aggregate([{
                             $match: {
                                 'orderRows.orderRowId': elem._id,
                                 _type: {
@@ -2795,7 +2795,7 @@ F.on('order:recalculateStatus', function(data, callback) {
                                     $ne: null
                                 },*/
                                 Status: {
-                                    $ne: 'DRAFT'
+                                    $ne: 'CANCELED'
                                 },
                                 isremoved: {
                                     $ne: true
@@ -2877,7 +2877,7 @@ F.on('order:recalculateStatus', function(data, callback) {
                                 } else
                                     stockStatus.shippingStatus = ((stockStatus.shippingStatus === 'NOA') || (stockStatus.shippingStatus === 'ALL')) ? 'NOA' : 'NOT';
 
-                                console.log(stockStatus);
+                                console.log("stockStatus : ", stockStatus);
 
 
                                 docs.forEach(function(el) {
@@ -2899,7 +2899,7 @@ F.on('order:recalculateStatus', function(data, callback) {
 
                             allocatedOnRow = fullfillOnRow + availability;
 
-                            //console.log(availability);
+                            console.log(availability);
 
                             if (!elem.product.info.productType.inventory) {
                                 //Not IN STOCK Managment
@@ -2920,14 +2920,13 @@ F.on('order:recalculateStatus', function(data, callback) {
                                 return eahcCb();
                             }
 
-                            if (allocatedOnRow !== elem.qty) { // Before <
-                                stockStatus.allocateStatus = 'NOA';
+                            if (!stockStatus.allocateStatus || stockStatus.allocateStatus == 'ALL') {
+                                stockStatus.allocateStatus = 'ALL';
                                 return eahcCb();
                             }
 
-
-                            if (!stockStatus.allocateStatus || stockStatus.allocateStatus == 'ALL') {
-                                stockStatus.allocateStatus = 'ALL';
+                            if (allocatedOnRow !== elem.qty) { // Before <
+                                stockStatus.allocateStatus = 'NOA';
                                 return eahcCb();
                             }
 

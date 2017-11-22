@@ -33,7 +33,7 @@ var Dict = INCLUDE('dict');
 exports.install = function() {
 
     var object = new Object();
-    F.route('/erp/api/stats/caFamily', object.caFamily, ['authorize']); // ForSales true or false
+    F.route('/erp/api/stats/caFamily', object.caFamily, ['authorize']); // forSales true or false
     F.route('/erp/api/stats/caEvolution', object.caEvolution, ['authorize']);
     F.route('/erp/api/stats/caGraph', object.caGraph, ['authorize']);
     F.route('/erp/api/stats/caCustomer', object.caCustomer, ['authorize']);
