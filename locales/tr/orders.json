@@ -392,6 +392,8 @@
   "NbOfPayments": "Nb de paiements",
   "NetToBePaid": "Net à payer",
   "NewBill": "Nouvelle facture",
+  "NewBillCustomer": "Nouvelle facture client",
+  "NewBillSupplier": "Nouvelle facture fournisseur",
   "NewChequeDeposit": "Nouveau dépôt",
   "NewCustomerOrder": "Nouvelle commande client",
   "NewDelivery": "Nouveau bon de livraison",
