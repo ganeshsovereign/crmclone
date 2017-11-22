@@ -3187,7 +3187,6 @@ F.on('order:sendDelivery', function(data) {
     var ObjectId = MODULE('utils').ObjectId;
 
     const OrderModel = exports.Schema.OrderCustomer;
-    const DeliveryModel = exports.Schema.GoodsOutNote;
 
     //console.log(data);
     console.log("Update emit order sendFirstDelivery", data);
@@ -3202,6 +3201,11 @@ F.on('order:sendDelivery', function(data) {
             return;
 
         var object = order.toObject();
+
+        if(order.forSales)
+        var DeliveryModel = exports.Schema.GoodsOutNote;
+        else
+        var DeliveryModel = exports.Schema.goodsInNotes;
 
         DeliveryModel.findOne({
             order: order._id
