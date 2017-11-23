@@ -19,11 +19,116 @@ limitations under the License.
 International Registered Trademark & Property of ToManage SAS
 */
 
+"use strict";
 
+const moment = require('moment');
 
 exports.name = 'orders';
 exports.version = '1.00';
 exports.enabled = true;
+
+exports.csv = {
+    "model": "order",
+    "schema": "orderCustomer",
+    "aliases": {
+        "ref": "Ref",
+        "supplier.fullName": "Client",
+        "ref_client": "Ref_Client",
+        "salesPerson.fullName": "Commercial",
+        "datedl": "Date exp",
+        "Status": "Statut",
+        "entity": "Entite",
+        "total_ht": "Total HT",
+        "total_ttc": "Total TTC",
+        "status.allocateStatus": "Reserve",
+        "status.fulfillStatus": "Rempli",
+        "status.shippingStatus": "Expedie",
+        "status.invoiceStatus": "Facture",
+
+        "datec": "Date creation"
+    },
+
+    "arrayKeys": {
+    },
+
+    "formatters": {
+        "Date exp": function(date) {
+            return moment(date).format(CONFIG('dateformatLong'));
+        },
+
+        "Date creation": function(date) {
+            return moment(date).format(CONFIG('dateformatLong'));
+        },
+
+        "Statut": function(Status) {
+            const OrderStatus = MODEL('order').Status;
+
+            let result = MODULE('utils').Status(Status, OrderStatus);
+            return result.name;
+        },
+        "Reserve": function(value) {
+            switch (value) {
+              case 'NOT':
+                  return 'Aucun';
+                break;
+              case 'NOA':
+              return 'Partiel';
+              break;
+              case 'ALL':
+               return 'Complet';
+               break;
+              default:
+                 return "-";
+            }
+        },
+        "Rempli": function(value) {
+            switch (value) {
+              case 'NOT':
+                  return 'Aucun';
+                break;
+              case 'NOA':
+              return 'Partiel';
+              break;
+              case 'ALL':
+               return 'Complet';
+               break;
+              default:
+                 return "-";
+            }
+        },
+        "Expedie": function(value) {
+            switch (value) {
+              case 'NOT':
+                  return 'Aucun';
+                break;
+              case 'NOA':
+              return 'Partiel';
+              break;
+              case 'ALL':
+               return 'Complet';
+               break;
+              default:
+                 return "-";
+            }
+        },
+        "Facture": function(value) {
+            switch (value) {
+              case 'NOT':
+                  return 'Aucun';
+                break;
+              case 'NOA':
+                return 'Partiel';
+                break;
+              case 'ALL':
+                return 'Complet';
+                break;
+              default:
+                 return "-";
+            }
+        }
+    }
+};
+
 exports.description = 'Gestion des commandes clients';
 exports.rights = [{
         "desc": "Lire les commandes clients",
