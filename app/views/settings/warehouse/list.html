@@ -7,53 +7,56 @@
             <span class="caption-subject font-grey-gallery bold uppercase">@(products:Warehouse)</span>
         </div>
         <div class="actions">
-            <a class="btn blue" ui-sref="settings.product.warehouse.create">@(Add) <i class="fa fa-plus"></i></a>
-            <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;"><i class="fa fa-refresh"></i>
+            <a class="btn blue" ui-sref="settings.product.warehouse.create">@(Add)
+                <i class="fa fa-plus"></i>
+            </a>
+            <a class="btn btn-icon-only btn-default" ng-click="find()" href="javascript:;">
+                <i class="fa fa-refresh"></i>
             </a>
         </div>
     </div>
     <div class="tools">
     </div>
-    <div class="portlet-body">
-        <div class="form-body">
-            <div class="table-responsive">
-                <div class="dataTables_wrapper no-footer table-responsive">
-                    <div class="col-md-12">
-                        <table class="table dataTable no-footer table-hover" id="priceList">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th>@(Name)</th>
-                                    <th class="text-center" width="100px">@(Owner)</th>
-                                    <th class="text-center" width="100px">@(products:Main)</th>
-                                    <th widht="30%">@(products:Locations)</th>
-                                    <th>@(products:Zones)</th>
-                                    <th width="120px"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="line in listObject">
-                                    <td>{{line.name}}</td>
-                                    <td class="text-center"><span ng-show="line.isOwn == true" class="fa fa-check font-blue"></span></td>
-                                    <td class="text-center"><span ng-show="line.main == true" class="fa fa-check font-blue"></span></td>
-                                    <td>
-                                        <ul>
-                                            <li ng-repeat="location in line.locations">{{location.name}}</li>
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        <ul>
-                                            <li ng-repeat="zone in line.zones">{{zone.name}}</li>
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        <a class="btn green fa fa-pencil" ui-sref="settings.product.warehouse.show({id:line._id})" title="Editer"></a>
-                                        <button ng-if="line.zones.length == 0 && line.locations.length == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="remove()"></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <div class="portlet light">
+        <div class="dataTables_wrapper no-footer table-responsive">
+            <div class="dataTables_wrapper no-footer table-responsive">
+                <table class="table table-striped table-bordered table-hover no-footer" id="priceList">
+                    <thead>
+                        <tr role="row" class="heading">
+                            <th>@(Name)</th>
+                            <th class="text-center" width="100px">@(Owner)</th>
+                            <th class="text-center" width="100px">@(products:Main)</th>
+                            <th widht="30%">@(products:Locations)</th>
+                            <th>@(products:Zones)</th>
+                            <th width="120px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="line in listObject">
+                            <td>{{line.name}}</td>
+                            <td class="text-center">
+                                <span ng-show="line.isOwn == true" class="fa fa-check font-blue"></span>
+                            </td>
+                            <td class="text-center">
+                                <span ng-show="line.main == true" class="fa fa-check font-blue"></span>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li ng-repeat="location in line.locations">{{location.name}}</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    <li ng-repeat="zone in line.zones">{{zone.name}}</li>
+                                </ul>
+                            </td>
+                            <td>
+                                <a class="btn green fa fa-pencil" ui-sref="settings.product.warehouse.show({id:line._id})" title="Editer"></a>
+                                <button ng-if="line.zones.length == 0 && line.locations.length == 0" class="btn red fa fa-trash" title="Supprimer" ng-confirm-click="@(products:ConfirmDeleteWarehouse)" confirmed-click="remove()"></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

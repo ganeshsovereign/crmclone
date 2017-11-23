@@ -10,13 +10,13 @@
                 <div class="portlet-body form">
                     <div class="form-horizontal">
                         <div class="form-body">
-                            <div ng-if="login.multiEntities" class="form-group">
+                            <!--<div ng-if="login.multiEntities" class="form-group">
                                 <label class="col-md-4 control-label">@(companies:Entity)</label>
                                 <div class="col-md-8">
-                                    <!--<select class="form-control" ng-model="payment.entity" ng-options="s.id as s.name for s in entityList" ng-change="loadBank()"></select>-->
+                                    <select class="form-control" ng-model="payment.entity" ng-options="s.id as s.name for s in entityList" ng-change="loadBank()"></select>
                                     <p class="form-control-static"> {{payment.entity}} </p>
                                 </div>
-                            </div>
+                            </div>-->
                             <div crm-id label="@(companies:Company)" name="societeId" ng-model="payment.societe" entity="payment.entity" url="/erp/api/societe/autocomplete?all=1" required="true" on-select="find" placeholder="@(companies:CompanyName)"></div>
 
                             <div class="form-group">

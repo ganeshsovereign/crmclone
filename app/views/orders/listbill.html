@@ -47,19 +47,19 @@
                                     @(orders:CreateBills)
                                 </a>
                             </li>-->
-                            <li class="divider">
-
-                            <li>
-                                <a ng-show="login.rights.bill.read" ng-href="/erp/api/order/export?contentType=invoice&type=xls&filter={{search}}">
-                                    <i class="fa fa-file-excel-o"></i> @(Export XLS)</a>
-                            </li>
                     <li class="divider">
-                    </li>
-                    <li>
-                        <a href="#" class="font-red" ng-show="login.rights.bill.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les factures ?">
+
+                        <li>
+                            <a ng-show="login.rights.bill.read" ng-href="/erp/api/order/export?contentType=invoice&type=xls&filter={{search}}">
+                                    <i class="fa fa-file-excel-o"></i> @(Export XLS)</a>
+                        </li>
+                        <li class="divider">
+                        </li>
+                        <li>
+                            <a href="#" class="font-red" ng-show="login.rights.bill.delete" confirmed-click="remove()" ng-confirm-click="Supprimer les factures ?">
                             <i class="fa fa-trash-o font-red"></i> @(Delete)
                         </a>
-                    </li>
+                        </li>
                 </ul>
             </div>
         </div>
@@ -144,12 +144,17 @@
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label>@(orders:DateInvoice)</label>
-                                            <div report-date-range ng-model="search.datec.value" class="btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range"></div>
+                                            <div filter-date-range ng-model="search.datec.value"></div>
                                         </div>
 
                                         <div class="form-group">
                                             <label>@(orders:DatePayment)</label>
                                             <div filter-date-range ng-model="search.dater.value"></div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="Status">@(AmountHT)</label>
+                                            <input ion-range-slider type="double" grid="true" min="totalAll.min" max="totalAll.max" from="search.total_ht.value[0]" to="search.total_ht.value[1]" />
                                         </div>
                                     </div>
                                 </div>
@@ -187,6 +192,19 @@
                             <div class="row static-info align-reverse ">
                                 <div class="col-md-5 name bold ">@(TotalTTC)</div>
                                 <div class="col-md-7 value bold  ng-binding">{{totalAll.total_ttc | currency}}</div>
+                            </div>
+                            <hr>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(Min) HT</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.min | currency}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(Max) HT</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.max | currency}}</div>
+                            </div>
+                            <div class="row static-info align-reverse ">
+                                <div class="col-md-5 name ">@(orders:Average) HT</div>
+                                <div class="col-md-7 value ng-binding">{{totalAll.avg | currency}}</div>
                             </div>
                             <hr>
                             <div class="row static-info align-reverse ">
@@ -265,7 +283,6 @@
                             <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.dater| date:'dd/MM/yyyy'}}</td>
 
                             <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.total_ht| currency}}</td>
-
 
                             <td ui-sref="bill.show({id:line._id, forSales:forSales})">{{line.total_ttc| currency}}</td>
 

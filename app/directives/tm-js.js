@@ -114,7 +114,7 @@ MetronicApp.directive('filterDateRange', ['$rootScope', function($rootScope) {
         },
         template: '<input type="checkbox" ng-model="checked" ng-click="activate($event)" ng-if="!checked"/><div class="btn btn-sm btn-default" data-container="body" data-placement="bottom" data-original-title="Change dashboard date range" ng-if="checked"><i class="icon-calendar"></i>&nbsp; <span class="thin uppercase visible-lg-inline-block">{{data.start | date : \'d MMM yyyy\'}} - {{data.end | date : \'d MMM yyyy\'}}</span>&nbsp; <i class="fa fa-angle-down"></i></div>',
         link: function(scope, element, attrs, ngModel) {
-            scope.checked = false;
+            scope.checked = scope.data.start ? true : false;
             if (!jQuery().daterangepicker || !element) {
                 return;
             }
@@ -185,20 +185,20 @@ MetronicApp.directive('filterDateRange', ['$rootScope', function($rootScope) {
  //console.log(element.parent());
  var id = element.parent();
  console.log(id)
- 
+
  //element.text("{{course.Status.css}}");
- 
+
  //var replaced = $(this),
  var select = id.data('replacement');
  console.log(select);
- 
+
  // If valid
  //if (select)
  //{
  // _updateSelectText(select, replaced, select.data('select-settings'));
  //}
- 
- 
+
+
  //return {
  //restrict: 'E',
  //template : 'Hello {{course.Status.css}}'
@@ -1028,7 +1028,7 @@ MetronicApp.directive(
                  ngModelCtrl.$viewValue = new Date(ngModelCtrl.$viewValue);
                  var date = ngModelCtrl.$viewValue ? dateFilter(ngModelCtrl.$viewValue,'dd/MM/yyyy' ) : '';
                  elm.val(date);
-                 
+
                  updateCalendar();
                  };*/
 

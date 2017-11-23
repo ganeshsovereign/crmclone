@@ -1,9 +1,8 @@
 <td>
     {{line.sequence}}
 </td>
-<td></td>
 
-<td colspan="5">
+<td colspan="6">
     <!--<summernote ng-if="edit" height="100" ng-model="line.description"></summernote>-->
     <textarea ng-if="edit" ng-model="line.description" rows="5" cols="50" class="form-control"></textarea>
     <pre ng-hide="edit" class="no-padding small">{{ line.description || 'empty' }}</pre>

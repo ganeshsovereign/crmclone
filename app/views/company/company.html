@@ -33,16 +33,16 @@
                                             <div class="md-radio">
                                                 <input type="radio" id="person" name="type" class="md-radiobtn" ng-model="societe.type" value="Person">
                                                 <label for="person">
-                                                            <span class="inc"></span>
-                                                            <span class="check"></span>
-                                                            <span class="box"></span> @(companies:Person) </label>
+                                                    <span class="inc"></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> @(companies:Person) </label>
                                             </div>
                                             <div class="md-radio">
                                                 <input type="radio" id="company" name="type" class="md-radiobtn" ng-model="societe.type" value="Company">
                                                 <label for="company">
-                                                            <span class="inc"></span>
-                                                            <span class="check"></span>
-                                                            <span class="box"></span> @(companies:Company) </label>
+                                                    <span class="inc"></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> @(companies:Company) </label>
                                             </div>
                                         </div>
                                     </div>
@@ -71,8 +71,10 @@
 
                                     <div class="form-group form-md-line-input" ng-class="{'has-error':$error , 'has-success': !$error}">
                                         <input type="text" class="form-control" maxlength="13" id="ref" ng-change="checkCodeClient()" ng-model="societe.salesPurchases.ref" ng-model-options='{ debounce: 500 }'>
-                                        <label for="ref">@(companies:IdThirdParty) <span class="required">
-                                        * </span> </label>
+                                        <label for="ref">@(companies:IdThirdParty)
+                                            <span class="required">
+                                                * </span>
+                                        </label>
                                     </div>
 
                                     <div ng-hide="societe.type == 'Person'" class="form-group form-md-line-input">
@@ -84,7 +86,10 @@
                                         <div class="md-checkbox-inline">
                                             <div class="md-checkbox">
                                                 <input type="checkbox" id="isGeneric" class="md-check" ng-model="societe.salesPurchases.isGeneric" ng-checked="societe.salesPurchases.isGeneric">
-                                                <label for="isGeneric"><span></span><span class="check"></span><span class="box"></span> @(companies:GenericCustomer)</label>
+                                                <label for="isGeneric">
+                                                    <span></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> @(companies:GenericCustomer)</label>
                                                 <span class="help">(@(companies:BecomeGenericCustomer))</span>
                                             </div>
                                         </div>
@@ -96,20 +101,25 @@
                                             <div class="md-checkbox" ng-repeat="value in entityList">
                                                 <input type="checkbox" class="md-check" name="checkedObj[]" id="{{value.id}}" ng-click="toggleSelection(societe.entity, value.id)" ng-checked="societe.entity.indexOf(value.id) >= 0" />
                                                 <label for="{{value.id}}">
-                                                <span></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span> {{value.name}} </label>
+                                                    <span></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span> {{value.name}} </label>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
+                                <div class="portlet light bordered">
                                     <div class="caption">
-                                        <span class="caption-subject font-yellow-crusta uppercase"> @(companies:MainAddress) </span><small class="lowercase font-yellow-crusta">(de facturation)</small>
+                                        <span class="caption-subject lowercase font-yellow-crusta"> @(companies:MainAddress) </span>
+                                        <small class="lowercase font-yellow-crusta">(de facturation)</small>
                                         <hr>
                                         <address ng-model=societe.address mode="withEmail"></address>
                                     </div>
                                 </div>
                             </div>
+
+
 
                             <div class="col-md-6 col-sm-12">
                                 <form editable-form name="editableInfo" onaftersave="addNote()">
@@ -118,12 +128,15 @@
                                             <div class="caption">@(StrategicInformation)
                                             </div>
                                             <div class="actions" ng-show="!editableInfo.$visible">
-                                                <a href="#" ng-click="editableInfo.$show()" ng-show="!editableInfo.$visible && editable" class="btn yellow-haze btn-sm" data-original-title="" title="@(Add)"><i class="fa fa-plus"></i>@(Add)</a>
+                                                <a href="#" ng-click="editableInfo.$show()" ng-show="!editableInfo.$visible && editable" class="btn yellow-haze btn-sm" data-original-title="" title="@(Add)">
+                                                    <i class="fa fa-plus"></i>@(Add)</a>
                                             </div>
                                             <div class="actions" ng-show="editableInfo.$visible">
                                                 <button type="button" ng-disabled="editableInfo.$waiting" ng-click="editableInfo.$cancel();
-                                                                findOne();" class="btn red btn-sm"><i class="fa fa-angle-left"></i>@(Cancel)</button>
-                                                <button type="submit" ng-disabled="editableInfo.$waiting" class="btn green btn-sm"><i class="fa fa-check-circle"></i>@(Save)</button>
+                                                                findOne();" class="btn red btn-sm">
+                                                    <i class="fa fa-angle-left"></i>@(Cancel)</button>
+                                                <button type="submit" ng-disabled="editableInfo.$waiting" class="btn green btn-sm">
+                                                    <i class="fa fa-check-circle"></i>@(Save)</button>
                                             </div>
 
                                         </div>
@@ -133,8 +146,13 @@
                                             <div class="" style="max-height:400px;overflow-y: auto">
                                                 <div ng-repeat="vnote in societe.notes| orderBy:'-datec'">
                                                     <div class="note row" ng-class="vnote.css">
-                                                        <h4 class="block col-md-12"><i class="icon-speech"></i> <b>{{vnote.author.username}}</b> - <i>{{ vnote.datec | date:'@(main:date.format.java.dayhour)' }}</i> <span ng-if="login.rights.societe.delete" title="Supprimer note"
-                                                                class="pull-right icon icon-trash" ng-confirm-click="@(DeletePostIt)" confirmed-click="removeNote(vnote)"></span></h4>
+                                                        <h4 class="block col-md-12">
+                                                            <i class="icon-speech"></i>
+                                                            <b>{{vnote.author.username}}</b> -
+                                                            <i>{{ vnote.datec | date:'@(main:date.format.java.dayhour)' }}
+                                                            </i>
+                                                            <span ng-if="login.rights.societe.delete" title="Supprimer note" class="pull-right icon icon-trash" ng-confirm-click="@(DeletePostIt)" confirmed-click="removeNote(vnote)"></span>
+                                                        </h4>
                                                         <pre class="col-md-12">{{vnote.note}}</pre>
                                                     </div>
                                                 </div>
@@ -172,8 +190,10 @@
                                                 <label for="Email">@(Email) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="mailto:{{societe.emails[0].email}}" class="btn yellow" type="button"><i class="fa fa-envelope"></i></a>
-                                                        </span>
+                                                <a ng-href="mailto:{{societe.emails[0].email}}" class="btn yellow" type="button">
+                                                    <i class="fa fa-envelope"></i>
+                                                </a>
+                                            </span>
                                         </div>
                                     </div>
 
@@ -184,8 +204,10 @@
                                                 <label for="societe.url">@(Web) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{societe.url}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-globe"></i></a>
-                                                        </span>
+                                                <a ng-href="{{societe.url}}" target="_blank" class="btn yellow" type="button">
+                                                    <i class="fa fa-globe"></i>
+                                                </a>
+                                            </span>
                                         </div>
                                     </div>
 
@@ -196,8 +218,10 @@
                                                 <label for="form_control_1">@(companies:Twitter) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{societe.social.TW}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-twitter"></i></a>
-                                                        </span>
+                                                <a ng-href="{{societe.social.TW}}" target="_blank" class="btn yellow" type="button">
+                                                    <i class="fa fa-twitter"></i>
+                                                </a>
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="form-group form-md-line-input">
@@ -207,8 +231,10 @@
                                                 <label for="form_control_1">@(companies:LinkedIn) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{societe.social.LI}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-linkedin"></i></a>
-                                                        </span>
+                                                <a ng-href="{{societe.social.LI}}" target="_blank" class="btn yellow" type="button">
+                                                    <i class="fa fa-linkedin"></i>
+                                                </a>
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="form-group form-md-line-input">
@@ -218,8 +244,10 @@
                                                 <label for="form_control_1">@(companies:FaceBook) </label>
                                             </div>
                                             <span class="input-group-btn btn-right">
-                                                            <a ng-href="{{societe.social.FB}}"  target="_blank" class="btn yellow" type="button"><i class="fa fa-facebook"></i></a>
-                                                        </span>
+                                                <a ng-href="{{societe.social.FB}}" target="_blank" class="btn yellow" type="button">
+                                                    <i class="fa fa-facebook"></i>
+                                                </a>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>

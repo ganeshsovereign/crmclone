@@ -138,13 +138,13 @@
                                         * </span></label>
                                         </div>
                                         <div class="form-group form-md-line-input has-success">
-                                            <input type="text" class="form-control" id="Password" ng-model="user.password">
-                                            <label for="Password">@(users:Password)</label>
+                                            <input type="text" class="form-control" id="Password" required ng-model="user.password">
+                                            <label for="Password">@(users:Password)<span class="required">
+                                        * </span></label>
                                         </div>
                                         <div class="form-group form-md-line-input has-success">
                                             <input type="text" class="form-control" id="Email" ng-change="checkEmailExist" ng-model="user.email">
-                                            <label for="Email">@(Email)<span class="required">
-                                        * </span></label>
+                                            <label for="Email">@(Email)</label>
                                         </div>
                                         <div class="form-group form-md-line-input has-success">
                                             <select type="text" class="form-control" id="Group" ng-model="user.groupe" ng-options="g.id as g.name for g in groups"></select>

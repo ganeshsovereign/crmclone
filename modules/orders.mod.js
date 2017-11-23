@@ -48,8 +48,7 @@ exports.csv = {
         "datec": "Date creation"
     },
 
-    "arrayKeys": {
-    },
+    "arrayKeys": {},
 
     "formatters": {
         "Date exp": function(date) {
@@ -68,62 +67,62 @@ exports.csv = {
         },
         "Reserve": function(value) {
             switch (value) {
-              case 'NOT':
-                  return 'Aucun';
-                break;
-              case 'NOA':
-              return 'Partiel';
-              break;
-              case 'ALL':
-               return 'Complet';
-               break;
-              default:
-                 return "-";
+                case 'NOT':
+                    return 'Aucun';
+                    break;
+                case 'NOA':
+                    return 'Partiel';
+                    break;
+                case 'ALL':
+                    return 'Complet';
+                    break;
+                default:
+                    return "-";
             }
         },
         "Rempli": function(value) {
             switch (value) {
-              case 'NOT':
-                  return 'Aucun';
-                break;
-              case 'NOA':
-              return 'Partiel';
-              break;
-              case 'ALL':
-               return 'Complet';
-               break;
-              default:
-                 return "-";
+                case 'NOT':
+                    return 'Aucun';
+                    break;
+                case 'NOA':
+                    return 'Partiel';
+                    break;
+                case 'ALL':
+                    return 'Complet';
+                    break;
+                default:
+                    return "-";
             }
         },
         "Expedie": function(value) {
             switch (value) {
-              case 'NOT':
-                  return 'Aucun';
-                break;
-              case 'NOA':
-              return 'Partiel';
-              break;
-              case 'ALL':
-               return 'Complet';
-               break;
-              default:
-                 return "-";
+                case 'NOT':
+                    return 'Aucun';
+                    break;
+                case 'NOA':
+                    return 'Partiel';
+                    break;
+                case 'ALL':
+                    return 'Complet';
+                    break;
+                default:
+                    return "-";
             }
         },
         "Facture": function(value) {
             switch (value) {
-              case 'NOT':
-                  return 'Aucun';
-                break;
-              case 'NOA':
-                return 'Partiel';
-                break;
-              case 'ALL':
-                return 'Complet';
-                break;
-              default:
-                 return "-";
+                case 'NOT':
+                    return 'Aucun';
+                    break;
+                case 'NOA':
+                    return 'Partiel';
+                    break;
+                case 'ALL':
+                    return 'Complet';
+                    break;
+                default:
+                    return "-";
             }
         }
     }
@@ -199,19 +198,17 @@ exports.menus = {
         "usertype": 2,
         "icon": "fa-shopping-cart",
         "title": "orders:Orders",
+        route: "order",
+        params: {
+            forSales: 1
+        },
         "submenus": {
-            "menu:offerlist": {
-                "position": 40,
-                "url": "/erp/#!/offer",
-                "perms": "offer.read",
-                "enabled": "$conf->offer->enabled",
-                "usertype": 2,
-                "icon": "fa-calculator",
-                "title": "orders:CommercialProposals"
-            },
             "menu:orderslist": {
                 "position": 50,
-                "url": "/erp/#!/order",
+                route: "order.list",
+                params: {
+                    forSales: 1
+                },
                 "perms": "order.read",
                 "enabled": "$conf->commande->enabled",
                 "usertype": 2,
@@ -317,77 +314,14 @@ exports.filters = {
                 "operator": ["$gte", "$lte"]
             }
         },
-
+        "total_ht": {
+            "type": "number",
+            "backend": {
+                "key": "total_ht",
+                "operator": ["$gte", "$lte"]
+            }
+        },
 
         "array": ["supplier", "salesPerson", "workflow", "allocationStatus", "fulfilledStatus", "shippingStatus", "channel", "name"]
-    },
-    "invoice": {
-        "forSales": {
-            "backend": "forSales",
-            "type": "boolean"
-        },
-
-        "ref": {
-            "displayName": "Ref",
-            "backend": "ref",
-            "type": "regex"
-        },
-
-        "ref_client": {
-            "displayName": "Ref customer",
-            "backend": "ref_client",
-            "type": "regex"
-        },
-
-        "entity": {
-            "displayName": "Entity",
-            "backend": "entity",
-            "type": "string"
-        },
-
-        "Status": {
-            "displayName": "Status",
-            "backend": "Status",
-            "type": "string"
-        },
-
-        "supplier": {
-            "displayName": "Customer",
-            "backend": "supplier"
-        },
-
-        "salesPerson": {
-            "displayName": "Assigned To",
-            "backend": "salesPerson"
-        },
-
-        "channel": {
-            "displayName": "Channel",
-            "backend": "channel._id"
-        },
-
-        "name": {
-            "displayName": "Reference",
-            "backend": "_id"
-        },
-
-        "dater": {
-            "type": "date",
-            "backend": {
-                "key": "dater",
-                "operator": ["$gte", "$lte"]
-            }
-        },
-
-        "datec": {
-            "type": "date",
-            "backend": {
-                "key": "datec",
-                "operator": ["$gte", "$lte"]
-            }
-        },
-
-
-        "array": ["supplier", "salesPerson", "workflow", "channel", "name"]
     }
 };

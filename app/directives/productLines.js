@@ -22,8 +22,8 @@ International Registered Trademark & Property of ToManage SAS
 
 
 // All lines
-MetronicApp.directive('productLines', ['$http', '$modal',
-    function($http, $modal) {
+MetronicApp.directive('productLines', ['$http', '$modal', '$timeout',
+    function($http, $modal, $timeout) {
         return {
             restrict: 'E',
             require: 'ngModel',
@@ -49,6 +49,36 @@ MetronicApp.directive('productLines', ['$http', '$modal',
             link: function(scope, elem, attrs, ngModel) {
 
                 //console.log(scope);
+
+                scope.edit = false;
+
+                var timeout = null;
+                var saving = false;
+                var autoSaveUpdates = function(newVal, oldVal) {
+                    //enable autoSave every 300s
+
+                    if (newVal != oldVal) {
+
+                        if (scope.edit && !timeout && !saving)
+                            return timeout = $timeout(function() {
+                                //scope.update();
+                                //console.log('save');
+                                timeout = null;
+                                saving = true;
+
+                                ngModel.$setViewValue(scope.linesModel);
+                                scope.ngChange();
+                                //block saving cicle
+                                $timeout(function() {
+                                    saving = false;
+                                }, 3000);
+
+                            }, 300000);
+                    }
+                };
+
+
+                scope.$watch('linesModel', autoSaveUpdates, true);
 
                 //Used in delivery
                 scope.min = function(val1, val2) {
@@ -318,7 +348,12 @@ MetronicApp.directive('productLines', ['$http', '$modal',
                     ngModel.$setViewValue(scope.linesModel);
 
                     scope.ngChange();
+
                     scope.edit = false;
+                    if (timeout) {
+                        $timeout.cancel(timeout);
+                        timeout = null;
+                    }
 
                     return true;
                 };

@@ -166,10 +166,17 @@ exports.menus = {
         "usertype": 2,
         "icon": "fa-truck",
         "title": "orders:Logistics",
+        route: "delivery",
+        params: {
+            forSales: 1
+        },
         "submenus": {
             "menu:deliverylist": {
                 "position": 1,
-                "url": "/erp/#!/delivery",
+                route: "delivery.list",
+                params: {
+                    forSales: 1
+                },
                 "perms": "delivery.read",
                 "enabled": "delivery->enabled",
                 "usertype": 2,
@@ -178,7 +185,10 @@ exports.menus = {
             },
             "menu:deliverysuppliers": {
                 "position": 5,
-                "url": "/erp/#!/deliverysupplier",
+                route: "delivery.list",
+                params: {
+                    forSales: 0
+                },
                 "perms": "delivery.read",
                 "enabled": "delivery->enabled",
                 "usertype": 2,

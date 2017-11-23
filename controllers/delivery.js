@@ -76,6 +76,7 @@ Object.prototype = {
             Order = MODEL('order').Schema.GoodsInNote;
         else
             Order = MODEL('order').Schema.GoodsOutNote;
+
         const OrderStatus = MODEL('order').Status;
         var data = self.query;
         var paginationObject = MODULE('helper').page(self.query);
@@ -280,31 +281,31 @@ Object.prototype = {
 
                 if (orderOld) //duplicate lines only if pricing Delivery
                     return async.each(rows, function(orderRow, aCb) {
-                        orderRow.order = order._id;
+                            orderRow.order = order._id;
 
-                        if (orderRow.isDeleted && !orderRow._id)
-                            return aCb();
+                            if (orderRow.isDeleted && !orderRow._id)
+                                return aCb();
 
-                        delete orderRow._id;
-                        delete orderRow.__v;
-                        delete orderRow.createdAt;
+                            delete orderRow._id;
+                            delete orderRow.__v;
+                            delete orderRow.createdAt;
 
-                        var orderRow = new OrderRowsModel(orderRow);
-                        orderRow.save(aCb);
-                    },
-                    function(err) {
-                        if (err) {
-                            console.log(err);
-                            return self.json({
-                                errorNotify: {
-                                    title: 'Erreur',
-                                    message: err
-                                }
-                            });
-                        }
+                            var orderRow = new OrderRowsModel(orderRow);
+                            orderRow.save(aCb);
+                        },
+                        function(err) {
+                            if (err) {
+                                console.log(err);
+                                return self.json({
+                                    errorNotify: {
+                                        title: 'Erreur',
+                                        message: err
+                                    }
+                                });
+                            }
 
-                        self.json(doc);
-                    });
+                            self.json(doc);
+                        });
 
                 self.json(doc);
             });
@@ -837,7 +838,7 @@ Object.prototype = {
                             res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
                             // Add id
                             res.datatable.data[i].DT_RowId = row._id.toString();
-                            // Add color line 
+                            // Add color line
                             //if (res.datatable.data[i].Status === 'SEND')
                             //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
                             // Add link company
@@ -971,7 +972,7 @@ Object.prototype = {
                     res.datatable.data[i].bool = '<input type="checkbox" name="id[]" value="' + row._id + '"/>';
                     // Add id
                     res.datatable.data[i].DT_RowId = row._id.toString();
-                    // Add color line 
+                    // Add color line
                     //if (res.datatable.data[i].Status === 'SEND')
                     //res.datatable.data[i].DT_RowClass = "bg-green-turquoise";
                     // Add link company
@@ -1138,8 +1139,8 @@ Object.prototype = {
                     F.emit('notify:controllerAngular', {
                         userId: null,
                         route: 'delivery'
-                            // _id: doc._id.toString(),
-                            //message: "Livraison " + doc.ref + ' modifiee.'
+                        // _id: doc._id.toString(),
+                        //message: "Livraison " + doc.ref + ' modifiee.'
                     });
 
                     self.res.setHeader('Content-type', 'application/pdf');
@@ -1370,57 +1371,57 @@ Object.prototype = {
 
         async.parallel({
             caFamily: function(cb) {
-                    DeliveryModel.aggregate([{
-                            $match: {
-                                Status: {
-                                    '$ne': 'DRAFT'
-                                },
-                                entity: self.user.entity,
-                                datec: {
-                                    '$gte': dateStart,
-                                    '$lt': dateEnd
-                                }
-                            }
-                        },
-                        {
-                            $unwind: "$lines"
-                        },
-                        {
-                            $project: {
-                                _id: 0,
-                                lines: 1
-                            }
-                        },
-                        {
-                            $group: {
-                                _id: "$lines.product.name",
-                                total_ht: {
-                                    "$sum": "$lines.total_ht"
-                                }
+                DeliveryModel.aggregate([{
+                        $match: {
+                            Status: {
+                                '$ne': 'DRAFT'
+                            },
+                            entity: self.user.entity,
+                            datec: {
+                                '$gte': dateStart,
+                                '$lt': dateEnd
                             }
                         }
-                    ], function(err, doc) {
-                        if (err) {
-                            return cb(err);
+                    },
+                    {
+                        $unwind: "$lines"
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            lines: 1
                         }
+                    },
+                    {
+                        $group: {
+                            _id: "$lines.product.name",
+                            total_ht: {
+                                "$sum": "$lines.total_ht"
+                            }
+                        }
+                    }
+                ], function(err, doc) {
+                    if (err) {
+                        return cb(err);
+                    }
 
-                        //console.log(doc);
-                        cb(null, doc);
-                    });
-                }
-                /*familles: function(cb) {
-                 CoursesModel.aggregate([
-                 {$match: {Status: {'$ne': 'REFUSED'}, total_ht: {'$gt': 0}, date_enlevement: {'$gte': dateStart, '$lt': dateEnd}}},
-                 {$project: {_id: 0, type: 1, total_ht: 1}},
-                 {$group: {_id: "$type", sum: {"$sum": "$total_ht"}}}
-                 ], function(err, doc) {
-                 if (doc.length == 0)
-                 return cb(0);
-                 
-                 //console.log(doc);
-                 cb(null, doc);
-                 });
-                 }*/
+                    //console.log(doc);
+                    cb(null, doc);
+                });
+            }
+            /*familles: function(cb) {
+             CoursesModel.aggregate([
+             {$match: {Status: {'$ne': 'REFUSED'}, total_ht: {'$gt': 0}, date_enlevement: {'$gte': dateStart, '$lt': dateEnd}}},
+             {$project: {_id: 0, type: 1, total_ht: 1}},
+             {$group: {_id: "$type", sum: {"$sum": "$total_ht"}}}
+             ], function(err, doc) {
+             if (doc.length == 0)
+             return cb(0);
+
+             //console.log(doc);
+             cb(null, doc);
+             });
+             }*/
         }, function(err, results) {
             if (err)
                 return console.log(err);
@@ -1608,15 +1609,15 @@ Billing.prototype = {
             ])
             .unwind('lines')
 
-        //.populate("orders", "ref ref_client total_ht")
-        .exec(function(err, docs) {
-            if (err)
-                return console.log(err);
+            //.populate("orders", "ref ref_client total_ht")
+            .exec(function(err, docs) {
+                if (err)
+                    return console.log(err);
 
-            //console.log(docs);
-            result.GroupBL = docs;
-            self.json(result);
-        });
+                //console.log(docs);
+                result.GroupBL = docs;
+                self.json(result);
+            });
     },
     create: function(id, self) {
         var DeliveryModel = MODEL('delivery').Schema;
@@ -1950,8 +1951,8 @@ Billing.prototype = {
                     /*
                      * Error $month operator with GMT !!!
                      * See https://jira.mongodb.org/browse/SERVER-6310
-                     * 
-                     * 
+                     *
+                     *
                      CoursesModel.aggregate([
                      {$match: {Status: {'$ne': 'REFUSED'}, date_enlevement: {'$gte': dateStart}}},
                      {$project: {total_ht: 1, type: 1, date_enlevement: 1}},
@@ -1967,16 +1968,16 @@ Billing.prototype = {
                      ], function(err, docs) {
                      if (err)
                      console.log(err);
-                     
+
                      console.log(docs);
-                     
+
                      for (var i = 0; i < docs.length; i++) {
                      result[docs[i]._id.type][docs[i]._id.month - 1] = docs[i].total_ht;
                      }
-                     
-                     
+
+
                      console.log(result);
-                     
+
                      cb(null, result);
                      });
                      */
@@ -2368,9 +2369,9 @@ function createDelivery(doc, callback) {
         var split = doc.ref.replace('/', '-').split('-');
         if (split.length == 2) //BL1607-02020-32
             barcode += "00" + fixedWidthString(doc.ID, 6, {
-            padding: '0',
-            align: 'right'
-        });
+                padding: '0',
+                align: 'right'
+            });
         else { // BL1607-120202
             barcode += fixedWidthString(doc.ID, 6, {
                 padding: '0',
@@ -2498,13 +2499,13 @@ function createDelivery2(doc, callback) {
     if (CONFIG('delivery.type') == "NOPRICE")
         model = "NOPRICE";
     else
-    // check if discount
+        // check if discount
         for (var i = 0; i < doc.lines.length; i++) {
-        if (doc.lines[i].discount > 0) {
-            model = "DISCOUNT";
-            break;
+            if (doc.lines[i].discount > 0) {
+                model = "DISCOUNT";
+                break;
+            }
         }
-    }
 
     SocieteModel.findOne({
         _id: doc.supplier.id
@@ -2665,7 +2666,7 @@ function createDelivery2(doc, callback) {
                 ]
             }];
 
-            // Frais de port 
+            // Frais de port
             if (doc.shipping && doc.shipping.total_ht)
                 tabTotal.push({
                     label: "Frais de port",
@@ -2831,10 +2832,10 @@ function createDelivery2(doc, callback) {
                     "TABULAR": tabLines,
                     //"TOTAL": tabTotal,
                     "TOTALQTY": tabTotalQty
-                        //"APAYER": {
-                        //    "type": "euro",
-                        //    "value": doc.total_ttc || 0
-                        //}
+                    //"APAYER": {
+                    //    "type": "euro",
+                    //    "value": doc.total_ttc || 0
+                    //}
                 })
                 .on('error', callback)
                 .finalize(function(tex) {

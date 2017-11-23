@@ -33,7 +33,7 @@ var Dict = INCLUDE('dict');
 exports.install = function() {
 
     var object = new Object();
-    F.route('/erp/api/stats/caFamily', object.caFamily, ['authorize']); // ForSales true or false
+    F.route('/erp/api/stats/caFamily', object.caFamily, ['authorize']); // forSales true or false
     F.route('/erp/api/stats/caEvolution', object.caEvolution, ['authorize']);
     F.route('/erp/api/stats/caGraph', object.caGraph, ['authorize']);
     F.route('/erp/api/stats/caCustomer', object.caCustomer, ['authorize']);
@@ -57,7 +57,7 @@ Object.prototype = {
         var ProductModel = MODEL('product').Schema;
         var queryCA = {
             Status: {
-                '$ne': 'DRAFT'
+                '$ne': 'CANCELED'
             },
             isremoved: {
                 $ne: true
@@ -70,7 +70,7 @@ Object.prototype = {
         };
         var queryCAN_1 = {
             Status: {
-                '$ne': 'DRAFT'
+                '$ne': 'CANCELED'
             },
             isremoved: {
                 $ne: true
@@ -386,7 +386,7 @@ Object.prototype = {
         var BillModel = MODEL('invoice').Schema;
         var queryCA = {
             Status: {
-                '$ne': 'DRAFT'
+                '$ne': 'CANCELED'
             },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').toDate(),
@@ -396,7 +396,7 @@ Object.prototype = {
         };
         var queryCAN_1 = {
             Status: {
-                '$ne': 'DRAFT'
+                '$ne': 'CANCELED'
             },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').subtract(1, 'year').toDate(),
@@ -529,7 +529,7 @@ Object.prototype = {
 
                 var query = {
                     Status: {
-                        '$ne': 'DRAFT'
+                        '$ne': 'CANCELED'
                     },
                     datec: {
                         '$gte': dateStart.toDate(),
@@ -704,7 +704,7 @@ Object.prototype = {
             ca: function(cb) {
                 var query = {
                     Status: {
-                        '$ne': 'DRAFT'
+                        '$ne': 'CANCELED'
                     },
                     datec: {
                         '$gte': dateStart,
@@ -747,7 +747,7 @@ Object.prototype = {
             charges: function(cb) {
                 var query = {
                     Status: {
-                        '$ne': 'DRAFT'
+                        '$ne': 'CANCELED'
                     },
                     datec: {
                         '$gte': dateStart,
@@ -839,7 +839,7 @@ Object.prototype = {
                     start_date: dateStart,
                     end_date: dateEnd,
                     perPage: 100
-                        //societeName: 'ADHOC STOCK'
+                    //societeName: 'ADHOC STOCK'
                 }).then(function(data) {
                     cb(null, data.balance);
                 });
@@ -875,7 +875,7 @@ Object.prototype = {
 
         var query = {
             Status: {
-                '$nin': ['DRAFT', 'CANCELED']
+                '$ne': 'CANCELED'
             },
             $or: [{
                     datec: {
@@ -986,7 +986,7 @@ Object.prototype = {
 
         var query = {
             Status: {
-                '$ne': 'DRAFT'
+                '$ne': 'CANCELED'
             },
             datec: {
                 '$gte': dateStart,
@@ -1087,7 +1087,7 @@ Object.prototype = {
 
         var query = {
             Status: {
-                '$ne': 'DRAFT'
+                '$ne': 'CANCELED'
             },
             datec: {
                 '$gte': dateStart,
@@ -1294,7 +1294,7 @@ Object.prototype = {
 
         var query = {
             Status: {
-                '$ne': 'DRAFT'
+                '$ne': 'CANCELED'
             },
             isremoved: {
                 $ne: true
@@ -1440,7 +1440,7 @@ Object.prototype = {
                     //_id: 1,
                     "supplier_name": 1,
                     ref: 1
-                        // family: 1,
+                    // family: 1,
                 }
             }
         ], function(err, docs) {
@@ -1464,7 +1464,7 @@ Object.prototype = {
                 //cb();
             });
             //}, function() {
-            //    
+            //
             //});
         });
 
@@ -1702,7 +1702,7 @@ function(err) {
             ca: function(cb) {
                 var query = {
                     Status: {
-                        '$ne': 'DRAFT'
+                        '$ne': 'CANCELED'
                     },
                     datec: {
                         '$gte': dateStart,
@@ -1745,7 +1745,7 @@ function(err) {
             charges: function(cb) {
                 var query = {
                     Status: {
-                        '$ne': 'DRAFT'
+                        '$ne': 'CANCELED'
                     },
                     datec: {
                         '$gte': dateStart,
@@ -1837,7 +1837,7 @@ function(err) {
                     start_date: dateStart,
                     end_date: dateEnd,
                     perPage: 100
-                        //societeName: 'ADHOC STOCK'
+                    //societeName: 'ADHOC STOCK'
                 }).then(function(data) {
                     cb(null, data.balance);
                 });
@@ -1861,7 +1861,7 @@ function(err) {
         var BillModel = MODEL('invoice').Schema;
         var ProductModel = MODEL('product').Schema;
         var queryCH = {
-            Status: { '$ne': 'DRAFT' },
+            Status: { '$ne': 'CANCELED' },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').toDate(),
                 '$lt': moment(self.query.end).endOf('day').toDate()
@@ -1869,7 +1869,7 @@ function(err) {
             forSales: false
         };
         var queryCHN_1 = {
-            Status: { '$ne': 'DRAFT' },
+            Status: { '$ne': 'CANCELED' },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').subtract(1, 'year').toDate(),
                 '$lt': moment(self.query.end).endOf('day').subtract(1, 'year').toDate()
@@ -2059,7 +2059,7 @@ function(err) {
         var BillModel = MODEL('invoice').Schema;
         var queryCH = {
             Status: {
-                '$ne': 'DRAFT'
+                '$ne': 'CANCELED'
             },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').toDate(),
@@ -2069,7 +2069,7 @@ function(err) {
         };
         var queryCHN_1 = {
             Status: {
-                '$ne': 'DRAFT'
+                '$ne': 'CANCELED'
             },
             datec: {
                 '$gte': moment(self.query.start).startOf('day').subtract(1, 'year').toDate(),
@@ -2202,7 +2202,7 @@ function(err) {
 
                 var query = {
                     Status: {
-                        '$ne': 'DRAFT'
+                        '$ne': 'CANCELED'
                     },
                     datec: {
                         '$gte': dateStart.toDate(),
@@ -2378,7 +2378,7 @@ function(err) {
                 const BillModel = MODEL('invoice').Schema;
                 var query = {
                     Status: {
-                        '$ne': 'DRAFT'
+                        '$ne': 'CANCELED'
                     },
                     datec: {
                         '$gte': dateStart,
@@ -2422,7 +2422,7 @@ function(err) {
                 const BillModel = MODEL('invoice').Schema;
                 var query = {
                     Status: {
-                        '$ne': 'DRAFT'
+                        '$ne': 'CANCELED'
                     },
                     datec: {
                         '$gte': dateStart,
@@ -2514,7 +2514,7 @@ function(err) {
                     start_date: dateStart,
                     end_date: dateEnd,
                     perPage: 100
-                        //societeName: 'ADHOC STOCK'
+                    //societeName: 'ADHOC STOCK'
                 }).then(function(data) {
                     cb(null, data.balance);
                 });

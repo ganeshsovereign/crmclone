@@ -67,12 +67,6 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             fullName: 1
         };
 
-        if (typeof superCache.get("SocieteController") !== "undefined") {
-            $scope.page = superCache.get("SocieteController").page;
-            $scope.search = superCache.get("SocieteController").search;
-            $scope.sort = superCache.get("SocieteController").sort;
-        }
-
         // This month
         $scope.date = {
             start: moment().startOf('year').toDate(),
@@ -118,16 +112,6 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             }
         ];
 
-        $scope.commercial_id = superCache.get("SocieteController.commercial_id");
-        $scope.status_id = superCache.get("SocieteController.status_id");
-
-        $scope.setCache = function(idx, value) {
-            superCache.put("SocieteController." + idx, value);
-        };
-
-        $scope.clearCache = function() {
-            superCache.removeAll();
-        };
 
         $scope.forSales = $rootScope.$stateParams.forSales == 0 ? 0 : 1;
         $scope.type = $rootScope.$stateParams.type;
@@ -154,8 +138,11 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
             // set default layout mode
             $rootScope.settings.layout.pageBodySolid = false;
 
-            if ($rootScope.$stateParams.id && $rootScope.$state.current.name === "societe.show")
-                return $rootScope.$state.go('societe.show.company');
+            if (typeof superCache.get("SocieteController") !== "undefined") {
+                $scope.page = superCache.get("SocieteController").page;
+                $scope.search = superCache.get("SocieteController").search;
+                $scope.sort = superCache.get("SocieteController").sort;
+            }
 
             var dict = ["fk_stcomm", "fk_typent", "fk_effectif", "fk_forme_juridique", "fk_payment_term", "fk_paiement", "fk_civilite", "fk_user_status"];
 
@@ -305,7 +292,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
         };
 
         $scope.checkCodeClient = function(data) {
-            if (!this.societe.salesPurchases.ref || this.societe.salesPurchases.ref.length < 4)
+            if (!this.societe.salesPurchases || !this.societe.salesPurchases.ref || this.societe.salesPurchases.ref.length < 4)
                 return $scope.$error = true;
 
             return Societes.query({
@@ -387,7 +374,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     else
                         return $rootScope.$state.go('societe.show.contact');
 
-                    //console.log(societe);
+                //console.log(societe);
 
                 $http({
                     method: 'GET',
@@ -664,7 +651,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                  var tab = [];
                  tab.push(data.own[i]._id.label);
                  tab.push(data.own[i].count);
-                 
+
                  funnelData.push(tab);
                  }
                  //console.log(funnelData);
@@ -768,7 +755,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
          show: true,
          placement: 'insideGrid'
          },
-         
+
          grid: {
          backgroundColor: 'transparent',
          drawGridlines: false,
@@ -838,7 +825,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                         $scope.findOne();
                     });
                 //.error(...)
-                //.then(success, error, progress); 
+                //.then(success, error, progress);
             }
         };
 
@@ -1162,14 +1149,14 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     // execute some code after table records loaded
                 },
                 onError: function(grid) {
-                    // execute some code on network or other general error 
+                    // execute some code on network or other general error
                 },
                 loadingMessage: 'Loading...',
-                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options
 
                     // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                    // So when dropdowns used the scrollable div should be removed. 
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js).
+                    // So when dropdowns used the scrollable div should be removed.
                     //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
 
                     "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
@@ -1273,11 +1260,11 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                 // Donc le SIRET est un numérique à 14 chiffres
                 // Les 9 premiers chiffres sont ceux du SIREN (ou RCS), les 4 suivants
                 // correspondent au numéro d'établissement
-                // et enfin le dernier chiffre est une clef de LUHN. 
+                // et enfin le dernier chiffre est une clef de LUHN.
                 var somme = 0;
                 var tmp;
                 for (var cpt = 0; cpt < siret.length; cpt++) {
-                    if ((cpt % 2) === 0) { // Les positions impaires : 1er, 3è, 5è, etc... 
+                    if ((cpt % 2) === 0) { // Les positions impaires : 1er, 3è, 5è, etc...
                         tmp = siret.charAt(cpt) * 2; // On le multiplie par 2
                         if (tmp > 9)
                             tmp -= 9; // Si le résultat est supérieur à 9, on lui soustrait 9
@@ -1286,7 +1273,7 @@ MetronicApp.controller('SocieteController', ['$scope', '$rootScope', '$http', '$
                     somme += parseInt(tmp, 10);
                 }
                 if ((somme % 10) === 0) {
-                    isValide = true; // Si la somme est un multiple de 10 alors le SIRET est valide 
+                    isValide = true; // Si la somme est un multiple de 10 alors le SIRET est valide
                     $scope.societe.idprof1 = siret.substr(0, 9);
                 } else {
                     isValide = false;
@@ -1749,7 +1736,7 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
         // initialize core components
         Metronic.initAjax();
 
-        // set default layout mode    
+        // set default layout mode
         $rootScope.settings.layout.pageBodySolid = false;
 
         if ($rootScope.$stateParams.societe)
@@ -1900,14 +1887,14 @@ MetronicApp.controller('ContactController', ['$scope', '$rootScope', '$http', '$
                 // execute some code after table records loaded
             },
             onError: function(grid) {
-                // execute some code on network or other general error 
+                // execute some code on network or other general error
             },
             loadingMessage: 'Loading...',
-            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+            dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options
 
                 // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-                // So when dropdowns used the scrollable div should be removed. 
+                // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js).
+                // So when dropdowns used the scrollable div should be removed.
                 //"dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
 
                 "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.

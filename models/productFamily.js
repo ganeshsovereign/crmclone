@@ -153,7 +153,9 @@ F.on('load', function() {
 
         const family = data.family;
 
-        ProductModel.find({ sellFamily: family._id }, function(err, docs) {
+        ProductModel.find({
+            sellFamily: family._id
+        }, function(err, docs) {
             if (!docs)
                 return;
 
@@ -180,7 +182,9 @@ F.on('load', function() {
 
         console.log("Update emit productFamily coefUpdate", data);
 
-        ProductModel.find({ sellFamily: data.family._id }, function(err, docs) {
+        ProductModel.find({
+            sellFamily: data.family._id
+        }, function(err, docs) {
             if (!docs)
                 return;
 

@@ -629,9 +629,16 @@ productSchema.statics.query = function(options, callback) {
     //console.log(filter);
 
     if (quickSearch) {
-        matchObject.$or = [
-            { 'info.SKU': { $regex: new RegExp(quickSearch, 'ig') } },
-            { 'info.langs.name': { $regex: new RegExp(quickSearch, 'ig') } }
+        matchObject.$or = [{
+                'info.SKU': {
+                    $regex: new RegExp(quickSearch, 'ig')
+                }
+            },
+            {
+                'info.langs.name': {
+                    $regex: new RegExp(quickSearch, 'ig')
+                }
+            }
         ];
         filter = {};
     }
@@ -1591,7 +1598,7 @@ productSchema.pre('save', function(next) {
                         });
             }
 
-            //console.log(this);
+        //console.log(this);
 
         if (this.directCost != directCost)
             this.directCost = directCost;
@@ -1629,13 +1636,13 @@ productSchema.pre('save', function(next) {
 
     if (!this.isNew && (this.isModified('directCost') || this.isModified('indirectCost') || this.isModified('sellFamily'))) // Emit to all that a product change totalCost
         setTimeout2('product:updateDirectCost_' + this._id.toString(), function() {
-        F.emit('product:updateDirectCost', {
-            userId: (self.editedBy ? self.editedBy.toString() : null),
-            product: {
-                _id: self._id.toString()
-            }
-        });
-    }, 500);
+            F.emit('product:updateDirectCost', {
+                userId: (self.editedBy ? self.editedBy.toString() : null),
+                product: {
+                    _id: self._id.toString()
+                }
+            });
+        }, 500);
 
     //Emit product update
     setTimeout2('product:' + this._id.toString(), function() {
@@ -1860,18 +1867,25 @@ F.on('load', function() {
                     /*Update Bundle Cost*/
                     const product = data.product;
 
-                    ProductModel.find({ 'bundles.id': product._id })
+                    ProductModel.find({
+                            'bundles.id': product._id
+                        })
                         //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                         //.populate("priceLists")
                         .populate("pack.id", "info directCost indirectCost")
                         .populate("bundles.id", "info directCost indirectCost")
                         .populate({
                             path: 'info.productType'
-                                //    populate: { path: "options" }
+                            //    populate: { path: "options" }
                         })
                         .populate({
                             path: 'sellFamily',
-                            populate: { path: "options", populate: { path: "group" } }
+                            populate: {
+                                path: "options",
+                                populate: {
+                                    path: "group"
+                                }
+                            }
                         })
                         .exec(function(err, products) {
                             if (!products)
@@ -1898,17 +1912,24 @@ F.on('load', function() {
                     /*UpdatePackCost*/
                     const product = data.product;
 
-                    ProductModel.find({ 'pack.id': product._id })
+                    ProductModel.find({
+                            'pack.id': product._id
+                        })
                         //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                         //.populate("priceLists")
                         .populate("pack.id", "info directCost indirectCost")
                         .populate({
                             path: 'info.productType'
-                                //    populate: { path: "options" }
+                            //    populate: { path: "options" }
                         })
                         .populate({
                             path: 'sellFamily',
-                            populate: { path: "options", populate: { path: "group" } }
+                            populate: {
+                                path: "options",
+                                populate: {
+                                    path: "group"
+                                }
+                            }
                         })
                         .exec(function(err, products) {
                             if (!products)
@@ -1935,7 +1956,9 @@ F.on('load', function() {
                     /*isCoef : UpdateProductPrices*/
                     const product = data.product;
 
-                    ProductPricesModel.find({ 'product': data.product._id })
+                    ProductPricesModel.find({
+                            'product': data.product._id
+                        })
                         //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                         .populate("priceLists")
                         .exec(function(err, pricesList) {
@@ -1984,7 +2007,9 @@ F.on('load', function() {
 
                     async.waterfall([
                         function(wCb) {
-                            ProductPricesModel.find({ 'product': data.product._id })
+                            ProductPricesModel.find({
+                                    'product': data.product._id
+                                })
                                 //.populate({ path: 'product', select: 'sellFamily', populate: { path: "sellFamily" } })
                                 .populate("priceLists")
                                 .exec(function(err, pricesList) {

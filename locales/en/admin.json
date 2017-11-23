@@ -805,6 +805,8 @@
     "ShowBugTrackLink": "Show link \"Report a bug\"",
     "ShowWorkBoard": "Show \"workbench\" on homepage",
     "Alerts": "Alerts",
+    "SignIn": "Se connecter",
+    "Enteryoure-mailaddressbelowtoresetyourpassword": "Entrez votre adresse e-mail ci-dessous pour réinitialiser votre mot de passe",
     "Delays": "Delays",
     "DelayBeforeWarning": "Delay before warning",
     "DelaysBeforeWarning": "Delays before warning",
@@ -923,6 +925,7 @@
     "GeneratePassword": "Suggest a generated password",
     "RuleForGeneratedPasswords": "Rule to generate suggested passwords or validate passwords",
     "DoNotSuggest": "Do not suggest any password",
+    "ForgotPassword": "Mot de passe oublié ?",
     "EncryptedPasswordInDatabase": "To allow the encryption of the passwords in the database",
     "DisableForgetPasswordLinkOnLogonPage": "Do not show the link \"Forget password\" on login page",
     "UsersSetup": "Users module setup",
@@ -1304,5 +1307,6 @@
     "Chartofaccounts": "Plan comptable",
     "Definechartofaccounts": "Définir un plan comptable",
     "Selectchartofaccounts": "Sélection d'un plan comptable",
-    "DoNotSuggestChart": "Ne pas suggérer de plan comptable"
+    "DoNotSuggestChart": "Ne pas suggérer de plan comptable",
+    "General": "Main"
 }

@@ -26,7 +26,6 @@ const moment = require('moment');
 exports.name = "bill";
 exports.version = '1.00';
 exports.enabled = true;
-
 exports.csv = {
     "model": "invoice",
     "schema": "invoice",
@@ -46,8 +45,7 @@ exports.csv = {
         "createdAt": "Date creation"
     },
 
-    "arrayKeys": {
-    },
+    "arrayKeys": {},
 
     "formatters": {
         "Date de facture": function(date) {
@@ -67,8 +65,6 @@ exports.csv = {
         }
     }
 };
-
-
 exports.description = "Gestion des factures";
 
 exports.rights = [{
@@ -156,5 +152,83 @@ exports.menus = {
                 "title": "orders:SuppliersInvoices"
             }
         }
+    }
+};
+
+exports.filters = {
+    "invoice": {
+        "forSales": {
+            "backend": "forSales",
+            "type": "boolean"
+        },
+
+        "ref": {
+            "displayName": "Ref",
+            "backend": "ref",
+            "type": "regex"
+        },
+
+        "ref_client": {
+            "displayName": "Ref customer",
+            "backend": "ref_client",
+            "type": "regex"
+        },
+
+        "entity": {
+            "displayName": "Entity",
+            "backend": "entity",
+            "type": "string"
+        },
+
+        "Status": {
+            "displayName": "Status",
+            "backend": "Status",
+            "type": "string"
+        },
+
+        "supplier": {
+            "displayName": "Customer",
+            "backend": "supplier"
+        },
+
+        "salesPerson": {
+            "displayName": "Assigned To",
+            "backend": "salesPerson"
+        },
+
+        "channel": {
+            "displayName": "Channel",
+            "backend": "channel._id"
+        },
+
+        "name": {
+            "displayName": "Reference",
+            "backend": "_id"
+        },
+
+        "dater": {
+            "type": "date",
+            "backend": {
+                "key": "dater",
+                "operator": ["$gte", "$lte"]
+            }
+        },
+
+        "datec": {
+            "type": "date",
+            "backend": {
+                "key": "datec",
+                "operator": ["$gte", "$lte"]
+            }
+        },
+
+        "total_ht": {
+            "type": "number",
+            "backend": {
+                "key": "total_ht",
+                "operator": ["$gte", "$lte"]
+            }
+        },
+        "array": ["supplier", "salesPerson", "workflow", "channel", "name"]
     }
 };

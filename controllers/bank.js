@@ -178,8 +178,8 @@ Payment.prototype = {
                     case "query":
                         if (self.query.query == "WAIT") // For payment
                             query.Status = {
-                            "$nin": ["PAID", "CANCELED", "DRAFT"]
-                        };
+                                "$nin": ["PAID", "CANCELED", "DRAFT"]
+                            };
                         break;
                     case "dater":
                         query.dater = JSON.parse(self.query.dater);
@@ -616,7 +616,7 @@ Payment.prototype = {
 
         var options = {
             conditions: conditions
-                // select: ""
+            // select: ""
         };
 
         //console.log(options);
