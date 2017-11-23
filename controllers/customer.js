@@ -312,14 +312,14 @@ exports.install = function() {
 
     /*app.post('/api/societe/segmentation/autocomplete', auth.requiresLogin, function(req, res) {
      //console.dir(req.body);
-     
+
      if (req.body.filter == null)
      return res.send(200, {});
-     
+
      var query = {
      'segmentation.text': new RegExp(req.body.filter.filters[0].value, "i")
      };
-     
+
      //console.log(query);
      SocieteModel.aggregate([{
      $project: {
@@ -344,25 +344,25 @@ exports.install = function() {
      }
      //console.log(docs);
      var result = [];
-     
+
      if (docs !== null)
      for (var i in docs) {
      result.push({
      text: docs[i]._id
      });
      }
-     
+
      return res.send(200, result);
      });
      });
-     
+
      app.post('/api/societe/import/kompass', function(req, res) {
-     
+
      var ContactModel = MODEL('contact').Schema;
-     
+
      if (req.query.key !== "COvy9NRXD2FEYjSQU6q3LM7HcdKesflGTB")
      return res.send(401);
-     
+
      var conv = [
      "kompass_id",
      "name",
@@ -428,7 +428,7 @@ exports.install = function() {
      "risk",
      false
      ];
-     
+
      var conv_id = {
      civilite: {
      "": "NO",
@@ -505,30 +505,30 @@ exports.install = function() {
      "S.A. Conseil de Surveillance (SA C.SURV.)": "56"
      }
      };
-     
+
      var is_Array = [
      "brand",
      "segmentation",
      "annualCA",
      "annualEBE"
      ];
-     
+
      var convertRow = function(row, index, cb) {
      var societe = {};
-     
+
      for (var i = 0; i < row.length; i++) {
      if (conv[i] === false)
      continue;
-     
+
      if (typeof conv_id[conv[i]] !== 'undefined') {
      if (conv_id[conv[i]][row[i]] === undefined) {
      console.log("error : unknown " + conv[i] + "->" + row[i] + " ligne " + index);
      return;
      }
-     
+
      row[i] = conv_id[conv[i]][row[i]];
      }
-     
+
      switch (conv[i]) {
      case "address1":
      if (row[i])
@@ -550,14 +550,14 @@ exports.install = function() {
      for (var j = 0; j < seg.length; j++) {
      seg[j] = seg[j].replace(/\./g, "");
      seg[j] = seg[j].trim();
-     
+
      societe[conv[i]].push({
      text: seg[j]
      });
      }
      }
-     
-     
+
+
      break;
      case "capital":
      if (row[i])
@@ -617,19 +617,19 @@ exports.install = function() {
      societe[conv[i]] = row[i];
      }
      }
-     
+
      cb(societe);
      };
-     
+
      var is_imported = {};
-     
-     
+
+
      if (req.files) {
      var filename = req.files.filedata.path;
      if (fs.existsSync(filename)) {
-     
+
      var tab = [];
-     
+
      csv()
      .from.path(filename, {
      delimiter: ';',
@@ -638,30 +638,30 @@ exports.install = function() {
      .transform(function(row, index, callback) {
      if (index === 0) {
      tab = row; // Save header line
-     
+
      //for (var i = 0; i < tab.length; i++)
      //if (conv[i] !== false)
      //	console.log(i + ". " + tab[i] + "->" + conv[i]);
-     
+
      return callback();
      }
-     
+
      var alreadyImport = false;
      if (is_imported[row[0]])
      alreadyImport = true;
-     
+
      is_imported[row[0]] = true;
-     
+
      //console.log(row);
-     
+
      //console.log(row[0]);
-     
+
      convertRow(row, index, function(data) {
-     
+
      //callback();
-     
+
      //return;
-     
+
      SocieteModel.findOne({
      $or: [{
      kompass_id: data.kompass_id
@@ -673,30 +673,30 @@ exports.install = function() {
      console.log(err);
      return callback();
      }
-     
+
      var isNew = false;
      if (societe == null) {
      societe = new SocieteModel(data);
      societe.Status = "ST_NEVER";
      isNew = true;
      }
-     
+
      societe = _.extend(societe, data);
-     
+
      //console.log(row[10]);
      //console.log(societe)
      //console.log(societe.datec);
      //callback();
      //return;
-     
+
      if (!alreadyImport)
      societe.save(function(err, doc) {
      if (err)
      console.log(err);
-     
+
      callback();
      });
-     
+
      if (!isNew) {
      ContactModel.findOne({
      'societe.id': societe._id,
@@ -707,31 +707,31 @@ exports.install = function() {
      console.log(err);
      return callback();
      }
-     
+
      if (contact == null) {
      contact = new ContactModel(data);
-     
+
      contact.societe.id = societe.id;
      contact.societe.name = societe.name;
-     
+
      }
-     
+
      contact = _.extend(contact, data);
-     
+
      //console.log(contact);
-     
+
      if (!contact.firstname && !contact.lastname)
      return callback();
-     
+
      contact.save(function(err, doc) {
      callback();
      });
      });
      } else
      callback();
-     
+
      });
-     
+
      //return row;
      });
      })
@@ -751,13 +751,13 @@ exports.install = function() {
      }
      }
      });
-     
+
      app.post('/api/societe/import/horsAntenne', function(req, res) {
      if (req.query.key !== "COvy9NRXD2FEYjSQU6q3LM7HcdKesflGTB")
      return res.send(401);
-     
+
      req.connection.setTimeout(300000);
-     
+
      var conv = [
      false,
      false,
@@ -801,7 +801,7 @@ exports.install = function() {
      "idprof1",
      "entity"
      ];
-     
+
      var conv_id = {
      civilite: {
      "": "NO",
@@ -831,35 +831,35 @@ exports.install = function() {
      "Publique / Administration": "TE_PUBLIC"
      }
      };
-     
+
      var is_Array = [
      "Tag"
      ];
-     
+
      var convertRow = function(row, index, cb) {
      var societe = {};
      societe.typent_id = "TE_PUBLIC";
      societe.country_id = "FR";
      societe.Tag = [];
      societe.remise_client = 0;
-     
+
      for (var i = 0; i < row.length; i++) {
      if (conv[i] === false)
      continue;
-     
+
      if (conv[i] != "effectif_id" && typeof conv_id[conv[i]] !== 'undefined') {
-     
+
      if (conv[i] == "civilite" && conv_id[conv[i]][row[i]] === undefined)
      row[i] = "";
-     
+
      if (conv_id[conv[i]][row[i]] === undefined) {
      console.log("error : unknown " + conv[i] + "->" + row[i] + " ligne " + index);
      return;
      }
-     
+
      row[i] = conv_id[conv[i]][row[i]];
      }
-     
+
      switch (conv[i]) {
      case "address1":
      if (row[i])
@@ -880,7 +880,7 @@ exports.install = function() {
      for (var j = 0; j < seg.length; j++) {
      seg[j] = seg[j].replace(/\./g, "");
      seg[j] = seg[j].trim();
-     
+
      societe[conv[i]].push({
      text: seg[j]
      });
@@ -922,7 +922,7 @@ exports.install = function() {
      break;
      case "effectif_id":
      societe[conv[i]] = "EF0";
-     
+
      for (var idx in conv_id[conv[i]]) {
      if (parseInt(idx, 10) <= parseInt(row[i], 10))
      societe[conv[i]] = conv_id[conv[i]][idx];
@@ -936,16 +936,16 @@ exports.install = function() {
      //console.log(societe);
      cb(societe);
      };
-     
+
      var is_imported = {};
-     
-     
+
+
      if (req.files) {
      var filename = req.files.filedata.path;
      if (fs.existsSync(filename)) {
-     
+
      var tab = [];
-     
+
      csv()
      .from.path(filename, {
      delimiter: ';',
@@ -954,35 +954,35 @@ exports.install = function() {
      .transform(function(row, index, callback) {
      if (index === 0) {
      tab = row; // Save header line
-     
+
      //for (var i = 0; i < tab.length; i++)
      //	if (conv[i] !== false)
      //		console.log(i + ". " + tab[i] + "->" + conv[i]);
-     
+
      return callback();
      }
      //if (index == 1)
      //	console.log(row);
-     
+
      var alreadyImport = false;
      if (is_imported[row[2]])
      alreadyImport = true;
-     
+
      is_imported[row[2]] = true;
-     
+
      //console.log(row);
-     
+
      //console.log(row[0]);
-     
+
      convertRow(row, index, function(data) {
-     
+
      //callback();
-     
+
      //return;
-     
+
      //if (!data.idprof2) // Pas de SIRET
      //	return callback();
-     
+
      var query;
      //console.log(data.idprof2);
      //if (data.idprof2)
@@ -991,7 +991,7 @@ exports.install = function() {
      query = {
      ha_id: data.ha_id
      };
-     
+
      SocieteModel.findOne(query, function(err, societe) {
      if (err) {
      console.log(err);
@@ -999,7 +999,7 @@ exports.install = function() {
      }
      //if (index == 1)
      //	console.log(societe);
-     
+
      var isNew = false;
      if (societe == null) {
      societe = new SocieteModel(data);
@@ -1011,23 +1011,23 @@ exports.install = function() {
      }
      //console.log(data);
      societe = _.extend(societe, data);
-     
+
      //console.log(row[10]);
      //console.log(societe);
      //console.log(societe.datec);
      //callback();
      //return;
-     
+
      if (!alreadyImport)
      societe.save(function(err, doc) {
      if (err)
      console.log("societe : " + JSON.stringify(err));
-     
+
      //console.log("save");
-     
+
      callback();
      });
-     
+
      if (!isNew) {
      ContactModel.findOne({
      'societe.id': societe._id,
@@ -1038,17 +1038,17 @@ exports.install = function() {
      console.log(err);
      return callback();
      }
-     
+
      if (contact == null) {
      contact = new ContactModel(data);
-     
+
      contact.societe.id = societe.id;
      contact.societe.name = societe.name;
-     
+
      }
-     
+
      contact = _.extend(contact, data);
-     
+
      //console.log(data);
      if (data.contact_phone)
      contact.phone = data.contact_phone;
@@ -1056,24 +1056,24 @@ exports.install = function() {
      contact.fax = data.contact_fax;
      if (data.contact_email)
      contact.email = data.contact_email;
-     
+
      //console.log(contact);
-     
+
      if (!contact.firstname || !contact.lastname)
      return callback();
-     
+
      contact.save(function(err, doc) {
      if (err)
      console.log("contact : " + err);
-     
+
      callback();
      });
      });
      } else
      callback();
-     
+
      });
-     
+
      //return row;
      });
      })
@@ -1788,18 +1788,18 @@ exports.install = function() {
      app.post('/api/societe/notes/import', function (req, res) {
      if (req.query.key !== "COvy9NRXD2FEYjSQU6q3LM7HcdKesflGTB")
      return res.send(401);
-     
+
      var convertRow = function (tab, row, index, cb) {
      var societe = {};
-     
+
      for (var i = 0; i < row.length; i++) {
      if (tab[i] === "false")
      continue;
-     
+
      switch (tab[i]) {
      case "notes":
      if (row[i]) {
-     
+
      societe[tab[i]] = {
      author: {
      name: "Inconnu"
@@ -1817,13 +1817,13 @@ exports.install = function() {
      //console.log(societe);
      cb(societe);
      };
-     
+
      if (req.files) {
      var filename = req.files.filedata.path;
      if (fs.existsSync(filename)) {
-     
+
      var tab = [];
-     
+
      csv()
      .from.path(filename, {delimiter: ';', escape: '"'})
      .transform(function (row, index, callback) {
@@ -1833,43 +1833,43 @@ exports.install = function() {
      }
      //console.log(tab);
      //console.log(row);
-     
+
      //console.log(row[0]);
-     
+
      //return;
-     
+
      convertRow(tab, row, index, function (data) {
-     
+
      if (!data.notes.note) {
      return callback();
      }
-     
+
      SocieteModel.findOne({oldId: data.oldId}, function (err, societe) {
      if (err) {
      console.log(err);
      return callback();
      }
-     
+
      if (societe == null) {
      console.log("Societe not found : " + data.oldId);
      return callback();
      }
-     
+
      societe.notes.push(data.notes);
      //console.log(data.notes);
-     
+
      //console.log(societe);
-     
+
      societe.save(function (err, doc) {
      if (err)
      console.log(err);
-     
+
      callback();
      });
-     
+
      });
      });
-     
+
      //return row;
      })
      .on("end", function (count) {
@@ -1886,51 +1886,51 @@ exports.install = function() {
      }
      }
      });
-     
+
      app.post('/api/societe/file/:Id', auth.requiresLogin, function (req, res) {
      var id = req.params.Id;
      //console.log(id);
-     
+
      if (req.files && id) {
      //console.log(req.files);
-     
+
      gridfs.addFile(SocieteModel, id, req.files.file, function (err, result) {
      if (err)
      return res.send(500, err);
-     
+
      return res.send(200, result);
      });
      } else
      res.send(500, "Error in request file");
      });
-     
+
      app.get('/api/societe/file/:Id/:fileName', auth.requiresLogin, function (req, res) {
      var id = req.params.Id;
-     
+
      if (id && req.params.fileName) {
-     
+
      gridfs.getFile(SocieteModel, id, req.params.fileName, function (err, store) {
      if (err)
      return res.send(500, err);
-     
+
      if (req.query.download)
-     res.attachment(store.filename); // for downloading 
-     
+     res.attachment(store.filename); // for downloading
+
      res.type(store.contentType);
      store.stream(true).pipe(res);
-     
+
      });
      } else {
      res.send(500, "Error in request file");
      }
-     
+
      });
-     
+
      app.del('/api/societe/file/:Id/:fileNames', auth.requiresLogin, function (req, res) {
      console.log(req.body);
      var id = req.params.Id;
      //console.log(id);
-     
+
      if (req.params.fileNames && id) {
      gridfs.delFile(SocieteModel, id, req.params.fileNames, function (err) {
      if (err)
@@ -1941,24 +1941,24 @@ exports.install = function() {
      } else
      res.send(500, "File not found");
      });
-     
+
      app.get('/api/societe/contact/select', auth.requiresLogin, function (req, res) {
      //console.log(req.query);
      var result = [];
-     
+
      if (req.query.societe)
      ContactModel.find({"societe.id": req.query.societe}, "_id name", function (err, docs) {
      if (err)
      console.log(err);
-     
+
      if (docs === null)
      return res.send(200, []);
-     
+
      for (var i in docs) {
      var contact = {};
      contact.id = docs[i]._id;
      contact.name = docs[i].name;
-     
+
      result.push(contact);
      }
      res.send(200, result);
@@ -1967,21 +1967,21 @@ exports.install = function() {
      ContactModel.find({}, "_id name", function (err, docs) {
      if (err)
      console.log(err);
-     
+
      if (docs === null)
      return res.send(200, []);
-     
+
      for (var i in docs) {
      var contact = {};
      contact.id = docs[i]._id;
      contact.name = docs[i].name;
-     
+
      result.push(contact);
      }
      res.send(200, result);
      });
      });
-     
+
      app.param('societeId', object.societe);*/
 
     //other routes..
@@ -2727,10 +2727,10 @@ Object.prototype = {
     /* export: function() {
           var self = this;
           var SocieteModel = MODEL('Customers').Schema;
-          
+
           var Stream = require('stream');
           var stream = new Stream();
-          
+
           if (!self.user.admin)
               return console.log("export non autorised");
 
@@ -3019,11 +3019,11 @@ Report.prototype = {
      ], function (err, docs) {
      if (err)
      console.log(err);
-     
+
      docs.forEach(function (doc) {
-     
+
      console.log(doc);
-     
+
      var task = {
      societe: doc.societe,
      contact: doc.contacts[0] || null,
@@ -3042,7 +3042,7 @@ Report.prototype = {
      ],
      lead: doc.leads || null
      };
-     
+
      switch (doc.actions.type) {
      case "Réunion interne":
      task.type = "AC_INTERNAL";
@@ -3068,18 +3068,18 @@ Report.prototype = {
      default:
      console.log("Manque " + doc.actions.type);
      }
-     
+
      task.name = i18n.t("tasks:" + task.type) + " (" + doc.societe.name + ")";
      task.notes[0].note = doc.actions.type + " " + i18n.t("tasks:" + task.type) + "\nCompte rendu du " + dateFormat(task.datec, CONFIG('dateformatShort'));
-     
+
      console.log(task);
-     
+
      Task.create(task, null, null, function (err, task) {
      if (err)
      console.log(err);
      //	console.log(task);
      });
-     
+
      });
      res.send(200);
      });

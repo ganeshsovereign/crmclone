@@ -100,7 +100,7 @@ exports.menus = {
             "menu:modules": {
                 "position": 70,
                 "enabled": "$user->admin",
-                "url": "/erp/#!/settings/module",
+                "url": "",
                 "perms": "admin",
                 "icon": "fa-cog",
                 "usertype": 2,

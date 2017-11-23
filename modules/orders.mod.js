@@ -29,7 +29,7 @@ exports.enabled = true;
 
 exports.csv = {
     "model": "order",
-    "schema": "orderCustomer",
+    "schema": "Order",
     "aliases": {
         "ref": "Ref",
         "supplier.fullName": "Client",

@@ -118,7 +118,8 @@ var OrderRowSchema = mongoose.Schema({
     isDeleted: {
         type: Boolean,
         defaut: false
-    }
+    },
+    oldId: String
 }, {
     collection: 'orderRows'
 });

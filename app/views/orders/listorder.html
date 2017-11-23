@@ -41,6 +41,10 @@
                             <i class="fa fa-money"></i> @(orders:CreateBills)
                         </a>
                     </li>
+                    <li>
+                        <a ng-show="login.rights.delivery.read" ng-href="/erp/api/order/export?contentType=delivery&type=xls&filter={{search}}">
+                            <i class="fa fa-file-excel-o"></i> @(Export XLS)</a>
+                    </li>
                 </ul>
             </div>
         </div>

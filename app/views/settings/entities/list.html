@@ -1,88 +1,88 @@
 <div>
-    <div class="page-bar">
-        <ul class="page-breadcrumb">
-            <li>
-                <i class="fa fa-home"></i>
-                <a ui-sref="home">@(Home)</a>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(Parameters)</span>
-                <i class="fa fa-angle-right"></i>
-            </li>
-            <li>
-                <span>@(companies:ManagementEntity)</span>
-            </li>
-        </ul>
+  <div class="page-bar">
+    <ul class="page-breadcrumb">
+      <li>
+        <i class="fa fa-home"></i>
+        <a ui-sref="home">@(Home)</a>
+        <i class="fa fa-angle-right"></i>
+      </li>
+      <li>
+        <span>@(Parameters)</span>
+        <i class="fa fa-angle-right"></i>
+      </li>
+      <li>
+        <span>@(companies:ManagementEntity)</span>
+      </li>
+    </ul>
 
-        <div class="page-toolbar">
-            <div class="btn-group pull-right">
-                <button class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
+    <div class="page-toolbar">
+      <div class="btn-group pull-right">
+        <button class="btn yellow-crusta dropdown-toggle uppercase" data-toggle="dropdown"><i class="fa fa-share"></i> @(Tools) <i class="fa fa-angle-down"></i>
                             </button>
-                <ul class="dropdown-menu pull-right">
-                    <li>
-                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+        <ul class="dropdown-menu pull-right">
+          <li>
+            <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i>
                                         @(PrintList) </a>
-                    </li>
-                    <li>
-                        <a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove()" ng-confirm-click="Confirmez-vous la suppression des sociétés ? Ceci sera irrémédiable.">
+          </li>
+          <li>
+            <a href="#" class="font-red" ng-show="login.rights.societe.delete" confirmed-click="remove()" ng-confirm-click="Confirmez-vous la suppression des sociétés ? Ceci sera irrémédiable.">
                             <i class="fa fa-trash-o font-red"></i> @(Delete)
                         </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 
-    <div class="portlet light portlet-form bordered waiting">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="fa fa-calculator"></i>
-                <span class="caption-subject dark bold uppercase">@(companies:ListOfEntity)</span>
-            </div>
-            <div class="actions">
-                <button class="btn blue" ui-sref="settings.entity.create">@(Add) <i class="fa fa-plus"></i></button>
-                <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find(true)"><i class="fa fa-refresh"></i></button>
-            </div>
-        </div>
-        <div class="tools">
-        </div>
-        <div class="portlet-body">
-            <table-pagination ng-model="page"></table-pagination>
-            <div class="no-footer table-responsive">
-                <table class="table table-striped table-hover table-condensed no-footer">
-                    <colgroup>
-                        <col width="42px">
-                        <col width="20%">
-                        <col width="20%">
-                        <col width="20%">
-                        <col width="20%">
-                    </colgroup>
-                    <thead>
-                        <tr role="row" class="heading">
-                            <th class="text-center">
-                                <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" ng-click="checkedAll()" />
-                            </th>
-                            <th table-sort='name' ng-model="sort" name="@(companies:Company)"></th>
-                            <th table-sort='address.zip' ng-model="sort" name="@(Zip)"></th>
-                            <th table-sort='address.city' ng-model="sort" name="@(Town)"></th>
-                            <th table-sort='companyInfo' ng-model="sort" name="@(companies:ProfId3FR)"></th>
-                            <th table-sort='datec' ng-model='sort' name="@(DateCreation)"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="line in entities" ng-class="{'bg-grey-silver':line.exported}">
-                            <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
-                            <td><a class="with-tooltip" ui-sref="settings.entity.show({id:line._id})"><i class="fa fa-institution"></i>{{line.name}}</a></td>
-                            <td ui-sref="settings.entity.show({id:line._id})">{{line.address.zip}}</td>
-                            <td ui-sref="settings.entity.show({id:line._id})">{{line.address.city}}</td>
-                            <td ui-sref="settings.entity.show({id:line._id})">{{line.companyInfo.idprof3}}</td>
-                            <td ui-sref="settings.entity.show({id:line._id})">{{line.createdAt | date:'dd/MM/yyyy'}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <table-pagination ng-model="page"></table-pagination>
-        </div>
+  <div class="portlet light portlet-form bordered waiting">
+    <div class="portlet-title">
+      <div class="caption">
+        <i class="fa fa-calculator"></i>
+        <span class="caption-subject dark bold uppercase">@(companies:ListOfEntity)</span>
+      </div>
+      <div class="actions">
+        <button class="btn blue" ui-sref="settings.entity.create">@(Add) <i class="fa fa-plus"></i></button>
+        <button title="@(Refresh)" class="btn btn-icon-only btn-default" ng-click="find(true)"><i class="fa fa-refresh"></i></button>
+      </div>
     </div>
+    <div class="tools">
+    </div>
+    <div class="portlet-body">
+      <table-pagination ng-model="page"></table-pagination>
+      <div class="no-footer table-responsive">
+        <table class="table table-striped table-hover table-condensed no-footer">
+          <colgroup>
+            <col width="42px">
+            <col width="20%">
+            <col width="20%">
+            <col width="20%">
+            <col width="20%">
+          </colgroup>
+          <thead>
+            <tr role="row" class="heading">
+              <th class="text-center">
+                <input uniform type="checkbox" ng-model="checkAll" ng-checked="checkAll" ng-click="checkedAll()" />
+              </th>
+              <th table-sort='name' ng-model="sort" name="@(companies:Company)"></th>
+              <th table-sort='address.zip' ng-model="sort" name="@(Zip)"></th>
+              <th table-sort='address.city' ng-model="sort" name="@(Town)"></th>
+              <th table-sort='companyInfo' ng-model="sort" name="@(companies:ProfId3FR)"></th>
+              <th table-sort='datec' ng-model='sort' name="@(DateCreation)"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="line in entities" ng-class="{'bg-grey-silver':line.exported}">
+              <td class="text-center"><input uniform type="checkbox" ng-model="grid[line._id]" ng-checked="grid[line._id]" /></td>
+              <td><a class="with-tooltip" ui-sref="settings.entity.show({id:line._id})"><i class="fa fa-institution"></i> {{line.name}}</a></td>
+              <td ui-sref="settings.entity.show({id:line._id})">{{line.address.zip}}</td>
+              <td ui-sref="settings.entity.show({id:line._id})">{{line.address.city}}</td>
+              <td ui-sref="settings.entity.show({id:line._id})">{{line.companyInfo.idprof3}}</td>
+              <td ui-sref="settings.entity.show({id:line._id})">{{line.createdAt | date:'dd/MM/yyyy'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <table-pagination ng-model="page"></table-pagination>
+    </div>
+  </div>
 </div>

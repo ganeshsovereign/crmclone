@@ -230,13 +230,15 @@
                                                 <a href="" class="collapse" data-original-title="" title=""> </a>
                                             </div>
                                             <div ng-show="module('delivery')" class="tools">
-                                                <a href="" class="expand" data-original-title="" title=""> </a>
-                                            </div>
+                                                    <a href="" class="expand" data-original-title="" title=""> </a>
+                                                </div>
+
                                             <div ng-hide="module('delivery')" class="portlet-body" style="display: block;">
-                                                <address ng-model="object.address" mode="withEmail" ng-disabled="!editable"></address>
-                                            </div>
+                                                    <address ng-model="object.address" mode="withEmail" ng-disabled="!editable"></address>
+                                                </div>
                                             <div ng-show="module('delivery')" class="portlet-body" style="display: none;">
-                                                <address ng-model="object.address" mode="simple" ng-disabled="!editable"></address>
+                                                    <address ng-model="object.address" mode="simple" ng-disabled="!editable"></address>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -256,10 +258,11 @@
                                                 </div>
                                             </div>
                                             <div ng-hide="module('delivery') || module('stockreturn')" class="portlet-body" style="display: none;">
-                                                <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
-                                            </div>
+                                                    <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
+                                                </div>
                                             <div ng-show="module('delivery') || module('stockreturn')" class="portlet-body" style="display: block;">
-                                                <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
+                                                    <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -276,7 +279,9 @@
                                                 </div>
                                             </div>
                                             <div class="portlet-body" style="display: block;">
-                                                <address ng-model="object.shippingAddress" ng-disabled="!editable"></address>
+                                                <div class="form-group form-md-line-input">
+                                                    <address ng-model="object.shippingAddress" ng-disabled="!editable"></address>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -321,18 +326,13 @@
     </div>
 </div>
 
-<div ng-if="object._id && module('delivery') && object.forSales" class="row">
-    <div class="col-md-12">
-        <product-lines ng-model="object.orderRows" title="'@(orders:ProductCart)'" for-sales="object.forSales" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliveryLine.html" ng-change="update()"></product-lines>
-    </div>
-</div>
+<!-- __DELIVERY__ -->
 <div ng-if="object._id && module('delivery') && !object.forSales" class="row">
     <div class="col-md-12">
         <product-lines ng-model="object.orderRows" title="'@(orders:ReceptionNotes)'" for-sales="object.forSales" warehouse="object.warehouse" ng-disabled="editable" price-list="object.supplier.salesPurchases.priceList._id" ng-template="/templates/core/productDeliverySupplierLine.html"
             ng-change="update()"></product-lines>
     </div>
 </div>
-
 <!-- __STOCKRETURN__ -->
 <div ng-if="object._id && module('stockreturn')" class="row">
     <div class="col-md-12">

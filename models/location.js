@@ -72,7 +72,7 @@ var locationsSchema = new Schema({
         ref: 'Users',
         default: null
     },
-
+    oldId: String
 }, {
     collection: 'locations'
 });
