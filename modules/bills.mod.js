@@ -19,11 +19,56 @@ limitations under the License.
 International Registered Trademark & Property of ToManage SAS
 */
 
+"use strict";
 
+const moment = require('moment');
 
 exports.name = "bill";
 exports.version = '1.00';
 exports.enabled = true;
+
+exports.csv = {
+    "model": "invoice",
+    "schema": "invoice",
+    "aliases": {
+        "ref": "Ref",
+        "supplier.fullName": "Client",
+        "ref_client": "Ref_Client",
+        "salesPerson.fullName": "Commercial",
+        "datec": "Date de facture",
+        "dater": "Date de paiement",
+        "total_ht": "Total HT",
+        "total_ttc": "Total TTC",
+        "total_paid": "Deja paye",
+        "total_to_paid": "Restant du",
+        "Status": "Statut",
+        "entity": "Entite",
+        "createdAt": "Date creation"
+    },
+
+    "arrayKeys": {
+    },
+
+    "formatters": {
+        "Date de facture": function(date) {
+            return moment(date).format(CONFIG('dateformatLong'));
+        },
+        "Date de paiement": function(date) {
+            return moment(date).format(CONFIG('dateformatLong'));
+        },
+        "Date creation": function(date) {
+            return moment(date).format(CONFIG('dateformatLong'));
+        },
+        "Statut": function(Status) {
+            const OrderStatus = MODEL('order').Status;
+
+            let result = MODULE('utils').Status(Status, OrderStatus);
+            return result.name;
+        }
+    }
+};
+
+
 exports.description = "Gestion des factures";
 
 exports.rights = [{

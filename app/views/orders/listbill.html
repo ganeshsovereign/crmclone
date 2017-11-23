@@ -19,7 +19,7 @@
                             </button>
                 <ul class="dropdown-menu pull-right">
                     <li>
-                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i> 
+                        <a href="#" onclick="javascript:window.print();"><i class="fa fa-print"></i>
                                     @(PrintList) </a>
                     </li>
                     <li>
@@ -47,6 +47,12 @@
                                     @(orders:CreateBills)
                                 </a>
                             </li>-->
+                            <li class="divider">
+
+                            <li>
+                                <a ng-show="login.rights.bill.read" ng-href="/erp/api/order/export?contentType=invoice&type=xls&filter={{search}}">
+                                    <i class="fa fa-file-excel-o"></i> @(Export XLS)</a>
+                            </li>
                     <li class="divider">
                     </li>
                     <li>
