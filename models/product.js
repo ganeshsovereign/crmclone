@@ -321,6 +321,11 @@ var productSchema = new Schema({
         set: MODULE('utils').setAccount,
         trim: true
     },
+    compta_buy_dom_tom: {
+        type: String,
+        set: MODULE('utils').setAccount,
+        trim: true
+    },
     compta_sell: {
         type: String,
         set: MODULE('utils').setAccount,
@@ -511,7 +516,7 @@ var productSchema = new Schema({
         width: { type: Number, default: 0 },
         height: { type: Number, default: 0 },
         dimension: { type: String, default: 'cm' },
-        
+
     },MOVE TO ATTRIBUTES */
     weight: {
         type: Number,
@@ -1345,7 +1350,7 @@ productSchema.statics.query = function(options, callback) {
 
                 for (var i = 0; i < resultData.data.length; i++) {
                     /*console.log(doNotShowImage);
-    
+
                              if (doNotShowImage) {
                              console.log(resultData.data[i]);
                              delete resultData.data[i].imageSrc;
@@ -1745,8 +1750,8 @@ productSchema.virtual('total_pack') // Set Total price for a pack
 /*productSchema.method('linker_category', function (cb) {
  var self = this;
  var CategoryModel=MODEL('category').Schema;
- 
- 
+
+
  CategoryModel.findOne({_id:self.category},"linker", function(err, doc){
  console.log(doc);
  });

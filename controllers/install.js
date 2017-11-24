@@ -3747,20 +3747,20 @@ F.on('load', function() {
             // ATTENTION il faut migrer les banques a la main pour ajouter la bank dans les meta
             /*
             db.getCollection('Transaction').update(
-                // query 
+                // query
                 {
                     'accounts':"512110"
                 },
-                
-                // update 
+
+                // update
                 {
                     $set : {'meta.bank':ObjectId("586a080bdb5b6948a2ba0c6c")}
                 },
-                
-                // options 
+
+                // options
                 {
-                    "multi" : true,  // update only one document 
-                    "upsert" : false  // insert a new document, if no existing document match the query 
+                    "multi" : true,  // update only one document
+                    "upsert" : false  // insert a new document, if no existing document match the query
                 }
             );*/
             function(conf, wCb) {
@@ -5268,6 +5268,67 @@ F.on('load', function() {
                             return console.log(err);
 
                         console.log("ToManage updated to {0}".format(0.64));
+                        wCb(err, doc.values);
+                        //wCb(err, conf);
+                    });
+                });
+            },
+            //Add new accounts DOM-TOM
+            function(conf, wCb) {
+                if (conf.version >= 0.65)
+                    return wCb(null, conf);
+
+                function addDomTomAccounts(aCb) {
+                    const Model = MODEL('productFamily').Schema;
+
+                    console.log("update productFamily");
+
+                    async.parallel([
+                        function(pCb) {
+                            Model.update({
+                                'accounts.account':"707100",
+                                'accounts':{$size: 3}
+                            }, {
+                                $addToSet: {
+                                    accounts: {account : '707090'}
+                                }
+                            }, {
+                                upsert: false,
+                                multi: true
+                            }, pCb);
+                        },
+                        function(pCb) {
+                            Model.update({
+                                'accounts.account':"607100",
+                                'accounts':{$size: 3}
+                            }, {
+                                $addToSet: {
+                                    accounts: {account : '607090'}
+                                }
+                            }, {
+                                upsert: false,
+                                multi: true
+                            }, pCb);
+                        }
+                    ], function(err, docs) {
+                        aCb(err);
+                    });
+
+                }
+
+                async.waterfall([addDomTomAccounts], function(err) {
+                    if (err)
+                        return console.log(err);
+
+                    Dict.findByIdAndUpdate('const', {
+                        'values.version': 0.65
+                    }, {
+                        new: true
+                    }, function(err, doc) {
+                        if (err)
+                            return console.log(err);
+
+                        console.log("ToManage updated to {0}".format(0.65));
                         wCb(err, doc.values);
                         //wCb(err, conf);
                     });
