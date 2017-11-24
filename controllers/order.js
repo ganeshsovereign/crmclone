@@ -217,12 +217,12 @@ Object.prototype = {
 
   exportToType: function() {
     var self = this;
-    var Order = MODEL('order').Schema;
+    var Order =  MODEL('order').Schema.Order;
     /*if (self.query.forSales === "false")
       Order = MODEL('order').Schema.OrderCustomer;
     else
       Order = MODEL('order').Schema.OrderSupplier;
-*/
+    console.log("forSales", self.query.forSales);*/
     var type = self.query.type;
 
     const exportMap = MODULE('orders').csv;

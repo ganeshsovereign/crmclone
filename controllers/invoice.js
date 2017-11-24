@@ -35,7 +35,7 @@ exports.install = function() {
 
     var object = new Object();
     F.route('/erp/api/bill', object.getByViewType, ['authorize']);
-    F.route('/erp/api/order/export', object.exportToType, ['authorize']);
+    F.route('/erp/api/bill/export', object.exportToType, ['authorize']);
     F.route('/erp/api/bill/stats', object.stats, ['authorize']);
     F.route('/erp/api/bill/pdf/', object.pdfAll, ['post', 'json', 'authorize', 60000]);
     F.route('/erp/api/bill/{id}', object.show, ['authorize']);
@@ -53,9 +53,9 @@ exports.install = function() {
 
 /*	// list for autocomplete
  app.post('/api/bill/autocomplete', function (req, res) {
- 
+
  var BillModel = MODEL('invoice').Schema;
- 
+
  console.dir(req.body.filter);
  if (req.body.filter == null)
  return res.send(200, {});
@@ -76,7 +76,7 @@ exports.install = function() {
  console.log(err);
  return;
  }
- 
+
  var result = [];
  if (docs !== null)
  for (var i in docs) {
@@ -102,7 +102,7 @@ exports.install = function() {
  result[i].address.town = docs[i].town;
  result[i].address.country = docs[i].country;
  }
- 
+
  return res.send(200, result);
  });
  });
@@ -218,6 +218,8 @@ Object.prototype = {
 
     },
     exportToType: function() {
+      console.log("export invoice");
+
         var self = this;
         const Invoice = MODEL('invoice').Schema;
 
@@ -1929,7 +1931,7 @@ function createBill(doc, cgv, callback) {
                 ]
             }];
 
-            // Frais de port 
+            // Frais de port
             if (doc.shipping && doc.shipping.total_ht)
                 tabTotal.push({
                     label: "Frais de port",
