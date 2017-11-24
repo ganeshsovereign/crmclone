@@ -230,63 +230,63 @@
                                                 <a href="" class="collapse" data-original-title="" title=""> </a>
                                             </div>
                                             <div ng-show="module('delivery')" class="tools">
-                                                    <a href="" class="expand" data-original-title="" title=""> </a>
-                                                </div>
+                                                <a href="" class="expand" data-original-title="" title=""> </a>
+                                            </div>
 
                                             <div ng-hide="module('delivery')" class="portlet-body" style="display: block;">
-                                                    <address ng-model="object.address" mode="withEmail" ng-disabled="!editable"></address>
-                                                </div>
+                                                <address ng-model="object.address" mode="withEmail" ng-disabled="!editable"></address>
+                                            </div>
                                             <div ng-show="module('delivery')" class="portlet-body" style="display: none;">
-                                                    <address ng-model="object.address" mode="simple" ng-disabled="!editable"></address>
-                                                </div>
+                                                <address ng-model="object.address" mode="simple" ng-disabled="!editable"></address>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div ng-hide="module('stockreturn') || module('bill')" ng-if="object.supplier._id">
-                                        <div class="portlet light bordered">
-                                            <div class="portlet-title">
-                                                <div class="caption">
-                                                    <i class="fa fa-truck"></i>
-                                                    <span class="caption-subject uppercase"> @(orders:DeliveryAddress)</span>
-                                                </div>
-                                                <div ng-hide="module('delivery') || module('stockreturn')" class="tools">
-                                                    <a href="" class="expand" data-original-title="" title=""> </a>
-                                                </div>
-                                                <div ng-show="module('delivery') || module('stockreturn')" class="tools">
-                                                    <a href="" class="collapse" data-original-title="" title=""> </a>
-                                                </div>
+                                <div ng-hide="module('stockreturn') || module('bill')" ng-if="object.supplier._id">
+                                    <div class="portlet light bordered">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="fa fa-truck"></i>
+                                                <span class="caption-subject uppercase"> @(orders:DeliveryAddress)</span>
                                             </div>
-                                            <div ng-hide="module('delivery') || module('stockreturn')" class="portlet-body" style="display: none;">
-                                                    <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
-                                                </div>
-                                            <div ng-show="module('delivery') || module('stockreturn')" class="portlet-body" style="display: block;">
-                                                    <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
-                                                </div>
+                                            <div ng-hide="module('delivery') || module('stockreturn')" class="tools">
+                                                <a href="" class="expand" data-original-title="" title=""> </a>
+                                            </div>
+                                            <div ng-show="module('delivery') || module('stockreturn')" class="tools">
+                                                <a href="" class="collapse" data-original-title="" title=""> </a>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div ng-show="module('stockreturn')">
-                                        <div class="portlet light bordered">
-                                            <div class="portlet-title">
-                                                <div class="caption">
-                                                    <i class="fa fa-truck"></i>
-                                                    <span class="caption-subject uppercase"> @(orders:WareHouseAddress)</span>
-                                                </div>
-                                                <div class="tools">
-                                                    <a href="" class="collapse" data-original-title="" title=""> </a>
-                                                </div>
-                                            </div>
-                                            <div class="portlet-body" style="display: block;">
-                                                <div class="form-group form-md-line-input">
-                                                    <address ng-model="object.shippingAddress" ng-disabled="!editable"></address>
-                                                </div>
-                                            </div>
+                                        <div ng-hide="module('delivery') || module('stockreturn')" class="portlet-body" style="display: none;">
+                                            <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
+                                        </div>
+                                        <div ng-show="module('delivery') || module('stockreturn')" class="portlet-body" style="display: block;">
+                                            <address ng-model="object.shippingAddress" ng-disabled="!editable" mode='shipping' supplier="object.supplier._id"></address>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
 
-                                    <!--<div ng-show="module('order') || module('offer')" ng-if="object.supplier">
+                            <div ng-show="module('stockreturn')">
+                                <div class="portlet light bordered">
+                                    <div class="portlet-title">
+                                        <div class="caption">
+                                            <i class="fa fa-truck"></i>
+                                            <span class="caption-subject uppercase"> @(orders:WareHouseAddress)</span>
+                                        </div>
+                                        <div class="tools">
+                                            <a href="" class="collapse" data-original-title="" title=""> </a>
+                                        </div>
+                                    </div>
+                                    <div class="portlet-body" style="display: block;">
+                                        <div class="form-group form-md-line-input">
+                                            <address ng-model="object.shippingAddress" ng-disabled="!editable"></address>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--<div ng-show="module('order') || module('offer')" ng-if="object.supplier">
                                         <div class="portlet light bordered">
                                             <div class="portlet-title">
                                                 <div class="caption">
@@ -304,14 +304,14 @@
                                             </div>
                                         </div>
                                     </div>-->
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 
 <div ng-hide="!object._id || object._id !==object.order._id" class="row">

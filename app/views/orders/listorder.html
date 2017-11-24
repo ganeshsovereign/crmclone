@@ -287,7 +287,7 @@
                                 , 'font-red' : line.status.allocateStatus=='NOT' } "></span>
                                     <span class="large fa fa-inbox " ng-class="{ 'font-grey': line.status.fulfillStatus=='NOR' , 'font-green-jungle': line.status.fulfillStatus=='ALL' , 'font-yellow-lemon': line.status.fulfillStatus=='NOA' ,
                                 'font-red' : line.status.fulfillStatus=='NOT' } "></span>
-                                    <span class="large fa" ng-class="{'fa-truck':object.forSales, 'fa-sign-in':!object.forSales, 'font-grey': line.status.shippingStatus=='NOR' , 'font-green-jungle': line.status.shippingStatus=='ALL' , 'font-yellow-lemon': line.status.shippingStatus=='NOA' ,
+                                    <span class="large fa" ng-class="{'fa-truck':forSales, 'fa-sign-in':!forSales, 'font-grey': line.status.shippingStatus=='NOR' , 'font-green-jungle': line.status.shippingStatus=='ALL' , 'font-yellow-lemon': line.status.shippingStatus=='NOA' ,
                                 'font-red' : line.status.shippingStatus=='NOT' } "></span>
                                     <span class="large fa fa-usd " ng-class="{ 'font-grey': line.status.invoiceStatus=='NOR' , 'font-green-jungle': line.status.invoiceStatus=='ALL' , 'font-yellow-lemon': line.status.invoiceStatus=='NOA' ,
                                 'font-red' : line.status.invoiceStatus=='NOT' } "></span>

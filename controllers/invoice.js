@@ -218,7 +218,7 @@ Object.prototype = {
 
     },
     exportToType: function() {
-      console.log("export invoice");
+        console.log("export invoice");
 
         var self = this;
         const Invoice = MODEL('invoice').Schema;
