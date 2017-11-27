@@ -115,6 +115,8 @@ AvailabilitySchema.statics.createMulti = function(options, callback) {
 				};
 		}
 
+		//console.log(options.avalabilities);
+
 		Availability.collection.insertMany(options.availabilities, function(err) {
 				if (err)
 						return callback(err);
@@ -1027,7 +1029,6 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
 												if (!batch.qty || !el.qty)
 														return false;
 
-
 												if (batch.qty >= el.qty) {
 														batchqty = el.qty;
 														batch.qty -= el.qty;
@@ -1127,6 +1128,9 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
 				}
 
 				function createAvailabilities(parallelCb) {
+						if(!options.availabilities.length)
+							return parallelCb('Erreur : Aucune Quantité ou aucune localisation');
+
 						self.createMulti(_.clone(options), function(err) {
 								if (err)
 										return parallelCb(err);
@@ -1153,7 +1157,7 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
 				if (err)
 						return mainCb(err);
 
-
+/*
 				if (goodsInNote.shippingCost) {
 						body = {
 								journal: null,
@@ -1203,7 +1207,7 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
 								}
 						});
 
-				}
+				}*/
 
 				mainCb(null, goodsInNote);
 		});

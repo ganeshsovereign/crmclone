@@ -317,7 +317,7 @@ Object.prototype = {
 				var Availability = MODEL('productsAvailability').Schema;
 				var isInventory = false;
 
-				if (self.query.stockReturn === 'true') {
+				if (self.query.stockReturn == 'true') {
 						if (self.query.forSales == "false")
 								return;
 						//var DeliveryModel = MODEL('order').Schema.stockReturns;
@@ -337,11 +337,11 @@ Object.prototype = {
 						self.body.status.receivedById = self.user._id;
 				}
 
-				if (self.body.Status == "VALIDATED" && !self.body.status.isInventory && !self.query.stockReturn)
+				if (self.body.Status == "VALIDATED" && !self.body.status.isInventory && self.body.forSales == true && !self.query.stockReturn)
 						isInventory = true;
 
 				// CANCEL DELIVERY
-				if (self.body.Status == "DRAFT" && self.body.status.isInventory) {
+				if (self.body.Status == "DRAFT" && self.body.status.isInventory && self.body.forSales == true) {
 						//cancelled inventory
 						return DeliveryModel.cancelInventories({
 										ids: [self.body._id]
@@ -406,6 +406,7 @@ Object.prototype = {
 										//delivery = _.extend(delivery, self.body);
 
 										//delivery.editedBy = self.user._id;
+
 										async.waterfall([
 														function(wCb) {
 																// Delivery depend on other order
@@ -436,7 +437,7 @@ Object.prototype = {
 
 																//update inventory IN
 
-																if (doc.status.isInventory)
+																if (doc.forSales == true || doc.status.isInventory)
 																		return wCb(null, doc);
 
 																if (!doc.status.isReceived)
@@ -447,6 +448,8 @@ Object.prototype = {
 																		.exec(function(err, result) {
 																				if (err)
 																						return wCb(err);
+
+																				//return console.log(result);
 
 																				return Availability.receiveProducts({
 																						uId: self.user._id,
@@ -481,7 +484,7 @@ Object.prototype = {
 														},
 														function(doc, wCb) {
 																//update inventory OUT
-																if (doc.status.isInventory)
+																if (doc.forSales == false || doc.status.isInventory)
 																		return wCb(null, doc);
 
 																// return console.log(doc.status);
@@ -501,7 +504,7 @@ Object.prototype = {
 																		})
 																		.exec(function(err, result) {
 																				if (err)
-																						return wCb(err);
+																							return wCb(err);
 
 																				//return console.log((result.orderRows));
 
@@ -567,9 +570,11 @@ Object.prototype = {
 																console.log(err);
 
 																delivery.update({
+																		'status.isReceived': null,
 																		'status.isPrinted': null,
 																		'status.isPacked': null,
-																		'status.isPicked': null
+																		'status.isPicked': null,
+																		Status : 'DRAFT'
 																}, function(err, doc) {});
 
 																return self.json({
