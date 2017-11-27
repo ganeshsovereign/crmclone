@@ -637,13 +637,13 @@ Object.prototype = {
 
                     cb(null, entry);
                 },
-function(entry,cb){
-    const CountryModel = MODEL('countries').Schema;
+                function(entry, cb) {
+                    const CountryModel = MODEL('countries').Schema;
 
-    CountryModel.findById(bill.address.country, function(err, doc){
-        return cb(err, entry, doc);
-    });
-},
+                    CountryModel.findById(bill.address.country, function(err, doc) {
+                        return cb(err, entry, doc);
+                    });
+                },
                 function(entry, country, cb) {
 
                     // Add product lines
@@ -694,17 +694,17 @@ function(entry,cb){
                         //    compta_sell = product.compta_sell;
 
                         switch (country.fiscalZone) {
-                          case 'EUROP':
-                            compta_sell = lineBill.product.sellFamily.accounts[1].account;
-                          break;
-                          case 'INTER':
-                          compta_sell = lineBill.product.sellFamily.accounts[2].account;
-                            break;
+                            case 'EUROP':
+                                compta_sell = lineBill.product.sellFamily.accounts[1].account;
+                                break;
+                            case 'INTER':
+                                compta_sell = lineBill.product.sellFamily.accounts[2].account;
+                                break;
                             case 'DOM_TOM':
-                            compta_sell = lineBill.product.sellFamily.accounts[3].account;
-                            break;
-                          default:
-                            // FR default compta_sell
+                                compta_sell = lineBill.product.sellFamily.accounts[3].account;
+                                break;
+                            default:
+                                // FR default compta_sell
                         }
 
                         if (lineBill.total_ht > 0)
@@ -825,10 +825,10 @@ function(entry,cb){
 
                         cb(null, entry);
                     },
-                    function(entry,cb){
+                    function(entry, cb) {
                         const CountryModel = MODEL('countries').Schema;
 
-                        CountryModel.findById(bill.address.country, function(err, doc){
+                        CountryModel.findById(bill.address.country, function(err, doc) {
                             return cb(err, entry, doc);
                         });
                     },
@@ -879,27 +879,27 @@ function(entry,cb){
                                 if (lineBill.product.costFamily.accounts.length)
                                     compta_buy = lineBill.product.costFamily.accounts[0].account;
 
-                                    switch (country.fiscalZone) {
-                                      case 'EUROP':
+                                switch (country.fiscalZone) {
+                                    case 'EUROP':
                                         compta_buy = lineBill.product.costFamily.accounts[1].account;
                                         if (product.compta_buy_eu)
                                             compta_buy = product.compta_buy_eu;
-                                      break;
-                                      case 'INTER':
-                                      compta_buy = lineBill.product.costFamily.accounts[2].account;
-                                      if (product.compta_buy_exp)
-                                          compta_buy = product.compta_buy_exp;
                                         break;
-                                        case 'DOM_TOM':
+                                    case 'INTER':
+                                        compta_buy = lineBill.product.costFamily.accounts[2].account;
+                                        if (product.compta_buy_exp)
+                                            compta_buy = product.compta_buy_exp;
+                                        break;
+                                    case 'DOM_TOM':
                                         compta_buy = lineBill.product.costFamily.accounts[3].account;
                                         if (product.compta_buy_dom_tom)
                                             compta_buy = product.compta_buy_dom_tom;
                                         break;
-                                      default:
-                                      if (product.compta_buy)
-                                          compta_buy = product.compta_buy;
+                                    default:
+                                        if (product.compta_buy)
+                                            compta_buy = product.compta_buy;
                                         // FR default compta_buy
-                                    }
+                                }
 
 
                                 if (lineBill.total_ht > 0)

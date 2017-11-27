@@ -484,6 +484,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row static-info align-reverse" ng-if="module('bill') && object.forSales == false">
+                            <div class="col-md-5 name">@(orders:CorrectionInvoice) : <span class="icon-pencil grey" ng-click="correction.$show()" ng-hide="correction.$visible || !editable"></span></div>
+                            <div class="col-md-7 value"><span editable-number="object.correction" e-step='0.01' e-style="width: 80px" blur="submit" buttons="no" onaftersave="update()" e-form="correction">
+                                                {{object.correction| currency}}
+                                            </span></div>
+                        </div>
                         <div class="row static-info align-reverse">
                             <div class="col-md-5 name bold">@(AmountTTC) :</div>
                             <div class="col-md-7 value bold">{{object.total_ttc| currency}}</div>

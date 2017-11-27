@@ -218,7 +218,7 @@ Object.prototype = {
     exportToType: function() {
         var self = this;
         var Order;
-        
+
         if (self.query.quotation === 'true') {
             if (self.query.forSales == "false")
                 Order = MODEL('order').Schema.QuotationSupplier;

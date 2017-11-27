@@ -5286,11 +5286,15 @@ F.on('load', function() {
                     async.parallel([
                         function(pCb) {
                             Model.update({
-                                'accounts.account':"707100",
-                                'accounts':{$size: 3}
+                                'accounts.account': "707100",
+                                'accounts': {
+                                    $size: 3
+                                }
                             }, {
                                 $addToSet: {
-                                    accounts: {account : '707090'}
+                                    accounts: {
+                                        account: '707090'
+                                    }
                                 }
                             }, {
                                 upsert: false,
@@ -5299,11 +5303,15 @@ F.on('load', function() {
                         },
                         function(pCb) {
                             Model.update({
-                                'accounts.account':"607100",
-                                'accounts':{$size: 3}
+                                'accounts.account': "607100",
+                                'accounts': {
+                                    $size: 3
+                                }
                             }, {
                                 $addToSet: {
-                                    accounts: {account : '607090'}
+                                    accounts: {
+                                        account: '607090'
+                                    }
                                 }
                             }, {
                                 upsert: false,
