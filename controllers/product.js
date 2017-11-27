@@ -3448,7 +3448,7 @@ PricesList.prototype = {
 				var PriceListModel = MODEL('priceList').Schema;
 				var query = {
 						$and: [],
-						$or : []
+						$or: []
 				};
 
 				if (self.query.cost)

@@ -621,7 +621,7 @@ MetronicApp.controller('OrdersController', ['$scope', '$rootScope', '$http', '$m
 								//$scope.object.$update(function(object) {
 								$rootScope.$state.go(go, {
 										id: response._id,
-										forSales: (response.forSales?'0':'1')
+										forSales: (response.forSales ? '0' : '1')
 								});
 								//});
 						});

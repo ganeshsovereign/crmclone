@@ -1128,8 +1128,8 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
 				}
 
 				function createAvailabilities(parallelCb) {
-						if(!options.availabilities.length)
-							return parallelCb('Erreur : Aucune Quantité ou aucune localisation');
+						if (!options.availabilities.length)
+								return parallelCb('Erreur : Aucune Quantité ou aucune localisation');
 
 						self.createMulti(_.clone(options), function(err) {
 								if (err)
@@ -1157,57 +1157,57 @@ AvailabilitySchema.statics.receiveProducts = function(options, mainCb) {
 				if (err)
 						return mainCb(err);
 
-/*
-				if (goodsInNote.shippingCost) {
-						body = {
-								journal: null,
-								currency: {
-										_id: "EUR"
-								},
+				/*
+								if (goodsInNote.shippingCost) {
+										body = {
+												journal: null,
+												currency: {
+														_id: "EUR"
+												},
 
-								date: goodsInNote.status.receivedOn,
-								sourceDocument: {
-										model: 'goodsInNote',
-										_id: goodsInNote._id,
-										name: goodsInNote.name
-								},
+												date: goodsInNote.status.receivedOn,
+												sourceDocument: {
+														model: 'goodsInNote',
+														_id: goodsInNote._id,
+														name: goodsInNote.name
+												},
 
-								accountsItems: [],
-								amount: goodsInNote.shippingCost
-						};
+												accountsItems: [],
+												amount: goodsInNote.shippingCost
+										};
 
-						PaymentMethodService.populatePaymentMethod({
-								dbName: dbName,
-								path: 'order.paymentMethod',
-								query: goodsInNote
-						}, function(err, goodsInNote) {
-								if (!err) {
-
-										OrgService.getDefaultShippingAccount({
-												dbName: dbName
-										}, function(err, shipping) {
+										PaymentMethodService.populatePaymentMethod({
+												dbName: dbName,
+												path: 'order.paymentMethod',
+												query: goodsInNote
+										}, function(err, goodsInNote) {
 												if (!err) {
-														body.accountsItems.push({
-																credit: 0,
-																debit: goodsInNote.shippingCost,
-																account: shipping
-														}, {
-																credit: goodsInNote.shippingCost,
-																debit: 0,
-																account: goodsInNote.order.paymentMethod.chartAccount
+
+														OrgService.getDefaultShippingAccount({
+																dbName: dbName
+														}, function(err, shipping) {
+																if (!err) {
+																		body.accountsItems.push({
+																				credit: 0,
+																				debit: goodsInNote.shippingCost,
+																				account: shipping
+																		}, {
+																				credit: goodsInNote.shippingCost,
+																				debit: 0,
+																				account: goodsInNote.order.paymentMethod.chartAccount
+																		});
+
+																		journalEntry.createMultiRows(body, {
+																				dbName: dbName,
+																				uId: uId
+																		});
+																}
 														});
 
-														journalEntry.createMultiRows(body, {
-																dbName: dbName,
-																uId: uId
-														});
 												}
 										});
 
-								}
-						});
-
-				}*/
+								}*/
 
 				mainCb(null, goodsInNote);
 		});

@@ -504,7 +504,7 @@ Object.prototype = {
 																		})
 																		.exec(function(err, result) {
 																				if (err)
-																							return wCb(err);
+																						return wCb(err);
 
 																				//return console.log((result.orderRows));
 
@@ -574,7 +574,7 @@ Object.prototype = {
 																		'status.isPrinted': null,
 																		'status.isPacked': null,
 																		'status.isPicked': null,
-																		Status : 'DRAFT'
+																		Status: 'DRAFT'
 																}, function(err, doc) {});
 
 																return self.json({
