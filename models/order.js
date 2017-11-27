@@ -2599,12 +2599,12 @@ goodsInNoteSchema.statics.query = function(options, callback) {
 		if (filter && filter.Status && filter.Status.value[0] == "NEW") {
 				filter.Status.value = [];
 				filterObject.Status = {
-						$nin: ["SEND", "BILLED"]
+						$nin: ["INSTOCK", "BILLED"]
 				};
 		}
 
 		if (filter && filter.Status && filter.Status.value[0] == "CLOSED") {
-				filter.Status.value[0] = "SEND";
+				filter.Status.value[0] = "INSTOCK";
 		}
 
 		filterObject.$and = [];

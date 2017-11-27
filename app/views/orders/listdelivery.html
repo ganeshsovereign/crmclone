@@ -198,9 +198,9 @@
 						<col width="8%">
 						<col width="30px">
 						<col width="70px">
-						<col width="40px">
-						<col width="40px">
-						<col width="40px">
+						<col ng-if="forSales" width="40px">
+						<col ng-if="forSales" width="40px">
+						<col ng-if="forSales" width="40px">
 						<col width="40px">
 						<col width="10%">
 					</colgroup>
@@ -224,10 +224,11 @@
 							<th>@(Type)</th>
 							<th>@(Status)</th>
 							<th>@(companies:Entity)</th>
-							<th class="text-center">@(orders:Printed)</th>
-							<th class="text-center">@(orders:Picked)</th>
-							<th class="text-center">@(orders:Packed)</th>
-							<th class="text-center">@(orders:Shipped)</th>
+							<th ng-if="forSales" class="text-center">@(orders:Printed)</th>
+							<th ng-if="forSales" class="text-center">@(orders:Picked)</th>
+							<th ng-if="forSales" class="text-center">@(orders:Packed)</th>
+							<th ng-if="forSales" class="text-center">@(orders:Shipped)</th>
+							<th ng-if="!forSales" class="text-center">@(orders:Received)</th>
 							<th>@(DateCreation)</th>
 						</tr>
 					</thead>
@@ -260,24 +261,29 @@
 
 							<td ui-sref="delivery.show({id:line._id, forSales:forSales})">{{line.entity}}</td>
 
-							<td ui-sref="delivery.show({id:line._id, forSales:forSales})" class="text-center">
+							<td ng-if="forSales" ui-sref="delivery.show({id:line._id, forSales:forSales})" class="text-center">
 								<span ng-if="!line.status.isPrinted" class="fa fa-close font-red"></span>
 								<span ng-if="line.status.isPrinted" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Imprimé le : {{line.status.isPrinted | date:'dd/MM/yyyy HH:mm'}}"></span>
 							</td>
 
-							<td ui-sref="delivery.show({id:line._id, forSales:forSales})" class="text-center">
+							<td ng-if="forSales" ui-sref="delivery.show({id:line._id, forSales:forSales})" class="text-center">
 								<span ng-if="!line.status.isPicked" class="fa fa-close font-red"></span>
 								<span ng-if="line.status.isPicked" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Scanné le : {{line.status.isPicked | date:'dd/MM/yyyy HH:mm'}}"></span>
 							</td>
 
-							<td ui-sref="delivery.show({id:line._id, forSales:forSales})" class="text-center">
+							<td ng-if="forSales" ui-sref="delivery.show({id:line._id, forSales:forSales})" class="text-center">
 								<span ng-if="!line.status.isPacked" class="fa fa-close font-red"></span>
 								<span ng-if="line.status.isPacked" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Emballé le : {{line.status.isPacked | date:'dd/MM/yyyy HH:mm'}}"></span>
 							</td>
 
-							<td ui-sref="delivery.show({id:line._id, forSales:forSales})" class="text-center">
+							<td ng-if="forSales" ui-sref="delivery.show({id:line._id, forSales:forSales})" class="text-center">
 								<span ng-if="!line.status.isShipped" class="fa fa-close font-red"></span>
 								<span ng-if="line.status.isShipped" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Expédié le : {{line.status.isShipped | date:'dd/MM/yyyy HH:mm'}}"></span>
+							</td>
+
+							<td ng-if="!forSales" ui-sref="delivery.show({id:line._id, forSales:forSales})" class="text-center">
+								<span ng-if="!line.status.isReceived" class="fa fa-close font-red"></span>
+								<span ng-if="line.status.isReceived" class="fa fa-check font-green-jungle" data-tooltip-options='{"position":"top"}' title="Recu le : {{line.status.isReceived | date:'dd/MM/yyyy HH:mm'}}"></span>
 							</td>
 
 							<td ui-sref="delivery.show({id:line._id, forSales:forSales})">{{line.datec| date:'dd/MM/yyyy'}}</td>
